@@ -1,0 +1,32 @@
+{
+  "findings": [
+    {
+      "id": "cassiopeia_e_kill_condition",
+      "path": "Cassiopeia.E.rules[3].conditions[0]",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If this kills the target, Cassiopeia restores 40 Mana.",
+      "issue": "처치한 대상의 `activation`이 `empowered`여야 한다는 조건은 원문에 없습니다. 이 조건은 마나 회복 발동을 잘못 제한합니다.",
+      "correction": "`activation = empowered` 조건을 제거하고, 해당 공격으로 대상이 처치된 경우에만 마나 회복이 발동하도록 표현하세요."
+    },
+    {
+      "id": "cassiopeia_e_minion_heal_stacks",
+      "path": "Cassiopeia.E.rules[2]",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If the enemy is Poisoned, they take an additional (20/45/70/95/120 + (45% Ability Power)) magic damage and Cassiopeia restores (10/11.5/13/14.5/16% Ability Power) Health, reduced to (2.5/2.875/3.25/3.625/4% Ability Power) Health against lane minions and small monsters.",
+      "issue": "감소 회복량을 별도의 추가 회복 효과로 기록해, 공격로 미니언 조건에서는 기본 회복량과 감소 회복량이 함께 적용되는 것으로 읽힙니다. 원문은 기본 회복량이 감소 수치로 대체된다고 합니다.",
+      "correction": "미니언 대상의 감소 회복을 별도 누적 효과가 아니라 기본 회복량을 대체하는 조건부 값으로 표현하세요."
+    },
+    {
+      "id": "cassiopeia_w_periodic_event",
+      "path": "Cassiopeia.W.rules[1].trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies in the clouds take (20/25/30/35/40 + (10% Ability Power)) magic damage per second, are Poisoned, Grounded, and Slowed by 40/50/60/70/80%.",
+      "issue": "`enter_area`는 구름에 들어가는 순간에만 발동하는 이벤트로 읽힐 수 있지만, 피해는 구름 안에 있는 동안 초당 적용됩니다.",
+      "correction": "구름 안에 있는 동안 반복 적용되는 이벤트로 표현하세요."
+    }
+  ],
+  "notes": []
+}

@@ -101,6 +101,30 @@ jobs:
         id: drift
         run: npm run llm:drift-report
 
+      # 스킬 본문·수치·형태가 바뀐 슬롯만 재작성 대상으로 잡는다.
+      # 모델 인증은 CI에 없으므로 준비한 입력과 재사용 후보를 artifact로 전달한다.
+      - name: Detect champion mechanics changes
+        id: mechanics-drift
+        run: npm run llm:mechanics-drift
+
+      - name: Prepare changed champion mechanics
+        if: steps.mechanics-drift.outputs.has_changes == 'true'
+        run: npm run llm:mechanics-refresh -- "$RUNNER_TEMP/mechanics-next"
+
+      - name: Check champion mechanics answer regressions
+        run: npm run llm:mechanics-eval -- research/champion-mechanics/reports/answer-quality.json --check
+
+      - name: Upload champion mechanics update inputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: champion-mechanics-update
+          path: |
+            research/champion-mechanics/reports/*
+            ${{ runner.temp }}/mechanics-next
+          retention-days: 14
+          if-no-files-found: ignore
+
       # 실패 알림은 워크플로가 멈출 때만 온다. 여기서 다루는 것은 멈출 일은 아닌데
       # 사람이 봐야 하는 것들이라, 이슈로 남겨 알림을 받는다. 열려 있는 이슈가 있으면
       # 댓글만 달아 같은 이슈가 쌓이지 않게 한다.

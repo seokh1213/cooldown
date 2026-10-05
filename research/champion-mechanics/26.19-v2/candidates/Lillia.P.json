@@ -1,0 +1,273 @@
+{
+  "summary": "릴리아의 스킬은 꿈가루를 적용해 최대 체력에 비례한 마법 피해를 3초 동안 입힌다. 대형 정글 몬스터와 챔피언에게 스킬이 적중하면 릴리아가 각각 정해진 방식으로 체력을 회복한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "릴리아의 스킬에 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "릴리아의 스킬이 꿈가루를 적용한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "꿈가루는3초에 걸쳐 최대 체력의 (5% + 주문력100당1.25%) 마법 피해를 입힌다. 최대 체력의 주인은 공급 원문이 명시하지 않았다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia's Abilities apply Dream Dust, dealing (5% + (1.25% per 100 Ability Power)) max Health magic damage over 3 seconds."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "릴리아의 스킬이 적에게 꿈가루를 묻혀 3초 동안 최대 체력의 (5% + (주문력 100당 1.25%))에 해당하는 마법 피해를 입힙니다."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "large jungle monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "릴리아의 스킬로 꿈가루가 적용된 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "대형 정글 몬스터에게 꿈가루가 적용되면 릴리아가 지속시간 동안 체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia restores (39 + (15% Ability Power)) Health over the duration against large jungle monsters"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia restores (39 + (15% Ability Power)) Health over the duration against large jungle monsters, and restores ((6 ~ 90) + (30% Ability Power)) Health against champions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia's Abilities apply Dream Dust, dealing (5% + (1.25% per 100 Ability Power)) max Health magic damage over 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "릴리아의 스킬로 꿈가루가 적용된 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "챔피언에게 꿈가루가 적용되면 릴리아가 체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and restores ((6 ~ 90) + (30% Ability Power)) Health against champions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia restores (39 + (15% Ability Power)) Health over the duration against large jungle monsters, and restores ((6 ~ 90) + (30% Ability Power)) Health against champions."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "5%+주문력100당1.25%는 비율을 더한 뒤 최대 체력에 곱하는 식이며 구성요소를 선형 피해 합으로 실행하지 않는다. 최대 체력의 소유자는 명시되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia's Abilities apply Dream Dust, dealing (5% + (1.25% per 100 Ability Power)) max Health magic damage over 3 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "요약은 챔피언 또는 몬스터 적중을 명시하지만 본문은 스킬의 적에게 꿈가루 적용을 일반적으로 서술한다. 본문 표현을 유지하며 그 밖의 대상에 대한 배제 조건은 확정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Hitting a champion or monster with a skill will deal additional max Health damage over time."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia's Abilities apply Dream Dust, dealing (5% + (1.25% per 100 Ability Power)) max Health magic damage over 3 seconds."
+        }
+      ]
+    }
+  ]
+}

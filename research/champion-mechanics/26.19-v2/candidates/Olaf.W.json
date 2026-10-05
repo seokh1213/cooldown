@@ -1,0 +1,199 @@
+{
+  "summary": "5초 동안 공격 속도가 증가하고2.5초 동안 기본량+잃은 체력 비례 보호막을 얻습니다. 체력30%미만에서 보호막의 최대량이 제시됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "5초 동안 공격 속도가40/50/60/70/80% 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Olaf gains 40/50/60/70/80% Attack Speed for 5 seconds, and 10/40/70/100/130 plus 17.5% missing Health Shield (up to a maximum of (10/40/70/100/130 + (12.25% Health)) Shield below 30% Health) for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "2.5초 동안10/40/70/100/130 + 자기 잃은 체력의17.5% 보호막을 얻으며 아래 최대량 제한을 받습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Olaf gains 40/50/60/70/80% Attack Speed for 5 seconds, and 10/40/70/100/130 plus 17.5% missing Health Shield (up to a maximum of (10/40/70/100/130 + (12.25% Health)) Shield below 30% Health) for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n18"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "체력이30%미만일 때 같은 보호막의 최대량은10/40/70/100/130 + Health의12.25%입니다. 별도 두 번째 보호막이 아닙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(up to a maximum of (10/40/70/100/130 + (12.25% Health)) Shield below 30% Health) for 2.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Olaf gains 40/50/60/70/80% Attack Speed for 5 seconds, and 10/40/70/100/130 plus 17.5% missing Health Shield (up to a maximum of (10/40/70/100/130 + (12.25% Health)) Shield below 30% Health) for 2.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "기본식은잃은HP17.5%이고상한식의Health12.25%는현재/최대구분미명시다. 이를maxHealth계수로추측하지않으며cap을추가shield로합산하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Olaf gains 40/50/60/70/80% Attack Speed for 5 seconds, and 10/40/70/100/130 plus 17.5% missing Health Shield (up to a maximum of (10/40/70/100/130 + (12.25% Health)) Shield below 30% Health) for 2.5 seconds."
+        }
+      ]
+    }
+  ]
+}

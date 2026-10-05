@@ -1,0 +1,287 @@
+{
+  "summary": "클레드가 목표 지점으로 돌진해 아군의 이동 속도를 점차 높이는 경로를 남깁니다. 돌진 중과 종료 후 일정 시간 동안 보호막을 얻습니다. 스칼은 경로에서 처음 만나는 적 챔피언에게 이동 거리에 따라 최대 체력 비례 마법 피해를 입히고 잠시 밀쳐냅니다. 피해·이동 속도·보호막은 돌진 시간이 길어질수록 최대치에 도달합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "경로가 아군에게 점차 증가하는 이동 속도를 부여한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kled charges toward an area, leaving a trail that grants allies increasing Move Speed."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The damage, Move Speed, and Shield reach their max values after 3 second(s) of charging."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "돌진 중 보호막을 얻고, 돌진이 끝난 뒤에도 일정 시간 유지된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While charging and for 2 seconds after Kled gains up to (200/300/400 + (300% bonus Attack Damage)) Shield."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The damage, Move Speed, and Shield reach their max values after 3 second(s) of charging."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "스칼이 처음 만나는 적 챔피언에게 이동 거리에 따라 달라지는 최대 체력 비례 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Skaarl rams the first enemy champion encountered, dealing (4/6/8% + (3% per 100 bonus Attack Damage)) to (12/18/24% + (9% per 100 bonus Attack Damage)) max Health magic damage (based on distance travelled) and briefly Knocking Back."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The damage, Move Speed, and Shield reach their max values after 3 second(s) of charging."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "처음 만나는 적 챔피언을 잠시 뒤로 밀쳐낸다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Skaarl rams the first enemy champion encountered, dealing (4/6/8% + (3% per 100 bonus Attack Damage)) to (12/18/24% + (9% per 100 bonus Attack Damage)) max Health magic damage (based on distance travelled) and briefly Knocking Back."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "최소·최대 피해 비율은 이동 거리에 따라 달라지며 돌진 3초 후 최대치에 도달하지만, 거리와 피해 사이의 구체적인 보간식은 원문에 제시되지 않는다. 추가 공격력 계수의 산출식도 원문이 'per 100 bonus Attack Damage'로만 제시하므로 수식 표현에는 한계가 있다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(based on distance travelled)"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The damage, Move Speed, and Shield reach their max values after 3 second(s) of charging."
+        }
+      ]
+    }
+  ]
+}

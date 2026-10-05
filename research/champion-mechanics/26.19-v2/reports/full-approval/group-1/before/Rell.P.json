@@ -1,0 +1,109 @@
+{
+  "summary": "렐의 기본 공격과 스킬이 적중하면 렐이 대상의 방어력과 마법 저항력을 훔친다. 기본 공격은 방어력과 마법 저항력에 비례한 추가 마법 피해를 입힌다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "렐이 적중 대상의 방어력과 마법 저항력을 훔친다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "armor",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "magicResist",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rell's Attacks and Abilities steal 3% Armor and 3% Magic Resist for 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "훔친 방어력과 마법 저항력에는 최대치가 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Max: 15%."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문은 최대치가 방어력과 마법 저항력 각각에 적용되는지, 두 수치의 합계에 적용되는지 밝히지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rell's Attacks and Abilities steal 3% Armor and 3% Magic Resist for 5 seconds. Max: 15%."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "summary": "바이가 스킬로 적 또는 구조물을 적중시키면 일정 시간 체력 비례 보호막을 얻습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "스킬로 적 또는 구조물을 적중시키면 보호막을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vi gains (10% Health) Shield for 3 seconds after hitting an enemy or structure with an activated Ability."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

@@ -1,0 +1,243 @@
+{
+  "summary": "람머스는 공 모양으로 말아 이동 속도가 증가하고, 시간이 지나며 더 높은 이동 속도까지 가속합니다. 적과 충돌하면 멈추고 마법 피해와 밀쳐내기를 적용하며, 주변 적을 둔화시킵니다. 재사용하면 스킬을 일찍 종료합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "공 모양으로 몸을 말면 이동 속도가 증가하고, 일정 시간에 걸쳐 더 높은 이동 속도까지 가속합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "level_range"
+            },
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rammus curls into a ball, gaining (25% ~ 39%) Move Speed, accelerating up to (150% ~ 235%) Move Speed over 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적과 충돌하면 멈추고 해당 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rammus stops after colliding with an enemy, dealing (80/120/160/200/240 + (100% Ability Power)) magic damage,"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rammus stops after colliding with an enemy, dealing (80/120/160/200/240 + (100% Ability Power)) magic damage, Knocking Back, and Slowing nearby enemies by 40/50/60/70/80% for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적과 충돌하면 해당 적을 뒤로 밀쳐냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rammus stops after colliding with an enemy, dealing (80/120/160/200/240 + (100% Ability Power)) magic damage, Knocking Back,"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "적과 충돌하면 주변 적을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Slowing nearby enemies by 40/50/60/70/80% for 1 second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rammus stops after colliding with an enemy, dealing (80/120/160/200/240 + (100% Ability Power)) magic damage, Knocking Back, and Slowing nearby enemies by 40/50/60/70/80% for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "재사용하면 이 스킬을 일찍 종료합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Rammus ends this Ability early."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

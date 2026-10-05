@@ -1,0 +1,91 @@
+{
+  "id": "Twitch.R",
+  "sourceHash": "416e65a93f5262ca01ea948b1a1555027f000d8d4aba5b62971264ef0b12c461",
+  "beforeCandidateHash": "a5b619c3a29f7bc2ce80ee554386aba1a6afc2a06cdb0e1d3831af1ca9a7643c",
+  "candidateHash": "14d67b5bee20e85e12ffaf8573ae421bebfb2b609a3bb7c95cafa535e4046c9b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "6초사거리300/공격력30~60/관통평타,통과적전부적중·후속대상피해10%감소와최소60%잔여,시전위장유지/평타위장해제를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 공격 사거리가 증가한다.; distance_units=300  scalar, duration_seconds=6  scalar / caster: 공격력이 증가한다.; amount=30/45/60  rank_values, duration_seconds=6  scalar / caster: 기본 공격이 관통 화살이 되어 경로상의 모든 적에게 적중한다.; duration_seconds=6  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 궁극기로 강화된 관통 기본 공격, target.hit_order eq 관통 화살의 첫 적중 이후 대상 적용. target: 강화관통화살은후속대상에게주는피해가관통할수록10%씩줄어들며일반피해의최소60%까지감소한다.10%자체가남은피해배율은아니다.; ratio_output=10%  scalar, min_amount=60%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq Camouflaged 적용. caster: 이 스킬을 사용해도 위장이 해제되지 않는다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.form eq Camouflaged 적용. caster: 위장 중 기본 공격을 하면 위장이 해제된다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "일반평타에도관통감소적용가능,10%감소량을damage_multiplier로오지정",
+      "correction": "궁극기관통후속대상조건·감소량과최소잔여비율로구별",
+      "sourceId": "en:body",
+      "quote": "These bolts hit all enemies they pass through, but deal 10% less damage to subsequent targets, down to a minimum of 60% damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "관통 이후 대상별 피해 감소를 attack_modifier로 기록했으며, 툴팁은 이를 기본 공격 피해에 적용한다고 설명하지만 피해 유형별 상호작용은 따로 명시하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "후속대상10%감소및최소60%잔여는명시되지만피해감소를비율로반복곱하는지또는기준피해에서단계별차감하는지영문이완전한수식으로정의하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

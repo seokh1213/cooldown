@@ -1,0 +1,150 @@
+{
+  "id": "Anivia.P",
+  "sourceHash": "4869ddd6d74eff662377a98b89d5ca0ae86455b807e911f0c377acd4410d7c10",
+  "beforeCandidateHash": "046ef3970c8cadd8f35f362212538a0d8279e0fcbc520a6fafae14ee7cd5f12b",
+  "candidateHash": "ceca371530bcab52e55c52975508c8ca9c38cfd6ddd9d536050ee01ac69e0433",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "치명 피해→알 변신과 즉시 전 회복, 알의 Armor/MR -40~20 변화, 6초 생존 환생 조건을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster가 치명 피해를 받으면 알로 변신하고 그 시점에 fullHealth 회복한다. Armor와 MR 각각 -40~20 변화이며 범위 기준은 unknown이다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "치명적인 피해를 받음"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 2,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "-40",
+              "value": -40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 3,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "-40",
+              "value": -40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "알로 변한 뒤 6초 생존해야 환생한다. 시간이 지나도 알이 죽었으면 적용되지 않으며 원문상 heal은 환생 시점이 아닌 변신 시점이다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n2"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "알 형태로 변한 뒤 생존"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.2;gaps",
+      "issue": "Armor/MR 복수 스탯이 statTo null로 합쳐지고 -40~20 기준 부족이 기록되지 않음",
+      "correction": "두 스탯 효과로 분리해 statTo를 지정하고 범위 기준 gap을 남겼다.",
+      "sourceId": "en:body",
+      "quote": "Upon taking fatal damage, Anivia reverts to an egg, healing to full Health and receiving (-40 ~ 20) Armor and Magic Resist."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "-40~20 변화의 기준 및 보간은 공급문에 명시되지 않아 레벨별 증가나 특정 랭크를 확정하지 않습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "summary": "오공이 적에게 돌진하고 분신은 대상 근처의 추가 적에게 돌진합니다. 적중한 적마다 마법 피해를 받으며, 오공과 분신은 공격 속도를 얻습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "오공이 적에게 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "secondary_targets",
+          "text": "분신이 대상 근처의 추가 적들에게 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Wukong dashes to an enemy, sending out Clones that mimic the dash to up to 2 additional enemies nearby."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적중한 적마다 마법 피해를 받습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each enemy struck takes (80/120/160/200/240 + (100% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "오공과 분신은 공격 속도를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He and his Clone gain 40/45/50/55/60% Attack Speed for 5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문은 오공과 분신 각각이 공격 속도를 얻는다고 하지만, effects.subject에는 두 소유자를 함께 지정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He and his Clone gain 40/45/50/55/60% Attack Speed for 5 seconds."
+        }
+      ]
+    }
+  ]
+}

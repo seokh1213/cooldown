@@ -1,0 +1,76 @@
+{
+  "summary": "세 장의 카드를 던져 마법 피해를 입힙니다. 같은 적은 카드 한 장으로만 피해를 입습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "던진 카드가 적에게 각각 마법 피해를 입힙니다. 각 적은 카드 한 장으로만 피해를 받습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Twisted Fate throws three cards that deal (60/105/150/195/240 + (50% bonus Attack Damage) + (85% Ability Power)) magic damage each. Enemies can only be damaged by one of the cards."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

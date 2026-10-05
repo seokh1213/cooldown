@@ -1,0 +1,89 @@
+{
+  "id": "Shen.R",
+  "sourceHash": "2e1fa891bc2145ecde7aec7e3592e3bcbbecc18bc94fd63f9fa62620aa3af5da",
+  "beforeCandidateHash": "e9736a1a53b134965fcef38bc200468cf670f04b41266073087c96b68b4a606f",
+  "candidateHash": "bb9c7d5c8feb948b2a99cb13d615158a34e71486409a7ad4da3d49c6b92c3209",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "맵어디든아군챔피언보호막5초,대상잃은HP에따라최소120/220/320+본인추가HP15%+AP135%~최대192/352/512+추가HP24%+AP216%,대상잃은HP60%에서최대,3초정신집중완료후본인과기의검순간이동을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion; target other present 아군 → target: 대상아군챔피언에게5초 보호막을 줍니다. 대상잃은체력에 따라 최소(120/220/320+자신의추가체력15%+자신의주문력135%)~최대(192/352/512+자신의추가체력24%+자신의주문력216%)이며 대상체력60%손실에서 최대입니다. / min_amount=120/220/320 [formula_components]; stat_coefficient=15% (caster bonusHealth) [formula_components]; stat_coefficient=135% (caster abilityPower) [formula_components]; max_amount=192/352/512 [formula_components]; stat_coefficient=24% (caster bonusHealth) [formula_components]; stat_coefficient=216% (caster abilityPower) [formula_components]; duration_seconds=5 [scalar]; other=60% [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 이 스킬의3초 정신집중을 완료했을 때 → caster: 정신 집중을 마치면 아군의 위치로 순간이동하며 기의 검도 함께 이동합니다. / other=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "최소15%bonusHP가ratio_output이고AP135%가bonusHP로중복연결됐다.최대24%bonusHP도입력연결이없고60%손실기준이보호막maxamount였다.",
+      "correction": "최소15%추가HP/135%AP와최대24%추가HP/216%AP를별도로연결하고60%대상손실HP기준을other로보존했다.",
+      "sourceId": "en:body",
+      "quote": "between (120/220/320 + (15% bonus Health) + (135% Ability Power)) and (192/352/512 + (24% bonus Health) + (216% Ability Power)) Shield"
+    },
+    {
+      "path": "rules.1",
+      "issue": "임의시간3초경과가순간이동조건이고3초가이동지속시간으로연결됐다.",
+      "correction": "해당스킬의3초정신집중완료조건과준비시간으로명시했다.",
+      "sourceId": "en:body",
+      "quote": "After channeling for 3 seconds, Shen teleports to his ally's location with his Spirit Blade."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 462,
+      "verdict": "repaired",
+      "reason": "실제15%인n3를caster bonusHealth stat_coefficient로수정했다."
+    },
+    {
+      "index": 463,
+      "verdict": "repaired",
+      "reason": "지적의n4=15%설명은틀리지만실제n4=135%를bonusHealth에연결한오류는맞다.중복을제거하고n4=135%를AP에만연결했다."
+    },
+    {
+      "index": 464,
+      "verdict": "false_positive",
+      "reason": "실제frozen숫자표에서n4는135%이며원본AP계수n4는올바르다. 오탐의15%설명은받아들이지않았고인접bonusHP오류는별도수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "보호막은 대상의 잃은 체력에 따라 달라지고, 잃은 체력 60%에서 최대가 되지만, 해당 비례식의 계산 방식은 원문에 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

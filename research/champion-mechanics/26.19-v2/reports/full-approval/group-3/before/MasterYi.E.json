@@ -1,0 +1,112 @@
+{
+  "summary": "기본 공격이 5초 동안 공격력에 비례한 추가 고정 피해를 입힌다. 일격 필살과 명상 사용 중에는 우주류 검술의 지속시간이 정지된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n6"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 공격이 추가 고정 피해를 입힌다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Master Yi's Attacks deal an additional (20/25/30/35/40 + (35% bonus Attack Damage)) true damage for 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Alpha Strike or Meditate active"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "우주류 검술의 지속시간이 일시 정지된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The duration of Wuju Style is paused during Alpha Strike and Meditate"
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

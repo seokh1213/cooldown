@@ -1,0 +1,165 @@
+{
+  "summary": "이블린이 가시를 발사해 처음 적중한 적에게 마법 피해를 입히고, 그 대상에게 가하는 다음 공격 또는 스킬 3회에 추가 마법 피해를 적용합니다. 재사용하면 가장 가까운 적을 통과하는 가시를 발사해 적중한 모든 적에게 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "가시가 처음 적중한 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Evelynn strikes with her Lasher, dealing (25/30/35/40/45 + (25% Ability Power)) magic damage to the first enemy hit"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Evelynn strikes with her Lasher, dealing (25/30/35/40/45 + (25% Ability Power)) magic damage to the first enemy hit and causing Evelynn's next 3 Attacks or Abilities on that unit to deal an additional (15/25/35/45/55 + (25% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "해당 대상에게 가하는 다음 공격 또는 스킬 3회에 추가 마법 피해를 적용합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "causing Evelynn's next 3 Attacks or Abilities on that unit to deal an additional (15/25/35/45/55 + (25% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Evelynn strikes with her Lasher, dealing (25/30/35/40/45 + (25% Ability Power)) magic damage to the first enemy hit and causing Evelynn's next 3 Attacks or Abilities on that unit to deal an additional (15/25/35/45/55 + (25% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "추가 피해는 해당 대상에 대한 다음 공격 또는 스킬 3회에 적용됩니다. 스키마에는 이 순차 횟수를 별도 조건으로 표현할 필드가 없어 설명문에 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "causing Evelynn's next 3 Attacks or Abilities on that unit to deal an additional (15/25/35/45/55 + (25% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "reason": "missing_variant",
+      "detail": "재사용 가능 횟수 제한은 피해 효과와 별개이며 이를 표현할 스키마 필드가 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Evelynn can Recast this Ability up to 3 times."
+        }
+      ]
+    }
+  ]
+}

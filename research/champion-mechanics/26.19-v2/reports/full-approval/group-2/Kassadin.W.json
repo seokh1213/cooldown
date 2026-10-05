@@ -1,0 +1,95 @@
+{
+  "id": "Kassadin.W",
+  "sourceHash": "46265091022cabf812b7a8eeb0cb12de1d281cf59203837bb0d14d452b9b23f8",
+  "beforeCandidateHash": "e7ddc51302f024cc33b6b81c39b7388d364be2d0749246248de070809e5f6458",
+  "candidateHash": "415ba6ffede390b0579a8399070e5dfcb350cc66a1ead4016d5be8cfe38ee1b2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "항상공격25+10%AP마법/검충전다음공격50~150+80%AP,자신잃은마나일반4~6%·챔피언20~30%대체회복 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 별도 제한 없음; target: 카사딘의 기본 공격이 추가 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=25 상수 scalar / stat_coefficient en:body:n1=10%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq 이 W로 검을 충전한 후 다음 기본공격; target: 강화된 다음 기본 공격이 추가 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n2=50,en:body:n3=75,en:body:n4=100,en:body:n5=125,en:body:n6=150 상수 rank_values / stat_coefficient en:body:n7=80%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq 이 W로 검을 충전한 후 다음 기본공격 / target.target_type neq champion; caster: 이 강화공격이 비챔피언을 맞히면 카사딘 자신의 잃은마나4/4.5/5/5.5/6%를 회복합니다.; 수치 amount en:body:n8=4(백분율),en:body:n9=4.5(백분율),en:body:n10=5(백분율),en:body:n11=5.5(백분율),en:body:n12=6%(백분율) 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq 이 W로 검을 충전한 후 다음 기본공격 / target.target_type eq champion; caster: 이 강화공격이 챔피언을 맞히면 카사딘 자신의 잃은마나20/22.5/25/27.5/30%를 회복합니다. 일반비율 대신 적용합니다.; 수치 amount en:body:n13=20(백분율),en:body:n14=22.5(백분율),en:body:n15=25(백분율),en:body:n16=27.5(백분율),en:body:n17=30%(백분율) 상수 formula_components; flags replaces_base"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: W사용으로 검을 충전해 다음 기본공격의 강화피해와 마나회복을 준비합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "increased to를대체불명이라고한gap교정·자원회복두비율중복방지·충전상태범위·누락된시전준비효과 복원",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Kassadin's Attacks deal an additional (25 + (10% Ability Power)) magic damage. Active: Kassadin charges his blade, causing his next Attack to deal (50/75/100/125/150 + (80% Ability Power)) magic damage and restore 4/4.5/5/5.5/6% missing Mana, increased to 20/22.5/25/27.5/30% against champions."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "잃은마나는 스키마참조스탯에 없어 백분율회복을 정확한text와formula_components로 보존한다. active마법피해와항상적용passive마법피해의 합산/대체관계는 원문이별도지정하지 않으므로 주어진각식을 보존한다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

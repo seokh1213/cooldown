@@ -1,0 +1,131 @@
+{
+  "id": "Shaco.W",
+  "sourceHash": "271d963df153871785b829dfb8f5b95e07ca62c4c5bf268f941107c009c480db",
+  "beforeCandidateHash": "1451c56d757e7929a4bad78504164bdd9e3896999d534e3f5739bb570fca9aeb",
+  "candidateHash": "52acc4f7354058017a73464633fca2dc0f137bfaf1aae56703e155d1d5fd841a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 3,
+  "summaryCheck": "설치2초 후 은신·상자 수명40+AP10%초, 접근/발각 OR 발동, 주변 유형별 공포,5초 일반/단일 공격 및 몬스터 추가피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. summon summon: 설치 후 은신 지연이 지나면 상자가 시야에서 사라지고, 별도의 수명 동안 지속된다. [other n0=2 scalar; duration_seconds n1=40 scalar; stat_coefficient n2=10% scalar caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 summon.other eq 적이 상자 근처에 오거나 상자가 드러남. summon other: 적이 가까이 다가오거나 상자가 발각되면 상자가 발동합니다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 target.target_type eq champion; target.other eq 상자 주변 적; summon.other eq 이 상자가 발동함. target crowd_control fear: 상자가 발동하면 주변 적 챔피언을 공포에 빠뜨립니다. [duration_seconds n3=0.5/n4=0.75/n5=1/n6=1.25/n7=1.5 rank_values]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 target.target_type eq minion; target.other eq 상자 주변 적; summon.other eq 이 상자가 발동함. target crowd_control fear: 상자가 발동하면 주변 미니언을 공포에 빠뜨린다. [duration_seconds n8=2 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 target.target_type eq monster; target.other eq 상자 주변 정글 몬스터; summon.other eq 이 상자가 발동함. target crowd_control fear: 상자가 발동하면 주변 정글 몬스터를 공포에 빠뜨린다. [duration_seconds n8=2 scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 summon.other eq 발동한 뒤5초 공격 상태인 이 상자. nearby_enemies damage magic: 발동한 상자가5초 동안 주변 모든 적에게 발사한다. 피해값은 상자 공격의 피해이며5초 동안의 총피해로 취급하지 않는다. [duration_seconds n9=5 scalar; amount n10=10/n11=15/n12=20/n13=25/n14=30 rank_values; stat_coefficient n15=12% scalar caster.abilityPower] flags=per_target"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 summon.other eq 단일 대상에 집중해 공격; summon.other eq 발동한 뒤5초 공격 상태인 이 상자. target damage magic: 상자가 단일 대상에게 집중해 공격하면 해당 대상에게 마법 피해를 입힙니다. [amount n16=25/n17=40/n18=55/n19=70/n20=85 rank_values; stat_coefficient n21=18% scalar caster.abilityPower] flags=replaces_base"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 target.target_type eq monster. target other: 깜짝 상자의 공격은 몬스터에게 추가 피해를 입힙니다. [amount n22=20/n23=35/n24=50/n25=65/n26=80 rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/6/7",
+      "issue": "은신지연·OR 사건·범위·집중 조건·미확정 피해타입",
+      "correction": "시간 역할/other 사건/수신 범위/집중 텍스트 및 대체/미확정 추가피해 보존",
+      "sourceId": "en:body",
+      "quote": "Jack in the Box's attacks deal an additional 20/35/50/65/80 damage to monsters."
+    },
+    {
+      "path": "rules.1-6;gaps.0",
+      "issue": "상자발동조건이효과문구에만있고지속공격이other사건",
+      "correction": "OR발동사건과공포발동/5초공격상태를명시하고실제피해는상자attack에연결했다.",
+      "sourceId": "en:body",
+      "quote": "Once activated, the trap fires at all nearby enemies for 5 seconds, dealing (10/15/20/25/30 + (12% Ability Power)) magic damage"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 456,
+      "verdict": "false_positive",
+      "reason": "summon 발동에서 target 챔피언 분기는 공포 수신자이고 발동자가 아니다. 주변 조건으로 명확히 했다."
+    },
+    {
+      "index": 457,
+      "verdict": "false_positive",
+      "reason": "target는 미니언 공포 수신자이다. 주변 범위를 보완했다."
+    },
+    {
+      "index": 458,
+      "verdict": "false_positive",
+      "reason": "target는 몬스터 공포 수신자이다. 주변 정글 범위를 보완했다."
+    },
+    {
+      "index": 459,
+      "verdict": "repaired",
+      "reason": "magic 단정을 제거했다. damage kind는 타입 필수여서 other로 추가 피해의 텍스트/수치를 모두 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "적 근접 또는 상자 노출이라는 OR발동 조건을 텍스트로 보존했다. 정확한 근접 반경과 노출 감지 방식은 공급되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "원문은 단일 대상에 집중하는 상황을 설명하지만, 그 상황이 발생하는 조건을 구체적으로 정의하지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "missing_source",
+      "detail": "몬스터 대상 추가 피해의 피해 유형은 해당 추가 피해 문장에 명시되지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

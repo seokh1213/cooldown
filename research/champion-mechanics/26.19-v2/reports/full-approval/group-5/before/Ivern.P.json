@@ -1,0 +1,248 @@
+{
+  "summary": "아이번은 에픽 몬스터가 아닌 몬스터를 해치지 않고, 몬스터를 우클릭해 체력과 마나를 소모하여 정글 수풀을 만듭니다. 수풀이 자라면 수확해 캠프를 해방하고 보상을 얻을 수 있으며, 강타로 즉시 성장시킬 수도 있습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "아이번은 에픽 몬스터가 아닌 몬스터를 해치지 않는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ivern will not hurt non-epic monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "아이번은 몬스터를 우클릭해 수풀을 만들며 체력과 마나를 소모한다. 체력과 마나의 구체적인 입력 통계는 원문에 명시되지 않았다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Instead, Ivern can right click a monster to grow a Grove that costs (15 ~ 0) × (1% Health) Health and (20 ~ 0) × (1% Mana) Mana."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n6"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "수풀이 완전히 자라면 아이번이 수확해 캠프를 해방하고 골드와 경험치를 얻을 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Groves: Grow over (40 ~ 1) second(s) Once fully grown, Ivern can harvest them, freeing the camp and earning gold and experience"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Groves: Grow over (40 ~ 1) second(s) Once fully grown, Ivern can harvest them, freeing the camp and earning gold and experience Ivern can also Smite the Groves to instantly grow and free the camp, earning gold and experience"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "수풀"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "아이번은 강타로 수풀을 즉시 성장시켜 캠프를 해방하고 골드와 경험치를 얻을 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ivern can also Smite the Groves to instantly grow and free the camp, earning gold and experience"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "수풀 비용은 Health 및 Mana에 비례한다고만 되어 있어 입력 통계를 최대치, 현재치 또는 잃은 양 중 무엇으로 계산하는지 특정할 수 없다. stat과 statSubject를 null로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "costs (15 ~ 0) × (1% Health) Health and (20 ~ 0) × (1% Mana) Mana."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "요약은 에픽 몬스터가 아닌 몬스터와 서로 공격할 수 없다고 하지만, 영문 본문은 아이번이 해당 몬스터를 해치지 않는다고만 설명한다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Ivern cannot attack or be attacked by non-epic monsters."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Ivern will not hurt non-epic monsters."
+        }
+      ]
+    }
+  ]
+}

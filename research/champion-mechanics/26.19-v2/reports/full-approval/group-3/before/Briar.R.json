@@ -1,0 +1,266 @@
+{
+  "summary": "혈석은 처음 적중한 챔피언을 먹잇감으로 지정하고 그 위치로 날아갑니다. 착지 시 주변 적을 공격하며 먹잇감 이외의 적을 공포에 빠뜨리고, 먹잇감을 추격하는 강화 광분과 능력치를 얻습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "혈석이 처음 적중한 챔피언의 위치로 날아갑니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "처음 적중한 챔피언을 먹잇감으로 표시합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Briar kicks her pillory's hemolith gemstone and flies to the location of the first champion it hits, marking them as her prey."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "nearby_enemies"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "착지 시 주변 모든 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On landing, she deals (150/250/350 + (130% Ability Power)) magic damage to everything nearby"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "prey"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "먹잇감이 아닌 적을 공포에 빠뜨립니다.",
+          "damageType": null,
+          "crowdControl": "fear",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "causes enemies who are not her prey to Flee for 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "강화된 핏빛 광분에 진입해 죽을 때까지 먹잇감을 추격합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "공격력에 비례한 방어력 및 마법 저항력, 생명력 흡수, 이동 속도를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "She then enters an empowered Blood Frenzy and will pursue her prey until death. During this time, she gains (20% Attack Damage) Armor and Magic Resist, 10/15/20% Lifesteal, and an additional 10/20/30% Move Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "적중 시 정신 집중 중인 스킬을 방해합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "먹잇감에 대한 절대 시야를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When the hemolith hits it interrupts channeled Abilities. Briar has True Sight of her prey."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

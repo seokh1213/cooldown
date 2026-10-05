@@ -1,0 +1,73 @@
+{
+  "id": "Gangplank.W",
+  "sourceHash": "381e1100e5dff33c8f50c7d00460d2795dfd7091756fff6f486d431b9aa47aee",
+  "beforeCandidateHash": "f2a501d3c50abec2c0c2942275564d7f064af9858cc1cc0861aa97757c1b71b8",
+  "candidateHash": "176bcb3dc36b4a7ec501b69c336714aa1e6ec33f0f3d9b262cbe37b1e71f7490",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 2,
+  "summaryCheck": "모든자기방해효과제거와45/70/95/120/145+90%자기주문력+잃은체력13%회복을대조했다.제거는CC를새로가하는판정이아니다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 갱플랭크에게 적용된 모든 방해 효과를 제거합니다.;  / caster: 기본회복량과자기주문력계수에자신의잃은체력13%를더한만큼회복한다.; amount=45/70/95/120/145  rank_values, stat_coefficient=90% caster의 abilityPower scalar, ratio_output=13%  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0",
+      "issue": "CC제거를disrupt적용으로분류",
+      "correction": "other제거효과로정정",
+      "sourceId": "en:body",
+      "quote": "removing all Disabling effects"
+    },
+    {
+      "path": "rules.0.effects.1.parameters.2",
+      "issue": "잃은체력을최대체력으로오지정",
+      "correction": "maxHealth제거및잃은체력13%텍스트/gap보존",
+      "sourceId": "en:body",
+      "quote": "plus 13% missing Health."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 80,
+      "verdict": "repaired",
+      "reason": "13%의기준은잃은체력이다.maxHealth연결을제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "tooltip은 제거 대상인 Disabling effects의 구체적인 군중 제어 종류를 열거하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "13%는잃은체력계수다.계약에missingHealth스탯이없으므로maxHealth로대체하지않고본문식으로보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

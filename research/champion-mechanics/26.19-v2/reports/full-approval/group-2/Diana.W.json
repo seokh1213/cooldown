@@ -1,0 +1,98 @@
+{
+  "id": "Diana.W",
+  "sourceHash": "d709c56a9360985af1c173209d62329c56dbef8f41d607105a5a98b213a538eb",
+  "beforeCandidateHash": "6110db676f6cb19f5caa8fbc0fa69a97e6f515bd5e9c3e33a6c69613e4ce4bde",
+  "candidateHash": "7c5a4ac374fcd4f03697944c8d94c7d8a0726d5df8efd10f7954487545239744",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "3구체5초생성·접촉당마법/별도최대식,자기보호막5초와마지막구체폭발시같은추가보호막/지속갱신 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 주위를 도는 구체를 생성합니다. 구체는 적에게 닿으면 폭발합니다.; 수치 count en:body:n0=three 상수 scalar / duration_seconds en:body:n1=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; target: 적 접촉 시 각 구체가 명시된 마법 피해를 줍니다. 원문에는 별도 최대 피해식이 제시되어 있으나 대상별/시전전체 집계 범위는 미명시입니다. [magic]; 수치 amount en:body:n2=20,en:body:n3=32,en:body:n4=44,en:body:n5=56,en:body:n6=68 상수 formula_components / stat_coefficient en:body:n7=18%(백분율) caster.abilityPower formula_components / max_amount en:body:n8=60,en:body:n9=96,en:body:n10=132,en:body:n11=168,en:body:n12=204 상수 formula_components / stat_coefficient en:body:n13=54%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 보호막을 얻습니다.; 수치 amount en:body:n14=45,en:body:n15=60,en:body:n16=75,en:body:n17=90,en:body:n18=105 상수 rank_values / stat_coefficient en:body:n19=30%(백분율) caster.abilityPower scalar / stat_coefficient en:body:n20=11%(백분율) caster.bonusHealth scalar / duration_seconds en:body:n1=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 summon; 조건 summon.other eq 마지막 구체가 폭발함; caster: 마지막 구체가 폭발하면 추가 보호막을 얻고 보호막 지속시간이 초기화됩니다.; 수치 amount en:body:n21=45,en:body:n22=60,en:body:n23=75,en:body:n24=90,en:body:n25=105 상수 rank_values / stat_coefficient en:body:n26=30%(백분율) caster.abilityPower scalar / stat_coefficient en:body:n27=11%(백분율) caster.bonusHealth scalar / duration_seconds en:body:n1=5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "최대피해집계범위단정과구체피해/최대식계수합산위험 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Diana creates three orbiting spheres for 5 seconds that explode on contact, each dealing (20/32/44/56/68 + (18% Ability Power)) magic damage, up to a max of (60/96/132/168/204 + (54% Ability Power)) damage. Diana also gains (45/60/75/90/105 + (30% Ability Power) + (11% bonus Health)) Shield for the same duration. When the last sphere detonates, she gains an additional (45/60/75/90/105 + (30% Ability Power) + (11% bonus Health)) Shield and refreshes the duration."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 45,
+      "verdict": "repaired",
+      "reason": "최대식이제시된다는수준으로범위미명시보존."
+    },
+    {
+      "index": 46,
+      "verdict": "false_positive",
+      "reason": "same duration은직전5seconds를가리키며refreshes the duration은동일보호막지속을갱신;5초연결근거명확."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "스키마에 마지막 구체의 폭발을 직접 나타내는 조건 필드가 없어 원문의 조건을 조건 텍스트로 보존했습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "최대피해의대상별/전체집계범위가미명시이므로각구체피해와최대식은선형합산하지않고구분보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

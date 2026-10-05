@@ -1,0 +1,58 @@
+{
+  "id": "Orianna.R",
+  "sourceHash": "ac394d00766fe53b25f8d6df1b70b9685ce16630471daa7a12cb45c2fe33f0f9",
+  "beforeCandidateHash": "5f6e849121b181f9e2c7a6013ca0ac8d55aa650d8b7f3270d78bb1ce7521a363",
+  "candidateHash": "1617b4d7a81e53220099cc4b2f7c65b9aaa4be344e85042762fea7d8d6169b3f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "구체주변225/350/475+110%AP마법, 짧은지연후구체방향끌어당김과숫자시간한계 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 nearby_enemies.distance eq 구체 주변; nearby_enemies: 충격파가 주변 적에게 마법 피해를 입힌다. [magic]; 수치 amount en:body:n0=225,en:body:n1=350,en:body:n2=475 상수 rank_values / stat_coefficient en:body:n3=110%(백분율) caster.abilityPower scalar; flags 없음 | nearby_enemies: 짧은 지연 후 구체 주변 적을 구체 방향으로 끌어당깁니다. [pull]; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "구체기준범위와summary에 있는끌어당김지연 보존",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Orianna commands her Ball to unleash a shockwave, dealing (225/350/475 + (110% Ability Power)) magic damage to nearby enemies and Knocking them in the direction of the Ball."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "끌어당김은 짧은 지연 뒤라고 summary에 명시하지만 지연 초/이동거리/CC시간은 공급원문에 없다.",
+      "sourceIds": [
+        "en:summary"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

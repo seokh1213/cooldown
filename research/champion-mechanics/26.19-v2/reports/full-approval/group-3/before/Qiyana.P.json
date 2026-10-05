@@ -1,0 +1,144 @@
+{
+  "summary": "키아나의 기본 공격과 스킬은 각 적에게 추가 물리 피해를 줍니다. 대상별 재사용 대기시간이 있으며, 대지창조로 다른 원소를 얻으면 모든 대상에 대한 재사용 대기시간이 초기화됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "각 적을 대상으로 한 첫 기본 공격 또는 스킬"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "키아나의 기본 공격 또는 스킬이 적중하면 추가 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Qiyana's first basic attack or ability against each enemy deals bonus damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Qiyana's Attacks and Abilities deal an additional ((15 ~ 83) + (25% bonus Attack Damage) + (30% Ability Power)) bonus physical damage. This effect has a 25 second per-target Cooldown."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "대지창조로 다른 무기 원소를 획득"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "target",
+          "text": "이 효과의 재사용 대기시간을 모든 대상에 대해 초기화합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Using Terrashape to gain a different weapon Enchantment resets this effect's Cooldown on all targets."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "첫 기본 공격 또는 스킬이라는 발동 조건은 요약문에 있지만, 상세 tooltip은 기본 공격과 스킬이 추가 피해를 준다고만 설명합니다. 대상별 첫 발동 조건을 activation 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Qiyana's first basic attack or ability against each enemy deals bonus damage."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "대상별 재사용 대기시간의 수치는 확인되지만, 재사용 대기시간 효과의 수치 파라미터로 따로 분리하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This effect has a 25 second per-target Cooldown."
+        }
+      ]
+    }
+  ]
+}

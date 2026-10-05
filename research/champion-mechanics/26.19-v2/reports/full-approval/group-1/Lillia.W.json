@@ -1,0 +1,56 @@
+{
+  "id": "Lillia.W",
+  "sourceHash": "51f46cd24dc9e1b65005418df1cf353f56db802290237bbf766bc5f6d875bc57",
+  "beforeCandidateHash": "375c12525015f5c12233fbf24ec15de3b7437642b072f08b85ecba20000bc71e",
+  "candidateHash": "f65c42178c95d59cfd19b7d7eb4fd750b40b7d67974d57b3c4fc94ac5880c86a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "주변 마법 피해, 중심 적에게 별도 대체 피해, 미니언에게만50% 피해, 지형 통과 불가를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. nearby_enemies damage magic: 릴리아가 힘을 모은 뒤 강력한 일격을 가해 마법 피해를 입힌다. 미니언에게는 피해가 감소한다. [amount n0=80/n1=100/n2=120/n3=140/n4=160 rank_values; stat_coefficient n5=35% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 중심에 있음. target damage magic: 중심에 있는 적은 기본 피해 대신 더 큰 피해를 받는다. 미니언에게는 피해가 감소한다. [amount n6=240/n7=300/n8=360/n9=420/n10=480 rank_values; stat_coefficient n11=105% formula_components caster.abilityPower] flags=replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 릴리아는 이 스킬로 지형을 통과하지 않는다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq minion; caster.other eq 이 스킬의 일반 또는 중심 피해. target other: 미니언에게는 이 스킬의 계산된 피해의50%만 입힌다. [damage_multiplier n12=50% scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,2,3",
+      "issue": "미니언 피해50%배율이 모든 적 피해에 결합, AP비율 입력 역할 오기, 지형 통과 불가를 이동 효과로 실행 가능",
+      "correction": "미니언 조건의 피해 배율 규칙을 분리하고 AP계수와 지형 통과 제한 효과를 바로잡았다.",
+      "sourceId": "en:body",
+      "quote": "Deals 50% less damage to minions."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

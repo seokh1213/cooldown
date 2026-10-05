@@ -1,0 +1,322 @@
+{
+  "summary": "기본 지속 효과는 기본 공격 적중 시 방출을 얻고 마법 피해를 입힙니다. 사용하면 방출을 소모해 공격 속도와 적중 시 추가 피해를 얻으며, 공격이 주변 적에게 확산됩니다. 초월 상태에서는 즉시 활성화되고, 확산 공격의 치명타·적중 시 효과와 미니언 대상 피해가 강화됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적중 시 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "공격이 적중하면 방출을 얻습니다. 대상이 챔피언이면 얻는 방출량이 더 많습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Yunara deal (5/10/15/20/25 + (20% Ability Power)) magic damage On-Hit and attacking grants 1 Unleash (2 Unleash for champions)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n8"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "방출을 소모합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_cost",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "공격 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적중 시 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Yunara consumes 8 Unleash and for 5 seconds gains 20/30/40/50/60% Attack Speed and deals an additional (5/10/15/20/25 + (20% Ability Power)) magic damage On-Hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "초월 상태"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "초월 상태에서는 스킬이 즉시 활성화되어 지속됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "확산 공격은 치명타가 적용될 수 있고 적중 시 효과가 일부 적용되며, 체력이 낮은 미니언에게 피해가 증가합니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n21",
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Transcendent State: This Ability is instantly activated for 15 seconds. Spread Attacks can Strike Critically and apply On-Hit effects at 30% effectiveness. Damage from spread Attacks deal 250% damage to minions below 30% Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "During this time, her Attacks spread to nearby enemies dealing them (30% Attack Damage) physical damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "활성 효과 동안 확산 공격이 언제 주변 적에게 적중하는지, 초월 상태에서 본 스킬의 즉시 활성화가 활성화 소모를 요구하는지 원문만으로 명확하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "During this time, her Attacks spread to nearby enemies dealing them (30% Attack Damage) physical damage. Transcendent State: This Ability is instantly activated for 15 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "확산 공격 피해의 30% 공격력 계수, 주변 대상별 적용 방식은 수치 소유자나 계산 형태를 이 입력만으로 확정하기 어렵습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "During this time, her Attacks spread to nearby enemies dealing them (30% Attack Damage) physical damage."
+        }
+      ]
+    }
+  ]
+}

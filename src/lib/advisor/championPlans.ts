@@ -5,6 +5,7 @@ import { buildCompareAnswer as buildCompareCard, buildSpellAnswer as buildSpellC
 import { asksComparison, asksWholeKit, looksChampionDirected, asksSkillHandling } from "./askWords";
 import { detectSpellFocus } from "./spellFocus";
 import { topicFromWords } from "./topicJudge";
+import { asksCombo } from "./comboIntent";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { type AnswerPlan, type Intent } from "./planTypes";
 
@@ -79,6 +80,10 @@ function championsFromContext({ question, ctx, data, recent, slot, ask }: Intent
  * 여기는 화면에 바로 나가는 글이라 그 제약이 없다.
  */
 async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOnce, slot }: Intent, card: ChampionCard, notice: string | undefined): Promise<AnswerPlan> {
+  // 판정기가 skills를 골라도 명시적인 연계 질문은 절차를 답한다.
+  if (asksCombo(question) && !asksSkillHandling(question)) {
+    return { type: "card", answer: { kind: "champion", card, notes: championNotes(data, card, question, "playing", { topic: "combo" }) }, notice };
+  }
   // "패시브와 네 가지 스킬을 각각" 은 패시브 한 칸이 아니라 스킬 전체 소개다
   const spell = slot && !asksWholeKit(question) ? card.spells.find((entry) => entry.slot === slot) : undefined;
   if (spell && asksSkillHandling(question)) {

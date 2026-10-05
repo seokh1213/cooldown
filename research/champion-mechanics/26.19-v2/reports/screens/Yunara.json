@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Yunara.E",
+      "sourceHash": "188c7313795883efe897aa3b6bbac6baac22f2c8ac91f67d5e7ea741eeab295d",
+      "candidateHash": "b23589345e82650721d1242f7156d034d290f102f4e3bc4b09398f1fdbdfaab8"
+    },
+    {
+      "id": "Yunara.P",
+      "sourceHash": "2e19aca37985886849606434d50f8498e82648871831138dcd220ea952ff53ef",
+      "candidateHash": "5ebd29e6feaabe09bcdf230634f11bd9f1fd7bfbd77cd98a44f0c843d6f9fdd5"
+    },
+    {
+      "id": "Yunara.Q",
+      "sourceHash": "d3cd598e32e679a319c44a7c4a2282ca05971177d0d7d3eab5922bc8641a1434",
+      "candidateHash": "e9b2f182bcd6ba5366e6e83c0eb007ff1d823a5d23ac26a14e3fb9fd43c2890d"
+    },
+    {
+      "id": "Yunara.R",
+      "sourceHash": "58f87fc8d6dbf4ce70fb03fdc933d8334b8afb093fdb33fafa4c7c9fd37ec00f",
+      "candidateHash": "c770644e08c1b1605cd026ccf40fc4ab7811aa5f9f4e4cadfbd79b8855821836"
+    },
+    {
+      "id": "Yunara.W",
+      "sourceHash": "384d91889e96ecbcadc2ac4d878fc69ebd4a65cf5e03cd3ce0174c0305dcb496",
+      "candidateHash": "91f5fe3899be69f2cb04a14bfaf7b3040d43150af7ded13ece701acf11a1918e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Yunara.Q",
+      "path": "rules.2.trigger.event",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Transcendent State: This Ability is instantly activated for 15 seconds.",
+      "issue": "초월 상태 즉시 활성화 효과를 기본 공격 시점에만 발생하는 것으로 제한했습니다. 원문은 이 스킬이 즉시 활성화된다고 하며 공격 이벤트 조건을 두지 않습니다.",
+      "correction": "해당 규칙의 공격 트리거를 제거하거나, 즉시 활성화를 나타내는 별도 트리거로 표현하세요."
+    },
+    {
+      "id": "Yunara.Q",
+      "path": "rules.2.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Damage from spread Attacks deal 250% damage to minions below 30% Health.",
+      "issue": "초월 상태 활성화 효과와 확산 공격의 미니언 피해 효과를 모두 대상이 미니언일 때만 적용하도록 조건을 묶었습니다. 초월 상태 활성화는 대상 유형과 무관합니다.",
+      "correction": "초월 상태 즉시 활성화 효과를 미니언 대상 조건에서 분리하세요."
+    },
+    {
+      "id": "Yunara.Q",
+      "path": "rules.2.effects.1.parameters.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Spread Attacks can Strike Critically and apply On-Hit effects at 30% effectiveness.",
+      "issue": "확산 공격 적중 시 효과의 30% 적용을 피해 배율로 기록했습니다. 원문은 적중 시 효과 적용 효율을 말하며 확산 피해 자체를 30%로 제한하지 않습니다.",
+      "correction": "30%를 확산 피해 배율이 아니라 적중 시 효과 적용 효율로 분류하세요."
+    },
+    {
+      "id": "Yunara.Q",
+      "path": "rules.2.effects.1.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Damage from spread Attacks deal 250% damage to minions below 30% Health.",
+      "issue": "확산 공격의 30% 공격력 계수를 별도 의미 불명 수치로 두어 규칙에서 계수 역할을 잃었습니다.",
+      "correction": "30% Attack Damage를 확산 공격 피해의 공격력 계수로 기록하세요."
+    },
+    {
+      "id": "Yunara.W",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Arc of Judgment deals (50% ~ 100%) damage to minions and its tick damage executes low health minions.",
+      "issue": "요약에서 미니언 대상 피해 범위와 초당 피해의 낮은 체력 미니언 처형 효과를 누락했습니다. 두 효과는 요약에 반영되어 있습니다.",
+      "correction": "심판의 궤적은 미니언에게 50~100% 피해를 주며, 초당 피해는 체력이 낮은 미니언을 처형한다고 요약하세요."
+    }
+  ],
+  "notes": []
+}

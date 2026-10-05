@@ -1,0 +1,77 @@
+{
+  "id": "Karthus.P",
+  "sourceHash": "0394780cbdf78d3a874a64c9d3823f9f755b6d6826ac6d711c75951a095b8276",
+  "beforeCandidateHash": "cf112c99840d68fb205f75254c7c6e576b04b55f30c6eb322307dd9e97255a46",
+  "candidateHash": "cf112c99840d68fb205f75254c7c6e576b04b55f30c6eb322307dd9e97255a46",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "본인사망후7초간스킬사용허용·마나소모없음.계속평타하거나부활한다고확장하지않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "death.caster에7초스킬무료사용권한.영문free를한국어본문마나미소모와대조했고새쿨초기화/추가행동권한은추측하지않음."
+    }
+  ],
+  "repairs": [],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ],
+    "draft": {
+      "summary": "카서스가 죽은 뒤 일정 시간 동안 마나를 소모하지 않고 스킬을 사용할 수 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "death",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "카서스는 죽은 뒤 일정 시간 동안 스킬을 무료로 사용할 수 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When Karthus dies he can use his Abilities for free for 7 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

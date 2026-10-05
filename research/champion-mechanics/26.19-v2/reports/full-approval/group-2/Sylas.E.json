@@ -1,0 +1,49 @@
+{
+  "id": "Sylas.E",
+  "sourceHash": "0c37c46ec8991bfb846d3b60e37918c9100ef2a129f633bffcb107547a744701",
+  "beforeCandidateHash": "3ba97e579c68d29949d8de7718fc88975f3420893151bf06e28d8736ee5d9433",
+  "candidateHash": "5d6e0c5e34e417248941c337e3fa2cce59cca8aadcf2e29211bc141971578123",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫 돌진/3.5초 재사용 창; 재사용 사슬 첫 적중적에게 이동,80~280+80%AP마법과0.5초공중 띄우기 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 빠르게 돌진합니다.; 수치 없음; flags 없음 | caster: 재사용을 준비합니다.; 수치 duration_seconds en:body:n0=3.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 caster.time eq 첫 돌진 후 3.5초 재사용 가능 시간 안 / target.hit_order eq 이 재사용 사슬에 처음 적중한 적; caster: 사슬을 던집니다. 처음 적중한 적에게 자신을 끌어당깁니다.; 수치 없음; flags 없음 | enemy: 적중한 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n1=80,en:body:n2=130,en:body:n3=180,en:body:n4=230,en:body:n5=280 상수 rank_values / stat_coefficient en:body:n6=80%(백분율) caster.abilityPower formula_components; flags 없음 | enemy: 적을 공중에 띄웁니다. [knockup]; 수치 duration_seconds en:body:n7=0.5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "재사용 가능시간과 첫 적중 대상을 전체 후속효과 조건에 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Sylas quickly dashes, and prepares a Recast for 3.5 seconds. Recast: Sylas throws his chains, pulling himself to the first enemy hit, dealing (80/130/180/230/280 + (80% Ability Power)) magic damage, and Knocking Up for 0.5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

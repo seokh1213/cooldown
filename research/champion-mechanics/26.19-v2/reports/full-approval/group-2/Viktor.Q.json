@@ -1,0 +1,82 @@
+{
+  "id": "Viktor.Q",
+  "sourceHash": "d3c4695a2415452643ffad285120fd702d22f5c882cec4dfab94140f042d68bf",
+  "beforeCandidateHash": "cf5140642c5da7fd66715a2084f5894bb74d5a0ec33d1e5785a98cdde880b9a3",
+  "candidateHash": "bd089fbce28511910fe60f27985f8064a5b06801d6f1acc21c8c6a3799de66d3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "시전마법과2.5초보호막,4초안다음한번의평타대체마법,업그레이드보호막/30%이속2.5초를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=60,en:body:n1=75,en:body:n2=90,en:body:n3=105,en:body:n4=120 상수 rank_values / stat_coefficient en:body:n5=40%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation neq empowered; caster: 빅토르가 보호막을 얻습니다.; 수치 min_amount en:body:n6=40 상수 level_range / max_amount en:body:n7=140 상수 level_range / stat_coefficient en:body:n8=25%(백분율) caster.abilityPower scalar / duration_seconds en:body:n9=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered; caster: 증강 시 빅토르가 보호막을 얻습니다.; 수치 min_amount en:body:n18=64 상수 level_range / max_amount en:body:n19=224 상수 level_range / stat_coefficient en:body:n20=40%(백분율) caster.abilityPower scalar / duration_seconds en:body:n22=2.5 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered; caster: 증강 시 빅토르의 이동 속도가 증가합니다.; 수치 amount en:body:n21=30%(백분율) caster.moveSpeed scalar / duration_seconds en:body:n22=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq 이 스킬 사용 후 다음 한 번의 기본 공격 / caster.time lte en:body:n10=4; target: 빅토르의 다음 기본 공격이 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n11=20,en:body:n12=45,en:body:n13=70,en:body:n14=95,en:body:n15=120 상수 rank_values / stat_coefficient en:body:n16=50%(백분율) caster.abilityPower scalar / stat_coefficient en:body:n17=100%(백분율) caster.totalAttackDamage scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "보호막적중전제와일반/증강중복,후속평타조건·피해4초지속 오표기를 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Viktor blasts an enemy, dealing (60/75/90/105/120 + (40% Ability Power)) magic damage and granting Viktor ((40 ~ 140) + (25% Ability Power)) Shield for 2.5 seconds. Viktor's next Attack within 4 seconds deals (20/45/70/95/120 + (50% Ability Power) + (100% Attack Damage)) magic damage. Upgraded: Grants ((64 ~ 224) + (40% Ability Power)) Shield and Viktor additionally gains 30% Move Speed for 2.5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 624,
+      "verdict": "repaired",
+      "reason": "보호막은 cast로변경; 일반보호막은미증강범위."
+    },
+    {
+      "index": 625,
+      "verdict": "false_positive",
+      "reason": "한국어본문은업그레이드보호막에도2.5초를직접명시; 증강은기본보호막수치변경이므로유지하고근거추가."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

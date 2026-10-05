@@ -1,0 +1,998 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "체력이 특정 기준 아래로 내려가면 잠시 투명 상태가 되고 무해한 분신을 생성한다. 분신은 Alt 키로 움직일 수 있다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "health_threshold",
+              "operator": "lt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "visibility",
+              "subject": "caster",
+              "text": "투명 상태가 된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "피해를 입히지 않는 분신을 생성한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "movement",
+              "subject": "summon",
+              "text": "르블랑은 Alt 키로 분신을 움직일 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When LeBlanc drops below 40% Health, she becomes Invisible for 1 second and creates a harmless clone for 8 seconds. LeBlanc can move the clone with the \"Alt\" key."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "적에게 인장을 날려 피해와 표식을 남긴다. 표식이 남은 적에게 스킬 피해를 주면 인장이 폭발한다. 두 피해 중 하나로 대상을 처치하면 마나를 돌려받고 이 스킬의 남은 재사용 대기시간이 감소한다. 최초 인장은 미니언에게 추가 피해를 준다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "인장을 날려 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "대상에게 표식을 남긴다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "LeBlanc projects a sigil to an enemy, dealing (65/90/115/140/165 + (40% Ability Power)) magic damage and marking them for 3.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "표식이 남은 적에게 스킬 피해를 주면 인장이 폭발해 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Damaging the marked enemy with an Ability detonates the sigil, dealing (65/90/115/140/165 + (40% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n13"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "인장의 최초 피해 또는 폭발 피해로 대상을 처치하면 소모한 마나를 돌려받는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "인장의 최초 피해 또는 폭발 피해로 대상을 처치하면 이 스킬의 남은 재사용 대기시간이 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If either part kills the target, Leblanc refunds 100% of the Mana cost and 30% of this spell's remaining Cooldown."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "최초 인장이 미니언에게 추가 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The initial sigil deals an additional (10 ~ 146) damage to minions."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_number",
+          "detail": "마나 환급량은 소모한 마나의 100%라고 적혀 있으나, 숫자 입력에 마나 비용 값이 없어 환급량을 수치화하지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If either part kills the target, Leblanc refunds 100% of the Mana cost and 30% of this spell's remaining Cooldown."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "최초 인장 피해 또는 폭발 피해 중 어느 쪽이 대상을 처치했는지 구분하는 전용 조건 필드가 없어 원문 표현을 effect.text에 보존했다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If either part kills the target, Leblanc refunds 100% of the Mana cost and 30% of this spell's remaining Cooldown."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "지정 위치로 돌진한 뒤 주변 적에게 마법 피해를 준다. 돌진 후 제한 시간 동안 다시 사용하면 처음 위치로 돌아온다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "지정 위치로 돌진한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "LeBlanc dashes to a location, dealing damage to enemies near her destination."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "돌진 후 주변 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "LeBlanc dashes then deals (75/115/155/195/235 + (90% Ability Power)) magic damage to nearby enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n6"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "처음 위치로 돌아간다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "For 4 seconds after dashing, LeBlanc can Recast. Recast: LeBlanc returns to her starting location."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "사슬을 던져 처음 명중한 적에게 피해를 주고 속박하며 절대 시야를 얻는다. 대상이 일정 시간 사슬에 묶여 있으면 추가 피해를 주고 속박한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 명중한 적을 사슬로 옭아맨다.",
+              "damageType": null,
+              "crowdControl": "kinematics",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "visibility",
+              "subject": "caster",
+              "text": "절대 시야를 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "LeBlanc launches a chain that shackles the first enemy hit, dealing (50/70/90/110/130 + (40% Ability Power)) magic damage and granting True Sight."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n6"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "대상이 사슬에 계속 묶여 있으면 속박한다.",
+              "damageType": null,
+              "crowdControl": "root",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "추가 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If they remain shackled for 1.5 seconds, LeBlanc Roots them for 1.5 seconds and deals an additional (80/120/160/200/240 + (85% Ability Power)) magic damage."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "가장 최근에 사용한 스킬을 모방해 다시 사용하며, 모방 스킬은 강화된 피해를 준다. 모방한 인장, 왜곡, 환영 사슬의 피해는 각 효과와 시점에 따라 달라진다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "모방한 악의의 인장을 남길 때 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mimicked Sigil of Malice deals (70/150/230 + (40% Ability Power)) magic damage when applied, and (140/300/460 + (80% Ability Power)) magic damage when consumed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "모방한 악의의 인장이 소모될 때 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mimicked Sigil of Malice deals (70/150/230 + (40% Ability Power)) magic damage when applied, and (140/300/460 + (80% Ability Power)) magic damage when consumed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "모방한 스킬이 왜곡"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "모방한 왜곡이 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mimicked Distortion deals (150/315/480 + (90% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "모방한 스킬이 환영 사슬"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "모방한 환영 사슬로 대상을 옭아맬 때 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mimicked Ethereal Chains deals (70/150/230 + (40% Ability Power)) magic damage when shackled and (140/300/460 + (85% Ability Power)) magic damage when Rooting."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "모방한 환영 사슬의 속박 효과 발생"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "모방한 환영 사슬로 속박할 때 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mimicked Ethereal Chains deals (70/150/230 + (40% Ability Power)) magic damage when shackled and (140/300/460 + (85% Ability Power)) magic damage when Rooting."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "원문은 가장 최근에 사용한 스킬을 모방한다고 설명하지만, 이 조건을 슬롯별 스킬 이름과 연결하는 조건 필드가 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "LeBlanc mimics her most recent Ability, using it again. The mimicked Ability deals increased damage."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "모방한 인장과 사슬의 피해 조건은 각각 적용·소모 및 옭아맴·속박 시점으로 서술되어 있으나, 발동 시점과 구체적 적용 대상에 대한 별도 조건 정보는 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mimicked Sigil of Malice deals (70/150/230 + (40% Ability Power)) magic damage when applied, and (140/300/460 + (80% Ability Power)) magic damage when consumed. Mimicked Distortion deals (150/315/480 + (90% Ability Power)) magic damage. Mimicked Ethereal Chains deals (70/150/230 + (40% Ability Power)) magic damage when shackled and (140/300/460 + (85% Ability Power)) magic damage when Rooting."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Leblanc.Q",
+      "errors": [
+        {
+          "code": "condition_unit",
+          "path": "rules.2",
+          "detail": "A percentage cannot be a hit/entity count or distance"
+        }
+      ]
+    }
+  ]
+}

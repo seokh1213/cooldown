@@ -1,0 +1,159 @@
+{
+  "id": "Yorick.P",
+  "sourceHash": "4d8c0f3ae8b200c0a2a5e9f745aaf6d087cd97ffd57d1b54624e972d56fe4604",
+  "beforeCandidateHash": "8c02c6c2193038a8d826a6fe3a2fed25d0ae4ab57c62451dde0f5c8c7c9c4e3e",
+  "candidateHash": "5bb688fd6872e170b8ac15a4018daf33a289617692c61365d43298e10f4ab89c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "주변 적 사망 누적8~2회, 챔피언·대형몬스터 항상 무덤, 무덤으로 최대4 망령 각성 및 HP/AD 구성식을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변 적 사망 누적8~2마다 무덤. 모든 적이라는 본문에 없는 챔피언 제외는 제거했다. 범위 중간 레벨값 미추정."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "근처 챔피언 사망은 항상 무덤을 남긴다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "근처 대형 몬스터만 항상 무덤. 일반 monster로 과적용하지 않는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "무덤으로 지역 최대4 망령 각성.4는 주변 적 인원 조건이 아니라 소환상한. 망령 HP100~300+추가HP15%, AD15~100+추가AD20%; 소유자 미명시는 unknown."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.1",
+      "issue": "일반 적 사망 본문에 없는 챔피언 제외",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick raises a grave for every (8 ~ 2) enemies that die near him. Champions and large monsters always leave a grave. These graves can be used to Awaken Mist Walkers with ((100 ~ 300) + (15% bonus Health)) Health and ((15 ~ 100) + (20% bonus Attack Damage)) Attack Damage, up to 4 in an area."
+    },
+    {
+      "path": "rules.2.conditions.2",
+      "issue": "항상 무덤 조건을 모든 몬스터로 확장",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick raises a grave for every (8 ~ 2) enemies that die near him. Champions and large monsters always leave a grave. These graves can be used to Awaken Mist Walkers with ((100 ~ 300) + (15% bonus Health)) Health and ((15 ~ 100) + (20% bonus Attack Damage)) Attack Damage, up to 4 in an area."
+    },
+    {
+      "path": "rules.3.conditions.1",
+      "issue": "망령 최대4를 주변 적 인원 조건으로 기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick raises a grave for every (8 ~ 2) enemies that die near him. Champions and large monsters always leave a grave. These graves can be used to Awaken Mist Walkers with ((100 ~ 300) + (15% bonus Health)) Health and ((15 ~ 100) + (20% bonus Attack Damage)) Attack Damage, up to 4 in an area."
+    },
+    {
+      "path": "rules.3.effects.0.parameters.0.role",
+      "issue": "레벨 기본 체력을 max_amount로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick raises a grave for every (8 ~ 2) enemies that die near him. Champions and large monsters always leave a grave. These graves can be used to Awaken Mist Walkers with ((100 ~ 300) + (15% bonus Health)) Health and ((15 ~ 100) + (20% bonus Attack Damage)) Attack Damage, up to 4 in an area."
+    },
+    {
+      "path": "rules.3.effects.0.parameters.1.statSubject",
+      "issue": "참조 추가체력을 망령 자신의 것으로 확정",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick raises a grave for every (8 ~ 2) enemies that die near him. Champions and large monsters always leave a grave. These graves can be used to Awaken Mist Walkers with ((100 ~ 300) + (15% bonus Health)) Health and ((15 ~ 100) + (20% bonus Attack Damage)) Attack Damage, up to 4 in an area."
+    },
+    {
+      "path": "rules.3.effects.0.parameters.2.role",
+      "issue": "레벨 기본 공격력을 max_amount로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick raises a grave for every (8 ~ 2) enemies that die near him. Champions and large monsters always leave a grave. These graves can be used to Awaken Mist Walkers with ((100 ~ 300) + (15% bonus Health)) Health and ((15 ~ 100) + (20% bonus Attack Damage)) Attack Damage, up to 4 in an area."
+    },
+    {
+      "path": "rules.3.effects.0.parameters.3.statSubject",
+      "issue": "참조 추가공격력을 망령 자신의 것으로 확정",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick raises a grave for every (8 ~ 2) enemies that die near him. Champions and large monsters always leave a grave. These graves can be used to Awaken Mist Walkers with ((100 ~ 300) + (15% bonus Health)) Health and ((15 ~ 100) + (20% bonus Attack Damage)) Attack Damage, up to 4 in an area."
+    },
+    {
+      "path": "gaps.0.detail",
+      "issue": "실제 복합 소환체 스탯 식 및 소유자 한계로 gap 정밀화",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick raises a grave for every (8 ~ 2) enemies that die near him. Champions and large monsters always leave a grave. These graves can be used to Awaken Mist Walkers with ((100 ~ 300) + (15% bonus Health)) Health and ((15 ~ 100) + (20% bonus Attack Damage)) Attack Damage, up to 4 in an area."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "소환체의 체력·공격력 두 식을 한 summon 효과의 구성요소로 보존한다. 레벨 범위 중간값 및 계수 스탯 소유자는 원문에 특정되지 않았으므로 정확한 자동 계산식으로 실행하지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "Yorick.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

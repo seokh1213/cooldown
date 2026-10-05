@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "TwistedFate.E",
+      "sourceHash": "8cdc24cfba991f35cd2ff1fefe25625c0ce768a1d36d8865475ab60831307fcc",
+      "candidateHash": "ba26e220edfc98423da34ea0b094d3ef1a489e517f9ae3ff3879fca9986e297c"
+    },
+    {
+      "id": "TwistedFate.P",
+      "sourceHash": "00789d3eba7872e9b4a7d61ca94d8cfefefc35c15a2ea38ba75c749b68b48217",
+      "candidateHash": "5059e0db627a27db6338a734c9b9ba152c493bc220bafe3b81e4ec4c6de8cbc1"
+    },
+    {
+      "id": "TwistedFate.Q",
+      "sourceHash": "acf5b6a417718fef4d8e882b2ca8d7143c5884474208da98d0f2773bc5c83785",
+      "candidateHash": "217c974b3533005fd46d88b97c826b5204b2f7301c1cb21e977dabd63a94e7d0"
+    },
+    {
+      "id": "TwistedFate.R",
+      "sourceHash": "85a3f4ce22966ff856211aba368923c643ff7c9333bcdd06e25abdb4b2797b92",
+      "candidateHash": "4f160cf888c11f04acfad862ff3becce8638355d75646c63bb81cf33fc6270c4"
+    },
+    {
+      "id": "TwistedFate.W",
+      "sourceHash": "f27792b9f9d74c16780e3b9ddb38b0db01aa00a6a22e53bbb7a41ed38797bbf5",
+      "candidateHash": "97204525d5403535200c64bd4fabb00dfc2a75a02cbf6fa61d61c44cf34f6c93"
+    }
+  ],
+  "findings": [
+    {
+      "id": "TwistedFate.E",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "every 4th Attack deals an additional (65/90/115/140/165 + (20% bonus Attack Damage) + (40% Ability Power)) magic damage.",
+      "issue": "`hit_count == 4`를 조건으로 써 네 번째 공격 한 번만 발동하는 것처럼 표현했습니다. 원문은 공격 4회마다 발동한다는 뜻입니다.",
+      "correction": "조건을 공격 주기 4회마다 발동하는 것으로 표현하세요."
+    },
+    {
+      "id": "TwistedFate.Q",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate throws three cards that deal (60/105/150/195/240 + (50% bonus Attack Damage) + (85% Ability Power)) magic damage each. Enemies can only be damaged by one of the cards.",
+      "issue": "효과 문구가 카드가 적에게 피해를 준다고만 하며, 카드가 지나가는 각 적 유닛에게 피해를 준다는 대상 범위를 빠뜨렸습니다.",
+      "correction": "던진 카드가 지나가는 각 적 유닛에게 피해를 주며, 각 적은 카드 한 장으로만 피해를 받는다고 명시하세요."
+    },
+    {
+      "id": "TwistedFate.W",
+      "path": "rules.3.effects.0.damageType",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.",
+      "issue": "원문은 붉은 카드 피해 유형을 명시하지 않았지만, `damageType`과 피해 문구에서 마법 피해라고 단정했습니다.",
+      "correction": "피해 유형은 미상으로 두고, 유형이 본문에 명시되지 않았다는 gap을 유지하세요."
+    },
+    {
+      "id": "TwistedFate.W",
+      "path": "rules.4.effects.0.damageType",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.",
+      "issue": "같은 붉은 카드 피해에 유형을 마법 피해로 단정했습니다. 인접 적 피해 유형은 원문에 없습니다.",
+      "correction": "피해 유형은 미상으로 두세요."
+    },
+    {
+      "id": "TwistedFate.W",
+      "path": "rules.5.effects.0.damageType",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds.",
+      "issue": "원문은 황금 카드 피해 유형을 명시하지 않았지만, `damageType`에서 마법 피해라고 특정했습니다.",
+      "correction": "피해 유형은 미상으로 두고, 유형 미지정 gap을 유지하세요."
+    }
+  ],
+  "notes": []
+}

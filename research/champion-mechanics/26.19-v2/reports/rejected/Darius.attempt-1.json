@@ -1,0 +1,1112 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "기본 공격과 피해를 주는 스킬이 대상에게 과다출혈을 적용해 지속 피해를 입힌다. 대상이 최대 중첩에 도달하거나 녹서스의 단두대에 처치되면 다리우스가 일시적으로 공격력을 얻고, 기본 공격과 피해를 주는 스킬 적중 시 과다출혈을 최대로 적용한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "과다출혈을 적용해 지속 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Darius' Attacks and damaging Abilities cause the target to Hemorrhage, dealing ((13 ~ 30) + (30% bonus Attack Damage)) physical damage over 5 seconds, stacking up to 5 times."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n4"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "다리우스가 추가 공격력을 얻고, 기본 공격 또는 피해를 주는 스킬 적중 시 대상에게 과다출혈을 최대로 적용한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "totalAttackDamage",
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When an enemy reaches max stacks or is killed by Noxian Guillotine, Darius gains an additional (30 ~ 230) Attack Damage and applies 5 Hemorrhage stacks on all Attack or damaging Ability hits for 5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Darius' Attacks and damaging Abilities cause the target to Hemorrhage, dealing ((13 ~ 30) + (30% bonus Attack Damage)) physical damage over 5 seconds, stacking up to 5 times."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "녹서스의 단두대로 처치"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "다리우스가 추가 공격력을 얻고, 기본 공격 또는 피해를 주는 스킬 적중 시 대상에게 과다출혈을 최대로 적용한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "totalAttackDamage",
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When an enemy reaches max stacks or is killed by Noxian Guillotine, Darius gains an additional (30 ~ 230) Attack Damage and applies 5 Hemorrhage stacks on all Attack or damaging Ability hits for 5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Darius' Attacks and damaging Abilities cause the target to Hemorrhage, dealing ((13 ~ 30) + (30% bonus Attack Damage)) physical damage over 5 seconds, stacking up to 5 times."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "도끼를 들어 올린 뒤 크게 휘둘러 도끼날과 자루에 맞은 적에게 서로 다른 물리 피해를 준다. 자루에 맞으면 과다출혈이 중첩되지 않는다. 도끼날에 맞힌 적 챔피언과 대형 정글 몬스터 수에 따라 잃은 체력을 회복한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "도끼날에 맞은 적에게 물리 피해를 준다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Darius hefts his axe then swings it around, dealing (50/80/110/140/170 + (100/110/120/130/140% Attack Damage)) physical damage with the edge"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Darius hefts his axe then swings it around, dealing (50/80/110/140/170 + (100/110/120/130/140% Attack Damage)) physical damage with the edge and (17.5/28/38.5/49/59.5 + (35/38.5/42/45.5/49% Attack Damage)) damage with the handle."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "도끼자루에 맞은 적에게 물리 피해를 준다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and (17.5/28/38.5/49/59.5 + (35/38.5/42/45.5/49% Attack Damage)) damage with the handle."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Darius hefts his axe then swings it around, dealing (50/80/110/140/170 + (100/110/120/130/140% Attack Damage)) physical damage with the edge and (17.5/28/38.5/49/59.5 + (35/38.5/42/45.5/49% Attack Damage)) damage with the handle."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "도끼자루에 맞은 적은 과다출혈 중첩을 받지 않는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies hit with the handle do not take a Hemorrhage stack."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "도끼날에 맞은 적 챔피언 및 대형 정글 몬스터마다 잃은 체력의 일정 비율을 회복하며, 회복량은 상한을 넘지 않는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Darius restores 17% missing Health per enemy champion and large jungle monster hit with the edge, up to a max of 51%."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "도끼날 적중 여부와 도끼자루 적중 여부를 구분하는 정확한 판정 조건은 입력 원문에 자세히 규정되어 있지 않다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "with the edge"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "with the handle"
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "회복 비율은 잃은 체력에 적용되지만 숫자 입력 체계에는 missing Health라는 스탯이 없어 정확한 stat 참조를 표현할 수 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "17% missing Health per enemy champion and large jungle monster hit with the edge"
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "다리우스의 다음 기본 공격을 강화해 물리 피해를 주고 둔화시킨다. 이 스킬로 대상을 처치하면 소모 마나를 돌려받고 재사용 대기시간을 줄인다. 피해를 입힐 때 주문 효과를 발동한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "attack_followup",
+              "subject": "target",
+              "text": "다음 기본 공격이 강화되어 물리 피해를 주고 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Darius' next Attack deals (140/145/150/155/160% Attack Damage) physical damage and Slows by 90% for 1 second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "강화된 기본 공격이 물리 피해를 준다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Darius' next Attack deals (140/145/150/155/160% Attack Damage) physical damage and Slows by 90% for 1 second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "처치하면 이 스킬의 소모 마나를 돌려받는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "처치하면 이 스킬의 재사용 대기시간을 줄인다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability refunds its Mana cost and reduces its Cooldown by 50% if it kills the target."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "피해를 입히면 주문 효과를 발동시킨다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability triggers spell effects upon dealing damage."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "기본 지속 효과로 방어구 관통력을 얻는다. 사용 시 도끼로 적을 끌어당겨 공중으로 띄우고 둔화시킨다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "방어구 관통력을 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "armorPenetration",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": "armorPenetration",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Darius gains 20/25/30/35/40% Armor Penetration."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "도끼로 적을 끌어당기고 공중으로 띄운 뒤 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "pull",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "도끼로 적을 끌어당기고 공중으로 띄운 뒤 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "knockup",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "도끼로 적을 끌어당기고 공중으로 띄운 뒤 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Darius hooks with his axe, Pulling, and Knocking Up and Slowing by 40% for 1 second."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "적에게 뛰어올라 고정 피해를 준다. 대상의 과다출혈 중첩마다 피해가 증가하며 최대 피해량이 있다. 처치하면 제한 시간 안에 한 번 재사용할 수 있고, 3레벨에서는 마나를 소모하지 않으며 처치 시 재사용 대기시간이 완전히 초기화된다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "적에게 고정 피해를 준다.",
+              "damageType": "true",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Darius leaps to an enemy and strikes a lethal blow, dealing (125/250/375 + (75% bonus Attack Damage)) true damage. For each Hemorrhage on the target, this Ability deals an additional 20% damage, up to a max of (250/500/750 + (150% bonus Attack Damage)) damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "Hemorrhage"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n4"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "대상의 과다출혈 중첩마다 피해가 추가로 증가한다.",
+              "damageType": "true",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "For each Hemorrhage on the target, this Ability deals an additional 20% damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "For each Hemorrhage on the target, this Ability deals an additional 20% damage, up to a max of (250/500/750 + (150% bonus Attack Damage)) damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "처치하면 제한 시간 안에 이 스킬을 한 번 재사용할 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If this kills the target, Darius may Recast this Ability once within 20 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "spell_ready",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "ready"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n10"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "3레벨에서는 이 스킬의 마나 소모가 없다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "At rank 3, this Ability has no Mana cost"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "At rank 3, this Ability has no Mana cost and kills refresh the Cooldown completely."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n10"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "3레벨에서는 처치 시 이 스킬의 재사용 대기시간을 완전히 초기화한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "At rank 3, this Ability has no Mana cost and kills refresh the Cooldown completely."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "대상의 과다출혈 중첩별 피해 증가 및 최대 피해 상한은 원문에 명시되어 있으나, 정확한 중첩 수 조건과 계산 순서는 별도 수식으로 주어지지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "For each Hemorrhage on the target, this Ability deals an additional 20% damage, up to a max of"
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "입력에 재사용을 처리하는 별도 시전 variant가 없어 재사용 가능 상태 이후의 시전 동작을 독립 규칙으로 기술할 수 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Darius may Recast this Ability once within 20 seconds."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Darius.Q",
+      "errors": [
+        {
+          "code": "first_hit",
+          "path": "rules.3",
+          "detail": "First-hit restriction is not stated by this rule's evidence"
+        }
+      ]
+    },
+    {
+      "id": "Darius.R",
+      "errors": [
+        {
+          "code": "condition_unit",
+          "path": "rules.1",
+          "detail": "A percentage cannot be a hit/entity count or distance"
+        }
+      ]
+    }
+  ]
+}

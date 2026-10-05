@@ -1,0 +1,252 @@
+{
+  "summary": "그림자가 전방으로 나아가 첫 번째로 적중한 적 챔피언에게 표식을 남기고 마법 피해를 줍니다. 재사용하면 표식 대상에게 돌진해 도착 시 마법 피해를 줍니다. 표식 대상이 이 스킬로 피해를 받은 뒤 일정 시간 안에 사망하면 재사용 대기시간이 일시적으로 초기화됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "그림자가 전방으로 나아가 적중한 대상에게 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shadow excitedly surges forward, dealing (75/125/175 + (20% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Shadow excitedly surges forward, dealing (75/125/175 + (20% Ability Power)) magic damage and marking the first enemy champion hit for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "첫 번째로 적중한 적 챔피언에게 표식을 남깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "marking the first enemy champion hit for 4 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Shadow excitedly surges forward, dealing (75/125/175 + (20% Ability Power)) magic damage and marking the first enemy champion hit for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "벡스가 표식이 있는 챔피언에게 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "돌진 도착 시 표식 대상에게 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Dash to the marked champion, dealing (150/250/350 + (50% Ability Power)) magic damage on arrival."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n9"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 능력으로 피해를 받은 뒤"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "표식 대상이 이 능력으로 피해를 받은 뒤 조건 시간 내에 사망하면 이 능력의 재사용 대기시간이 일시적으로 초기화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the marked champion dies within 8 seconds of taking damage from this Ability, its Cooldown is temporarily reset."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

@@ -1,0 +1,280 @@
+{
+  "id": "Renata.P",
+  "sourceHash": "857befbb44983ad321d1beb0aad1dc428d14879b061a4f0b7b423ffdba9126b6",
+  "beforeCandidateHash": "97ff35a2c36bca63d29d5aa48d4e2a263fabbd7e6096be14ce56e1afef2904a4",
+  "candidateHash": "30949ce06cb4e9f04cda65621f46d703624fea82fa774a8b571a45a5588733e6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "자기공격6초표식과미표식추가피해,아군챔피언의공격/스킬표식소모피해,동시표식1대상제한,HP×(1~2%+AP100당2%)중첩식을 검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "표식없던공격적추가마법=targetHP×(1~2%+자기AP100당2%);2%중복입력/100피해량오류제거.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "absent",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "1.0%",
+              "value": 1,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "2.0%",
+              "value": 2,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "2%",
+              "value": 2,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "레나타공격은대상표식6초부여;미표식조건은피해에만걸리며표식갱신을막지않음.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "행위자가아군챔피언이고피해대상은챔피언만으로제한안함;표식소모및같은중첩마법피해.",
+      "verifiedConditions": [
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "1.0%",
+              "value": 1,
+              "percent": true
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "2.0%",
+              "value": 2,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "2%",
+              "value": 2,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "동시표식대상최대1은게임상제한이며UI표시가아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "one",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules/gaps.0",
+      "issue": "아군챔피언조건을적대상에부과,표식도미표식에서만부여,중첩식2%중복및100피해량,표식상한UI분류오류.",
+      "correction": "행위자ally챔피언/표식공통/정확한분모입력과출력/동시1제한으로수정했다.",
+      "sourceId": "en:body",
+      "quote": "Allied champions' Attacks or Abilities consume the mark, dealing ((1.0% ~ 2.0%) + (2% per 100 Ability Power)) max Health magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "확정중첩식은targetHP×(기본1~2%+레나타AP100당2%)이다.현재매개변수는연산트리가아니므로선형AP피해/100고정피해로실행하지않는다.기본1~2%의증가기준은미제공이다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "표식을 남기는 공격의 대상 제한은 본문에 'enemies'라고만 되어 있다. 표식 소비 조건은 아군 챔피언의 공격 또는 스킬로 한정된다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,305 @@
+{
+  "summary": "대상에게 지속 피해를 주며, 해당 시간 동안 공허의 부름이나 황천의 손아귀를 그 대상에게 사용하면 효과가 갱신됩니다. 대상이 죽으면 마나를 얻고 환상이 가장 가까운 적에게 옮겨갑니다. 체력이 기준치 미만인 미니언은 처형합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상에게 일정 시간 동안 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar inflicts terrible visions, dealing (80/115/150/185/220 + (80% Ability Power)) magic damage over 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Malefic Visions"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "시전 대상이 공허의 부름 또는 황천의 손아귀"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "환상의 지속시간을 갱신합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Applying Call of the Void or Nether Grasp to the victim during this time refreshes the visions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Malefic Visions"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "마나를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "maxMana",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the victim dies, Malzahar gains (2% Mana) Mana"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If the victim dies, Malzahar gains (2% Mana) Mana and the visions spread to the nearest enemy."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Malefic Visions"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "enemy",
+          "text": "환상이 가장 가까운 적에게 옮겨갑니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "the visions spread to the nearest enemy."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n8"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "체력이 기준치 미만인 미니언을 처형합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Malefic Visions executes minions below (10 ~ 30) Health."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "본문은 환상을 시전해 대상에게 적용한다고 하지만 대상 선택 범위를 더 설명하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar inflicts terrible visions"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "마나 획득량의 2%가 어떤 마나 기준값을 참조하는지 본문에서 명확하지 않아 통계 기준을 확정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar gains (2% Mana) Mana"
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "처형 체력은 (10 ~ 30) 범위로 제시되며 스킬 레벨 등 범위를 결정하는 기준은 기재되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "executes minions below (10 ~ 30) Health."
+        }
+      ]
+    }
+  ]
+}

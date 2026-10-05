@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Ambessa.E",
+      "sourceHash": "4eb69e21ea897eab0efb5ba8cdb5ad4d0ef01dea5190a970c7f552d74d8544ec",
+      "candidateHash": "5a9439a417c9686312a4e9ddd93e45ab0faf5add94c752c5c5251b6d0d832859"
+    },
+    {
+      "id": "Ambessa.P",
+      "sourceHash": "f4d1972a4e86905ea7afb5ae54a8ee2d462a8769c733b97fda98f045b3e1d645",
+      "candidateHash": "b21b097cf29f1cc2e7000bb411cda7d16d07bc1f4153ebc374d23c3faeed9975"
+    },
+    {
+      "id": "Ambessa.Q",
+      "sourceHash": "36bf857f3e1a1cde6ac1630a093a9d92e1556d5847cb8660569302db74e8f217",
+      "candidateHash": "d39d178c1042c3ee3fde6520c6a75d1019eb40a8d32d0c2493768aa674e60472"
+    },
+    {
+      "id": "Ambessa.R",
+      "sourceHash": "324b69c41b11cb60e72d4b2e4739794b10c96512dc23f13bc94e3108b64b4e06",
+      "candidateHash": "4e64e44d1fc868df40fe413c2c574e386ea1f20436aeac85ffae97c6ddc6e899"
+    },
+    {
+      "id": "Ambessa.W",
+      "sourceHash": "0dc1e4c8538204275d218c5be7f652c376feb9f1371055777c7030280c553f58",
+      "candidateHash": "7965b0462a76b84d48d5c3194dc5a610ad0ccbe56b45dcce35837a9ffa66b6d4"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Ambessa.Q",
+      "path": "rules.4.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Sundering Slam: Ambessa slams her blades down, dealing (50/75/100/125/150 + (90% bonus Attack Damage)) + (4/4.5/5/5.5/6% + (4% per 100 bonus Attack Damage)) max Health physical damage against the first enemy hit. All other enemies take 50% damage.",
+      "issue": "설명은 첫 적중 대상의 피해를 기준으로 다른 모든 적이 절반 피해를 받는다고만 합니다. 이를 ‘첫 적중 대상 피해의 절반’으로 특정할 근거는 없습니다.",
+      "correction": "다른 모든 적에게는 피해의 50%를 준다고 기재하세요."
+    },
+    {
+      "id": "Ambessa.R",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Passive: Ambessa gains 10/20/30% Armor Penetration and her Abilities heal her for (15/17.5/20% + (50% Lifesteal)) of the damage she dealt.",
+      "issue": "요약에서 생명력 회복이 미니언과 몬스터에게 입힌 피해에도 적용된다는 범위를 밝히지 않고, 뒤 문장의 효율 감소만 언급해 회복 효과의 대상 범위가 불분명합니다.",
+      "correction": "스킬 피해에 따라 체력을 회복하며, 미니언과 몬스터에게 입힌 피해에 대한 회복 효율은 25%라고 요약하세요."
+    },
+    {
+      "id": "Ambessa.W",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "which increases to (75/112.5/150/187.5/225 + (75% bonus Attack Damage)) physical damage if she braced herself from damage from an enemy champion, large monster, or structure.",
+      "issue": "요약이 조건부 증가 피해만 서술해 기본 피해량이 따로 있는 것처럼 보입니다. 조건을 만족하면 피해가 명시된 증가 수치로 바뀐다는 점이 드러나지 않습니다.",
+      "correction": "기본 피해를 주며, 준비 중 적 챔피언·대형 몬스터·구조물의 피해를 받으면 해당 피해가 증가한 수치로 적용된다고 요약하세요."
+    }
+  ],
+  "notes": []
+}

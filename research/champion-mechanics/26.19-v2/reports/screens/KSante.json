@@ -1,0 +1,125 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "KSante.E",
+      "sourceHash": "d7bde102a42292c9abbdec64e98ff10b2974373979a9f31d08441adec963f883",
+      "candidateHash": "a0105d5eb692c16723a3291c47def26b595d03a7d39914e30772cc61c2974053"
+    },
+    {
+      "id": "KSante.P",
+      "sourceHash": "9205fbe1b740a317a91be0bae452f6a7301b7b08f524ebd34107eb54654954a3",
+      "candidateHash": "3eeabdb226f57541006d6bf6cf1a4f4ab8654d501d40aca245b19ebae1b7a7f5"
+    },
+    {
+      "id": "KSante.Q",
+      "sourceHash": "be3fc9a87838eee09f683b5f657b8922822944ee32ff037fa3904cdd09c2fa89",
+      "candidateHash": "7304d69880b289522843a0750bed816330ef9ca2a057e93398eac410c39269f9"
+    },
+    {
+      "id": "KSante.R",
+      "sourceHash": "06cc9df71ddee65e7f38c17d269b484f748ae2bc1e1d072ee34779a1fe2475dc",
+      "candidateHash": "18406fc30e359393cd876567dde8dade6fca73146998e06d4063b067766b69e6"
+    },
+    {
+      "id": "KSante.W",
+      "sourceHash": "db66618c11dc7f8cc2bc43274fbfdaf455921dc0ef3bd2ead19c81c2adc4803f",
+      "candidateHash": "99d92eb9cd23027ce4508deab54e2bde248bc22b8ebf67a8cbb85c57acb12725"
+    }
+  ],
+  "findings": [
+    {
+      "id": "KSante.Q",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If he hits, he gains a stack of Ntofo Strikes for 6 seconds.",
+      "issue": "중첩 획득 효과의 `count`가 원문상 6초 지속 시간인 `6`을 참조하고 있습니다. 6초를 중첩 개수로 오해하게 됩니다.",
+      "correction": "이 숫자는 지속 시간으로만 연결하고, 중첩 획득 개수는 원문대로 텍스트에 남기거나 명시적 수치 근거가 있을 때만 구조화하세요."
+    },
+    {
+      "id": "KSante.Q",
+      "path": "rules.1.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "At 2 stacks, he instead fires a shockwave that Stuns and Pulls enemies for 1 second.",
+      "issue": "중첩 획득 효과의 `duration_seconds`가 충격파 조건의 중첩 수 `2`를 참조합니다. 설명 텍스트도 중첩 지속 시간이 만료된다고만 하여, 2초 지속으로 읽힙니다.",
+      "correction": "중첩 수 2는 충격파 발동 조건에만 연결하고, 중첩 지속 시간은 6초로 기록하세요."
+    },
+    {
+      "id": "KSante.R",
+      "path": "rules.0.effects.2.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "then dashes behind them and goes All Out for 15s.",
+      "issue": "15초 지속 시간이 돌진 효과의 매개변수로 붙어 있어 돌진 지속 시간처럼 해석될 수 있습니다.",
+      "correction": "15초를 총공세 상태 지속 시간에 연결하세요."
+    },
+    {
+      "id": "KSante.R",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "K'Sante's Abilities are upgraded and he gains 40/60/80% Attack Speed, 50% Bonus Armor Penetration, and 20% Omnivamp,",
+      "issue": "공격 속도 수치 `40/60/80%`가 참조되지만 첫 두 값의 `raw`는 `%`가 빠져 있습니다. 원문 전체가 해당 순위별 값에 퍼센트를 붙입니다.",
+      "correction": "세 순위 값 모두 백분율로 보존하세요: 40%, 60%, 80%."
+    },
+    {
+      "id": "KSante.R",
+      "path": "rules.2.effects.0.parameters.2.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "and 20% Omnivamp,",
+      "issue": "옴니흡혈을 `lifeSteal`로 분류해 다른 능력치와 혼동하게 합니다.",
+      "correction": "옴니흡혈로 유지하거나 전용 stat이 없다면 텍스트로 남기세요."
+    },
+    {
+      "id": "KSante.R",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "but loses 35% max Health, 85% Bonus Armor, and 85% Bonus Magic Resistance.",
+      "issue": "35% 최대 체력 감소가 숫자 매개변수로 기록됐지만 `stat: maxHealth`는 감소가 아닌 최대 체력 값 자체로 읽힐 수 있습니다.",
+      "correction": "감소 방향을 명시하는 능력치 변경으로 기록하거나, 지원되지 않으면 감소 텍스트로 보존하세요."
+    },
+    {
+      "id": "KSante.W",
+      "path": "rules.1.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage.",
+      "issue": "피해 공식의 `8% max Health`가 `maxHealth` 능력치를 대상에게서 가져오는 것으로 지정됐습니다. 이 문구에서 최대 체력 피해의 주체는 맞은 대상이라는 설명이 없으므로 소유자를 단정할 수 없습니다.",
+      "correction": "`statSubject: target`을 단정하지 말고 원문 공식 텍스트와 불확실성 간극을 보존하세요."
+    },
+    {
+      "id": "KSante.W",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals an additional 10-80% damage as true damage (based on charge time),",
+      "issue": "추가 고정 피해 비율의 범위가 `10`에서 `-80%`로 저장되어 상한이 음수로 표현됩니다.",
+      "correction": "범위 끝값을 양수 80%로 기록하세요."
+    },
+    {
+      "id": "KSante.W",
+      "path": "rules.4.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "damage reduction is increased to 75% and dash speed is increased,",
+      "issue": "75%는 총공세 중 피해 감소 효과의 값인데, 매개변수 역할이 일반 `amount`여서 효과의 종류가 드러나지 않습니다.",
+      "correction": "피해 감소율로 역할을 명시하거나, 해당 역할을 지원하지 않으면 수치를 텍스트로 보존하세요."
+    },
+    {
+      "id": "KSante.W",
+      "path": "rules.6.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Maximum of 180/260/340/420/500 damage against monsters.",
+      "issue": "몬스터 대상 최대 피해 제한이 물리 피해 효과에 구조화돼 있지만 원문은 피해 유형을 지정하지 않고 전체 피해 한도 적용 여부도 확정하지 않습니다. gap은 이 범위 불확실성을 인정하면서도 타입과 적용 대상을 단정합니다.",
+      "correction": "고정 피해 유형을 지정하지 말고, 최대 피해의 대상 범위를 원문이 확정하지 않는다는 gap을 유지하세요."
+    }
+  ],
+  "notes": []
+}

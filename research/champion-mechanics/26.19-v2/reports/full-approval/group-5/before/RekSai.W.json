@@ -1,0 +1,252 @@
+{
+  "summary": "돌출 상태에서 매복해 새 스킬에 접근하고 이동 속도를 얻지만 기본 공격을 할 수 없다. 시야 범위가 줄어들며, 보이지 않은 채 움직이는 근처 적의 위치를 렉사이와 아군에게 드러낸다. 매복 중 돌출을 사용해 근처 적을 공중으로 띄우고 피해를 줄 수 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Unburrowed"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "매복 상태가 되어 새 스킬에 접근할 수 있지만 기본 공격을 할 수 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "시야 범위가 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Unburrowed: Rek'Sai burrows into the ground, gaining access to new Abilities but cannot Attack. She gains 5/10/15/20/25 Move Speed, 65% reduced vision range"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "She gains 5/10/15/20/25 Move Speed, 65% reduced vision range, and nearby enemies that move and are otherwise unseen will have their positions revealed to Rek'sai and her allies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Burrowed"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "unseen"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "moving"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "nearby"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "enemy",
+          "text": "보이지 않은 채 움직이는 근처 적의 위치를 렉사이와 아군에게 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "nearby enemies that move and are otherwise unseen will have their positions revealed to Rek'sai and her allies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Burrowed"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "근처 적을 공중으로 띄운다.",
+          "damageType": null,
+          "crowdControl": "knockup",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "While Burrowed, Rek'Sai may cast Unburrow to knock up and damage nearby enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Burrowed"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "근처 적에게 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "While Burrowed, Rek'Sai may cast Unburrow to knock up and damage nearby enemies."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "돌출 시 근처 적에게 주는 피해의 수치와 유형은 입력 원문에 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "knock up and damage nearby enemies."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "시야 범위 감소량에는 대응하는 stat 항목이 없어 stat 및 statSubject를 지정하지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "65% reduced vision range"
+        }
+      ]
+    }
+  ]
+}

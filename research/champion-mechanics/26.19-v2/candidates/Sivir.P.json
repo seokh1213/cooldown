@@ -1,0 +1,74 @@
+{
+  "summary": "시비르의 기본 공격과 스킬이 적 챔피언에게 피해를 입히면 이동 속도가 잠시 증가하고 점차 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기본공격또는스킬로적챔피언에게피해를입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "적 챔피언에게 피해를 입히면 이동 속도가 증가하고 점차 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sivir's Attacks and Abilities grant her a burst of (55 ~ 75) Decaying Move Speed for 1.5 seconds when they damage enemy champions."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

@@ -1,0 +1,205 @@
+{
+  "summary": "스킬 사용 후 충전을 얻습니다. 충전된 기본 공격은 충전 하나를 소모해 사슬을 휘둘러 주 대상과 주변의 다른 적에게 마법 피해를 입힙니다. 충전이 하나 이상 있으면 공격 속도가 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "스킬 사용 후 충전 하나를 얻습니다. 최대 보유 충전량이 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using an Ability, Sylas gains a charge (max 3 charges)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n5"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "충전 하나를 소모합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 공격 시 사슬을 휘둘러 주 대상에게 마법 피해를 입힙니다. 피해량은 사일러스의 공격력과 주문력에 비례합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "기본 공격 시 사슬을 휘둘러 주변의 다른 적에게 마법 피해를 입힙니다. 피해량은 사일러스의 공격력과 주문력에 비례합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "ko:body",
+          "quote": "다음 기본 공격 시 충전량을 하나 소모하여 사슬을 휘두르며 적중당한 대상에게 ((130% 공격력) + (30% 주문력))의 마법 피해를 입히고 대상 주변의 모든 적에게 ((40% 공격력) + (20% 주문력))의 마법 피해를 입힙니다."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sylas' Attacks expend a charge to whirl his chains, dealing ((130% Attack Damage) + (30% Ability Power)) magic damage to the main target and ((40% Attack Damage) + (20% Ability Power)) magic damage to other surrounding enemies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "While he has at least one charge, Sylas gains 125% Attack Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n5"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "충전이 하나 이상 있으면 공격 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While he has at least one charge, Sylas gains 125% Attack Speed."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

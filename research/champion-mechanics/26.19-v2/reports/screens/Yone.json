@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Yone.E",
+      "sourceHash": "4a4de3de2e0d7847c54e0562be3c8e43c39cddc26b2cb5640edec37f190cfb16",
+      "candidateHash": "1cd4752271622a75ecf6bfe1f82a5b4b15a8dcd1bec3392111aa2889d650cdf9"
+    },
+    {
+      "id": "Yone.P",
+      "sourceHash": "31c9371d963ed75bcf4994f7c2976f5c727ea06ef17d45814bd29a2e9646287b",
+      "candidateHash": "c8e80854ecc43f1962e6f739ac2dff5e84354cc3d0a02b8e21c4884411c3c2e6"
+    },
+    {
+      "id": "Yone.Q",
+      "sourceHash": "acea5ba467e3526d5f048380ff39bc55ec885b2e40dd2af1e2902c5ceef1caa7",
+      "candidateHash": "6610301b1b92fb53b367ae60c56fb0f3f4e1e9541b7b837aca418f0b2ff317d1"
+    },
+    {
+      "id": "Yone.R",
+      "sourceHash": "bc4a33ceaa5b1ec7f73f303113e0ed57af03863dd272512e1880467156a165ff",
+      "candidateHash": "e0636ed73a833259e7111c1ac9bf11c592f3a7a7b8a3245b21962d9e64bead42"
+    },
+    {
+      "id": "Yone.W",
+      "sourceHash": "c32d210c7b4d905c9f85967c804a8961a9b96d3ffa9f62950073e7d2096c8876",
+      "candidateHash": "fe761576254f104e9dff7fecd9669bb7d5459ae34b3ea334fd7a7800c33191c1"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Yone.E",
+      "path": "rules.1.effects.0.flags",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "gaining 10% to 30% ramping Move Speed.",
+      "issue": "`decays`는 이동 속도가 점차 감소한다는 뜻이어서, 원문의 점차 증가(`ramping`)와 반대입니다.",
+      "correction": "`decays`를 제거하거나 점차 증가를 나타내는 의미로 수정하세요."
+    },
+    {
+      "id": "Yone.Q",
+      "path": "rules.2.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "At 2 stacks, this ability causes Yone to dash forward",
+      "issue": "강화 발동 조건은 중첩 2회 보유인데 `hit_count`는 적중 횟수 조건입니다. 스택 보유량과 적중 횟수를 혼동했습니다.",
+      "correction": "중첩 수 조건으로 표현하세요."
+    },
+    {
+      "id": "Yone.R",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "teleporting behind the last champion hit and Knocking Up victims towards Yone.",
+      "issue": "마지막 챔피언을 맞히는 것이 이동 조건인데, `nearby_enemies`의 챔피언 존재 여부로 대체되어 실제로 맞았는지와 마지막 적중 대상이 보존되지 않습니다.",
+      "correction": "마지막 챔피언 적중을 조건으로 두고, 이동 대상을 그 마지막 적중 챔피언으로 명시하세요."
+    },
+    {
+      "id": "Yone.R",
+      "path": "rules.2.effects.1.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Knocking Up victims towards Yone.",
+      "issue": "요약문은 모든 적중 적을 끌어당긴다고 하지만 본문은 적중 대상을 `victims`라고만 합니다. 이를 모든 적중 적으로 단정한 것은 제공된 본문보다 범위를 넓힙니다.",
+      "correction": "`victims`의 대상 범위를 확정하지 말고 원문의 모호함을 유지하세요."
+    },
+    {
+      "id": "Yone.W",
+      "path": "rules.0.effects.0.parameters.1.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "4/4.5/5/5.5/6% max Health physical damage",
+      "issue": "`max Health`만으로는 체력 소유자가 명시되지 않으며, 입력에서도 대상 체력인지 요네 체력인지 모호하다고 기록했습니다. 그런데 수치 입력을 `target` 소유로 확정했습니다.",
+      "correction": "체력 소유자를 미확정으로 두고 갭을 유지하세요."
+    },
+    {
+      "id": "Yone.W",
+      "path": "rules.1.effects.0.parameters.1.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "4/4.5/5/5.5/6% max Health magic damage",
+      "issue": "`max Health`만으로는 체력 소유자가 명시되지 않으며, 입력에서도 대상 체력인지 요네 체력인지 모호하다고 기록했습니다. 그런데 수치 입력을 `target` 소유로 확정했습니다.",
+      "correction": "체력 소유자를 미확정으로 두고 갭을 유지하세요."
+    }
+  ],
+  "notes": []
+}

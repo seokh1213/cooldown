@@ -390,6 +390,9 @@ export const koKRTranslations: Translations = {
     emptyHint: "룬·아이템 판정이나 챔피언 스킬을 물어보세요. 기기 안에서 답합니다.",
     rateUp: "도움이 됐어요",
     rateDown: "틀렸거나 부족해요",
+    copyAnswer: "답변 복사",
+    answerCopied: "복사했어요",
+    answerCopyFailed: "복사하지 못했어요. 다시 눌러 주세요.",
     errorPrefix: "오류",
   },
 };

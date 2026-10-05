@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 2,
+  "id": "Taliyah.P",
+  "champion": "Taliyah",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "352cd348efc6b366cf641699d68280f5e4d8c8cdcb5b9d0213a834f48600d6b7",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Rock Surfing",
+      "ko": "바위타기"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          15,
+          15,
+          15,
+          25,
+          25,
+          25,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "digits": 0,
+        "percent": true
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Taliyah.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Taliyah gains Move Speed near walls.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Taliyah gains (10% ~ 40%) Move Speed while out of combat if she has been near a wall within the last 3 seconds.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "벽 근처에서 이동 속도가 상승합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "전투 중이 아닐 때 지난 3초 안에 벽 근처에 있었으면 이동 속도가 (10% ~ 40%) 증가합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 15,
+      "end": 18
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 21,
+      "end": 24
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 101,
+      "end": 102
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 14,
+      "end": 15
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 39,
+      "end": 42
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 45,
+      "end": 48
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "전투 중이 아닐 때 최근 벽 근처에 있었다면 이동 속도가 증가합니다.",
+  "rules": [
+    {
+      "id": "2ddc206445ef03ba8eec",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "전투 중이 아님"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n2"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "벽 근처에 마지막으로 있었던 이후의 경과 시간"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Taliyah gains (10% ~ 40%) Move Speed while out of combat if she has been near a wall within the last 3 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "ae0466425c9cb2e2a9679cd9204589e3afecfa20e8b25df895d1593d850c89cb"
+}

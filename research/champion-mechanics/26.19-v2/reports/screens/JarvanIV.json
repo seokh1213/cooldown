@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "JarvanIV.E",
+      "sourceHash": "e0c67e81c3d947bd29d4236c6754dd8869c1010777c6094f14577dc43118714f",
+      "candidateHash": "dc1a36ff67309e62bafb4cf91f68319fa65241b652a28ee6e0b2e5637da1f83e"
+    },
+    {
+      "id": "JarvanIV.R",
+      "sourceHash": "8d8e372e3467d4282fe735103db57078c39696058e5c8d3b252f0503a7774f9a",
+      "candidateHash": "254316659700319f98eae3c61f3b6766d3da89a8ce3117cb4577263ede74b172"
+    },
+    {
+      "id": "JarvanIV.P",
+      "sourceHash": "37d49e99239f72f2d95845d06c153e3729ae73cfce2d21a4f56f747813acab51",
+      "candidateHash": "3e45850556da2ea4218d9b3a7f7714c51d5925b84cbba453c261dee576f00051"
+    },
+    {
+      "id": "JarvanIV.Q",
+      "sourceHash": "d7b45ba16963375386e0729b95193734587d99165f888cf5ef83d9c54414f991",
+      "candidateHash": "f88652086ecb07de733c888bb8847feeb8a634e098032704ec07195a02b65d72"
+    },
+    {
+      "id": "JarvanIV.W",
+      "sourceHash": "2405214725a1878f77425e51fe1f85f9e6908d9abd91e85b9b37bb33a84d5520",
+      "candidateHash": "9b785501335e2933c4c9d51f70ea87d018868228067fe17e7e54e9761d1d6898"
+    }
+  ],
+  "findings": [
+    {
+      "id": "JarvanIV.Q",
+      "path": "rules.1.effects.0.parameters.0.numbers.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "removing 10/14/18/22/26% Armor for 3 seconds.",
+      "issue": "첫 네 값의 `percent`가 `true`이지만 원문에는 첫 네 숫자에 `%`가 없습니다. 이 속성은 10/14/18/22를 비율로 구조화합니다.",
+      "correction": "`raw` 표기와 일치하도록 첫 네 값의 `percent`를 `false`로 설정하거나, 원문 전체의 방어력 감소 비율을 텍스트로 보존하세요."
+    },
+    {
+      "id": "JarvanIV.W",
+      "path": "rules.0.effects.0.parameters.0.numbers.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Slowing nearby enemies by 15/20/25/30/35% for 2 seconds",
+      "issue": "첫 네 값의 `percent`가 `true`이지만 해당 숫자 뒤에는 `%`가 없습니다. 마지막 값만 `%`가 있어 구조화 값이 원문 표기와 일치하지 않습니다.",
+      "correction": "첫 네 값의 `percent`를 `false`로 설정하거나, 원문 전체의 둔화 비율을 텍스트로 보존하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,90 @@
+{
+  "id": "Neeko.W",
+  "sourceHash": "60a1bdda226142c5a399197cf6e02965255912b2668c30a955245d5f3d28731d",
+  "beforeCandidateHash": "d90a7d2d37e999ead04ab2d85916704c05bff83808e7d469958361ffc60260e9",
+  "candidateHash": "3db045ab92872605a359e135d2123d29e88d698c8e41a75ae7ee220895d59113",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 0,
+  "summaryCheck": "매3번째평타추가마법30~170+AP60%/1초이속10~40%,시전0.5초invisible/3초clone,둘3초20~40%이속,재사용/단축키조종·분신mirroring/stealth중지정불가,강화평타몬스터75추가를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.activation eq empowered; caster.other eq 매 세 번째 기본 공격이며 그 공격이 강화됨. target damage magic: 세 번째 기본 공격마다 추가 마법 피해를 입힌다. [amount n1=30/n2=65/n3=100/n4=135/n5=170 rank_values; stat_coefficient n6=60% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.activation eq empowered; caster.other eq 매 세 번째 기본 공격이며 그 공격이 강화됨. caster stat_modifier: 세 번째 기본 공격마다 이동 속도가 증가한다. [amount n7=10%/n8=17.5%/n9=25%/n10=32.5%/n11=40% rank_values caster.moveSpeed; duration_seconds n12=1 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster visibility: 잠시 투명 상태가 된다. [duration_seconds n13=0.5 scalar] / summon summon: 지정한 방향으로 복제 형상을 보낸다. [duration_seconds n14=3 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 니코의 이동 속도가 증가한다. [amount n15=20%/n16=25%/n17=30%/n18=35%/n19=40% rank_values caster.moveSpeed; duration_seconds n20=3 scalar] / summon stat_modifier: 복제 형상의 이동 속도가 증가한다. [amount n15=20%/n16=25%/n17=30%/n18=35%/n19=40% rank_values summon.moveSpeed; duration_seconds n20=3 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 없음. summon other: 재사용하거나 이동 단축키를 사용해 복제 형상을 조종할 수 있다. []"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.passive; 조건 없음. summon other: 복제 형상은 니코의 스킬 시전, 감정표현, 귀환을 따라 한다. [] / summon other: 은신 상태에서 대상으로 지정될 수 없다. []"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.activation eq empowered; target.target_type eq monster; caster.other eq 매 세 번째 기본 공격이며 그 공격이 강화됨. target damage magic: 강화된 기본 공격은 몬스터에게 추가 마법 피해를 입힌다. [amount n21=75 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/3/4/5/6",
+      "issue": "공격행위자·3번째조건·이속3초출처·recast행위자·지정불가분류",
+      "correction": "caster공격/매3번째조건, 이속n20, casterrecast/untargetableother",
+      "sourceId": "en:body",
+      "quote": "Neeko and the clone gain 20/25/30/35/40% Move Speed for 3 seconds."
+    },
+    {
+      "path": "rules.0,1,6.conditions",
+      "issue": "매세번째강화기본공격이라는모호한문구",
+      "correction": "강화공격세번이아닌기본공격세번째가강화됨을명시했다.",
+      "sourceId": "en:body",
+      "quote": "Passive: Every 3rd Attack deals an additional (30/65/100/135/170 + (60% Ability Power)) bonus magic damage"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 340,
+      "verdict": "repaired",
+      "reason": "같은값3초라도이속에는원문이속지속시간n20을참조하고해당문장증거를추가했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

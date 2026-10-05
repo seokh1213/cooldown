@@ -1,0 +1,59 @@
+{
+  "id": "Sylas.W",
+  "sourceHash": "d4d1a7dbabeb7b751d4df925f8c2aa8ce7ef87731d3c11ec8b239f95391b0fa7",
+  "beforeCandidateHash": "97bbf12699f4409fc7af592d9e3a4206bd086f882a866a3c5584f47f4513bfc1",
+  "candidateHash": "f1abb6c9d755841ec2207d404b2606722287ec3a514a22a9eaa951b925be8b7f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "적 돌진75~215+60%AP마법, 챔피언에만 잃은체력에 따른 최소/최대회복식 및 체력40% 이하 최대 조건을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=75,en:body:n1=110,en:body:n2=145,en:body:n3=180,en:body:n4=215 상수 rank_values / stat_coefficient en:body:n5=60%(백분율) caster.abilityPower formula_components; flags 없음 | caster: 마법의 힘으로 선택한 적에게 돌진합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 챔피언에게 사용하면 사일러스의 잃은 체력에 따라 최소(20/40/60/80/100+30%AP+5%추가체력)~최대(40/80/120/160/200+60%AP+10%추가체력)로 회복합니다. 체력40% 이하에서 최대식입니다. 각 끝점의 계수를 합산하지 않습니다.; 수치 min_amount en:body:n6=20,en:body:n7=40,en:body:n8=60,en:body:n9=80,en:body:n10=100 상수 formula_components / stat_coefficient en:body:n11=30%(백분율) caster.abilityPower formula_components / stat_coefficient en:body:n12=5%(백분율) caster.bonusHealth formula_components / max_amount en:body:n13=40,en:body:n14=80,en:body:n15=120,en:body:n16=160,en:body:n17=200 상수 formula_components / stat_coefficient en:body:n18=60%(백분율) caster.abilityPower formula_components / stat_coefficient en:body:n19=10%(백분율) caster.bonusHealth formula_components / other en:body:n20=40%(백분율) 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "돌진효과 추가, 최대회복40% 기준 보존, 최소/최대식 계수의 합산 방지",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Sylas lunges at an enemy with magical force dealing (75/110/145/180/215 + (60% Ability Power)) magic damage. Against champions, Sylas restores between (20/40/60/80/100 + (30% Ability Power) + (5% bonus Health)) and (40/80/120/160/200 + (60% Ability Power) + (10% bonus Health)) Health based on his missing Health (max healing at or below 40% Health)."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력에 따라 최소 회복량에서 최대 회복량으로 달라지지만, 그 보간식은 tooltip에 명시되어 있지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

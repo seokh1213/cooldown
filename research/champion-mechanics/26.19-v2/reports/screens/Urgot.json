@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Urgot.E",
+      "sourceHash": "526941516c709e71f381dd91be2391e3a30a8eb79851483c9b6d786af8b35766",
+      "candidateHash": "7305af60a6dcf51b6e03630a37046deaf6d31a7466823a2687eb44906e1bb59d"
+    },
+    {
+      "id": "Urgot.P",
+      "sourceHash": "f461221f4a50444a5f80e0344e75c951ff10d6c16d4c6b7b4056db1ab6ffeb23",
+      "candidateHash": "2400f1186f245b3df2b0716081dd08c764525612ed31e6ff72d0ee2e55e6ad17"
+    },
+    {
+      "id": "Urgot.Q",
+      "sourceHash": "8506bba5288b9d79653ad2bf7e7e6bf63feebcad6bf39d0b627991e210ba8113",
+      "candidateHash": "94c1ae272f16ab032fc93dbf0f00a5b2e9d2d94acf0aadeb7eb639105dbed400"
+    },
+    {
+      "id": "Urgot.R",
+      "sourceHash": "0ac48a9e00ca1b7e5eb2d74602a68fc15ae63c1788afdc376c151b3cebdb8713",
+      "candidateHash": "c56cb69be05db86038781158004d1e3604fa2371cdedd8d3880669bb630af7e6"
+    },
+    {
+      "id": "Urgot.W",
+      "sourceHash": "413aa18635f98ffe5eaba8b5dc15d71118f0c92b5415dc3180d9dec68a197812",
+      "candidateHash": "b77ed39e3284218745d21cb57496c0e62cf5431bd0a0ad2a55ea23f958d8ece9"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Urgot.E",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Urgot charges forward, gaining (55/75/95/115/135 + (135% bonus Attack Damage) + (13.5% bonus Health)) Shield for 4 seconds.",
+      "issue": "요약 문구는 보호막을 ‘돌진 중’ 얻는다고만 하여, 보호막이 4초 동안 지속된다는 효과를 지속 시간으로 명시하지 않습니다.",
+      "correction": "돌진하며 4초 동안 보호막을 얻습니다."
+    },
+    {
+      "id": "Urgot.W",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "He Attacks them 3 times a second dealing (12 + (20/23.5/27/30.5/34% Attack Damage)) physical damage per shot.",
+      "issue": "초당 3회라는 공격 속도가 `count`로 입력되어 사격 횟수처럼 표현됩니다. 원문은 사격 1회당 피해와 초당 발사 빈도를 구분합니다.",
+      "correction": "초당 발사 빈도는 텍스트/미지원 필드로 보존하고, 사격당 피해량만 피해 효과에 연결하세요."
+    },
+    {
+      "id": "Urgot.W",
+      "path": "rules.2.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "He Attacks them 3 times a second dealing (12 + (20/23.5/27/30.5/34% Attack Damage)) physical damage per shot.",
+      "issue": "20/23.5/27/30.5/34%는 스킬 등급별 값인데 `rank_values`로 둔 반면, 같은 수치의 양끝만 `min_amount`와 `max_amount`로 별도 표현해 값의 의미가 중복·혼재합니다.",
+      "correction": "계수 전체를 등급별 값으로 일관되게 표현하고, 별도 최소·최대량 필드는 제거하세요."
+    },
+    {
+      "id": "Urgot.W",
+      "path": "rules.6.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Urgot can move while firing and has 40% Slow resistance, but loses 125 Move Speed.",
+      "issue": "효과 문구가 40% 둔화 저항을 담지 않고 ‘둔화 상태가 됩니다’라고 기술해, 원문에 없는 자기 둔화를 뜻합니다.",
+      "correction": "사격 중 둔화 저항이 40% 증가합니다."
+    },
+    {
+      "id": "Urgot.W",
+      "path": "rules.7.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Urgot can move while firing and has 40% Slow resistance, but loses 125 Move Speed.",
+      "issue": "125 이동 속도 감소가 `amount`로만 기록되어 감소값임을 알 수 없고, 구조화된 대상도 `statTo`에만 설정되어 있습니다.",
+      "correction": "이동 속도 125 감소로 기록하고, 감소량이 음수인지 또는 감소 방향을 나타내는 별도 필드인지 명시하세요."
+    }
+  ],
+  "notes": []
+}

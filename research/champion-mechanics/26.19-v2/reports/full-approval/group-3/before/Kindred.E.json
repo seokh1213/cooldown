@@ -1,0 +1,230 @@
+{
+  "summary": "적을 약화시켜 둔화시킵니다. 같은 대상을 향한 세 번째 공격이 앞선 두 공격 각각 4초 이내에 적중하면 늑대가 덮쳐 추가 물리 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "적을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred weakens an enemy, Slowing them by (30 + (5% Ability Power))for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:summary:n0"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n3"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "same_target"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "늑대가 덮쳐 추가 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred's third Attack against the target within 4 seconds of each other directs Wolf to pounce on the enemy, dealing an additional (80/110/140/170/200 + (100% bonus Attack Damage)) plus 5.5% missing Health physical damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "If Lamb attacks the target two more times, her third attack instead directs Wolf to pounce on the enemy, savaging them for massive damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "정글 몬스터에게 입히는 잃은 체력 비례 피해량이 제한됩니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Missing health damage is capped at 200 against jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "원문은 세 번째 공격과 앞선 공격 간 간격을 설명하지만, 스키마의 단일 time 조건으로 각 공격 간 4초 이내 조건을 모두 표현할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred's third Attack against the target within 4 seconds of each other"
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "피해량은 치명타 확률과 치명타 피해량에 의해 50% 효율로 증가하지만 구체적인 계산식은 제시되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage is increased by Critical Strike Chance and Damage at 50% effectiveness."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "잃은 체력 비례 피해의 기준 스탯 소유자를 허용된 stat 값으로 특정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "plus 5.5% missing Health physical damage."
+        }
+      ]
+    }
+  ]
+}

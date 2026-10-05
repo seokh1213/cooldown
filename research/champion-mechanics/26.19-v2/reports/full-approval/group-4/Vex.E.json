@@ -1,0 +1,85 @@
+{
+  "id": "Vex.E",
+  "sourceHash": "c3113f4f333e6b175adf159b35c5d4de6dc31fb0a31b765b17d27c590143622d",
+  "beforeCandidateHash": "89f50ca42a79fed1a2e80c162077087ef7dbdae4dd6a79e939a4edadb5fdbc0e",
+  "candidateHash": "e63591743baf8c2c4c17db5d3197b1af939af3ff84aa55958fa9f7952fdb51f3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "크기증가하며지정위치로가는그림자,도착시마법피해/2초둔화,적중우울,이E로처치시패시브쿨10%감소를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. summon: 벡스가 그림자를 지정 위치로 보내며, 그림자는 이동 중 커집니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 other 사건에서 summon.activation eq 그림자가 지정 위치에 도착함, target.other eq 도착한 그림자의 효과에 적중한 적 적용. target: 그림자가 지정 위치에 도착하면 적에게 마법 피해를 줍니다. (magic); amount=50/70/90/110/130  rank_values, stat_coefficient=40/45/50/55/60% caster의 abilityPower rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 other 사건에서 summon.activation eq 그림자가 지정 위치에 도착함, target.other eq 도착한 그림자의 효과에 적중한 적 적용. target: 그림자가 지정 위치에 도착하면 적을 둔화시킵니다. (slow); amount=30/35/40/45/50%  rank_values, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 벡스의 이 스킬로 적이 처치됨 적용. caster: 이 스킬로 적을 처치하면 파멸과 우울의 재사용 대기시간을 줄입니다.; amount=10%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 적중한 적에게 우울 표식을 적용합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-4",
+      "issue": "그림자도착을target영역진입으로표시하고처치를모든스킬로확대",
+      "correction": "그림자도착/적중및이E실제처치조건",
+      "sourceId": "en:body",
+      "quote": "Killing an enemy with this ability reduces Doom'n Gloom's Cooldown by 10%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

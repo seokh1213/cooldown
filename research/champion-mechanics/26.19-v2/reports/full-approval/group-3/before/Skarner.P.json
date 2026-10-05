@@ -1,0 +1,115 @@
+{
+  "summary": "스카너의 기본 공격, 부서진 대지, 지반 돌출, 꿰뚫기는 4초 동안 전율을 적용합니다. 전율이 3회 중첩된 적은 지속시간 동안 최대 체력 비례 마법 피해를 입습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "enemy"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "스카너의 기본 공격, 부서진 대지, 지반 돌출 또는 꿰뚫기가 적중하면 대상에게 전율을 4초 동안 적용한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Skarner's Attacks, Shattered Earth, Upheaval, and Impale, apply Quaking for 4s."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "전율이 3회 중첩된 적은 지속시간 동안 최대 체력 비례 마법 피해를 입는다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At 3 stacks of Quaking, enemies take (5.0% ~ 9.0%) max Health magic damage over its duration."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Skarner's Attacks, Shattered Earth, Upheaval, and Impale, apply Quaking for 4s."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "조건은 전율 중첩 수가 3회일 때지만, 스키마에 전율 중첩을 표현하는 전용 조건 필드가 없어 other 조건으로 원문을 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At 3 stacks of Quaking, enemies take (5.0% ~ 9.0%) max Health magic damage over its duration."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,444 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "피즈는 유체화 상태가 되고 모든 출처의 피해를 주문력에 비례해 감소시킵니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "피즈는 유체화 상태가 됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "모든 출처로부터 받는 피해가 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Fizz is Ghosted and takes (4 + (1% Ability Power)) reduced damage from all sources."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "W": {
+      "summary": "기본 공격은 출혈 피해를 주며, 사용 시 다음 공격을 강화합니다. 강화 공격은 처치 여부에 따라 마나 회복과 재사용 대기시간 감소 또는 일정 시간의 후속 공격 강화 효과를 적용합니다. 정글 몬스터와 구조물에는 별도의 기본 공격 효과가 적용됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "피즈의 기본 공격은 적에게 출혈을 일으켜 지속 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Fizz's Attacks cause his enemies to bleed, dealing (30/45/60/75/90 + (25% Ability Power)) magic damage over 3 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "caster",
+              "text": "피즈의 다음 기본 공격이 추가 마법 피해를 입힙니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Fizz's next Attack deals an additional (50/75/100/125/150 + (45% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "이 강화 공격이 대상을 처치하면 피즈가 마나를 돌려받습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "이 강화 공격이 대상을 처치하면 이 스킬의 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If this Attack kills its target, Fizz refunds 30/40/50/60/70 Mana and reduces the cooldown of this Ability to 1 second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "caster",
+              "text": "이 강화 공격이 대상을 처치하지 못하면 피즈의 기본 공격이 일정 시간 추가 마법 피해를 입힙니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21",
+                    "en:body:n22",
+                    "en:body:n23"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n24"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n25"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If it does not kill, Fizz's Attacks deal an additional (20/25/30/35/40 + (30% Ability Power)) magic damage for 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "정글 몬스터를 대상으로 한 기본 공격은 추가 피해를 입힙니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n26"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Attacks deal 90 bonus damage to jungle monsters."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "structure"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "기본 공격은 구조물에 감소된 피해를 입힙니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n27"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Attacks deal 50% damage to structures."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "스키마 조건 필드로 강화 공격이 대상을 처치했는지 또는 처치하지 못했는지를 표현할 수 없어, 두 결과의 조건은 effect.text에 보존했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If this Attack kills its target, Fizz refunds 30/40/50/60/70 Mana and reduces the cooldown of this Ability to 1 second."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "If it does not kill, Fizz's Attacks deal an additional (20/25/30/35/40 + (30% Ability Power)) magic damage for 5 seconds."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Fizz.W",
+      "errors": [
+        {
+          "code": "damage_type",
+          "path": "rules.4",
+          "detail": "Damage effect needs an explicit source damage type"
+        }
+      ]
+    }
+  ]
+}

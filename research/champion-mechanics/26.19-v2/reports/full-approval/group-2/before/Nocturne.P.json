@@ -1,0 +1,238 @@
+{
+  "summary": "몇 초마다 녹턴의 다음 기본 공격이 주변 적에게 추가 물리 피해를 입히고, 적중한 대상 하나당 녹턴의 체력을 회복시킵니다. 녹턴의 기본 공격은 이 효과의 재사용 대기시간을 줄이며, 적 챔피언이나 정글 몬스터를 공격하면 감소량이 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "spell_ready",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "주변 모든 적에게 공격력의 일정 비율에 해당하는 추가 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        },
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "주변 적중 대상 하나당 녹턴을 회복시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 12 seconds, Nocturne's next Attack strikes all nearby enemies for (120% Attack Damage) physical damage and restores ((13 ~ 32) + (30% Ability Power)) Health per target hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "unknown",
+          "text": "이 기본 지속 효과의 재사용 대기시간을 줄입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nocturne's Attacks reduce this Ability's Cooldown by 1 second, increased to 3 against champions and jungle monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "unknown",
+          "text": "적 챔피언을 공격하면 이 기본 지속 효과의 재사용 대기시간 감소량이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nocturne's Attacks reduce this Ability's Cooldown by 1 second, increased to 3 against champions and jungle monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "unknown",
+          "text": "정글 몬스터를 공격하면 이 기본 지속 효과의 재사용 대기시간 감소량이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nocturne's Attacks reduce this Ability's Cooldown by 1 second, increased to 3 against champions and jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "공격력의 종류가 원문에서 base, bonus, total 중 어느 범위인지 특정되지 않아 totalAttackDamage로의 매핑은 잠정적이다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(120% Attack Damage) physical damage"
+        }
+      ]
+    }
+  ]
+}

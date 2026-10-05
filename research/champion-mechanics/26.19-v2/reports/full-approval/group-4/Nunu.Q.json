@@ -1,0 +1,70 @@
+{
+  "id": "Nunu.Q",
+  "sourceHash": "f3de8ebfc33e449c1112ca6efd2adc382f424c80bbdfce0ea8b486d99366c3d9",
+  "beforeCandidateHash": "0e88956142a64247714d966745fef7430fb9f010c622be8c4bf92bc90fcac4d8",
+  "candidateHash": "aad89a432c05e1072b02c242729f5325b73056fd1965eb371663a55213835dde",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "미니언/정글 몬스터의 고정 피해와 자기 회복, 챔피언의 대체 마법 피해/회복 수식, 시전자 체력 50% 미만의 회복량 50% 증가를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq minion 적용. target: 미니언에게 고정 피해를 줍니다. (true); amount=400/600/800/1000/1200  rank_values / caster: 체력을 회복합니다.; amount=65/95/125/155/185  rank_values, stat_coefficient=10% caster의 bonusHealth formula_components, stat_coefficient=90% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq monster, target.other eq 정글 몬스터 적용. target: 정글 몬스터에게 고정 피해를 줍니다. (true); amount=400/600/800/1000/1200  rank_values / caster: 체력을 회복합니다.; amount=65/95/125/155/185  rank_values, stat_coefficient=10% caster의 bonusHealth formula_components, stat_coefficient=90% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq champion 적용. target: 챔피언에게 마법 피해를 줍니다. (magic); amount=60/100/140/180/220  rank_values, stat_coefficient=5% caster의 bonusHealth formula_components, stat_coefficient=65% caster의 abilityPower formula_components / caster: 체력을 회복합니다.; amount=39/57/75/93/111  rank_values, stat_coefficient=6% caster의 bonusHealth formula_components, stat_coefficient=54% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.health_threshold lt 50% 적용. caster: 이 스킬의 회복량이 해당 백분율만큼 증가한다.; amount=50%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2.trigger.subject",
+      "issue": "시전 행위자를 대상으로 기록",
+      "correction": "caster로 정정",
+      "sourceId": "en:body",
+      "quote": "Nunu asks Willump to take a bite of an enemy"
+    },
+    {
+      "path": "rules.1.conditions",
+      "issue": "정글 몬스터 범위가 일반 몬스터로 확대",
+      "correction": "정글 몬스터 text 조건 추가",
+      "sourceId": "en:body",
+      "quote": "when used against a minion or jungle monster"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

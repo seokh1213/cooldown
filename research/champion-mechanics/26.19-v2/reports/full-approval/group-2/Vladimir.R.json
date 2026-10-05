@@ -1,0 +1,99 @@
+{
+  "id": "Vladimir.R",
+  "sourceHash": "ac77ce8aaf58415d47ea3aa6129985474ce58484d72d9491a99e876981208dcb",
+  "beforeCandidateHash": "ac324e96f824e376a00be7daa050ee1eb8a59210645733921e0d3fc93feda81d",
+  "candidateHash": "e562f6255f2ab0d08eecabfcefea9e3aff60b782f3749cdd64aeb615dd7bed8c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "감염 적이 4초 동안 받는 모든 피해 10% 증가, 종료 시 감염 대상마다 마법 피해, 챔피언 하나 이상 적중 시 기본 회복 한 번과 추가 챔피언별 별도 회복을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 감염된 적이 받는 모든 피해를 증가시킵니다.; 수치 amount en:body:n0=10%(백분율) 상수 scalar / duration_seconds en:body:n1=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: expiry 사건의 행위자 target; 조건 target.mark present infected; target: 감염된 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n2=150,en:body:n3=250,en:body:n4=350 상수 rank_values / stat_coefficient en:body:n5=70%(백분율) caster.abilityPower scalar; flags per_target"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / caster.activation eq 혈사병 종료 피해가 챔피언을 하나 이상 맞히면 한 번 기본 회복; caster: 챔피언을 맞히면 체력을 회복합니다.; 수치 amount en:body:n6=150,en:body:n7=250,en:body:n8=350 상수 rank_values / stat_coefficient en:body:n9=70%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / target.other eq 혈사병 종료 피해를 받은 첫 챔피언을 제외한 추가 챔피언 각각; caster: 첫 챔피언 이후 추가로 맞힌 챔피언마다 체력을 추가 회복합니다.; 수치 amount en:body:n10=60,en:body:n11=100,en:body:n12=140 상수 rank_values / stat_coefficient en:body:n13=28%(백분율) caster.abilityPower scalar; flags per_target"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "회복량 150을 인원 임계값으로 잘못 참조한 두 조건과 사건 행위자 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Vladimir creates a virulent plague, causing its victims to take 10% increased damage from all sources for 4 seconds. After it expires, Vladimir deals (150/250/350 + (70% Ability Power)) magic damage to all infected targets. Vladimir restores (150/250/350 + (70% Ability Power)) Health if he hits a champion, and restores an additional (60/100/140 + (28% Ability Power)) Health for each champion beyond the first."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 633,
+      "verdict": "repaired",
+      "reason": "챔피언 하나 이상 적중 시 기본 회복으로 변경; 150 대상 수 제거."
+    },
+    {
+      "index": 634,
+      "verdict": "repaired",
+      "reason": "첫 챔피언을 제외한 추가 챔피언별 조건으로 변경; 150 대상 수 제거."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "‘champion beyond the first’는 추가 챔피언별 회복으로 기록했으나, 첫 대상 판정이 적중 순서인지 별도 집계인지 원문에서 특정하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

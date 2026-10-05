@@ -1,0 +1,854 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "제드가 체력이 절반 이하인 적을 기본 공격하면 대상 최대 체력에 비례한 마법 피해를 추가로 입힙니다. 적 챔피언에게는 같은 대상에게 일정 시간 동안 한 번만 적용됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "health_threshold",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "대상 최대 체력에 비례한 추가 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Whenever Zed Attacks an enemy below 50% Health, he deals an additional (5.0% ~ 10.0%) max Health magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "같은 적 챔피언에게 이 효과는 10초 동안 한 번만 적용됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemy champions can only be hit once every 10 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "제드와 그림자가 표창을 던집니다. 각 표창은 처음 지나치는 적에게 기본 피해를, 이후 맞히는 적에게는 더 낮은 피해를 입힙니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "표창이 처음 지나치는 적에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zed and his Shadows throw their shurikens, each dealing (80/120/160/200/240 + (100% bonus Attack Damage)) physical damage to the first enemy they pass through"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Zed and his Shadows throw their shurikens, each dealing (80/120/160/200/240 + (100% bonus Attack Damage)) physical damage to the first enemy they pass through, and (48/72/96/120/144 + (60% bonus Attack Damage)) physical damage to each additional enemy."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "표창이 처음 지나친 적 이후에 맞히는 적에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and (48/72/96/120/144 + (60% bonus Attack Damage)) physical damage to each additional enemy."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Zed and his Shadows throw their shurikens, each dealing (80/120/160/200/240 + (100% bonus Attack Damage)) physical damage to the first enemy they pass through, and (48/72/96/120/144 + (60% bonus Attack Damage)) physical damage to each additional enemy."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "W": {
+      "summary": "기본 지속 효과로 제드와 그림자가 같은 스킬로 같은 적을 맞히면 기력을 얻으며, 기력 회복은 스킬 사용마다 한 번만 가능합니다. 사용 시 그림자가 전방으로 질주해 잠시 머뭅니다. 재사용하면 제드가 그림자와 위치를 바꿉니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "same_target"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "제드와 그림자가 같은 스킬로 같은 적을 맞히면 제드가 기력을 얻습니다. 기력 회복은 스킬 사용마다 한 번만 가능합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Zed gains 30/35/40/45/50 Energy whenever he and his Shadows strike an enemy with the same Ability."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Energy can only be gained once per Ability usage."
+            },
+            {
+              "sourceId": "ko:summary",
+              "quote": "기본 지속 효과: 제드와 그림자가 같은 스킬로 동일한 대상을 공격하면 제드가 기력을 회복합니다."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "summon",
+              "text": "제드의 그림자가 전방으로 질주해 제자리에 머뭅니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Zed's Shadow dashes forward, remaining in place for 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "제드가 그림자와 위치를 바꿉니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Recasting this Ability will cause Zed to switch positions with this Shadow."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "제드와 그림자가 주위 적을 베어 물리 피해를 입힙니다. 제드의 베기에 맞은 적 챔피언마다 살아있는 그림자의 재사용 대기시간이 감소합니다. 그림자의 베기에 맞으면 둔화되며, 여러 번 맞으면 추가 피해 없이 더 강한 둔화가 적용됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "제드와 그림자가 주위 적에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zed and his Shadows slash, dealing (70/92.5/115/137.5/160 + (70% bonus Attack Damage)) physical damage to nearby enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "제드의 베기가 적 챔피언에게 맞을 때마다 살아있는 그림자의 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each enemy champion hit by Zed's slash reduces Living Shadow's Cooldown by 3 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "summon"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "그림자의 베기에 맞은 적을 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies hit by a Shadow's slash are Slowed by 20/25/30/35/40% for 1.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "summon"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_count",
+              "operator": "gt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n12"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "그림자 베기에 여러 번 맞은 적은 추가 피해를 받지 않고 더 강하게 둔화됩니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies hit by multiple slashes take no additional damage but are Slowed by 30/37.5/45/52.5/60% instead."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies hit by a Shadow's slash are Slowed by 20/25/30/35/40% for 1.5 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "그림자 베기의 중복 적중 둔화가 기본 둔화와 중첩되는 방식은 원문에 명시되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies hit by multiple slashes take no additional damage but are Slowed by 30/37.5/45/52.5/60% instead."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "제드가 대상으로 지정할 수 없는 상태가 되어 적 챔피언에게 돌진하고 표식을 남깁니다. 표식이 발동하면 공격력에 비례한 물리 피해와 표식이 활성화된 동안 제드가 대상에게 입힌 피해 일부를 가합니다. 돌진한 자리에 그림자가 남으며 재사용하면 위치를 바꿀 수 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "visibility",
+              "subject": "caster",
+              "text": "제드가 대상으로 지정할 수 없는 상태가 됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "제드가 적 챔피언에게 돌진해 표식을 남깁니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "적 챔피언에게 표식을 남깁니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zed becomes Untargetable and dashes to an enemy champion, marking them."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "표식이 발동할 때 공격력에 비례한 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "표식이 활성화된 동안 제드가 대상에게 입힌 피해 일부를 다시 입힙니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After 3 seconds, the mark triggers, dealing (100% Attack Damage) physical damage and repeating 25/40/55% of all damage dealt to the target by Zed while the mark was active."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "돌진한 자리에 그림자를 남깁니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The dash leaves a Shadow behind for 7.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "제드가 이 그림자와 위치를 바꿉니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zed can Recast this Ability to switch positions with this Shadow."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "summon"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "summon",
+              "text": "재사용 가능 시간이 끝난 뒤에도 그림자는 잠시 더 유지됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Shadow remains for an extra 1.5 seconds after the recast window ends."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "표식이 반복하는 피해의 종류와 계산 방식은 원문에서 구체적으로 특정되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "repeating 25/40/55% of all damage dealt to the target by Zed while the mark was active."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Zed.R",
+      "errors": [
+        {
+          "code": "damage_type",
+          "path": "rules.1",
+          "detail": "Damage effect needs an explicit source damage type"
+        }
+      ]
+    }
+  ]
+}

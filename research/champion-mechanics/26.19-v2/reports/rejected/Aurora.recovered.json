@@ -1,0 +1,1134 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "스킬 또는 공격으로 같은 적에게 피해를 세 번 입히면 최대 체력 비례 마법 피해를 주고 제령한다. 대상이 챔피언이면 영혼이 오로라를 따라다니며 매초 체력을 회복시킨다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "같은 적에게 누적 적중 횟수가 조건에 도달하면 최대 체력 비례 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Damaging an enemy 3 times with Abilities or Attacks exorcises them, dealing (1% + (2.7% per 100 Ability Power)) max Health magic damage"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "제령된 영혼이 오로라를 따라다닌다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "영혼이 따라다니는 동안 매초 체력을 회복한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "if the enemy is a champion, frees a spirit that follows Aurora for 4 seconds, restoring her Health for ((3 ~ 20) + (2% Ability Power)) every second."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "적중 누적 횟수가 어떤 시점에서 초기화되는지는 툴팁에 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Damaging an enemy 3 times with Abilities or Attacks exorcises them"
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "summary": "저주 에너지를 발사해 적에게 피해를 주고 저주를 건다. 재사용하거나 지속시간이 끝나면 저주를 끝내고 영혼을 끌어당겨 경로상의 적에게 잃은 체력에 비례하는 피해를 준다. 재사용 피해는 첫 적중 이후 감소하며 미니언과 몬스터에게는 피해량이 감소한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "발사체가 적중한 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Fire cursed energy in a direction, dealing (45/70/95/120/145 + (40% Ability Power)) magic damage to enemies"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "적중한 적에게 저주를 건다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and cursing them for 3.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "재사용하면 저주를 끝내고 적의 영혼 일부를 오로라에게 끌어당긴다. 끌어당기는 경로에 있는 적에게 잃은 체력에 비례해 최대 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Recast: End the curse, drawing back part of the enemy's spirit to Aurora, dealing up to (67.5/105/142.5/180/217.5 + (60% Ability Power)) magic damage to enemies passed through based on their missing Health."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "재사용 피해의 첫 적중 이후 피해량이 감소한다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Damage beyond the first hit is reduced to 20%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "재사용 피해는 미니언에게 감소한 비율로 적용된다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Recast deals 40% damage to minions and monsters."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "재사용 피해는 몬스터에게 감소한 비율로 적용된다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Recast deals 40% damage to minions and monsters."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "unknown"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "저주 지속시간이 끝나면 자동으로 재사용한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the duration runs out, Aurora will automatically Recast the Ability."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "잃은 체력에 따른 피해 비례식이 툴팁에 구체적으로 제시되지 않아 수식으로 확정할 수 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "based on their missing Health."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "저주 표식이 있는 대상만 재사용 피해를 받는지 여부는 명시되지 않았다. 재사용 피해는 툴팁의 경로상 적을 대상으로 보존했다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing up to (67.5/105/142.5/180/217.5 + (60% Ability Power)) magic damage to enemies passed through based on their missing Health."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "지정한 방향으로 도약한다. 착지 시 영혼 세계에 들어가 투명해지고 이동 속도가 증가한다. 적 챔피언 처치 관여 시 재사용 대기시간이 초기화된다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "지정한 방향으로 도약한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hop in a direction."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "visibility",
+              "subject": "caster",
+              "text": "착지 시 영혼 세계에 들어가 투명해진다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "착지 시 세계를 넘나드는 자가 되어 이동 속도가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Upon landing, enter the spirit realm, becoming Invisible for 1/1.15/1.3/1.45/1.6 seconds and entering Realm Hopper, gaining 20/25/30/35/40% Move Speed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "takedown",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "적 챔피언 처치 관여 시 이 스킬의 재사용 대기시간을 초기화한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Scoring a takedown on an enemy champion resets this Ability's Cooldown."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "이동 속도 증가 지속시간은 툴팁에 제시되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "entering Realm Hopper, gaining 20/25/30/35/40% Move Speed."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "착지 시 영혼 세계 진입 및 이동 속도 증가 효과의 정확한 발동 시점은 착지로 명시되지만, 내부 적용 순서는 불명확하다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Upon landing, enter the spirit realm, becoming Invisible for 1/1.15/1.3/1.45/1.6 seconds and entering Realm Hopper, gaining 20/25/30/35/40% Move Speed."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "영혼 마법을 발사해 범위 내 적에게 마법 피해와 감소하는 둔화를 적용한 뒤 오로라가 뒤로 도약한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "범위 내 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Converge the realms, sending out a blast of spirit magic dealing (80/120/160/200/240 + (70% Ability Power)) magic damage to enemies in the area"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "범위 내 적을 둔화시키며 둔화 효과는 지속시간에 걸쳐 감소한다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Slowing them by 80% decaying over 1 second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "시전 후 뒤로 짧은 거리를 도약한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Aurora hops backwards a short distance after casting."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "도약해 착지하면서 영혼 에너지 파동으로 적중한 적에게 마법 피해와 둔화를 적용하고 융합 영역을 만든다. 영역은 적이 드나들려 할 때 추가 둔화를 주며, 오로라는 영역의 한쪽 가장자리에서 다른 쪽으로 점프할 수 있다. 재사용하면 효과를 일찍 끝낸다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "지정한 방향으로 도약한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Leap in a direction."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "착지 시 방출하는 파동에 적중한 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "파동에 적중한 적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Upon landing, Aurora converges the realms, sending out a pulse of spirit energy that deals (175/275/375 + (70% Ability Power)) magic damage and Slows enemies hit by 30% for 2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "unknown",
+              "text": "융합 영역이 일정 시간 유지된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "융합 영역이 활성화된 동안 세계를 넘나드는 자가 되어 영역의 한쪽 가장자리에서 다른 쪽으로 점프할 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The area of convergence stays active for 3/3.5/4 seconds, granting Aurora Realm Hopper for 3.5/4.25/5 seconds, allowing her to jump from one edge of the area to another."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "enemy"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "영역에 들어가려는 적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies attempting to enter or leave the area are Slowed by 50% for 1.5/1.75/2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "leave_vision",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "영역을 나가려 함"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "영역을 나가려는 적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies attempting to enter or leave the area are Slowed by 50% for 1.5/1.75/2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "재사용하면 효과를 일찍 종료한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Aurora can Recast this Ability to end the effect early."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "영역 가장자리 점프가 어떤 입력이나 조건으로 발동하는지는 툴팁에 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "allowing her to jump from one edge of the area to another."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "영역 자체의 효과 및 오로라의 Realm Hopper 적용이 영역 생성 순간부터 시작하는지 별도 시점인지 명시되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The area of convergence stays active for 3/3.5/4 seconds, granting Aurora Realm Hopper for 3.5/4.25/5 seconds"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Aurora.P",
+      "errors": [
+        {
+          "code": "number_evidence",
+          "path": "rules.1",
+          "detail": "Number reference lacks quoted evidence: en:body:n0"
+        }
+      ]
+    }
+  ]
+}

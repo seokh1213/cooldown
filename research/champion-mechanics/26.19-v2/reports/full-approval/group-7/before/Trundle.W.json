@@ -1,0 +1,140 @@
+{
+  "summary": "트런들이 일정 시간 동안 지역을 얼립니다. 트런들이 그 안에 있는 동안 이동 속도, 공격 속도, 회복량이 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "목표 지점의 일정 지역을 얼립니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Trundle freezes an area for 8 seconds. While inside he gains 20/28/36/44/52% Move Speed, 30/50/70/90/110% Attack Speed, and 25% increased healing."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "얼린 지역 안에 있는 동안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "공격 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "모든 출처로부터 받는 회복량이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Trundle freezes an area for 8 seconds. While inside he gains 20/28/36/44/52% Move Speed, 30/50/70/90/110% Attack Speed, and 25% increased healing."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

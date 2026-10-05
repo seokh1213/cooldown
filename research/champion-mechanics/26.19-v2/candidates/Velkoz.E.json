@@ -1,0 +1,177 @@
+{
+  "summary": "벨코즈가 가까운 범위를 폭발시켜 적에게 마법 피해를 입힙니다. 적은 공중으로 띄워지며, 벨코즈와 가까운 적은 대신 뒤로 밀려납니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "벨코즈와 가까운 범위 밖에서 이 스킬에 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "폭발로 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적을 공중으로 띄웁니다.",
+          "damageType": null,
+          "crowdControl": "knockup",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vel'Koz disrupts a nearby area, causing it to explode, Knocking Up for 0.75 seconds and dealing (70/100/130/160/190 + (30% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies close to Vel'Koz will be Knocked Back instead of Knocked Up."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "벨코즈와 가까운 범위에서 이 스킬에 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "폭발로 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "공중으로 띄우는 대신 뒤로 밀어냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vel'Koz disrupts a nearby area, causing it to explode, Knocking Up for 0.75 seconds and dealing (70/100/130/160/190 + (30% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies close to Vel'Koz will be Knocked Back instead of Knocked Up."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "툴팁은 ‘close’ 조건을 명시하지만 그 거리 기준을 수치로 제시하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies close to Vel'Koz will be Knocked Back instead of Knocked Up."
+        }
+      ]
+    }
+  ]
+}

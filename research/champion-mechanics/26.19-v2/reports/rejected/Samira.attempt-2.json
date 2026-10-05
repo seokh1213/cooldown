@@ -1,0 +1,1144 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "적 챔피언에게 직전과 다른 공격 또는 스킬로 피해를 입히면 스타일 콤보를 쌓습니다. 스타일 등급마다 이동 속도를 얻고, 근접 사거리에서 공격하거나 스킬을 사용하면 대상의 잃은 체력에 따라 증가하는 추가 마법 피해를 줍니다. 이동 불가 효과를 받는 적을 기본 공격하면 사거리까지 돌진하며, 대상이 공중에 뜬 상태라면 함께 공중에 띄웁니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "followup_status",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "same_target"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "스타일 콤보를 한 단계 쌓는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira builds a combo by dealing damage with Attacks or Abilities against enemy champions unique from the previous one."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Each one increases her Style, from \"E\" to \"S\" grade (6 total)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "caster",
+              "text": "스타일은 E부터 S까지 총 단계로 표시된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "스타일 등급마다 이동 속도가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each one increases her Style, from \"E\" to \"S\" grade (6 total). Samira gains (2.8% ~ 3.5%) Move Speed per grade."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "distance",
+              "operator": "lte",
+              "value": {
+                "kind": "text",
+                "value": "근접 사거리"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "근접 사거리에서 공격 또는 스킬로 적중하면 추가 마법 피해를 준다. 피해는 대상의 잃은 체력에 따라 증가한다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira's Attacks and Abilities in melee range deal an additional ((2 ~ 19) + ((3.5% ~ 10.5%) Attack Damage)) magic damage, increased up to ((4 ~ 38) + ((7% ~ 21%) Attack Damage)) based on the target's missing Health."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "enum",
+                "value": "immobilized"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "대상을 공격하면 대상의 공격 사거리까지 돌진한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira's Attacks against enemies affected by Immobilizing effects will dash her to her Attack Range."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "enum",
+                "value": "immobilized"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "Knocked Up"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "대상을 최소 지속 시간 동안 공중에 띄운다.",
+              "damageType": null,
+              "crowdControl": "knockup",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the enemy is Knocked Up, she also keeps them Knocked Up for at least 0.5 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "잃은 체력에 따른 피해 증가식과 중간 피해량은 원문에 명시되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "increased up to ((4 ~ 38) + ((7% ~ 21%) Attack Damage)) based on the target's missing Health."
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "summary": "총을 쏘거나 근접 사거리의 적에게 검을 휘둘러 물리 피해를 줍니다. 총은 처음 맞은 적을 대상으로 합니다. 두 공격 모두 치명타가 가능하고 생명력 흡수가 적용됩니다. 거침없는 질주 도중 시전하면 돌진 완료 시 경로의 모든 적을 공격합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "distance",
+              "operator": "gt",
+              "value": {
+                "kind": "text",
+                "value": "근접 사거리"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "총을 발사해 처음 맞은 적에게 물리 피해를 준다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira fires a shot, dealing (0/5/10/15/20 + (110% Attack Damage)) physical damage to the first enemy hit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "distance",
+              "operator": "lte",
+              "value": {
+                "kind": "text",
+                "value": "근접 사거리"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "검으로 베어 물리 피해를 준다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If this Ability is cast towards an enemy in melee range, Samira will instead slash with her sword, dealing (0/5/10/15/20 + (110% Attack Damage)) physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "Q의 총 또는 검 공격 적중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "치명타가 적용되면 피해량은 기본 피해 계산식에 치명타 배율을 적용한 값이 된다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n18",
+                    "en:body:n19"
+                  ],
+                  "stat": "critDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": [
+                "replace_input"
+              ]
+            },
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "생명력 흡수가 100% 효율로 적용된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Either hit can critically strike for (0/5/10/15/20 + (110% Attack Damage)) × (0.5 + 50% Critical Strike Damage) damage and applies Life Steal at 100% effectiveness."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "거침없는 질주 중 시전"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "돌진 완료 시 경로에 있는 모든 적을 공격한다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If cast during Wild Rush, Samira will strike all enemies in her path upon completion."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "W": {
+      "summary": "주변을 일정 시간 검으로 휘둘러 적에게 두 번 물리 피해를 주며, 범위에 들어오는 적 투사체를 파괴합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "주변 적에게 두 번 각각 물리 피해를 준다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira slashes around her for 0.75 seconds, damaging enemies twice for (20/35/50/65/80 + (50% bonus Attack Damage)) physical damage each and destroying any enemy missiles that enter the area."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "적 투사체가 범위에 진입"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "enemy",
+              "text": "범위에 들어오는 적 투사체를 파괴한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "destroying any enemy missiles that enter the area."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "적 또는 구조물을 통과해 돌진하며, 통과하는 적을 베어 마법 피해를 주고 공격 속도를 얻습니다. 사미라가 피해를 준 적 챔피언이 정해진 시간 안에 처치되면 이 스킬의 재사용 대기시간이 초기화됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "대상을 통과해 돌진한다. 적과 구조물을 대상으로 할 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira dashes through an enemy (including structures)"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "돌진 중 통과"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "돌진 중 통과하는 적을 베어 마법 피해를 준다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira dashes through an enemy (including structures), slashing enemies she passes through dealing (50/60/70/80/90 + (20% bonus Attack Damage)) magic damage and gaining 20/25/30/35/40% Attack Speed for 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 속도가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira dashes through an enemy (including structures), slashing enemies she passes through dealing (50/60/70/80/90 + (20% bonus Attack Damage)) magic damage and gaining 20/25/30/35/40% Attack Speed for 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n12"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "사미라가 피해를 준 대상"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "이 스킬의 재사용 대기시간을 초기화한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If an enemy champion is killed within 3 seconds of Samira damaging them, This Ability's Cooldown is reset."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "스타일 등급이 S일 때만 사용할 수 있으며 시전하면 스타일 등급을 모두 소모합니다. 주변의 모든 적에게 일정 시간 동안 여러 발을 발사해 각각 물리 피해를 줍니다. 생명력 흡수가 적용되고 치명타가 가능하며, 미니언에게는 피해가 감소합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "S 등급 스타일"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "주변의 모든 적에게 정해진 횟수만큼 발사해 각 사격마다 물리 피해를 준다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Samira can only use this Ability if her current Style rating is S. Using this Ability consumes all Style rating. Samira unleashes a torrent of shots from her weapons, wildly shooting all enemies surrounding her 10 times over 2 seconds, each shot dealing (20/40/60 + (30% Attack Damage)) physical damage and applying Life Steal at 100% effectiveness."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "S 등급 스타일"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "시전하면 보유한 스타일 등급을 모두 소모한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Using this Ability consumes all Style rating."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "R의 각 사격 적중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "생명력 흡수가 100% 효율로 적용된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "각 사격은 치명타가 적용될 수 있다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each shot can also critically strike."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Samira unleashes a torrent of shots from her weapons, wildly shooting all enemies surrounding her 10 times over 2 seconds, each shot dealing (20/40/60 + (30% Attack Damage)) physical damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Samira unleashes a torrent of shots from her weapons, wildly shooting all enemies surrounding her 10 times over 2 seconds, each shot dealing (20/40/60 + (30% Attack Damage)) physical damage and applying Life Steal at 100% effectiveness."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "기본 피해량의 일정 비율만큼 피해를 준다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability deals 25% damage to minions."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  },
+  "failures": [
+    {
+      "id": "Samira.R",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.2.evidence.1",
+          "detail": "Quote is not an exact source substring"
+        }
+      ]
+    }
+  ]
+}

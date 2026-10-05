@@ -1,0 +1,102 @@
+{
+  "id": "Malzahar.R",
+  "sourceHash": "f9e254876ee92e3bfbac649564564b7828dadeea6457764287159ff59ac46138",
+  "beforeCandidateHash": "65c6d5ca4749d077786317d2fde9a4920febc2fa26036170d3cc0e27b0528ae0",
+  "candidateHash": "39fe377b1f56f91999c085a8cc220c6fdbe4c9b89a4940977abd9c09b0c43db8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "적챔피언2.5초제압/마법피해,주변지대5초최대체력복합마법,적knockdown범위미명시를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; target: 적 챔피언을 제압합니다. [suppression]; 수치 duration_seconds en:body:n4=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; target: 제압한 적 챔피언에게 지속 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=125,en:body:n1=200,en:body:n2=275 상수 rank_values / stat_coefficient en:body:n3=80%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n4=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; nearby_enemies: 대상 주변 지대 내부 적에게5초동안 (10/15/20% + 주문력100당2.5%) × 최대체력 마법피해를 줍니다. 최대체력 소유자는 원문에 미명시입니다. [magic]; 수치 ratio_output en:body:n5=10(백분율),en:body:n6=15(백분율),en:body:n7=20%(백분율) unknown.maxHealth formula_components / stat_coefficient en:body:n8=2.5%(백분율) caster.abilityPower formula_components / ratio_input en:body:n9=100 caster.abilityPower formula_components / duration_seconds en:body:n10=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; enemy: 적을 쓰러뜨립니다. [knockdown]; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "주문력100입력을대상maxHealth로참조한오류와최대체력곱요소누락 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Malzahar Suppresses an enemy champion and deals (125/200/275 + (80% Ability Power)) magic damage over 2.5 seconds. A zone of negative energy is created around his target dealing (10/15/20% + (2.5% per 100 Ability Power)) max Health magic damage over 5 seconds. This Ability Knocks Down enemies."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 276,
+      "verdict": "repaired",
+      "reason": "랭크비율을maxHealth미명시소유자의비율요소로보존,AP100입력분리."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "최대체력 × (랭크비율+주문력100당2.5%) 복합식이며최대체력소유자는미명시; 독립선형피해항으로합산하지않음.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "황천의 지대 범위와 내부 적을 판정하는 조건이 구체적으로 설명되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "쓰러뜨리는 효과의 적용 대상 범위가 본문에서 구체적으로 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

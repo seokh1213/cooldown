@@ -1,0 +1,86 @@
+{
+  "id": "TwistedFate.E",
+  "sourceHash": "8cdc24cfba991f35cd2ff1fefe25625c0ce768a1d36d8865475ab60831307fcc",
+  "beforeCandidateHash": "ba26e220edfc98423da34ea0b094d3ef1a489e517f9ae3ff3879fca9986e297c",
+  "candidateHash": "a6d514d649716c6df9846e4a712fc5249a673bbac18a6d8cb820f33a052204da",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "공격 속도 상승, 매 네 번째 공격의 추가 피해와 구조물 절반 효율을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격 속도 15/25/35/45/55%를 확인하고 모든 순위의 단위를 명시했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "매 네 번째 기본 공격마다 65/90/115/140/165 + 추가 공격력 20% + 주문력 40% 추가 마법 피해를 확인했다. 단회 hit_count 4를 반복 주기로 바꿨다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 주기의 구조물 추가 피해는 50% 효율이다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "퍼센트 배열의 앞 항목 단위를 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Twisted Fate gains 15/25/35/45/55% Attack Speed and every 4th Attack deals an additional (65/90/115/140/165 + (20% bonus Attack Damage) + (40% Ability Power)) magic damage. 50% effective against structures."
+    },
+    {
+      "path": "rules.1.conditions.0.field",
+      "issue": "every 4th Attack는 매 네 번째 반복 주기다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Twisted Fate gains 15/25/35/45/55% Attack Speed and every 4th Attack deals an additional (65/90/115/140/165 + (20% bonus Attack Damage) + (40% Ability Power)) magic damage. 50% effective against structures."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 556,
+      "verdict": "repaired",
+      "reason": "두 피해 분기의 조건을 매 네 번째 기본 공격마다 반복하는 조건으로 바꿨다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "공격 속도 15/25/35/45/55% 앞 항목은 frozen percent=false지만 실제로 모든 항목이 퍼센트다. lexical 숫자표만으로 단위를 실행하지 말 것."
+    }
+  ],
+  "validation": {
+    "id": "TwistedFate.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

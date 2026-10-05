@@ -1,0 +1,211 @@
+{
+  "summary": "주기적으로 또는 담대함 공격 적중 시 충전을 얻습니다. 사용하면 모든 충전을 소모해 근처 아군 챔피언을 충전당 회복시킵니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "충전을 얻습니다. 보유 가능한 최대 충전 수는 스킬 단계에 따라 달라집니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Gain a stack (max 1/2/3/4/5) every 15 seconds and when hitting a Bravado Attack."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "담대함으로 강화된 공격이 적중하면 충전을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Gain a stack (max 1/2/3/4/5) every 15 seconds and when hitting a Bravado Attack."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "보유한 모든 충전을 소모합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "근처 아군 챔피언을 충전당 회복시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "unknown",
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Consume all stacks to restore (25 + (15% Ability Power) + (1% Health)) Health per stack to nearby ally champions ((25/50/75/100/125 + (15/30/45/60/75% Ability Power) + (1/2/3/4/5% Health)) at 1/2/3/4/5 stacks)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Gain a stack (max 1/2/3/4/5) every 15 seconds and when hitting a Bravado Attack."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "회복식의 Ability Power 소유자는 원문에서 특정되지 않아 unknown으로 기록했습니다. Health의 의미와 소유자도 특정되지 않아 통계 종류와 소유자를 확정하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(25 + (15% Ability Power) + (1% Health)) Health per stack"
+        }
+      ]
+    }
+  ]
+}

@@ -22,6 +22,7 @@ import { translateRatioStat, translateTag } from "./promptLocale";
 import { labelSlots } from "./slotLabels";
 import { josa } from "@/lib/knowledge/text";
 import { controlHeading } from "@/lib/knowledge/crowdControl";
+import { comboDigest } from "./comboNotes";
 
 interface ProseWords {
   /** "{champion}의 {label}입니다." 처럼 값 하나를 알리는 말 */
@@ -558,6 +559,7 @@ function expandLine(line: string, fullOf: Map<string, string>, name: string | un
  */
 function championDigest(answer: Extract<AdvisorAnswer, { kind: "champion" }>, lang: Language): string {
   const notes = answer.notes;
+  if (notes?.topic === "combo") return comboDigest(answer.card.name, notes, lang);
   if (!notes || (!notes.playing.length && !notes.against.length)) return "";
   const heading = DIGEST_HEADINGS[lang] ?? DIGEST_HEADINGS.ko_KR;
   const block = (title: string, lines: string[], size: number) =>

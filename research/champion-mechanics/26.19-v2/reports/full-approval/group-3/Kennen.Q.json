@@ -1,0 +1,63 @@
+{
+  "id": "Kennen.Q",
+  "sourceHash": "d1b24e9963521a23636d6fc289289ccbbed148e10afc8d3f69e4a2070d1ec7f8",
+  "beforeCandidateHash": "780009a36aa2340993fa04942636c7d257f16b43be27ae0c0c5716f97dbd3e37",
+  "candidateHash": "9e7add27071166081c9ca016607368c9411fe5ba1aea2d5f1606a1a640c1c76b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "케넨수리검시전·첫적75~275+자기AP75%마법피해및요약의폭풍표식을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 수리검을 던집니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first → target: 처음 적중한 적에게 마법 피해를 입힙니다. [magic] / amount=75/125/175/225/275 [rank_values]; stat_coefficient=75% (caster abilityPower) [formula_components] | target: 처음 맞은 적에게 폭풍의 표식을 남긴다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.subject",
+      "issue": "투척행위주체unknown",
+      "correction": "caster",
+      "sourceId": "en:body",
+      "quote": "Kennen throws a shuriken"
+    },
+    {
+      "path": "rules.1.effects",
+      "issue": "요약폭풍표식적용규칙누락",
+      "correction": "표식효과복구",
+      "sourceId": "en:summary",
+      "quote": "adding a Mark of the Storm"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 198,
+      "verdict": "repaired",
+      "reason": "수리검을던지는효과의주체를caster로수정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

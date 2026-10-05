@@ -1,0 +1,42 @@
+{
+  "id": "Soraka.Q",
+  "sourceHash": "61e1ab71e2de86b9bd9a109ec4b8a3a8071a74b80b01c6b9c55ddf50b4fa02cb",
+  "beforeCandidateHash": "e2356a874286dfe313c0a60cc797f4c209fddd2bfa93f3ef5d66ea3663e48be5",
+  "candidateHash": "0f2e47122982ffee97d525b727b5f9ab29b92439355bf37dafa369a29f6b6d71",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "지정 위치 적의마법 피해85~225+AP35%와30%1.5초둔화,적챔피언적중 시자기별의가호/2.5초회복60~120+AP30%/20~30%감쇠이속을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. enemy damage magic: 별이 떨어진 위치의 적에게 마법 피해를 입힌다. [amount n0=85/n1=120/n2=155/n3=190/n4=225 rank_values; stat_coefficient n5=35% scalar caster.abilityPower] / enemy crowd_control slow: 적을 1.5초 동안 30% 둔화시킨다. [amount n6=30% scalar; duration_seconds n7=1.5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; target.other eq 이 별부름에 적중한 적 챔피언. caster heal: 별의 가호로 2.5초에 걸쳐 체력을 회복한다. [amount n8=60/n9=75/n10=90/n11=105/n12=120 rank_values; stat_coefficient n13=30% scalar caster.abilityPower; duration_seconds n14=2.5 scalar] / caster stat_modifier: 같은 2.5초 동안 이동 속도가 증가하며 점차 감소한다. [amount n15=20%/n16=22.5%/n17=25%/n18=27.5%/n19=30% rank_values; duration_seconds n14=2.5 scalar] flags=decays / caster mark: 별부름이 적 챔피언에게 적중하여 소라카가 별의 가호를 얻는다. 그 회복과 감쇠 이동 속도 효과는2.5초에 걸쳐 적용된다. [duration_seconds n14=2.5 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.trigger,conditions,effects.2",
+      "issue": "챔피언 적중 행위자target과임의챔피언적중으로 회복,별의가호 부여 상태 누락",
+      "correction": "이 별부름의적챔피언적중으로 제한하고 별의가호 상태를 별도 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Hitting an enemy champion grants Soraka Rejuvenation, which restores (60/75/90/105/120 + (30% Ability Power)) Health over 2.5 seconds and grants 20/22.5/25/27.5/30% Move Speed decaying over the same duration."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "Shen.W",
+  "sourceHash": "d6347af5b91f7e52a53167da8a84118e9fa0b4ae7ab2b7fe3f79cdeef061bc34",
+  "beforeCandidateHash": "3145735351a6afee1c1b5be2915da177534a0314609a84a8e3fa7992762886af",
+  "candidateHash": "e70d7f8f85782dc084e9a213ff7170de0e259c95f027a98c8e4f453cf0d8558e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "기의검위치1.75초보호결계,내부본인/아군챔피언기본공격차단,시작시보호챔피언없으면최대2초대기를대조했다.2초는챔피언수조건이아니다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast → ally: 기의검위치에 활성화 후1.75초 지속되는 결계를 만들고 내부의 쉔 본인 및 아군챔피언에게 향하는 기본공격을 차단합니다. 보호할 챔피언이 없으면 아래 대기조건을 따릅니다. / duration_seconds=1.75 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 ally other present 영역 시작 시 보호할 챔피언이 없음 → ally: 결계 시작시 보호할 챔피언이 없으면 활성화가 최대2초 대기합니다. / duration_seconds=2 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions.0",
+      "issue": "활성대기시간2초를아군챔피언수2명조건으로지정했다.",
+      "correction": "잘못된entity_count조건삭제후챔피언없을때최대2초대기를보존했다.",
+      "sourceId": "en:body",
+      "quote": "If there are no champions to protect in the zone when it starts, it will wait for up to 2 seconds."
+    },
+    {
+      "path": "rules.0",
+      "issue": "요약의본인공격차단과대기후활성지속시간의연결이불명확했다.",
+      "correction": "쉔본인포함/활성후1.75초결계를명시했다.",
+      "sourceId": "en:summary",
+      "quote": "Attacks that would hit Shen or his allies near his spirit blade are blocked."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

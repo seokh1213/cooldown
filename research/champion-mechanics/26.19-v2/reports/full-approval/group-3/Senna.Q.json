@@ -1,0 +1,112 @@
+{
+  "id": "Senna.Q",
+  "sourceHash": "4fe3da36fd2d8217ac643dc4985811e0ae134b7a18c7eb381b20c0d2f9a0652b",
+  "beforeCandidateHash": "5a21c046031a9d1ddf6e0ec71a74f9f79ce9207b89e16af7caf1504e6b6903e0",
+  "candidateHash": "4940dea8f15802ce73e0dad7171403a7e6f47c6e37347ac7d849c50bd8bc9f6f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 0,
+  "summaryCheck": "관통스킬의모든적물리피해/복합둔화·아군챔피언회복·공격쿨다운1초감소·공격사거리일치/AS시전개선·모든대상지정·적챔피언onhit를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → enemy: 적에게 물리 피해를 준다. [physical] / amount=30/55/80/105/130 [rank_values]; stat_coefficient=60% (caster bonusAttackDamage) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → enemy: 적을15% + 자신의AP100당7% + 자신의추가AD0.15%만큼 둔화시킨다. AP항은100당계수다. [slow] / amount=15% [scalar]; stat_coefficient=7% (caster abilityPower) [formula_components]; ratio_input=100 (caster abilityPower) [formula_components]; stat_coefficient=0.15% (caster bonusAttackDamage) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → enemy: 적 둔화 효과를 일정 시간 적용한다. [slow] / duration_seconds=1/1.25/1.5/1.75/2 [rank_values]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 ally target_type eq champion → ally: 아군 챔피언의 체력을 회복시킨다. / amount=40/60/80/100/120 [rank_values]; stat_coefficient=35% (caster abilityPower) [scalar]; stat_coefficient=40% (caster bonusAttackDamage) [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack → caster: 기본 공격이 이 스킬의 재사용 대기시간을 줄인다. / cooldown_seconds=1 [scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 시전 사거리는 자신의 공격 사거리와 같고 시전 시간은 자신의 공격 속도 증가로 개선된다. 무엇이든 시전 대상으로 지정할 수 있다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 enemy target_type eq champion → enemy: 적 챔피언에게 적중 시 효과를 적용한다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "피해/둔화대상을미니언으로제한및적관계미표현",
+      "correction": "관통적중모든적으로수정",
+      "sourceId": "en:body",
+      "quote": "physical damage to enemies and Slowing them"
+    },
+    {
+      "path": "rules.5",
+      "issue": "실제시전메커니즘/onhit가unknown UI효과에묶임",
+      "correction": "시전자시전속성및적챔피언onhit규칙으로분리",
+      "sourceId": "en:body",
+      "quote": "It can target anything and applies on-hit effects to enemy champions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 437,
+      "verdict": "repaired",
+      "reason": "미니언조건을삭제하고관통피해·둔화대상을모든적으로수정했다."
+    },
+    {
+      "index": 438,
+      "verdict": "repaired",
+      "reason": "damage.subject=enemy로아군피해적용을제거했다."
+    },
+    {
+      "index": 439,
+      "verdict": "repaired",
+      "reason": "둔화subject=enemy로관계와대상범위를수정했다."
+    },
+    {
+      "index": 440,
+      "verdict": "false_positive",
+      "reason": "원문은35%AbilityPower이고숫자참조35%/percent=true,자신AP계수35%와일치한다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

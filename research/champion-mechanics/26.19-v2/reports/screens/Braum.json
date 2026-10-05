@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Braum.E",
+      "sourceHash": "96c6dd7efe5b2228a8d6dbfd153d9f5fb6e2a3074ed90ec79532efd319ffb321",
+      "candidateHash": "75b750dfa9ad07852f2ea617b424164af8fc0eb3f50c512555e32054f735570a"
+    },
+    {
+      "id": "Braum.Q",
+      "sourceHash": "48ac59bcbef384726b55400dd790ba297bec20b6b665b5f1db66e35a6f5ba765",
+      "candidateHash": "6becf3a14f59c7237f870b6af1030a4b745c1083a88ffb7ebb87a96361ea74ee"
+    },
+    {
+      "id": "Braum.W",
+      "sourceHash": "d85b8cf5054c862b98d8ab3deaf1a024604d8570f751e641661880063d303bad",
+      "candidateHash": "5407384ec1e393479a499309192e4e094b3e5f7d8ec6836352aa2ec16943241a"
+    },
+    {
+      "id": "Braum.P",
+      "sourceHash": "87fd882715be2fb0e2894937a25bd9f6784bcc98e0708551bee73a2ad083eed8",
+      "candidateHash": "f302e90c53f4f25c60eace84f30846b7a3a70ca4a33eaf3ea2db5f913f57abe4"
+    },
+    {
+      "id": "Braum.R",
+      "sourceHash": "aa12a6fc653fc1f64a88d1521a9f62baac946023cc55ea7bb7c376218fd76874",
+      "candidateHash": "f10f1e7fd23d68796d62ce3a03fc0a34c72c877272f17baea9d962ca5710ed23"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Braum.R",
+      "path": "rules.3.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Braum slams the ground sending forth a fissure that Knocks Up enemies in its path and nearby Braum",
+      "issue": "근처 적을 띄우는 효과를 `other` 이벤트에 연결해, 적중 이벤트 없이 발생하는 별도 발동처럼 표현했습니다.",
+      "correction": "균열 경로의 적중과 함께 브라움 근처 적도 띄워지는 효과로 기록하세요."
+    },
+    {
+      "id": "Braum.R",
+      "path": "rules.4.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The fissure also creates a zone for 4 seconds, that Slows by 40/50/60%.",
+      "issue": "둔화 구역 생성 효과를 `other` 이벤트에 연결해 시전과 무관한 별도 발동처럼 표현했습니다.",
+      "correction": "시전으로 균열이 생성될 때 4초 동안 지속되는 둔화 구역이 생긴다고 기록하세요."
+    }
+  ],
+  "notes": []
+}

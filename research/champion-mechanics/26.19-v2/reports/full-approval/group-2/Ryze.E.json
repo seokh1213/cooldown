@@ -1,0 +1,71 @@
+{
+  "id": "Ryze.E",
+  "sourceHash": "44963a5466e3d570e53a441d0ed41e2121fda8b38744dbbc69302f4911d85d8f",
+  "beforeCandidateHash": "132d71a9a64cf41e3d3d5ed1042d51d6fb3e0f3f9dd9a95679b381dabc481d2b",
+  "candidateHash": "8284dcd22fcd9bf0fec18fcb4f79aa4c9928d579008ab67761f98555d85d432b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "대상60~180+50%AP+2%보너스마나마법; 대상과주변4초Flux; 기존Flux에E적용시 추가전파 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 구체가 대상에게 마법 피해를 입힌다. [magic]; 수치 amount en:body:n0=60,en:body:n1=90,en:body:n2=120,en:body:n3=150,en:body:n4=180 상수 rank_values / stat_coefficient en:body:n5=50%(백분율) caster.abilityPower scalar / stat_coefficient en:body:n6=2%(백분율) caster.bonusMana scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; target: 대상에게 전이 표식을4초 적용합니다.; 수치 duration_seconds en:body:n7=4 상수 scalar; flags 없음 | nearby_enemies: 대상 주변 적들에게도 전이 표식을4초 적용합니다.; 수치 duration_seconds en:body:n7=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.mark eq 이 E 적용 전에 이미 전이(Flux) 표식이 있음; nearby_enemies: 이미 전이에 걸린 적에게 이 E를 적용하면 전이 표식이 더 멀리 퍼집니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "표식 받는대상과주변 분리·행위자 교정·이미표식 상태 추가전파를 무조건지속passive로 해석한 오류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Ryze fires an orb, dealing (60/90/120/150/180 + (50% Ability Power) + (2% bonus Mana)) magic damage and applies Flux for 4 seconds to the target and nearby enemies. Enemies already afflicted with Flux will cause it to spread further."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "기본주변범위와 기존Flux로 더퍼지는 거리/전파 단계는 원문에 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

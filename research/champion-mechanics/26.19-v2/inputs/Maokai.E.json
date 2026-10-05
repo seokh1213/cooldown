@@ -1,0 +1,706 @@
+{
+  "champion": "Maokai",
+  "slot": "E",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Maokai flings a sapling to the target area to stand guard. More effective in brush.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Maokai flings a sapling, which stands watch for 30 seconds. Saplings chase nearby enemies, detonating on arrival to deal (50/75/100/125/150 + (25% Ability Power) + (5% bonus Health)) magic damage and Slow surrounding enemies by 45% for 2 seconds. Sap Magic's Cooldown is reduced by an additional 4 seconds if the sapling hits an enemy champion or epic monster. If placed in brush, Saplings instead last for (30 + (1.5% bonus Health)) seconds and cause a larger explosion, dealing (100/150/200/250/300 + (50% Ability Power) + (10% bonus Health)) magic damage over 2 seconds and Slowing enemies by (45% + (1% per 100 Ability Power) + (1% per 100 bonus Health)). Saplings run at (400 ~ 460) Move Speed. Brush saplings do not deal the increased damage to minions.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "마오카이가 묘목을 던져 해당 지역을 감시하게 합니다. 수풀에서는 효과가 향상됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "마오카이가 30초 동안 주변을 감시하는 묘목을 던집니다. 묘목은 근처 적을 추격해 접근 시 폭발하며 (50/75/100/125/150 + (25% 주문력) + (5% 추가 체력))의 마법 피해를 입히고 주변 적들을 2초간 45% 둔화시킵니다. 묘목이 적 챔피언이나 에픽 몬스터를 맞히면 마법 흡수의 재사용 대기시간이 추가로 4초 감소합니다. 수풀에 설치된 묘목은 (30 + (1.5% 추가 체력))초간 유지되며 더 큰 폭발을 일으켜 (100/150/200/250/300 + (50% 주문력) + (10% 추가 체력))의 마법 피해를 2초에 걸쳐 입히고 적들을 (45% + (주문력 100당 1%) + (추가 체력 100당 1%)) 둔화시킵니다. 묘목이 (400 ~ 460)의 이동 속도로 달립니다. 수풀에 설치된 묘목도 미니언에게는 보통 묘목과 같은 양의 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Sapling Toss",
+      "ko": "묘목 던지기"
+    },
+    "cooldownSeconds": [
+      18,
+      17,
+      16,
+      15,
+      14
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1100,
+      1100,
+      1100,
+      1100,
+      1100
+    ],
+    "cost": {
+      "values": [
+        60,
+        65,
+        70,
+        75,
+        80
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "50/75/100/125/150"
+      },
+      {
+        "label": "Empowered Damage",
+        "values": "100/150/200/250/300"
+      },
+      {
+        "label": "Cooldown",
+        "values": "18/17/16/15/14"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "60/65/70/75/80"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          400,
+          405,
+          410,
+          415,
+          420,
+          425,
+          430,
+          435,
+          440,
+          445,
+          450,
+          455,
+          460,
+          460,
+          460,
+          460,
+          460,
+          460,
+          460,
+          460
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          50,
+          75,
+          100,
+          125,
+          150
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ]
+          },
+          {
+            "stat": "bonusHealth",
+            "coefficientsByRank": [
+              0.05000000074505806,
+              0.05000000074505806,
+              0.05000000074505806,
+              0.05000000074505806,
+              0.05000000074505806
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Maokai.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Maokai.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Maokai.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 122,
+      "end": 124
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 125,
+      "end": 127
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 128,
+      "end": 131
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 132,
+      "end": 135
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 136,
+      "end": 139
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 143,
+      "end": 146
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 165,
+      "end": 167
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 228,
+      "end": 231
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 236,
+      "end": 237
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 296,
+      "end": 297
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 408,
+      "end": 410
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 414,
+      "end": 418
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 481,
+      "end": 484
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 485,
+      "end": 488
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 489,
+      "end": 492
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 493,
+      "end": 496
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 497,
+      "end": 500
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 504,
+      "end": 507
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 526,
+      "end": 529
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 563,
+      "end": 564
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 597,
+      "end": 600
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "1%",
+      "value": 1,
+      "percent": true,
+      "start": 604,
+      "end": 606
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 611,
+      "end": 614
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "1%",
+      "value": 1,
+      "percent": true,
+      "start": 633,
+      "end": 635
+    },
+    {
+      "id": "en:body:n25",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 640,
+      "end": 643
+    },
+    {
+      "id": "en:body:n26",
+      "sourceId": "en:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 677,
+      "end": 680
+    },
+    {
+      "id": "en:body:n27",
+      "sourceId": "en:body",
+      "raw": "460",
+      "value": 460,
+      "percent": false,
+      "start": 683,
+      "end": 686
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 6,
+      "end": 8
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 57,
+      "end": 59
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 60,
+      "end": 62
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 63,
+      "end": 66
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 67,
+      "end": 70
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 71,
+      "end": 74
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 78,
+      "end": 81
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 90,
+      "end": 92
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 120,
+      "end": 121
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 124,
+      "end": 127
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 181,
+      "end": 182
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 204,
+      "end": 206
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 210,
+      "end": 214
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 243,
+      "end": 246
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 247,
+      "end": 250
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 251,
+      "end": 254
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 255,
+      "end": 258
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 259,
+      "end": 262
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 266,
+      "end": 269
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 278,
+      "end": 281
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 298,
+      "end": 299
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 314,
+      "end": 317
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 325,
+      "end": 328
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "1%",
+      "value": 1,
+      "percent": true,
+      "start": 330,
+      "end": 332
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 343,
+      "end": 346
+    },
+    {
+      "id": "ko:body:n25",
+      "sourceId": "ko:body",
+      "raw": "1%",
+      "value": 1,
+      "percent": true,
+      "start": 348,
+      "end": 350
+    },
+    {
+      "id": "ko:body:n26",
+      "sourceId": "ko:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 366,
+      "end": 369
+    },
+    {
+      "id": "ko:body:n27",
+      "sourceId": "ko:body",
+      "raw": "460",
+      "value": 460,
+      "percent": false,
+      "start": 372,
+      "end": 375
+    }
+  ],
+  "sourceHash": "91e137de2200c1e7199d4fb14efee1f6d9aa2befb93a1e5dbdcbef51f0baa625",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

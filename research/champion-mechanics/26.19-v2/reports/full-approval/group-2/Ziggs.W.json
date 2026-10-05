@@ -1,0 +1,121 @@
+{
+  "id": "Ziggs.W",
+  "sourceHash": "ae638a1538b75f7b9d7739bc90fbb5378fea6e6e6bae06448d559778e535099d",
+  "beforeCandidateHash": "9eebf57b70c87e2f9f9c923e6aff60aff25183e3b1e74b14e360bc4db8c18f04",
+  "candidateHash": "fdff015a8e5961bd4b565bcba856a715edd06d6ab585332d40cafd927907b4a6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "던진뒤4초OR재사용폭발70~210+50%AP마법/적밀침/직스밀침무피해;포탑체력25~35%미만자동파괴 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 이 폭약을 던진 뒤4초 경과 또는 이 스킬 재사용으로 폭발 / enemy.distance eq 해당폭발에 적중한 적; enemy: 폭발이 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n1=70,en:body:n2=105,en:body:n3=140,en:body:n4=175,en:body:n5=210 상수 rank_values / stat_coefficient en:body:n6=50%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 이 폭약을 던진 뒤4초 경과 또는 이 스킬 재사용으로 폭발 / enemy.distance eq 해당폭발에 적중한 적; enemy: 폭발이 적을 뒤로 밀어냅니다. [knockback]; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 이 폭약을 던진 뒤4초 경과 또는 이 스킬 재사용으로 폭발; caster: 폭발 시 직스도 밀려나며 피해를 입지 않습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 target.target_type eq structure / target.target_type eq 포탑 / target.health_threshold eq 포탑체력이랭크별25/27.5/30/32.5/35%미만; target: 폭약은 체력25/27.5/30/32.5/35%미만인 포탑을 자동파괴합니다. 소모/추가피해량이 아닌 포탑체력기준입니다.; 수치 other en:body:n7=25(백분율),en:body:n8=27.5(백분율),en:body:n9=30(백분율),en:body:n10=32.5(백분율),en:body:n11=35%(백분율) 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 폭약을던져4초후 자동폭발을 준비합니다. 그 전에 재사용하면 즉시 폭발할 수 있습니다.; 수치 other en:body:n0=4 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "자동폭발경로전효과복원·포탑유형/미만조건누락·수치를피해amount로해석한오류·가짜expiry 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Ziggs flings an explosive charge that detonates after 4 seconds, or when this ability is Recast. It deals (70/105/140/175/210 + (50% Ability Power)) magic damage to enemies and Knocks them Back. Ziggs is also knocked away, but takes no damage. Satchel Charge will automatically destroy towers below 25/27.5/30/32.5/35% of their Health."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 722,
+      "verdict": "repaired",
+      "reason": "피해사건을4초자동OR재사용폭발로 확대."
+    },
+    {
+      "index": 723,
+      "verdict": "repaired",
+      "reason": "동일OR폭발조건에적밀침연결."
+    },
+    {
+      "index": 724,
+      "verdict": "repaired",
+      "reason": "직스밀침/무피해도동일폭발OR조건으로연결."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "포탑체력미만 자동파괴는 명시되지만 그검사가폭약배치시/재사용시인지본문이별도설명하지 않는다. expiry로 단정하지 않고 이 폭약의효과로 보존한다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

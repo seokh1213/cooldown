@@ -1,0 +1,564 @@
+{
+  "summary": "적 챔피언은 절대 미각 중첩 조건을 충족해야 삼킬 수 있고, 삼키는 동안 최대 지속 시간 후 내뱉을 수 있으며 마법 피해를 받는다. 아군 챔피언을 삼키면 보호막을 얻고 일찍 나올 수 있다. 대상에 따라 탐 켄치에게 적용되는 이동 제한과 둔화, 아군 삼키기 중의 시전 가능 및 이동 속도 증가가 다르다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "절대 미각 3중첩"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "적 챔피언을 삼킨다. 재시전하면 대상을 내뱉을 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tahm Kench devours a champion for a few seconds. He can Recast to spit them out. Enemy Champions: Require 3 stacks of An Acquired Taste. Are devoured for up to 3 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Are devoured for up to 3 seconds and take 100/250/400 ( + (15% + (7% per 100 Ability Power)) of their Max Health) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "삼킨 적 챔피언에게 마법 피해를 입히며, 피해량은 대상 최대 체력 비율과 주문력에 따라 결정된다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemy Champions: Require 3 stacks of An Acquired Taste. Are devoured for up to 3 seconds and take 100/250/400 ( + (15% + (7% per 100 Ability Power)) of their Max Health) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "caster",
+          "text": "적 챔피언을 삼키는 동안 둔화되고 고정된다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "caster",
+          "text": "적 챔피언을 삼키는 동안 고정된다.",
+          "damageType": null,
+          "crowdControl": "ground",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tahm Kench is Slowed by 40% and Grounded during this effect."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "삼킨 아군"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "삼킨 아군은 내뱉어진 뒤 점차 감소하는 보호막을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ally Champions: Are devoured for up to 3 seconds and are granted (650/800/950 + (100% Ability Power)) Shield which decays gradually after being spit out."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "삼켜진 아군"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "time",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "삼켜진 아군은 더 일찍 나올 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Allies can also choose to exit early."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Are devoured for up to 3 seconds and take 100/250/400 ( + (15% + (7% per 100 Ability Power)) of their Max Health) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "삼킨 아군"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "caster",
+          "text": "아군을 삼키는 동안 고정된다.",
+          "damageType": null,
+          "crowdControl": "ground",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "아군을 삼키는 동안 심연 잠수를 시전할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "아군을 삼킨 동안 이동 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tahm Kench is Grounded during this effect, but can cast Abyssal Dive and gains 60% Move Speed for 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "삼켜진 아군"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "ally",
+          "text": "아군은 체력 바 옆에서 이 스킬의 다음 사용 가능 상태를 확인할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "ui_information",
+          "subject": "enemy",
+          "text": "적은 이 스킬의 다음 사용 가능 상태를 확인할 수 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Allies can see when this spell is available next to your health bar (enemies cannot)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "삼켜진 아군"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "time",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n9"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "보호막은 초당 일정량 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shield decays by 200 per second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Ally Champions: Are devoured for up to 3 seconds and are granted (650/800/950 + (100% Ability Power)) Shield which decays gradually after being spit out."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "적 최대 체력 피해 계산에 포함된 100/250/400의 피해와 대상 최대 체력에 적용되는 괄호 수식 사이의 연산 방식 및 스탯 계수 표기를 스키마의 parameters만으로 확정할 수 없어 수식 요소를 근거 범위에서 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "take 100/250/400 ( + (15% + (7% per 100 Ability Power)) of their Max Health) magic damage."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "아군 보호막이 내뱉은 후 점차 감소한다는 정보와 초당 감소량은 있으나, 감소량이 삼킨 아군의 보호막에만 적용되는지 문장만으로 분명하지 않다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shield decays by 200 per second."
+        }
+      ]
+    }
+  ]
+}

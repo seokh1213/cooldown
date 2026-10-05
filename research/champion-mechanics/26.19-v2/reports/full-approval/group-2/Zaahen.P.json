@@ -1,0 +1,124 @@
+{
+  "id": "Zaahen.P",
+  "sourceHash": "390e0aeb8935ce21d11c6b09af5899141f9dc687abe127a72400ad5cf432a209",
+  "beforeCandidateHash": "e360a1609e50a22b512f6063f47c0417fb8eeb5e38ed7dea17d6a232f341f6af",
+  "candidateHash": "ec25d1e1ced5e6c21d3d2f9086d454e427de0ed6bc795b90f4b825ab3b9a34f3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "챔피언공격/스킬적중1중첩최대12,중첩당AD1.5~2.8%,가득참부여AD2배,부활준비시치명피해대신4초경직/자신maxHealth30~75%부활·300~120초쿨 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / caster.resource lt en:body:n0=12; caster: 결심 중첩을 얻습니다.; 수치 amount ko:body:n0=1 상수 scalar / storage_cap en:body:n0=12 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.resource present 결심 중첩; caster: 결심 중첩당 공격력이 증가합니다.; 수치 amount en:body:n1=1.5%(백분율),en:body:n2=2.8%(백분율) 상수 level_range; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.resource eq 결심 최대12중첩으로 가득 참; caster: 결심이 가득 차면 부여되는 공격력이 두 배가 됩니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.resource eq 결심 최대12중첩으로 가득 참 / caster.activation eq 부활 효과 준비 상태에서 사망할 피해를 받음; caster: 사망할 경우 대신 경직 상태에 들어간 뒤 부활하며, 부활 시 최대 체력의 일정 비율만큼 체력을 회복합니다.; 수치 duration_seconds en:body:n3=4 상수 scalar / amount en:body:n4=30%(백분율),en:body:n5=75%(백분율) caster.maxHealth level_range / cooldown_seconds en:body:n6=300,en:body:n7=120 상수 level_range; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "중첩량을적중횟수로혼동·12획득량·미명시AD스탯범위·부활사건·레벨범위를랭크배열로오표기 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Zaahen gains a stack of Determination when he hits an enemy champion with an Attack or Ability (max 12). He gains (1.5% ~ 2.8%) increased Attack Damage per stack. When filled with Determination, Zaahen doubles the granted Attack Damage, and if he would die, he instead enters Stasis for 4 seconds then revives with (30% ~ 75%) of his max Health. Zaahen's revive has a (300 ~ 120) second Cooldown."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 689,
+      "verdict": "repaired",
+      "reason": "현재결심자원12미만으로변경."
+    },
+    {
+      "index": 690,
+      "verdict": "repaired",
+      "reason": "획득1과저장상한12분리."
+    },
+    {
+      "index": 691,
+      "verdict": "repaired",
+      "reason": "미명시기본/추가/전체증가범위statTo제거."
+    },
+    {
+      "index": 692,
+      "verdict": "repaired",
+      "reason": "결심가득참자원조건명시."
+    },
+    {
+      "index": 693,
+      "verdict": "repaired",
+      "reason": "치명피해순간가득참및부활준비조건명시."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "툴팁은 중첩당 증가하는 공격력의 기본/추가/전체 스탯 범위를 특정하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "부활 재사용 대기시간이 준비되지 않은 경우 사망 시 효과가 어떻게 처리되는지는 명시되어 있지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

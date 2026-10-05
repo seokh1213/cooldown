@@ -1,0 +1,2165 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "네 가지 기본 스킬로 태세를 바꾼다. 재사용 대기 중인 스킬을 재사용하면 궁극기 효과와 함께 보너스를 다시 얻는다. 스킬 사용 후 정해진 시간 안에 다음 두 번의 공격을 하면 공격 속도가 증가하고 각성의 재사용 대기시간 일부를 돌려받는다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "caster",
+              "text": "네 가지 기본 스킬로 태세를 바꾼다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Udyr has four basic Abilities that swap between Stances."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Awakened Spirit: Udyr has four basic Abilities that swap between Stances."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "spell_ready",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "down"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "재사용 대기 중인 스킬을 재사용하면 해당 스킬의 보너스를 궁극기 효과와 함께 다시 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Udyr can Recast an Ability that is on Cooldown to gain its bonuses again with Ultimate benefits. ((50 ~ 20) second Cooldown)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n3"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n4"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "caster",
+              "text": "스킬 사용 후 정해진 시간 안에 다음 공격들이 공격 속도 증가 효과를 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "해당 공격마다 각성의 재사용 대기시간 일부를 돌려받는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Monk Training: After using an Ability, Udyr's next two Attacks within 4 seconds gain 30% Attack Speed and refund 5% of Awaken's Cooldown."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "발톱 태세는 공격 속도를 높이고 기본 공격에 적중 시 물리 피해를 부여한다. 이 태세의 다음 두 공격은 추가 최대 체력 비례 피해와 사거리를 얻는다. 각성은 공격 속도와 해당 피해를 강화하고, 다음 두 공격이 번개를 일으킨다. 대상 유형에 따라 피해 조건이 달라진다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "발톱 태세 동안 공격 속도가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Claw Stance: Udyr gains 20/32/44/56/68/80% Attack Speed and his Attacks deal (6/12/18/24/30/36 + (20% bonus Attack Damage) + (1/1.2/1.4/1.6/1.8/2% bonus Health)) physical damage On-Hit for 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "발톱 태세 중 공격 적중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "기본 공격 적중 시 물리 피해를 입힌다. 피해량에는 고정 피해, 추가 공격력, 추가 체력이 반영된다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18"
+                  ],
+                  "stat": "bonusHealth",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Claw Stance: Udyr gains 20/32/44/56/68/80% Attack Speed and his Attacks deal (6/12/18/24/30/36 + (20% bonus Attack Damage) + (1/1.2/1.4/1.6/1.8/2% bonus Health)) physical damage On-Hit for 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "발톱 태세"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n20"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "이 태세에서 정해진 횟수까지의 다음 공격은 대상 최대 체력에 비례한 추가 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n21",
+                    "en:body:n22",
+                    "en:body:n23",
+                    "en:body:n24",
+                    "en:body:n25",
+                    "en:body:n26"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n27"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n28"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "해당 공격의 사거리가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "distance_units",
+                  "numberRefs": [
+                    "en:body:n29"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Additionally, Udyr's next two Attacks in this stance deal a bonus (3/4/5/6/7/8% + (3.5% per 100 bonus Attack Damage)) max Health physical damage and gain 50 range."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "각성은 추가 공격 속도를 높인다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n30",
+                    "en:body:n31",
+                    "en:body:n32",
+                    "en:body:n33",
+                    "en:body:n34",
+                    "en:body:n35"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n36"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n37"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Increase bonus Attack Speed to (20/32/44/56/68/80% + (20% ~ 70%)) and max Health damage to"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Increase bonus Attack Speed to (20/32/44/56/68/80% + (20% ~ 70%)) and max Health damage to (3/4/5/6/7/8% + (2% ~ 4%) + (5% per 100 bonus Attack Damage) + (0.1% per 100 bonus Health))."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n50"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "각성 시 발톱 태세의 최대 체력 비례 피해가 증가한다. 추가 공격력과 추가 체력 계수가 적용된다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n38",
+                    "en:body:n39",
+                    "en:body:n40",
+                    "en:body:n41",
+                    "en:body:n42",
+                    "en:body:n43"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n44"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n45"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n46"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n47"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n48"
+                  ],
+                  "stat": "bonusHealth",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n49"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Increase bonus Attack Speed to (20/32/44/56/68/80% + (20% ~ 70%)) and max Health damage to (3/4/5/6/7/8% + (2% ~ 4%) + (5% per 100 bonus Attack Damage) + (0.1% per 100 bonus Health))."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Additionally, Udyr's next two Attacks call lightning six times, dealing a total of ((9.0% ~ 18.0%) + (3.6% per 100 Ability Power)) max Health magic damage to isolated targets (strikes bounce to other nearby targets when possible)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n50"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "각성 후 다음 공격들은 번개를 일으켜 총 최대 체력 비례 마법 피해를 입힌다. 고립된 대상에게는 번개가 집중되고, 가능하면 주변의 다른 대상에게 튄다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n51"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n52",
+                    "en:body:n53"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n54"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n55"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Additionally, Udyr's next two Attacks call lightning six times, dealing a total of ((9.0% ~ 18.0%) + (3.6% per 100 Ability Power)) max Health magic damage to isolated targets (strikes bounce to other nearby targets when possible)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "발톱 태세"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "몬스터 대상 발톱 태세 최대 체력 비례 피해에는 상한이 적용된다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n56"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n57"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n58"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Claw Stance Max Health damage is capped at (15 + (50% Ability Power) + (100% bonus Attack Damage)) to monsters."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "번개 1회당 최대 체력 비례 마법 피해에 최소 피해량이 적용된다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n59",
+                    "en:body:n60"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n61"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n62"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n63",
+                    "en:body:n64"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each lightning strike deals ((1.5% ~ 3.0%) + (0.6% per 100 Ability Power)) max Health magic damage Minimum damage to minions: (40 ~ 160))."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "번개 피해는 고립된 대상에게 총 피해가 적용된다고 적혀 있고, 주변 대상이 있으면 번개가 튄다고 적혀 있으나 대상별 피해 배분 조건은 명시되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "to isolated targets (strikes bounce to other nearby targets when possible)."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "갑옷 태세는 보호막을 얻고 다음 두 공격에 생명력 흡수와 적중 시 회복을 부여한다. 각성은 보호막과 회복을 강화하고, 기존 보호막이 남아 있으면 새 보호막과 합친다. 미니언 상대 적중 시 회복 효과는 감소한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "갑옷 태세 동안 보호막을 얻는다. 보호막량은 고정값과 체력, 주문력, 추가 공격력 계수로 구성된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mantle Stance: Udyr gains (45/65/85/105/125/145 + (2/2.3/2.6/2.9/3.2/3.5% Health) + (40% Ability Power) + (50% bonus Attack Damage)) Shield for 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n15"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "caster",
+              "text": "次の攻击获得生命偷取效果。",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "攻击命中时恢复生命值，数值根据自身最大生命值与法术强度计算。",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n23"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Additionally, Udyr's next two Attacks gain 15/16/17/18/19/20% Life Steal and restore ((1.2% Health) + (8% Ability Power)) Health."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "각성은 강화된 보호막을 부여한다. 보호막량은 고정값과 추가 고정량, 주문력, 체력, 추가 공격력 계수로 구성된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n24",
+                    "en:body:n25",
+                    "en:body:n26",
+                    "en:body:n27",
+                    "en:body:n28",
+                    "en:body:n29"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n30"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n31"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n32"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n33"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n34"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n46"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Gain (45/65/85/105/125/145 + (20 ~ 150) + (65% Ability Power) + (8% Health) + (100% bonus Attack Damage)) Shield, restore (22.5/32.5/42.5/52.5/62.5/72.5 + (10 ~ 75) + (32.5% Ability Power) + (4% Health) + (50% bonus Attack Damage)) Health over 4 seconds,"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Gain (45/65/85/105/125/145 + (20 ~ 150) + (65% Ability Power) + (8% Health) + (100% bonus Attack Damage)) Shield, restore (22.5/32.5/42.5/52.5/62.5/72.5 + (10 ~ 75) + (32.5% Ability Power) + (4% Health) + (50% bonus Attack Damage)) Health over 4 seconds, and Udyr's next two Attacks instead have 30/32/34/36/38/40% Life Steal and restore ((2.4% Health) + (16% Ability Power)) Health."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "각성은 일정 시간에 걸쳐 회복한다. 회복량은 고정값과 추가 고정량, 주문력, 체력, 추가 공격력 계수로 구성된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n35",
+                    "en:body:n36",
+                    "en:body:n37",
+                    "en:body:n38",
+                    "en:body:n39",
+                    "en:body:n40"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n41"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n42"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n43"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n44"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n45"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n46"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Gain (45/65/85/105/125/145 + (20 ~ 150) + (65% Ability Power) + (8% Health) + (100% bonus Attack Damage)) Shield, restore (22.5/32.5/42.5/52.5/62.5/72.5 + (10 ~ 75) + (32.5% Ability Power) + (4% Health) + (50% bonus Attack Damage)) Health over 4 seconds,"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Gain (45/65/85/105/125/145 + (20 ~ 150) + (65% Ability Power) + (8% Health) + (100% bonus Attack Damage)) Shield, restore (22.5/32.5/42.5/52.5/62.5/72.5 + (10 ~ 75) + (32.5% Ability Power) + (4% Health) + (50% bonus Attack Damage)) Health over 4 seconds, and Udyr's next two Attacks instead have 30/32/34/36/38/40% Life Steal and restore ((2.4% Health) + (16% Ability Power)) Health."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n47"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "caster",
+              "text": "각성 후 다음 공격은 생명력 흡수 효과가 적용된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n48",
+                    "en:body:n49",
+                    "en:body:n50",
+                    "en:body:n51",
+                    "en:body:n52",
+                    "en:body:n53"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "공격 적중 시 회복한다. 회복량은 자신의 최대 체력과 주문력에 비례한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n54"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n55"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and Udyr's next two Attacks instead have 30/32/34/36/38/40% Life Steal and restore ((2.4% Health) + (16% Ability Power)) Health."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Gain (45/65/85/105/125/145 + (20 ~ 150) + (65% Ability Power) + (8% Health) + (100% bonus Attack Damage)) Shield, restore (22.5/32.5/42.5/52.5/62.5/72.5 + (10 ~ 75) + (32.5% Ability Power) + (4% Health) + (50% bonus Attack Damage)) Health over 4 seconds, and Udyr's next two Attacks instead have 30/32/34/36/38/40% Life Steal and restore ((2.4% Health) + (16% Ability Power)) Health."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "shield_ready",
+              "operator": "eq",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "각성 시전으로 얻은 보호막은 기본 시전에서 남아 있는 보호막과 중첩된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Shield granted by an Awaken cast will stack with any remaining Shield from the original cast."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "미니언 상대 적중 시 생명력 흡수 효과가 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n56"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Life on hit reduced by 40% against minions."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "일반 및 각성 생명력 흡수의 미니언 상대 감소가 별도로 표기되어 있지 않아, 미니언에게 적용되는 최종 생명력 흡수·회복 계산 범위는 불명확하다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Life on hit reduced by 40% against minions."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "쇄도 태세는 이동 속도를 높이고 시간이 지나며 증가분이 감소한다. 태세 중 공격은 대상에게 돌진해 기절시키며 대상별 재사용 대기시간이 있다. 각성은 이동 불가 및 방해 효과 면역과 추가 이동 속도를 부여하고, 이동 속도 증가 중 유닛을 통과하며 태세의 공격은 취소되지 않는다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "쇄도 태세는 이동 속도를 높이고, 증가분은 시간이 지나며 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Stampede Stance: Udyr gains (25/31/37/43/49/55% + (5% per 100 bonus Attack Damage)) Move Speed, decaying over 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "쇄도 태세"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "태세의 공격은 대상을 향해 돌진한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "태세의 공격은 대상을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Additionally, Udyr's Attacks dash him to the target and Stun for 0.75 seconds (6/5.6/5.2/4.8/4.4/4 second Cooldown per target)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "각성은 이동 불가 및 방해 효과에 면역을 부여한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "각성은 추가 이동 속도를 부여한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n18"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Grants immunity to Immobilizing and Disabling effects and an additional ((30% ~ 40%) + (0.1% bonus Attack Damage)) Move Speed for 1.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n19"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "이동 속도 증가 중에는 유닛 사이를 통과한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Udyr moves through units during the Move Speed boost,"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Grants immunity to Immobilizing and Disabling effects and an additional ((30% ~ 40%) + (0.1% bonus Attack Damage)) Move Speed for 1.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_cancelled",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "쇄도 태세"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "caster",
+              "text": "이 태세에서 공격은 취소될 수 없다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and his Attacks in this Stance can't be cancelled."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "폭풍 태세는 주변 적에게 지속 마법 피해를 주고 둔화시킨다. 태세 중 다음 두 공격은 폭풍 안의 적에게 추가 마법 피해를 준다. 각성은 폭풍을 마지막으로 공격한 적을 따라가게 하며, 지속시간에 걸친 추가 최대 체력 비례 피해와 추가 둔화를 부여한다. 미니언과 몬스터에 대한 피해 규칙이 따로 있다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "폭풍 태세 동안 주변 적에게 매초 마법 피해를 준다. 피해량은 고정값과 주문력 계수로 구성된다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "폭풍은 주변 적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Storm Stance: Udyr surrounds himself in a glacial storm for 4 seconds, dealing (20/36/52/68/84/100 + (35% Ability Power)) magic damage per second to nearby enemies and Slowing them by 15/18/21/24/27/30%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "폭풍 태세"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n14"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "폭풍 태세에서 다음 공격은 폭풍 안의 적에게 마법 피해를 준다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n15",
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n17"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Additionally, Udyr's next two Attacks in this stance deal ((10 ~ 40) + (35% Ability Power)) magic damage to enemies in the storm."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "nearby_enemies",
+              "text": "각성은 폭풍을 우디르가 마지막으로 공격한 적을 따라가게 한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "각성 폭풍은 지속시간에 걸쳐 추가 최대 체력 비례 마법 피해를 준다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n18",
+                    "en:body:n19"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "각성 폭풍은 둔화를 추가로 강화한다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Awaken: Unleash the storm, causing it to follow Udyr's last Attacked enemy, deal an additional ((8.0% ~ 14.0%) + (3.5% per 100 Ability Power)) max Health magic damage over the duration, and Slow by an additional 5%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "폭풍은 미니언에게 감소된 비율의 피해를 준다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n23"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n24"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replace_input"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Storm deals (50% ~ 80%) damage to minions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "각성 폭풍의 몬스터 대상 피해에는 최소 피해량이 적용된다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n25"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n26"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Awakened deals a minimum of (40 ~ 280) to monsters."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "각성 폭풍의 추가 피해와 미니언 피해 비율이 기본 초당 피해 및 태세 공격 피해 중 어느 피해 구성요소에 적용되는지 문구만으로 특정하기 어렵다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Storm deals (50% ~ 80%) damage to minions. Awakened deals a minimum of (40 ~ 280) to monsters."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Udyr.E",
+      "errors": [
+        {
+          "code": "first_hit",
+          "path": "rules.1",
+          "detail": "First-hit restriction is not stated by this rule's evidence"
+        }
+      ]
+    }
+  ]
+}

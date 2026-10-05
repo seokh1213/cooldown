@@ -1,0 +1,36 @@
+{
+  "id": "Nilah.E",
+  "sourceHash": "2e4c8443077100e7b31f1e3d4d31756550b2030013bc1f13ba5bb9c3a2b68298",
+  "beforeCandidateHash": "c66417064cf905bff0c3c50ddf6e6eb62828bb6f7a8aa6e870cee0f26b0919ea",
+  "candidateHash": "4d16681b3bb9e58e5ed5530029caa5aa5fb6d7a90ca2ead57a16578d9abd9ecf",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "대상 유닛을 뚫는 자기 돌진과 경로에서 통과한 모든 적의60/70/80/90/100+20%시전자 추가 공격력 물리 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq any 적용. caster: 대상 유닛을 뚫고 돌진합니다.;  / enemy: 돌진 경로상의 적에게 물리 피해를 줍니다. (physical); amount=60/70/80/90/100  rank_values, stat_coefficient=20% caster의 bonusAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1.subject",
+      "issue": "secondary_targets로 주 대상 적을 피해 집합에서 제외할 가능성",
+      "correction": "경로상의 모든 적 enemy로 수정",
+      "sourceId": "en:body",
+      "quote": "dealing (60/70/80/90/100 + (20% bonus Attack Damage)) physical damage to any enemies she passes through."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

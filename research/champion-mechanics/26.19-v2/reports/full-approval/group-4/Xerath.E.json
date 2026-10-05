@@ -1,0 +1,56 @@
+{
+  "id": "Xerath.E",
+  "sourceHash": "fe9546b8d5ef6668490c0c929a789e74ae2879c66664676da39a667c37866f9b",
+  "beforeCandidateHash": "d2ddd593d2d0ca0daf130c3ec46b6e7b9edc7631e626d20019fb913536ec4b2c",
+  "candidateHash": "cff7abe34791c2e91a1e603243862488987382083721230e7aa2623d6a94a1ed",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "구체의 첫 적중 적에게 70/100/130/160/190 + 제라스 주문력 45% 마법 피해와 이동 거리에 따른 최소 0.75초·최대 2.25초 기절을 주는 관계를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 적중한 적에게 마법 피해를 줍니다. (magic); amount=70/100/130/160/190  rank_values, stat_coefficient=45% caster의 abilityPower scalar / target: 구체가 이동한 거리에 따라 첫 적중 적을 최소 0.75초, 최대 2.25초 기절시킵니다. (stun); duration_seconds=0.75/2.25  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger",
+      "issue": "맞은 대상이 제라스 스킬 적중 행위자로 표현된다.",
+      "correction": "시전자 적중 사건으로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "Xerath fires an orb of raw magic"
+    },
+    {
+      "path": "rules.0.effects.1.parameters",
+      "issue": "기절 초 단위 최소·최대가 일반 amount로 분류된다.",
+      "correction": "시간 경계의 duration_seconds와 거리 대응식 한계로 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Minimum Stun duration is 0.75 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "기절 최소 0.75초·최대 2.25초와 구체 이동 거리 의존은 확정되나 거리별 지속시간식은 없다. duration_seconds 참조 두 개는 시간 경계를 보존하며 합산하거나 레벨 범위로 실행하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

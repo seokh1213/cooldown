@@ -1,0 +1,121 @@
+{
+  "id": "Braum.R",
+  "sourceHash": "aa12a6fc653fc1f64a88d1521a9f62baac946023cc55ea7bb7c376218fd76874",
+  "beforeCandidateHash": "f10f1e7fd23d68796d62ce3a03fc0a34c72c877272f17baea9d962ca5710ed23",
+  "candidateHash": "bc0dfb1501b68a2a1d2421981f98bd45dfc82f4a4a8838903427dc48b7c3a6b5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "균열 경로와 브라움 근처 적의150/250/350+AP60% 마법 피해, 첫 적중 거리비례0.6~1/1.5/2초와 그외0.6초 띄우기,4초 균열 구역40/50/60% 둔화를 대조했다. 별도의 근처적 띄우기 중복을 제거하고 구역 지속시간과 개별 둔화 시간을 구분했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이 스킬의 균열 경로 또는 브라움 근처에서 맞은 적 → enemy: 균열 경로와 브라움 근처의 적에게 마법 피해를 입힌다. [magic] / amount=150/250/350 [rank_values]; stat_coefficient=60% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first; target other eq 이 스킬의 균열 경로 또는 브라움 근처에서 맞은 적 → target: 첫 적중 적을 브라움과의 거리에 따라 최소0.6초에서 최대1/1.5/2초 동안 공중으로 띄웁니다. [knockup] / duration_seconds=0.6 [formula_components]; duration_seconds=1/1.5/2 [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order neq first; target other eq 이 스킬의 균열 경로 또는 브라움 근처에서 맞은 적 → target: 첫 번째 적중 대상이 아닌 나머지 적중 대상은 0.6초 동안 공중에 띄워진다. [knockup] / duration_seconds=0.6 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 균열은4초 동안 유지되는 둔화 구역을 생성하며 구역 안 적을40/50/60% 둔화시킵니다.4초는 구역 지속시간입니다. / other=4 [scalar]; amount=40/50/60% [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "적중 행위자가 대상이고 첫 대상 띄우기의 초 단위가 min/max_amount로 표시되었다.",
+      "correction": "브라움의 스킬 적중 사건과 균열/근처적 범위, 거리별 지속시간 범위를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "The first target hit is Knocked Up for between 0.6 and 1/1.5/2 seconds, increasing with distance from Braum."
+    },
+    {
+      "path": "rules.3",
+      "issue": "근처 적의 띄우기가 첫/그외 적중 규칙과 중복되어 별도 사건으로 적용되었다.",
+      "correction": "별도 중복 규칙을 삭제하고 기존 적중 규칙들에 근처적/균열 범위를 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Knocks Up enemies in its path and nearby Braum"
+    },
+    {
+      "path": "rules.4",
+      "issue": "구역 생성이 시전과 무관하고4초가 개별 둔화 지속시간처럼 표현되었다.",
+      "correction": "시전으로 생성되는4초 구역과 구역 안40/50/60% 둔화를 구분하고 랭크%표 한계를 기록했다.",
+      "sourceId": "en:body",
+      "quote": "The fissure also creates a zone for 4 seconds, that Slows by 40/50/60%."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 22,
+      "verdict": "repaired",
+      "reason": "근처 적 별도 띄우기를 삭제하고 스킬 적중 첫/그외 규칙에 경로와 근처 범위를 통합했다."
+    },
+    {
+      "index": 23,
+      "verdict": "repaired",
+      "reason": "시전이4초 구역을 생성함을 명시하고 그 안 적에 대한 둔화를 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "첫 번째 적중 대상의 공중 띄우기 시간은 브라움과의 거리에 따라 증가하지만 원문은 정확한 거리별 계산식을 제공하지 않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "40/50/60%는 모든 랭크의 퍼센트 둔화량이지만 frozen 숫자표는 마지막60%에만 percent=true다. 텍스트에 단위를 보존하며 단순 절대량으로 실행할 수 없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

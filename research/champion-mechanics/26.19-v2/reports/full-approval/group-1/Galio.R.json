@@ -1,0 +1,57 @@
+{
+  "id": "Galio.R",
+  "sourceHash": "5c77524164c59e8264f18ee011df8565fbc4a91ac1d7c224b285683431d79a3e",
+  "beforeCandidateHash": "ae6ac87ef93fb1493466e41a50d279c717bc59ba8225da0eb6679680271852a0",
+  "candidateHash": "c7dfcbf83645893c58619be37846eccf9be1b885d8c31288c0261c6c4e2d1bde",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "아군champ위치지정/그영역아군champ5초Wpassive마법shield,날아가착지knockup0.75/magic150~350+AP70%+bonusMR100% 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 ally.target_type eq champion; ally.other eq 지정된 착지 지점 주변의 아군 챔피언. ally shield: 착지 지점 주변의 아군 챔피언에게5초간 듀란드의 방패 기본 지속 효과와 같은 마법 보호막을 준다. [duration_seconds n0=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 지정한 착지 지점으로 날아갑니다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 지정 지점에 착지. nearby_enemies crowd_control knockup: 착지 시 주변 적을 공중으로 띄웁니다. [duration_seconds n1=0.75 scalar] / nearby_enemies damage magic: 착지 시 주변 적에게 마법 피해를 입힙니다. [amount n2=150/n3=250/n4=350 rank_values; stat_coefficient n5=70% formula_components caster.abilityPower; stat_coefficient n6=100% formula_components caster.bonusMagicResist]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/2/gaps",
+      "issue": "아군champ/영역조건·magicshield분류설명·착지조건·참조보호막수치부족",
+      "correction": "ally범위/마법shield명시,착지조건과crossability수치gap",
+      "sourceId": "en:summary",
+      "quote": "granting all allies in the area a magic shield."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "shield는W기본지속효과를참조하지만이R슬롯공급숫자는5초만제공하며실제shield양은없다.서로다른입력의숫자를끌어와확정하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

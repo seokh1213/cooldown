@@ -1,0 +1,71 @@
+{
+  "summary": "지연 후 근처 아군 챔피언을 무적 상태로 만듭니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "distance",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "무적 상태가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After 2.5 seconds, nearby ally champions become invulnerable for 2.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

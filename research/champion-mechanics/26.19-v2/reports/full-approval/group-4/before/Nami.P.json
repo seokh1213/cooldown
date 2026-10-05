@@ -1,0 +1,73 @@
+{
+  "summary": "나미의 스킬이 아군 챔피언에게 적중하면 이동 속도를 높이고, 증가량은 시간이 지나며 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "나미의 스킬에 적중한 아군 챔피언의 이동 속도가 증가하고, 증가량은 시간이 지나며 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Nami's Abilities hit allied champions, they gain (100 + (25% Ability Power)) Move Speed, decaying over 1.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

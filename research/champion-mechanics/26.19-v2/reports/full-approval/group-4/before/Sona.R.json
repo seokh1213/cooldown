@@ -1,0 +1,95 @@
+{
+  "summary": "적을 기절시키고 마법 피해를 줍니다. 춤출 줄 아는 적은 기절 중에 춤을 춥니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "적을 기절시키며, 춤출 줄 아는 적은 기절 중에 춤을 춥니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sona strikes an irresistible chord, Stunning enemy for 1.5 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sona strikes an irresistible chord, Stunning enemy for 1.5 seconds and dealing (150/250/350 + (50% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "적에게 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sona strikes an irresistible chord, Stunning enemy for 1.5 seconds and dealing (150/250/350 + (50% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

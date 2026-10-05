@@ -1,0 +1,80 @@
+{
+  "id": "Qiyana.R",
+  "sourceHash": "7d1e63da5cf20de1efe0a7e3dc09323c71ec9f6c4cb21de9a6220b1a21058930",
+  "beforeCandidateHash": "712cbe1062cd20c3a3506d72961c553bfd9cfd9981f20f8a803baa395f401929",
+  "candidateHash": "0bf357723daf2629a2fd8ef705c07810320aad2ec8e41066bc7871c754791154",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "충격파밀치기·지형외곽폭발물리100~300+추가AD125%+대상maxHP10%·0.5~1초기절/거리에따라감소·강/수풀지연폭발동일효과를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 충격파가 적을 뒤로 밀쳐냅니다. [knockback]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 other / 조건 unknown other present 충격파가 지형에 적중해 폭발 → nearby_enemies: 폭발이 지형 외곽 전체를 따라 적을 기절시킵니다. 기절 시간은 충격파가 이동한 거리에 따라 감소합니다. 지속시간은0.5~1초다. [stun] / duration_seconds=0.5/1 [unknown] | nearby_enemies: 폭발은 물리 피해를 줍니다. [physical] / amount=100/200/300 [rank_values]; stat_coefficient=125% (caster bonusAttackDamage) [scalar] | nearby_enemies: 폭발은 대상의 최대 체력에 비례한 추가 물리 피해를 줍니다. [physical] / stat_coefficient=10% (target maxHealth) [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 other / 조건 unknown other present 충격파가 강이나 수풀을 통과한 뒤 지연 폭발 → nearby_enemies: 충격파가 통과한 강이나 수풀도 지연 폭발해 적을 같은 시간 동안 기절시킵니다. 지속시간은0.5~1초다. [stun] / duration_seconds=0.5/1 [unknown] | nearby_enemies: 강이나 수풀의 지연 폭발은 같은 물리 피해를 줍니다. [physical] / amount=100/200/300 [rank_values]; stat_coefficient=125% (caster bonusAttackDamage) [scalar]; stat_coefficient=10% (target maxHealth) [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0",
+      "issue": "밀치기CC를이동만분류",
+      "correction": "knockbackCC",
+      "sourceId": "en:body",
+      "quote": "Knocks Back enemies"
+    },
+    {
+      "path": "rules.1-2.effects.0.parameters",
+      "issue": "기절시간을피해량min/max역할로기록",
+      "correction": "0.5~1초duration_seconds범위와텍스트보존",
+      "sourceId": "en:body",
+      "quote": "Stunning for between 0.5 and 1 seconds"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "기절 지속시간이 충격파 이동 거리에 따라 감소하지만, 감소 공식은 제시되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

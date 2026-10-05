@@ -1,0 +1,62 @@
+{
+  "id": "Neeko.Q",
+  "sourceHash": "2d003bf1271022e63b48bedcd022ff5380cbb0feacfcd7a6840cf0739105b602",
+  "beforeCandidateHash": "bd6bf2d5c6f8c8214529ebf709effb09ee5887ef6f645255ace570c484a2ad52",
+  "candidateHash": "50cdf966ef88ce0d6499778a50260916f0f208ae4a97390226c9a238c4e81d33",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "씨앗초기마법60~260+AP60%,Q폭발이유닛처치or챔프/큰몬스터적중하면추가35~135+AP25%최대2회,각폭발몬스터추가35~95를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 최초 씨앗 폭발 적중. target damage magic: 씨앗이 폭발해 마법 피해를 입힌다. [amount n0=60/n1=110/n2=160/n3=210/n4=260 rank_values; stat_coefficient n5=60% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 이 시전의 씨앗 폭발이 유닛을 처치하거나 챔피언 또는 대형 몬스터에게 적중함; caster.other eq 이 시전에서 추가 폭발이 아직 두 번 미만 발생. unknown damage magic: 씨앗이 다시 폭발하여 마법 피해를 입힌다. 재폭발 피해 대상의 세부 범위는 원문에 명시되지 않았다. [amount n6=35/n7=60/n8=85/n9=110/n10=135 rank_values; stat_coefficient n11=25% formula_components caster.abilityPower; storage_cap n12=2 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq monster; caster.other eq 최초 또는 추가 씨앗 폭발 적중. target damage magic: 각 씨앗 폭발은 몬스터에게 추가 마법 피해를 입힌다. [amount n13=35/n14=50/n15=65/n16=80/n17=95 rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/gaps",
+      "issue": "재폭발최대2누락·여러발동조건동시중복·행위자·몬스터passive피해",
+      "correction": "추가폭발OR규칙통합/한도보존,초기및추가사건/각폭발몬스터적중",
+      "sourceId": "en:body",
+      "quote": "Max 2 extra blooms."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 339,
+      "verdict": "false_positive",
+      "reason": "unknown은대상을모른다는보존값이며특정타깃이라는확정이아니다. 원문재폭발은죽은대상과다른피해대상일수있어출처없는target배분을강제하지않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "추가 폭발의 수신 대상/세부 범위는 원문에 명시되지 않아 unknown으로 보존한다. 추가 폭발 최대두번과 발동OR조건은 규칙에 명시한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

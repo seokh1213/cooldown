@@ -1,0 +1,183 @@
+{
+  "summary": "렐이 창을 찔러 대상에게 마법 피해를 입히고 기절시키며 보호막을 파괴한다. 몬스터의 보호막은 파괴하지 않는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "전방 일직선으로 찌른 창에 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 기절시킨다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rell thrusts her lance, Stunning targets for 0.65 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rell thrusts her lance, Stunning targets for 0.65 seconds, destroying all Shields, and dealing (60/100/140/180/220 + (60% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Rell deals magic damage to units in a line, breaking their shields and stunning them."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "전방 일직선으로 찌른 창에 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "대상의 모든 보호막을 파괴한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "destroying all Shields"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Does not break Shields on monsters."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Rell deals magic damage to units in a line, breaking their shields and stunning them."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "전방 일직선으로 찌른 창에 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "창에 맞은 대상에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (60/100/140/180/220 + (60% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rell thrusts her lance, Stunning targets for 0.65 seconds, destroying all Shields, and dealing (60/100/140/180/220 + (60% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Rell deals magic damage to units in a line, breaking their shields and stunning them."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

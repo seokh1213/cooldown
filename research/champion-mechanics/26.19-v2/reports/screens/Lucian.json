@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Lucian.Q",
+      "sourceHash": "a24f8867acc0eacb972ffd0fb6198650036a7a9f04f3e6e78dc1f029bf494cb4",
+      "candidateHash": "38d198ef04b06a27260adb85ab5b5abf66eba6879bbd54a6453c8d23b490c9b3"
+    },
+    {
+      "id": "Lucian.W",
+      "sourceHash": "000f6c3a45ef90d2b55e04d942cf032a1826386efc7d544b88d67b9aab40eccf",
+      "candidateHash": "63b0027ff0b36a4355265549b8f88f40ce7a1764765a2f43c168de2e8107b8f3"
+    },
+    {
+      "id": "Lucian.E",
+      "sourceHash": "70d9d8fc98136a7c5ea79e82d3b9fce661bd2ba90cf85a0e7e621a6c7d464d0c",
+      "candidateHash": "293e502dd22601044ff1bbc32e8528804c18636f28db386ece4e1c63d1e12532"
+    },
+    {
+      "id": "Lucian.P",
+      "sourceHash": "388a28559a59c687a667d450f8925d2f46e29e23cdac08ce66f3cb2fa416313d",
+      "candidateHash": "70a6efffe6691c19c52b0e9339983310213c3055d9ae36077fbf0e4052aff226"
+    },
+    {
+      "id": "Lucian.R",
+      "sourceHash": "8841bd9c9e44a261f16d516126dde1fbb1b2a77e53297b1bd17d368d43dae9c1",
+      "candidateHash": "3647c2e33825690d487996be985f2a881738ab0b0e17f244ba222b7c1fb497a0"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Lucian.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Cooldown is reduced by 1 second whenever Lucian hits an enemy with Lightslinger (2 seconds for champions).",
+      "issue": "비챔피언 적중 조건을 `target_type != champion`으로 제한해, 적중 대상이 챔피언이 아닌 경우를 포괄하지 못합니다. 원문은 모든 비챔피언 적중에 1초 감소를 명시합니다.",
+      "correction": "챔피언이 아닌 적중을 포괄하는 조건으로 수정하세요."
+    },
+    {
+      "id": "Lucian.P",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The second shot deals ((50% ~ 60%) Attack Damage) physical damage to the target, increased to (100% Attack Damage) against minions.",
+      "issue": "비미니언 조건이 `target_type != minion`이라 대상을 미니언 또는 챔피언으로 제한하는 표현으로 읽힐 수 있습니다. 원문은 미니언 외 모든 대상에 기본 계수를 적용합니다.",
+      "correction": "미니언이 아닌 대상을 포괄하는 조건으로 수정하세요."
+    },
+    {
+      "id": "Lucian.R",
+      "path": "rules.0.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Each shot deals (15/30/45 + (25% Attack Damage) + (15% Ability Power)) physical damage to the first enemy hit.",
+      "issue": "피해 기본값이 세 단계 랭크 값인데 `shape: rank_values`에 대응하는 값 표기가 있으나, 규칙의 subject가 `target`이고 `per_target` 플래그라 탄환마다 첫 적중 대상에게 적용된다는 뜻과 혼동될 수 있습니다. 다만 실제 표현은 원문과 일치합니다.",
+      "correction": "해당 없음."
+    }
+  ],
+  "notes": []
+}

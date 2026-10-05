@@ -1,0 +1,191 @@
+{
+  "id": "Vladimir.W",
+  "sourceHash": "69334d7f22d44e8976ae4b84626b695a628e94e29f2128033cf6b7c9c89b7228",
+  "beforeCandidateHash": "e74aabb59d8da19505ecabf3c4c5b243005d67ffd77c474f03029e49de73614e",
+  "candidateHash": "d698f9a86b734d6a979ea235c3dab16eac9eeab087ecf1c8398eff0d95ac05ae",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 10,
+  "checkedGapCount": 2,
+  "summaryCheck": "웅덩이 2초, 37.5% 이속의 1초 감소, 웅덩이 안 40% 둔화/총 지속 피해·적별 회복, E 충전 중 W 허용 및 공격 금지, 미니언 회복 60%, 지정 불가의 이미 적중한 공격 예외와 유체화를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 피의 웅덩이로 변해 대상 지정 불가 및 유체화 상태가 됩니다.; 수치 duration_seconds en:body:n0=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이동 속도가 증가한 뒤 감소합니다.; 수치 amount en:body:n1=37.5%(백분율) 상수 scalar / duration_seconds en:body:n2=1 상수 scalar; flags decays"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 target.other eq 이 스킬의 웅덩이 안에 있는 적; nearby_enemies: 웅덩이 안의 적을 둔화시킵니다. [slow]; 수치 amount en:body:n3=40%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 target.other eq 이 스킬의 웅덩이 안에 있는 적; nearby_enemies: 웅덩이 위의 적에게 지속시간 동안 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n4=80,en:body:n5=135,en:body:n6=190,en:body:n7=245,en:body:n8=300 상수 rank_values / stat_coefficient en:body:n9=15%(백분율) caster.bonusHealth scalar / duration_seconds en:body:n0=2 상수 scalar; flags per_target"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 target.other eq 이 스킬의 웅덩이 안에 있는 적; caster: 웅덩이 위의 적마다 지속시간 동안 체력을 회복합니다.; 수치 amount en:body:n10=24,en:body:n11=40.5,en:body:n12=57,en:body:n13=73.5,en:body:n14=90 상수 rank_values / stat_coefficient en:body:n15=4.5%(백분율) caster.bonusHealth scalar / duration_seconds en:body:n0=2 상수 scalar; flags per_target"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq charging Tides of Blood; caster: 선혈의 파도를 충전하는 동안에도 이 스킬을 사용할 수 있습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.form eq inside the pool; caster: 웅덩이 안에서는 기본 공격이나 다른 스킬을 사용할 수 없습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq minion; caster: 미니언에게 적용되는 회복 효과가 감소합니다.; 수치 damage_multiplier en:body:n16=60%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq untargetable; caster: 이미 적중당한 상태가 아닌 한 적의 공격이나 스킬에 영향을 받지 않습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.form eq Ghosted; caster: 다른 유닛을 통과할 수 있습니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "요약의 W/E 사용 허용 관계 반전, 범위 조건 distance any, 유체화·지정 불가 분류, 오타, 원문 충돌을 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Vladimir sinks into a pool of blood for 2 seconds, gaining 37.5% decaying Move Speed for 1 second and becoming Untargetable and Ghosted while Slowing enemies in the pool by 40%. Vladimir deals (80/135/190/245/300 + (15% bonus Health)) magic damage and restores (24/40.5/57/73.5/90 + (4.5% bonus Health)) Health per enemy over the duration. This Ability can be used while charging Tides of Blood. Vladimir can't Attack or use other Abilities while inside the pool. Healing is 60% effective against minions. Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been hit by them. Ghosted units can pass through other units."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 635,
+      "verdict": "false_positive",
+      "reason": "전체 문장은 per enemy over the duration이며 웅덩이 지속시간이 2초; 지속 피해는 한국어 본문에도 명시되어 2초 참조 유지."
+    },
+    {
+      "index": 636,
+      "verdict": "repaired",
+      "reason": "웅池를 웅덩이로 수정."
+    },
+    {
+      "index": 637,
+      "verdict": "false_positive",
+      "reason": "over the duration의 적별 회복은 웅덩이 2초 동안의 회복으로 본문과 일치."
+    },
+    {
+      "index": 638,
+      "verdict": "documented_gap",
+      "reason": "영문 미니언과 한국어 몬스터 포함은 충돌; 우선 영문 범위를 유지하고 source_conflict 기록."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "둔화와 웅덩이 피해·회복의 범위는 ‘in the pool’ 및 ‘per enemy’로만 설명되어 있어 정확한 거리값은 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "영문 본문은 회복 감소를 미니언으로 한정; 한국어는 정글 몬스터까지 포함하고 회복식 표현도 피해량 비율처럼 서술. 구체 영문 본문의 독립 회복식·미니언 범위를 우선.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.8",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

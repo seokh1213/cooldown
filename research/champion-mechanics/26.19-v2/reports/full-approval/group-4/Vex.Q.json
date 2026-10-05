@@ -1,0 +1,56 @@
+{
+  "id": "Vex.Q",
+  "sourceHash": "c1e2d2bcaef24d4d276a7886a826ebf4e4158354eee8da0f0ef01a802769ebc0",
+  "beforeCandidateHash": "911cb00e0547747f2760d3744ff9d447536192d61fc3fbaacf9e53889f72bad0",
+  "candidateHash": "fd0fb90ff92e26efc564021035d6ec307070bbe1cb7f1ec665c15002aad77b26",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "안개파동의70/115/160/205/250+70%시전자주문력마법피해,지연뒤작아짐/빨라짐,맞은적우울소모를확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 안개 파동이 적중한 적에게 마법 피해를 줍니다. (magic); amount=70/115/160/205/250  rank_values, stat_coefficient=70% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. unknown: 잠시 후 파동이 작아지고 빨라집니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 적중한 적의 우울 표식을 소모합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,2.trigger",
+      "issue": "발사시피해및적중주체target",
+      "correction": "실제caster의스킬적중으로정정",
+      "sourceId": "en:body",
+      "quote": "Consumes Gloom on enemies hit."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

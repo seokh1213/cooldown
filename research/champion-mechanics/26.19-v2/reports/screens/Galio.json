@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Galio.E",
+      "sourceHash": "f6be201acba9403a8926eba0a58da5bf49301206e7cc66b4b9dde9dfc58355c0",
+      "candidateHash": "d7929306c36d2f7cd1af4ef933e1f8417ee0c155807477162af8119fcbe13739"
+    },
+    {
+      "id": "Galio.P",
+      "sourceHash": "1b9f2cd946afb3bbe100bdff4ecd2c0b516fddae12d7077facc12f604df41300",
+      "candidateHash": "2b4b3ae408c10fb18cdd406469cc24edde43f7b4f842c59d36fa996bdb550656"
+    },
+    {
+      "id": "Galio.Q",
+      "sourceHash": "83ed71d34ce12c8feb83fe3e2df8b44ab0bb868e8957d47fe18bb664258f0625",
+      "candidateHash": "eab96c56e65a201932ad9db32b8ee01fd0d673ff6cf7a8dc5c9ffa9b149317eb"
+    },
+    {
+      "id": "Galio.R",
+      "sourceHash": "5c77524164c59e8264f18ee011df8565fbc4a91ac1d7c224b285683431d79a3e",
+      "candidateHash": "ae6ac87ef93fb1493466e41a50d279c717bc59ba8225da0eb6679680271852a0"
+    },
+    {
+      "id": "Galio.W",
+      "sourceHash": "5713cc657d48fccd3ef9e23d8cc4171d96da27bac98b00ca75d10eacc7feb39a",
+      "candidateHash": "c9c75d7701a896ea7e4c44ed55bb12fe9fb2311c45862ca206634ccdfcaee422"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Galio.P",
+      "path": "rules.1.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This effect's cooldown is reduced by 3 seconds when Galio hits an enemy champion or epic monster with an ability, once per cast.",
+      "issue": "조건이 적 챔피언만 대상으로 지정해 에픽 몬스터 적중 시에도 재사용 대기시간이 감소한다는 원문의 범위가 빠졌습니다.",
+      "correction": "에픽 몬스터 조건도 포함하거나, 타입을 구조화할 수 없다면 해당 대상 범위를 텍스트와 gap으로 보존하세요."
+    },
+    {
+      "id": "Galio.Q",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When the windblasts meet, they combine into a tornado that deals (8 + (4% Ability Power))max Health magic damage over 2 seconds.",
+      "issue": "초당 피해량 공식에 최대 체력을 기준으로 한다는 설명이 누락되어, 8이 최대 체력 비례 수치인지 불명확합니다.",
+      "correction": "8이 최대 체력의 퍼센트임을 텍스트/파라미터에 보존하고, 주문력 계수는 별도 항으로 유지하세요."
+    },
+    {
+      "id": "Galio.Q",
+      "path": "rules.1.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When the windblasts meet, they combine into a tornado that deals (8 + (4% Ability Power))max Health magic damage over 2 seconds.",
+      "issue": "2초 지속시간은 소용돌이 피해 효과에 붙어 있으므로, 피해가 2초 동안 적용된다는 표현은 맞지만 amount가 총량인지 초당량인지는 원문만으로 단정할 수 없습니다. 현재 구조는 duration과 amount를 함께 두어 의미가 불확실합니다.",
+      "correction": "총 피해량 또는 초당 피해량이라고 단정하지 말고, 원문 공식과 2초 지속을 텍스트/unknown gap으로 보존하세요."
+    },
+    {
+      "id": "Galio.W",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Passive: Galio gains a (7.5/9/10.5/12/13.5% Health) Magic Shield after not taking damage for (12 ~ 8) seconds.",
+      "issue": "대기 조건이 12초만을 요구해 레벨에 따라 8초까지 줄어드는 원문의 범위를 반영하지 않습니다.",
+      "correction": "조건의 레벨별 대기 시간을 12~8초 범위로 나타내거나, 범위 끝값만으로 중간값을 확정하지 않는 gap으로 남기세요."
+    },
+    {
+      "id": "Galio.W",
+      "path": "rules.1.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Galio reduces incoming magic damage by (25/30/35/40/45% + (4% per 100 Ability Power) + (8% per 100 bonus Magic Resist) + (1% per 100 bonus Health))",
+      "issue": "주문력 100당 4%를 구성하는 두 수치를 각각 stat_coefficient와 ratio_input으로 표현해, 4%가 독립적인 주문력 배율인 것처럼 읽힙니다.",
+      "correction": "4% per 100 Ability Power를 하나의 비율 공식으로 보존하고, 두 숫자를 독립 계수처럼 구조화하지 마세요."
+    },
+    {
+      "id": "Galio.W",
+      "path": "rules.1.effects.1.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "incoming physical damage by (12.5/15/17.5/20/22.5% + (2% per 100 Ability Power) + (4% per 100 bonus Magic Resist) + (0.5% per 100 bonus Health))",
+      "issue": "주문력·추가 마법 저항력·추가 체력의 ‘100당’ 단위가 각 계수에서 분리되어, 계수가 해당 스탯에 직접 곱해지는 배율처럼 해석될 수 있습니다.",
+      "correction": "각 항을 ‘스탯 100당 해당 퍼센트’로 보존하거나, 결합 수식을 미확정 텍스트로 남기세요."
+    },
+    {
+      "id": "Galio.W",
+      "path": "rules.2.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Release: Galio Taunts enemy champions for between 0.5 to 1.5 seconds",
+      "issue": "효과 대상이 enemy로만 지정되어 적 챔피언이라는 범위가 빠졌습니다.",
+      "correction": "대상을 적 챔피언으로 한정하세요."
+    },
+    {
+      "id": "Galio.W",
+      "path": "rules.3.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Release: Galio Taunts enemy champions for between 0.5 to 1.5 seconds, deals between (20/30/40/50/60 + (30% Ability Power)) and (60/90/120/150/180 + (90% Ability Power)) magic damage",
+      "issue": "피해 대상이 enemy로만 지정되어 적 챔피언이라는 범위가 빠졌습니다.",
+      "correction": "피해 대상을 적 챔피언으로 한정하세요."
+    }
+  ],
+  "notes": []
+}

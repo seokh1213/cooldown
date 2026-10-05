@@ -1,0 +1,89 @@
+{
+  "id": "Leblanc.R",
+  "sourceHash": "a9d4dd892350ebc80b09638c6e4a43db7f5bf44154be4f004a21fe6d4085dbd1",
+  "beforeCandidateHash": "c0e6ae949437e7ed4c948edeb41cd857d75cd47b05d4d6d28ba9d9063da32162",
+  "candidateHash": "d38f70848eaae3436ad366d49bd56cd2ddc337eb06030c8983f59225e1862bcd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "가장 최근 기본 스킬 모방과 인장 적용/소모, 왜곡, 사슬 연결/속박별 독립 피해값 및 주문력 계수를 확인했다. 이 슬롯에 없는 기본 스킬 수치는 가져오지 않았다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 모방한 스킬이 악의의 인장이고 인장을 적용할 때. target damage magic: 모방한 악의의 인장을 적용할 때 마법 피해를 입힌다. [amount n0=70/n1=150/n2=230 rank_values; stat_coefficient n3=40% scalar caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 모방한 스킬이 악의의 인장이고 표식을 소모할 때. target damage magic: 모방한 악의의 인장 표식을 소모할 때 마법 피해를 입힌다. [amount n4=140/n5=300/n6=460 rank_values; stat_coefficient n7=80% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 모방한 스킬이 왜곡일 때. unknown damage magic: 모방한 왜곡이 마법 피해를 입힌다. [amount n8=150/n9=315/n10=480 rank_values; stat_coefficient n11=90% scalar caster.abilityPower]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 모방한 스킬이 환영 사슬이고 사슬로 옭아맬 때. target damage magic: 모방한 환영 사슬로 옭아맬 때 마법 피해를 입힌다. [amount n12=70/n13=150/n14=230 rank_values; stat_coefficient n15=40% scalar caster.abilityPower]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 모방한 스킬이 환영 사슬이고 속박할 때. target damage magic: 모방한 환영 사슬로 속박할 때 마법 피해를 입힌다. [amount n16=140/n17=300/n18=460 rank_values; stat_coefficient n19=85% scalar caster.abilityPower]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 가장 최근에 사용한 기본 스킬을 모방하여 다시 사용한다. 모방한 피해는 위의 각 기본 스킬별 모방 피해값을 사용한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.*.trigger;rules.5;gaps.0",
+      "issue": "모방 피해 행위자 unknown 및 가장 최근 기본 스킬 반복 규칙 누락, 불필요한 슬롯 연결 부족 주장",
+      "correction": "행위자는 르블랑으로 고치고 가장 최근 기본 스킬 반복 규칙을 추가했다. 각 이름 조건이 슬롯 연결을 보존하므로 잘못된 gap은 제거했다.",
+      "sourceId": "en:body",
+      "quote": "LeBlanc mimics her most recent Ability, using it again. The mimicked Ability deals increased damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 248,
+      "verdict": "false_positive",
+      "reason": "영문 원문 when applied와 한글 인장을 남기면은 모방 인장 부착 시점을 말한다. 기존 적용 표현은 그 시점과 일치하며 갱신 효과를 추가하지 않는다."
+    },
+    {
+      "index": 249,
+      "verdict": "false_positive",
+      "reason": "기존 other 조건이 모방한 인장이고 표식을 소모할 때를 명시하여 소비 사건을 이미 식별한다. 별도 표식 존재 조건은 소비 자체에 내포된다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "모방한 왜곡 피해의 구체적 발동 이벤트와 대상 범위는 원문에 명시되어 있지 않다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

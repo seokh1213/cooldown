@@ -1,0 +1,49 @@
+{
+  "id": "Hecarim.P",
+  "sourceHash": "cf624ded1fa7f8d4ceb8877d0a4752950985e3632a51945798c26e0330de1b32",
+  "beforeCandidateHash": "15c1c1a18f192694519f503bdbe51505c39470ac866a54696e1b7b7e96ebb7df",
+  "candidateHash": "09a4c40ced811691352ba651b0a7fd47795f51ff6a031289f49e01aa7d8d4a1a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "추가 이동속도의12%~24%를 레벨에 따라 공격력으로 얻는 패시브를 대조했다. 입력 이동속도를 소비하거나 전체 이동속도1:1을 전환하지 않으며 bonus move speed 전용 스탯이 없는 한계를 기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 레벨에 따라 자신의 추가 이동 속도의12%~24%만큼 공격력을 추가로 얻습니다. 입력 이동 속도는 소비하거나 대체하지 않습니다. / stat_coefficient=12%/24% [level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0",
+      "issue": "추가 이동속도를 전체moveSpeed로 지정하고 동일12~24%를 input/output에 넣어1:1전환, replace_input을 선언했다.",
+      "correction": "레벨별12~24% 추가 이동속도 계수의 공격력 증가로 보존하고 소비 플래그를 제거했다.",
+      "sourceId": "en:body",
+      "quote": "Hecarim gains ((12% ~ 24%) bonus Movement Speed) Attack Damage, increasing based on level."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "스키마에는 bonus movement speed 입력 스탯이 없다. 전체 moveSpeed로 대체하지 않고 효과 텍스트와12%~24% 계수로 보존하므로 단순 구조화된 선형 스탯 계산은 불가하다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

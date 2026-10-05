@@ -1,0 +1,1435 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "두 자루의 검을 사용해 두 번째 공격마다 마법 피해를 입힌다. 치명타 확률이 증가하고, 100%를 넘는 치명타 확률에 따라 추가 공격력을 얻는다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "eq",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "두 번째 공격은 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yone uses two blades, causing every second Attack to deal 50% magic damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Steel and Spirit: Yone uses two blades, causing every second Attack to deal 50% magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "치명타 확률이 증가하고 치명타 피해량은 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "critChance",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n3",
+                    "en:body:n6"
+                  ],
+                  "stat": "critDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Intent: Yone's Critical Strike Chance is increased by 100% but his Critical Strike Damage is reduced to (100% Critical Strike Damage)."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Gain 0.5 Bonus AD for every 1% Critical Strike Chance above 100%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "stat_gain",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "stat_scope",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "bonus"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "치명타 확률이 100%를 초과하면 초과분에 따라 추가 공격력을 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "critChance",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gain 0.5 Bonus AD for every 1% Critical Strike Chance above 100%."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "전방으로 찔러 일직선상의 적에게 물리 피해를 입힌다. 적중하면 중첩을 얻으며, 중첩이 충분하면 돌진과 돌풍으로 적을 띄우고 피해를 입힌다. 공격처럼 치명타, 적중 시 효과, 생명력 흡수가 적용되며 군중 제어기에 끊길 수 있다. 공격 속도는 재사용 대기시간과 시전 시간을 줄인다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "전방으로 찔러 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yone thrusts forward, dealing (25/50/75/100/125 + (110% Attack Damage)) physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "caster",
+              "text": "적중 시 중첩을 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:summary:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "On hit, grants a stack for 6 seconds."
+            },
+            {
+              "sourceId": "en:summary",
+              "quote": "At 2 stacks, Mortal Steel dashes Yone forward with a gust of wind knocking enemies Airborne."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:summary:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "돌풍과 함께 전방으로 돌진한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "돌풍에 맞은 적을 공중으로 띄운다.",
+              "damageType": null,
+              "crowdControl": "knockup",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "돌풍으로 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "At 2 stacks, this ability causes Yone to dash forward with a wave of wind that Knocks Up for 0.75 seconds and deals (25/50/75/100/125 + (110% Attack Damage)) physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "이 스킬은 공격처럼 치명타를 낼 수 있으며, 치명타 피해량은 별도로 정해져 있다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability acts like an Attack: it can critically strike for (25/50/75/100/125 + (0% Attack Damage)) physical damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability acts like an Attack: it can critically strike for (25/50/75/100/125 + (0% Attack Damage)) physical damage, it applies On-hit effects and lifesteal to the first enemy struck, is interruptible by crowd control, and its cooldown and cast time are reduced with Attack Speed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "처음 맞힌 적에게 적중 시 효과와 생명력 흡수를 적용한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "it applies On-hit effects and lifesteal to the first enemy struck"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_cancelled",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "군중 제어기에 의해 중단될 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "it is interruptible by crowd control"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "공격 속도에 따라 재사용 대기시간과 시전 시간이 줄어든다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "its cooldown and cast time are reduced with Attack Speed."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "중첩을 얻는 기본 적중 횟수와 강화 발동이 요구하는 중첩 상태를 각각 어떻게 구분하는지 원문 툴팁만으로는 명확하지 않다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "On hit, grants a stack for 6 seconds. At 2 stacks, this ability causes Yone to dash forward"
+            },
+            {
+              "sourceId": "en:summary",
+              "quote": "At 2 stacks, Mortal Steel dashes Yone forward"
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "치명타 가능 피해 항목의 본문 수치가 별도 피해인지 치명타 때 적용되는 피해 계산인지 표현이 불명확하다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "it can critically strike for (25/50/75/100/125 + (0% Attack Damage)) physical damage"
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "전방을 베어 물리 피해와 마법 피해를 입힌다. 적중하면 보호막을 얻고, 적중한 챔피언에 따라 보호막량이 증가한다. 미니언에게는 총 피해량 최솟값이 적용된다. 공격 속도는 재사용 대기시간과 시전 시간을 줄인다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "전방을 베어 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yone cleaves forward, dealing 5/10/15/20/25 + 4/4.5/5/5.5/6% max Health physical damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Yone cleaves forward, dealing 5/10/15/20/25 + 4/4.5/5/5.5/6% max Health physical damage and 5/10/15/20/25 + 4/4.5/5/5.5/6% max Health magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "전방을 베어 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and 5/10/15/20/25 + 4/4.5/5/5.5/6% max Health magic damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Yone cleaves forward, dealing 5/10/15/20/25 + 4/4.5/5/5.5/6% max Health physical damage and 5/10/15/20/25 + 4/4.5/5/5.5/6% max Health magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "적중하면 보호막을 얻으며, 적중한 챔피언 수와 순서에 따라 보호막량이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n23"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Yone hits, he gains ((40 ~ 90) + (65% bonus Attack Damage)) Shield for 1.5 seconds. The amount of Shield increases for each champion struck."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "처음 맞힌 챔피언에 대해 보호막 흡수량이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n24"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Shield increased by 100% for the first champion hit"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Shield increased by 100% for the first champion hit and 50% for all subsequent champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "이후 맞힌 챔피언마다 보호막 흡수량이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n25"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and 50% for all subsequent champions."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Shield increased by 100% for the first champion hit and 50% for all subsequent champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "미니언에게 주는 총 피해량에는 최솟값이 적용된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n26"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "other",
+                  "numberRefs": [
+                    "en:body:n27"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Minimum (40 ~ 410) total damage against minions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "공격 속도에 따라 재사용 대기시간과 시전 시간이 줄어든다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This abilities cooldown and cast time are reduced by Attack Speed."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "tooltip은 체력 비율이 대상의 현재 체력인지 최대 체력인지 소유자를 특정하지 않는다. ‘max Health’ 문구만으로 대상 소유자라고 확정하지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "4/4.5/5/5.5/6% max Health physical damage"
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "미니언 총 피해 최솟값의 레벨 범위 중간 수치와 적용 방식은 원문에 명시되어 있지 않다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Minimum (40 ~ 410) total damage against minions."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "영혼 상태에서 몸을 떠나며 이동 속도가 점차 증가한다. 상태가 끝나면 몸으로 돌아와 해당 시간 동안 챔피언에게 입힌 공격 및 스킬 피해의 일부를 반복한다. 재사용하면 일찍 종료할 수 있으며, 강력한 군중 제어 효과 중에는 돌아올 수 없다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "transform",
+              "subject": "caster",
+              "text": "영혼 상태가 되어 지속시간 동안 몸을 떠난다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yone enters a spirit form for 5 seconds, leaving his body behind for the duration"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Yone enters a spirit form for 5 seconds, leaving his body behind for the duration and gaining 10% to 30% ramping Move Speed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "영혼 상태 동안 이동 속도가 점차 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "gaining 10% to 30% ramping Move Speed."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Yone enters a spirit form for 5 seconds, leaving his body behind for the duration and gaining 10% to 30% ramping Move Speed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "영혼 상태 동안 챔피언에게 가한 기본 공격 및 스킬 피해의 일부를 다시 입힌다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": [
+                "per_target"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When the spirit form ends, Yone snaps back to his body and repeats 25/27.5/30/32.5/35% of all Attack and Ability damage he dealt to champions during this time."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "영혼 상태"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "transform",
+              "subject": "caster",
+              "text": "영혼 상태를 일찍 끝낸다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "You may Recast this ability during spirit form. Recast: End spirit form early."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "강력한 군중 제어 효과의 영향"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "강력한 군중 제어 효과를 받는 동안에는 몸으로 돌아올 수 없다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yone cannot snap back while affected by hard crowd control."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "경로상의 모든 적에게 물리 및 마법 피해를 입힌다. 맞은 챔피언이 있으면 마지막으로 맞은 챔피언 뒤로 이동하고 적중한 적을 요네 쪽으로 띄워 당긴다. 챔피언이 맞지 않으면 최대 사거리로 이동한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "경로상의 적에게 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yone strikes all enemies along a path for (100/200/300 + (40% bonus Attack Damage)) physical damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Yone strikes all enemies along a path for (100/200/300 + (40% bonus Attack Damage)) physical damage and (100/200/300 + (40% bonus Attack Damage)) magic damage, teleporting behind the last champion hit and Knocking Up victims towards Yone."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "경로상의 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and (100/200/300 + (40% bonus Attack Damage)) magic damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Yone strikes all enemies along a path for (100/200/300 + (40% bonus Attack Damage)) physical damage and (100/200/300 + (40% bonus Attack Damage)) magic damage, teleporting behind the last champion hit and Knocking Up victims towards Yone."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "마지막으로 맞은 챔피언 뒤로 순간이동한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적중한 적을 요네 쪽으로 당겨 공중으로 띄운다.",
+              "damageType": null,
+              "crowdControl": "pull",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적중한 적을 공중으로 띄운다.",
+              "damageType": null,
+              "crowdControl": "knockup",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "teleporting behind the last champion hit and Knocking Up victims towards Yone."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "적 챔피언이 맞지 않으면 최대 사거리로 순간이동한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If no enemy champion is struck, Yone will instead blink to maximum range."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "마지막 챔피언 적중 시 이동 효과의 조건을 모델이 분명히 표현하지만, 적중 적 전체에 끌어당김/넉업이 적용되는 정확한 적용 대상 문구는 “victims”로만 주어져 스키마상 대상 범위를 더 좁힐 수 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "teleporting behind the last champion hit and Knocking Up victims towards Yone."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Yone.Q",
+      "errors": [
+        {
+          "code": "number_evidence",
+          "path": "rules.2",
+          "detail": "Number reference lacks quoted evidence: en:summary:n0"
+        },
+        {
+          "code": "evidence",
+          "path": "rules.5.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        }
+      ]
+    },
+    {
+      "id": "Yone.W",
+      "errors": [
+        {
+          "code": "damage_type",
+          "path": "rules.5",
+          "detail": "Damage effect needs an explicit source damage type"
+        }
+      ]
+    },
+    {
+      "id": "Yone.E",
+      "errors": [
+        {
+          "code": "damage_type",
+          "path": "rules.2",
+          "detail": "Damage effect needs an explicit source damage type"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,498 @@
+{
+  "summary": "세나는 죽은 적에게서 생성된 영혼을 공격해 안개를 흡수할 수 있으며, 적 챔피언에게 공격이나 스킬을 두 번 적중시키면 안개를 흡수하고 현재 체력에 비례한 추가 물리 피해를 준다. 안개는 공격력·공격 사거리·치명타 확률을 높인다. 세나의 공격은 발사까지 더 오래 걸리고 추가 물리 피해를 주며 대상의 이동 속도 일부를 잠시 얻는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "soul spawned from a dead enemy"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "영혼을 공격하면 그 영혼을 붙들고 있던 안개를 흡수한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Senna can attack souls that spawn from dead enemies to absorb their Mist."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "twice; the specific counting/reset rules are unspecified"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "공격이나 스킬을 두 번 적중시킨 적 챔피언에게서 안개를 흡수한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상 현재 체력의1~10%에 해당하는 추가 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "She can also siphon Mist from enemy champions she hits with Attacks or Abilities twice, dealing an additional (1 ~ 10)% current Health physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "흡수한 안개 하나당 공격력이 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "totalAttackDamage",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each stack of Mist grants 0.75 Attack Damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "stat_gain",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "안개 20중첩마다"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "안개20중첩마다 공격 사거리가20 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "안개20중첩마다 치명타 확률이10% 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "critChance",
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 20 stacks grant 20 Attack Range and 10% Critical Strike Chance"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Every 20 stacks grant 20 Attack Range and 10% Critical Strike Chance but she only has (100% Critical Strike Damage) Critical Strike Damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "세나의 치명타 피해량은 원문에 명시된 비율로 제한된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "critDamage",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "but she only has (100% Critical Strike Damage) Critical Strike Damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Every 20 stacks grant 20 Attack Range and 10% Critical Strike Chance but she only has (100% Critical Strike Damage) Critical Strike Damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "stat_gain",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "최대치를 초과한 치명타 확률"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "최대치를 초과한 치명타 확률 일부가 생명력 흡수로 전환된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": "critChance",
+          "statTo": "lifeSteal",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "critChance",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "35% of excess Critical Strike Chance is converted into Lifesteal."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "세나의 공격은 발사까지 더 오래 걸린다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "공격이 추가 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Senna's Attacks take extra time to fire, deal an additional (20% Attack Damage) physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Senna's Attacks take extra time to fire, deal an additional (20% Attack Damage) physical damage, and briefly grant her (10% ~ 20%) of the target's Move Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "세나의 공격은 대상의 이동 속도 일부를 잠시 부여한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "target",
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "target",
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and briefly grant her (10% ~ 20%) of the target's Move Speed."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Senna's Attacks take extra time to fire, deal an additional (20% Attack Damage) physical damage, and briefly grant her (10% ~ 20%) of the target's Move Speed."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "툴팁은 공격이나 스킬을 두 번 적중시키는 조건만 말하며, 적중 횟수의 누적·초기화 방식은 설명하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "She can also siphon Mist from enemy champions she hits with Attacks or Abilities twice"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "현재 체력 비율 피해의 기준은 대상의 현재 체력으로 텍스트에 보존했다. 스키마에 current Health 통계가 없어 stat 참조를 지정하지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing an additional (1 ~ 10)% current Health physical damage."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "초과 치명타 확률 조건은 보너스 치명타 확률 전체와 같다고 단정할 수 없어 초과분을 효과 텍스트로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "35% of excess Critical Strike Chance is converted into Lifesteal."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "(1 ~ 10)%의 숫자표percent=false는괄호뒤%를보존하지못한다.효과텍스트에대상현재체력1~10%를보존하며참조를그대로단순스칼라실행하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing an additional (1 ~ 10)% current Health physical damage."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "초과치확35%흡혈변환은본문에명시되어있으나stat_conversion스키마는ratio_input숫자를요구하고본문에분모가없다.입출력35/35의잘못된1:1변환을만들지않고stat_modifier와계수텍스트로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "35% of excess Critical Strike Chance is converted into Lifesteal."
+        }
+      ]
+    }
+  ]
+}

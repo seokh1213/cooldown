@@ -1,0 +1,69 @@
+{
+  "id": "Leona.E",
+  "sourceHash": "5656b4fea12de0d52d5129be7c31231c1ad8319a3755287d1945357b99f0f0a8",
+  "beforeCandidateHash": "11b9101ea2c76282545814d390dd699b8b2a0a7950b7803ba28883def4794a81",
+  "candidateHash": "1edf6e16ce1edf5fbea6e91667f9bd4d91e2258031622270807e2bd9a4221168",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "일직선상의 모든 적에게 50/90/130/170/210 + 레오나 주문력 40% 마법 피해, 형상이 사라질 때 마지막으로 맞은 적 챔피언의 0.5초 속박과 그 대상으로의 레오나 돌진을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 enemy.other eq 발사된 빛의 검이 일직선으로 통과하여 적중한 모든 적 적용. enemy: 빛의 검이 일직선상의 적에게 마법 피해를 입힌다. (magic); amount=50/90/130/170/210  rank_values, stat_coefficient=40% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 other 사건에서 target.target_type eq champion, target.hit_order eq 빛의 검에 마지막으로 적중한 적 챔피언, caster.other eq 빛의 검 형상이 사라질 때 적용. target: 마지막으로 적중한 챔피언을 속박한다. (root); duration_seconds=0.5  scalar / caster: 마지막으로 적중한 챔피언에게 돌진한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger,conditions,evidence",
+      "issue": "시전만으로 피해가 적용되며 일직선 전부 대상 근거는 요약에 있다.",
+      "correction": "검의 실제 일직선 적중 사건과 요약 근거를 연결했다.",
+      "sourceId": "en:summary",
+      "quote": "dealing magic damage to all enemies in a line."
+    },
+    {
+      "path": "rules.1.trigger,conditions,gaps",
+      "issue": "일반 챔피언 적중마다 속박·돌진하고 마지막 적중 조건 표현이 불가능하다고 한다.",
+      "correction": "형상이 사라질 때 마지막 적중 적 챔피언을 텍스트 hit_order 조건으로 특정했다.",
+      "sourceId": "en:summary",
+      "quote": "When the image fades, the last enemy champion struck will be briefly immobilized and Leona will dash to them."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 252,
+      "verdict": "repaired",
+      "reason": "본문은 마지막 챔피언이고 요약은 형상이 사라질 때라고 특정한다. 그 종료 사건과 마지막 적중 조건으로 수정하여 모든 적중마다 돌진하지 않게 했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

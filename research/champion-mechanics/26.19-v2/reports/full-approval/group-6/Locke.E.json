@@ -1,0 +1,92 @@
+{
+  "id": "Locke.E",
+  "sourceHash": "8b191f55503dd31f591bdce49615dd1f68a3ab5581bba6339a0b811fcab0e256",
+  "beforeCandidateHash": "4a6d38f92eeaa26634b223822e024dad90cd2f305222a6ff347d4f66a1d00962",
+  "candidateHash": "9d236dc38b29235e598a6d3c1adec7ed8e31c8c4ef702e69e45017e30d0660d2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "도착주변40/50/60/70/80+AP40%마법,다음평타대상돌진/경로40/60/80/100/120+AP40%,각적중대못소모,처치관여CD리셋을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전위치순간이동 후 도착주변적 마법피해40/50/60/70/80+자신AP40%."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이 시전의 다음 평타에만 대상돌진 및 경로상모든적40/60/80/100/120+AP40%마법피해. 단순fired 상태만으로 일반평타에 확장하지 않는다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적중 시 영혼의 대못을 소모. 대못표식 조건을 구체화하고 Each hit의상세범위미명시gap 유지."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "로크의처치관여(takedown)는 이스킬CD초기화, kill만으로 제한하지 않는다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions.1",
+      "issue": "다음공격 조건 누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke teleports to a location, dealing (40/50/60/70/80 + (40% Ability Power)) magic damage to nearby enemies on arrival. On his next Attack, he dashes to his target, dealing (40/60/80/100/120 + (40% Ability Power)) magic damage to all enemies in his path. Each hit consumes Soul Nails. If Locke scores a takedown, the Cooldown of this Ability is reset."
+    },
+    {
+      "path": "rules.2.conditions.0.value",
+      "issue": "소모되는 표식을 일반표식으로 기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke teleports to a location, dealing (40/50/60/70/80 + (40% Ability Power)) magic damage to nearby enemies on arrival. On his next Attack, he dashes to his target, dealing (40/60/80/100/120 + (40% Ability Power)) magic damage to all enemies in his path. Each hit consumes Soul Nails. If Locke scores a takedown, the Cooldown of this Ability is reset."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "note": "영혼의 대못 소모 문구의 'Each hit'가 순간이동 도착 피해와 다음 기본 공격 돌진 경로 피해 중 어느 적중을 가리키는지 본문에서 특정되지 않습니다."
+    }
+  ],
+  "validation": {
+    "id": "Locke.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "id": "Sivir.E",
+  "sourceHash": "c92337300600321100ac3dab5ecd5de9236ecd0b238b344a70dfe18ce86cfc34",
+  "beforeCandidateHash": "869eabda928c0d23d2f7881af92e4e663702e14af5fa08e91bcb3c44f79e9520",
+  "candidateHash": "e16be04fa4ca90a633c7c05b437fdadee766a4fc7d661cecbd7649d1165cec90",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "1.5초다음적스킬한개장벽·챔피언/아이템스킬모두차단,실제차단성공AD/AP회복/패시브발동 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 잠시 동안 다음에 들어오는 적 스킬을 막는 마법 보호막을 생성합니다. 챔피언 스킬과 아이템 스킬을 모두 막습니다.; 수치 duration_seconds en:body:n0=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 이주문방어막으로들어오는적스킬을차단성공; caster: 적 스킬을 막으면 공격력과 주문력에 비례해 체력을 회복합니다.; 수치 ratio_input en:body:n1=60(백분율),en:body:n2=65(백분율),en:body:n3=70(백분율),en:body:n4=75(백분율),en:body:n5=80%(백분율) caster.totalAttackDamage formula_components / ratio_input en:body:n6=50%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 이주문방어막으로들어오는적스킬을차단성공; caster: 적 스킬을 막으면 재빠른 발놀림을 발동합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "자신의ability_hit와shield_ready만으로회복/패시브를발동한사건오류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Sivir creates a magical barrier for 1.5 seconds that blocks the next incoming enemy Ability. If an ability is blocked, Sivir restores ((60/65/70/75/80% Attack Damage) + (50% Ability Power)) health and triggers Fleet of Foot. This shield blocks both champion and item Abilities."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 482,
+      "verdict": "repaired",
+      "reason": "other사건/실제스킬차단성공조건."
+    },
+    {
+      "index": 483,
+      "verdict": "repaired",
+      "reason": "패시브발동에도실제차단성공조건."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

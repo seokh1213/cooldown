@@ -1,0 +1,286 @@
+{
+  "summary": "미니언 처치 시 닐라와 가장 가까운 아군이 경험치 분배로 잃을 경험치 일부를 얻습니다. 아군 챔피언의 회복과 보호막 효과를 강화하며, 서로 자신 또는 상대에게 부여한 추가 효과를 공유합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "경험치 분배로 잃을 경험치의 일부를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "ally",
+          "text": "가장 가까운 아군도 경험치 분배로 잃을 경험치의 일부를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Nilah kills a minion, she and her nearest ally gain 50% of the experience they would have normally lost from sharing the kill."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "아군 챔피언의 스킬로 닐라가 회복 또는 보호막을 받음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "아군 챔피언의 스킬로 받은 회복 효과가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "아군 챔피언의 스킬로 받은 보호막 효과가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nilah gains 7.5% increased effectiveness from healing and 15% from shielding given to her by allied champions abilities."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "아군 챔피언이 닐라에게 회복 또는 보호막을 부여함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "닐라에게 회복을 부여한 아군도 증가한 회복 효과를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "닐라에게 보호막을 부여한 아군도 증가한 보호막 효과를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If an ally heals or shields her, they will also gain the increased amount of the shield or heal themselves."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Nilah gains 7.5% increased effectiveness from healing and 15% from shielding given to her by allied champions abilities."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "아군 챔피언이 자신에게 회복 또는 보호막을 부여함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "아군이 자신을 회복시킨 경우 닐라도 추가 회복 효과를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "아군이 자신에게 보호막을 부여한 경우 닐라도 추가 보호막 효과를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If an ally shields or heals themself, Nilah will also gain that additional effect."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Nilah gains 7.5% increased effectiveness from healing and 15% from shielding given to her by allied champions abilities."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

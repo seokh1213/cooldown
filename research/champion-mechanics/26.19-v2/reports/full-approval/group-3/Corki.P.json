@@ -1,0 +1,85 @@
+{
+  "id": "Corki.P",
+  "sourceHash": "a9e81397fdb85b45bf7c41798b17cffd67e2b23f45612f2758a526184cc546e4",
+  "beforeCandidateHash": "a6c48201250691f9351896ec5e658b62a9323defd51d8ade54999b461dc32c9b",
+  "candidateHash": "1b2a812bf8a4c704451e55d2132062819828f4a21a6c2ec70986f4270eaf736f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "기본공격및주문검20%추가고정피해,일반공격총AD20%,치명타총AD20%×치명타피해100%의곱을대조했다.주문검피해의계산입력미명시는유지했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 이기본공격이치명타가아닐때 → target: 치명타아닌기본공격은총공격력20%의추가고정피해를입힙니다. [true] / stat_coefficient=20% (caster totalAttackDamage) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 공격이 치명타일 때 → target: 치명타기본공격의추가고정피해는(총공격력20%)×(치명타피해량100%)입니다. 일반공격추가피해와별도로중복더하지않습니다. [true] / stat_coefficient=20% (caster totalAttackDamage) [formula_components]; stat_coefficient=100% (caster critDamage) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 주문검효과가실제로발동해피해를줄때 → target: 주문검효과가20%추가고정피해를입힙니다. 그20%의계산입력은공급본문미명시입니다. [true] / ratio_output=20% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1",
+      "issue": "일반/치명타추가피해가중복적용되고치명타식에서총AD20%입력이빠지며20%를치명타스탯계수에잘못묶었다.",
+      "correction": "치명타분기를상호배타로구분하고총AD20%×치명타피해100%복합곱을보존했다.",
+      "sourceId": "en:body",
+      "quote": "Critical Strikes: (20% Attack Damage) × (100% Critical Strike Damage)."
+    },
+    {
+      "path": "rules.2",
+      "issue": "주문검추가피해가모든기본공격에서무조건발생했다.",
+      "correction": "실제주문검피해발동사건으로한정했다.",
+      "sourceId": "en:body",
+      "quote": "Corki's Attacks and Spellblades deal 20% bonus true damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "주문 검의 추가 고정 피해 계산 기준 스탯은 툴팁에 명시되어 있지 않다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

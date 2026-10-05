@@ -11,6 +11,7 @@ import { answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact, an
 import { continueMatchup } from "./matchupPlans";
 import { answerNewMatchup } from "./newMatchupPlan";
 import { answerItemOrMechanics, answerChampion } from "./championPlans";
+import { comboAdvicePlan } from "./comboPlan";
 
 /** 자료 계획의 9개 처리기. 새 상성의 이름 수별 3개 처리기를 하나로 합쳐 기존 우선순위를 유지한다. */
 const ANSWER_STAGES = {
@@ -37,6 +38,8 @@ export async function planAnswer(input: QuestionInput, ctx: PlanContext, deps: P
   if (asksAboutHelper(question)) return { type: "code", answer: copy.identity };
 
   const resolved = resolveQuestion(input, data);
+  const combo = comboAdvicePlan(resolved, ctx);
+  if (combo) return combo;
   const knowledgeFact = knowledgeFactPlan(resolved, ctx);
   if (knowledgeFact) return knowledgeFact;
   const passive = passiveMechanicPlan(resolved, ctx);

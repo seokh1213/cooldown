@@ -1,0 +1,68 @@
+{
+  "id": "Ornn.Q",
+  "sourceHash": "68b98c83b7c06410a74dec402967011c685e6b8140eadc2fa3cf6376dfb68faa",
+  "beforeCandidateHash": "2372b3e4333712378920cc581168fdfe30876ffe7b3b134c296aa17267931983",
+  "candidateHash": "2a4a94f6f276a3e8dbac0e62d3bc14f8a56bb0c8c2935d2deee36c7bc72438cb",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "지연기둥4초와챔피언적중후잠시뒤정지를본문/요약에서확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 균열이 적에게 물리 피해를 입힙니다. [physical] / amount=20/45/70/95/120 [rank_values]; stat_coefficient=110% (caster totalAttackDamage) [formula_components] | enemy: 균열에 맞은 적을 둔화시킵니다. [slow] / amount=40% [scalar]; duration_seconds=2 [scalar] | unknown: 잠시 후 균열 끝에 바위 기둥이 생겨4초 유지된다. / duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion → unknown: 적 챔피언을 맞히면 균열은 잠시 후 멈춥니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.2.text",
+      "issue": "기둥의잠시후생성시점이누락",
+      "correction": "잠시후생성/4초유지텍스트",
+      "sourceId": "en:summary",
+      "quote": "After a small delay, a magma pillar forms at the end location."
+    },
+    {
+      "path": "rules.1.trigger.subject",
+      "issue": "적이능력행위자",
+      "correction": "caster",
+      "sourceId": "en:body",
+      "quote": "The fissure stops shortly after hitting an enemy champion."
+    },
+    {
+      "path": "summary",
+      "issue": "균열정지지연이누락",
+      "correction": "잠시후정지를명시",
+      "sourceId": "en:body",
+      "quote": "The fissure stops shortly after hitting an enemy champion."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "Nocturne.E",
+  "sourceHash": "cfdb11c5c9506f91d9a961a49dbce22bd22df25f4ef4bcb795c7e0f19d5be566",
+  "beforeCandidateHash": "904e348291c7e8f04172c71c521d099495b9271469aa5d9e12c3e1429c043f54",
+  "candidateHash": "904e348291c7e8f04172c71c521d099495b9271469aa5d9e12c3e1429c043f54",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "공포적접근90%이속·2초연결총마법피해·연결종료까지안끊어지면랭크별1.25~2.25초공포를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.other present 공포 상태 / caster.other present 공포에 빠진 적에게 접근; caster: 공포에 빠진 적에게 접근할 때 이동 속도가 증가합니다.; 수치 amount en:body:n0=90%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 악몽의 연결이 대상에게 지속 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n1=80,en:body:n2=125,en:body:n3=170,en:body:n4=215,en:body:n5=260 상수 rank_values / stat_coefficient en:body:n6=100%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n7=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: expiry 사건의 행위자 target; 조건 target.other present 연결이 끊어지지 않음; target: 연결이 끊어지지 않으면 대상이 공포에 빠집니다. [fear]; 수치 duration_seconds en:body:n8=1.25,en:body:n9=1.5,en:body:n10=1.75,en:body:n11=2,en:body:n12=2.25 상수 rank_values; flags 없음"
+    }
+  ],
+  "repairs": [],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

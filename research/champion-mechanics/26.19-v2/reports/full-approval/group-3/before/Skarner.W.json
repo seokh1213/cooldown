@@ -1,0 +1,67 @@
+{
+  "summary": "스카너가 체력 비례 보호막을 얻고 지진을 일으켜 주변 적에게 마법 피해와 둔화를 적용합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "보호막을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Skarner gains (8% Health) Shield for 2.5s"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Skarner gains (8% Health) Shield for 2.5s and triggers an earthquake that deals (50/70/90/110/130 + (80% Ability Power)) magic damage and Slows nearby enemies by 20% for 1s."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "보호막 수치는 Health의 8%로 제시되지만, 원문이 기준 체력 통계의 범위를 특정하지 않아 통계를 null로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Skarner gains (8% Health) Shield for 2.5s"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "id": "Velkoz.R",
+  "sourceHash": "9ba4c163d1f6e87f5cbd9f2adda3bd5664b9cbe68b0f638989b7bb6a3e4debf8",
+  "beforeCandidateHash": "821f42a1551b29ce60ca0460182b27f1b2152b8999b3845aa019ff4445479da0",
+  "candidateHash": "b66208fa46658272f2f37914941becf90abb6814a1ec719a7fb330cb228a80e0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "커서를따르는2.5초정신집중광선총마법피해,최근유기물분해피해적대신고정피해,광선내20%둔화및주기적분해중첩을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.other neq 최근 유기물 분해로 피해를 입은 적, target.distance eq 궁극기 광선에 맞은 적 적용. target: 광선이 총 마법 피해를 입힙니다. (magic); amount=450/700/925  rank_values, stat_coefficient=125% caster의 abilityPower scalar, duration_seconds=2.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.other eq 최근 유기물 분해로 피해를 입은 적, target.distance eq 궁극기 광선에 맞은 적 적용. target: 최근 유기물 분해로 피해를 입은 적에게 광선이 마법 피해 대신 고정 피해를 입힙니다. (true); amount=450/700/925  rank_values, stat_coefficient=125% caster의 abilityPower scalar, duration_seconds=2.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 enemy.distance eq 궁극기 광선 안의 적 적용. enemy: 광선안의적을20%둔화시킨다.별도의고정2.5초둔화지속시간은추정하지않는다. (slow); amount=20%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 target.distance eq 궁극기 광선 안에 있는 적 적용. target: 광선에 맞은 적에게 분해 중첩을 주기적으로 적용합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 2.5초동안정신집중하며커서를따르는에너지광선을발사한다.; duration_seconds=2.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1",
+      "issue": "피해이력조건을실제표식존재로잘못분류",
+      "correction": "최근분해피해이력eq/neq및광선적중대상으로명시",
+      "sourceId": "en:body",
+      "quote": "Deals true damage instead to enemies recently damaged by Organic Deconstruction."
+    },
+    {
+      "path": "rules.2,3",
+      "issue": "피해지속2.5초를둔화지속/적중횟수로잘못연결",
+      "correction": "고정둔화시간제거및광선내주기적중첩조건",
+      "sourceId": "en:body",
+      "quote": "Enemies gain stacks of Deconstruction periodically while in the beam."
+    },
+    {
+      "path": "rules.4",
+      "issue": "커서추적정신집중발사규칙누락",
+      "correction": "2.5초정신집중과커서추적발사보완",
+      "sourceId": "en:body",
+      "quote": "Vel'Koz channels a ray of energy that follows the cursor"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 601,
+      "verdict": "false_positive",
+      "reason": "기존mark absent는최근분해피해조건이없는적에게마법피해,별도present규칙은고정피해라반전오류가아니다.이력조건의분류만정정했다."
+    },
+    {
+      "index": 602,
+      "verdict": "repaired",
+      "reason": "2.5초는전체광선피해시간이고고정둔화시간아니다.둔화에서제거했다."
+    },
+    {
+      "index": 603,
+      "verdict": "false_positive",
+      "reason": "원문은고정20%둔화를서술하며decays같은flag를요구하지않는다.광선내범위를조건/text로명시했다."
+    },
+    {
+      "index": 604,
+      "verdict": "repaired",
+      "reason": "2.5는시간이지적중횟수가아니다.광선안의적조건으로교체했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "분해로 ‘최근’ 피해를 입은 상태의 지속 시간이나 판정 범위는 툴팁에 제시되지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "광선이 분해 중첩을 적용하는 주기는 수치로 제시되지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "요약은분해연구된챔피언이고정피해를받는다고한정하지만본문은최근유기물분해피해를입은적일반이라고한다.본문의구체적인피해이력조건을우선했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,255 @@
+{
+  "summary": "피오라가 적 챔피언의 급소를 드러낸다. 급소를 공격하면 추가 고정 피해를 입히고 이동 속도가 상승하며 체력을 회복한다. 급소를 공격하거나 시간이 지나면 새 급소가 드러난다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Vital"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "최대 체력에 비례한 추가 고정 피해를 입힌다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 상승하고 시간에 걸쳐 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        },
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting this Vital with an Attack or Ability deals an additional (3% + (4% per 100 bonus Attack Damage)) max Health true damage, grants Fiora 20/30/40/50% Move Speed decaying over 2 seconds, and restores (35 ~ 100) Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "적 챔피언의 급소를 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiora identifies Vitals on enemy champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "새 급소를 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiora reveals a new Vital after 15 seconds or after striking one."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Vital"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "새 급소를 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiora reveals a new Vital after 15 seconds or after striking one."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

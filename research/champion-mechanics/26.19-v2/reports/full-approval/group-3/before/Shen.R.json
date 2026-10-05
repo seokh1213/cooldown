@@ -1,0 +1,196 @@
+{
+  "summary": "쉔이 맵 어디에 있든 아군 챔피언에게 잃은 체력에 따라 달라지는 보호막을 부여합니다. 정신 집중을 마치면 대상 아군의 위치로 기의 검과 함께 순간이동합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "아군"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "target",
+          "text": "맵 어디에 있든 아군 챔피언에게 잃은 체력에 따라 보호막을 부여합니다. 잃은 체력이 기준치에 도달하면 보호막이 최대가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shen grants an allied champion anywhere on the map between (120/220/320 + (15% bonus Health) + (135% Ability Power)) and (192/352/512 + (24% bonus Health) + (216% Ability Power)) Shield based on their missing Health for 5 seconds (max Shield at 60% missing Health)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n12"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "정신 집중을 마치면 아군의 위치로 순간이동하며 기의 검도 함께 이동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After channeling for 3 seconds, Shen teleports to his ally's location with his Spirit Blade."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "보호막은 대상의 잃은 체력에 따라 달라지고, 잃은 체력 60%에서 최대가 되지만, 해당 비례식의 계산 방식은 원문에 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shield based on their missing Health for 5 seconds (max Shield at 60% missing Health)."
+        }
+      ]
+    }
+  ]
+}

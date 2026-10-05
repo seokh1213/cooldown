@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Xayah.E",
+      "sourceHash": "858a507b2b41d51aab7c7edb987e0eb678d84a1267a5466939b289ec16a3b428",
+      "candidateHash": "62a2984fc50fa5b57b15c51c3384722c30741c4c711585b32d39e2c246611476"
+    },
+    {
+      "id": "Xayah.P",
+      "sourceHash": "7f90217b2296787052bd409251418a25df2ca5f6fc034eb2e9485882c0b78498",
+      "candidateHash": "281e2d743c0f756792d9eb1ec490d55dc4392f27d2d79ac2c5ac946f6d88506d"
+    },
+    {
+      "id": "Xayah.Q",
+      "sourceHash": "92859c48ec12500fd157143aa60ad37d8f397b8a998e0aa292c8f0108b034828",
+      "candidateHash": "52156330f6695f3f8d1c5d237cb4d3a49f5ea8e0fca222b6a782aae7c2d2df29"
+    },
+    {
+      "id": "Xayah.R",
+      "sourceHash": "ee13990307f5438c74ea10a9ae74b08b2891e8416df90f6c5f38b3c9d51ea5c2",
+      "candidateHash": "3ad1c68d2d96a5d695df4a4b13561621693f19025ff75cbfa601807b80d21f26"
+    },
+    {
+      "id": "Xayah.W",
+      "sourceHash": "75913f6b596b2228a7969f66b8a32cd6396aa6493c167b85bd1cdd2f33e7c268",
+      "candidateHash": "37c884d153f946e2dfa304d24ed064060e731e490404163ab2fcd3eb41f50fc0"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Xayah.Q",
+      "path": "rules.0.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Xayah throws two daggers, dealing (45/60/75/90/105 + (50% bonus Attack Damage)) physical damage each and leaving two Feathers.",
+      "issue": "단검 두 개를 던진다는 수를 피해 효과의 count 매개변수로 넣었습니다. 원문에서 두 개는 투사체 수이고, 각 단검 피해량은 별도입니다.",
+      "correction": "이 피해 효과에서 count 매개변수를 제거하고, 단검 수는 투사체 수 또는 남기는 깃털 수로 기록하세요."
+    },
+    {
+      "id": "Xayah.Q",
+      "path": "rules.1.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Targets hit after the first take (22.5/30/37.5/45/52.5 + (25% bonus Attack Damage)) damage from each dagger.",
+      "issue": "대상마다 받는 피해량 계산에 단검 수 2를 count로 붙였습니다. 원문은 각 단검의 감소 피해만 설명하며 대상당 단검 적중 수나 총 피해 계산은 명시하지 않습니다.",
+      "correction": "피해 효과의 count 매개변수를 제거하고, 감소 피해를 단검별 피해로 유지하세요."
+    },
+    {
+      "id": "Xayah.R",
+      "path": "rules.1.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "before raining down daggers that deal (200/300/400 + (100% bonus Attack Damage)) physical damage",
+      "issue": "피해 효과의 발동을 시전으로 기록했지만, 원문은 도약 후 단검을 퍼부을 때 피해가 발생한다고 구분합니다.",
+      "correction": "피해 규칙의 이벤트를 시전 후 단검이 떨어지는 적중 이벤트로 기록하세요."
+    },
+    {
+      "id": "Xayah.W",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Rakan is nearby he will also gain the effects of this Ability, except he gains Move Speed when Xayah strikes a target.",
+      "issue": "요약에서 라칸도 이 스킬의 효과를 받는다는 점과, 자야가 대상을 공격할 때 라칸의 이동 속도가 오른다는 조건을 누락했습니다.",
+      "correction": "요약에 라칸이 근처에 있으면 스킬 효과를 함께 받고, 자야가 대상을 공격할 때 이동 속도를 얻는다는 내용을 추가하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,68 @@
+{
+  "scope": "Final candidate delta for Graves.P and Nami.E",
+  "hashAlgorithm": "SHA-256 of JSON.stringify(parsed candidate), consistent with sources.digest",
+  "changes": [
+    {
+      "id": "Graves.P",
+      "candidatePath": "candidates/Graves.P.json",
+      "beforeHash": "2de7d345e9a60645f813a7fb4675dc273bf2f5c649ba8b043ec6dc1e363498f6",
+      "afterHash": "2b52cf085a4a53a2cf033533dbedde98eae3f888bf12f744d3dc8457132da0de",
+      "changedFields": [
+        {
+          "path": "/rules/6/conditions",
+          "before": "hit_count > en:body:n0 (two shells); target is not champion",
+          "after": "target.other equals named text condition “해당 공격의 여러 탄환에 적중”; target is not champion",
+          "basis": "Source says non-champions struck by multiple bullets are knocked back. Two shells is reload capacity, not a knockback hit threshold."
+        },
+        {
+          "path": "/rules/6/evidence",
+          "before": "Knockback quote plus unrelated two-shell reload quote",
+          "after": "Knockback quote only",
+          "basis": "Removed unrelated evidence."
+        },
+        {
+          "path": "/gaps/1/detail",
+          "before": "Claimed the schema cannot express a text condition",
+          "after": "Records that the multi-bullet condition is retained as named text and exact bullet threshold is unspecified."
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Non-champions struck by multiple bullets are Knocked Back."
+        }
+      ]
+    },
+    {
+      "id": "Nami.E",
+      "candidatePath": "candidates/Nami.E.json",
+      "beforeHash": "f7f1ea737f5905380259ba558b528dc721a08ce6f7f8e6f02c9ed27a1f05819f",
+      "afterHash": "a69617073d3991172d2bfb7e34a5a5b7d66678f194524503b9883eb72d7aea5b",
+      "changedFields": [
+        {
+          "path": "/summary",
+          "before": "Omitted 3 uses and 6-second duration.",
+          "after": "States the next 3 attacks and abilities are empowered for 6 seconds.",
+          "basis": "Matches sourced count and duration refs without changing typed count or duration."
+        },
+        {
+          "path": "/rules/0/effects/0/text",
+          "before": "Says the ally’s next attacks and abilities without duration/count.",
+          "after": "States the ally’s next 3 attacks and abilities are empowered for 6 seconds.",
+          "basis": "Makes the mark scope and source quantities explicit; typed refs remain unchanged."
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nami empowers an allied champion's next 3 Attacks and Abilities for 6 seconds"
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "command": "node --import tsx scripts/llm/champion-mechanics/check.ts research/champion-mechanics/26.19-v2 Graves.P Nami.E",
+    "checked": 2,
+    "valid": 2
+  }
+}

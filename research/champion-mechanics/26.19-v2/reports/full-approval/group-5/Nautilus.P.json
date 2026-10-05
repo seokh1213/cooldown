@@ -1,0 +1,135 @@
+{
+  "id": "Nautilus.P",
+  "sourceHash": "4f364afbaead84995ffafd3d92d442a666345c7fc5abecdb377049c061b109de",
+  "beforeCandidateHash": "7026f73710068f5ca38ed7d86f02df106fb2db514955ef85d7f84c43956ee755",
+  "candidateHash": "c017782c275c287dcf6a79463d50508bf72fdeb4f95746ec5a9d881bb00e2510",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "같은대상에첫공격의14~116+100%AD전체physical·root0.75~1.50초를확인,순서/변화기준미공급을추측하지않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "target별첫공격이며enemy중첫순서아님. 전체14~116+100%ADphysical과0.75~1.50초root,범위unknown.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 노틸러스의 첫 기본 공격"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "14",
+              "value": 14,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "116",
+              "value": 116,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "0.75",
+              "value": 0.75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "1.50",
+              "value": 1.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "대상별첫공격을hit_order·전체AD식을추가피해·root초를min/max량.",
+      "correction": "대상별첫조건·전체공격식·durationunknown.",
+      "sourceId": "en:body",
+      "quote": "Nautilus' first Attack against a target deals ((14 ~ 116) + (100% Attack Damage)) physical damage and Roots them for (0.75 ~ 1.50) seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "피해/속박범위의변화기준및대상별첫공격의재활성화주기는공급되지않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

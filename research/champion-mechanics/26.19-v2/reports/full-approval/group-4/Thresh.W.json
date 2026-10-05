@@ -1,0 +1,103 @@
+{
+  "id": "Thresh.W",
+  "sourceHash": "38c355e8262c2f7a7cc2df365d6b6301a2d7718932ef6bb37eda1938e7cb5734",
+  "beforeCandidateHash": "9b8b2c7f18f0df881d1808f1ac0034e240f52e3ef96ccdcb881dd99dea55fd05",
+  "candidateHash": "5cb5ccc12503674f7761d4196eb3c5910dc3e07e88ea737bba42c83b2e397ff0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "랜턴 클릭 아군의 쓰레쉬 방향 이동, 쓰레쉬와 처음 접촉한 아군 챔피언 하나의 52/72/92/112/132·4초 보호막, 영혼 수 의존과 랜턴 영혼 수집을 확인했다. 아군 보호막은 근처 전체가 아닌 첫 접촉 한 명에 적용된다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 쓰레쉬가 보호막을 얻습니다. 보호막은 획득한 영혼 수에 따라 증가합니다.; amount=52/72/92/112/132  rank_values, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 other 사건에서 ally.other eq 이 랜턴을 클릭한 아군 적용. ally: 아군이 랜턴을 클릭하면 쓰레쉬에게 이동합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 랜턴을 사용하여 영혼을 획득함 적용. caster: 쓰레쉬는 랜턴으로 영혼을 획득할 수 있습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 enter_area 사건에서 ally.target_type eq champion, ally.other eq 이 랜턴에 처음 접촉한 아군 챔피언 하나 적용. ally: 랜턴에 처음 접촉한 아군 챔피언 하나가 보호막을 얻습니다. 보호막은 획득한 영혼 수에 따라 증가합니다.; amount=52/72/92/112/132  rank_values, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects,rules.3",
+      "issue": "시전 즉시 아군 보호막을 부여해 첫 접촉 챔피언 조건이 text에만 있다.",
+      "correction": "아군 보호막을 첫 아군 챔피언 접촉 사건과 조건으로 분리했다.",
+      "sourceId": "en:body",
+      "quote": "the first ally champion to come in contact with it."
+    },
+    {
+      "path": "rules.1-2.conditions",
+      "issue": "아군 클릭 및 랜턴 영혼 수집 사건 조건이 빠져 있다.",
+      "correction": "랜턴 클릭과 랜턴으로 영혼을 수집하는 실제 사건을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "allowing an ally to click on it to dash to Thresh."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "보호막이 획득한 영혼 수에 따라 증가한다고 명시되어 있지만 증가량 계산식은 제공되지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "요약은 근처 아군 챔피언들을 보호한다고 포괄적으로 설명하지만 본문은 처음 접촉한 아군 챔피언 하나만 명시한다. 규칙은 더 구체적인 본문의 첫 접촉 대상 조건을 따른다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

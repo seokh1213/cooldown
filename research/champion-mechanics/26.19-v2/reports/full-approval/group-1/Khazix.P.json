@@ -1,0 +1,55 @@
+{
+  "id": "Khazix.P",
+  "sourceHash": "2a4383e88db74e159376ecd4b504081be06a715a76ec19da5157d84e36fa2f2c",
+  "beforeCandidateHash": "760e6c0b9b013c675167c8d79bfc5d353d58a2cd6e20a6718b80f1d0b32f5834",
+  "candidateHash": "26bb449bb87266789d7ba5ceca0ce9aaa69423861fb9de4a57e34095a7fd2598",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "근처 동료 없는 적 고립 표시와 적 팀에게 보이지 않을 때 보이지 않는 위협 획득을 분리했다. 다음 적 챔피언 기본 공격의 추가 마법 피해와 25% 2초 둔화를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.visibility eq 적 팀에게 보이지 않음. caster other: 적 팀에게 보이지 않을 때 다음 공격에 보이지 않는 위협 효과를 부여합니다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 target.target_type eq champion; caster.other eq 적 팀에게 보이지 않을 때 획득한 보이지 않는 위협의 다음 적 챔피언 기본 공격. target damage magic: 다음 공격에 추가 마법 피해를 줍니다. [amount n0=22/n1=141 level_range; stat_coefficient n2=50% formula_components caster.bonusAttackDamage] / target crowd_control slow: 둔화시킵니다. [amount n3=25% scalar; duration_seconds n4=2 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 nearby_enemies.other eq 해당 적 근처에 그 적의 아군이 없음. nearby_enemies mark: 근처에 아군이 없는 적을 고립 상태로 표시합니다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "독립 고립 표시를 시야 이탈 사건에 결합, 공격 시 현재 시야/후속 발사 요구, 레벨 피해 범위 최솟값·최댓값 해석",
+      "correction": "고립과 은신 상태의 강화 획득을 분리하고 획득한 다음 적 챔피언 기본 공격으로 제한했다. 기본 추가 피해는22~141 레벨 범위이다.",
+      "sourceId": "en:body",
+      "quote": "Enemies with no nearby allies become Isolated."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 204,
+      "verdict": "repaired",
+      "reason": "leave_vision 순간 대신 적 팀에게 보이지 않는 상태에서 다음 공격 강화 획득 규칙으로 고쳤다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

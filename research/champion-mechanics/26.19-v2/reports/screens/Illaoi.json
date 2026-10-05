@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Illaoi.E",
+      "sourceHash": "a037800af2a91a5f4c0ad229c1ae353197cf9f0570e4afefca4b37e598f89af0",
+      "candidateHash": "89e013a2547651f17576497aed9ff9b9dff42acf4f0794cfdba9cb445158c9d4"
+    },
+    {
+      "id": "Illaoi.P",
+      "sourceHash": "3fe384626dbeddb897440322185b2860a5e637b4289de3be2171073710a44a36",
+      "candidateHash": "55f3c475162f063e8fadf0022008327a4839b6e145b92e86bfdfdd1a27f0c62d"
+    },
+    {
+      "id": "Illaoi.Q",
+      "sourceHash": "fdbec53b54281e410fcde579865653e7146875770c82ad64e56d6a729cc302ac",
+      "candidateHash": "19865b6094bc554505edc4e886ce8839225b3d69da42e286da0d7788be86e7b4"
+    },
+    {
+      "id": "Illaoi.R",
+      "sourceHash": "9245da84862b5be4f020590cb21c055b0b985f5b1a934d055459bfb35fa02fb3",
+      "candidateHash": "961d2fdc171d1a9e87a0ac2e2b250f7b2663ffc873920cdaf2f9d1304fcd6f89"
+    },
+    {
+      "id": "Illaoi.W",
+      "sourceHash": "e84cf401747505200e7e95efb67484ed1c54296bbc8d026be90877014549cae8",
+      "candidateHash": "7b181ec95b37386c83dcf93d63c8afc2ebf4753bc63cde7749b090f5979cfd1e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Illaoi.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "spawning a Tentacle on nearby terrain if no other Tentacles are nearby",
+      "issue": "촉수 소환 조건을 ‘근처 적이 정확히 1명’으로 구조화했지만, 원문은 근처에 다른 촉수가 없는 조건입니다. 적 수 조건은 근거가 없습니다.",
+      "correction": "이 조건을 제거하고 근처에 다른 촉수가 없다는 조건만 텍스트로 보존하세요."
+    },
+    {
+      "id": "Illaoi.R",
+      "path": "rules.3.effects.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "For the next 8 seconds, Tentacles are untargetable and Slam 50% faster",
+      "issue": "후려치기 속도 증가 효과를 ‘속도를 50% 높인다’고 적어 원문의 ‘50% 더 빠르게’보다 의미가 단정적으로 보일 수 있습니다. 다만 수치와 8초 지속은 일치합니다.",
+      "correction": "효과 텍스트를 ‘촉수가 8초 동안 50% 더 빠르게 후려칩니다’로 바꾸세요."
+    },
+    {
+      "id": "Illaoi.R",
+      "path": "rules.3.effects.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Harsh Lesson has a 2 second cooldown",
+      "issue": "‘재사용 대기시간이 설정됩니다’는 기존 대기시간이 2초로 설정되는 효과인지, 2초 감소인지 분명하지 않습니다.",
+      "correction": "‘혹독한 가르침의 재사용 대기시간이 2초가 됩니다’로 명시하세요."
+    },
+    {
+      "id": "Illaoi.W",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Against jungle monsters the damage is capped at 300.",
+      "issue": "정글 몬스터 상한 조건을 모든 몬스터 대상 조건으로 구조화했지만, 원문은 정글 몬스터로 범위를 한정합니다.",
+      "correction": "조건을 정글 몬스터 대상으로 한정하거나, 구체 유형이 불명확하면 해당 범위를 텍스트/갭으로 보존하세요."
+    }
+  ],
+  "notes": []
+}

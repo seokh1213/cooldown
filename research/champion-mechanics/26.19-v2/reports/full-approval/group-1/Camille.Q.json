@@ -1,0 +1,80 @@
+{
+  "id": "Camille.Q",
+  "sourceHash": "5e760fc9067bba27c9fd155a06453beb47213cadeb8f5e4a9c555efc4b0922a9",
+  "beforeCandidateHash": "90cbdaf3a16666d2b8a24ae2f77d27bcf0a5e524c60fa3ea91a5e20371a53774",
+  "candidateHash": "a6762f85a4b0171697977f7080dfb8aaf7e8539f47fd3c2f94e83da9803d90ec",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "다음공격bonusAD총20~40%/1초MS25~45%,next3.5초recast,재공격적중이첫공격후≥1.5면bonusAD40~80%대체/공격전체40~100%true전환,피해스킬효과발동 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.activation eq empowered. target damage physical: 강화된 다음 공격이 추가 물리 피해를 입힌다. [stat_coefficient n0=20%/n1=25%/n2=30%/n3=35%/n4=40% rank_values caster.totalAttackDamage] / caster stat_modifier: 이동 속도가 증가한다. [amount n5=25%/n6=30%/n7=35%/n8=40%/n9=45% rank_values; duration_seconds n10=1 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster attack_followup: 시전 후 다음 3.5초 동안 이 스킬을 재사용할 수 있다. [duration_seconds n11=3.5 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.activation eq empowered; caster.time gte n12=1.5; caster.other eq 재사용으로 강화된 기본 공격이 첫 번째 기본 공격 후1.5초 이상 지난 시점에 적중. target damage physical: 재사용 공격이 적중하면 추가 피해가 강화된다. [stat_coefficient n13=40%/n14=50%/n15=60%/n16=70%/n17=80% rank_values caster.totalAttackDamage] flags=replaces_base / target other: 재사용 강화 공격의 전체 공격 피해 중40~100%가 고정 피해로 전환된다. 추가로 독립 피해를 더하는 효과가 아니다. [ratio_output n18=40%/n19=100% level_range]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 caster.other eq 이 Q로 실제 피해를 입힘. caster attack_modifier: 이 스킬은 피해를 입힐 때 스킬 효과를 발동한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/2/new/gaps",
+      "issue": "시간앵커/재공격식별·추가피해대체·전환범위/스킬효과누락·ko재사용기간충돌",
+      "correction": "재공격적중조건/replaces_base/전체공격전환/효과발동규칙과source_conflict",
+      "sourceId": "en:body",
+      "quote": "This Ability triggers spell effects upon dealing damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 31,
+      "verdict": "repaired",
+      "reason": "시간앵커와재사용공격적중을조건에명시했다."
+    },
+    {
+      "index": 32,
+      "verdict": "repaired",
+      "reason": "전환율은추가독립피해배율이아니라Attackdamage의타입전환이다. ratio_output및원문전체공격범위로명확히보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "강화에는 재사용 공격이 첫 공격으로부터 지정된 시간 이상 지난 뒤 적중해야 한다. 조건 필드로 두 공격 간 경과 시간의 기준과 재사용 공격 적중을 함께 명시할 수 없어 trigger와 설명에 보존했다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "en본문은next3.5초내재사용이나ko본문은3.5초후재사용이라고번역한다. en3.5초창을우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

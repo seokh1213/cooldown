@@ -1,0 +1,200 @@
+{
+  "summary": "트위치가 독약 병을 던져 맞힌 적에게 맹독 중첩을 적용하고, 독구름을 남깁니다. 구름 안에 머무는 적은 둔화되고 매초 맹독 중첩을 추가로 받습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "독약 병에 맞은 적에게 맹독 중첩을 하나 적용한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Twitch hurls a cask that adds a stack of Deadly Venom to all enemies struck and leaves behind a toxic cloud that persists for 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "독구름이 일정 시간 지속된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Twitch hurls a cask that adds a stack of Deadly Venom to all enemies struck and leaves behind a toxic cloud that persists for 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "독구름 안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "구름안에머무는적을랭크별기본감속량과시전자주문력계수항만큼둔화시킨다.결과단위는원문이명시하지않아확정계산하지않는다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies that remain within the cloud are Slowed by (30/35/40/45/50 + (6% Ability Power))and receive an additional stack of Deadly Venom each second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "독구름 안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "독구름안에머무는적에게매초맹독중첩하나를추가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies that remain within the cloud are Slowed by (30/35/40/45/50 + (6% Ability Power))and receive an additional stack of Deadly Venom each second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Twitch hurls a cask that adds a stack of Deadly Venom to all enemies struck and leaves behind a toxic cloud that persists for 3 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "초기및매초추가중첩은각각1개지만frozen숫자표는a stack를1로추출하지않는다.3초는구름지속시간이고중첩count가아니다.실제1중첩/초관계는text로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Twitch hurls a cask that adds a stack of Deadly Venom to all enemies struck and leaves behind a toxic cloud that persists for 3 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies that remain within the cloud are Slowed by (30/35/40/45/50 + (6% Ability Power))and receive an additional stack of Deadly Venom each second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Twitch hurls a cask that adds a stack of Deadly Venom to all enemies struck and leaves behind a toxic cloud that persists for 3 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "감속식(30/35/40/45/50+(6%주문력))의결과단위는공급영문/한국어모두명시하지않는다.백분율/고정속도단위로추정하지않고구성요소로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies that remain within the cloud are Slowed by (30/35/40/45/50 + (6% Ability Power))and receive an additional stack of Deadly Venom each second."
+        }
+      ]
+    }
+  ]
+}

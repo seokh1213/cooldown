@@ -1,0 +1,145 @@
+{
+  "id": "Varus.W",
+  "sourceHash": "995b0b2153d626e25dd544b590216afb75f8277b057f8d4d2b0d4b90a2d44af8",
+  "beforeCandidateHash": "fe9d8e8b0167fc84303e2aac64a3d24f127541e660919c86ac4252ddfc954594",
+  "candidateHash": "8e8850cff2a55d5350895b86f0a661303abe1b5bc802babb539f41224532c602",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "공격추가마법피해/역병6초3중첩·다른스킬폭발대상maxHP/AP100당계수·챔피언/에픽폭발중첩당기본최대쿨13%감소·정글중첩당120상한·강화다음Q잃은체력6~14%→충전9~21%를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack → target: 기본 공격이 추가 마법 피해를 줍니다. [magic] / amount=4/13/22/31/40 [rank_values]; stat_coefficient=25% (caster abilityPower) [formula_components]; stat_coefficient=15% (caster bonusAttackDamage) [formula_components] | target: 대상에게 일정 시간 지속되는 역병 중첩을 적용합니다. / duration_seconds=6 [scalar]; storage_cap=3 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target mark present 역병; caster activation eq 다른 스킬로 역병 중첩을 폭발시킴 → target: 역병중첩당대상최대체력 × (3/3.5/4/4.5/5% + 자기AP100당1.3%) 마법피해.최대는대상최대체력 × (9/10.5/12/13.5/15% + 자기AP100당3.9%)이며AP항을독립선형피해로합산하지않는다. [magic] / amount=3/3.5/4/4.5/5% (target maxHealth) [rank_values]; stat_coefficient=1.3% (caster abilityPower) [formula_components]; ratio_input=100 (caster abilityPower) [formula_components]; max_amount=9/10.5/12/13.5/15% (target maxHealth) [rank_values]; stat_coefficient=3.9% (caster abilityPower) [formula_components]; ratio_input=100 (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target mark present 역병; target target_type eq champion; caster activation eq 다른 스킬로 역병 중첩을 폭발시킴 → caster: 역병 폭발 중첩마다 기본 스킬의 재사용 대기시간이 최대 재사용 대기시간의 일부만큼 감소합니다. / amount=13% [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target mark present 역병; target target_type eq monster; caster activation eq 다른 스킬로 역병 중첩을 폭발시킴; target other eq 에픽 몬스터 → caster: 역병 폭발 중첩마다 기본 스킬의 재사용 대기시간이 최대 재사용 대기시간의 일부만큼 감소합니다. / amount=13% [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target mark present 역병; target target_type eq monster; caster activation eq 다른 스킬로 역병 중첩을 폭발시킴; target other eq 정글 몬스터 → target: 정글 몬스터에게 역병 폭발로 주는 기본 지속 효과 피해는 중첩당 상한이 적용됩니다. [magic] / max_amount=120 [scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster activation eq 이 스킬로 강화된 다음 꿰뚫는 화살 적중 → target: 다음 꿰뚫는 화살이 대상의 잃은 체력에 비례하는 추가 마법 피해를 줍니다. 충전 시간에 따라 비율이 증가합니다. [magic] / amount=6/8/10/12/14% [rank_values]; max_amount=9/12/15/18/21% [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3.conditions",
+      "issue": "쿨감이모든몬스터로확장",
+      "correction": "에픽몬스터추가조건",
+      "sourceId": "en:body",
+      "quote": "Detonating Blight on champions and epic monsters"
+    },
+    {
+      "path": "rules.4.conditions",
+      "issue": "120상한이모든몬스터로확장",
+      "correction": "정글몬스터조건",
+      "sourceId": "en:body",
+      "quote": "capped at 120 damage per stack against jungle monsters."
+    },
+    {
+      "path": "rules.5",
+      "issue": "강화피해발생시점이W시전및maxHealth연결오류",
+      "correction": "강화다음Q적중·max비율과잃은체력텍스트",
+      "sourceId": "en:body",
+      "quote": "Varus' next Piercing Arrow deals an additional 6/8/10/12/14% missing Health magic damage"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 592,
+      "verdict": "repaired",
+      "reason": "에픽대상은기존rule3별도몬스터규칙에있으나epic한정이누락되어조건추가했다.챔피언rule2자체누락판정은오탐이다."
+    },
+    {
+      "index": 593,
+      "verdict": "repaired",
+      "reason": "정글몬스터조건을별도텍스트로추가해범위를좁혔다."
+    },
+    {
+      "index": 594,
+      "verdict": "repaired",
+      "reason": "잃은체력최대비율을maxHealth연결에서분리하고max_amount로보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "정글 몬스터 피해 상한의 인용문은 대상 분류를 ‘jungle monsters’로 한정하지만 허용된 조건값으로 이를 구체적으로 표현할 수 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "강화 화살 피해는 잃은 체력 비례로 명시되어 있으나 허용된 통계 필드에 잃은 체력이 없어 해당 비율의 입력 통계를 직접 지정할 수 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Samira.E",
+      "sourceHash": "01277e99fd632751153b8b30e24790fc718511db241f5b93cb667da4f713c9fd",
+      "candidateHash": "c5ac233f8cfa1f7ba173fea73ae0b4b6fa4209b28a6770e46fd0fadb1efa84ae"
+    },
+    {
+      "id": "Samira.P",
+      "sourceHash": "ccea699b557e3bb7a0beb8a1a3dea161561c7baeecd3696a1a6bf531eeadf88b",
+      "candidateHash": "63309c330593ea132a99193f89a5493eea265c2b938e95b69d46f7d667409bac"
+    },
+    {
+      "id": "Samira.Q",
+      "sourceHash": "935ff8c66b83fb739874bf566962408aba2c759e9b8992b25c11927612ece850",
+      "candidateHash": "7599cac426bff6298eb9fcb6a9da211b842a48e254277f72186d10c06adf0686"
+    },
+    {
+      "id": "Samira.R",
+      "sourceHash": "9a7b501e63355552e9384345ed9f51a0fb74236682895e1a1609503738b7c687",
+      "candidateHash": "764381120ea038343642d3317af788690b36d404570ab9d7498fc769ccf2ab0a"
+    },
+    {
+      "id": "Samira.W",
+      "sourceHash": "04a35f9bb32c87a477dcc50a86aa2c357e043cb3f08abf500a790d0b0a575002",
+      "candidateHash": "b12a1b06bd1486a21affc5fbc5e7151fe477978f6c73d101c5f358526860ce64"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Samira.P",
+      "path": "rules.0.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Samira builds a combo by dealing damage with Attacks or Abilities against enemy champions unique from the previous one.",
+      "issue": "조건이 직전 공격과 다른 공격·스킬인지가 아니라 대상이 직전과 다른지를 검사하는 것으로 추출됐습니다. 같은 적에게 서로 다른 공격과 스킬을 적중시켜도 콤보가 쌓이는 원문 조건과 어긋납니다.",
+      "correction": "직전 적중과 공격 또는 스킬 종류가 다른지를 나타내도록 조건을 수정하세요."
+    },
+    {
+      "id": "Samira.W",
+      "path": "rules.0.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Samira slashes around her for 0.75 seconds, damaging enemies twice for (20/35/50/65/80 + (50% bonus Attack Damage)) physical damage each and destroying any enemy missiles that enter the area.",
+      "issue": "공격 횟수의 값으로 지속 시간 0.75초를 재사용했습니다. 원문은 적을 두 번 공격한다고 명시합니다.",
+      "correction": "count 값은 2로 기록하고, 0.75초는 duration_seconds에만 연결하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,7 +1,19 @@
 import { useEffect, useRef } from "react";
 
+function canScroll(drawer: HTMLElement, target: EventTarget | null, delta: number): boolean {
+  let node = target instanceof Element ? target : null;
+  while (node && node !== drawer) {
+    const room = node.scrollHeight - node.clientHeight;
+    if (/(auto|scroll)/.test(getComputedStyle(node).overflowY) && room > 0) {
+      if (delta < 0 ? node.scrollTop > 0 : node.scrollTop < room - 1) return true;
+    }
+    node = node.parentElement;
+  }
+  return false;
+}
+
 /*
- * 서랍 위에서 굴린 휠이 뒤 페이지를 움직이지 않게 한다.
+ * 서랍 위에서 굴린 휠과 터치가 뒤 페이지를 움직이지 않게 한다.
  *
  * `overscroll-behavior: contain` 만으로는 안 된다. 대화가 짧아 스크롤할 것이 없으면
  * 그 칸은 스크롤할 자리가 없는 것으로 쳐서 브라우저가 휠을 그대로 조상에게 넘긴다.
@@ -21,23 +33,25 @@ export function useDrawerWheelTrap() {
     const drawer = drawerRef.current;
     if (!drawer) return;
     const onWheel = (event: WheelEvent) => {
-      if (event.deltaY === 0) return;
-      let node = event.target as HTMLElement | null;
-      while (node && node !== drawer) {
-        const style = getComputedStyle(node);
-        const scrolls = /(auto|scroll)/.test(style.overflowY);
-        const room = node.scrollHeight - node.clientHeight;
-        if (scrolls && room > 0) {
-          const atTop = node.scrollTop <= 0;
-          const atBottom = node.scrollTop >= room - 1;
-          if (!(event.deltaY < 0 ? atTop : atBottom)) return;
-        }
-        node = node.parentElement;
-      }
+      if (event.ctrlKey || event.deltaY === 0 || canScroll(drawer, event.target, event.deltaY)) return;
       event.preventDefault();
     };
+    let lastY: number | undefined;
+    const onTouchStart = (event: TouchEvent) => { lastY = event.touches.length === 1 ? event.touches[0].clientY : undefined; };
+    const onTouchMove = (event: TouchEvent) => {
+      if (lastY === undefined || event.touches.length !== 1) return;
+      const delta = lastY - event.touches[0].clientY;
+      lastY = event.touches[0].clientY;
+      if (delta && !canScroll(drawer, event.target, delta) && event.cancelable) event.preventDefault();
+    };
     drawer.addEventListener("wheel", onWheel, { passive: false });
-    return () => drawer.removeEventListener("wheel", onWheel);
+    drawer.addEventListener("touchstart", onTouchStart, { passive: true });
+    drawer.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => {
+      drawer.removeEventListener("wheel", onWheel);
+      drawer.removeEventListener("touchstart", onTouchStart);
+      drawer.removeEventListener("touchmove", onTouchMove);
+    };
   }, []);
   return drawerRef;
 }

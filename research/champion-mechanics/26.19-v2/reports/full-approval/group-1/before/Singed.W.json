@@ -1,0 +1,77 @@
+{
+  "summary": "끈적한 액체를 던져 해당 지역의 적을 둔화시키고 이동 스킬을 사용할 수 없게 한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "영역 안의 적을 둔화시키고 이동 스킬을 사용할 수 없게 한다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "영역 안의 적은 이동 스킬을 사용할 수 없다.",
+          "damageType": null,
+          "crowdControl": "ground",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Singed hurls a cask of sticky liquid, Grounding and Slowing enemies in the area by 50/55/60/65/70% for 3 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

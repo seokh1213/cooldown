@@ -1,0 +1,552 @@
+{
+  "drafts": {
+    "E": {
+      "summary": "회전하며 적에게 물리 피해를 입히고, 적중한 적마다 분노를 얻습니다. 챔피언 적중 시 분노 획득량이 증가합니다. 치명타 적중 시 재사용 대기시간이 감소하며, 챔피언 치명타 적중 시 감소량이 더 큽니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "경로에 있는 적에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere spins through his enemies, dealing (80/120/160/200/240 + (100% bonus Attack Damage) + (80% Ability Power)) physical damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere spins through his enemies, dealing (80/120/160/200/240 + (100% bonus Attack Damage) + (80% Ability Power)) physical damage and generating 2 Fury per enemy hit, increased to 5 Fury against enemy champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "적중한 적 하나당 분노를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "generating 2 Fury per enemy hit, increased to 5 Fury against enemy champions."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere spins through his enemies, dealing (80/120/160/200/240 + (100% bonus Attack Damage) + (80% Ability Power)) physical damage and generating 2 Fury per enemy hit, increased to 5 Fury against enemy champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "적중한 챔피언 하나당 분노를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "generating 2 Fury per enemy hit, increased to 5 Fury against enemy champions."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere spins through his enemies, dealing (80/120/160/200/240 + (100% bonus Attack Damage) + (80% Ability Power)) physical damage and generating 2 Fury per enemy hit, increased to 5 Fury against enemy champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "치명타 적중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "이 스킬의 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability's Cooldown is reduced by 0.75 seconds when Tryndamere critically strikes."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability's Cooldown is reduced by 0.75 seconds when Tryndamere critically strikes, and reduced by 1.5 seconds when critically striking a champion."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "치명타 적중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "이 스킬의 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "reduced by 1.5 seconds when critically striking a champion."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability's Cooldown is reduced by 0.75 seconds when Tryndamere critically strikes, and reduced by 1.5 seconds when critically striking a champion."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "P": {
+      "summary": "트린다미어는 기본 공격, 치명타 공격, 유닛 처치로 분노를 얻습니다. 전투에서 벗어난 뒤 분노가 시간에 따라 감소하며, 분노는 치명타 확률을 높입니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "neq",
+              "value": {
+                "kind": "text",
+                "value": "치명타 적중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "공격으로 분노를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere's Attacks grant him 5 Fury or 10 Fury for a critical strike"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere's Attacks grant him 5 Fury or 10 Fury for a critical strike, and 10 Fury for killing a unit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "치명타 적중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "치명타 공격으로 분노를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere's Attacks grant him 5 Fury or 10 Fury for a critical strike"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere's Attacks grant him 5 Fury or 10 Fury for a critical strike, and 10 Fury for killing a unit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "유닛을 처치하면 분노를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "10 Fury for killing a unit."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere's Attacks grant him 5 Fury or 10 Fury for a critical strike, and 10 Fury for killing a unit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n3"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "전투에서 벗어난 뒤 분노가 매초 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After 8 seconds of being out of combat, Tryndamere loses 5 Fury every second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "stat_gain",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "stat_scope",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "base"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "분노가 증가할 때마다 치명타 확률이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "critChance",
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "critChance",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each point of Fury grants 0.5% Critical Strike Chance."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "원문은 공격으로 얻는 분노와 치명타 공격으로 얻는 분노를 구분하지만, 치명타 공격이 일반 공격 획득량을 대체하는지 추가하는지 명시하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tryndamere's Attacks grant him 5 Fury or 10 Fury for a critical strike"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Tryndamere.E",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.3.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        }
+      ]
+    }
+  ]
+}

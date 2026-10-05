@@ -1,0 +1,125 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Senna.E",
+      "sourceHash": "b674c28fd762685cce0e30a0fcb3d11c013e1ac6bad730e6376a5eac6f2597bd",
+      "candidateHash": "9f15a5cfaec69888c1af36431acf0df9d73f4b1c3a9523b94a3b60d57e402e60"
+    },
+    {
+      "id": "Senna.P",
+      "sourceHash": "8d8edeb3d17f13addbf8a5b2bf8b1f4f4389e2be884e12fa7f74c0637eac2c58",
+      "candidateHash": "edd18948eab2d71cfc205b33572468017b2ea5bbdca9db7ab91cb8903330c4f2"
+    },
+    {
+      "id": "Senna.Q",
+      "sourceHash": "4fe3da36fd2d8217ac643dc4985811e0ae134b7a18c7eb381b20c0d2f9a0652b",
+      "candidateHash": "5a21c046031a9d1ddf6e0ec71a74f9f79ce9207b89e16af7caf1504e6b6903e0"
+    },
+    {
+      "id": "Senna.R",
+      "sourceHash": "b5e22a069f4228afba62efedac905bd8d2aca7876be25d6cf538f14cd43e54d7",
+      "candidateHash": "6e4eb64e76fc1169cf364928a4cdc558aa0bf4b27e25d9cecb50c946b765f0e1"
+    },
+    {
+      "id": "Senna.W",
+      "sourceHash": "6a4e42df9ccac5be5d9483686beff4e30da550992311e6f1a8a8576672c6ed51",
+      "candidateHash": "b402d62858a76ec65850bc4ab782db1517af9f6d8a2d1d850f7c7060df73f79e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Senna.E",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Allied champions who enter the Mist are Camouflaged and become Wraiths when they leave.",
+      "issue": "아군 챔피언은 안개를 떠날 때 망령이 되는데, 트리거가 `leave_vision`으로 되어 있어 안개를 떠나는 사건과 다릅니다.",
+      "correction": "안개를 떠나는 사건으로 트리거를 표현하세요."
+    },
+    {
+      "id": "Senna.P",
+      "path": "rules.1.conditions.1.field",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "She can also siphon Mist from enemy champions she hits with Attacks or Abilities twice, dealing an additional (1 ~ 10)% current Health physical damage.",
+      "issue": "`hit_count`를 대상의 상태 필드로 표현해 적 챔피언을 두 번 적중시키는 사건 조건과 맞지 않습니다.",
+      "correction": "적 챔피언에 대한 공격 또는 스킬 적중 횟수 조건으로 표현하세요."
+    },
+    {
+      "id": "Senna.P",
+      "path": "rules.1.effects.1.parameters.0.numbers.0.percent",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "dealing an additional (1 ~ 10)% current Health physical damage.",
+      "issue": "현재 체력 비율 피해의 수치가 1~10으로 기록됐지만 `percent:false`로 표시되어 비율 의미가 빠졌습니다.",
+      "correction": "수치의 `percent`를 `true`로 기록하세요."
+    },
+    {
+      "id": "Senna.P",
+      "path": "rules.3.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every 20 stacks grant 20 Attack Range and 10% Critical Strike Chance",
+      "issue": "텍스트는 안개가 쌓일 때마다 사거리가 증가한다고 해 20중첩마다 증가한다는 설명과 다릅니다.",
+      "correction": "안개 20중첩마다 공격 사거리가 20 증가한다고 표현하세요."
+    },
+    {
+      "id": "Senna.P",
+      "path": "rules.3.effects.0.statTo",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every 20 stacks grant 20 Attack Range and 10% Critical Strike Chance",
+      "issue": "공격 사거리 증가 효과에 `statTo`가 지정되지 않아 대상 능력치가 구조화되지 않았습니다.",
+      "correction": "`statTo`를 공격 사거리로 지정하세요."
+    },
+    {
+      "id": "Senna.P",
+      "path": "rules.5.conditions.0.field",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "35% of excess Critical Strike Chance is converted into Lifesteal.",
+      "issue": "조건이 보너스 치명타 확률로 한정되어 있지만 원문은 초과 치명타 확률을 대상으로 합니다.",
+      "correction": "보너스 여부를 한정하지 않고 초과 치명타 확률을 조건으로 표현하세요."
+    },
+    {
+      "id": "Senna.Q",
+      "path": "rules.0.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Senna shoots a bolt of piercing shadow through an ally or enemy",
+      "issue": "대상 유형 조건이 `any`와 `minion`을 동시에 요구해, 아군 챔피언을 관통할 수 있다는 툴팁과 모순됩니다.",
+      "correction": "아군 또는 적을 대상으로 하는 조건으로 표현하고, 적중 대상 유형에 따라 피해·회복 효과를 구분하세요."
+    },
+    {
+      "id": "Senna.Q",
+      "path": "rules.0.effects.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "dealing (30/55/80/105/130 + (60% bonus Attack Damage)) physical damage to enemies",
+      "issue": "피해 효과에 적 대상 조건이 없고, `any` 대상 조건과 결합되어 아군 대상에도 피해가 적용되는 구조입니다.",
+      "correction": "피해 효과를 적 대상에 한정하세요."
+    },
+    {
+      "id": "Senna.Q",
+      "path": "rules.1.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "dealing (30/55/80/105/130 + (60% bonus Attack Damage)) physical damage to enemies and Slowing them by (15% + (7% per 100 Ability Power) + (0.15% bonus Attack Damage))",
+      "issue": "둔화 조건에 적 대상 판정이 없어 아군 챔피언에게도 둔화가 적용되는 구조입니다.",
+      "correction": "둔화 효과를 적 대상에 한정하세요."
+    },
+    {
+      "id": "Senna.Q",
+      "path": "rules.3.effects.0.parameters.1.numbers",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(35% Ability Power)",
+      "issue": "회복 효과의 주문력 계수 수치에 `%` 표기가 있지만, 이 계수는 35%로 기록되어 있습니다.",
+      "correction": "수치의 퍼센트 여부가 툴팁의 계수 표기와 일치하는지 확인하고, 일치하게 기록하세요."
+    }
+  ],
+  "notes": []
+}

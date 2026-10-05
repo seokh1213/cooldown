@@ -1,0 +1,104 @@
+{
+  "id": "Swain.E",
+  "sourceHash": "2be9f6f2ef1a0258280b3c969093f245c189adb86753f1ee739eb31540920066",
+  "beforeCandidateHash": "e001acc8bc7d18672a828610fb46c76f5150678a32bff4392366dbc8438d884f",
+  "candidateHash": "beb7e14504f0fcecae3fd5bcc5188fc3bb8072adc76fc3e446d8878f578901bd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "귀환파동첫충돌폭발·지역마법/1.5초속박,챔피언속박뒤재사용의모든속박챔피언끌어당김·각영혼조각,속박챔피언시야,악의승천중쿨단축요약을 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first / caster.activation eq 파동이 되돌아오는 중 첫 적과 충돌; nearby_enemies: 되돌아오는 파동은 처음 적중한 적에게 폭발해 마법 피해를 입힌다. [magic]; 수치 amount en:body:n0=90,en:body:n1=130,en:body:n2=170,en:body:n3=210,en:body:n4=250 상수 rank_values / stat_coefficient en:body:n5=70%(백분율) caster.abilityPower formula_components; flags 없음 | nearby_enemies: 폭발 지역의 적이 속박된다. [root]; 수치 duration_seconds en:body:n6=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 caster.activation eq 속박명령으로 챔피언을 속박한 뒤 재사용; enemy: 속박명령으로 속박된 모든 챔피언을 자신에게 끌어당깁니다. [pull]; 수치 없음; flags 없음 | caster: 끌어당긴 챔피언마다 스웨인이 영혼 조각을 얻는다.; 수치 없음; flags per_target"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.target_type eq champion / target.mark present 속박명령으로 속박됨; target: 속박명령이 속박된 챔피언의 모습을 일시적으로 드러낸다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.form eq Demonic Ascension 지속 중; caster: 악의 승천 중 이 스킬의 재사용 대기시간이 더 짧습니다. 수치는 미명시입니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "귀환조건누락·재사용허용과전체대상구별·끌어당김CC분류·시야시점·요약쿨단축누락 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Swain launches a wave of demonic power that returns, detonating on the first enemy hit to deal (90/130/170/210/250 + (70% Ability Power)) magic damage and Root enemies in the area for 1.5 seconds. Rooting a champion allows Swain to reactivate this ability to pull all champions Rooted by Nevermove toward him, gaining a Soul Fragment for each. Nevermove temporarily grants vision of rooted champions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 494,
+      "verdict": "repaired",
+      "reason": "재사용허용은caster의챔피언속박사건,효과는속박된전체챔피언으로명시."
+    },
+    {
+      "index": 495,
+      "verdict": "repaired",
+      "reason": "속박된챔피언의시야를passive상태로보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "요약은악의승천중쿨단축을명시하지만본문에는없으며단축수치미명시;텍스트로보존.",
+      "sourceIds": [
+        "en:summary"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

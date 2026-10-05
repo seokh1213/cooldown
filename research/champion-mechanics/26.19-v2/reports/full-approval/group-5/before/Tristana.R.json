@@ -1,0 +1,212 @@
+{
+  "summary": "대상에게 마법 피해를 입히고 대상과 주변 적을 밀쳐내며 기절시킵니다. 이 스킬이 폭발 화약의 마지막 중첩을 적용하면 대상이 밀쳐진 뒤 폭탄이 폭발합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tristana fires a massive cannonball, dealing (225/275/325 + (70% bonus Attack Damage) + (100% Ability Power)) magic damage to the target"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Tristana fires a massive cannonball, dealing (225/275/325 + (70% bonus Attack Damage) + (100% Ability Power)) magic damage to the target, Knocking Back and Stunning them and surrounding enemies for 0.4/0.55/0.7 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 밀쳐냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "주변 적을 밀쳐냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 기절시킵니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "주변 적을 기절시킵니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Knocking Back and Stunning them and surrounding enemies for 0.4/0.55/0.7 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Tristana fires a massive cannonball, dealing (225/275/325 + (70% bonus Attack Damage) + (100% Ability Power)) magic damage to the target, Knocking Back and Stunning them and surrounding enemies for 0.4/0.55/0.7 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭발 화약"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬이 폭발 화약의 마지막 중첩을 적용함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "이 스킬이 폭발 화약의 마지막 중첩을 적용하면 대상이 밀쳐진 뒤 폭탄이 폭발합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this Ability applies the final stack of Explosive Charge, it explodes after the unit is Knocked Back."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "조건 필드에 폭탄의 현재 중첩 수나 이번 적중으로 마지막 중첩이 적용되는 상태를 직접 표현할 수 없어 해당 조건을 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this Ability applies the final stack of Explosive Charge, it explodes after the unit is Knocked Back."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "Fiora.Q",
+  "sourceHash": "0511291d90317efaa4b94cb97d9b89be30f3356e65b9edb4b264a51f1d876f36",
+  "beforeCandidateHash": "c4ba4eb43559cb259d0be9981815ce26ad039c313dbc5c2e1d0e2ea9c797c18d",
+  "candidateHash": "419b3490c04a05d92bcc8836fc3336e9defea22596a4b280c27fcee6cbbf4527",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "한방향돌진/가장가까운적와드구조물물리70~110+추가AD90~110%·급소/처치가능적우선·Q가적을가격할때50%쿨감·적중효과를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → target: 가장 가까운 적, 와드 또는 구조물에 물리 피해를 입힌다. [physical] / amount=70/80/90/100/110 [rank_values]; stat_coefficient=90/95/100/105/110% (caster bonusAttackDamage) [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 한 방향으로 돌진한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq any → target: 공격은 급소와 처치할 수 있는 적을 우선한다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이 스킬이 적을 가격 → caster: 이 스킬의 재사용 대기시간이 감소한다. / amount=50% [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → target: 적중 시 효과를 적용한다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3.trigger/conditions",
+      "issue": "모든공격/스킬적중에서쿨감대상any",
+      "correction": "Q적중적가격조건",
+      "sourceId": "en:body",
+      "quote": "If Fiora strikes an enemy, this Ability's Cooldown is reduced by 50%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

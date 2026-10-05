@@ -1,0 +1,176 @@
+{
+  "id": "Kled.E",
+  "sourceHash": "770ad53ba5da9bbe7d632e71e76c381cf53c859952c590191f29cfff56aadee1",
+  "beforeCandidateHash": "3f59bbe3d1e96d44cf21e09ae640a812f11ba44c05b158d0c6892502780cd2a6",
+  "candidateHash": "56af2be9341680d891133fe88919a7fcb9168e6dfd10bbaf2d0a184147046ac1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "경로 피해와 돌진, 미니언/작은 몬스터 끌기, 챔피언/대형 몬스터 적중 시 50% 1초 이동 속도, 3초 재돌진 및 동일 피해, 통과한 적의 절대 시야를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. enemy: 돌진 경로상의 적에게 물리 피해를 입힌다. (physical); amount=35/60/85/110/135  rank_values, stat_coefficient=55% caster의 bonusAttackDamage formula_components / caster: 클레드가 돌진한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq minion, target.other eq 돌진 경로에서 클레드가 통과한 적 적용. target: 미니언을 클레드 앞으로 끌어당긴다. (pull);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq monster, target.other eq 작은 몬스터, target.other eq 돌진 경로에서 클레드가 통과한 적 적용. target: 작은 몬스터를 클레드 앞으로 끌어당긴다. (pull);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion 적용. caster: 이동 속도가 증가한다.; amount=50%  scalar, duration_seconds=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq monster, target.other eq 대형 정글 몬스터 적용. caster: 이동 속도가 증가한다.; amount=50%  scalar, duration_seconds=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 caster.time lte 3, target.other eq 앞선 돌진에 적중한 적 챔피언 또는 대형 정글 몬스터, target.other eq same_target 적용. caster: 같은 대상으로 다시 돌진한다.; other=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 caster.time lte 3, target.other eq 앞선 돌진에 적중한 적 챔피언 또는 대형 정글 몬스터, target.other eq same_target 적용. target: 재돌진으로 같은 피해를 다시 입힌다. (physical); amount=35/60/85/110/135  rank_values, stat_coefficient=55% caster의 bonusAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 클레드가 통과한 적 적용. caster: 클레드가 통과한 적을 절대 시야로 드러낸다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "돌진 효과 및 끌기 적중 범위 구조 누락",
+      "correction": "자기 돌진과 통과 적 조건을 명시",
+      "sourceId": "en:body",
+      "quote": "Kled dashes, dealing (35/60/85/110/135 + (55% bonus Attack Damage)) physical damage to enemies he passes through, pulling minions and small monsters towards him."
+    },
+    {
+      "path": "rules.5,6",
+      "issue": "재사용 조건을 근거 없는 mark로 기록",
+      "correction": "앞서 적중한 적 챔피언/대형 몬스터 및 동일 대상 조건으로 변경",
+      "sourceId": "en:body",
+      "quote": "If this Ability hits an enemy champion or large jungle monster, Kled gains 50% Move Speed for 1 second(s) and can Recast within 3 seconds to dash back through the same target."
+    },
+    {
+      "path": "rules.6",
+      "issue": "동일 피해 참조 관계가 수치에서 누락",
+      "correction": "초기 피해 수치를 재사용 관계로 연결",
+      "sourceId": "en:summary",
+      "quote": "Kled can cast this ability again to dash back through his initial target, dealing the same damage."
+    },
+    {
+      "path": "rules.7",
+      "issue": "절대 시야 전에 visibility 존재 요구",
+      "correction": "불필요한 기존 시야 조건 제거",
+      "sourceId": "en:body",
+      "quote": "Kled gains True Sight to enemies he passes through."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 219,
+      "verdict": "false_positive",
+      "reason": "작은 몬스터는 규칙2로 별도 보존되어 누락이 아니다."
+    },
+    {
+      "index": 220,
+      "verdict": "false_positive",
+      "reason": "규칙2에는 monster와 작은 몬스터 text 조건이 동시에 있어 정확히 범위를 제한한다."
+    },
+    {
+      "index": 221,
+      "verdict": "repaired",
+      "reason": "mark를 실제 최초 적중 대상 및 재사용 가능 문맥으로 정정했다."
+    },
+    {
+      "index": 222,
+      "verdict": "repaired",
+      "reason": "동일 피해 텍스트는 이미 있었다. 확인 가능한 최초 피해 매개변수도 함께 연결했다."
+    },
+    {
+      "index": 223,
+      "verdict": "repaired",
+      "reason": "통과한 적 조건만 남기고 visibility 전제 제거."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 최초 적중 대상에게 재돌진하며 동일 피해를 준다고 명시한다. 재돌진 중 다른 통과 적에게도 피해가 적용되는지와 구체적인 대상 선택 방식은 공급 원문에서 확정되지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

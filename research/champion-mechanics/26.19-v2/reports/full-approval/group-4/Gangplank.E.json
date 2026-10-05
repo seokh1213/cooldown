@@ -1,0 +1,178 @@
+{
+  "id": "Gangplank.E",
+  "sourceHash": "aea3bf5ee09df086ca09ecf7194a7c3cda25600d6a11853f3763d9da91e6348b",
+  "beforeCandidateHash": "a33cdbe97f38b19db82965a4fcd26f87db0a9966e7100aace2ce580b61c069ca",
+  "candidateHash": "8cb922077da85b3c894cc0caac4f70bef327090c0401b88c7f885b80fa607922",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 3,
+  "summaryCheck": "25초통설치·적파괴해체·자기파괴폭발의공격피해/40%방어무시/2초둔화·챔피언추가피해,감소간격2~0.5초와7/13레벨변화,겹친통연쇄·같은대상중복금지,Q폭발처치골드를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. summon: 갱플랭크가 일정 시간 동안 갱플랭크와 적 챔피언이 공격할 수 있는 화약통을 설치합니다.; duration_seconds=25  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy의 kill 사건에서 enemy.other eq 적 챔피언이 화약통을 파괴함 적용. summon: 적 챔피언이 화약통을 파괴하면 통은 해체됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 갱플랭크가 화약통을 파괴함 적용. nearby_enemies: 갱플랭크가파괴한화약통이주변적에게파괴공격의피해를전달하며방어력40%를무시한다.40%는피해배율이아니다.; other=40%  scalar / nearby_enemies: 폭발이 적을 둔화시킵니다. (slow); amount=40/50/60/70/80%  rank_values, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 갱플랭크에 의해 화약통이 폭발함, target.target_type eq champion 적용. target: 화약통 폭발에 맞은 챔피언은 추가 물리 피해를 입습니다. (physical); amount=75/95/115/135/155  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 other 사건에서 별도 조건 없이 적용. summon: 화약통체력은최소0.5~최대2초간격으로감소하며7,13레벨에서감소속도가빨라진다.; min_amount=0.5  level_range, max_amount=2.0  level_range, other=7/13  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 other 사건에서 summon.other eq 이 화약통이 폭발함 적용. summon: 화약통 폭발은 폭발 범위가 겹치는 다른 화약통을 연쇄 폭발시키며, 같은 대상에게 피해를 중복 적용하지 않습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 혀어어어업상으로 촉발된 화약통 폭발에 의해 처치된 대상 적용. caster: 혀어어어업상으로 화약통을 폭발시켜 대상을 처치하면 추가 골드를 얻습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-3",
+      "issue": "통파괴를공격/일반대상과혼동,40%방어무시를피해배율로표기",
+      "correction": "파괴/폭발사건과챔피언효과대상,방어무시other역할로정정",
+      "sourceId": "en:body",
+      "quote": "When Gangplank destroys it, it explodes, Slowing by 40/50/60/70/80% for 2 seconds and dealing the Attack's damage, ignoring 40% Armor."
+    },
+    {
+      "path": "rules.4",
+      "issue": "감소간격최소/최대역전및레벨변화누락",
+      "correction": "0.5~2초범위와7/13레벨정보보완",
+      "sourceId": "en:body",
+      "quote": "Keg decay rate increases at level 7 and 13."
+    },
+    {
+      "path": "rules.5,6",
+      "issue": "연쇄에근거없는적표식조건,골드에Q적중만조건",
+      "correction": "통폭발의겹친통연쇄와Q폭발실제처치조건",
+      "sourceId": "en:body",
+      "quote": "Keg explosions triggered by Parrrley will grant the bonus gold for targets killed."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 74,
+      "verdict": "repaired",
+      "reason": "적표식조건을제거하고통폭발및겹친폭발영역통관계를보존했다."
+    },
+    {
+      "index": 75,
+      "verdict": "repaired",
+      "reason": "Q로촉발된통폭발에의한실제처치사건으로수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "tooltip은 화약통 폭발로 전달되는 기본 공격 피해의 구체적인 피해 계산 방식을 설명하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "화약통 체력 감소 간격의 두 값은 제공되지만 레벨 구간별 적용 방식은 tooltip만으로 확정할 수 없습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "폭발은파괴공격의피해를전달한다.공급원문은일반전달피해의유형을재명시하지않으며추가챔피언피해만physical로명시하므로일반피해유형을추정하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "id": "Twitch.W",
+  "sourceHash": "5bbce6cf74c1d7405c89ba33d0bf44a7dda4a19be872d0389101325b57d70a7f",
+  "beforeCandidateHash": "149ab12cb7335e85aeafd381f189336d3f3f16bf7cee3575341e92e321258a2b",
+  "candidateHash": "5ba25de5a9a2aa52d882e2367aae2ec2a00b8dd1bc9f024d49b437f1712207b6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "병적중맹독1중첩,3초독구름,구름내적의감속랭크5값/AP항과매초추가1중첩을대조했다.감속결과단위와숫자표의1중첩누락을미상으로보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 독약 병에 맞은 적에게 맹독 중첩을 하나 적용한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 독구름이 일정 시간 지속된다.; duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy의 passive 사건에서 target.distance lte 독구름 안 적용. target: 구름안에머무는적을랭크별기본감속량과시전자주문력계수항만큼둔화시킨다.결과단위는원문이명시하지않아확정계산하지않는다. (slow); amount=30/35/40/45/50  formula_components, stat_coefficient=6% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy의 passive 사건에서 target.distance lte 독구름 안 적용. target: 독구름안에머무는적에게매초맹독중첩하나를추가한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,3.parameters",
+      "issue": "구름지속시간3초를초기/매초중첩수로오참조",
+      "correction": "잘못된count제거및실제1중첩관계text/gap보존",
+      "sourceId": "en:body",
+      "quote": "Twitch hurls a cask that adds a stack of Deadly Venom to all enemies struck"
+    },
+    {
+      "path": "rules.2.parameters",
+      "issue": "5랭크감속량중중간3값누락",
+      "correction": "전체30/35/40/45/50및주문력항보존",
+      "sourceId": "en:body",
+      "quote": "Enemies that remain within the cloud are Slowed by (30/35/40/45/50 + (6% Ability Power))and receive an additional stack of Deadly Venom each second."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 564,
+      "verdict": "repaired",
+      "reason": "초기중첩count3제거,실제1개는text로보존했다."
+    },
+    {
+      "index": 565,
+      "verdict": "false_positive",
+      "reason": "독구름효과에duration_seconds=3이이미존재한다.text가숫자를반복하지않아도구조정보는누락되지않았다."
+    },
+    {
+      "index": 566,
+      "verdict": "repaired",
+      "reason": "매초추가중첩의count3제거,매초하나text및숫자표한계로정정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "초기및매초추가중첩은각각1개지만frozen숫자표는a stack를1로추출하지않는다.3초는구름지속시간이고중첩count가아니다.실제1중첩/초관계는text로보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "감속식(30/35/40/45/50+(6%주문력))의결과단위는공급영문/한국어모두명시하지않는다.백분율/고정속도단위로추정하지않고구성요소로보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

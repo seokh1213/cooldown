@@ -1,0 +1,327 @@
+{
+  "id": "Poppy.R",
+  "sourceHash": "30418ef26c6c96aa10e7b977b3e82a7eaf0ad7614792ecf9414fa6dc3af7a104",
+  "beforeCandidateHash": "de4fb3defdc40d8df57d924691332c977587d4ac8eb207a8c283d42ab8be91be",
+  "candidateHash": "f16199cedf008e16a798711eea80a3ff858e5641b216e69a202918141a086324",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "충전최대4초와자기15%slow,충전방출/즉시방출 피해와CC를 배타적으로 대조하고 비대상화 예외를 복원했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최대4초는 충전 시간상한,15%는 충전 중 자기slow량. 각각 효과를 분리했다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "15%",
+              "value": 15,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "충전방출의200/300/400+90%bonusAD physical은 첫챔피언과주변적 범위.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충전한 망치를 방출"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "400",
+              "value": 400,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "90%",
+              "value": 90,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "동일 충전충격파 맞은적을넥서스쪽 knockback. 날아갈동안 untargetability와 이미적중한효과 예외를 보존.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충전한 망치를 방출"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충격파의 첫 적중 챔피언 또는 그 주변 적"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "충전시간에따라 사거리/밀기거리가증가하나 별도수치식은 공급되지 않았다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충전한 망치를 방출"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "무충전방출만100/150/200+45%bonusAD physical 및1초knockup. 충전피해와 중첩안함.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충전 없이 즉시 망치를 방출"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n9"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "45%",
+              "value": 45,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules,gaps",
+      "issue": "충전/무충전 조건누락,untargetability visibility분류,원문예외누락.",
+      "correction": "방출사건과배타조건,4초충전별도효과,비대상화other/예외복원.",
+      "sourceId": "en:body",
+      "quote": "An uncharged swing deals (100/150/200 + (45% bonus Attack Damage)) physical damage and Knocks Up for 1 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 380,
+      "verdict": "repaired",
+      "reason": "other4초는원래지속초가아니었지만slow매개변수에혼합돼있어 별도충전상한효과로 옮겼다."
+    },
+    {
+      "index": 381,
+      "verdict": "false_positive",
+      "reason": "crowd_control slow의amount15%는 계약상 정확한둔화량이다. 전용slow_amount역할이없고퍼센트참조도원문과일치한다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

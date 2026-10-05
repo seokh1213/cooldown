@@ -1,0 +1,63 @@
+{
+  "id": "Volibear.E",
+  "sourceHash": "be38cd7c3d4c8c9554fbab1b0090ac292a2a11154f1724103fa23d478fcf0eb4",
+  "beforeCandidateHash": "be780359aef8ea07b64fc4c3b9181a56297288536ce9474644e434ccec762efa",
+  "candidateHash": "02e5a41bdfb7b9f6698095d8f87e2afbecf8928bc1b8bb7299965509167aced2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "범위번개80~200+AP70%+target최대HP11~15%,40%2초둔화, caster폭발안 AP75%+자기최대HP14%3초보호막,비챔피언150~610+AP70%상한을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 번개 폭발 범위 내 적. target damage magic: 번개가 적에게 마법 피해를 입힌다. [amount n0=80/n1=110/n2=140/n3=170/n4=200 rank_values; stat_coefficient n5=70% formula_components caster.abilityPower; stat_coefficient n6=11%/n7=12%/n8=13%/n9=14%/n10=15% rank_values target.maxHealth]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 번개 폭발 범위 내 적. target crowd_control slow: 적을 둔화시킨다. [amount n11=40% scalar; duration_seconds n12=2 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 번개 폭발 범위 안. caster shield: 보호막을 얻는다. [stat_coefficient n13=75% formula_components caster.abilityPower; stat_coefficient n14=14% formula_components caster.maxHealth; duration_seconds n15=3 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type neq champion; target.other eq 번개 폭발 범위 내 적. target other: 챔피언이 아닌 대상에게는 이 번개의 전체 피해 상한이150/265/380/495/610+볼리베어 주문력70%이다. 별도의 추가 피해가 아니다. [max_amount n16=150/n17=265/n18=380/n19=495/n20=610 formula_components; stat_coefficient n21=70% formula_components caster.abilityPower]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3",
+      "issue": "피해대상범위가caster주변으로오해·체력비례양role·폭발내거리조건",
+      "correction": "폭발안적조건/target와caster스탯소유, stat_coefficient 및area텍스트조건",
+      "sourceId": "en:body",
+      "quote": "If Volibear is inside the blast zone, he gains a (75% Ability Power) plus 14% max Health Shield for 3 seconds."
+    },
+    {
+      "path": "rules.3.effects.0",
+      "issue": "피해상한을독립damage로기록해추가피해로실행가능",
+      "correction": "비챔피언피해식의상한조정으로분리했다.",
+      "sourceId": "en:body",
+      "quote": "Damage against non-champions is capped at (150/265/380/495/610 + (70% Ability Power))."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

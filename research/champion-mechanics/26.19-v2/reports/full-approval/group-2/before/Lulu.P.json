@@ -1,0 +1,81 @@
+{
+  "summary": "룰루가 공격하면 픽스가 대상에게 광선 3개를 발사해 처음 적중한 적에게 마법 피해를 줍니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적 유닛"
+          }
+        },
+        {
+          "subject": "secondary_targets",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "픽스가 룰루의 공격 대상에게 광선 3개를 발사하며, 처음 적중한 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Lulu Attacks, Pix fires 3 bolts at her target, dealing ((15 ~ 117) + (15% Ability Power)) magic damage to the first enemy hit."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

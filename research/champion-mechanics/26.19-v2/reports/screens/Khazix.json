@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Khazix.E",
+      "sourceHash": "c414063323e0097ca8d9f2be206ee76ed8ca46162d30c3a87ac951a23d3bddff",
+      "candidateHash": "71bdf06f03021c8db8c65216fe6ad0789f3a961fcffca0fe864aa8221c0f329b"
+    },
+    {
+      "id": "Khazix.P",
+      "sourceHash": "2a4383e88db74e159376ecd4b504081be06a715a76ec19da5157d84e36fa2f2c",
+      "candidateHash": "760e6c0b9b013c675167c8d79bfc5d353d58a2cd6e20a6718b80f1d0b32f5834"
+    },
+    {
+      "id": "Khazix.Q",
+      "sourceHash": "f05db799477ddd7efba1059f702da7fa06a8857acbd130094ed005e79acc9a13",
+      "candidateHash": "55fe28204fe4a3211f705da9b023b688fd24b764623bc5bc6b79945504a9d8bc"
+    },
+    {
+      "id": "Khazix.R",
+      "sourceHash": "7225c9dde8f222a692f01f477b7fa73956d701adf918ee071b843d9f30cc5017",
+      "candidateHash": "30c155202653cd88ce92de30872c8a737ce557c7b9e67a239434895a6d4fe089"
+    },
+    {
+      "id": "Khazix.W",
+      "sourceHash": "a9367748e4db6fa615740e7e8909370a07599570606ddc55805ec51b59c929a6",
+      "candidateHash": "27999df05aeaab26ef5041353a8b9b055de38938e40ff17ef57cd5fb0b7ff0b2"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Khazix.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:summary",
+      "quote": "If he chooses to Evolve Wings, Leap's range increases by 200 and the cooldown resets on champion kill or assist.",
+      "issue": "재사용 대기시간 초기화 조건에 날개 진화가 필요하다고 표현했습니다. 원문은 날개 진화를 선택했을 때 사거리 증가를 설명하며, 초기화는 챔피언 처치 또는 어시스트 시로 별도 서술합니다.",
+      "correction": "날개 진화 조건은 사거리 증가에만 적용하고, 챔피언 처치 관여 시 재사용 대기시간 초기화 규칙에는 해당 조건을 두지 마세요."
+    },
+    {
+      "id": "Khazix.P",
+      "path": "rules.0.effects.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When Kha'Zix is not visible to the enemy team, his next Attack against a champion deals an additional ((22 ~ 141) + (50% bonus Attack Damage)) magic damage and Slows by 25% for 2 seconds.",
+      "issue": "다음 공격 효과를 적 시야에서 벗어나는 이벤트에 묶었습니다. 원문은 적 팀에게 보이지 않는 상태일 때 다음 챔피언 공격에 효과가 적용된다고 설명합니다.",
+      "correction": "효과 부여를 시야 이탈 이벤트가 아니라 보이지 않는 상태로 표현하고, 실제 추가 피해와 둔화는 다음 챔피언 공격 시에 적용하세요."
+    },
+    {
+      "id": "Khazix.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "This deals (168/220.5/273/325.5/378 + (220.5% bonus Attack Damage)) damage instead to enemies Isolated from their allies.",
+      "issue": "기본 피해 규칙에 고립 표식이 없는 조건을 달았습니다. 원문은 기본 피해가 고립된 적에게 별도 피해로 대체된다고 명시하므로, 이 조건은 고립 판정을 표식의 부재로 뒤집습니다.",
+      "correction": "기본 피해를 고립되지 않은 대상에 한정하고, 고립된 대상에는 대체 피해 규칙만 적용하세요."
+    },
+    {
+      "id": "Khazix.W",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kha'Zix fires a spike dealing (75/105/135/165/195 + (100% bonus Attack Damage)) physical damage to the first enemy hit in a small area.",
+      "issue": "범위 피해를 첫 적중 대상에만 귀속했습니다. 원문은 첫 적중 대상을 특정하지만, 피해가 그 대상 하나뿐인지까지 한정하지 않습니다.",
+      "correction": "첫 적중 조건과 좁은 범위 피해 설명은 유지하되, 피해 대상을 첫 적중 대상 하나로 단정하지 마세요."
+    }
+  ],
+  "notes": []
+}

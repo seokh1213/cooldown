@@ -1,0 +1,70 @@
+{
+  "id": "Soraka.W",
+  "sourceHash": "c89317cff6bc90c11e766e8ff6216379e5ea4fc0949f1e019fb85d9e354b841e",
+  "beforeCandidateHash": "4ea35cb93139535d32056b2888728334be0aa1acaeb577cfbb7355547d4f51bb",
+  "candidateHash": "7f2fa6fe9ef8d69e05294f3bf98d9bc99ce6af7400def0e804eb75be64c49d84",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "자기체력희생·다른아군챔피언90~170+AP50%회복,자기별의가호중체력비용80~100%감소와대상2.5초가호,자기체력5%영문미만/한글이하사용불가를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion; target.other eq 소라카 자신이 아닌 아군 챔피언; caster.health_threshold gte n12=5%. target heal: 다른 아군 챔피언의 체력을 회복시킨다. [amount n0=90/n1=110/n2=130/n3=150/n4=170 rank_values; stat_coefficient n5=50% scalar caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.mark present Rejuvenation; target.other eq 소라카 자신이 아닌 아군 챔피언; caster.health_threshold gte n12=5%. caster resource_change: 별의 가호를 받는 동안 이 스킬의 자기 체력 비용이80/85/90/95/100%감소한다. 이 수치는 남은 체력비용이나 환급량이 아닌 감소율이다. [amount n6=80%/n7=85%/n8=90%/n9=95%/n10=100% rank_values] / target mark: 대상이 별의 가호를 얻는다. [duration_seconds n11=2.5 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.health_threshold lt n12=5%. caster other: 이 능력을 사용할 수 없다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 소라카 자신이 아닌 아군 챔피언; caster.health_threshold gte n12=5%. caster resource_change: 아군을 회복시키기 위해 소라카 자신의 체력 일부를 소모한다. 기본 체력 소모량은 미제공이다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3;gaps",
+      "issue": "아군/자기외 조건 및사용가능체력조건 누락,사용불가를cast후효과로표현,기본체력희생이gap에만 있음,양언어경계차이 미기록",
+      "correction": "다른아군챔피언과영문기준5%이상시전조건을회복/가호규칙에명시하고사용불가를상태제약으로기록했다.비수치자기체력비용도복구했다.",
+      "sourceId": "en:body",
+      "quote": "Soraka restores (90/110/130/150/170 + (50% Ability Power)) Health to another allied champion."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "기본 체력 소모량이 제시되지 않아 소모량과 감소 후 소모량을 수치화할 수 없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "영문은below5%일때사용불가(5%이상사용가능),한글은5%이하사용불가로 경계가 충돌한다.영문 조건을 보존하고 정확히5%에서의 판정은 출처 충돌로 남긴다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

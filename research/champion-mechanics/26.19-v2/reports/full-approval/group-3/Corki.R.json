@@ -1,0 +1,100 @@
+{
+  "id": "Corki.R",
+  "sourceHash": "13797adb05ef5ea74f6d6d90cefbe54927d5e14cf52e682a7b3a84e7a80af443",
+  "beforeCandidateHash": "a3bead5827ab69423f0b3f3c0ecd949fea1f4c0840c9bcea6dcb1a59e8bb8fe0",
+  "candidateHash": "d0cc0d7e101b6e1547baa8e5b3782bc4d98f027e2bbdfd4d4c1634a00c4faa06",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫적중적에게폭발하는미사일주변90/170/250+추가AD85%물리피해,발사순서매3번째는180/340/500+추가AD170%대체,최대4충전/시간충전/공격적중챔피언충전간격(2+치명타확률400%)초감소를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first; caster other eq 이번발사미사일이매3번째발사가아닌경우 → nearby_enemies: 이일반미사일이처음맞힌적에게폭발하면그주변적들에게90/170/250+추가공격력85%물리피해를입힙니다. [physical] / amount=90/170/250 [rank_values]; stat_coefficient=85% (caster bonusAttackDamage) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster other eq 발사순서매3번째미사일이첫적을맞혀폭발했을때 → nearby_enemies: 발사순서매3번째미사일은같은첫적중폭발주변범위에일반피해대신180/340/500+추가공격력170%물리피해를입힙니다. [physical] / amount=180/340/500 [rank_values]; stat_coefficient=170% (caster bonusAttackDamage) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 시간이지나면미사일이충전되어최대4충전을보유합니다. / storage_cap=4 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target target_type eq champion; caster other eq 챔피언대상기본공격이실제로적중했을때 → caster: 챔피언대상기본공격적중은다음미사일충전까지의시간을(2+자신의치명타확률400%)초줄입니다. / cooldown_seconds=2 [formula_components]; stat_coefficient=400% (caster critChance) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1/gaps.0",
+      "issue": "적중행위자가enemy이고큰미사일피해범위를문맥에서찾지못해unknown으로두며일반/큰미사일피해중복이가능했다.",
+      "correction": "시전자첫폭발/주변범위와발사순서매3번째대체피해를상호배타로보존하고false범위gap을정정했다.",
+      "sourceId": "en:body",
+      "quote": "Every third missile instead deals (180/340/500 + (170% bonus Attack Damage)) physical damage."
+    },
+    {
+      "path": "rules.2-3",
+      "issue": "실제미사일충전이UI로분류되고쿨타임감소2의초단위/공격적중조건이불완전했다.",
+      "correction": "최대4실제충전과챔피언공격적중에따른복합초단위감소를명시했다.",
+      "sourceId": "en:body",
+      "quote": "Basic attacks against champions reduce the time between charges by (2 + (400% Critical Strike Chance)) seconds on hit."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 43,
+      "verdict": "false_positive",
+      "reason": "원본조건target hit_order=first는폭발을일으킨첫적중대상이고효과subject=secondary_targets는다른주변대상을이미구분했다.첫적만피해라는지적은오탐이며최종에서는설명을더명확히했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "최대4미사일충전과시간충전은제공되지만기본충전주기는공급본문에없다.큰미사일은동일미사일의매3번째발사대체피해이므로첫적중폭발/주변범위는공통문맥으로보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

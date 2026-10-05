@@ -1,0 +1,311 @@
+{
+  "summary": "사이온이 충격파를 발사해 첫 번째로 맞는 적에게 피해, 둔화, 방어력 감소를 적용합니다. 챔피언이 아닌 대상은 밀려나며, 밀려난 유닛에 부딪힌 적에게도 같은 피해와 효과가 적용됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "충격파가 적중하면 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Sion fires a short range shockwave that damages and slows and reduces the Armor of the first enemy hit."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sion fires a shockwave, dealing (65/100/135/170/205 + (55% Ability Power)) magic damage, Slowing them by 40/45/50/55/60% for 2.5 seconds and removing 25% Armor for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "충격파가 적중하면 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Sion fires a short range shockwave that damages and slows and reduces the Armor of the first enemy hit."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sion fires a shockwave, dealing (65/100/135/170/205 + (55% Ability Power)) magic damage, Slowing them by 40/45/50/55/60% for 2.5 seconds and removing 25% Armor for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "target",
+          "text": "방어력을 감소시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Sion fires a short range shockwave that damages and slows and reduces the Armor of the first enemy hit."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sion fires a shockwave, dealing (65/100/135/170/205 + (55% Ability Power)) magic damage, Slowing them by 40/45/50/55/60% for 2.5 seconds and removing 25% Armor for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "챔피언이 아닌 대상은 뒤로 밀려난다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Non-champions hit are Knocked Back."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "밀려난 유닛에 부딪힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "밀려난 유닛에 부딪힌 적에게 동일한 피해와 효과를 적용한다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "secondary_targets",
+          "text": "밀려난 유닛에 부딪힌 적에게 동일한 둔화 효과를 적용한다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "secondary_targets",
+          "text": "밀려난 유닛에 부딪힌 적의 방어력을 동일하게 감소시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies hit by a Knocked Back unit take the same damage and effects."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "충격파 기본 효과의 적용 대상이 원문 요약에서 첫 번째 적중 대상으로 한정되지만, 본문은 별도 구분 없이 ‘them’으로 표현한다. 본문 수치는 첫 적중 대상 요약을 근거로 연결했다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Sion fires a short range shockwave that damages and slows and reduces the Armor of the first enemy hit."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sion fires a shockwave, dealing (65/100/135/170/205 + (55% Ability Power)) magic damage, Slowing them by 40/45/50/55/60% for 2.5 seconds and removing 25% Armor for 4 seconds."
+        }
+      ]
+    }
+  ]
+}

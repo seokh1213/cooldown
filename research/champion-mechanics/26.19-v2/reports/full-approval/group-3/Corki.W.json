@@ -1,0 +1,81 @@
+{
+  "id": "Corki.W",
+  "sourceHash": "2d66121c5d458f33c2453c30ff09f146f93c71b4f25326f14e850c4b52595b53",
+  "beforeCandidateHash": "246235c61a9a96f66112d99a91b1bacca00651c7b0dfb8d89c92176e42d43cf2",
+  "candidateHash": "5afd21f2389061d98591cb71510cbda969a0ce7269e5887fe365c5168731852b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "목표위치로비행/경로2.5초불길,그안머무는적은지속시간동안최대150/225/300/375/450+AP150%+추가AD200%마법피해를대조했다. 머무는시간별틱/계산식은미명시다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:summary"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 코르키가목표위치로비행하며폭탄으로불타는경로를남깁니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → unknown: 비행 경로를 2.5초 동안 불태운다. / duration_seconds=2.5 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: enemy의 passive / 조건 enemy other eq 불길 속에 있음 → enemy: 이2.5초불길안에머무는적은그지속시간에걸쳐최대150/225/300/375/450+주문력150%+추가공격력200%마법피해를받습니다. [magic] / max_amount=150/225/300/375/450 [formula_components]; stat_coefficient=150% (caster abilityPower) [formula_components]; stat_coefficient=200% (caster bonusAttackDamage) [formula_components]; duration_seconds=2.5 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2/gaps.0",
+      "issue": "up to최대누적피해가일반amount로기록되고2.5초피해연결이빠져있었다.",
+      "correction": "2.5초동안의최대복합누적피해와실제틱/시간별계산한계를보존했다.",
+      "sourceId": "en:body",
+      "quote": "Enemies in the fire take up to (150/225/300/375/450 + (150% Ability Power) + (200% bonus Attack Damage)) magic damage over the duration."
+    },
+    {
+      "path": "rules.0",
+      "issue": "요약의목표위치비행/폭탄투하가불완전했다.",
+      "correction": "해당이동과폭탄경로를명시했다.",
+      "sourceId": "ko:summary",
+      "quote": "코르키가 목표 위치로 비행하며 폭탄을 투하하여"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "up to는불길에머무는동안누적피해가최대식까지발생함을보존한다.정확한틱간격이나머무는시간별피해계산식은공급본문에미명시다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

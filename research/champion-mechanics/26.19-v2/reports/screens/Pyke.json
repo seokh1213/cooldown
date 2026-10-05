@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Pyke.E",
+      "sourceHash": "009062694b6883aae7a7818309cc82271611ebdd9deff92908876512896a75d4",
+      "candidateHash": "3328503581386bc696f0826b5aa1fcb7a10da96323ed5b3bf84d0d7ae0eebb06"
+    },
+    {
+      "id": "Pyke.P",
+      "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+      "candidateHash": "2c32a2513d88064cba12878398f6113ea15a47c677bc2f8f9b488d308dacbd8f"
+    },
+    {
+      "id": "Pyke.Q",
+      "sourceHash": "f742d23643f9f2c258d26e911e38343c3a838daaab3427649c727f19abe44744",
+      "candidateHash": "d0f4d04044f03287c45d76d564804499519f7b8de27c3b416151cc51117811ae"
+    },
+    {
+      "id": "Pyke.R",
+      "sourceHash": "f44e2d7eff5788e564ada90d1f7d9112b64f11a246d9310d628d6b816f0e9916",
+      "candidateHash": "0bd169fb8018ec9274135f9a6fabc012a062daf0b26ba4351f071cdbcf131d1c"
+    },
+    {
+      "id": "Pyke.W",
+      "sourceHash": "27b232ac0d075982d5bffce310a0ac388c0323e805c52548a2b5494964bcd95c",
+      "candidateHash": "637e1ed2be808cf299f2305aa32a73218985b800e1b91a8ae80e13c32cc86fdb"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Pyke.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Pyke stores (9% + (0.2% Lethality)) of damage taken from champions, increased to (40% + (0.4% Lethality)) when there's more than one enemy nearby.",
+      "issue": "피해를 준 대상을 조건으로 한 효과인데, 조건은 `target`이 챔피언인지 검사합니다. 이 구조는 피해를 받은 파이크를 대상으로 판정하는 것처럼 나타나 출처의 조건과 맞지 않습니다.",
+      "correction": "조건을 피해를 준 적 챔피언에 연결하거나, 대상 지정이 불가능하다면 조건을 미해결 텍스트로 남기세요."
+    },
+    {
+      "id": "Pyke.P",
+      "path": "rules.3.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Pyke converts all Maximum Health increases to Attack Damage instead at a rate of 14 Health to 1 Attack Damage.",
+      "issue": "설명문은 추가 최대 체력만 전환한다고 하지만, 인용한 영문은 모든 최대 체력 증가분을 지칭합니다. 한국어 요약은 bonus 범위를 뒷받침하지만 영문 본문과 충돌합니다.",
+      "correction": "범위를 bonus로 한정하지 말고 출처 간 범위 불일치를 명시하거나, 보너스 체력 전환은 한국어 요약에 근거한 해석임을 설명문에서 밝히세요."
+    },
+    {
+      "id": "Pyke.Q",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Tap: Pyke stabs, dealing (100/150/200/250/300 + (75% bonus Attack Damage)) physical damage to the first enemy hit, preferring champions.",
+      "issue": "챔피언 우선 문구가 피해 설명에 들어가 있어 피해량 자체가 챔피언 우선인 것처럼 읽힙니다. 원문에서 챔피언 우선은 첫 적중 대상 선택에 적용됩니다.",
+      "correction": "피해 설명에서 우선 문구를 분리하고, 챔피언 우선은 첫 적중 대상 선택 규칙으로 표현하세요."
+    },
+    {
+      "id": "Pyke.Q",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hold: Pyke throws his harpoon, dealing (100/150/200/250/300 + (75% bonus Attack Damage)) physical damage to the first enemy hit and Pulling them towards him.",
+      "issue": "챔피언 우선 문구가 길게 누르기 피해 효과에도 붙어 있지만, 영문 본문은 길게 누르기에 이를 명시하지 않습니다. 한국어 본문 또한 길게 누르기 피해에서 챔피언 우선 조건을 반복하지 않습니다.",
+      "correction": "이 효과의 설명에서 챔피언 우선 문구를 삭제하세요."
+    },
+    {
+      "id": "Pyke.R",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Pyke strikes all enemy champions in an X, teleporting to and executing targets below ((250 ~ 550) + (80% bonus Attack Damage) + (150% Lethality)) Health.",
+      "issue": "효과가 피해를 준다고 기록됐지만, 영문은 X 안의 모든 적 챔피언을 공격한다고만 합니다. 피해량은 기준 이상인 챔피언과 비챔피언에 대해서만 별도로 명시됩니다.",
+      "correction": "모든 적 챔피언에 대한 효과를 피해로 단정하지 말고 공격 효과로 기록하세요."
+    },
+    {
+      "id": "Pyke.W",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Camouflaged units cannot be seen unless an enemy champion is inside their detection radius.",
+      "issue": "조건을 만족하면 위장 중인 유닛이 보인다는 설명은 출처보다 단정적입니다. 출처는 감지 범위 밖에서는 보이지 않는다고 할 뿐, 범위 안에서 반드시 보인다고 명시하지 않습니다.",
+      "correction": "이를 감지 범위 밖에서 보이지 않는다는 조건으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

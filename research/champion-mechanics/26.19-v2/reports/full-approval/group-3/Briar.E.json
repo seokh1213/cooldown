@@ -1,0 +1,94 @@
+{
+  "id": "Briar.E",
+  "sourceHash": "b4ada7429f50cfea66c8056e8a0f8c4813b8e5927ac64d5816bc3d56d1b9dc32",
+  "beforeCandidateHash": "09188448eba3e5e96848489fd26bd36a450943a8c0cc94fc525633a2cd24f937",
+  "candidateHash": "375a7c55c0da53c37351a70e4c44500a479d750be382160bbe8a1aee89e325ba",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "충전 시 광분종료·35%피해감소·1초체력회복, 발사 최대마법피해·0.5초80%둔화, 완전충전 밀치기와 벽충돌 피해/1.5초기절을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 충전을 시작할 때 핏빛 광분을 끝냅니다. | caster: 충전 중 받는 피해가 감소합니다. / amount=35% [scalar] | caster: 1초 동안 체력의10/11.5/13/14.5/16%를 회복한다. 요약은 최대 체력이라고 하지만 본문은 체력 종류를 명시하지 않는다. / amount=10/11.5/13/14.5/16% [rank_values]; duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → enemy: 충전 시간에 따라 최대 마법 피해를 입힙니다. [magic] / max_amount=80/115/150/185/220 [rank_values]; stat_coefficient=100% (caster bonusAttackDamage) [scalar]; stat_coefficient=100% (caster abilityPower) [scalar] | enemy: 둔화시킵니다. [slow] / amount=80% [scalar]; duration_seconds=0.5 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster activation eq fully charged → enemy: 완전히 충전된 비명으로 적을 밀쳐냅니다. [knockback]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster activation eq fully charged; enemy other eq 밀쳐져 벽에 충돌 → enemy: 벽에 부딪힌 적에게 마법 피해를 입힙니다. [magic] / amount=140/215/290/365/440 [rank_values]; stat_coefficient=240% (caster bonusAttackDamage) [scalar]; stat_coefficient=240% (caster abilityPower) [scalar] | enemy: 벽에 부딪힌 적을 기절시킵니다. [stun] / duration_seconds=1.5 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2.trigger.subject",
+      "issue": "발사 행위자가 적",
+      "correction": "시전자 적중/벽충돌 사건으로 수정",
+      "sourceId": "en:body",
+      "quote": "Briar unleashes a scream"
+    },
+    {
+      "path": "rules.2",
+      "issue": "벽충돌 피해와기절에 벽충돌 조건누락",
+      "correction": "완전충전밀치기와벽충돌피해·기절 분리",
+      "sourceId": "en:body",
+      "quote": "magic damage to those who hit a wall and Stunning them for 1.5 seconds."
+    },
+    {
+      "path": "gaps",
+      "issue": "요약 최대체력과 본문미명시 체력차이 누락",
+      "correction": "source_conflict 기록",
+      "sourceId": "en:body",
+      "quote": "restoring (10/11.5/13/14.5/16% Health) Health over 1 second."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "회복 체력 종류는 en/ko 요약이 최대 체력이라고 하나 en/ko 본문은 Health/체력이라고만 한다. 더 구체적인 본문을 우선하며 종류를 단정하지 않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

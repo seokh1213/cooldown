@@ -1,0 +1,1042 @@
+{
+  "drafts": {
+    "E": {
+      "summary": "근처 아군 근접 챔피언의 기본 공격은 적 챔피언과 정글 몬스터에게 만년 서리 중첩을 적용한다. 사용 시 서리 중첩이 4회 쌓인 대상에게 마법 피해를 입히고 기절시키며, 이 능력으로 기절한 적은 약간 뒤로 밀리고 쓰러진다. 세주아니에게 기절당한 챔피언은 일정 시간 중첩을 얻지 못한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "distance",
+              "operator": "lte",
+              "value": {
+                "kind": "text",
+                "value": "nearby"
+              }
+            },
+            {
+              "subject": "ally",
+              "field": "weapon",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "melee"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "근처 아군 근접 챔피언의 기본 공격이 대상에게 만년 서리 중첩을 적용한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Nearby melee allied champions' Attacks apply a stack to champions and jungle monsters."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "distance",
+              "operator": "lte",
+              "value": {
+                "kind": "text",
+                "value": "nearby"
+              }
+            },
+            {
+              "subject": "ally",
+              "field": "weapon",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "melee"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "근처 아군 근접 챔피언의 기본 공격이 대상에게 만년 서리 중첩을 적용한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Nearby melee allied champions' Attacks apply a stack to champions and jungle monsters."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "만년 서리 중첩이 4회 쌓임"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "중첩이 요구량에 도달한 대상에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Sejuani deals (55/105/155/205/255 + (70% Ability Power)) magic damage to target enemy with 4 stacks and Stuns them for 1 second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "만년 서리 중첩이 4회 쌓임"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "대상을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Sejuani deals (55/105/155/205/255 + (70% Ability Power)) magic damage to target enemy with 4 stacks and Stuns them for 1 second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "만년 서리 중첩이 4회 쌓임"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "target",
+              "text": "이 능력으로 기절한 적을 약간 뒤로 밀어낸다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies Stunned by this Ability are slightly Knocked Back."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "만년 서리 중첩이 4회 쌓임"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "이 능력은 적을 쓰러뜨린다.",
+              "damageType": null,
+              "crowdControl": "knockdown",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability Knocks Down enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "세주아니에게 기절당한 챔피언"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "세주아니가 기절시킨 챔피언은 만년 서리 중첩을 얻지 못한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Champions Stunned by Sejuani can't gain stacks for 8 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "distance",
+              "operator": "lte",
+              "value": {
+                "kind": "text",
+                "value": "closest valid enemy to cursor"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "target",
+              "text": "마우스 커서에서 가장 가까운 유효한 적을 대상으로 하며 챔피언을 우선한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Permafrost will target the closest valid enemy to your cursor (prioritizing champions)."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "근처 아군의 범위가 수치로 명시되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Nearby melee allied champions' Attacks apply a stack to champions and jungle monsters."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "중첩 수는 hit_count 필드로 표현할 수 없어 텍스트 조건으로 보존했다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Sejuani deals (55/105/155/205/255 + (70% Ability Power)) magic damage to target enemy with 4 stacks and Stuns them for 1 second."
+            }
+          ]
+        }
+      ]
+    },
+    "P": {
+      "summary": "챔피언 또는 대형 정글 몬스터에게 일정 시간 피해를 받지 않으면 둔화에 면역되고 방어력과 마법 저항력을 얻는다. 서리 갑옷은 피해를 받은 후에도 잠깐 유지된다. 세주아니가 기절시킨 적을 처음 기본 공격하면 최대 체력에 비례한 추가 마법 피해를 입힌다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "text",
+                "value": "12 ~ 6 seconds without taking damage from champions or large jungle monsters"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "둔화에 면역된다. 발동 후 면역 지속 시간은 원문에 명시되지 않았다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "방어력이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "armor",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": "bonusArmor",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "마법 저항력이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "magicResist",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "bonusMagicResist",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Sejuani becomes immune to Slows and gains (10 + (75% bonus Armor)) Armor and (10 + (75% bonus Magic Resist)) Magic Resist after not taking damage from champions or large jungle monsters for (12 ~ 6) seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "피해 출처가 챔피언"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "챔피언에게 피해를 받으면 서리 갑옷을 얻기 위한 무피해 시간이 다시 시작된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "after not taking damage from champions or large jungle monsters for (12 ~ 6) seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "피해 출처가 대형 정글 몬스터"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "대형 정글 몬스터에게 피해를 받으면 서리 갑옷을 얻기 위한 무피해 시간이 다시 시작된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "after not taking damage from champions or large jungle monsters for (12 ~ 6) seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "세주아니가 기절시킨 적"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "세주아니가 기절시킨 적을 대상으로 한 첫 기본 공격은 추가 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Sejuani's first Attack against enemies she has Stunned deals an additional 10% max Health magic damage."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "무피해 조건의 12~6초 범위는 보존했으며, 그 적용 방식은 원문에 설명되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "after not taking damage from champions or large jungle monsters for (12 ~ 6) seconds."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "피해를 받은 뒤 서리 갑옷이 잠시 유지된다는 요약 설명의 지속 시간은 본문에 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "Frost Armor persists for a short time after Sejuani takes damage."
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "summary": "전방으로 돌진하며 적에게 마법 피해를 입히고 공중으로 띄운다. 적 챔피언에게 충돌하면 돌진이 끝난다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "돌진 중 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Sejuani charges, dealing (90/140/190/240/290 + (75% Ability Power)) magic damage to enemies and Knocking them Up for 0.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "돌진 중 적중한 적을 공중으로 띄운다.",
+              "damageType": null,
+              "crowdControl": "knockup",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Sejuani charges, dealing (90/140/190/240/290 + (75% Ability Power)) magic damage to enemies and Knocking them Up for 0.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "적 챔피언에게 충돌하면 돌진이 끝난다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The charge ends after hitting an enemy champion."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "올가미가 처음 맞힌 적 챔피언을 기절시키고 모습을 드러내며 마법 피해를 입힌다. 올가미가 사거리의 일정 비율 이상 이동하면 기절과 드러내기 지속 시간이 늘어난다. 얼음 폭풍은 주변 적을 둔화시키며, 스킬에 영향을 받은 모든 적은 마법 피해를 입는다. 기절한 적은 즉시, 폭풍 안의 적은 폭풍이 끝난 뒤 피해를 받으며 폭풍 안의 적은 추가로 둔화된다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "distance",
+              "operator": "lt",
+              "value": {
+                "kind": "text",
+                "value": "25% of bola range"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 맞힌 적 챔피언을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "visibility",
+              "subject": "target",
+              "text": "처음 맞힌 적 챔피언의 모습을 드러낸다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "처음 맞힌 적 챔피언에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Sejuani throws her True Ice bola, Stunning and revealing the first enemy champion hit for 1 second and dealing (125/150/175 + (40% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "distance",
+              "operator": "gte",
+              "value": {
+                "kind": "text",
+                "value": "25% of bola range"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 맞힌 적 챔피언을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "visibility",
+              "subject": "target",
+              "text": "처음 맞힌 적 챔피언의 모습을 드러낸다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the bola travels at least 25% of its range, it Stuns and reveals for 1.5 seconds instead."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "도달한 사거리 비율을 distance 필드로 직접 표현할 수 없어 문맥 조건으로 보존했다. 장거리 효과는 처음 맞힌 적 챔피언에 적용된다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the bola travels at least 25% of its range, it Stuns and reveals for 1.5 seconds instead."
+            }
+          ]
+        },
+        {
+          "reason": "missing_source",
+          "detail": "올가미가 처음 맞힌 적 챔피언을 대상으로 한다는 기본 효과와 수치는 해당 첫 적중 문장에 함께 제시되어 있다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Sejuani throws her True Ice bola, Stunning and revealing the first enemy champion hit for 1 second and dealing (125/150/175 + (40% Ability Power)) magic damage."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Sejuani.R",
+      "errors": [
+        {
+          "code": "first_hit",
+          "path": "rules.1",
+          "detail": "First-hit restriction is not stated by this rule's evidence"
+        }
+      ]
+    }
+  ]
+}

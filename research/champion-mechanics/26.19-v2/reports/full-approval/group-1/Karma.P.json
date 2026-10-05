@@ -1,0 +1,42 @@
+{
+  "id": "Karma.P",
+  "sourceHash": "2f21d4f06c65ae2b8710d4b6faca27780b55b721926555d6f744a39e0541a02a",
+  "beforeCandidateHash": "a9ccad8353f5f68d06c5211733c47563fdb0e4e6fecfb38becbcb08b7d82d0a4",
+  "candidateHash": "393b3da46be66e37fb726187e135c36e4720d8385cf36f2d59e0481beb07520c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "게임시작Mantra1point,챔피언에게Ability실제피해시Mantra4초쿨감 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; caster.other eq 챔피언에게 스킬로 실제 피해를 가함. caster cooldown_change: 스킬로 챔피언에게 피해를 입히면 만트라의 재사용 대기시간이 감소합니다. [cooldown_seconds n0=4 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 없음. caster ui_information: 게임을 시작할 때 만트라를 가지고 있습니다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "적중행위자target/피해조건누락·쿨감초역할amount",
+      "correction": "caster 실제스킬피해조건/cooldown_seconds",
+      "sourceId": "en:body",
+      "quote": "She reduces the Cooldown of Mantra by 4 seconds when she damages a champion with an Ability."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

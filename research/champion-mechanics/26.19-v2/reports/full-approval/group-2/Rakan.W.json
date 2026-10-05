@@ -1,0 +1,51 @@
+{
+  "id": "Rakan.W",
+  "sourceHash": "be0c27aea0e8cb9f91f2c436c5d4d30745095f146f37dc014a267bfb2ffbba44",
+  "beforeCandidateHash": "a864619da8f980f8072d15a15cf660a1f294f1fc2125931323c210bcb0cb6e53",
+  "candidateHash": "4aece63cfd7f94804ea8d7a9a0347380088b4822836cd533a1b7e22d2fd31e80",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "지정위치돌진/도착주변적1초공중띄움70~270+80%AP마법 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 지정위치로 돌진하여 도착한 후 공중으로 날아오름 / nearby_enemies.distance eq 도착지점 주변 적; nearby_enemies: 적들을 공중으로 띄운다. [knockup]; 수치 duration_seconds en:body:n0=1 상수 scalar; flags 없음 | nearby_enemies: 적들에게 마법 피해를 입힌다. [magic]; 수치 amount en:body:n1=70,en:body:n2=120,en:body:n3=170,en:body:n4=220,en:body:n5=270 상수 rank_values / stat_coefficient en:body:n6=80%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 지정위치로 돌진한 후 공중으로 날아오릅니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "누락된이동효과 추가·도착사건과도착지주변범위 연결",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Rakan dashes, then spirals into the air, Knocking Up for 1 second and dealing (70/120/170/220/270 + (80% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

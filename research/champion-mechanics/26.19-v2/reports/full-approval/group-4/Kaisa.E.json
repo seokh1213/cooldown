@@ -1,0 +1,141 @@
+{
+  "id": "Kaisa.E",
+  "sourceHash": "4718b20fee69bcb7651a167eb66bd486758fcf1816437f8614ad0c2ed9156c2d",
+  "beforeCandidateHash": "970f0a542e095b8d4ee26a501670016520434a6335e4110262b543c0434c59bf",
+  "candidateHash": "921b831504872131468baa79f02570bada24b217e8ce2b494d7d6c33493d9929",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 2,
+  "summaryCheck": "충전 중이동 속도·유체화와충전 후4초공격 속도,평타0.5초쿨감,진화0.5초투명·포탑/절대시야 예외,유체화통과,공격 속도 증가에따른충전시간감소,요구100%추가공속표시를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 충전 중 이동 속도가 증가한다.; amount=55/60/65/70/75%  rank_values / caster: 충전 중 유체화 상태가 된다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.activation eq 고속 충전이 완료됨 적용. caster: 충전 후 일정 시간 공격 속도가 증가한다.; amount=40/50/60/70/80%  rank_values, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 별도 조건 없이 적용. caster: 기본 공격 시 이 스킬의 재사용 대기시간이 감소한다.; cooldown_seconds=0.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq 진화 적용. caster: 투명 상태가 된다.; duration_seconds=0.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 별도 조건 없이 적용. caster: 충전 시간은 공격 속도에 따라 감소한다.; other=1.2  unknown 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.other eq 유체화 상태 적용. caster: 유체화 상태인 동안 다른 유닛을 통과할 수 있다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.other eq 진화 고속 충전의 투명 상태 적용. caster: 포탑이나 절대 시야를 제외한 수단으로는 투명 상태가 드러나지 않는다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 고속 충전 진화는 현재 추가 공격 속도?/요구100%로 표시된다.; other=100% caster의 bonusAttackSpeed scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "충전 후 공격 속도를 즉시 시전 사건으로 기록",
+      "correction": "충전 완료 사건 및상태로 구별",
+      "sourceId": "en:body",
+      "quote": "then gaining 40/50/60/70/80% Attack Speed for 4 seconds."
+    },
+    {
+      "path": "rules.5-7,gaps.1",
+      "issue": "유체화 통과·투명 예외·진화 요구100%효과가누락/미상",
+      "correction": "각기 원문 규칙/표시 기준과미상현재값을 보존",
+      "sourceId": "en:body",
+      "quote": "Invisible units cannot be revealed except by turrets or True Sight."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "충전 시간과 공격 속도의 관계식은 제시되지 않았다. 현재 표시값만으로 관계식을 특정할 수 없다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "진화 진행표의현재추가공격속도값은?로미해결이며요구량100%는명시된다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

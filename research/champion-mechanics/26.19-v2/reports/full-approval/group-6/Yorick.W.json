@@ -1,0 +1,83 @@
+{
+  "id": "Yorick.W",
+  "sourceHash": "dc31c099b91bc571a99c05ee7e4f2a5f6cdbaa04b83b5d2c2880ef900a0c0847",
+  "beforeCandidateHash": "e7c589a70a9d7aedc005af1888e2563b1a9058e8fc2d862c327ca4d4374a1833",
+  "candidateHash": "6fc67eafc04f6804c063606c4408dd636009e336d4edff98fe16f97a31f5ccfc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "적 경로 차단·아군 통과, 랭크별 벽HP2/2/3/3/4,4초 소멸, 요약의 공격 파괴를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:summary",
+        "en:summary"
+      ],
+      "note": "영혼 벽 소환 및 HP2/2/3/3/4. 제공된 EN/KO 요약에 공격으로 파괴 가능함이 있어 소환 설명에 보존했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "벽은 적 이동 경로를 막는다. CC종류를 추정하지 않는다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "벽은 아군 경로를 막지 않는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "소환 후4초 경과 시 벽 소멸. 공격 파괴와 별도 자연 만료다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "요약에 공급된 파괴 가능 정보 누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons a wall of spirits blocking enemies' path, but not allies'. The wall has 2/2/3/3/4 Health and disappears after 4 seconds."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "제공된 두 요약에 명시된 파괴를 출처 부족으로 오기",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons a wall of spirits blocking enemies' path, but not allies'. The wall has 2/2/3/3/4 Health and disappears after 4 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Yorick.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

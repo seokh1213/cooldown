@@ -1,0 +1,193 @@
+{
+  "summary": "얼음 폭풍을 소환해 적에게 초당 피해를 주고 둔화시킨다. 폭풍은 1.5초에 걸쳐 커지며 완전히 형성되면 적을 냉각하고 별도의 둔화와 초당 피해를 적용한다. 애니비아가 너무 멀어지면 폭풍이 끝난다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "얼음 폭풍이 적에게 초당 마법 피해를 준다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "얼음 폭풍이 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Toggle: Anivia calls forth a driving rain of ice and hail that Slows enemies by 20/30/40% and deals (30/45/60 + (12.5% Ability Power)) magic damage per second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "nearby_enemies"
+      },
+      "conditions": [
+        {
+          "subject": "nearby_enemies",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭풍이 완전히 형성됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "완전히 형성된 폭풍이 적에게 초당 마법 피해를 준다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "완전히 형성된 폭풍이 적을 냉각하고 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The storm increases in size over 1.5 seconds. When the storm is fully formed, it Chills, Slows by 30/45/60%, and does (90/135/180 + (37.5% Ability Power)) magic damage per second instead."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "폭풍이 완전히 형성되는 정확한 시점은 명시되지 않았다. 1.5초는 폭풍이 커지는 데 걸리는 시간으로만 기록된다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The storm increases in size over 1.5 seconds. When the storm is fully formed, it Chills, Slows by 30/45/60%, and does (90/135/180 + (37.5% Ability Power)) magic damage per second instead."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "폭풍이 끝나는 거리의 임계값은 명시되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The storm ends if Anivia is too far away."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "토글을 끄는 입력 및 자원 소모의 세부 조건은 명시되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Toggle: Anivia calls forth a driving rain of ice and hail"
+        }
+      ]
+    }
+  ]
+}

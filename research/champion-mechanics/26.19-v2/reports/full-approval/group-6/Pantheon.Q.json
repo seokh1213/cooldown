@@ -1,0 +1,95 @@
+{
+  "id": "Pantheon.Q",
+  "sourceHash": "efe8249abece1dd29e17604b2648eae5de4fd95f1d1e520d6d5865a4b600188d",
+  "beforeCandidateHash": "3fe2dadedd8d5dce90082ae62d2c03589ef6a027aa144b3beb9281bfa4baf712",
+  "candidateHash": "7dc3b677cd9a125e0fa79cd81c8a53a94076e13cb23875a162a67192cbed0a43",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 0,
+  "summaryCheck": "짧게 누르는 찌르기와 길게 누르는 투창, 체력 및 강화·대상 유형 분기를 양 언어와 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Tap의 70/100/130/160/190 + 추가 공격력 115% 물리 피해와 쿨다운 60% 환급을 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Hold 최초 적중의 기본 피해에만 115% 추가 공격력과 50% 주문력 계수를 적용하고 후속 대상 감쇠를 분리했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "체력 20% 미만일 때 155/230/305/380/455 + 추가 공격력 230% 피해로 대체되는 조건과 replaces_base를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "필멸자의 의지 강화 시 20~240 + 추가 공격력 115% 추가 피해를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몬스터에게 원 피해의 80%를 적용하는 유형 조건을 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언에게 원 피해의 70%를 적용하는 유형 조건을 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Hold 최초 이후 대상에게만 50% 감소가 적용되도록 별도 조건을 붙였다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions.1",
+      "issue": "후속 대상 50% 감쇠가 최초 대상에도 무조건 적용되는 구조였다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Tap: Pantheon thrusts his spear, dealing (70/100/130/160/190 + (115% bonus Attack Damage)) physical damage to enemies hit. Refunds 60% of this Ability's Cooldown. Hold: Pantheon hurls his spear, dealing (70/100/130/160/190 + (115% bonus Attack Damage) + (50% Ability Power)) physical damage to the first enemy hit and 50% less to further targets. This Ability is enhanced against enemies below 20% Health to deal (155/230/305/380/455 + (230% bonus Attack Damage)) physical damage instead. Mortal Will Bonus: Deals an additional ((20 ~ 240) + (115% bonus Attack Damage)) physical damage. Deals 80% damage to monsters. Deals 70% damage to minions."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Pantheon.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "Jax.Q",
+  "sourceHash": "99cee6a74f7cd57b2ad7f7b41025095a9c196d20e5994729397b52a974266155",
+  "beforeCandidateHash": "2355d5875ad643504d1f0d23783f17b4625847b6a492f05ef908fe78af234580",
+  "candidateHash": "2355d5875ad643504d1f0d23783f17b4625847b6a492f05ef908fe78af234580",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "아군/적유닛또는와드도약·적일때만65~225+자기추가AD100%물리피해를확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 아군 또는 적 유닛이나 와드를 향해 도약합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq enemy → target: 적 대상에게 물리 피해를 입힙니다. [physical] / amount=65/105/145/185/225 [rank_values]; stat_coefficient=100% (caster bonusAttackDamage) [scalar]"
+    }
+  ],
+  "repairs": [],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "대상을 적으로 특정하는 조건은 원문에 있으나, 허용된 target_type 열거값에는 enemy가 없어 조건값을 텍스트로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "적 대상 조건은 명시되어 있으나, 적의 분류 범위는 원문에서 더 구체적으로 나뉘지 않습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

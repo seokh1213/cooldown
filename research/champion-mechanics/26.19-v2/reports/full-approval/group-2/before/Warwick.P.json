@@ -1,0 +1,164 @@
+{
+  "summary": "기본 공격 적중 시 추가 마법 피해를 입히며, 워윅의 체력이 낮을수록 해당 피해를 바탕으로 더 많이 회복한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 공격 적중 시 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick's Attacks deal an additional ((6 ~ 55) + (15% bonus Attack Damage) + (10% Ability Power)) magic damage On-Hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n4"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "끝없는 허기로 입힌 피해량의 일부만큼 체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Warwick is below 50% Health, he also heals for 100% of the damage dealt by Eternal Hunger."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n6"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "끝없는 허기로 입힌 피해량을 바탕으로 체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Warwick is below 25% health, the healing is increased to 250% of the damage dealt."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

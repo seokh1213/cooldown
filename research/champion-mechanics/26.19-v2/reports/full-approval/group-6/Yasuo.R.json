@@ -1,0 +1,98 @@
+{
+  "id": "Yasuo.R",
+  "sourceHash": "a3d8e0212907ebc633b4c6677444043e7fba606e8aadb25a3ab9d8334c7f742e",
+  "beforeCandidateHash": "a18aae34edaafc8b788e11426631106b03ba063866b808f9233396a5ecde503c",
+  "candidateHash": "e4a1c293f716dc6d941a54797fbce7a6c2f8c5bc79bae0a6f7554ee8c2eb12a8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "공중 적 챔피언 순간이동과 피해, 주변 공중 적 유지·기류 최대·Q 중첩 초기화 및 15초 치명타 추가 방어력 무시를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공중 적 챔피언을 대상으로 순간이동하며 200/350/500 + 추가 공격력 150% 물리 피해를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변의 이미 공중에 뜬 모든 적을 1초 더 붙들며 챔피언으로 제한하지 않는다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "기류를 최대로 채우고 강철 폭풍 중첩을 모두 잃는 두 자원 변화를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "R 이후 15초 동안 자신의 치명타가 대상 추가 방어력 60%를 무시하는 공격 특성이다. 대상 방어력에 지속 디버프를 주는 효과가 아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions.0",
+      "issue": "all nearby Airborne enemies에는 챔피언 제한이 없다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yasuo teleports to an Airborne enemy champion, dealing (200/350/500 + (150% bonus Attack Damage)) physical damage and holding all nearby Airborne enemies up for an additional 1 second. Yasuo also gains maximum Flow, but loses all Steel Tempest stacks. Afterwards, Yasuo's critical strikes ignore 60% bonus Armor for 15 seconds."
+    },
+    {
+      "path": "rules.3.trigger.event",
+      "issue": "15초 버프는 R 이후에 시작하며 매 치명타마다 15초 방어력 감소를 주는 효과가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yasuo teleports to an Airborne enemy champion, dealing (200/350/500 + (150% bonus Attack Damage)) physical damage and holding all nearby Airborne enemies up for an additional 1 second. Yasuo also gains maximum Flow, but loses all Steel Tempest stacks. Afterwards, Yasuo's critical strikes ignore 60% bonus Armor for 15 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 665,
+      "verdict": "repaired",
+      "reason": "주변 공중 적 유지 규칙의 champion 조건을 제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "note": "영문 본문·양 요약은 주변의 이미 공중에 뜬 적을 유지한다고 하지만 한국어 본문은 주변 모든 적을 붙든다고 쓰며 공중 선행 조건이 빠져 있다. 구체적인 영문 본문과 요약의 공중 조건을 보존한다."
+    }
+  ],
+  "validation": {
+    "id": "Yasuo.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

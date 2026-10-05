@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Nasus.E",
+      "sourceHash": "a8fd9579d61b6e2f19c635f7f263fe5eab8e1227b5d60e47bfd652865c121eb8",
+      "candidateHash": "f150267f87bc239941de1cb9c6335855b774f98f5b089137a0b557bf5e8d3d69"
+    },
+    {
+      "id": "Nasus.P",
+      "sourceHash": "ddbb17e87cb903a574216bfcff539de5ead2c03b3bce6ec08419a1d72ef5ce68",
+      "candidateHash": "e367291fcbea0ebc4c310fd79d8b4dd7006b5ac694869fc8c92d35092d4e0a7f"
+    },
+    {
+      "id": "Nasus.Q",
+      "sourceHash": "3d415522f5598c0c9712e4fbeddec03e95c3bf9b4190aa898dc87fcd023bd469",
+      "candidateHash": "dca5e677d091e8f0625b5971396ead2d63daed78abd99c1d51931a43a1d44847"
+    },
+    {
+      "id": "Nasus.R",
+      "sourceHash": "52463dae04865b390ed857ecc9d8df28d819758426bae56fe4b2aed65cbf1aa9",
+      "candidateHash": "132e6cc7e70e38223e1b0307bb0f7f6e3a6578956f1e0e7c379030d78b841b3b"
+    },
+    {
+      "id": "Nasus.W",
+      "sourceHash": "8824dd4d7d65059384645231c32e376e31385a3f821fe31415d3e987f05cc8a0",
+      "candidateHash": "c8913d68e476bee98520ea68393f93d4320518b074b7df3ca5f7f25fdb71428e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Nasus.E",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies in the area lose 30/35/40/45/50% Armor and take (50/80/110/140/170 + (60% Ability Power)) magic damage over 5 seconds.",
+      "issue": "방어력 감소와 지속 피해의 적용 사건을 `ability_hit`으로 단정하지만, 원문은 범위 내 적에게 효과가 적용된다고만 하며 명중 사건은 명시하지 않습니다.",
+      "correction": "발동 사건은 불명으로 두거나 범위 효과 적용으로 표현하세요."
+    },
+    {
+      "id": "Nasus.R",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "While the storm rages, nearby enemies take (3/4/5% + (1% per 100 Ability Power)) of their maximum Health as magic damage each second and Siphoning Strike has a 50% reduced Cooldown.",
+      "issue": "폭풍이 15초 지속된다는 수치를 시간 조건에 넣어 `time > 15`로 설정해 폭풍 효과가 끝난 뒤 발동하는 조건이 됐습니다. 원문은 폭풍이 부는 동안의 효과입니다.",
+      "correction": "조건을 폭풍 활성 상태로 바꾸세요. 15초는 폭풍 지속시간으로만 연결하세요."
+    },
+    {
+      "id": "Nasus.R",
+      "path": "rules.1.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "While the storm rages, nearby enemies take (3/4/5% + (1% per 100 Ability Power)) of their maximum Health as magic damage each second",
+      "issue": "100당 주문력 계수를 표현하는 `100`을 최대 체력 비례 피해의 기준값처럼 `ratio_input`으로 넣었습니다. 원문에서 최대 체력은 피해 비율의 대상이고 100은 주문력 계수의 기준입니다.",
+      "correction": "최대 체력 비례 대상은 텍스트로 보존하고, 100은 주문력 계수의 기준값으로 연결하세요."
+    },
+    {
+      "id": "Nasus.R",
+      "path": "rules.2.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "While the storm rages, nearby enemies take (3/4/5% + (1% per 100 Ability Power)) of their maximum Health as magic damage each second and Siphoning Strike has a 50% reduced Cooldown.",
+      "issue": "흡수의 일격 재사용 대기시간 감소 조건을 `time > 15`로 설정해 폭풍이 끝난 뒤 효과가 적용되는 것으로 바꿨습니다.",
+      "correction": "조건을 폭풍 활성 상태로 바꾸고 15초를 조건값으로 사용하지 마세요."
+    },
+    {
+      "id": "Nasus.R",
+      "path": "rules.3.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "The storm deals a max of 240 damage per second.",
+      "issue": "초당 피해 상한에 폭풍 지속시간 `15`를 조건으로 연결해 `time > 15`로 만들었습니다. 원문은 초당 피해 상한만 말하며 15초 조건은 제시하지 않습니다.",
+      "correction": "이 조건을 제거하거나 폭풍 활성 상태로 표현하고, 15초를 발동 기준으로 사용하지 마세요."
+    }
+  ],
+  "notes": []
+}

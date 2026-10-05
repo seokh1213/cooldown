@@ -1,0 +1,86 @@
+{
+  "id": "Kindred.Q",
+  "sourceHash": "bfb86e0f5b90dbc7b8dff505136714e6eb0a5e06b8a5690ac3753420f7ace640",
+  "beforeCandidateHash": "d8e9c87bfc29b7edf4861fb8126edaacb603ea2c1ebbf80db0fa606b667d1e99",
+  "candidateHash": "24f67e31132b5c98f173c883d8a3eeea1c814e7cf9f9bdf3e218824897397e4d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "도약/최대3적화살40~140+추가AD75%·4초AS40%/표식강화·W안쿨4~2초를확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 킨드레드가 도약한다. | enemy: 최대 3명의 적에게 화살을 발사해 물리 피해를 입힙니다. [physical] / count=3 [scalar]; amount=40/65/90/115/140 [rank_values]; stat_coefficient=75% (caster bonusAttackDamage) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 공격 속도를 얻습니다. / amount=40% [scalar]; duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster activation eq 늑대의 광기 범위 안 → caster: 늑대의 광기 범위 안에서 이 스킬의 재사용 대기시간이 감소합니다. / cooldown_seconds=4/3.5/3/2.5/2 [rank_values]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster mark present true → caster: 표식 수에 따라 공격 속도가 증가합니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects",
+      "issue": "도약이동효과누락",
+      "correction": "movement도약복구",
+      "sourceId": "en:body",
+      "quote": "Kindred vaults"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 213,
+      "verdict": "false_positive",
+      "reason": "damage효과의count=3과텍스트최대3적은피해대상수를표현한다.스키마에별도max_target_count가없으며수치역할을화살3발로단정하지않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "공격 속도가 표식 수에 따라 증가하지만, 표식 수에 따른 정확한 증가량이나 계산식은 제시되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

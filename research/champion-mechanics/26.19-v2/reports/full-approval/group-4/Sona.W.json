@@ -1,0 +1,128 @@
+{
+  "id": "Sona.W",
+  "sourceHash": "9daae6b49ce51c51a52def3e6f4859b7c24644bcc29f9b506e7aeb4f610ac831",
+  "beforeCandidateHash": "f688b5f22d4e02a86b3e5c5ee2f084974be37b9840bb73ff25fd43d610bfacc8",
+  "candidateHash": "76e7283a4b0e2fa1d6b247d66cac3a3a12cdb28e89669d89b9df5016bcea8d0f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "자기와 가장 부상한 근처 아군 한 명 회복, 소나3초 오라·접촉 아군1.5초 보호막, 부상한 다른 아군 치유/보호막 흡수 기준별 중첩, 디미누엔도 피해 감소식과3초를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 자신의 체력을 회복합니다.; amount=30/45/60/75/90  rank_values, ratio_output=30% caster의 abilityPower scalar / ally: 근처 아군 챔피언 한 명의 체력을 회복하며, 가장 많이 피해를 입은 아군을 우선합니다.; amount=30/45/60/75/90  rank_values, ratio_output=30% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 enter_area 사건에서 ally.other eq 소나의 이 스킬 오라에 닿은 아군 챔피언 적용. ally: 소나의 오라에 닿은 아군 챔피언이 해당 흡수량의 보호막을 해당 지속시간 동안 얻는다.; amount=25/45/65/85/105  rank_values, ratio_output=25% caster의 abilityPower scalar, duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 ally.other present 치유되는 다른 아군이 부상당한 상태, caster.other eq 이 스킬로 해당 아군을 치유함 적용. caster: 아첼레란도 중첩을 얻습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 ally.other present 이 보호막이 다른 아군이 받을 피해를 막고, 막은 피해가 최소 기준 이상 적용. caster: 아첼레란도 중첩을 얻습니다.; other=25/45/65/85/105  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 인내의 아리아로 강화된 디미누엔도 파워 코드를 소비하는 다음 기본 공격 적용. target: 대상이 주는 물리 및 마법 피해를 감소시킵니다.; ratio_output=25%  formula_components, ratio_output=4% caster의 abilityPower formula_components, ratio_input=100  formula_components, duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 소나가 새 멜로디를 시작하고 해당 시간 동안 오라를 얻는다.; duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,5",
+      "issue": "소나 오라3초를 아군 보호막 지속시간과 혼합",
+      "correction": "자기3초 오라와 접촉 아군1.5초 보호막을 분리",
+      "sourceId": "en:body",
+      "quote": "Melody: Sona gains an aura for 3 seconds, granting allied champions (25/45/65/85/105 + (25% Ability Power)) Shield for 1.5 seconds."
+    },
+    {
+      "path": "rules.2-4",
+      "issue": "부상 아군 치유 사건/피해 흡수 기준/강화 곡 명칭 불명확",
+      "correction": "실제 치유 사건, 흡수 기준 other 역할, 인내의 아리아 파워 코드 다음 공격으로 명시",
+      "sourceId": "en:body",
+      "quote": "Power Chord - Diminuendo: Power Chord also reduces physical and magic damage dealt by the target by (25% + (4% per 100 Ability Power)) for 3 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 493,
+      "verdict": "repaired",
+      "reason": "소나의 오라와 아군 보호막을 규칙으로 분리해 주체와 시간을 각각 명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "아군의 '부상' 상태를 판별하는 구체적인 체력 조건은 tooltip에 정의되어 있지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "보호막이 다른 아군에게 실제로 피해를 흡수한 양을 추적하는 조건은 입력 조건 필드로 정확히 표현할 수 없어 원문 조건을 텍스트로 보존했습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

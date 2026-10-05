@@ -1,0 +1,140 @@
+{
+  "findings": [
+    {
+      "id": "Zyra.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this Ability passes near a Seed, the Seed grows into a Vine Lasher that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds.",
+      "issue": "조건을 `target`과 `distance`로 두어 씨앗 근처 여부가 적 대상과의 거리 조건처럼 표현됩니다. 원문 조건은 시전한 스킬이 씨앗 근처를 지나가는 것입니다.",
+      "correction": "조건을 적 대상 거리 대신 시전 스킬과 씨앗의 근접/경로 조건으로 표현하세요."
+    },
+    {
+      "id": "Zyra.E",
+      "path": "rules.1.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this Ability passes near a Seed, the Seed grows into a Vine Lasher that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds. Vine Lashers have 400 range.",
+      "issue": "소환 효과의 피해, 지속시간, 사거리를 한데 담았지만 피해의 주체가 식물이라는 점과 지속시간이 식물에 붙는다는 점이 명확하지 않습니다.",
+      "correction": "식물이 입히는 피해, 식물의 8초 지속시간, 식물의 400 사거리를 각각 대상/효과로 명시하세요."
+    },
+    {
+      "id": "Zyra.E",
+      "path": "rules.2.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The Slow from multiple Vine Lashers stacks up to 2 times.",
+      "issue": "둔화 중첩 상한을 효과의 `count`로 기록해 둔화 횟수 전반의 횟수처럼 읽힙니다. 원문 상한은 여러 덩굴 채찍손의 둔화 중첩에 한정됩니다.",
+      "correction": "2를 둔화 중첩 상한으로 명시하고, 여러 덩굴 채찍손의 둔화에 적용된다고 적으세요."
+    },
+    {
+      "id": "Zyra.P",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If an enemy champion steps on a Seed, it dies. Zyra will not spawn Seeds while hiding in brush.",
+      "issue": "요약에서 적 챔피언이 밟으면 씨앗이 사라지는 효과를 수풀에 있는 동안 씨앗이 생성되지 않는 조건과 결합해, 밟힘이 생성 중단 조건인 것처럼 서술합니다.",
+      "correction": "씨앗은 적 챔피언이 밟으면 파괴되고, 자이라가 수풀에 숨은 동안에는 새 씨앗이 생성되지 않는다고 분리해 쓰세요."
+    },
+    {
+      "id": "Zyra.P",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zyra spawns Seeds around herself every (13.6 ~ 9.1) seconds that last 30 seconds. She can have 8 Seeds planted at once.",
+      "issue": "세 개의 수치가 같은 효과에 병렬로 붙어 있어 30초가 생성 간격 또는 8이 생성 횟수로 오인될 수 있습니다.",
+      "correction": "13.6~9.1초는 생성 간격, 30초는 씨앗 지속시간, 8은 동시에 심어 둘 수 있는 씨앗 수로 각각 명시하세요."
+    },
+    {
+      "id": "Zyra.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zyra will not spawn Seeds while hiding in brush.",
+      "issue": "수풀에 숨음 조건이 `visibility=unseen`으로 typed 되어 있어, 시야에서 보이지 않는 모든 상황에 씨앗 생성이 중단되는 것으로 의미가 넓어집니다. 원문은 수풀에 숨는 경우만 말합니다.",
+      "correction": "조건을 `unseen` 대신 수풀에 숨은 상태로 표현하세요."
+    },
+    {
+      "id": "Zyra.P",
+      "path": "rules.2.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zyra will not spawn Seeds while hiding in brush.",
+      "issue": "씨앗 생성 중단이 `other` 효과로 모델링되어 있어 생성 불가 조건이 효과처럼 기록됩니다.",
+      "correction": "이 내용을 별도의 생성 조건/제약으로 표현하고, 효과로 기록하지 마세요."
+    },
+    {
+      "id": "Zyra.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this Ability is cast near a Seed, the Seed grows into a Thorn Spitter that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds. Thorn Spitters have 575 range.",
+      "issue": "조건이 `target`과 `distance`로 되어 있어 씨앗 근처 시전 조건이 적 대상과의 거리 조건처럼 표현됩니다.",
+      "correction": "조건을 적 대상 거리 대신 시전 위치와 씨앗의 근접 조건으로 표현하세요."
+    },
+    {
+      "id": "Zyra.Q",
+      "path": "rules.1.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this Ability is cast near a Seed, the Seed grows into a Thorn Spitter that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds. Thorn Spitters have 575 range.",
+      "issue": "소환 효과의 피해, 지속시간, 사거리를 한데 담았지만 피해의 주체가 식물이라는 점과 지속시간이 식물에 붙는다는 점이 명확하지 않습니다.",
+      "correction": "식물이 입히는 피해, 식물의 8초 지속시간, 식물의 575 사거리를 각각 대상/효과로 명시하세요."
+    },
+    {
+      "id": "Zyra.R",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 2 seconds, the vines snap upwards, Knocking Up for 1 second.",
+      "issue": "2초 후 덩굴이 솟아오르는 시점을 `expiry`로 분류해 효과 만료 이벤트로 표현합니다. 원문은 시전 후 지연되어 발생하는 후속 효과입니다.",
+      "correction": "`expiry` 대신 시전 후 2초 지연된 후속 발동으로 표현하세요."
+    },
+    {
+      "id": "Zyra.R",
+      "path": "rules.1.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 2 seconds, the vines snap upwards, Knocking Up for 1 second.",
+      "issue": "공중으로 띄우는 효과의 주체가 `enemy`로 되어 있어 모든 적에게 적용되는 것으로 읽힙니다. 피해/군중 제어 문맥상 덩굴에 맞은 대상이라는 범위가 필요하지만, 원문 인용에는 대상 범위가 구체적으로 명시되어 있지 않습니다.",
+      "correction": "주체를 특정하지 않은 원문 설명으로 남기고 대상 범위를 확정하지 마세요."
+    },
+    {
+      "id": "Zyra.R",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zyra's plants within the thicket become enraged, resetting their duration, gaining 50% Health and Attacking for 50% bonus damage.",
+      "issue": "50% Health 증가가 일반 `amount`로 기록되어 증가 대상인 식물의 체력 효과로 연결되지 않습니다.",
+      "correction": "50%를 덩굴손 안의 자이라 식물이 얻는 체력 증가량으로 명시하세요."
+    },
+    {
+      "id": "Zyra.W",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "These Seeds grant True Sight of enemy champions that step on them for 2 seconds, but are still destroyed.",
+      "issue": "`other` 이벤트가 씨앗을 밟는 사건을 드러내지 않습니다.",
+      "correction": "트리거를 적 챔피언이 씨앗을 밟는 이벤트로 표현하세요."
+    },
+    {
+      "id": "Zyra.W",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "These Seeds grant True Sight of enemy champions that step on them for 2 seconds, but are still destroyed.",
+      "issue": "2초 지속시간이 씨앗을 밟은 적 챔피언에 대한 절대 시야 효과가 아니라 효과 전반에 붙어 있습니다.",
+      "correction": "2초를 씨앗을 밟은 챔피언에 대한 절대 시야 지속시간으로 명시하세요."
+    },
+    {
+      "id": "Zyra.W",
+      "path": "rules.2.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This Ability has 2 charges with a 18/16/14/12/10 second recharge time.",
+      "issue": "효과 설명은 충전 수와 재충전 시간을 기록하지만, `count`가 최대 저장 충전 수인지 밝히지 않습니다.",
+      "correction": "2를 저장 가능한 최대 충전 수로 명시하세요."
+    }
+  ],
+  "notes": []
+}

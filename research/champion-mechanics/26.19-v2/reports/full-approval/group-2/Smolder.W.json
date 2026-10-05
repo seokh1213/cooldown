@@ -1,0 +1,88 @@
+{
+  "id": "Smolder.W",
+  "sourceHash": "653d56caa9ba2ac1ca6957571c16eb9be263e137738a888cfaa34346ae33022b",
+  "beforeCandidateHash": "11ed80b38a306b3a6a58d6d78a09313ea8553acbe036579cd8576af9448ab655",
+  "candidateHash": "2a74af8ace3c9a8dfd87fe151a085cb307e2f07ccdd37e6738824f508aa835ab",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "재채기 물리 피해/35% 1.5초 둔화, 챔피언 적중 시 혼합 폭발, 연속 폭발75%, 챔피언별 중첩1회 상한을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 불꽃 재채기로 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n0=60,en:body:n1=70,en:body:n2=80,en:body:n3=90,en:body:n4=100 상수 rank_values / stat_coefficient en:body:n5=60%(백분율) caster.bonusAttackDamage formula_components; flags 없음 | target: 둔화시킵니다. [slow]; 수치 amount en:body:n6=35%(백분율) 상수 scalar / duration_seconds en:body:n7=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion; unknown: 챔피언에게 적중하면 폭발해 물리 피해와 마법 피해를 입힙니다. [physical]; 수치 amount en:body:n8=10,en:body:n9=35,en:body:n10=60,en:body:n11=85,en:body:n12=110 상수 rank_values / stat_coefficient en:body:n13=50%(백분율) caster.bonusAttackDamage formula_components / stat_coefficient en:body:n14=80%(백분율) caster.abilityPower formula_components; flags 없음 | unknown: 폭발은 마법 피해도 입힙니다. [magic]; 수치 amount en:body:n15=0.55 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 이 스킬의 연속 폭발을 맞음; target: 연속 폭발은 감소한 피해를 입힙니다.; 수치 damage_multiplier en:body:n16=75%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 맞힌 챔피언당 용 훈련 중첩은 한 번만 얻을 수 있습니다.; 수치 count en:body:n17=one 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "시전·적중 행위자와 폭발 대상 제한, 연속 혼합 피해를 물리로 잘못 단정한 효과 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Smolder lets out an adorable flaming sneeze, dealing (60/70/80/90/100 + (60% bonus Attack Damage)) physical damage and Slowing by 35% for 1.5 seconds. Hitting champions causes an explosion, dealing (10/35/60/85/110 + (50% bonus Attack Damage) + (80% Ability Power)) physical + 0.55 magic damage. Each consecutive explosion does 75% damage. Smolder can only gain one Dragon Practice stack per champion hit."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "챔피언 적중은 폭발 발동 조건; 폭발 피해 대상 범위는 본문 미명시이므로 triggering champion에만 제한하지 않고 unknown. 연속 폭발 75%는 혼합 피해 배율로 보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "id": "Illaoi.W",
+  "sourceHash": "e84cf401747505200e7e95efb67484ed1c54296bbc8d026be90877014549cae8",
+  "beforeCandidateHash": "7b181ec95b37386c83dcf93d63c8afc2ebf4753bc63cde7749b090f5979cfd1e",
+  "candidateHash": "f3304748386003315d2f7e0f4524cd91e5cc85cd0980ca9883775e35a581d6a4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "W강화다음평타도약·체력복합추가물리·근처촉수동일대상후려치기,랭크별하한/정글300상한,피해시스킬효과를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq empowered; caster: 대상에게 도약합니다.; 수치 없음; flags 없음 | target: 다음 W 강화 평타는(랭크3~5% + 공격력100당3.5%)×최대체력추가물리피해입니다. 최대체력소유자는미명시입니다. [physical]; 수치 amount en:body:n0=3(백분율),en:body:n1=3.5(백분율),en:body:n2=4(백분율),en:body:n3=4.5(백분율),en:body:n4=5%(백분율) unknown.maxHealth formula_components / stat_coefficient en:body:n5=3.5%(백분율) 상수 formula_components / ratio_input en:body:n6=100 caster.totalAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq empowered; summon: 일라오이가 공격하면 근처 촉수가 대상에게 후려칩니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq empowered; target: 체력 비례 피해에는 최소 피해량이 적용됩니다. [physical]; 수치 min_amount en:body:n7=20,en:body:n8=30,en:body:n9=40,en:body:n10=50,en:body:n11=60 상수 rank_values; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq empowered / target.target_type eq monster / target.other eq 정글 몬스터; target: 정글 몬스터 대상 피해량에는 상한이 적용됩니다. [physical]; 수치 max_amount en:body:n12=300 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; target: 이 스킬은 피해를 입힐 때 스킬 효과를 발동합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "최대체력소유자단정·최소최대독립피해표현·정글몬스터조건누락 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Illaoi's next Attack causes her to leap at the target, dealing an additional (3/3.5/4/4.5/5% + (3.5% per 100 Attack Damage)) max Health physical damage. When she strikes, nearby Tentacles will Slam at the target. The percent Health damage does a minimum of 20/30/40/50/60. Against jungle monsters the damage is capped at 300. This Ability triggers spell effects upon dealing damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 115,
+      "verdict": "repaired",
+      "reason": "monster외정글몬스터텍스트조건추가."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "원문의 최대 체력 비례 피해 식은 공격력에 따른 추가 비율의 결합 방식을 고정된 parameters 구조로 완전히 표현할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "원문은 정글 몬스터 대상 상한과 최소 피해를 각각 설명하지만, 두 값의 적용 순서는 밝히지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "최대체력소유자가본문/요약에미명시이므로unknown.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

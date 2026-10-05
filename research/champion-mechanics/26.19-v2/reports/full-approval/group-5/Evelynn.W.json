@@ -1,0 +1,452 @@
+{
+  "id": "Evelynn.W",
+  "sourceHash": "813d37046a832c8958503cd7f41b2d4e693fede00668d192e7ab6f60e91b39c1",
+  "beforeCandidateHash": "a4353faf98896376faf75bf96d40d5372622db2d33a8912f820f47b76135ffb6",
+  "candidateHash": "150a85193a9555ee912137b6a163d00df4e9cfc1512ac1e4b1b14a0bc17d3317",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "챔피언/몬스터5초 표식,공격/스킬 적중 소모·환불·45%0.75초둔화,2.5초 이상 표식의 타입별 추가 charm/MR/피해,장막 유지 예외를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언 또는몬스터에게5초표식.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "champion or monster"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "동일W표식 대상의자기공격/스킬적중에서표식소모/비용환불/slow45%0.75초.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 2,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "45%",
+              "value": 45,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "0.75",
+              "value": 0.75,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "표식지속≥2.5초후챔피언소모:charm1.25~2.25초/MR35~45%감소4초.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n3"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n4",
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "1.25",
+              "value": 1.25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "1.5",
+              "value": 1.5,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "1.75",
+              "value": 1.75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "2.25",
+              "value": 2.25,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11",
+            "en:body:n12",
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "35",
+              "value": 35,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "37.5",
+              "value": 37.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "42.5",
+              "value": 42.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "45%",
+              "value": 45,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "≥2.5초몬스터소모:charm3~4초와물리아닌마법250~450+AP60%.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n3"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17",
+            "en:body:n18",
+            "en:body:n19"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "3.25",
+              "value": 3.25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "3.5",
+              "value": 3.5,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "3.75",
+              "value": 3.75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n19",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n20",
+            "en:body:n21",
+            "en:body:n22",
+            "en:body:n23",
+            "en:body:n24"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n20",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            },
+            {
+              "id": "en:body:n22",
+              "raw": "350",
+              "value": 350,
+              "percent": false
+            },
+            {
+              "id": "en:body:n23",
+              "raw": "400",
+              "value": 400,
+              "percent": false
+            },
+            {
+              "id": "en:body:n24",
+              "raw": "450",
+              "value": 450,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n25"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n25",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "W시전으로장막이해제되지않는예외.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/rules.2/rules.3/gaps",
+      "issue": "charm시간을amount로분류했고MR퍼센트/환불자원명및불필요조건gap이불완전했다.",
+      "correction": "charm duration_seconds,MR%text,마나환불원문근거로보존하고불필요gap제거했다.",
+      "sourceId": "en:body",
+      "quote": "Against champions: Charms them for 1.25/1.5/1.75/2/2.25 second(s)"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "표식 비용 환불량은 원문에 수치가 명시되지 않아 수치 참조를 추가하지 않았습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

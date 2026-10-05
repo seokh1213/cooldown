@@ -1,0 +1,126 @@
+{
+  "id": "Milio.Q",
+  "sourceHash": "e7ddb515d40f983c05c114b4871016936edd6f6c90c6e1d8d391b900a56ee6d4",
+  "beforeCandidateHash": "6407b6820be30e899ec0e103cebe83b0d71a646ec4befa7b173078bc3dcaf092",
+  "candidateHash": "ed732ed4cad30331b5bdfc7c67b1713e94fa646a36d378a2a8dd0021725461fc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫적밀침후튕겨폭발주변80~320+120%AP마법/40~60%+100AP당5%둔화1.5초;챔피언수>=1 Q비용50%환급;미니언/몬스터더큰밀침·폭발 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 enemy.hit_order eq 이번 불꽃공의 첫 적중적; enemy: 처음 맞힌 적을 밀쳐낸다. [knockback]; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.activation eq 이번공이 적에게처음적중해 그적을지나튀고 폭발함 / nearby_enemies.distance eq 그 폭발의 주변 적들; nearby_enemies: 공이 적중해 튕겨 폭발하면 주변 적에게 마법 피해를 입힌다. [magic]; 수치 amount en:body:n0=80,en:body:n1=140,en:body:n2=200,en:body:n3=260,en:body:n4=320 상수 rank_values / stat_coefficient en:body:n5=120%(백분율) caster.abilityPower formula_components; flags 없음 | nearby_enemies: 폭발주변적을1.5초동안(40/45/50/55/60)%+(밀리오AP/100)×5% 둔화합니다.5%계수의100당 분모를생략하지않습니다. [slow]; 수치 amount en:body:n6=40(백분율),en:body:n7=45(백분율),en:body:n8=50(백분율),en:body:n9=55(백분율),en:body:n10=60%(백분율) 상수 rank_values / stat_coefficient en:body:n11=5%(백분율) caster.abilityPower formula_components / ratio_input en:body:n12=100 상수 formula_components / duration_seconds en:body:n13=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.entity_count gte en:body:n14=one / caster.entity_count eq 이번 초특급불꽃킥에 적중한 서로다른 적챔피언수 / caster.activation eq 이번 Q사용으로 아직마나환급하지않음; caster: 이번 Q에 적챔피언을한명이상적중시키면 이번Q소모마나의50%를 돌려받습니다. 마나전체의50%나 적마다별도50%가 아닙니다.; 수치 resource_refund en:body:n15=50%(백분율) 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 enemy.target_type eq minion / enemy.hit_order eq 이번 불꽃공의 첫적중으로 밀쳐지는 적; enemy: 미니언은 더 멀리 밀려나고 더 큰 폭발을 일으킨다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 enemy.target_type eq monster / enemy.hit_order eq 이번 불꽃공의 첫적중으로 밀쳐지는 적; enemy: 몬스터는 더 멀리 밀려나고 더 큰 폭발을 일으킨다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "피격적행위자·AP100당분모·적중횟수대신챔피언entity수·환급비용기준·추가밀침첫적중scope 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Milio kicks a fireball, Knocking Back the first enemy hit. If it hits, the ball bounces past them and explodes, dealing (80/140/200/260/320 + (120% Ability Power)) magic damage to surrounding enemies and Slowing them by (40/45/50/55/60% + (5% per 100 Ability Power)) for 1.5 seconds. Hitting at least one enemy champion with Ultra Mega Fire Kick refunds 50% of it's Mana cost. Minions and monsters are knocked further and create a larger explosion."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 292,
+      "verdict": "repaired",
+      "reason": "챔피언타격횟수가 아닌 이번Q에맞은적챔피언entity_count>=1로 교정."
+    },
+    {
+      "index": 293,
+      "verdict": "false_positive",
+      "reason": "원본rule3 미니언과rule4 몬스터가각각동일효과를보존하고있다. rule3 하나에 OR를강제할필요없고현전체scope누락없음."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "둔화AP100당5%분모는원문에따라text/구성요소로 보존했다. 정확한폭발범위/미니언몬스터추가밀침거리/커진폭발수치 및환급절대량을위한Q초기마나비용은 이본문이제공하지않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

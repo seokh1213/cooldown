@@ -1,0 +1,275 @@
+{
+  "id": "Zilean.R",
+  "sourceHash": "b79570c939922e0d8092f0a7b7e2ef55232c75e471e86eab55f5e83eca226b2b",
+  "beforeCandidateHash": "defd134d737654277fe4a5a2d5e30bec10b1a0992e7141352d094618c5e5d208",
+  "candidateHash": "aa27299489ccab6d68015cf2b82106742c18f12d263cd68ab0977c665f04ef10",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "아군챔피언의5초 유효 룬→치명적피해 시3초 경직→경직종료 후부활 및600/850/1100+시전자AP200%회복, 경직행동금지/무적/대상비지정 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전 대상은 아군챔피언이며 룬의 유효시간5초."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "유효한 룬을 가진 대상의 치명적피해에만3초 경직. 경직 중 행동/이동불가,무적,untargetable."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "3초 경직이 끝난 뒤 부활 및 시전자 AP 기준 회복. 치명피해 즉시에 이미 부활한 것으로 구조화하지 않음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "champion 조건만 있어 아군 한정이 구조에 모호",
+      "correction": "아군 챔피언 조건과보호mark종류 명시",
+      "sourceId": "en:body",
+      "quote": "Zilean grants a protective time rune to an allied champion for 5 seconds."
+    },
+    {
+      "path": "rules.1",
+      "issue": "시간룬 유효 조건없이 모든 치명피해에 경직/부활 허용",
+      "correction": "질리언R룬유효+치명적피해 조건 추가",
+      "sourceId": "en:body",
+      "quote": "If the target would die, the rune rewinds their timeline"
+    },
+    {
+      "path": "rules.2",
+      "issue": "3초 경직 이후 부활/회복이 피격 사건과 묶여 즉시결과로 보임",
+      "correction": "경직 만료 사건의 부활/회복 규칙으로 분리",
+      "sourceId": "en:body",
+      "quote": "putting them into Stasis for 3 seconds, then reviving them and restoring (600/850/1100 + (200% Ability Power)) Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "질리언은 아군 챔피언에게 보호용 시간 룬을 부여한다. 대상이 죽을 상황이 되면 경직 상태가 된 뒤 부활하고 체력을 회복한다. 경직 상태 동안 유닛은 움직이거나 행동할 수 없고 무적이며 대상으로 지정할 수 없다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "아군 챔피언"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "ally",
+              "text": "아군 챔피언에게 보호용 시간 룬을 부여한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zilean grants a protective time rune to an allied champion for 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "질리언 R 보호 시간 룬이 유효함"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "치명적인 피해로 죽을 위기에 처함"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "룬이 대상의 시간을 되돌려 경직 상태로 만든다. 경직 상태 동안 대상은 움직이거나 행동할 수 없고 무적이며 대상으로 지정할 수 없다.",
+              "damageType": null,
+              "crowdControl": "stasis",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zilean grants a protective time rune to an allied champion for 5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "If the target would die, the rune rewinds their timeline, putting them into Stasis for 3 seconds, then reviving them and restoring (600/850/1100 + (200% Ability Power)) Health."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Units in Stasis cannot move or act, and are invulnerable and Untargetable."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "보호 시간 룬으로 발동한 3초 경직 상태가 끝남"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "revive",
+              "subject": "target",
+              "text": "경직 상태가 끝난 뒤 대상을 부활시킨다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "heal",
+              "subject": "target",
+              "text": "부활한 대상의 체력을 회복시킨다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the target would die, the rune rewinds their timeline, putting them into Stasis for 3 seconds, then reviving them and restoring (600/850/1100 + (200% Ability Power)) Health."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "id": "Belveth.P",
+  "sourceHash": "4bba0204ed783bb5bd276621d8f7a1aaa3dffb9b5512086f474b53495bb01b83",
+  "beforeCandidateHash": "2e21ecaa29fcada8db9f771471490bc240304d76d33de1fe7abe25158bf476b9",
+  "candidateHash": "a31fec8e73768374feba4f04a093d34dd6655eab6f9581726a121ef1570eeda6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "스킬 사용 후 유체화·3초20% 공격속도, 처치 대상별1/2중첩과 중첩별0.10~2.00% 영구 공격속도를 원문과 대조하고 괄호 뒤 백분율을 효과 텍스트에 보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 유체화 상태가 된다. | caster: 공격 속도가 증가한다. / amount=20% [scalar]; duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target target_type eq minion; target other eq 대형 미니언 → caster: 연보라 중첩을 얻으며, 각 중첩당 공격 속도가 0.10~2.00%씩 영구적으로 증가한다. / count=1 [scalar]; min_amount=0.10 [level_range]; max_amount=2.00 [level_range]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target target_type eq monster; target other eq 에픽이 아닌 몬스터 → caster: 연보라 중첩을 얻으며, 각 중첩당 공격 속도가 0.10~2.00%씩 영구적으로 증가한다. / count=1 [scalar]; min_amount=0.10 [level_range]; max_amount=2.00 [level_range]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target target_type eq champion → caster: 연보라 중첩을 얻으며, 각 중첩당 공격 속도가 0.10~2.00%씩 영구적으로 증가한다. / count=2 [scalar]; min_amount=0.10 [level_range]; max_amount=2.00 [level_range]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target target_type eq monster; target other eq 에픽 몬스터 → caster: 연보라 중첩을 얻으며, 각 중첩당 공격 속도가 0.10~2.00%씩 영구적으로 증가한다. / count=2 [scalar]; min_amount=0.10 [level_range]; max_amount=2.00 [level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.kind",
+      "issue": "유체화를 시야 효과로 분류",
+      "correction": "이동 효과로 수정",
+      "sourceId": "en:body",
+      "quote": "Bel'Veth becomes Ghosted"
+    },
+    {
+      "path": "rules.2.conditions.1",
+      "issue": "대형 몬스터 제한 추정",
+      "correction": "에픽이 아닌 몬스터로 수정",
+      "sourceId": "en:body",
+      "quote": "1 Lavender stack for large minion and monster takedowns"
+    },
+    {
+      "path": "rules.1-4.effects.0.text",
+      "issue": "괄호 뒤 %가 숫자표 percent=false라 구조상 단위 상실",
+      "correction": "각 중첩당0.10~2.00% 영구 증가를 텍스트와 gap으로 보존",
+      "sourceId": "en:body",
+      "quote": "Each stack permanently grants (0.10 ~ 2.00)% Attack Speed."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "영문 원문은 첫 번째 중첩 획득 문장에서 몬스터가 대형인지 명시하지 않고, 에픽 몬스터의 두 번째 중첩 조건도 target_type 값만으로 표현할 수 없어 조건 설명에 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "숫자 표의 괄호형 (0.10 ~ 2.00)% 참조 n4/n5는 lexical percent=false이다. 효과 텍스트에 % 단위를 보존했으며 해당 참조를 단순 비율 없는 스칼라로 실행할 수 없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

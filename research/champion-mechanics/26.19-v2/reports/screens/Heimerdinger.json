@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Heimerdinger.E",
+      "sourceHash": "53f9386c64e394eb2d01c24d17d8ec63fc49b5704c719d091f4c1e35f80b125a",
+      "candidateHash": "19ef0b549445be02d3282c3b0ff3be95dc22365deedd078d40b5f156eaa47caa"
+    },
+    {
+      "id": "Heimerdinger.P",
+      "sourceHash": "f83a89c8cd87356b7db7b9896147218125d6d2af6deac06287ee1d83418b65c2",
+      "candidateHash": "1a4167ccc9b21dff83afe973052d2bc90d8ac1c5e2029517d86872929e26f0d6"
+    },
+    {
+      "id": "Heimerdinger.Q",
+      "sourceHash": "c068131e70661ca457ac83496bd343710311bff6b9a76dc2f4dd194762f76530",
+      "candidateHash": "d6aa3e704072ef841a1e865e0252898ab331e1f7a9471388847054c8843ba1ee"
+    },
+    {
+      "id": "Heimerdinger.R",
+      "sourceHash": "08b8a1a2a0eb0f7fe7ec993d0993d5e60caf26844793ab3cc250fd5f4a052be5",
+      "candidateHash": "e48b144418d1f7fea23e1d7cc8014f03b86b5841e8c4955d1ad5412b8fcfb299"
+    },
+    {
+      "id": "Heimerdinger.W",
+      "sourceHash": "fdbf7717054f1173dd223cac9723212aaa549993f3c3a51b6841bc6d59a9eee0",
+      "candidateHash": "492532dd508692ea54f2ebf8a31cbd14ff40ee4e850b2c56436594b508f76117"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Heimerdinger.Q",
+      "path": "rules.5.effects.0.parameters.1.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(7/11/15/19/23 + (35% Ability Power)) magic damage per regular shot",
+      "issue": "일반 사격 피해의 주문력 계수를 포탑이 아닌 하이머딩거의 주문력으로 귀속했습니다. 원문은 계수의 소유자를 명시하지 않습니다.",
+      "correction": "statSubject를 미확정으로 두거나 설명에 계수 주체가 원문에서 특정되지 않았음을 표시하세요."
+    },
+    {
+      "id": "Heimerdinger.Q",
+      "path": "rules.6.effects.0.parameters.1.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(40/60/80/100/120 + (55% Ability Power)) magic damage per charged shot",
+      "issue": "충전 사격 피해의 주문력 계수를 하이머딩거의 주문력으로 귀속했습니다. 원문은 계수의 소유자를 명시하지 않습니다.",
+      "correction": "statSubject를 미확정으로 두거나 설명에 계수 주체가 원문에서 특정되지 않았음을 표시하세요."
+    },
+    {
+      "id": "Heimerdinger.R",
+      "path": "rules.4.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Its attacks deal damage in an area, Slow by 25% for 2 seconds, and it is immune to crowd control.",
+      "issue": "둔화와 군중 제어 면역을 조건에 따라 적용되는 단일 효과로 묶었습니다. 원문은 둔화는 포탑 공격에, 면역은 포탑 자체에 적용한다고 구분합니다.",
+      "correction": "범위 공격의 둔화와 포탑의 군중 제어 면역을 각각 대상과 효과가 구분되도록 분리하세요."
+    },
+    {
+      "id": "Heimerdinger.R",
+      "path": "rules.6.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Champions and jungle monsters hit by additional rockets take reduced damage",
+      "issue": "챔피언 적중만 조건으로 두어 정글 몬스터의 추가 로켓 피해 감소를 누락했습니다. 별도 규칙은 몬스터 조건을 두지만 감소 효과의 구체적 크기를 표현하지 않습니다.",
+      "correction": "이 규칙에 정글 몬스터도 포함하거나, 별도의 몬스터 규칙에 추가 적중 시 피해 감소 효과를 명시하세요."
+    },
+    {
+      "id": "Heimerdinger.R",
+      "path": "rules.9.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Fires 4 waves of rockets that each deal (135/180/225 + (45% Ability Power)) magic damage.",
+      "issue": "네 번의 로켓 파동 수를 미니언의 적중 횟수 기준으로 사용해, 4회를 넘긴 뒤에만 증가 피해 규칙이 발동하도록 했습니다. 원문은 미니언 대상 로켓 피해가 증가한다고만 하며 4회 초과 조건을 제시하지 않습니다.",
+      "correction": "hit_count > 4 조건을 제거하고, 원문에 없는 발동 횟수는 추가하지 마세요."
+    },
+    {
+      "id": "Heimerdinger.W",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Additional rocket hits deal reduced damage.",
+      "issue": "5발은 발사되는 로켓 수인데, 이를 표적의 적중 횟수 기준으로 사용해 표적이 5회 초과 적중해야 감소 효과가 적용되는 것으로 표현했습니다. 원문은 추가 로켓 적중의 피해가 감소한다고 합니다.",
+      "correction": "5발 수를 hit_count 기준에서 제거하고, 첫 적중 이후의 추가 로켓 적중을 조건으로 표현하세요."
+    },
+    {
+      "id": "Heimerdinger.W",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies hit by multiple rockets take (10/15/20/25/30 + (12% Ability Power)) magic damage beyond the first.",
+      "issue": "5발은 발사되는 로켓 수이며 추가 피해 조건의 적중 횟수 기준이 아닙니다. 현재 규칙은 표적이 5회 초과 적중해야 추가 피해를 받는다고 해석됩니다.",
+      "correction": "5발 수를 hit_count 조건에서 제거하고, 첫 로켓 이후 추가 적중에 피해가 적용되도록 수정하세요."
+    },
+    {
+      "id": "Heimerdinger.W",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minions instead take (30/45/60/75/90 + (36% Ability Power)) magic damage beyond the first",
+      "issue": "5발은 로켓 발사 수이지 적중 횟수 임계값이 아닙니다. 현재 규칙은 미니언이 5회 초과 적중해야 추가 피해를 받는 것으로 표현합니다.",
+      "correction": "5발 수를 hit_count 조건에서 제거하고, 첫 로켓 이후 미니언을 맞힌 추가 로켓에 피해를 적용하세요."
+    }
+  ],
+  "notes": []
+}

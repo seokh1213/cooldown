@@ -1,0 +1,162 @@
+{
+  "id": "Briar.P",
+  "sourceHash": "d305c9d2b4078e23043dea9d7c581c81f24811c95edb40696d6ccf8d75b229ba",
+  "beforeCandidateHash": "43675c4a210db1f5cf41cc2f2daf7193b563bbba5852e6bc7211e6814f621f87",
+  "candidateHash": "a940172b1d21a542199de4e3364af2ef52bf5768dbb2d106a34d80e9f7fbf5df",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 3,
+  "summaryCheck": "기본 공격과 스킬의5초/최대5 출혈, 중첩별 피해 범위·감소 전25% 회복, 자신 잃은 체력에 따른 회복 증가, 현재 체력5% 시전 비용 및 기본 재생 없음의 의미를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "브라이어 공격이 대상5초 출혈을 최대5중첩 적용한다. 행위자는 caster다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "브라이어 스킬이 대상 출혈을 적용한다. 원문에 정확한 적중·시전 시점을 단정할 근거가 없어 other로 보존했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "출혈 중첩별 물리 피해 범위는10~50+추가AD50%부터20~100+추가AD100%다. 만료 시 피해라는 단정을 삭제했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "출혈 감소 전 피해의25%를 브라이어에게 회복한다. 만료 트리거를 삭제했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "브라이어의 잃은 체력에 따라 회복량 증가 최대40 + 자신 추가 체력2.5%다. 독립 회복 발생으로 분류하지 않는다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "스킬 시전 시 브라이어 현재 체력5%를 비용으로 소모한다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "브라이어의 기본 체력 재생이 없다는 실제 능력치 효과다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.trigger.subject",
+      "issue": "공격·스킬 행위자가 피해 대상으로 기록",
+      "correction": "caster로 수정하고 스킬 적용 시점은 other로 보존",
+      "sourceId": "en:body",
+      "quote": "Briar's Attacks and Abilities apply a bleed for 5 seconds, stacking up to 5 times."
+    },
+    {
+      "path": "rules.2-3.trigger.event",
+      "issue": "원문 없는 만료 피해·만료 회복",
+      "correction": "other로 변경하여 시점 미확정 보존",
+      "sourceId": "en:body",
+      "quote": "and Heals Briar for 25% of the pre-mitigation damage."
+    },
+    {
+      "path": "rules.2.effects.0.parameters",
+      "issue": "피해 최소/최대의 계수 두 개를 독립 scalar로 표시",
+      "correction": "공식 구성요소로 구분",
+      "sourceId": "en:body",
+      "quote": "((10 ~ 50) + (50% bonus Attack Damage)) to ((20 ~ 100) + (100% bonus Attack Damage))"
+    },
+    {
+      "path": "rules.4.effects.0.kind",
+      "issue": "회복 증폭을 독립 회복으로 분류",
+      "correction": "stat_modifier로 수정",
+      "sourceId": "en:body",
+      "quote": "Briar gains up to (40 + (2.5% bonus Health)) increased Healing based on her missing Health."
+    },
+    {
+      "path": "rules.6.effects.0",
+      "issue": "기본 재생 없음이 UI 정보로 분류",
+      "correction": "healthRegen 능력치 효과로 보존",
+      "sourceId": "en:body",
+      "quote": "She has no Base Health Regeneration"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 24,
+      "verdict": "documented_gap",
+      "reason": "스킬이 대상에게 출혈을 적용한다는 것만 명시되고 시전/적중의 정확한 사건은 없다. other로 보존하고 gap에 기록했다."
+    },
+    {
+      "index": 25,
+      "verdict": "repaired",
+      "reason": "피해가 출혈 만료 때만 발생한다는 문장이 없으므로 expiry를 제거했다."
+    },
+    {
+      "index": 26,
+      "verdict": "repaired",
+      "reason": "회복 기준은 감소 전 출혈 피해25%이며 만료 시점은 명시되지 않아 expiry를 제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "출혈 피해의 적용 시점과 출혈 중첩별 피해 처리 방식은 원문에 명시되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "출혈 회복량에 적용되는 계수 효과의 발동 시점은 원문에 명시되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "출혈 피해 최소·최대 식의 계수는 명시되어 있으나 중첩별 대응식은 명시되지 않았다. 스킬 출혈 적용의 정확한 시점도 본문에 없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

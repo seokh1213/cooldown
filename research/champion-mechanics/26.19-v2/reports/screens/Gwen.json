@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Gwen.W",
+      "sourceHash": "c523f8424d1e9934f7de4d035b30b7b9ec854d2827b5a2702ba78b3b6de23c56",
+      "candidateHash": "5123859df2b77d7879f028f94b8d5c2e87c002f36ba465e3fe638b28cd61935a"
+    },
+    {
+      "id": "Gwen.E",
+      "sourceHash": "ee015948570a7be95ff8f0a88b3f9c085ee3b1766a8a6153ce7d9a13d7141ab8",
+      "candidateHash": "7156200197a30d719df1720a2f008d0f7d862c0d935e1690ee00f03d0e2f383d"
+    },
+    {
+      "id": "Gwen.P",
+      "sourceHash": "a7cb6eca87cc95525f454102c619f8d95f344701bfeea80d4b5cd455e8b2d908",
+      "candidateHash": "2bf27a998dbfd41de9c0ef5c6b5b93c9f7499b08687207e97e6b3bcf691b00da"
+    },
+    {
+      "id": "Gwen.Q",
+      "sourceHash": "eb78e1703259c52105904018aad257f3968450470e4b1374d2615522f7248d24",
+      "candidateHash": "a382b31da6e1d5d7beebbf401e71485710e3ac1246e3d0d0bfe6bb909e1b2f8c"
+    },
+    {
+      "id": "Gwen.R",
+      "sourceHash": "0da6226fef0767ac7acf47d5b130fe76ba403d372f48ca1ba0eecb37d658255e",
+      "candidateHash": "a1c78100136c3d9c669e476e2ff93faf6598f0b853281bbe46584721164b2e7a"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Gwen.P",
+      "path": "rules.0.effects.0.parameters.0.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Gwen's Attacks deal an additional (1% + (0.6% per 100 Ability Power)) Max Health magic damage on hit.",
+      "issue": "대상 체력 비례 피해를 나타내는 비율 출력이 `maxHealth`로 구조화되어 있지만, STATS에는 `currentHealth`와 `missingHealth`가 없으므로 이 연결은 근거가 부족합니다. 툴팁은 Max Health라고 밝히므로 대상 최대 체력임을 설명 문장과 gap으로 보존해야 합니다.",
+      "correction": "이 비율 출력의 `stat`을 미지정으로 두고, 설명 문장에 대상의 최대 체력 기준임을 보존하세요."
+    },
+    {
+      "id": "Gwen.Q",
+      "path": "rules.5.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minions below 20% health take 1000% bonus damage instead of reduced damage.",
+      "issue": "설명 문장은 20% 미만일 때 감소 피해를 대신해 1000% 추가 피해를 받는다고 하지만, 구조화된 파라미터에 `amount: 1000%`만 있어 피해가 기본 피해에 추가되는 효과인지 드러나지 않습니다. `replaces_base` 플래그와도 읽는 방식이 충돌합니다.",
+      "correction": "1000%가 기본 피해에 추가되는 피해임을 파라미터와 설명에서 명시하고, 감소 피해 규칙을 대체한다는 점은 별도로 보존하세요."
+    },
+    {
+      "id": "Gwen.R",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage",
+      "issue": "피해 효과의 `count`가 세 개의 바늘 발사 수를 나타내므로, 세 바늘 모두 적중해야 이 피해를 입는 횟수 조건으로 오해될 수 있습니다. 툴팁은 발사 수만 말하고 피해가 적중 횟수에 따라 반복되는지는 밝히지 않습니다.",
+      "correction": "세 바늘은 설명 문장에 발사 수로만 보존하고, 피해 효과의 `count` 파라미터는 제거하세요."
+    },
+    {
+      "id": "Gwen.R",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage",
+      "issue": "피해 효과의 `count`가 다섯 바늘 발사 수를 나타내므로, 다섯 바늘 모두 적중해야 이 피해를 입는 횟수 조건으로 오해될 수 있습니다. 툴팁은 발사 수만 말하고 피해가 적중 횟수에 따라 반복되는지는 밝히지 않습니다.",
+      "correction": "다섯 바늘은 설명 문장에 발사 수로만 보존하고, 피해 효과의 `count` 파라미터는 제거하세요."
+    }
+  ],
+  "notes": []
+}

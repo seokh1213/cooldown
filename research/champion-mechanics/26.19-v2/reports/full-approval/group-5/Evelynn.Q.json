@@ -1,0 +1,319 @@
+{
+  "id": "Evelynn.Q",
+  "sourceHash": "e3dfdd19268512a97c6df443639886a5ca836d602444393007e7d236ed0d4b59",
+  "beforeCandidateHash": "91381f84698d1261af657021306fcebde13de0547af7fa580378bad88942dc4d",
+  "candidateHash": "87ffc39e210ef1234fa72ae70c55381469e228ff37e98e1c36d8f4feb6dfdb17",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫 적중25/30/35/40/45+AP25%,동일 대상 다음3공격/스킬 추가15/25/35/45/55+AP25%,재사용최대3과관통피해/현재공격대상우선을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫 적중 적에게 랭크별25/30/35/40/45+자기AP25%마법;중간3랭크복원.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "45",
+              "value": 45,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫 가시 동일 적에 다음3회 공격/스킬만15/25/35/45/55+자기AP25% 추가마법;실제발동횟수조건.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "첫 가시에 맞은 동일 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n6"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "15",
+              "value": 15,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "45",
+              "value": 45,
+              "percent": false
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "55",
+              "value": 55,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최대3회재사용허용;보유상한이나3회자동시전이아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "재사용가시는가까운적관통/현재공격대상우선,적중모든적기본피해25~45+AP25%.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17",
+            "en:body:n18"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "45",
+              "value": 45,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n19"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n19",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules/gaps",
+      "issue": "랭크값중간3개누락,유효3회조건불완전,핵심재사용피해및우선타깃누락을잘못된스키마gap으로덮었다.",
+      "correction": "전체5랭크/다음3회조건/재사용규칙을복원하고허위gap제거했다.",
+      "sourceId": "en:body",
+      "quote": "Recast: Evelynn fires spikes through the nearest enemy, dealing (25/30/35/40/45 + (25% Ability Power)) magic damage to all enemies hit."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "summary": "코르키의 기본 공격과 주문 검은 추가 고정 피해를 입히며, 기본 공격의 추가 피해는 공격력 계수로, 치명타 공격의 추가 피해는 치명타 피해량도 반영해 계산합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 공격은 추가 고정 피해를 입힌다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks: (20% Attack Damage)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공격이 치명타일 때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "치명타 공격은 추가 고정 피해를 입힌다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": "critDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Critical Strikes: (20% Attack Damage) × (100% Critical Strike Damage)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "주문 검 효과는 추가 고정 피해를 입힌다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Corki's Attacks and Spellblades deal 20% bonus true damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "주문 검의 추가 고정 피해 계산 기준 스탯은 툴팁에 명시되어 있지 않다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Corki's Attacks and Spellblades deal 20% bonus true damage."
+        }
+      ]
+    }
+  ]
+}

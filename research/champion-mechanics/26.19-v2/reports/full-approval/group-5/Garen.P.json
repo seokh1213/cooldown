@@ -1,0 +1,134 @@
+{
+  "id": "Garen.P",
+  "sourceHash": "92fdc8a8dfd298af3284c6e8e64ad5721da52436545e8983d1618c17433fcbf2",
+  "beforeCandidateHash": "9c56da3630eb6ab1d360a0b5a1aa3b27f211c3923f6ffed66c8d9768874dac7a",
+  "candidateHash": "d5624baf2f02bdd3f735a9d989987c185b5799a369b86962709916d1fc0ff658",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "최근8초피해또는적스킬에맞지않음이회복전제,본문5초당maxHP1.5~10.1%. 요약1초/KO부정or충돌기록.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "8초noDamage AND noEnemyAbilityHit,5초당maxHP1.5~10.1%. source에레벨근거없어unknown. 5는주기other참조이며회복량아님.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n3"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "absent",
+          "value": {
+            "kind": "text",
+            "value": "최근 해당 시간 동안 피해를 입음"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "absent",
+          "value": {
+            "kind": "text",
+            "value": "최근 해당 시간 동안 적의 스킬에 맞음"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "caster",
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "1.5%",
+              "value": 1.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "10.1%",
+              "value": 10.1,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,gaps",
+      "issue": "%HP를절대amount·level_range추측·본문요약시간충돌누락.",
+      "correction": "maxHP계수/unknown범위·정확5초주기/한계.",
+      "sourceId": "en:body",
+      "quote": "Garen regenerates (1.5% ~ 10.1%) max Health every 5 seconds if he has not been damaged or hit with enemy Abilities in the last 8 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 81,
+      "verdict": "false_positive",
+      "reason": "주기전용역할이없어other5는적절하다. 텍스트에5초마다명시해량과시간을구분했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "본문5초당회복과요약매초표현의시간단위차이가있어본문수치를우선한다. KO본문부정조건or는EN의두피격조건모두부재와다르게읽힐수있어EN의두조건부재를기록한다. 회복범위변화기준은미공급.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -373,6 +373,9 @@ export const zhCNTranslations: Translations = {
     emptyHint: "可以询问符文、装备判定或英雄技能。回答在你的设备上生成。",
     rateUp: "有帮助",
     rateDown: "有误或不足",
+    copyAnswer: "复制回答",
+    answerCopied: "已复制",
+    answerCopyFailed: "复制失败，请重试。",
     errorPrefix: "错误",
   },
 };

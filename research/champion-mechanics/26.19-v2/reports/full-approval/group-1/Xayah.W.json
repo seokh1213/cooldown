@@ -1,0 +1,76 @@
+{
+  "id": "Xayah.W",
+  "sourceHash": "75913f6b596b2228a7969f66b8a32cd6396aa6493c167b85bd1cdd2f33e7c268",
+  "beforeCandidateHash": "37c884d153f946e2dfa304d24ed064060e731e490404163ab2fcd3eb41f50fc0",
+  "candidateHash": "b21773bc7c7b6f293ddb2725b40ff1e21bf538111374c2bfc1f84fd8538d146e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "4초 공격 속도35~55%, 기본 공격의25% 보조 칼날, 보조 칼날 챔피언 적중 시 자기30%1.5초 이속, 근처 라칸 공유와 자야 적중 시 라칸 이속을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 공격 속도가 증가합니다. [duration_seconds n0=4 scalar; amount n1=35%/n2=40%/n3=45%/n4=50%/n5=55% rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 4초 칼날 폭풍 효과가 활성 중. target attack_modifier: 자야의 기본 공격은 피해를 주는 보조 칼날을 발사합니다. [damage_multiplier n6=25% scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.followup_attack; 조건 target.target_type eq champion; caster.other eq W활성 중 발사된 보조 칼날이 적 챔피언에 적중. caster stat_modifier: 이동 속도가 증가합니다. [amount n7=30% scalar; duration_seconds n8=1.5 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 ally.other eq 근처에 있는 라칸. ally other: 라칸이 근처에 있으면 이 스킬의 효과를 함께 받습니다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 ally.other eq 근처에 있는 라칸; caster.other eq W활성 중 자야의 기본 공격이 대상에 적중. ally stat_modifier: 자야가 대상을 공격하면 라칸의 이동 속도가 증가합니다. [amount n7=30% scalar; duration_seconds n8=1.5 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-4",
+      "issue": "W활성 조건 누락, 보조 칼날 적중 사건을 target ability_hit으로 기록, 아군 라칸 신원 조건 없고 문자열 거리에 lte, 공격 시도만으로 라칸 이속 발동",
+      "correction": "4초 칼날 폭풍 활성/보조 칼날 적중을 명시하고 아군을 근처 라칸으로 제한했다. 자야 공격 적중이 라칸 이속 조건이다.",
+      "sourceId": "en:body",
+      "quote": "If Rakan is nearby he will also gain the effects of this Ability, except he gains Move Speed when Xayah strikes a target."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 650,
+      "verdict": "false_positive",
+      "reason": "현재 요약은 근처 라칸 효과 공유와 자야가 대상을 공격하면 라칸 이동 속도 증가를 모두 명시한다. 누락 지적은 현 후보에 해당하지 않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 라칸이 'nearby'일 때라고 하지만 정확한 거리 기준은 주어지지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

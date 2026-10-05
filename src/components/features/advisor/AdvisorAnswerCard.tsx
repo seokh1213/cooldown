@@ -2,7 +2,7 @@
  * 코드가 만든 답을 카드로 그린다
  *
  * 모델이 데이터를 읊게 하지 않는다. 사실은 카드가 그리고, 모델은 그 위에 해설만 쓴다.
- * 그래서 카드는 도구 결과처럼 보여야 한다 — 이름·종류 칩·표·출처 링크.
+ * 그래서 카드는 도구 결과처럼 보여야 한다 — 이름·종류 칩·표·화면 링크.
  *
  * 채택된 시안
  *   M1-B  스킬: 표 카드에서 묻은 행만 굵게, 나머지는 흐리게, 설명 전문은 접음
@@ -202,11 +202,10 @@ function RuleAnswerCard({ answer, patch }: { answer: Extract<AdvisorAnswer, { ki
     <Frame
       icon={<SlotBadge slot="§" />}
       title={ruleName(answer.rule, lang)}
-      subtitle={copy.ruleSource}
       tool={copy.rule}
       footer={
         <>
-          <span>{fill(copy.patch, { patch })} · CC BY-SA</span>
+          <span>{fill(copy.patch, { patch })}</span>
         </>
       }
     >

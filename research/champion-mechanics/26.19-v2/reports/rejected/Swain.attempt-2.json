@@ -1,0 +1,581 @@
+{
+  "drafts": {
+    "R": {
+      "summary": "스웨인이 악마로 변신해 주변 적에게 마법 피해를 주고 매초 체력을 흡수합니다. 악마의 기운은 시간에 따라 소진되며, 챔피언을 흡수하는 동안 회복되고 챔피언 처치 관여 시 완전히 회복됩니다. 변신 중 일정 시간이 지난 뒤 악의 불길을 사용할 수 있으며 주변 적에게 마법 피해와 점차 사라지는 둔화를 줍니다. 비챔피언에게서 얻는 회복량은 감소합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "transform",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "transform",
+              "subject": "caster",
+              "text": "스웨인이 악마를 해방해 변신합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "변신 시 주변 적에게 마법 피해를 줍니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Swain frees the demon, which deals (15/25/35 + (4% Ability Power)) magic damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Swain frees the demon, which deals (15/25/35 + (4% Ability Power)) magic damage and drains (15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health per second from nearby enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "주변 적의 체력을 매초 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": "bonusHealth",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "drains (15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health per second from nearby enemies."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Swain frees the demon, which deals (15/25/35 + (4% Ability Power)) magic damage and drains (15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health per second from nearby enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "챔피언에게서 체력을 흡수해 스웨인을 회복시킵니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Regenerates 20 Demonic Energy per second while draining from champions."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "drains (15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health per second from nearby enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "비챔피언에게서 얻는 회복량은 기본 회복량의 일부로 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Healing is reduced to 10% against non-champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "악마의 기운이 시간에 따라 소진됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Depletes 10 Demonic Energy per second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n19"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "변신 후 일정 시간이 지나면 악마의 기운 소진량이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After 5 seconds, this increases to 15."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "챔피언에게서 체력을 흡수하는 동안 악마의 기운을 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Regenerates 20 Demonic Energy per second while draining from champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "takedown",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "챔피언 처치 관여 시 악마의 기운이 완전히 회복됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "His Demonic Energy depletes over time but can be recharged indefinitely by draining enemy Champions and is fully restored on Champion takedowns."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "transformed"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n9"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "변신 중 악의 불길을 시전하면 주변 적에게 마법 피해를 줍니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After 2 seconds and every 8 seconds thereafter, Swain can cast Demonflare while transformed, which deals (150/250/350 + (40% Ability Power)) magic damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "After 2 seconds and every 8 seconds thereafter, Swain can cast Demonflare while transformed, which deals (150/250/350 + (40% Ability Power)) magic damage and Slows enemies by 50%, decaying over 1.5s."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "transformed"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n9"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "악의 불길이 주변 적을 둔화시키며, 둔화 효과는 시간이 지나며 사라집니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After 2 seconds and every 8 seconds thereafter, Swain can cast Demonflare while transformed, which deals (150/250/350 + (40% Ability Power)) magic damage and Slows enemies by 50%, decaying over 1.5s."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "기본 변신 피해가 어떤 주기로 반복되는지는 툴팁에 명시되어 있지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Swain frees the demon, which deals (15/25/35 + (4% Ability Power)) magic damage"
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "툴팁은 체력 흡수를 설명하지만 흡수량이 대상에게 주는 피해와 동일한지, 흡수 효과의 피해 유형이 무엇인지는 명시하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "drains (15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health per second from nearby enemies."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "비챔피언 상대 회복량이 10%로 감소한다고 명시되어 있으나 감소 전 회복량의 산정 방식은 설명하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Healing is reduced to 10% against non-champions."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "악마의 기운 소진량이 변신 후 5초 뒤 증가한다고 명시되어 있으나 그 이후 지속 시간이나 추가 구간은 설명하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Depletes 10 Demonic Energy per second. After 5 seconds, this increases to 15."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "악의 불길의 첫 사용 가능 시점과 이후 반복 간격은 명시되어 있지만, 반복 간격의 기준 시점이 무엇인지는 설명되지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After 2 seconds and every 8 seconds thereafter, Swain can cast Demonflare while transformed"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Swain.R",
+      "errors": [
+        {
+          "code": "damage_type",
+          "path": "rules.1",
+          "detail": "Damage effect needs an explicit source damage type"
+        }
+      ]
+    }
+  ]
+}

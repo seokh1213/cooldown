@@ -1,0 +1,358 @@
+{
+  "summary": "닐라가 1초 동안 회전하며 주변 적에게 물리 피해를 주고, 마지막 폭발로 추가 피해와 끌어당김을 적용합니다. 적 챔피언에게 준 피해를 바탕으로 닐라와 주변 아군을 회복시키며, 초과 회복은 보호막으로 바뀝니다. 비챔피언 대상 회복은 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "1초 동안 회전하며 주변 적에게 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nilah whirls her whip-blade, dealing (60/100/140 + (40% bonus Attack Damage)) physical damage over 1 second"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Nilah whirls her whip-blade, dealing (60/100/140 + (40% bonus Attack Damage)) physical damage over 1 second, then finishes with a burst of (125/225/325 + (100% bonus Attack Damage)) physical damage that also Pulls nearby enemies toward her."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "마지막 폭발로 주변 적에게 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "마지막 폭발이 주변 적을 닐라 쪽으로 끌어당깁니다.",
+          "damageType": null,
+          "crowdControl": "pull",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "then finishes with a burst of (125/225/325 + (100% bonus Attack Damage)) physical damage that also Pulls nearby enemies toward her."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Nilah whirls her whip-blade, dealing (60/100/140 + (40% bonus Attack Damage)) physical damage over 1 second, then finishes with a burst of (125/225/325 + (100% bonus Attack Damage)) physical damage that also Pulls nearby enemies toward her."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "적 챔피언에게 입힌 피해를 바탕으로 닐라가 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "적 챔피언에게 입힌 피해를 바탕으로 닐라의 주변 아군이 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Apotheosis heals Nilah and her nearby allies for (20% + (10% Critical Strike Chance)) ( + (20% Critical Strike Chance) Formless Blade) of the damage dealt to enemy champions,"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Apotheosis heals Nilah and her nearby allies for (20% + (10% Critical Strike Chance)) ( + (20% Critical Strike Chance) Formless Blade) of the damage dealt to enemy champions, converting any overhealing into a Shield for 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "R 회복량이 최대 체력을 초과함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "초과 회복량이 보호막으로 전환됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "초과 회복량이 보호막으로 전환됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "converting any overhealing into a Shield for 6 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Apotheosis heals Nilah and her nearby allies for (20% + (10% Critical Strike Chance)) ( + (20% Critical Strike Chance) Formless Blade) of the damage dealt to enemy champions, converting any overhealing into a Shield for 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "비챔피언 대상에게는 회복 효과가 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Healing is reduced to 10% against non-champions"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "회복량 식에 기본 비율, 치명타 확률 계수, Formless Blade 관련 추가 치명타 확률 항이 병기되어 있으나 괄호 구조와 스탯 적용 범위가 불명확해 각 수치만 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "for (20% + (10% Critical Strike Chance)) ( + (20% Critical Strike Chance) Formless Blade) of the damage dealt to enemy champions"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "비챔피언 대상 회복 감소 문구의 10%가 전체 회복량의 최종 비율인지 기본 회복량 대체인지 명확하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Healing is reduced to 10% against non-champions"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "비챔피언 회복 감소 규칙에서 회복 주체가 닐라 및 주변 아군 모두인지 원문에 명시되어 있지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Healing is reduced to 10% against non-champions"
+        }
+      ]
+    }
+  ]
+}

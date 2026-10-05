@@ -1,0 +1,549 @@
+{
+  "id": "Urgot.W",
+  "sourceHash": "413aa18635f98ffe5eaba8b5dc15d71118f0c92b5415dc3180d9dec68a197812",
+  "beforeCandidateHash": "b77ed39e3284218745d21cb57496c0e62cf5431bd0a0ad2a55ea23f958d8ece9",
+  "candidateHash": "14c6fbb5bed6844819054341b72ca483dec9dd9d1ae660d56be754eaa406bb5e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 12,
+  "checkedGapCount": 0,
+  "summaryCheck": "다른 스킬의 마지막 챔피언 표식5초, 가까운 적/표식 우선 사격, 이동 가능·MS감소·둔화 저항을 본문과 대조했다. 요약의 자기 둔화는 구체적인 125MS감소를 따른다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다른 스킬이 마지막으로 맞힌 챔피언에 표식을5초 부여. W자체 적중으로 표식을 새로 주지 않는 범위 확인.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "심판의 원이 아닌 다른 스킬 적중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "가까운 적에게 기관총을 시작하되 표식 있는 적 우선이라는 선택 기준 확인.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "초당3은 빈도다. 사격당12+AD20/23.5/27/30.5/34%이며 양끝 계수의 중복 amount를 제거했다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "12",
+              "value": 12,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "23.5",
+              "value": 23.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "27",
+              "value": 27,
+              "percent": true
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "30.5",
+              "value": 30.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "34%",
+              "value": 34,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "각 사격의 on-hit 피해50%, 치명타 불가 확인.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "damage_multiplier",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언 사격 피해 최소50은 기본 사격을 보정하는 하한이다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정글 몬스터 사격 피해 최소50도 같은 보정이며 비에픽 제한은 통과 이동에만 있다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "40%는 둔화 저항이며 자기에게40%slow를 거는 효과가 아니다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "심판의 원 사격 중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "125는 사격 중의 이동 속도 감소량이다. 텍스트가 방향을 명시하므로 양수amount를 감소로 해석한다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "심판의 원 사격 중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n9"
+          ],
+          "stat": "moveSpeed",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "125",
+              "value": 125,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최대 스킬 랭크에서만 무한 지속·켜고 끄기 가능.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "스킬을 최고 등급으로 올림"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "사격 중에도 이동 가능.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "사격 중 미니언과 비에픽 정글 몬스터 통과.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 11,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "요약에 명시된 화염의 메아리 발동을 별도 효과로 보존했다.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2",
+      "issue": "초당 빈도를 총 타격count로 기록하고 AD계수를 최소/최대 amount로 중복했다.",
+      "correction": "빈도other와 명시문구, 랭크 계수만 보존.",
+      "sourceId": "en:body",
+      "quote": "He Attacks them 3 times a second dealing (12 + (20/23.5/27/30.5/34% Attack Damage)) physical damage per shot."
+    },
+    {
+      "path": "rules.4-7",
+      "issue": "최소 사격 피해를 추가damage, 둔화 저항을 자기slow로 분류했다.",
+      "correction": "하한other, 저항other, 사격 중125MS감소 명시.",
+      "sourceId": "en:body",
+      "quote": "Urgot can move while firing and has 40% Slow resistance, but loses 125 Move Speed."
+    },
+    {
+      "path": "rules.11",
+      "issue": "요약의 패시브 발동 누락.",
+      "correction": "W가 Echoing Flames를 발동시킬 수 있음을 복원.",
+      "sourceId": "en:summary",
+      "quote": "Prioritizes enemy champions Urgot has recently struck with other abilities and triggers Echoing Flames."
+    },
+    {
+      "path": "summary",
+      "issue": "구체적인 본문의125MS감소와 달리 자기slow라고만 기술했다.",
+      "correction": "이동 속도 감소와 둔화 저항을 명시.",
+      "sourceId": "en:body",
+      "quote": "Urgot can move while firing and has 40% Slow resistance, but loses 125 Move Speed."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 585,
+      "verdict": "repaired",
+      "reason": "초당3회 빈도로 변경해 총 타격수처럼 실행되는 오류를 제거했다."
+    },
+    {
+      "index": 586,
+      "verdict": "repaired",
+      "reason": "중복 min/max를 삭제하고 모든5랭크 AD%계수만 보존했다."
+    },
+    {
+      "index": 587,
+      "verdict": "repaired",
+      "reason": "40%저항을 other로 수정했다. 본문은 별도125MS감소를 명시하므로 저항수치를 자기slow로 적용할 수 없다."
+    },
+    {
+      "index": 588,
+      "verdict": "false_positive",
+      "reason": "원래 statTo와 parameter.stat/owner가 moveSpeed/caster였고 텍스트도 감소라고 명시했다. 구조적 오류는 없으나125와 사격 중을 문구에 추가했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.8",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.11",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "id": "Gangplank.R",
+  "sourceHash": "783f2393ce24eef3862554aa2513365c1689c47ac65a9dd73516a8d7c3077a22",
+  "beforeCandidateHash": "5027b0ad4c3e9e02dfb1d5ab146307e8432e04e738c8242e4c3d27d877bd816c",
+  "candidateHash": "b85284dfad157febb9d7af3f2ea49a1fe32e6a338aa89c79a4d655a699aab60b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 1,
+  "summaryCheck": "맵어디든8초12차례포격,차례당마법피해와0.5초30%둔화,기본최대피해표시,가차없는포격6회추가·죽음의여신고정피해/둔화·사기진작아군40%2초이동을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. nearby_enemies: 포격 영역 안의 적에게 포탄 세례 한 차례마다 마법 피해를 입힌다. (magic); amount=40/70/100  rank_values, stat_coefficient=10% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. nearby_enemies: 포격 영역 안의 적에게 포탄 세례 각 차례가 둔화를 적용한다. (slow); amount=30%  scalar, duration_seconds=0.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq Fire at Will 업그레이드 적용. caster: 포탄을 추가로 발사합니다.; count=6  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq Death's Daughter 업그레이드 적용. nearby_enemies: 대형 포탄이 고정 피해를 입힙니다. (true); amount=120/210/300  rank_values, stat_coefficient=30% caster의 abilityPower scalar / nearby_enemies: 대형 포탄이 적을 둔화시킵니다. (slow); amount=75%  scalar, duration_seconds=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 enter_area 사건에서 caster.activation eq Raise Morale 업그레이드, ally.distance lte Cannon Barrage 범위 안 적용. ally: 포탄 세례 범위 안의 아군이 이동 속도를 얻습니다.; amount=40%  scalar, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 맵 어디든 지정한 영역을8초동안12차례포격한다.; count=12  scalar, duration_seconds=8  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 기본12차례포격의최대합계마법피해표시다.업그레이드의추가포격을포함한별도상한으로추정하지않는다.; max_amount=480/840/1200  rank_values, stat_coefficient=120% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,5",
+      "issue": "포탄한발과포격차례혼동및발사수/피해혼합",
+      "correction": "12차례8초시전과차례별적중효과분리",
+      "sourceId": "en:body",
+      "quote": "Each wave Slows by 30% for 0.5 seconds and deals (40/70/100 + (10% Ability Power)) magic damage."
+    },
+    {
+      "path": "rules.4,6",
+      "issue": "사기진작업그레이드소유자오류및최대피해표시누락",
+      "correction": "caster업그레이드와기본최대합계표시보완",
+      "sourceId": "en:body",
+      "quote": "Raise Morale: Allies inside Cannon Barrage gain 40% Move Speed for 2 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_variant",
+      "detail": "업그레이드별 효과가 tooltip에 이름과 함께 제시되지만 입력 variants에는 base만 있습니다. 업그레이드 효과는 base 문서 안의 조건부 규칙으로 기록했습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

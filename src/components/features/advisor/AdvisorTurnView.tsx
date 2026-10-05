@@ -1,5 +1,5 @@
 /**
- * 대화의 말풍선 하나 — 사용자 질문, 또는 답(카드·코드가 쓴 글·모델 해설)과 그 곁의 칩·링크·평가.
+ * 대화의 말풍선 하나 — 사용자 질문, 또는 답과 그 곁의 자료 칩·링크·복사.
  */
 import { ComparisonHeadlines } from "./ComparisonHeadlines";
 import { Link } from "react-router-dom";
@@ -36,7 +36,6 @@ interface AdvisorTurnViewProps {
   onShowDoc: (id: string, title: string) => void;
   onPickChampion: (championId: string) => void;
   onNavigate: () => void;
-  onRate: (turnId: number, rating: "up" | "down", patch: string) => void;
 }
 
 function linkLabel(link: ReturnType<typeof answerLinks>[number], copy: Translations["advisor"]): string {
@@ -180,12 +179,11 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
           </span>
         )
       )}
-      {turn.role === "assistant" && turn.sources && turn.sources.length > 0 && <TurnSources sources={turn.sources} />}
       {/* 카드 없는 답(규칙)의 바로 가기. 카드가 있는 답은 자료 칩 옆에 이미 붙였다. */}
       {turn.role === "assistant" && linkButtons.length > 0 && !asReference && (
         <div className="mt-2 flex flex-wrap gap-1.5">{linkButtons}</div>
       )}
-      {turn.role === "assistant" && (turn.content || turn.answer || Boolean(turn.answers?.length)) && <TurnFooter turn={turn} patch={patch} onRate={props.onRate} />}
+      {turn.role === "assistant" && (turn.content || turn.answer || Boolean(turn.answers?.length)) && <TurnFooter turn={turn} />}
     </div>
   );
 }
@@ -212,28 +210,6 @@ function RelatedDocs({
         >
           {doc.title}
         </button>
-      ))}
-    </div>
-  );
-}
-
-/*
-  무엇을 보고 답했는지 밝힌다. "자료에 있는 것만 답한다" 가 설계인데
-  어느 자료인지 안 보이면 사용자가 맞는지 가릴 수 없다. 엉뚱한 자료를
-  물어 왔을 때도 그 사실이 드러나야 한다.
-
-  "근거" 가 아니라 "찾은 자료" 다. 상위 세 건을 다 실어 놓고 어느 것이
-  답인지는 모델이 고르므로, 답에 안 쓰인 것도 섞여 있다.
-*/
-function TurnSources({ sources }: { sources: string[] }) {
-  const { t } = useTranslation();
-  return (
-    <div className="mt-2 flex flex-wrap items-center gap-1 border-t pt-2 text-[11px] text-muted-foreground">
-      <span>{t.advisor.sources}</span>
-      {sources.map((source) => (
-        <span key={source} className="rounded bg-background px-1.5 py-0.5">
-          {source}
-        </span>
       ))}
     </div>
   );

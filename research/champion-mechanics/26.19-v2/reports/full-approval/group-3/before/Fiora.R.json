@@ -1,0 +1,322 @@
+{
+  "summary": "기본 지속 효과는 급소 공격의 이동 속도 상승량을 높인다. 사용 시 챔피언의 급소 네 곳을 드러내고 대상 근처에서 이동 속도 상승 효과를 얻는다. 8초 안에 급소 네 곳을 모두 공격하거나, 급소를 하나 이상 공격한 뒤 대상이 사망하면 주변 아군 챔피언을 회복시킨다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "급소 공격으로 얻는 이동 속도 상승량을 높인다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Duelist's Dance Move Speed bonus is increased to 30/40/50%."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "챔피언의 급소 네 곳을 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Fiora reveals all four Vitals on a champion for a max of (12% + (0.16% bonus Attack Damage)) max Health true damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Fiora reveals all four Vitals on a champion for a max of (12% + (0.16% bonus Attack Damage)) max Health true damage and gains Duelist's Dance's Move Speed bonus while near the target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "급소에 대상 최대 체력 비례 고정 피해를 최대치까지 입힌다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Fiora reveals all four Vitals on a champion for a max of (12% + (0.16% bonus Attack Damage)) max Health true damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Fiora reveals all four Vitals on a champion for a max of (12% + (0.16% bonus Attack Damage)) max Health true damage and gains Duelist's Dance's Move Speed bonus while near the target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "대상 근처"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "대상 근처에서 급소 공격의 이동 속도 상승 효과를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and gains Duelist's Dance's Move Speed bonus while near the target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n8"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "피오라가 급소를 하나 이상 가격한 뒤 대상이 사망하면 주변 아군 챔피언을 일정 시간 동안 매초 회복시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Fiora strikes all four Vitals within 8 seconds or if the target dies after she has hit at least one, Fiora restores (80/105/130 + (70% bonus Attack Damage)) Health per second to surrounding allied champions for 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n8"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "급소를 네 곳 모두 8초 안에 가격하면 주변 아군 챔피언을 일정 시간 동안 매초 회복시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Fiora strikes all four Vitals within 8 seconds or if the target dies after she has hit at least one, Fiora restores (80/105/130 + (70% bonus Attack Damage)) Health per second to surrounding allied champions for 5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "조건 필드가 급소 개수 및 개별 급소 추적을 나타내지 않아, 네 급소 모두를 제한 시간 내에 가격하는 조건과 대상 사망 전 최소 한 번 급소를 가격한 조건은 효과 텍스트에 보존했다. 주변 아군 회복 대상에 피오라 자신이 포함되는지는 원문만으로 확정할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Fiora strikes all four Vitals within 8 seconds or if the target dies after she has hit at least one"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "to surrounding allied champions"
+        }
+      ]
+    }
+  ]
+}

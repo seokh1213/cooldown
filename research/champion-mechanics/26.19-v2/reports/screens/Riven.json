@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Riven.E",
+      "sourceHash": "ec20c99b5dfd19c8e765aeeab830ccbe066176d86035515904cdf64c141f211a",
+      "candidateHash": "c3daa47531662131b00d8d68f0d6b707c80a0cf4eea09865d0d7a0722b8dd26e"
+    },
+    {
+      "id": "Riven.W",
+      "sourceHash": "daf4fe7f0a6bc43b6cf66a719d70729805e141ecd9e238dd5ee32d4f1d4441b4",
+      "candidateHash": "14a3cbf51a2f1b835014157c143cb91741bb2d8e502468fb0d1133eb4cfe2b69"
+    },
+    {
+      "id": "Riven.P",
+      "sourceHash": "3cf23fd83642c0ac7155c694ffb6d891f9756c5d71441579e013872e38ba182f",
+      "candidateHash": "0b9b4e904da4791bbffec0a129092daaee8938e334860bad2b8a7761fd87debd"
+    },
+    {
+      "id": "Riven.Q",
+      "sourceHash": "e32d34b008ac2989bc8d429a7176842e61c3d41d0c2a86839b3358d8b290de17",
+      "candidateHash": "2a10d980054e1e88334f352b75d6010049ae314b88160d36f279c75a672230f5"
+    },
+    {
+      "id": "Riven.R",
+      "sourceHash": "77e1af3e6ad532e3e8b5daf1a2f2a69f6fb6c7bd3c1aa07a0ae2ab6a06a75ad4",
+      "candidateHash": "dca206ba169c4957a2496b2742c4c90b5e134a66161a0fac5e50da4de938f9c0"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Riven.P",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Her Attacks spend a charge to deal an additional ((30% ~ 45%) Attack Damage) physical damage.",
+      "issue": "충전 보유 조건이 3회 초과로 설정되어 있습니다. 원문상 최대 보유량은 3회이므로, 이 조건이면 충전을 가진 정상 상태에서도 공격 효과가 발동하지 않습니다.",
+      "correction": "충전 보유 여부를 확인하는 조건으로 수정하고, 충전 1회 소모와 추가 피해는 그대로 유지하세요."
+    },
+    {
+      "id": "Riven.P",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Her Attacks spend a charge to deal an additional ((30% ~ 45%) Attack Damage) physical damage.",
+      "issue": "소모량이 최대 충전량을 나타내는 원문 값 3에 연결되어 있어, 충전 3회를 소모하는 것으로 읽힙니다.",
+      "correction": "충전 1회 소모로 표현하세요. 소모량 1은 원문 수치로 뒷받침되지 않으므로 값 참조를 제거하거나 미상으로 남기세요."
+    },
+    {
+      "id": "Riven.Q",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The first Recast is the same as the original, but the second has a different effect: Recast: Riven leaps forward and slams, dealing (45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage and Knocks Up nearby enemies for 0.75 seconds.",
+      "issue": "요약이 두 번째 재사용의 피해 효과를 누락해, 공중에 띄우는 효과만 있는 것처럼 읽힙니다.",
+      "correction": "두 번째 재사용 시 물리 피해도 입힌다고 요약에 포함하세요."
+    }
+  ],
+  "notes": []
+}

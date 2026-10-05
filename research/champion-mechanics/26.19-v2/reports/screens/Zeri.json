@@ -1,0 +1,116 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Zeri.E",
+      "sourceHash": "1a31e900b5406ea245f8f6980599d20c764ffd71d513301b8c1311ecdcc1c81c",
+      "candidateHash": "0af5745addec30b3439acdcd4f20370d8b5a37d77b501b5532782c1616537f29"
+    },
+    {
+      "id": "Zeri.P",
+      "sourceHash": "5fe860c6095e59fa77c6b5438ce239478bc1830dde80ef8b8bcf7be9b14eb475",
+      "candidateHash": "a2cfc6cd7d7a865339c7d3550e55b964909cbef413d6cf91456f4d5a580140b4"
+    },
+    {
+      "id": "Zeri.Q",
+      "sourceHash": "c5e58e5a9408e13879daa27ae33d3e8b226105dbbaf4cdad54f994679052ea9c",
+      "candidateHash": "bd3ab20f097a19fb05682b7fb865c2337f31d46f36c1a4b84d10e1dc21ba48e0"
+    },
+    {
+      "id": "Zeri.R",
+      "sourceHash": "aaddb214cfe2b7074acff408e103d28d54815183e619cd3c3193771fccecdd5d",
+      "candidateHash": "a1397f9d75ebd76bd1c5b9d6ef785deb9e51c62cbcdd86ee644349747a84f629"
+    },
+    {
+      "id": "Zeri.W",
+      "sourceHash": "5946e85df014c6822e5d367ae7ff9d8e02c685dac3c966290b3a8e641b4ab5bd",
+      "candidateHash": "391302fcb4b3c9a0adb8d0395ddab0da9cfcf18d97bdda0b34940c1c2188975c"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Zeri.E",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck.",
+      "issue": "첫 대상 추가 피해를 주는 이벤트를 `attack_or_ability_hit`으로 지정했습니다. 출처는 해당 효과를 Burst Fire의 사격에 한정하므로, 임의의 스킬 적중에도 적용되는 것으로 해석될 수 있습니다.",
+      "correction": "Burst Fire 사격 적중에 한정되는 이벤트나 텍스트로 기록하세요."
+    },
+    {
+      "id": "Zeri.E",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "On-hit damage is increased by Zeri's Critical Strike Chance and Critical Strike Damage at 100% effectiveness.",
+      "issue": "치명타 확률·피해량 증가 효과에 `hit_order == first` 조건을 붙였습니다. 원문은 적중 시 피해 전체를 가리키며 첫 대상에만 한정하지 않습니다.",
+      "correction": "첫 대상 조건을 제거하고, 증가 대상의 범위가 불확실하다면 그 불확실성만 별도 기록하세요."
+    },
+    {
+      "id": "Zeri.P",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zeri's Attacks are treated as Abilities instead of Attacks and can be charged up by moving and casting Burst Fire.",
+      "issue": "요약 텍스트는 기본 공격이 스킬 대신 기본 공격이 아닌 것으로 취급된다고 말하지만, 본문 효과가 이를 `기본 공격 대신 스킬`로 뒤집었습니다. 원문은 기본 공격을 스킬로 취급한다고 명시합니다.",
+      "correction": "‘제리의 기본 공격은 기본 공격이 아니라 스킬로 취급됩니다.’로 고치세요."
+    },
+    {
+      "id": "Zeri.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Uncharged Attacks consume a small amount of charge, deal ((10 ~ 25) + (3% Ability Power)) magic damage and execute enemies below ((70 ~ 160) + (20% Ability Power)) Health.",
+      "issue": "충전되지 않은 공격의 조건을 자원 상태가 `uncharged`와 같은 경우로 표현했지만, 이 상태는 원문에 정의되어 있지 않습니다. 원문은 충전되지 않은 공격을 설명할 뿐 특정 내부 자원 판정값을 제시하지 않습니다.",
+      "correction": "미정의 자원값 조건을 제거하고, 충전되지 않은 공격이라는 텍스트 조건으로 남기세요."
+    },
+    {
+      "id": "Zeri.R",
+      "path": "rules.2.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hitting an enemy champion with an Attack or Ability extends this ability's duration and adds a stack of Overcharge for 2.5 seconds.",
+      "issue": "과충전 중첩 효과의 `count` 값에 다음 문장의 2를 연결했습니다. 2는 치명타 적중 시 추가되는 중첩 수이며, 일반 공격 또는 스킬 적중의 중첩 수는 원문상 1입니다.",
+      "correction": "일반 적중 중첩 수를 1로 기록하고, 치명타 적중 시 추가 2중첩은 별도 규칙으로 유지하세요."
+    },
+    {
+      "id": "Zeri.R",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Critical strikes add 2 additional stacks.",
+      "issue": "치명타 중첩 규칙에 대상이 챔피언이어야 하고 공격이 강화되어야 한다는 조건을 추가했습니다. 원문에는 두 조건이 없습니다.",
+      "correction": "챔피언 및 강화 공격 조건을 제거하고, 치명타 적중 시 추가 중첩만 기록하세요."
+    },
+    {
+      "id": "Zeri.R",
+      "path": "rules.5.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "During this time, Burst Fire becomes a faster triple shot that chains (40% Attack Damage) physical damage to nearby enemies.",
+      "issue": "3연발 사격의 `count`에 치명타 추가 중첩 수인 2를 연결했습니다. 원문은 3연발이라고 명시하며, 2는 별도 효과의 수치입니다.",
+      "correction": "연발 수를 3으로 기록하고, 해당 2 수치를 이 효과에서 참조하지 마세요."
+    },
+    {
+      "id": "Zeri.R",
+      "path": "rules.5.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "chains (40% Attack Damage) physical damage to nearby enemies.",
+      "issue": "피해 계수를 bonusAttackDamage로 특정했지만, 원문은 Attack Damage라고만 하며 추가 공격력으로 한정하지 않습니다. 같은 자료의 다른 문장은 bonus Attack Damage라고 명시적으로 구분합니다.",
+      "correction": "스탯 종류를 미확정으로 남기고, Attack Damage 계수라는 원문 표현을 보존하세요."
+    },
+    {
+      "id": "Zeri.W",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If the pulse hits terrain, it expands into a laser that applies the effects in an area and Critically Strikes champions and monsters for (30/70/110/150/190 + (100% Attack Damage) + (50% Ability Power)) × (0.5 + 50% Critical Strike Damage) physical damage.",
+      "issue": "한국어 요약은 레이저가 범위에 효과를 적용한다고만 서술해, 범위 내 모든 적에게 적용된다는 효과 범위를 빠뜨렸습니다.",
+      "correction": "‘지형에 맞으면 광선으로 확산되어 범위 내 모든 적에게 효과를 적용하고, 챔피언과 몬스터에게 치명타 피해를 입힙니다.’로 명시하세요."
+    }
+  ],
+  "notes": []
+}

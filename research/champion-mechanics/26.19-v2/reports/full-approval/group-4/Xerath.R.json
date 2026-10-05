@@ -1,0 +1,118 @@
+{
+  "id": "Xerath.R",
+  "sourceHash": "e8691db2224a63791f265f434b8f17be0027770cb6d8282204f7a94bb136e531",
+  "beforeCandidateHash": "d4b4164362eaa2b7b0b30744bbac3b4607477bbd7e6388b5dc71704ad85e982f",
+  "candidateHash": "faa115dce1581273df953a8c1b8b2c3bb8b82c51fd2123d3a058907a28238ea8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "10초 정신 집중·이동 불가 동안 최대 4/5/6회 재사용, 포격의 170/220/270 + 제라스 주문력 45% 기본 마법 피해와 챔피언 적중마다 20/25/30 + 주문력 5% 추가 피해, 한 번도 재사용하지 않으면 50% 대기시간 감소를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 순수한 모습으로 승화하여 10초 정신 집중하며 이 동안 최대 4/5/6회 재사용할 수 있습니다.; duration_seconds=10  scalar, storage_cap=4/5/6  rank_values / caster: 정신 집중 중 제라스는 이동할 수 없습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.other eq 10초 정신 집중 중 최대 4/5/6회 재사용 가능한 포격을 발사하여 적중한 경우 적용. target: 비전 포격을 발사해 적중한 대상에게 마법 피해를 줍니다. (magic); amount=170/220/270  rank_values, stat_coefficient=45% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.other eq 정신 집중 중 재사용한 비전 포격, target.target_type eq champion 적용. target: 포격이 챔피언을 적중할 때마다 20/25/30 + 제라스 주문력의 5% 추가 마법 피해라는 효과가 적용됩니다. 누적 피해의 시간 범위는 공급 원문만으로 확정하지 않습니다. (magic); amount=20/25/30  rank_values, stat_coefficient=5% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.other eq 이 정신 집중 동안 스킬을 한 번도 재사용하지 않음 적용. caster: 한 번도 재사용하지 않으면 이 스킬의 재사용 대기시간이 감소합니다.; amount=50%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects,evidence",
+      "issue": "정신 집중 중 이동 불가와 재사용 상한의 전체 랭크 값이 빠졌다.",
+      "correction": "10초 집중·이동 불가와 4/5/6회 저장 상한을 보존했다.",
+      "sourceId": "en:summary",
+      "quote": "Xerath immobilizes himself and gains numerous long-range barrages."
+    },
+    {
+      "path": "rules.1-2.trigger,conditions",
+      "issue": "재사용 상한 첫 값 4를 적중 수로 제한하고 임의 시전자 시간으로 판정한다.",
+      "correction": "정신 집중 중 재사용 포격의 실제 적중 사건과 랭크별 재사용 상한을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "During this time he may Recast up to 4/5/6 times."
+    },
+    {
+      "path": "rules.3.conditions,effects.0.subject",
+      "issue": "적중 4회 조건은 한 번도 재사용하지 않음과 모순된다.",
+      "correction": "정신 집중 동안 무재사용 조건과 시전자 스킬 대기시간 감소로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "If Xerath does not Recast at all, this Ability's Cooldown is reduced by 50%."
+    },
+    {
+      "path": "gaps",
+      "issue": "4/5/6 랭크 배열을 미확정 적용 조건으로 처리하나 실제 누적 추가 피해 범위는 다루지 않는다.",
+      "correction": "랭크 전체 값은 규칙에 보존하고 추가 피해의 적용·누적 시간 범위만 한계로 기록했다.",
+      "sourceId": "en:body",
+      "quote": "For each champion hit, the artillery deals an additional (20/25/30 + (5% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 652,
+      "verdict": "repaired",
+      "reason": "재사용 가능 횟수는 적중 횟수가 아니다. 4/5/6을 랭크별 상한으로 보존하고 현재 정신 집중의 재사용 포격 조건으로 바꿨다."
+    },
+    {
+      "index": 653,
+      "verdict": "repaired",
+      "reason": "무재사용은 hit_count=4와 정반대다. 정신 집중 동안 한 번도 재사용하지 않은 텍스트 조건으로 수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "각 챔피언 적중마다 추가 피해라는 원문은 보존했으나, 증가분이 현재 포격·다음 포격 중 언제 적용되고 언제까지 누적되는지는 공급 문구가 특정하지 않는다. 임의 중첩·초기화 조건을 만들지 않았다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

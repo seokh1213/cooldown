@@ -1,0 +1,76 @@
+{
+  "id": "Seraphine.Q",
+  "sourceHash": "873ccf16ed3f526c57fcf372a9f8bb1625068c4b7bec878c46c751c7b0e62bfd",
+  "beforeCandidateHash": "1d4d2a1f2d636c884f677ef89170f174858333ce742fad28403332bc6eb369d7",
+  "candidateHash": "4a03ecdf617f8c684291d60202d2f609c5aee30ea03d908287bde60a8b676626",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "지역마법기본식과챔피언/몬스터대상잃은체력증가·25%미만최대식,미니언에는증가효과미기재를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 대상에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=60,en:body:n1=85,en:body:n2=110,en:body:n3=135,en:body:n4=160 상수 rank_values / stat_coefficient en:body:n5=40%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; target: 챔피언 대상에게 대상의 잃은 체력 비율에 따라 증가한 마법 피해를 입히며, 체력이 25% 미만이면 최대 피해에 도달합니다. [magic]; 수치 max_amount en:body:n6=105,en:body:n7=148.75,en:body:n8=192.5,en:body:n9=236.25,en:body:n10=280 상수 rank_values / stat_coefficient en:body:n11=70%(백분율) caster.abilityPower formula_components; flags replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq monster; target: 몬스터 대상에게 대상의 잃은 체력 비율에 따라 증가한 마법 피해를 입히며, 체력이 25% 미만이면 최대 피해에 도달합니다. [magic]; 수치 max_amount en:body:n6=105,en:body:n7=148.75,en:body:n8=192.5,en:body:n9=236.25,en:body:n10=280 상수 rank_values / stat_coefficient en:body:n11=70%(백분율) caster.abilityPower formula_components; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "증가피해의독립중복합산방지와en/ko25%경계충돌 기록",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Seraphine projects a pure note, dealing (60/85/110/135/160 + (40% Ability Power)) magic damage, increased against champions and monsters by the target's missing Health percentage up to (105/148.75/192.5/236.25/280 + (70% Ability Power)) damage below 25% Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력 비율에 따라 기본 피해에서 최대 피해까지 증가하는 구체적인 수식은 원문에 없습니다. 잃은 체력 비율도 현재 스키마 조건/parameters로 직접 표현할 수 없어 피해 증가식을 확정하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "최대피해경계영문below25%와한국어25%이하충돌;영문미만우선.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

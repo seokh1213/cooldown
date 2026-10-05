@@ -1,0 +1,80 @@
+{
+  "id": "Ziggs.R",
+  "sourceHash": "8f4c86f8666ed8f161460d11469e003a3c45cbe12add3945870c46a2f9e2c211",
+  "beforeCandidateHash": "efd8639ae40cf5f405c444bae165b634223782b051ba62615e6643d8c6458994",
+  "candidateHash": "ce9c98c19166d78161743ec54a15bf1590fb43649dbb0fac1a7dd4c5930e4cd2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "폭발중앙300/500/700+100%AP/가장자리195/325/455+65%AP마법과영역경계한계 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.activation eq 이번 폭발의 중앙영역에 있는 적; target: 폭발 중심부에 있는 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=300,en:body:n1=500,en:body:n2=700 상수 rank_values / stat_coefficient en:body:n3=100%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.activation eq 이번 폭발의 가장자리영역에 있는 적; target: 폭발 가장자리에 있는 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n4=195,en:body:n5=325,en:body:n6=455 상수 rank_values / stat_coefficient en:body:n7=65%(백분율) caster.abilityPower scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "고립조건을중앙/가장자리predicate로 교정·피격대상행위자 오류 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Ziggs hurls his ultimate creation, dealing (300/500/700 + (100% Ability Power)) magic damage in the center of the blast radius, or (195/325/455 + (65% Ability Power)) magic damage at the edge."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 720,
+      "verdict": "repaired",
+      "reason": "고립이 아닌 폭발중앙영역이라는 text조건으로 교정."
+    },
+    {
+      "index": 721,
+      "verdict": "repaired",
+      "reason": "고립아님을가장자리로바꿔 읽지 않도록 명시적 폭발가장자리영역조건으로 교정."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "중앙/가장자리를원문text predicate로 정확히보존했다. 영역의수치반경과경계판정값은 공급원문에 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

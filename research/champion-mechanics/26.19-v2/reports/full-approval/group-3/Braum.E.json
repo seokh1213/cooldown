@@ -1,0 +1,102 @@
+{
+  "id": "Braum.E",
+  "sourceHash": "96c6dd7efe5b2228a8d6dbfd153d9f5fb6e2a3074ed90ec79532efd319ffb321",
+  "beforeCandidateHash": "75b750dfa9ad07852f2ea617b424164af8fc0eb3f50c512555e32054f735570a",
+  "candidateHash": "3503aca29fa5e14f9014937c6a30acc879494e57d4e849307d8c796e368776ac",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "선택한 방향의 적 투사체를3/3.25/3.5/3.75/4초 가로막아 대신 맞은 후 파괴하고 첫 투사체 피해0, 이후35/40/45/50/55% 감소, 방패가 올라간 동안MS10% 증가를 en/ko 본문과 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 선택한 방향에서 날아오는 적 투사체를 대신 맞고 파괴하며 방패를3/3.25/3.5/3.75/4초 동안 듭니다. / duration_seconds=3/3.25/3.5/3.75/4 [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 target hit_order eq first; caster other eq 활성화된 이 방패로 선택한 방향의 적 투사체를 막을 때 → caster: 이 방패로 첫 번째 막은 적 투사체가 브라움에게 주는 피해를 완전히 무효화합니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 target hit_order neq first; caster other eq 활성화된 이 방패로 선택한 방향의 적 투사체를 막을 때 → caster: 이 방패로 첫 번째 이후 막은 적 투사체가 브라움에게 주는 피해를35/40/45/50/55% 감소시킵니다. / amount=35/40/45/50/55% [rank_values]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 이 방패를 든 동안 이동 속도가10% 증가합니다. / amount=10% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary",
+      "issue": "공급 언어와 다른 러시아어 요약으로 작성되었다.",
+      "correction": "검수한 동일 의미의 한국어 요약을 기록했다.",
+      "sourceId": "ko:body",
+      "quote": "브라움이 3/3.25/3.5/3.75/4초 동안 방패를 들어 올려"
+    },
+    {
+      "path": "rules.0-3",
+      "issue": "첫/이후 투사체 무효화의 대상이 target이며 방패·방향·차단 사건이 명확하지 않고 랭크 퍼센트 단위가 숫자표에 보존되지 않았다.",
+      "correction": "브라움의 수신피해를 대상으로 방패 차단 조건과 전체 퍼센트 단위를 명시하고 실제 숫자표 한계를 기록했다.",
+      "sourceId": "en:body",
+      "quote": "The first missile Braum blocks deals no damage, and subsequent projectiles deal 35/40/45/50/55% reduced damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "35/40/45/50/55%의 모든 랭크가 퍼센트 감소량이지만 frozen 숫자표는 마지막55%에만 percent를 표시한다. 효과 텍스트에 전체 단위를 보존하며 혼합 숫자표를 단순 절대량으로 실행할 수 없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

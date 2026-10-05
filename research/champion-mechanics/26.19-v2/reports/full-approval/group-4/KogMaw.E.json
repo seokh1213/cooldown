@@ -1,0 +1,73 @@
+{
+  "id": "KogMaw.E",
+  "sourceHash": "ff1c8184da6d48854b17ab673f432741351e4f798be36323e2d0f866847f4447",
+  "beforeCandidateHash": "63a10d0e1b4c7766fc9f4ed93f0c471408c3b035a2be934fcf6113aed5e73957",
+  "candidateHash": "5812248afd71633e68ea8b672538ee3be86dc73a136650280244700c49778b6d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "분비물이 통과한 적에게 마법 피해를 주고, 3초 남는 흔적 안의 적을 40/45/50/55/60% 둔화한다는 범위와 지속 관계를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 enemy.other eq 발사된 분비물이 통과하여 적중한 적 적용. enemy: 분비물이 적에게 마법 피해를 입힙니다. (magic); amount=70/110/150/190/230  rank_values, stat_coefficient=65% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. unknown: 분비물 흔적을 남깁니다.; duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy의 other 사건에서 enemy.other eq 분비물 흔적 안에 있는 동안 적용. enemy: 분비물 흔적 안에 있는 적은 40/45/50/55/60% 둔화됩니다. (slow); amount=40/45/50/55/60%  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger,conditions",
+      "issue": "시전 사건만으로 모든 적에게 피해가 적용된다.",
+      "correction": "분비물 적중과 통과 대상을 명시했다.",
+      "sourceId": "en:summary",
+      "quote": "damages all enemies it passes through"
+    },
+    {
+      "path": "rules.2.trigger,conditions",
+      "issue": "일반 영역 입장으로만 처리되어 흔적과 현재 위치 조건이 빠졌다.",
+      "correction": "흔적 안에 있는 동안 둔화하는 규칙으로 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Enemies in the ooze are Slowed by 40/45/50/55/60%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

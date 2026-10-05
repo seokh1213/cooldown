@@ -1,0 +1,69 @@
+{
+  "id": "KSante.E",
+  "sourceHash": "d7bde102a42292c9abbdec64e98ff10b2974373979a9f31d08441adec963f883",
+  "beforeCandidateHash": "a0105d5eb692c16723a3291c47def26b595d03a7d39914e30772cc61c2974053",
+  "candidateHash": "17789c0edbf8e54f47754778d968dfe909ddd5a4a68f87a743d15a2dd22fd091",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "자신돌진·2초70/112.5/155/197.5/240+추가HP13.5%보호막,아군대상거리증가+아군보호막,총공세CD50%감소·돌진속도증가대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "일반시전에도자신돌진과2초보호막70~240+자신추가HP13.5%."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군대상돌진은거리증가하며아군도보호막.자기보호막은r0별도적용."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "총공세중CD50%감소및돌진속도증가."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.1.role",
+      "issue": "추가HP계수를amount분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante dashes, gaining (70/112.5/155/197.5/240 + (13.5% bonus Health)) Shield for 2 seconds. If dashing to an ally, the distance of the dash is significantly increased and the ally is also Shielded. All Out: Cooldown is decreased by 50% and dash speed is increased."
+    },
+    {
+      "path": "rules.0.effects.1",
+      "issue": "일반시전자신돌진movement누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante dashes, gaining (70/112.5/155/197.5/240 + (13.5% bonus Health)) Shield for 2 seconds. If dashing to an ally, the distance of the dash is significantly increased and the ally is also Shielded. All Out: Cooldown is decreased by 50% and dash speed is increased."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "KSante.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

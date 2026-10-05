@@ -1,0 +1,125 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Nilah.E",
+      "sourceHash": "2e4c8443077100e7b31f1e3d4d31756550b2030013bc1f13ba5bb9c3a2b68298",
+      "candidateHash": "c66417064cf905bff0c3c50ddf6e6eb62828bb6f7a8aa6e870cee0f26b0919ea"
+    },
+    {
+      "id": "Nilah.P",
+      "sourceHash": "abd554f9c833df7096f077dfc1b4527494cee060d2203adf6d5f507c4a53771f",
+      "candidateHash": "77715da251c8e1f0424b2830966391f293f9771bc1125b7f61a8ecff2faae48a"
+    },
+    {
+      "id": "Nilah.Q",
+      "sourceHash": "e09fa1ea08a7856b600e1278cf5b77c33c783c889cafeca086168e77ad008a7c",
+      "candidateHash": "71af83a5ac05fb00cd3bcf9498c81380546d05a442f616ad59c48562ccb357e1"
+    },
+    {
+      "id": "Nilah.R",
+      "sourceHash": "503c7605399c3b6fa5e54811e9a8c9d865b07ac944a0ec48bf684234e8a3a070",
+      "candidateHash": "ae5746726ff2bcfd9138eed45dcf13e256502fdd42d69d3f5526e6f6eb2063cc"
+    },
+    {
+      "id": "Nilah.W",
+      "sourceHash": "86b0ff349448b8cdb1852ef943d0a9365c5846662075bcf23b808ebb04c1d027",
+      "candidateHash": "e45c34c553b75354d7d69ac6af67d14a75dd87f80ce34ea6c6f9750765d77f9e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Nilah.Q",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Passive: Nilah gains (30% Critical Strike Chance) Armor Penetration,",
+      "issue": "치명타 확률의 30%만큼 방어구 관통력을 얻는다고 표현해, 전환되는 양이 아니라 방어구 관통력에 대한 비율 배율처럼 읽힙니다.",
+      "correction": "치명타 확률을 입력으로 하는 방어구 관통력 전환임을 유지하고, 정확한 식은 미확정으로 남기세요."
+    },
+    {
+      "id": "Nilah.Q",
+      "path": "rules.0.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Passive: Nilah gains (30% Critical Strike Chance) Armor Penetration,",
+      "issue": "같은 30% 수치를 입력 비율과 출력 비율 양쪽에 배정해, 원문이 보장하지 않는 30% 대 30% 변환식을 확정합니다.",
+      "correction": "원문의 괄호 수치만 보존하고, 출력 비율은 별도 확정하지 마세요."
+    },
+    {
+      "id": "Nilah.Q",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Overhealing from this is converted into a Shield for 4 seconds.",
+      "issue": "4초를 보호막 효과 파라미터로 기록하지 않아, 보호막 지속시간이 구조화 데이터에서 누락됐습니다.",
+      "correction": "보호막 지속시간 4초를 duration_seconds로 기록하세요."
+    },
+    {
+      "id": "Nilah.Q",
+      "path": "rules.3.effects",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Nilah cracks her whip-blade, dealing (0/10/20/30/40 + (100% Attack Damage)) physical damage.",
+      "issue": "피해 효과가 enemy 전체로 지정됐지만, 피해는 채찍날에 적중한 대상에게 적용됩니다.",
+      "correction": "피해 대상을 적중 대상 또는 적중한 유닛으로 한정하세요."
+    },
+    {
+      "id": "Nilah.Q",
+      "path": "rules.4.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If an enemy unit or structure is hit, Nilah gains 125 Attack Range and (10 ~ 60)% Attack Speed, and her Attacks hit in a cone for 4 seconds.",
+      "issue": "공격 사거리 증가량 125가 amount로 기록됐지만 stat이 null이라 공격 사거리 증가라는 효과와 연결되지 않습니다.",
+      "correction": "해당 파라미터를 attackRange 증가로 연결하세요."
+    },
+    {
+      "id": "Nilah.Q",
+      "path": "rules.4.effects.1.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If an enemy unit or structure is hit, Nilah gains 125 Attack Range and (10 ~ 60)% Attack Speed, and her Attacks hit in a cone for 4 seconds.",
+      "issue": "(10~60)% 공격 속도 증가량에 퍼센트 단위가 보존되지 않았습니다.",
+      "correction": "두 값 모두 percent=true로 기록하세요."
+    },
+    {
+      "id": "Nilah.Q",
+      "path": "rules.4.effects.1.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If an enemy unit or structure is hit, Nilah gains 125 Attack Range and (10 ~ 60)% Attack Speed, and her Attacks hit in a cone for 4 seconds.",
+      "issue": "4초는 원뿔 공격 지속시간인데 공격 속도 증가 파라미터에 붙어, 공격 속도 버프 지속시간으로 잘못 표시됩니다.",
+      "correction": "duration_seconds를 원뿔 공격 효과에만 연결하세요."
+    },
+    {
+      "id": "Nilah.Q",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If cast during Slipstream, Nilah creates a wave of water striking all enemies along Nilah's path.",
+      "issue": "Slipstream 중 시전 조건을 form=empowered로 변환했지만, 원문은 다른 스킬 사용 중이라는 시전 상태를 뜻하며 폼을 지정하지 않습니다.",
+      "correction": "조건을 Slipstream 사용 중 시전으로 표현하고 form 조건은 제거하세요."
+    },
+    {
+      "id": "Nilah.W",
+      "path": "rules.0.effects.1.parameters.0.numbers",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "gaining 15/17.5/20/22.5/25% Move Speed",
+      "issue": "이동 속도 랭크 값 배열에서 마지막 값 25%가 빠졌습니다.",
+      "correction": "15, 17.5, 20, 22.5, 25% 전체를 rank_values에 포함하세요."
+    },
+    {
+      "id": "Nilah.W",
+      "path": "rules.1.effects.1.parameters.0.numbers",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "gaining 15/17.5/20/22.5/25% Move Speed",
+      "issue": "아군에게 부여되는 동일한 이동 속도 혜택에서 마지막 값 25%가 빠졌습니다.",
+      "correction": "아군 효과의 rank_values에도 25%를 포함하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,56 @@
+{
+  "id": "Vladimir.P",
+  "sourceHash": "aaeb084ee2f3daad5394d5eb834c23cdefed302d0b8eacb41862f990278e8b37",
+  "beforeCandidateHash": "3f6bc4d77c7c0f63228474afff93e919ed5ef8ce9fa3f5354a7c254b1edeb1fb",
+  "candidateHash": "e397286ebfe69ae4db6167c5d931c7fab803d622e1cacc1561f6a0eedb1cbb6f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "추가 체력 30당 주문력 1, 주문력 1당 최대 체력 1.6 추가 획득과 자기 중첩 방지를 대조. 툴팁 추가 스탯 출력의 보정 계수는 이 두 획득식에 별도 합산하지 않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.other eq 두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음; caster: 추가 체력을 주문력으로 비례하여 추가로 얻습니다.; 수치 ratio_input en:body:n1=30 caster.bonusHealth scalar / ratio_output en:body:n0=1 caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.other eq 두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음; caster: 주문력을 최대 체력으로 비례하여 추가로 얻습니다.; 수치 ratio_input en:body:n3=1 caster.abilityPower scalar / ratio_output en:body:n2=1.6 caster.maxHealth scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "스탯 소비/대체를 뜻하는 replace_input을 제거; 요약의 자기 중첩 금지 복원",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Vladimir gains 1 Ability Power for every 30 bonus Health. He also gains 1.6 max Health per 1 Ability Power. Bonus Ability Power: ((3.533% bonus Health) + (-5.653% Ability Power)) Bonus Health: ((169.6% bonus Ability Power) + (-5.653% bonus Health))"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

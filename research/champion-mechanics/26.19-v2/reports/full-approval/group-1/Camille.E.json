@@ -1,0 +1,70 @@
+{
+  "id": "Camille.E",
+  "sourceHash": "ba3f0ca285b955cae24f37df7927511e56e8b81f7b10330a8d26be92302ae5bd",
+  "beforeCandidateHash": "8a2496f61825db9636192c762e7a67faefdc6a69468b3e0842de64b2b1707ecf",
+  "candidateHash": "69b79c74942bd73dc8f53cd5c0b310f992e77c144c34bdf9878c00441798895d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "갈고리지형1초pull/recast벽도약첫champ충돌,landingAS40~60%5초/주변physical60~180+AD75%/enemychampstun0.75,champ향해dash두배거리 대조했다. summary넉업vs본문stun및ko충돌조건차이를기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 갈고리가 지형에 걸리면 자신을 지형으로 끌어당기고 재사용할 수 있게 된다. [duration_seconds n0=1 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 없음. caster movement: 벽에서 도약하며 처음 마주친 적 챔피언과 충돌한다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 벽 도약 후 착지. caster stat_modifier: 공격 속도가 증가한다. [amount n1=40%/n2=45%/n3=50%/n4=55%/n5=60% rank_values; duration_seconds n6=5 scalar] / nearby_enemies damage physical: 주변 적에게 물리 피해를 입힌다. [amount n7=60/n8=90/n9=120/n10=150/n11=180 rank_values; stat_coefficient n12=75% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 벽 도약 후 착지; enemy.target_type eq champion. enemy crowd_control stun: 적 챔피언을 기절시킨다. [duration_seconds n13=0.75 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.other eq 적 챔피언을 향해 벽 도약. caster movement: 적 챔피언을 향한 도약은 두 배의 거리를 이동한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.1/2/new/gaps",
+      "issue": "champ있어야recast/landing조건누락·방향2배규칙누락·출처CC충돌",
+      "correction": "recast이동무타입조건/landing본체와champstun분리,두배거리와충돌gap",
+      "sourceId": "en:body",
+      "quote": "Dashes towards enemy champions travel twice as far."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en요약은knockup이지만en/ko본문은stun0.75초다.본문stun을우선한다. en본문은landing효과이나ko본문은챔피언충돌효과라하여조건차이를보존하고en착지를우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

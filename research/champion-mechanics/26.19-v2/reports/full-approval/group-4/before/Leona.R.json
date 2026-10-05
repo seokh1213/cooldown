@@ -1,0 +1,162 @@
+{
+  "summary": "레오나가 광선을 소환해 범위 내 적에게 마법 피해를 주고 둔화시킨다. 폭발 중심의 적은 둔화 대신 기절한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "광선이 적에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Leona calls down a radiant beam of solar energy dealing (150/225/300 + (80% Ability Power)) magic damage and Slowing by 80% for 1.75 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "폭발 중심 바깥의 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Leona calls down a radiant beam of solar energy dealing (150/225/300 + (80% Ability Power)) magic damage and Slowing by 80% for 1.75 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies in the center of the flare are Stunned instead of Slowed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "isolated"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "폭발 중심에 있는 적은 둔화 대신 기절한다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies in the center of the flare are Stunned instead of Slowed."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "폭발 중심과 중심 바깥의 구분을 입력 조건 필드의 허용값으로 정확히 표현할 수 없어 text에 남겼다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies in the center of the flare are Stunned instead of Slowed."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "id": "Belveth.E",
+  "sourceHash": "9fbf58cc5ae5f380c6d232e6e948365457f9fd9b1b415f3773c9daff753cd7fb",
+  "beforeCandidateHash": "15cd9482039a30096138e9a9fcdcb6a2e16b95075668e9d7daf15aa0c63ac187",
+  "candidateHash": "e6462410af936364ae1c104e740d381e63189c3cc008881cd8ed6fc2ff3570e6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "1.5초 정신 집중의 피해 감소·생명력 흡수·공격 횟수, 최저 체력 대상의 잃은 체력 기반 피해, 조기 종료, 몬스터 200%와 모든 대상의 12~24% 적중 효과를 대조해 대상 범위를 수정했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "1.5초 동안 시전자 받는 피해를 랭크별 20/30/40/50/60% 줄인다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 기간 시전자 생명력 흡수 20/25/30/35/40%를 부여한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격 횟수 식은 6 + 자신의 추가 공격 속도 240%이며 1.5초에 걸친다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최저 체력 적을 공격하며 최소 피해 10~18 + 자신 총 AD 12%, 최대 20~36 + 총 AD 24% 사이에서 대상 잃은 체력에 따라 달라진다. 두 계수를 합하지 않는다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "재사용으로 현재 정신 집중을 조기 종료한다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다른 스킬 사용으로 현재 정신 집중을 조기 종료한다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몬스터에 대한 공격 피해만 200%다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적중 시 효과 12~24% 효율은 모든 해당 공격에 적용되며 대상 잃은 체력에 따른다. 몬스터 조건에서 분리했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.6.effects.1",
+      "issue": "적중 시 효과를 몬스터 대상에 한정",
+      "correction": "모든 해당 공격에 적용하는 독립 규칙으로 분리",
+      "sourceId": "en:body",
+      "quote": "Attacks from this Ability deal 200% damage to monsters and apply On-Hit Effects at 12% to 24% effectiveness based on the target's missing Health."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "공격 횟수 공식이 없다는 gap은 본문과 모순",
+      "correction": "명시된 6 + 240% 추가 공격 속도 식을 유지하고 오기 gap 삭제",
+      "sourceId": "en:body",
+      "quote": "Attacking (6 + (240% bonus Attack Speed)) times over 1.5 seconds"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력과 피해량 및 적중 시 효과 효율 사이의 구체적인 대응식은 제시되지 않았다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "id": "Zyra.P",
+  "sourceHash": "e89ceb43d10b1e44b367e1def7ff8c8ee609bc27df4d783e59aabda4c81927b3",
+  "beforeCandidateHash": "9d2f7fa16a07e7dc94b7be44b9dfaf086f9b877550edfeb89fa2fb4601ccfd42",
+  "candidateHash": "9047675991503ec57e48f0e29d00b953c95871aa831636194b17d46bf0975286",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "비수풀상태주변씨앗13.6~9.1초주기·30초지속·동시최대8,챔피언밟음의씨앗죽음,수풀숨음생성금지,씨앗근처Q/E식물생성과식물마법피해를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.other neq 수풀에 숨은 상태 적용. caster: 주변에씨앗을레벨에따라빨라지는해당주기(초)로생성한다.씨앗은30초유지되며동시에최대8개까지심을수있다.; other=13.6/9.1  level_range, duration_seconds=30  scalar, storage_cap=8  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy의 enter_area 사건에서 enemy.other eq 적 챔피언이 이 씨앗을 밟음 적용. summon: 적 챔피언이 씨앗을 밟으면 씨앗이 파괴됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.other eq 수풀에 숨은 상태 적용. caster: 수풀에 숨은 동안에는 씨앗을 생성하지 않습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 other 사건에서 별도 조건 없이 적용. target: 식물이 마법 피해를 입힙니다. (magic); min_amount=15  level_range, max_amount=75  level_range, stat_coefficient=20% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq 씨앗 근처에서 치명적인 가시 또는 휘감는 뿌리를 시전함 적용. summon: 씨앗이자이라를위해싸우는식물로자란다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary,rules.1,2",
+      "issue": "씨앗밟음과생성금지를혼동하고unseen모든상태로수풀조건확대",
+      "correction": "밟힌씨앗죽음·수풀숨음생성금지구별",
+      "sourceId": "en:body",
+      "quote": "If an enemy champion steps on a Seed, it dies. Zyra will not spawn Seeds while hiding in brush."
+    },
+    {
+      "path": "rules.0,4",
+      "issue": "생성주기를지속시간/상한8을횟수로표기,식물생성누락",
+      "correction": "주기other/상한storage_cap및Q/E식물생성규칙보완",
+      "sourceId": "en:body",
+      "quote": "She can have 8 Seeds planted at once."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 732,
+      "verdict": "repaired",
+      "reason": "unseen을정확한수풀숨음text조건으로바꿨다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

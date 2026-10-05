@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Yorick.E",
+      "sourceHash": "ecd130fea1deb75b1ebbacfdbd9fc8c92a922bcc6f482ebd54141c954a74967b",
+      "candidateHash": "756b880bf14c474d9e1990169295191335d0ab1a2a33c54b6d91b60303a0558e"
+    },
+    {
+      "id": "Yorick.P",
+      "sourceHash": "4d8c0f3ae8b200c0a2a5e9f745aaf6d087cd97ffd57d1b54624e972d56fe4604",
+      "candidateHash": "8c02c6c2193038a8d826a6fe3a2fed25d0ae4ab57c62451dde0f5c8c7c9c4e3e"
+    },
+    {
+      "id": "Yorick.Q",
+      "sourceHash": "06911f5e01cb5a8d06659c720bfbd59fbad4714dc75f4264c0ec3f5b47b886b5",
+      "candidateHash": "7af41cde80c6c30e346700f606db18f482a2f6ef96dc7c8d8170248d83362c2e"
+    },
+    {
+      "id": "Yorick.R",
+      "sourceHash": "a155e29c417d5bd03fb1e5b6f061f557f6fb649b6c9d22046be2ed1589851067",
+      "candidateHash": "b599d473f20db6d2051557c89d210bdf50f6fe9918137a270120f702fd6e0341"
+    },
+    {
+      "id": "Yorick.W",
+      "sourceHash": "dc31c099b91bc571a99c05ee7e4f2a5f6cdbaa04b83b5d2c2880ef900a0c0847",
+      "candidateHash": "e7c589a70a9d7aedc005af1888e2563b1a9058e8fc2d862c327ca4d4374a1833"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Yorick.Q",
+      "path": "rules.1.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "restores (10 ~ 68) plus 6/7/8/9/10% of his missing Health",
+      "issue": "회복 비율의 stat이 `maxHealth`로 지정되어 있어 원문이 밝힌 기준과 다릅니다.",
+      "correction": "stat을 `missingHealth`로 고치거나, 스키마에서 표현할 수 없다면 텍스트/미상으로 두고 해당 공식을 gap으로 기록하세요."
+    },
+    {
+      "id": "Yorick.R",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage.",
+      "issue": "요릭이 안개 마녀의 표적에게 피해를 줄 때 발동하는 효과인데, 조건에 표식 보유 여부를 필수로 추가했습니다. 원문은 표식 조건을 말하지 않습니다.",
+      "correction": "표식 조건을 제거하고 안개 마녀의 표적에게 피해를 주는 조건만 남기세요."
+    },
+    {
+      "id": "Yorick.R",
+      "path": "rules.5.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage.",
+      "issue": "`amount`가 피해 비율 값을 중복 기록해, 최대 체력 비례 피해의 백분율이 별도 고정 피해량처럼 읽힙니다.",
+      "correction": "`ratio_output`의 최대 체력 비례 백분율만 남기세요."
+    }
+  ],
+  "notes": []
+}

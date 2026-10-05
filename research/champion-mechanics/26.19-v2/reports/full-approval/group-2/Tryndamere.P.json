@@ -1,0 +1,86 @@
+{
+  "id": "Tryndamere.P",
+  "sourceHash": "4b6c8ef43711d20019ffe5f66829074c6a1c60d2ab000f4c2fadc9b5c3b99fe7",
+  "beforeCandidateHash": "b0db85f7d45e588946ac9d0a6f1c14b8e9db405cb072428fbb3a3fb425228f0a",
+  "candidateHash": "a1af253630df77d61562107a96236535445cfb8e687a043ec5ed2491bc35c5e8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "일반5/치명타10분노 중 택일, 처치10, 비전투8초후 초당5소실, 분노1당치확0.5%p 및 Q소모요약을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 치명타가 아닌 기본 공격; caster: 기본 공격으로 분노를 얻습니다.; 수치 amount en:body:n0=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 치명타 기본 공격; caster: 기본공격의5분노 대신 치명타이면10분노를 얻습니다.; 수치 amount en:body:n1=10 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: kill 사건의 행위자 caster; 조건 별도 제한 없음; caster: 유닛 처치로 분노10을 얻습니다.; 수치 amount en:body:n2=10 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.time eq 전투에서 벗어난 지8초 이후 매초; caster: 전투에서 벗어난 지8초 이후 매초 분노5를 잃습니다. 8초는 시작 대기시간이며 매초 간격과 구별합니다.; 수치 other en:body:n3=8 상수 scalar / amount en:body:n4=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 분노1당 치명타 확률0.5%p가 증가합니다. 현재 분노에 비례합니다.; 수치 stat_coefficient en:body:n5=0.5%(백분율) 상수 formula_components; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "치명타 오조건과 잘못된 OR불명 gap 수정; 처치/비전투감소/치확 세 규칙 누락 복원",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Tryndamere's Attacks grant him 5 Fury or 10 Fury for a critical strike, and 10 Fury for killing a unit. After 8 seconds of being out of combat, Tryndamere loses 5 Fury every second. Each point of Fury grants 0.5% Critical Strike Chance."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 555,
+      "verdict": "repaired",
+      "reason": "챔피언대상이 아닌 치명타 공격 조건으로 수정; 일반5 대신10으로 OR를 분명히 보존."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

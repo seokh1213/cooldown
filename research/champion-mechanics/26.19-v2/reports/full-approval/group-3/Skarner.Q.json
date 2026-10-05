@@ -1,0 +1,144 @@
+{
+  "id": "Skarner.Q",
+  "sourceHash": "ba6445955ccaff4c69228d308d8788b696d6ac39223b2f21cf485fb4bf8256dd",
+  "beforeCandidateHash": "4eb205bdfed7e38b5ea023824dbf1806abed836db02f79fa68dbe795ede08b2e",
+  "candidateHash": "60a15cfe4beb4558fbd9b76e46add57a06d81d4c39a6384c4ad34e87cf94cf84",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 2,
+  "summaryCheck": "다음3기본공격AS20~40%/주변물리피해·마지막11%체력피해/1초40%둔화·재사용투척/종료·모든체력비례몬스터150~350상한·구조물100%를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 다음 기본 공격 3회를 강화하고 공격 속도를 증가시킨다. / count=3 [scalar]; amount=20/25/30/35/40% (caster attackSpeed) [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster activation eq empowered → nearby_enemies: 다음 강화 기본 공격이 주변 적에게10/20/30/40/50 + 자신의추가AD90% + 추가체력3% 물리피해를 준다. [physical] / amount=10/20/30/40/50 [rank_values]; stat_coefficient=90% (caster bonusAttackDamage) [formula_components]; stat_coefficient=3% (caster bonusHealth) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster activation eq empowered; caster hit_order eq 3 → target: 마지막 강화 기본 공격은 추가로 최대 체력 비례 물리 피해를 입힌다. [physical] / stat_coefficient=11% (target maxHealth) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster activation eq empowered; caster hit_order eq 3 → target: 마지막 강화 기본 공격에 맞은 적을 둔화시킨다. [slow] / amount=40% [scalar]; duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast → target: 재사용하면이강화를끝내고바위를던져물리피해를준다.11%최대체력항의소유자는본문에미명시다. [physical] / amount=10/20/30/40/50 [rank_values]; stat_coefficient=90% (caster bonusAttackDamage) [formula_components]; stat_coefficient=3% (caster bonusHealth) [formula_components]; stat_coefficient=11% (unknown maxHealth) [formula_components]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast → nearby_enemies: 바위 투척은 처음 적중한 적과 그 주변의 다른 적을 둔화시킨다. [slow] / amount=40% [scalar]; duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 target target_type eq monster; caster activation eq 이 스킬의 체력 비례 몬스터 피해 → target: 몬스터에게 입히는 체력 비례 피해 성분에는 최대치가 적용된다. [physical] / max_amount=150/200/250/300/350 [rank_values]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq structure → target: 구조물에 이 스킬 피해의 100%를 입힌다. [physical] / damage_multiplier=100% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.trigger.event",
+      "issue": "강화공격주변피해를바위뜯는시전피해로기록",
+      "correction": "강화attack로연결",
+      "sourceId": "en:body",
+      "quote": "empowering his next 3 Attacks with 20/25/30/35/40% Attack Speed and dealing"
+    },
+    {
+      "path": "rules.2-3.conditions.1.field",
+      "issue": "마지막강화공격순서를적중횟수로표현",
+      "correction": "hit_order3으로변경",
+      "sourceId": "en:body",
+      "quote": "His final Attack will deal an additional 11% max Health physical damage"
+    },
+    {
+      "path": "rules.6.trigger.event",
+      "issue": "몬스터체력피해상한을투척에만제한",
+      "correction": "스킬의강화공격및투척체력피해에적용",
+      "sourceId": "en:body",
+      "quote": "Percent Health Damage to monsters is capped at 150/200/250/300/350."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 489,
+      "verdict": "repaired",
+      "reason": "다음3공격강화에연결된피해이며시전피해텍스트/트리거를공격으로변경했다."
+    },
+    {
+      "index": 490,
+      "verdict": "repaired",
+      "reason": "3은강화공격순서이며적중수hit_count를hit_order로변경했다."
+    },
+    {
+      "index": 491,
+      "verdict": "repaired",
+      "reason": "상한은강화공격/재사용투척모두의몬스터체력비례항에적용하도록범위수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "재사용 투척 피해의 11% max Health 성분에서 체력 통계의 소유자가 원문에 명시되지 않아 unknown으로 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "몬스터 피해 상한이 체력 비례 피해 성분에만 적용된다고 원문은 밝히지만, 상한의 실제 적용 계산 범위는 별도 수치 구조가 없어 텍스트로 범위를 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

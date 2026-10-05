@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Zoe.E",
+      "sourceHash": "c90c0167bba27748f3a429fee417486e95e4ead1594246cb68ed543edac26b2d",
+      "candidateHash": "84387d82ecedd841872b71e4561d331765b0bf09bdbab62a8a528416932b8be3"
+    },
+    {
+      "id": "Zoe.P",
+      "sourceHash": "c9da3259c7a4190f934bbcf9162532f5b8f75dad896fc0ced4b33be7c9ab7a28",
+      "candidateHash": "65e7ddceb671004b67f612575ff6f40dc023391b1cfa8ba5811bd6ad62448c42"
+    },
+    {
+      "id": "Zoe.Q",
+      "sourceHash": "7b9121b5998e91a76b0ad4b8021e9416a2c5d44c041022f46936c07687a887d0",
+      "candidateHash": "9c318e51b41a1d6330d740feb37249b4550dfb6247ec4dbf6cb7e8e8acd64b64"
+    },
+    {
+      "id": "Zoe.R",
+      "sourceHash": "27dd23bf6931f70360a052cfc2396828287dcb0d74d25f72ac695f5ab42d0f12",
+      "candidateHash": "07a433b674f3388ba9e753c1f9255c27c49665384524f2047ca108b4db5f83f1"
+    },
+    {
+      "id": "Zoe.W",
+      "sourceHash": "4a13e41b9d6903a62ca495b2d2e014d648d1ac63f7c674044e4de628b0d52cca",
+      "candidateHash": "cfb7406b7ba02e997d42d48464307f4ec6fa1128fa13f6f6960b721edbfdc144"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Zoe.Q",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "between (50/80/110/140/170 + (2 ~ 50) + (60% Ability Power)) to (125/200/275/350/425 + (5 ~ 125) + (150% Ability Power)) magic damage",
+      "issue": "피해 하한의 `2 ~ 50`과 상한의 `5 ~ 125`가 이동 거리에 따라 달라지는 수치 구간인데, 각각 `formula_components`로 기록되어 그 역할이 고정 수치 성분처럼 읽힙니다.",
+      "correction": "해당 두 구간을 이동 거리에 따른 피해 성분으로 표현하거나, 역할을 확정할 수 없다면 원문 구간을 텍스트로 남기고 수식 해석에 gap을 두세요."
+    },
+    {
+      "id": "Zoe.W",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "she gains 30/40/50/60/70% Move Speed for 2/2.25/2.5/2.75/3 seconds",
+      "issue": "이동 속도 증가량은 스킬 등급에 따른 다섯 값인데, 숫자 중 일부는 `%`가 빠져 있어 입력 기록의 단위가 불일치합니다.",
+      "correction": "다섯 이동 속도 값 모두를 백분율로 기록하세요."
+    }
+  ],
+  "notes": []
+}

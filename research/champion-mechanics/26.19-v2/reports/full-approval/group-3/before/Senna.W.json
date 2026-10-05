@@ -1,0 +1,130 @@
+{
+  "summary": "세나가 검은 안개의 파동을 보내 첫 번째로 적중한 적에게 물리 피해를 준다. 1초 지연 후 해당 적과 주변 적들을 속박한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "첫 번째로 적중한 적에게 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (70/110/150/190/230 + (90% bonus Attack Damage)) physical damage to the first enemy hit."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Senna sends forth the Black Mist, dealing (70/110/150/190/230 + (90% bonus Attack Damage)) physical damage to the first enemy hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n6"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "1초 지연 후 첫 번째 적중 대상과 그 주변의 다른 적들을 속박한다.",
+          "damageType": null,
+          "crowdControl": "root",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After a 1 second delay the target and other nearby enemies are Rooted for 1.25/1.5/1.75/2/2.25 second(s)."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

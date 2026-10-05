@@ -1,0 +1,96 @@
+{
+  "id": "Illaoi.P",
+  "sourceHash": "3fe384626dbeddb897440322185b2860a5e637b4289de3be2171073710a44a36",
+  "beforeCandidateHash": "55f3c475162f063e8fadf0022008327a4839b6e145b92e86bfdfdd1a27f0c62d",
+  "candidateHash": "a64b0e4afc2d2a80d1fbc370df53fedd3af03b09db50c440129f34ec374b1d7d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "주변다른촉수없으면지형소환18~7초쿨,스킬지시로만후려치기·전체괄호×배율물리,한번후려치기에서챔피언하나이상적중시자신잃은체력5%회복 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 summon.entity_count eq 주변에 다른 촉수 없음; summon: 근처 지형에 촉수를 생성합니다.; 수치 cooldown_seconds en:body:n0=18,en:body:n1=7 상수 level_range; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 summon; 조건 summon.activation eq 일라오이 스킬에 의해 후려치기 실행; enemy: 일라오이의 스킬로 후려치기를 하게 된 촉수는 적에게 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n2=9,en:body:n3=180 상수 formula_components / stat_coefficient en:body:n4=110%(백분율) caster.totalAttackDamage formula_components / stat_coefficient en:body:n5=40%(백분율) caster.abilityPower formula_components / damage_multiplier en:body:n6=1,en:body:n7=1.1,en:body:n8=1.15,en:body:n9=1.2,en:body:n10=1.25,en:body:n11=1.3 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 summon; 조건 enemy.target_type eq champion / summon.activation eq 한 번의 후려치기가 적 챔피언 하나 이상에게 적중; caster: 촉수가 적 챔피언 한 명 이상에게 적중하면 일라오이가 잃은 체력의 일부를 회복합니다.; 수치 ratio_output en:body:n13=5%(백분율) 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "근처적정확히1명무관조건과피해행위자·후려치기조건·복합배율실행위험 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Illaoi draws the presence of her god, spawning a Tentacle on nearby terrain if no other Tentacles are nearby ((18 ~ 7) second cooldown). Tentacles will not attack on their own, but can be made to Slam by Illaoi's Abilities. Slam deals ((9 ~ 180) + (110% Attack Damage) + (40% Ability Power)) × 1/1.1/1.15/1.2/1.25/1.3 physical damage. Hitting at least one enemy champion restores 5% missing Health to Illaoi."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 112,
+      "verdict": "repaired",
+      "reason": "적1명전제를제거하고주변다른촉수없음만유지."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "촉수 소환의 '주변' 범위는 수치로 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "후려치기의괄호전체에×1/1.1/.../1.3배율이적용;스탯계수와배율을선형합산하지않음.잃은체력회복은전용통계가없어텍스트보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,438 @@
+{
+  "summary": "적이 소환사 주문이나 사용 효과 아이템을 사용하면 주문 파편을 떨어뜨립니다. 일부 미니언도 조이나 주변 아군에게 처치당하면 파편을 떨어뜨립니다. 파편으로 해당 효과를 한 번 사용할 수 있습니다. 조이가 이 스킬 또는 소환사 주문을 사용하면 이동 속도를 얻고, 마지막으로 기본 공격한 대상에게 미사일을 발사합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "fired"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "적이 소환사 주문을 시전하거나 사용 효과 아이템을 사용하면 주문 파편을 떨어뜨립니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies drop spell shards when casting a Summoner Spell or using an Active Item."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "특정 미니언은 조이나 주변 아군에게 처치당하면 주문 파편을 떨어뜨립니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Specific minions also drop a spell shard when Zoe or a nearby ally kills them."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "조이가 주문 파편을 획득함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "획득한 주문 파편의 해당 능력을 한 번 시전할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zoe can pick up this shard to cast that ability once."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "시전한 것은 이 스킬 또는 소환사 주문"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Zoe casts this Ability or any Summoner Spell, she gains 30/40/50/60/70% Move Speed for 2/2.25/2.5/2.75/3 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: When Zoe casts this Ability or any Summoner Spell, she gains 30/40/50/60/70% Move Speed for 2/2.25/2.5/2.75/3 seconds and tosses 3 missiles at the target she Attacked most recently."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "시전한 것은 이 스킬 또는 소환사 주문"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "unknown",
+          "text": "가장 최근에 기본 공격한 대상을 향해 미사일을 발사합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "tosses 3 missiles at the target she Attacked most recently."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: When Zoe casts this Ability or any Summoner Spell, she gains 30/40/50/60/70% Move Speed for 2/2.25/2.5/2.75/3 seconds and tosses 3 missiles at the target she Attacked most recently."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "대상은 W 미사일의 적중 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "각 미사일이 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "These missiles deal (15/25/35/45/55 + (10% Ability Power)) magic damage each."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "획득한 주문 파편을 사용"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "획득한 주문 파편의 해당 능력을 시전합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Cast the Ability from a spell shard Zoe has picked up."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "주문 파편이 지면에 남아 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "지면의 주문 파편은 지속 시간이 지나면 사라집니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Spell shards last on the ground for 40 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "대상은 W 미사일의 적중 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "각 미사일이 반짝반짝! 효과를 적용할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each missile can apply More Sparkles!"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "주문 파편을 떨어뜨리는 특정 미니언과 파편 습득의 조건은 원문에서 구체적으로 특정되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Specific minions also drop a spell shard when Zoe or a nearby ally kills them."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "미사일이 향하는 '가장 최근에 공격한 대상'의 유효 기간이나 대상이 없을 때의 처리 방식은 원문에 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "the target she Attacked most recently"
+        }
+      ]
+    }
+  ]
+}

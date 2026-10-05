@@ -1,0 +1,75 @@
+{
+  "id": "Yone.R",
+  "sourceHash": "bc4a33ceaa5b1ec7f73f303113e0ed57af03863dd272512e1880467156a165ff",
+  "beforeCandidateHash": "e0636ed73a833259e7111c1ac9bf11c592f3a7a7b8a3245b21962d9e64bead42",
+  "candidateHash": "285c5b69753f87ff591c47ad754d2c27c0350f2e6589ef938fca0e731265a6e8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "경로모든적각100/200/300+bonusAD40%물리/마법,마지막적중챔피언뒤또는무챔프최대범위blink,적중모든적pull+knockup을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 스킬 경로 내 적 적중. target damage physical: 경로상의 적에게 물리 피해를 입힌다. [amount n0=100/n1=200/n2=300 rank_values; stat_coefficient n3=40% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 스킬 경로 내 적 적중. target damage magic: 경로상의 적에게 마법 피해를 입힌다. [amount n4=100/n5=200/n6=300 rank_values; stat_coefficient n7=40% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 이 스킬에 적 챔피언이 하나 이상 적중. caster movement: 마지막으로 맞은 챔피언 뒤로 순간이동한다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 이 스킬에 적 챔피언이 적중하지 않음. caster movement: 적 챔피언이 맞지 않으면 최대 사거리로 순간이동한다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 스킬 경로 내 적 적중. target crowd_control pull: 적중한 적을 요네 쪽으로 당겨 공중으로 띄운다. [] / target crowd_control knockup: 적중한 적을 공중으로 띄운다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/new/gaps",
+      "issue": "nearby챔피언조건·무챔프분기반전·CC를챔피언존재로제한·불필요gap",
+      "correction": "경로적중/챔프적중OR미적중 및공통CC분리/ko범위근거",
+      "sourceId": "ko:body",
+      "quote": "적중한 모든 적을 자신 쪽으로 끌어당기며 공중으로 띄워 올립니다."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 668,
+      "verdict": "repaired",
+      "reason": "주변챔피언존재가아니라실제로이경로에서챔피언적중 여부가조건이다. 미적중반대분기도 함께고쳤다."
+    },
+    {
+      "index": 669,
+      "verdict": "false_positive",
+      "reason": "ko본문은적중한모든적을끌어당긴다고명시한다. en victims도앞all enemies와연결된다. 범위확대가아니다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

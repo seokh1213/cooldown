@@ -1,0 +1,133 @@
+{
+  "id": "Hecarim.E",
+  "sourceHash": "64177d57122c56b1b15719aded65cab3337f221310408775ed1a5153e8103cf9",
+  "beforeCandidateHash": "6abe1adafc3324a2058ae170cb2f8cdab95c5d4efb5419a5eb2db41e628429cc",
+  "candidateHash": "ddd40b10142bd47e026d10ea5514da870daa022f38bb1c1367029fccdb2d5da7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "유체화는 충돌 무시이며 시야 효과가 아님을 확인했다. MS25%에서4초에65%, 다음 공격 밀치기/이동거리별최소30~90+추가AD50%~최대60~180+추가AD100%, R중남은시간정지, E피해가주문효과발동함을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 유체화되어 다른 유닛과의 충돌을 무시합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 이동 속도가 증가하고, 일정 시간에 걸쳐 더 높아집니다. / min_amount=25% (caster moveSpeed) [scalar]; max_amount=65% (caster moveSpeed) [scalar]; duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other eq 이 스킬로 유체화된 동안 → caster: 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 followup_attack / 조건 caster other eq 이 스킬 활성화 후 다음 기본 공격 → target: 다음 공격이 대상을 뒤로 밀쳐냅니다. 밀쳐내는 거리는 이 스킬 사용 중 이동한 거리에 따라 달라집니다. [knockback] | target: 이 스킬을 사용하는 중 이동한 거리에 따라 다음 기본 공격은 최소(30/45/60/75/90+추가공격력50%)부터 최대(60/90/120/150/180+추가공격력100%)까지의 물리 피해를 입힙니다. [physical] / min_amount=30/45/60/75/90 [formula_components]; stat_coefficient=50% (caster bonusAttackDamage) [formula_components]; max_amount=60/90/120/150/180 [formula_components]; stat_coefficient=100% (caster bonusAttackDamage) [formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other present Onslaught of Shadows 사용 중 → caster: 그림자의 맹습 사용 중 이 스킬의 남은 지속시간이 멈춥니다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 이 스킬로 피해를 입힐 때 → target: 피해를 입힐 때 주문 효과를 발동합니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "유체화가 visibility로 분류되고 충돌무시가 모든시점 패시브처럼 작성되었다.",
+      "correction": "유체화 이동/충돌무시로 분류하고 활성상태 한정을 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Ghosted units ignore collision with other units."
+    },
+    {
+      "path": "rules.3",
+      "issue": "followup fired 조건은 원문에 없고 복합 피해의 양끝 계수 연결이 모호했다.",
+      "correction": "활성후다음기본공격과 거리별최소/최대 완전식을 텍스트/formula_components로 보존했다.",
+      "sourceId": "en:body",
+      "quote": "His next Attack Knocks Back and deals between (30/45/60/75/90 + (50% bonus Attack Damage)) and (60/90/120/150/180 + (100% bonus Attack Damage)) physical damage."
+    },
+    {
+      "path": "rules.5",
+      "issue": "주문효과가 대상의 일반 스킬 적중마다 발동했다.",
+      "correction": "시전자가 이 스킬로 실제 피해를 입힐 때로 한정했다.",
+      "sourceId": "en:body",
+      "quote": "This Ability triggers spell effects upon dealing damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "이동 거리에 따른 피해/밀치기거리의 정확한 보간식은 공급본문에 없다. 최소/최대 복합식과 거리비례 사실만 보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,989 @@
+{
+  "drafts": {
+    "E": {
+      "summary": "갱플랭크가 화약통을 설치합니다. 적이 파괴하면 해체되고, 갱플랭크가 파괴하면 폭발해 기본 공격 피해를 입히고 적을 둔화시킵니다. 폭발 범위가 겹치는 화약통은 연쇄 폭발하며, 같은 대상은 한 번만 피해를 입습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "갱플랭크가 갱플랭크와 적 챔피언이 공격할 수 있는 화약통을 설치합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gangplank places a powder keg that can be attacked by Gangplank and enemy champions for 25 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "summon",
+              "text": "적이 화약통을 파괴하면 통은 해체됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When an enemy destroys it, the keg is defused."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "화약통"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "화약통 폭발이 기본 공격의 피해를 입히며 방어력의 일부를 무시합니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "폭발이 적을 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When Gangplank destroys it, it explodes, Slowing by 40/50/60/70/80% for 2 seconds and dealing the Attack's damage, ignoring 40% Armor."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "화약통"
+              }
+            },
+            {
+              "subject": "nearby_enemies",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "폭발에 맞은 챔피언은 추가 물리 피해를 입습니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Champions take an additional 75/95/115/135/155 physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "summon"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "summon",
+              "text": "화약통의 체력이 일정 간격으로 감소하며, 감소 속도는 특정 레벨에서 빨라집니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "other",
+                  "numberRefs": [
+                    "en:body:n15",
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "unknown"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Keg health decays every (2.0 ~ 0.5) seconds. Keg decay rate increases at level 7 and 13."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "summon"
+          },
+          "conditions": [
+            {
+              "subject": "summon",
+              "field": "entity_count",
+              "operator": "gt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "summon",
+              "text": "폭발 범위가 겹치는 다른 화약통은 연쇄 폭발합니다. 같은 대상은 폭발로 피해를 한 번만 입습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": [
+                "per_target"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Keg explosions detonate other kegs with overlapping blast zones, but don't deal damage to the same target more than once."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Gangplank places a powder keg that can be attacked by Gangplank and enemy champions for 25 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "혀어어어업상으로 유발한 화약통 폭발로 처치"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "혀어어어업상으로 유발한 화약통 폭발이 대상을 처치하면 추가 골드를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Keg explosions triggered by Parrrley will grant the bonus gold for targets killed."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "기본 공격 피해의 구체적인 피해 계산 방식은 tooltip에 명시되지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing the Attack's damage, ignoring 40% Armor."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "화약통 체력 감소 간격의 두 값과 레벨 7 및 13에서 감소 속도가 증가한다는 사실은 있으나 각 값의 레벨별 적용 구간은 명시되지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Keg health decays every (2.0 ~ 0.5) seconds. Keg decay rate increases at level 7 and 13."
+            }
+          ]
+        }
+      ]
+    },
+    "P": {
+      "summary": "갱플랭크의 근접 기본 공격이 대상을 불태워 지속 피해를 주고 이동 속도를 높입니다. 화약통을 파괴하면 재사용 대기시간이 초기화되고 같은 이동 속도 효과를 얻습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "weapon",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "melee"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "근접 공격이 대상을 불태워 지속 시간에 걸쳐 추가 고정 피해를 입힙니다.",
+              "damageType": "true",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "갱플랭크의 이동 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gangplank's melee Attacks ignite the target, dealing an additional ((50 ~ 250) + (100% bonus Attack Damage)) true damage over 2.5 seconds and granting Gangplank (15% ~ 30%) Move Speed for 2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "화약통"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "화약통을 파괴하면 이 스킬의 재사용 대기시간이 초기화됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "화약통을 파괴하면 갱플랭크가 같은 이동 속도 효과를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Destroying a Powder Keg refreshes this Cooldown and grants Gangplank the same Move Speed."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Gangplank's melee Attacks ignite the target, dealing an additional ((50 ~ 250) + (100% bonus Attack Damage)) true damage over 2.5 seconds and granting Gangplank (15% ~ 30%) Move Speed for 2 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "갱플랭크가 총알을 발사해 물리 피해를 입힙니다. 적 챔피언에게 입힌 피해에 따라 골드와 바다뱀 은화를 얻으며, 이 사격으로 대상을 처치하면 추가 보상을 얻습니다. 사격에는 적중 시 효과와 치명타가 적용될 수 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "총알이 대상에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gangplank fires a bullet dealing (10/40/70/100/130 + (100% Attack Damage)) physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "적 챔피언에게 입힌 피해량에 따라 골드와 바다뱀 은화를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Against Champions, Gangplank earns 7% of the damage dealt as Gold and Silver Serpents."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "이 사격으로 처치"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "이 사격으로 대상을 처치하면 추가 골드와 바다뱀 은화를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n23",
+                    "en:body:n24",
+                    "en:body:n25",
+                    "en:body:n26",
+                    "en:body:n27"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n28",
+                    "en:body:n29",
+                    "en:body:n30",
+                    "en:body:n31",
+                    "en:body:n32"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If this kills the target, Gangplank gains an additional 3/4/5/6/7 Gold and 4/5/6/7/8 Silver Serpents."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "이 사격은 불의 심판을 제외한 적중 시 효과를 적용하며 치명타가 적용될 수 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The shot applies On-Hit effects (other than Trial by Fire) and can critically strike"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "치명타 발생"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "치명타가 발생하면 치명타 피해량 계수가 적용된 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19",
+                    "en:body:n20"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n39"
+                  ],
+                  "stat": "critDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The shot applies On-Hit effects (other than Trial by Fire) and can critically strike for (10/40/70/100/130 + (100% Attack Damage)) × (100% Critical Strike Damage) physical damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Gangplank fires a bullet dealing (10/40/70/100/130 + (100% Attack Damage)) physical damage."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "source_conflict",
+          "detail": "영문 본문 앞부분과 반복된 뒷부분이 사격 설명을 반복하며, 뒷부분에만 챔피언에게 입힌 피해 기반 보상이 추가되어 있습니다. 해당 보상은 별도 규칙으로 보존했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If this kills the target, Gangplank gains an additional 3/4/5/6/7 Gold and 4/5/6/7/8 Silver Serpents."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Against Champions, Gangplank earns 7% of the damage dealt as Gold and Silver Serpents."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "갱플랭크가 귤을 먹어 모든 방해 효과를 제거하고 체력을 회복합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "갱플랭크에게 적용된 모든 방해 효과를 제거합니다.",
+              "damageType": null,
+              "crowdControl": "disrupt",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "갱플랭크가 체력을 회복합니다. 회복량에는 잃은 체력 비율에 따른 추가량이 포함되지만, 해당 기준을 스키마의 기존 통계로 표현할 수 없습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gangplank consumes a large amount of citrus fruit, removing all Disabling effects and restoring (45/70/95/120/145 + (90% Ability Power)) plus 13% missing Health."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "회복량의 추가 항은 잃은 체력의 비율이지만, 스키마의 stat 목록에 잃은 체력이 없어 통계 입력으로 표현하지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "plus 13% missing Health."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "tooltip은 제거되는 Disabling effects의 구체적인 효과 종류를 열거하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "removing all Disabling effects"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Gangplank.E",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.4.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.4",
+          "detail": "Number reference lacks quoted evidence: en:body:n13"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.4",
+          "detail": "Number reference lacks quoted evidence: en:body:n14"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.4",
+          "detail": "Number reference lacks quoted evidence: en:body:n15"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.4",
+          "detail": "Number reference lacks quoted evidence: en:body:n16"
+        },
+        {
+          "code": "evidence",
+          "path": "gaps.1.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        }
+      ]
+    }
+  ]
+}

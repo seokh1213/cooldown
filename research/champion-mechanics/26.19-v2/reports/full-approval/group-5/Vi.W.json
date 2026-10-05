@@ -1,0 +1,334 @@
+{
+  "id": "Vi.W",
+  "sourceHash": "90c84a6c0bfe907eda63e959447ae1f5d56dea8bcb88905225fa10f86e36acd8",
+  "beforeCandidateHash": "0d561ee1caa0d2d13bf1ae9ec2295086eae7f47e48ea712a046b1e4af74f947d",
+  "candidateHash": "a5b567d5608ffe0c7d5f79b42cbe37ee5e0c1caa03d9beeb7c4c50285fe0a050",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "같은 대상의 매3번째 공격, 대상 최대체력×(기본퍼센트+추가AD100당3.5%), Armor20%감소와 AS30~50%4초, 패시브CD4초감소·정글300상한을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "같은 대상의 매3번째 기본 공격이다. 누적정확히3으로 제한하지 않는다. 대상maxHealth×(기본4~8%+casterbonusAD100당3.5%)추가 물리 피해, 대상Armor20%감소4초(KO), 바이AS보너스30~50%4초, BlastShield남은CD4초감소를 각각 확인했다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "동일 대상에 대한 기본 공격의 매3번째 적중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "4",
+              "value": 4,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "5",
+              "value": 5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "6",
+              "value": 6,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "7",
+              "value": 7,
+              "percent": true
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "8%",
+              "value": 8,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "3.5%",
+              "value": 3.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": "armor",
+          "statSubject": "target",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "20%",
+              "value": 20,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11",
+            "en:body:n12",
+            "en:body:n13"
+          ],
+          "stat": "attackSpeed",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "35",
+              "value": 35,
+              "percent": true
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "45",
+              "value": 45,
+              "percent": true
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 3,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n15"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "동일 매3번째 공격이 정글 몬스터에 적중할 때만 W추가 피해300상한이다. 챔피언을 포함한 모든 대상의 피해 상한으로 저장하지 않았다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "동일 대상에 대한 기본 공격의 매3번째 적중이며 대상이 정글 몬스터"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n16"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n16",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0;rules.1;gaps",
+      "issue": "정확히3회 조건·max300전 대상 적용·nested maxHealth식 단위 관계 누락 및 Armor4초 누락",
+      "correction": "매3번째 조건, jungle전용상한,100bonusAD당3.5%식, 공통%단위 및KO Armor4초를 정정했다.",
+      "sourceId": "en:body",
+      "quote": "Passive: Every 3rd Attack on the same target deals an additional (4/5/6/7/8% + (3.5% per 100 bonus Attack Damage)) max Health physical damage, removes 20% Armor and grants Vi 30/35/40/45/50% Attack Speed for 4 seconds. It also reduces the remaining Cooldown of Blast Shield by 4 seconds. Deals a maximum of 300 damage against jungle monsters."
+    },
+    {
+      "path": "summary",
+      "issue": "단발 세 번째만 읽힐 수 있는 요약",
+      "correction": "동일 대상 매 세 번째 기본 공격의 반복 발동임을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Every 3rd Attack on the same target"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 612,
+      "verdict": "repaired",
+      "reason": "frozen percent=false입력은 수정하지 않고 실제4~8%공통 단위와 targetmaxHealth×(base%+bonusAD/100×3.5%)관계를 text와 ratio_input100/ratio_output3.5%로 명시했다."
+    },
+    {
+      "index": 613,
+      "verdict": "repaired",
+      "reason": "Every3rd는 반복해서3,6,9번째 공격이다. 누적 eq3을 매3번째 텍스트 조건으로 교체했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "기본4/5/6/7/8%와 공격 속도30/35/40/45/50%는 slash 값 전체에 퍼센트가 적용됩니다. lexical 표 앞부분 percent=false를 절대량으로 실행하지 않고, 피해 계수는 대상 maxHealth×(기본%+bonusAD/100×3.5%)로 읽어야 합니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

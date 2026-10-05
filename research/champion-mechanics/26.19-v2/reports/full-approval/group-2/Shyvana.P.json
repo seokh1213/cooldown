@@ -1,0 +1,64 @@
+{
+  "id": "Shyvana.P",
+  "sourceHash": "9b59d2414e775d100088123f7e20683d080a604be5a67702a0a8cc741e7b9502",
+  "beforeCandidateHash": "3447f9c0b631e22fd434377ae912bb64ab7505ac7f2ec0e207a8b808617bf886",
+  "candidateHash": "55b46ca694d6cc2fd33deef8a77412c2daee589d6d7ff5455e4b0d2d76a33b46",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "챔피언·대형 미니언·몬스터 처치 관여마다 시전자가 영구 방어력/마법 저항력 0.3을 얻는 본문을 확인; 대형 몬스터 요약과의 충돌은 본문 우선으로 보존.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: takedown 사건의 행위자 caster; 조건 target.target_type eq 챔피언 또는 대형 미니언 또는 몬스터; caster: 미늘갑옷 중첩을 얻습니다. 중첩마다 영구적으로 방어력이 증가합니다.; 수치 amount en:body:n0=0.3 상수 scalar; flags 없음 | caster: 미늘갑옷 중첩을 얻습니다. 중첩마다 영구적으로 마법 저항력이 증가합니다.; 수치 amount en:body:n1=0.3 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger/conditions",
+      "issue": "행위자와 대상 범위 오류",
+      "correction": "시전자 처치 관여 및 본문의 세 대상 OR 조건으로 수정",
+      "sourceId": "en:body",
+      "quote": "Takedowns on champions, large minions, and monsters earn Shyvana stacks of Scalemail"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 468,
+      "verdict": "repaired",
+      "reason": "본문의 large minions, and monsters를 조건에 복원하고 요약 차이는 source_conflict로 기록."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문 툴팁은 모든 몬스터를 적격 대상으로 쓰지만 요약은 대형 몬스터로 한정합니다. 몬스터 대상 범위가 서로 다릅니다.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

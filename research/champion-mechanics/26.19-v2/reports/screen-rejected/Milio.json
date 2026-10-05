@@ -1,0 +1,77 @@
+{
+  "findings": [
+    {
+      "id": "Milio.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This ability has 2 charges and the effects stack on repeat targets.",
+      "issue": "`resource > 2`는 충전 횟수가 2회라는 설명과 모순되며, 원문은 충전 수를 조건이나 발동 기준으로 제시하지 않습니다.",
+      "correction": "이 충전 수 조건을 제거하고, 두 번 충전된다는 사실만 UI 정보로 유지하세요."
+    },
+    {
+      "id": "Milio.P",
+      "path": "rules.1.effects.1.parameters.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "... plus ((10 ~ 50) + (20% Ability Power)) magic damage over 1.5 seconds.",
+      "issue": "1.5초는 추가 피해가 적용되는 시간인데 `duration_seconds`가 피해 효과에 붙어 있어, 그 피해가 시간에 걸쳐 입힌다는 점이 분명하지 않습니다.",
+      "correction": "피해가 1.5초에 걸쳐 적용됨을 효과 텍스트나 지원되는 지속 피해 표현으로 명시하세요."
+    },
+    {
+      "id": "Milio.Q",
+      "path": "rules.2.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hitting at least one enemy champion with Ultra Mega Fire Kick refunds 50% of it's Mana cost.",
+      "issue": "조건은 챔피언 적중만 확인해 스킬 식별자 `Ultra Mega Fire Kick`을 표현하지 않습니다. 다른 스킬의 챔피언 적중에도 환급 효과가 성립하는 것처럼 보입니다.",
+      "correction": "조건 또는 규칙 범위에 이 효과가 초특급 불꽃 킥에만 해당함을 명시하세요."
+    },
+    {
+      "id": "Milio.Q",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hitting at least one enemy champion with Ultra Mega Fire Kick refunds 50% of it's Mana cost.",
+      "issue": "`target_type == champion`은 한 명 이상 적중이라는 조건의 수량을 표현하지 않아, 챔피언 한 명만 맞혀도 환급되는 것으로 읽힙니다.",
+      "correction": "한 명 이상 적중 조건을 텍스트로 보존하거나 지원되는 수량 조건을 사용하세요."
+    },
+    {
+      "id": "Milio.Q",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minions and monsters are knocked further and create a larger explosion.",
+      "issue": "미니언 적중 효과에 밀쳐내기만 더 길어진다고 기록하고, 더 큰 폭발 효과를 빠뜨렸습니다.",
+      "correction": "미니언 적중 시 더 큰 폭발이 발생한다는 효과를 포함하세요."
+    },
+    {
+      "id": "Milio.Q",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minions and monsters are knocked further and create a larger explosion.",
+      "issue": "몬스터 적중 효과에 밀쳐내기만 더 길어진다고 기록하고, 더 큰 폭발 효과를 빠뜨렸습니다.",
+      "correction": "몬스터 적중 시 더 큰 폭발이 발생한다는 효과를 포함하세요."
+    },
+    {
+      "id": "Milio.W",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Milio creates a hearth that follows ally champions for 6 seconds.",
+      "issue": "`subject: unknown`은 온기가 아군 챔피언을 따라간다는 원문의 추종 대상을 잃어버립니다.",
+      "correction": "추종 대상이 아군 챔피언임을 효과 텍스트에 명시하세요."
+    },
+    {
+      "id": "Milio.W",
+      "path": "rules.1.effects.1.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "... restore (70/90/110/130/150 + (15% Ability Power)) Health over the duration.",
+      "issue": "치유가 온기의 6초 지속시간에 걸쳐 이뤄진다는 정보가 `duration_seconds`로 수치에만 연결되어, 효과 문장에는 지속 치유가 드러나지 않습니다.",
+      "correction": "치유 효과가 온기의 지속시간 동안 이뤄짐을 효과 텍스트나 지원되는 지속 치유 표현으로 명시하세요."
+    }
+  ],
+  "notes": []
+}

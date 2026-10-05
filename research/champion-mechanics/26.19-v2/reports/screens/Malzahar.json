@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Malzahar.E",
+      "sourceHash": "0c36647ec023b00d4fd8d69f55e7e69f1d2fdd7bad586ca2a0c327fff141df87",
+      "candidateHash": "941ca3f44555cdb1a8504da48b76f1d18691f9badefad5b525b1129a707d759e"
+    },
+    {
+      "id": "Malzahar.Q",
+      "sourceHash": "ce0ce2db3977deba6c3b6bcb6eb55c1117da1cebfde824e493eb429a5156da0c",
+      "candidateHash": "44009b1aa4852df5d45a7e9651e3f705525f79685900a46ea863505a5e8f3af4"
+    },
+    {
+      "id": "Malzahar.R",
+      "sourceHash": "f9e254876ee92e3bfbac649564564b7828dadeea6457764287159ff59ac46138",
+      "candidateHash": "65c6d5ca4749d077786317d2fde9a4920febc2fa26036170d3cc0e27b0528ae0"
+    },
+    {
+      "id": "Malzahar.P",
+      "sourceHash": "5659b784ba6547cd6d941385b1850c94e005d9491e0a352903d69b97af34b41c",
+      "candidateHash": "c29286d4b1848c3bde55be818bc36c1b07b64f434685b36b74279611edf0d2ae"
+    },
+    {
+      "id": "Malzahar.W",
+      "sourceHash": "0f76c6b8fc8890b7d3f0f3acfbd4324cb84bb1f58c72d44e001c6b54859f60c8",
+      "candidateHash": "694b051596dc7e2be23602d7c0fa4818a28bbffaf04eeb4d5ddf5fb6f8b4d677"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Malzahar.Q",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Malzahar opens two portals to the Void that fire projectiles inward, dealing (70/105/140/175/210 + (55% Ability Power)) magic damage and Silencing for 1/1.25/1.5/1.75/2 second(s).",
+      "issue": "피해 효과의 설명을 ‘투사체가 적중한 적’으로 한정했지만, 본문은 안쪽으로 발사된 투사체가 마법 피해를 준다고만 하며 적중 조건을 명시하지 않습니다.",
+      "correction": "적중 조건을 단정하지 않는 ‘적에게 마법 피해를 입힙니다’로 고치거나, 적중 여부를 미확정으로 남기세요."
+    },
+    {
+      "id": "Malzahar.R",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "A zone of negative energy is created around his target dealing (10/15/20% + (2.5% per 100 Ability Power)) max Health magic damage over 5 seconds.",
+      "issue": "최대 체력 비례 피해의 10/15/20%를 피해량 파라미터가 아니라 백분율 수치로 기록해, 최대 체력 기준 피해라는 의미를 보존하지 못합니다.",
+      "correction": "10/15/20%를 대상 최대 체력 기준 피해 비율로 표현하고, 주문력 100당 2.5% 항은 별도 계수로 유지하세요."
+    },
+    {
+      "id": "Malzahar.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects.",
+      "issue": "조건이 ‘최근 피해나 군중 제어를 받지 않음’으로만 제한되어 있습니다. 본문은 피해를 받거나 방해·이동 불가 효과를 막은 뒤에도 효과가 0.25초 지속된다고 하므로, 군중 제어를 받았다는 사실만으로 효과가 끝난다고 단정할 수 없습니다.",
+      "correction": "이 조건을 삭제하거나, 본문으로 확인되는 활성 조건을 별도로 표현하고 정확한 활성 시점은 미확정으로 남기세요."
+    },
+    {
+      "id": "Malzahar.P",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects.",
+      "issue": "90% 피해 감소의 지속 시간으로 0.25초가 규칙에 연결되지 않았습니다. 본문은 피해 감소와 면역 효과 모두가 해당 사건 뒤 0.25초 동안 지속된다고 명시합니다.",
+      "correction": "피해 감소 효과에도 지속 시간 0.25초를 연결하세요."
+    },
+    {
+      "id": "Malzahar.P",
+      "path": "rules.1.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "lingering for 0.25 seconds after taking damage or blocking one of those effects",
+      "issue": "이 규칙은 피해를 받은 뒤 지속되는 효과만 표현하고, 방해 또는 이동 불가 효과를 막은 뒤에도 지속되는 경우를 빠뜨렸습니다.",
+      "correction": "해당 차단 사건도 이 지속 효과의 트리거로 포함하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,91 @@
+{
+  "id": "Zed.P",
+  "sourceHash": "86603f1e4391c798be1e67daa3a61948bf94f081fb6b3be57abfbfde1953d5e6",
+  "beforeCandidateHash": "45102e544240e0214d2dab35006880f19d1df79648e583beb9fbe90671f2c52c",
+  "candidateHash": "ba1394b27ade28e0a37667164842c57c2448e092430f87e299bcbf80914bd293",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "영문50%미만 발동/KO이하충돌, 대상최대체력5~10% 추가마법 및 같은챔피언10초 재발동제한 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.health_threshold lt en:body:n0=50%(백분율) / target.spell_ready eq 챔피언인 경우 같은 대상의 이 효과10초 재발동 제한이 끝남; target: 대상 최대체력의5~10%를 추가 마법 피해로 줍니다. 공급원문은 이 범위의 변화 기준을 특정하지 않습니다. [magic]; 수치 stat_coefficient en:body:n1=5.0%(백분율),en:body:n2=10.0%(백분율) target.maxHealth formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type eq champion; target: 같은 적 챔피언은 이 추가 마법 피해에10초에 한 번만 맞을 수 있습니다.; 수치 cooldown_seconds en:body:n3=10 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "경계충돌 처리·중복피해params 제거·레벨단정 제거·재발동조건 연결",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Whenever Zed Attacks an enemy below 50% Health, he deals an additional (5.0% ~ 10.0%) max Health magic damage. Enemy champions can only be hit once every 10 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 705,
+      "verdict": "repaired",
+      "reason": "영문우선 미만으로 summary와 condition 수정; KO이하와 충돌 gap도 명시."
+    },
+    {
+      "index": 706,
+      "verdict": "repaired",
+      "reason": "10초 지속효과 대신 같은챔피언10초에 한번 재발동 제한으로 변경."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문 below50%는 미만, 한국어50%이하는 경계 포함. 영문 tooltip 우선으로 미만을 사용.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "5~10% 범위의 변화 기준/보간식이 공급 tooltip에 없어 레벨 비례를 단정하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

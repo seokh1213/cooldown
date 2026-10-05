@@ -1,0 +1,80 @@
+{
+  "id": "Kassadin.E",
+  "sourceHash": "dec02b81e348135d323cc3307c815178c2c04a7770e3aae2d52ce076caaa1af1",
+  "beforeCandidateHash": "800e46e5020981a5b0015afa9a853fa2c38fd9d570ea29ca6cac493653d76eaa",
+  "candidateHash": "931741ebbde55937be19744d03ae2e3c5661e0de7d5d3e1eca415297132c4490",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "주변임의스킬사용E0.75초쿨감/전방원뿔70~190+70%AP마법/50~70%둔화1초; 충전summary와body 차이 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 unknown; 조건 unknown.distance eq 스킬 사용 위치가 카사딘 근처; caster: 카사딘 근처에서 임의의 스킬이 사용될 때마다 힘의파동쿨이0.75초 감소합니다.; 수치 cooldown_seconds en:body:n0=0.75 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 nearby_enemies.distance eq 카사딘 전방 원뿔 안 적; nearby_enemies: 전방 원뿔 안의 적에게 공허의 파동으로 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n1=70,en:body:n2=100,en:body:n3=130,en:body:n4=160,en:body:n5=190 상수 rank_values / stat_coefficient en:body:n6=70%(백분율) caster.abilityPower scalar; flags 없음 | nearby_enemies: 전방 원뿔 안의 적을 둔화시킵니다. [slow]; 수치 amount en:body:n7=50(백분율),en:body:n8=55(백분율),en:body:n9=60(백분율),en:body:n10=65(백분율),en:body:n11=70%(백분율) 상수 rank_values / duration_seconds en:body:n12=1 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "주변스킬cast사건·근처조건·summary의추가충전요건·원뿔범위 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Force Pulse's Cooldown is reduced by 0.75 second whenever any Ability is used near Kassadin. Active: Kassadin unleashes a void pulse, dealing (70/100/130/160/190 + (70% Ability Power)) magic damage and Slowing by 50/55/60/65/70% for 1 second."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "양언어summary는 충전완료시 사용을 설명하지만 body는 주변스킬사용당0.75초쿨감으로 기술하고 충전 조건을 쓰지 않는다. 구체본문쿨감 우선으로summary를수정하며 추가충전요건을 추정하지 않는다.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "근처의 구체적인 거리임계값은 없다. anyAbility를 특정아군/적스킬로 제한하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

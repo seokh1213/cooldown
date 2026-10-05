@@ -1,0 +1,309 @@
+{
+  "champion": "Tristana",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Tristana loads a massive cannonball into her weapon and fires it at an enemy unit. This deals Magic Damage and knocks the target back. If the target is carrying the Explosive Charge bomb, the bomb detonation radius is doubled.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Tristana fires a massive cannonball, dealing (225/275/325 + (70% bonus Attack Damage) + (100% Ability Power)) magic damage to the target, Knocking Back and Stunning them and surrounding enemies for 0.4/0.55/0.7 seconds. If this Ability applies the final stack of Explosive Charge, it explodes after the unit is Knocked Back.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "트리스타나가 무기에 거대한 대포알을 장착하여 적 유닛에게 발사합니다. 이 스킬은 마법 피해를 입히고 적을 뒤로 밀어냅니다. 대상에게 폭발 화약이 붙어 있을 경우 폭발 범위가 두 배로 늘어납니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "트리스타나가 거대한 대포를 발사하여 대상에게 (225/275/325 + (70% 추가 공격력) + (100% 주문력))의 마법 피해를 입히며 주변 적과 함께 밀어내고 0.4/0.55/0.7초 동안 기절시킵니다. 이 스킬로 폭발 화약 마지막 중첩이 적용되면 유닛이 뒤로 밀려난 후 폭발합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Buster Shot",
+      "ko": "대구경 탄환"
+    },
+    "cooldownSeconds": [
+      100,
+      100,
+      100
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      550,
+      550,
+      550
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "225/275/325"
+      },
+      {
+        "label": "Knockback Distance",
+        "values": "600/800/1000"
+      },
+      {
+        "label": "Stun Duration:",
+        "values": "0.4/0.55/0.7"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:DamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "DamageCalc",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          225,
+          275,
+          325
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.699999988079071,
+              0.699999988079071,
+              0.699999988079071
+            ]
+          },
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Tristana.json"
+        },
+        {
+          "type": "knockback",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Tristana.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Tristana.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Tristana.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 46,
+      "end": 49
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 50,
+      "end": 53
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "325",
+      "value": 325,
+      "percent": false,
+      "start": 54,
+      "end": 57
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 61,
+      "end": 64
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 89,
+      "end": 93
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "0.4",
+      "value": 0.4,
+      "percent": false,
+      "start": 198,
+      "end": 201
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "0.55",
+      "value": 0.55,
+      "percent": false,
+      "start": 202,
+      "end": 206
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "0.7",
+      "value": 0.7,
+      "percent": false,
+      "start": 207,
+      "end": 210
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 26,
+      "end": 29
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 30,
+      "end": 33
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "325",
+      "value": 325,
+      "percent": false,
+      "start": 34,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 41,
+      "end": 44
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 56,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "0.4",
+      "value": 0.4,
+      "percent": false,
+      "start": 93,
+      "end": 96
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "0.55",
+      "value": 0.55,
+      "percent": false,
+      "start": 97,
+      "end": 101
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "0.7",
+      "value": 0.7,
+      "percent": false,
+      "start": 102,
+      "end": 105
+    }
+  ],
+  "sourceHash": "54b2b63056196a5a499cd4e71e2fe48f36f2e6dd28eaaaf295590d3b6ca14ac7",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

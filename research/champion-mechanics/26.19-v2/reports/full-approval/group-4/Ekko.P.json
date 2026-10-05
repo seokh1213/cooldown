@@ -1,0 +1,79 @@
+{
+  "id": "Ekko.P",
+  "sourceHash": "8a474ddb31324b6b606a6fb74f54368cd7130aa8e8f87e290e3a85e52d0c42a6",
+  "beforeCandidateHash": "4578fc736b1376d54adacb255aa672c9a56dae706a4eab7dfbc24db9ea02e6a5",
+  "candidateHash": "609ed4dd8cb85732ea868285d82c8720a582391aa1ceca6354235f8222044f79",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "같은대상세번째평타/피해스킬의추가마법피해,챔피언시이동속도50~80%와2~3초,동일적4초발동간격을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack_or_ability_hit 사건에서 target.hit_count eq 세 번째 공격 또는 피해를 주는 스킬 적중, target.followup_status eq same_target, target.other eq 같은 적에 대한 이 효과가 최근4초 안에 발동하지 않음 적용. target: 대상에게 추가 마법 피해를 입힙니다. (magic); min_amount=30  level_range, max_amount=140  level_range, stat_coefficient=80% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack_or_ability_hit 사건에서 target.hit_count eq 세 번째 공격 또는 피해를 주는 스킬 적중, target.followup_status eq same_target, target.target_type eq champion, target.other eq 같은 적에 대한 이 효과가 최근4초 안에 발동하지 않음 적용. caster: 이동 속도가 증가합니다.; min_amount=50%  level_range, max_amount=80%  level_range, duration_seconds=2.0/3.0  level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack_or_ability_hit 사건에서 target.hit_count eq 세 번째 공격 또는 피해를 주는 스킬 적중, target.followup_status eq same_target 적용. caster: 동일한 적에게 이 효과는 정해진 시간 안에 한 번만 발동할 수 있습니다.; cooldown_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.trigger.subject",
+      "issue": "공격/스킬적중행위자가target",
+      "correction": "caster로정정",
+      "sourceId": "en:body",
+      "quote": "Every third Attack or damaging Ability on the same target deals an additional ((30 ~ 140) + (80% Ability Power)) magic damage."
+    },
+    {
+      "path": "rules.0,1.conditions",
+      "issue": "피해및이동효과규칙에동일적4초간격연결불명확",
+      "correction": "실제발동규칙에도간격조건명시",
+      "sourceId": "en:body",
+      "quote": "This effect can't trigger on the same enemy more than once every 4 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 49,
+      "verdict": "false_positive",
+      "reason": "attack_or_ability_hit과동일대상세번째조건은영문세번째Attack or damaging Ability를보존한다.두사건을누적하면안된다는근거는없고,새별도카운터추정도하지않았다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

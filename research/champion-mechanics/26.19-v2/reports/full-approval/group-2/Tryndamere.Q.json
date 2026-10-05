@@ -1,0 +1,68 @@
+{
+  "id": "Tryndamere.Q",
+  "sourceHash": "8f9fcfb29a2019dd982f4bdc7bc22959d1a198ba03047d10c219d8e3d36c12c9",
+  "beforeCandidateHash": "3e5fbadbf901a72952bb3dacd8ccd2cb38ecc547fdd18ed219d3ff53cf89ade3",
+  "candidateHash": "43704fe7843be6f98850c40cc5192eb141264efa975a401e8f3e68aaa529f775",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "잃은체력공격력 최대20~80/남은10%최대, 분노소모와 기본+분노당회복 및 원문과 동일한 최대회복식 한계를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 잃은 체력에 따라 공격력이 증가하며 최대20/35/50/65/80입니다. 남은 체력10%에서 최대입니다.; 수치 max_amount en:body:n0=20,en:body:n1=35,en:body:n2=50,en:body:n3=65,en:body:n4=80 상수 rank_values / other en:body:n23=10%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 분노를 소모합니다.; 수치 없음; flags 없음 | caster: 기본(30/40/50/60/70+30%AP)에 소모 분노당(0.5/0.95/1.4/1.85/2.3+1.2%AP)를 더해 회복합니다. 원문의 최대식도(30/40/50/60/70+30%AP)로 표기되어 있습니다. 이 최대식과 기본/분노당식을 임의로 합산하거나 수정하지 않습니다.; 수치 amount en:body:n5=30,en:body:n6=40,en:body:n7=50,en:body:n8=60,en:body:n9=70 상수 formula_components / stat_coefficient en:body:n10=30%(백분율) caster.abilityPower formula_components / amount en:body:n11=0.5,en:body:n12=0.95,en:body:n13=1.4,en:body:n14=1.85,en:body:n15=2.3 상수 formula_components / stat_coefficient en:body:n16=1.2%(백분율) caster.abilityPower formula_components / max_amount en:body:n17=30,en:body:n18=40,en:body:n19=50,en:body:n20=60,en:body:n21=70 상수 formula_components / stat_coefficient en:body:n22=30%(백분율) caster.abilityPower formula_components; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "최대AD를 일반amount로 해석한 오류와 회복 세 식의 계수합산 위험 교정; 원문 내부 산식 한계 기록",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Tryndamere thirsts for blood, gaining up to 20/35/50/65/80 Attack Damage based on his missing Health. Active: Tryndamere consumes his Fury, restoring (30/40/50/60/70 + (30% Ability Power)) plus (0.5/0.95/1.4/1.85/2.3 + (1.2% Ability Power)) Health per Fury (max: (30/40/50/60/70 + (30% Ability Power))). Maximum Attack Damage gained at 10% remaining Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "툴팁에는 분노 소모량이 수치로 지정되어 있지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "최대회복식이 기본회복식과 동일해 분노 추가회복과의 적용 관계가 불명확하다. 공급원문 최대식을 그대로 보존하며 외부 값으로 보정하지 않는다. 또한 잃은체력→공격력 중간 보간식이 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

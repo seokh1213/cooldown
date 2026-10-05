@@ -1,0 +1,303 @@
+{
+  "id": "Garen.Q",
+  "sourceHash": "6155355db6f32e489a3e14376b900a68677df9f3746dae5bc81007d25ae0bd68",
+  "beforeCandidateHash": "5112fb4a14737f52aa52f1992561ea7e32d31d80708f406cef297e898fb0e6aa",
+  "candidateHash": "cf832ca3dd05a58a8f62e2e1ab4e5e11c8f7ab8ef687795b63a11590eaa7bdb0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "slow제거·35%MS5랭크duration·다음공격150%AD식/1.5silence·4.5초만료·Q피해spell효과를대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "slow모두제거,35%MS1.4/1.95/2.5/3.05/3.6초모두있음.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "35%",
+              "value": 35,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "1.4",
+              "value": 1.4,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "1.95",
+              "value": 1.95,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "2.5",
+              "value": 2.5,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "3.05",
+              "value": 3.05,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "3.6",
+              "value": 3.6,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Q다음공격만silence1.5초및30/60/90/120/150+150%AD전체physical.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이Q 사용 후4.5초 이내의 다음 기본 공격"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "1.5",
+              "value": 1.5,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "150%",
+              "value": 150,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "4.5초만료,MSduration과다른공격강화유효시간.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "4.5",
+              "value": 4.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이Q의실제피해로spell효과발동,다른피해로확대안함.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이Q 강화 공격이 실제 피해를 입힘"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,3",
+      "issue": "Q강화공격과spellproc인과조건모호.",
+      "correction": "Q다음공격/실제Q피해조건·전체공격피해식명시.",
+      "sourceId": "en:body",
+      "quote": "His next Attack Silences for 1.5 seconds and does (30/60/90/120/150 + (150% Attack Damage)) physical damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 82,
+      "verdict": "false_positive",
+      "reason": "원래duration파라미터에5값모두빠짐없이참조돼있다. 가정성지적으로실제누락없음."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

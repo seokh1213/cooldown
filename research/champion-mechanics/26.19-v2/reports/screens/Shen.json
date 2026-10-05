@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Shen.E",
+      "sourceHash": "e79c6f00993792379d566ff240b9304ff039c3fc0e4551ea4e8945f1c9abfe3f",
+      "candidateHash": "c2bd209cfcfa779885c4941eff1fd1d925645bbcd07a7b889700aab251504369"
+    },
+    {
+      "id": "Shen.P",
+      "sourceHash": "6c764bb6ce94937650f63e52fc42661d42c4c0e7f3ba10a6f91feddebd16cd0b",
+      "candidateHash": "390c2d1cc7e9a2ca92f5016a5e58f740d0811032097d5a979ffd09316661ebae"
+    },
+    {
+      "id": "Shen.Q",
+      "sourceHash": "29b27e9a92c9e6579aaf4fe32048a27ac360a418caf2b434821c41af0cf749a8",
+      "candidateHash": "39aa7d89ddd6f5e8e09d8a67cb376656a9b7bb340603b907c63fdb1ec7d8297b"
+    },
+    {
+      "id": "Shen.R",
+      "sourceHash": "2e1fa891bc2145ecde7aec7e3592e3bcbbecc18bc94fd63f9fa62620aa3af5da",
+      "candidateHash": "e9736a1a53b134965fcef38bc200468cf670f04b41266073087c96b68b4a606f"
+    },
+    {
+      "id": "Shen.W",
+      "sourceHash": "d6347af5b91f7e52a53167da8a84118e9fa0b4ae7ab2b7fe3f79cdeef061bc34",
+      "candidateHash": "3145735351a6afee1c1b5be2915da177534a0314609a84a8e3fa7992762886af"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Shen.Q",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Additionally, Shen's next 3 Attacks deal an additional (10 ~ 40) plus (2/2.5/3/3.5/4% + (1.5% per 100 Ability Power)) max Health magic damage.",
+      "issue": "`count`가 공격 횟수 3회를 피해 효과의 수치 매개변수로 기록해, 피해량의 일부처럼 오해될 수 있습니다.",
+      "correction": "3회를 후속 공격 효과의 발동 횟수로 기록하고 피해 수치 매개변수에서는 제외하세요."
+    },
+    {
+      "id": "Shen.Q",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Shen hit an enemy champion with the Spirit Blade, the damage is increased to (10 ~ 40) plus (5/5.5/6/6.5/7% + (2% per 100 Ability Power)) max Health magic damage and he gains 50% Attack Speed for those Attacks.",
+      "issue": "강화 피해에서 기본 피해와 같은 10~40 값을 빠뜨렸습니다. `replace_input` 플래그가 있어도 이 값은 강화 피해 문장에 명시되어 있습니다.",
+      "correction": "강화 피해 효과에도 10~40의 최소·최대 기본값을 포함하세요."
+    },
+    {
+      "id": "Shen.R",
+      "path": "rules.0.effects.0.parameters.3",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Shen grants an allied champion anywhere on the map between (120/220/320 + (15% bonus Health) + (135% Ability Power)) and (192/352/512 + (24% bonus Health) + (216% Ability Power)) Shield based on their missing Health for 5 seconds (max Shield at 60% missing Health).",
+      "issue": "`15% bonus Health`를 stat coefficient 대신 `ratio_output`으로 기록했습니다. 이는 보너스 체력 전환 계수를 잘못된 역할로 분류합니다.",
+      "correction": "해당 15% 수치를 시전자 bonusHealth의 `stat_coefficient`로 기록하세요."
+    },
+    {
+      "id": "Shen.R",
+      "path": "rules.0.effects.0.parameters.4",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Shen grants an allied champion anywhere on the map between (120/220/320 + (15% bonus Health) + (135% Ability Power)) and (192/352/512 + (24% bonus Health) + (216% Ability Power)) Shield based on their missing Health for 5 seconds (max Shield at 60% missing Health).",
+      "issue": "135% Ability Power를 bonusHealth 계수로 기록했고, 해당 수치의 참조도 135% 대신 `en:body:n4`(15%)입니다.",
+      "correction": "시전자 abilityPower 계수는 135%인 `en:body:n4`가 아니라 실제 135% 수치를 참조하는 `en:body:n4` 위치에 맞춰 별도 numberRef를 기록하세요."
+    },
+    {
+      "id": "Shen.R",
+      "path": "rules.0.effects.0.parameters.5",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Shen grants an allied champion anywhere on the map between (120/220/320 + (15% bonus Health) + (135% Ability Power)) and (192/352/512 + (24% bonus Health) + (216% Ability Power)) Shield based on their missing Health for 5 seconds (max Shield at 60% missing Health).",
+      "issue": "15%를 참조하는 동일한 `en:body:n4` 수치를 abilityPower 계수로도 중복 기록해, stat 소유자와 계수가 잘못 연결됐습니다.",
+      "correction": "15%는 bonusHealth 계수로, 135%는 abilityPower 계수로 각각 원문 위치와 값에 맞춰 기록하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,106 @@
+{
+  "id": "Viktor.R",
+  "sourceHash": "b4eebdac847b5ab8ad548f75ab87a00287496bc7f2de66b929891f32a1bc5b0e",
+  "beforeCandidateHash": "bbc5e61b25ebd6d577701de2765f60db90560be582f5d4175bb4dda4b9634d08",
+  "candidateHash": "4c6d9927dd5909a55de89891da6b47d4834bfaf1ff686ded36d632851d7785c6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 0,
+  "summaryCheck": "폭풍6.5초생성·즉시/초당 주변마법·최근피해챔피언자동추적·재사용수동이동·증강25%속도·폭풍피해챔피언사망당크기/3초증가최대6회·생성시채널방해·거리비례감속 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; nearby_enemies: 폭풍이 나타날 때 주변 적에게 즉시 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n1=100,en:body:n2=175,en:body:n3=250 상수 rank_values / stat_coefficient en:body:n4=50%(백분율) caster.abilityPower scalar; flags 없음 | summon: 6.5초 동안 폭풍을 생성합니다.; 수치 duration_seconds en:body:n0=6.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 summon; 조건 target.other eq 활성 폭풍 주변에 있음; nearby_enemies: 폭풍이 주변 적에게 초당 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n5=65,en:body:n6=105,en:body:n7=145 상수 rank_values / stat_coefficient en:body:n8=35%(백분율) caster.abilityPower scalar; flags per_target"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 폭풍은 최근 피해를 입힌 챔피언을 자동으로 따라갑니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 빅토르가 재사용 시 폭풍을 직접 이동시킬 수 있습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered; summon: 증강 시 폭풍의 이동 속도가 증가합니다.; 수치 amount en:body:n9=25%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: death 사건의 행위자 target; 조건 target.target_type eq champion / target.other eq 폭풍이 피해를 준 뒤 사망 / caster.activation eq empowered / summon.activation eq 이 폭풍에서 사망에 따른 크기/지속시간 증가가 아직6회미만; summon: 폭풍의 크기와 지속시간이 증가합니다.; 수치 duration_seconds en:body:n10=3 상수 scalar / storage_cap en:body:n11=6 상수 scalar; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 폭풍이 나타날 때 정신 집중 중인 적의 정신 집중을 방해합니다. [disrupt]; 수치 없음; flags 없음"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 summon; 조건 summon.distance eq 빅토르로부터 멀어질수록; summon: 폭풍이 빅토르에게서 멀어질수록 느리게 이동합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "기본 지속시간누락, 사망을takedown으로 변경 및 증강횟수를개체수로 오표기, 폭풍행위자/추적주체 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Viktor conjures an Arcane Storm in an area for 6.5 seconds, which instantly deals (100/175/250 + (50% Ability Power)) magic damage followed by (65/105/145 + (35% Ability Power)) magic damage per second to surrounding enemies. The storm automatically follows champions it has recently damaged. Recast: Viktor can manually move the storm. Upgraded: The storm moves 25% faster. If a champion that the storm has damaged dies, the storm increases its size and its duration by 3 seconds (up to 6 times). When the storm appears it interrupts channeled Abilities. The farther the storm is from Viktor, the slower it moves."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

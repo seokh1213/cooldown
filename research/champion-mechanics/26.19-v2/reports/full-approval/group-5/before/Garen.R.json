@@ -1,0 +1,81 @@
+{
+  "summary": "적 챔피언을 처단할 데마시아의 힘을 소환해 고정 피해를 입힙니다. 피해는 기본값과 대상의 잃은 체력에 비례하는 양으로 구성됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적 챔피언에게 고정 피해를 입힙니다. 피해량은 기본값에 대상의 잃은 체력에 비례하는 양을 더해 계산합니다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Garen calls upon the might of Demacia to attempt to execute an enemy champion."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Garen calls upon the might of Demacia to slay his enemy, dealing 125/200/275 plus 25/30/35% missing Health true damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "비율이 대상의 잃은 체력에 적용된다고 원문에 명시되어 있지만, 허용된 stat 목록에는 잃은 체력이 없어 입력 통계를 구조화할 수 없습니다. 잃은 체력을 최대 체력으로 대체하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "25/30/35% missing Health"
+        }
+      ]
+    }
+  ]
+}

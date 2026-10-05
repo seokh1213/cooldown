@@ -1,0 +1,105 @@
+{
+  "id": "Shaco.R",
+  "sourceHash": "e559067c35b8d710c8fc1db24798121c35d822e501d7027647b5c20acf2c6c0d",
+  "beforeCandidateHash": "92d1f2e089107ae05a4b69fb193ae119be7a5488e142f76e737f81d282473c2c",
+  "candidateHash": "3bfe1f8fc22296b436573ceac3ac0c45b60750dd30de6ebc4b6c22cd676120f1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 9,
+  "checkedGapCount": 1,
+  "summaryCheck": "잠시 사라짐/18초 분신, 사망 폭발·세 상자 즉시 발동,분신피해60%/피격증가50%, 미니상자 피해·공포1초와 조종을 대조했다. 포탑 감소도 summary 출처로 보완했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster visibility: 샤코가 잠시 사라졌다가 다시 나타납니다. [] / summon summon: 샤코가 정해진 시간 지속되고 사망 시 폭발하는 분신을 생성한다. [duration_seconds n0=18 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.death; 조건 summon.other eq 이 궁극기로 생성된 분신. nearby_enemies damage magic: 분신이 죽으면 폭발해 주변 적에게 마법 피해를 입힙니다. [amount n1=150/n2=225/n3=300 rank_values; stat_coefficient n4=70% scalar caster.abilityPower] flags=per_target / summon summon: 폭발과 함께 작은 깜짝 상자들을 즉시 발동 상태로 생성합니다. [count n5=3 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 summon.other eq 분신의 공격. summon attack_modifier: 분신은 샤코 피해량의 일정 비율만큼 피해를 입힙니다. [ratio_output n6=60% scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.damage_taken; 조건 summon.other eq 이 궁극기로 생성된 분신. summon other: 분신은 받는 피해가 증가합니다. [amount n7=50% scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 summon.other eq 작은 깜짝 상자의 공격; summon.other neq 작은 상자가 오직 한 적에게 발사함. target damage magic: 작은 깜짝 상자가 적에게 마법 피해를 입힙니다. [amount n8=10/n9=20/n10=30 rank_values; stat_coefficient n11=10% scalar caster.abilityPower] flags=per_target"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 summon.other eq 작은 깜짝 상자의 공격; summon.other eq 작은 상자가 오직 한 적에게 발사함. target damage magic: 작은 깜짝 상자가 단일 적에게 발사하면 강화된 마법 피해를 입힙니다. [amount n12=25/n13=50/n14=75 rank_values; stat_coefficient n15=15% scalar caster.abilityPower] flags=per_target,replaces_base"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 summon.other eq 분신 폭발로 생긴 작은 상자가 즉시 발동함. target crowd_control fear: 작은 깜짝 상자가 적을 공포에 빠뜨립니다. [duration_seconds n17=1 scalar]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 없음. summon other: Alt 키와 우클릭 또는 이 스킬 재사용으로 분신을 조종할 수 있다. []"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 summon.other eq 분신의 공격; target.target_type eq structure. target other: 분신은 포탑에 감소된 피해를 준다. 감소 비율은 원문에 명시되지 않았다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/2/3/4/5/6/7/8",
+      "issue": "만료 폭발 추측·소환물 공격 행위자·한 대상 발사 조건·포탑 감소 누락",
+      "correction": "사망 표현, summon 행위자, 실제 발사 대상 텍스트, 포탑 summary 규칙",
+      "sourceId": "en:summary",
+      "quote": "Deals reduced damage to turrets"
+    },
+    {
+      "path": "rules.1-3,6",
+      "issue": "분신과상자소환주체구분조건부족,작은상자공포를매attack에연결",
+      "correction": "분신사망/피격으로제한하고작은상자공포는즉시발동사건에연결했다.",
+      "sourceId": "en:body",
+      "quote": "and spawning three mini Jack in the Boxes that trigger immediately."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "분신이 샤코 피해량의 비율로 입히는 피해의 적용 범위와 분신이 받는 추가 피해의 계산 기준은 원문에서 더 구체적으로 설명되지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

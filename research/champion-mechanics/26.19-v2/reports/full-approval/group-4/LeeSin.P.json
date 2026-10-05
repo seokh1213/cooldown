@@ -1,0 +1,79 @@
+{
+  "id": "LeeSin.P",
+  "sourceHash": "6fab71733cde0ee91cae5e1028cdd8a45ef0bd864c2550473146ae7da65b1184",
+  "beforeCandidateHash": "d72e685debf31416c54a94143625367b5da0cc020446ff8dac1434c83e0b2547",
+  "candidateHash": "08321ca6cda94f5961308efe86a814e78d5bfb54e7db8d710a768900d820ee13",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "스킬 사용 뒤 다음 두 기본 공격의 공격 속도 40% 증가와 첫 공격의 20~40·둘째 공격의 10~20 기력 회복을 공격 순서별로 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 다음 두 번의 기본 공격 동안 공격 속도가 증가한다.; amount=40%  scalar, count=two  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.other eq 스킬 사용 후 강화된 다음 두 기본 공격 중 첫 번째 공격 적용. caster: 기력을 회복한다.; min_amount=20  scalar, max_amount=40  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.other eq 스킬 사용 후 강화된 다음 두 기본 공격 중 두 번째 공격 적용. caster: 기력을 회복한다.; min_amount=10  scalar, max_amount=20  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger",
+      "issue": "스킬 사용 사건과 무관한 상시 패시브로 공격 속도 증가를 처리한다.",
+      "correction": "시전자 스킬 시전으로 다음 두 공격 강화를 연결했다.",
+      "sourceId": "en:summary",
+      "quote": "After Lee Sin uses an ability, his next 2 basic attacks gain Attack Speed and return Energy."
+    },
+    {
+      "path": "rules.1-2.conditions",
+      "issue": "대상의 충돌 순서로 첫째·둘째 공격을 판정하며 스킬 사용 뒤 강화 공격의 범위가 빠졌다.",
+      "correction": "시전자의 스킬 사용 후 다음 두 기본 공격 순서를 조건으로 명시했다.",
+      "sourceId": "en:body",
+      "quote": "The first Attack restores (20 ~ 40) Energy and the second restores (10 ~ 20) Energy."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 250,
+      "verdict": "repaired",
+      "reason": "기력 회복은 맞은 대상의 순서가 아니라 스킬 사용 후 리 신의 강화 공격 순서다. 시전자 첫 공격 조건으로 수정했다."
+    },
+    {
+      "index": 251,
+      "verdict": "false_positive",
+      "reason": "계약의 enum 목록에는 second가 없고 text 값은 허용된다. 타입 차이 자체는 오류가 아니다. 실제 스킬 후 두 번째 공격 범위·행위자 오류는 함께 수정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

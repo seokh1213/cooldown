@@ -1,0 +1,49 @@
+{
+  "id": "Lillia.E",
+  "sourceHash": "bd4fa9af3f57d7d4fac67d3dae809d499c46d18393311b1548bc50e86ce4e688",
+  "beforeCandidateHash": "6b1bcfb7ba1a16414888c463b6bfe941362d4480ea34a19a1956fec989c84077",
+  "candidateHash": "7d444864fb19980b2d91f9208a91002cb15dbfbb2951c9f55d2d69c8c2e76ba2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "씨앗 도착/적중 적의 마법 피해·노출·40%3초 둔화와 적을 맞히지 못한 씨앗의 적/지형 충돌까지 굴러가는 동작을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. target damage magic: 씨앗이 적중한 위치의 적에게 마법 피해를 입힌다. [amount n0=60/n1=85/n2=110/n3=135/n4=160 rank_values; stat_coefficient n5=50% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. target visibility: 적의 모습을 드러낸다. [] / target crowd_control slow: 적을 둔화시킨다. [amount n6=40% scalar; duration_seconds n7=3 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 던진 씨앗이 도착 시 적을 하나도 맞히지 못함. unknown other: 씨앗은 적 또는 지형에 부딪힐 때까지 계속 굴러간다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2;gaps",
+      "issue": "행위자 enemy, AP ratio_input, 씨앗 굴러가기 핵심 규칙 gap에만 있음",
+      "correction": "caster와 AP계수로 수정하고 조건부 씨앗 이동을 other 규칙으로 보존했다. 표현 불가라는 잘못된 gap을 제거했다.",
+      "sourceId": "en:body",
+      "quote": "If no enemies are hit, the seed rolls until it hits an enemy or collides with terrain."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Zyra.E",
+      "sourceHash": "251aa5cb3aae2dfdc8a14ea02c83ad938dd2a436551423ae6300e16428d9b621",
+      "candidateHash": "bf3079d8fd03a80bd16f86140f50b9bba41fafc6d05b98e837c8f050d89e696b"
+    },
+    {
+      "id": "Zyra.P",
+      "sourceHash": "e89ceb43d10b1e44b367e1def7ff8c8ee609bc27df4d783e59aabda4c81927b3",
+      "candidateHash": "9d2f7fa16a07e7dc94b7be44b9dfaf086f9b877550edfeb89fa2fb4601ccfd42"
+    },
+    {
+      "id": "Zyra.Q",
+      "sourceHash": "369b888d946e14f00e4691a76d4bb6dd0050320c1a540fa34096f2cca4efaab1",
+      "candidateHash": "a34e24d357257a3d9ab2e7836a4ccabc7ab62f2c4b44f366f2aee1a50b084b0b"
+    },
+    {
+      "id": "Zyra.R",
+      "sourceHash": "bf206499356964ba6587d04dfdf68daf00007ad48f542b150dea602809ce170b",
+      "candidateHash": "8efc468208e92545d856526739036f74622f958580a858adcaca2c4b630b4017"
+    },
+    {
+      "id": "Zyra.W",
+      "sourceHash": "04882ac5d8322fff39a37342ba8cdd3dc5d752399747ace79f2eb9ceb9cca987",
+      "candidateHash": "575d6add126292dfcff6ca896f48d8f57f6c417a4c72fa3e39d8c3965667c177"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Zyra.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this Ability passes near a Seed, the Seed grows into a Vine Lasher that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds.",
+      "issue": "조건이 `target.distance`로 typed 되어 있어 적 대상과의 거리 조건처럼 표현됩니다. 설명문은 스킬이 씨앗 근처를 지나는 경우를 조건으로 듭니다.",
+      "correction": "적 대상과의 거리 대신 스킬 경로와 씨앗의 근접 조건으로 표현하세요."
+    },
+    {
+      "id": "Zyra.E",
+      "path": "rules.1.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this Ability passes near a Seed, the Seed grows into a Vine Lasher that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds.",
+      "issue": "소환 효과의 `damageType`이 null이라 식물이 입히는 마법 피해의 유형이 구조화된 효과에서 빠졌습니다.",
+      "correction": "식물 소환 효과의 피해 유형을 magic으로 기록하세요."
+    },
+    {
+      "id": "Zyra.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zyra will not spawn Seeds while hiding in brush.",
+      "issue": "조건이 `visibility=unseen`으로 typed 되어 있어 수풀에 숨는 상태가 아니라 시야에서 보이지 않는 모든 상황으로 넓어집니다.",
+      "correction": "조건을 수풀에 숨은 상태로 표현하세요."
+    },
+    {
+      "id": "Zyra.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this Ability is cast near a Seed, the Seed grows into a Thorn Spitter that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds.",
+      "issue": "조건이 `target.distance`로 typed 되어 있어 적 대상과의 거리 조건처럼 표현됩니다. 설명문은 씨앗 근처에서 시전하는 경우를 조건으로 듭니다.",
+      "correction": "적 대상과의 거리 대신 시전 위치와 씨앗의 근접 조건으로 표현하세요."
+    },
+    {
+      "id": "Zyra.Q",
+      "path": "rules.1.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this Ability is cast near a Seed, the Seed grows into a Thorn Spitter that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds.",
+      "issue": "소환 효과의 `damageType`이 null이라 식물이 입히는 마법 피해의 유형이 구조화된 효과에서 빠졌습니다.",
+      "correction": "식물 소환 효과의 피해 유형을 magic으로 기록하세요."
+    },
+    {
+      "id": "Zyra.W",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "These Seeds grant True Sight of enemy champions that step on them for 2 seconds, but are still destroyed.",
+      "issue": "트리거가 `other`라 씨앗을 밟는 사건이 표현되지 않습니다.",
+      "correction": "적 챔피언이 씨앗을 밟는 사건을 트리거로 표현하세요."
+    }
+  ],
+  "notes": []
+}

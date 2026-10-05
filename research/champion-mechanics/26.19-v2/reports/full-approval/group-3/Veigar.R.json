@@ -1,0 +1,72 @@
+{
+  "id": "Veigar.R",
+  "sourceHash": "030ff30922ec2013e68021248425bef92b2c1751e1bad96bc23e746818626ac6",
+  "beforeCandidateHash": "b9e852fe0562956405d0e65511b2241ccc14945efb81df31d46cdac84b540265",
+  "candidateHash": "82078015b1ee8518b6dbeb81bfadcee9e58c65642454dd9ae56dda7868b98480",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "적챔피언대상손실HP별최소175/250/325+AP65/70/75%~최대350/500/650+AP130/140/150%마법피해,HP33%미만에서최대임을대조했다. 최대규칙은별도추가피해가아니다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion; target other eq 적챔피언 → target: 대상손실체력에따라최소(175/250/325+자신의주문력65/70/75%)~최대(350/500/650+자신의주문력130/140/150%)마법피해를입힙니다. [magic] / min_amount=175/250/325 [formula_components]; stat_coefficient=65/70/75% (caster abilityPower) [formula_components]; max_amount=350/500/650 [formula_components]; stat_coefficient=130/140/150% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion; target health_threshold lt 33%; target other eq 적챔피언 → target: 대상체력이33%미만이면위피해가최대(350/500/650+자신의주문력130/140/150%)가됩니다. 별도추가피해가아닙니다. / other=33% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.0-1",
+      "issue": "summary이하가본문below미만과다르고최대피해규칙이별도damage였으며양끝퍼센트계수가단순rank_values로표현됐다.",
+      "correction": "적챔피언/33%미만최대수정과복합양끝피해/퍼센트단위한계를명시했다.",
+      "sourceId": "en:body",
+      "quote": "Damage is maximized against enemies below 33% Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력에 따른 피해 증가의 계산식이 제공되지 않아 중간 피해량을 산출하지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "65/70/75%,130/140/150%AP는전체랭크%이나frozen숫자표는각마지막값만percent=true다.전체%단위와최소/최대복합식을텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

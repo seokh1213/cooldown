@@ -1,0 +1,191 @@
+{
+  "id": "Shyvana.R",
+  "sourceHash": "7fdeb06394a19d92871b8c9448782e4e5165c9ccae97ec81c86dbce70f150d86",
+  "beforeCandidateHash": "e9c9b0f6651ddf9a2a0fbfd1b2bc5e8c5fb1c679832e082d8926de976b204ffd",
+  "candidateHash": "664ab59f187e1212b8d5e3d25cf28934dc35ba8f57e5bec2cf028aae4d46af8f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 11,
+  "checkedGapCount": 3,
+  "summaryCheck": "공격·스킬 적중 분노와 용 형상 증가/비챔피언 광역 감소, 비행 중 마법 피해·0.75초 도주, 용 형상 강화·추가 체력·크기·사거리, 시간 소모와 잔량 없음 종료, 궁극기 가속 효과를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; caster: 적을 기본 공격 또는 스킬로 타격하면 용의 분노를 얻습니다.; 수치 amount en:body:n0=1.25 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 caster.form eq Dragon Form; caster: 용 형상일 때 용의 분노 생성량이 증가합니다.; 수치 amount en:body:n1=200%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 target.target_type neq champion / target.other present 광역 피해; caster: 비챔피언에게 광역 피해를 입힐 때 용의 분노 생성량이 감소합니다.; 수치 amount en:body:n2=75%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 용 형상으로 변신하고 저지 불가 상태가 되어 대상 위치로 날아가며 경로의 적에게 불을 내뿜습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 날아가며 경로 아래의 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n3=150,en:body:n4=250,en:body:n5=350 상수 rank_values / stat_coefficient en:body:n6=100%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 경로에 있는 적을 도주하게 합니다. [fear]; 수치 duration_seconds en:body:n7=0.75 상수 scalar; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: transform 사건의 행위자 caster; 조건 별도 제한 없음; caster: 변신 중 추가 체력을 얻습니다.; 수치 amount en:body:n8=150,en:body:n9=250,en:body:n10=350 상수 rank_values; flags 없음 | caster: 변신 중 크기와 공격 사거리가 증가합니다.; 수치 없음; flags 없음 | caster: 용 형상 동안 기본 스킬이 강화됩니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: resource_depleted 사건의 행위자 caster; 조건 caster.resource eq 용의 분노 잔량 없음; caster: 용의 분노가 남아 있지 않으면 변신이 끝납니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.other eq 궁극기 가속에 의한 분노 획득 증가; 사망 중 획득분은 부활 후 적용; caster: 궁극기 가속에 따라 모든 출처에서 얻는 분노가 증가합니다.; 수치 ratio_input en:body:n12=1 상수 formula_components / ratio_output en:body:n11=1%(백분율) 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: stat_gain 사건의 행위자 caster; 조건 caster.other eq 궁극기 가속을 사망 상태에서 획득; caster: 사망 상태에서 얻은 궁극기 가속은 부활할 때까지 분노 획득량 증가 효과를 적용하지 않습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.form eq Dragon Form; caster: 용 형상에서는 시간이 지남에 따라 용의 분노가 소모됩니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-9",
+      "issue": "행위자·기본형상 전용 감소·추가체력 스탯·고갈 임계값·궁극기 가속 비율·dead visibility 오류",
+      "correction": "시전자 적중; 형상 제한 제거; bonusHealth; 잔량 없음; 전용 가속 텍스트와 1당 1% 역할; 사망 조건 정정",
+      "sourceId": "en:body",
+      "quote": "Passive: Shyvana generates 1.25 Dragon Fury by striking enemies with Attacks and Abilities, increased by 200% while in Dragon Form, and reduced 75% by when striking in an area against non-champions. Active: Shyvana transforms into her Dragon Form, becoming Unstoppable, and flying to the target location breathing fire on enemies below dealing (150/250/350 + (100% Ability Power)) magic damage and causing them Flee for 0.75 seconds. While transformed, Shyvana's basic Abilities are upgraded, she gains 150/250/350 bonus Health, size, and Attack Range. Shyvana loses Dragon Fury over time and her transformation ends when she has no Dragon Fury remaining. Shyvana gains 1% increased Fury from all sources per 1 Ultimate Ability Haste. Ultimate Haste acquired while dead does not take effect until Shyvana revives."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 471,
+      "verdict": "repaired",
+      "reason": "bonus Health에 대응하는 bonusHealth 키가 존재하므로 maxHealth에서 bonusHealth로 수정."
+    },
+    {
+      "index": 472,
+      "verdict": "repaired",
+      "reason": "1.25는 생성량이므로 제거하고 잔량 없음으로 변경."
+    },
+    {
+      "index": 473,
+      "verdict": "repaired",
+      "reason": "가속 1을 ratio_input, 증가율 1%를 ratio_output으로 교정; 전용 궁극기 가속은 텍스트로 보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "비챔피언 대상 광역 적중의 분노 감소 문구에 문법상 불명확한 부분이 있어, 감소량을 어떤 기준으로 적용하는지 확정할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "변신 시 증가하는 크기와 공격 사거리는 구체적인 수치가 없으며, 기존 통계 슬롯으로 표현할 수 없어 텍스트로 보존했습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "궁극기 가속은 일반 abilityHaste와 구별되는 통계이나 전용 스탯 키가 없어 가속 1당 분노 획득 1% 증가를 텍스트/비율 구성요소로 보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.10",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

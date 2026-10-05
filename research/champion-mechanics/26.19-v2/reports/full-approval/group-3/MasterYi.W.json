@@ -1,0 +1,112 @@
+{
+  "id": "MasterYi.W",
+  "sourceHash": "b57aa752a075db1b6744a2a409d2716ff0fe1a5668f671b661b80f2502eea1ce",
+  "beforeCandidateHash": "7067bfdb88e344505a189ef6dceb2c7a663c2136a2b7d5d3b4007e9680498ef4",
+  "candidateHash": "9e15b64ca946557b983188fab8e5af89da9cdbcd46810c1ce845a9bd94212ede",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "4초120~440+AP100%회복과최대100%증폭·처음0.5초70%이후45~55%피해감소/종료후0.5초·매초쌍타중첩및E/R시간정지요약·포탑피해감소절반을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 4초 동안120/200/280/360/440 + 자신의AP100%를 회복하며, 자기잃은체력에따라회복량이최대100% 증가한다. / amount=120/200/280/360/440 [rank_values]; ratio_input=100% (caster abilityPower) [formula_components]; duration_seconds=4 [scalar]; other=100% [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 정신 집중 시작 후 처음0.5초에는 받는 피해가70% 감소하고, 이후45/47.5/50/52.5/55% 감소한다. 피해감소는정신집중종료후0.5초까지유지된다. / duration_seconds=0.5 [scalar]; ratio_output=70/70/70/70/70% [rank_values]; ratio_output=45/47.5/50/52.5/55% [rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 정신 집중하는 매초 2연속 공격 중첩을 얻는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 정신 집중 중 우주류 검술과 최후의 전사 남은 지속시간이 일시 정지된다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 damage_taken / 조건 enemy other present 포탑에서 받은 피해 → caster: 포탑에 대한 피해 감소 효과는 절반으로 줄어든다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0.text",
+      "issue": "첫0.5초와이후피해감소구간관계불명확",
+      "correction": "70%첫0.5초/이후45~55%및종료후0.5초명시",
+      "sourceId": "en:body",
+      "quote": "decreased to 45/47.5/50/52.5/55% after the first 0.5 seconds."
+    },
+    {
+      "path": "rules.4.effects.0.parameters",
+      "issue": "절반관계의숫자참조가원문근거와불일치위험",
+      "correction": "숫자연결삭제·절반텍스트유지",
+      "sourceId": "en:body",
+      "quote": "Damage reduction is halved against turrets."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 287,
+      "verdict": "repaired",
+      "reason": "효과텍스트에첫0.5초70%/이후45~55%/집중종료후0.5초유지를각각명시했다."
+    },
+    {
+      "index": 288,
+      "verdict": "repaired",
+      "reason": "halved를기계적으로0.5숫자에연결하지않고절반텍스트로보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "포탑 상대 피해 감소가 절반으로 적용된다는 수치는 number 목록에 해당하는 영어 본문 숫자 ID가 없어 parameters에서 수치로 참조할 수 없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "요약은 정신 집중 매초 중첩 획득 및 두 다른 스킬의 지속시간 정지를 설명하지만, 각 효과의 세부 적용 시점이나 누적 계산은 본문에 없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

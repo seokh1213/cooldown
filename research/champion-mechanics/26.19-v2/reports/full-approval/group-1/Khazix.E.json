@@ -1,0 +1,69 @@
+{
+  "id": "Khazix.E",
+  "sourceHash": "c414063323e0097ca8d9f2be206ee76ed8ca46162d30c3a87ac951a23d3bddff",
+  "beforeCandidateHash": "71bdf06f03021c8db8c65216fe6ad0789f3a961fcffca0fe864aa8221c0f329b",
+  "candidateHash": "16106f305c06e77295bcfe349466481442bca85e612995c0f8cf499096e4e545",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "기본 도약과 착지 물리 피해, 날개 진화 사거리+200 및 챔피언 처치/어시스트 E쿨 초기화를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. nearby_enemies damage physical: 착지할 때 물리 피해를 줍니다. [amount n0=65/n1=100/n2=135/n3=170/n4=205 rank_values; stat_coefficient n5=40% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 날개 진화. caster other: 도약 사거리가 증가합니다. [distance_units n0=200 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.takedown; 조건 caster.form eq 날개 진화; target.target_type eq champion. caster cooldown_change: 도약의 재사용 대기시간을 초기화합니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 지정 지역으로 도약한다. 물리 피해는 착지 때 발생한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3",
+      "issue": "기본 도약 이동 효과 누락",
+      "correction": "기본 사용 시 도약 규칙을 복구했다.",
+      "sourceId": "en:body",
+      "quote": "Kha'Zix leaps, dealing (65/100/135/170/205 + (40% bonus Attack Damage)) physical damage upon landing."
+    },
+    {
+      "path": "rules.1.effects.0.kind",
+      "issue": "진화사거리증가를추가이동동작으로분류",
+      "correction": "도약사거리200증가라는능력수정으로분류하여독립200이동을실행하지않는다.",
+      "sourceId": "en:summary",
+      "quote": "If he chooses to Evolve Wings, Leap's range increases by 200 and the cooldown resets on champion kill or assist."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 203,
+      "verdict": "false_positive",
+      "reason": "If he chooses to Evolve Wings가 사거리 증가와 and the cooldown resets 모두를 한 문장으로 지배한다. 진화 조건을 초기화에도 유지하는 것이 원문에 맞다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

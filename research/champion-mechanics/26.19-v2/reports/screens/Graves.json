@@ -1,0 +1,116 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Graves.E",
+      "sourceHash": "69c1c2de77b6edb714b0f235a4eea8dfac2b53a700a265d5ce8949c970ece4de",
+      "candidateHash": "79eca9b38fd22e0dda537f82745b751a757f9f33ccd2251a8bc837db700f97a6"
+    },
+    {
+      "id": "Graves.R",
+      "sourceHash": "795127d1b49b6591907ae80d1b762f4bbe29516151f63188e2162b48aba1a4e0",
+      "candidateHash": "f16a32380b2870b1773cb43fc35131a2c4160b4fea7a7e1329fe7eb78a2cb8ce"
+    },
+    {
+      "id": "Graves.W",
+      "sourceHash": "ad8f647d62ae309bec047e618a2f8c3c1672e05a42fa9943319a2c1f142610a2",
+      "candidateHash": "f3764e2874620b50de915e6d62493030512b747871b3d24f3af39161ab02456a"
+    },
+    {
+      "id": "Graves.P",
+      "sourceHash": "feefb7483056a9489a0b43cf3085066571548b6b0837fa77c085b756cc183389",
+      "candidateHash": "2de7d345e9a60645f813a7fb4675dc273bf2f5c649ba8b043ec6dc1e363498f6"
+    },
+    {
+      "id": "Graves.Q",
+      "sourceHash": "08e5d88dc2f6298af922c6d481b6a96017a860bbdf4a5d83b675b70920f359f2",
+      "candidateHash": "0f32492cd3441c714527b6d495c63afd4c5a2e42f05b0d9b28b8de1bd529db48"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Graves.E",
+      "path": "rules.0.effects.2.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "He also gains a stack for 4 seconds (max 8 stacks)",
+      "issue": "`4`초를 중첩 획득량으로도 기록해 중첩을 4개 얻는 것처럼 구조화했습니다. 원문에서 획득량은 1중첩이고 4초는 지속시간입니다.",
+      "correction": "`count` 수치 참조를 제거하고 `4`는 `duration_seconds`로만 기록하세요."
+    },
+    {
+      "id": "Graves.E",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "or two stacks if he dashes towards an enemy champion.",
+      "issue": "중첩 획득량인 `two`를 돌진 거리의 기준값으로 사용해, 챔피언까지 거리가 2보다 커야 한다는 조건이 생겼습니다. 원문은 적 챔피언을 향해 돌진하는 경우를 말합니다.",
+      "correction": "거리 조건을 제거하고 방향 조건을 표현할 수 없다면 해당 조건은 구조화하지 말고 설명과 gap에 보존하세요."
+    },
+    {
+      "id": "Graves.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Stacks grant him 7/10/13/16/19 Armor",
+      "issue": "방어력 증가의 적용 조건으로 `resource > one`을 넣었지만, 참조한 `one`은 장전하는 탄환 수입니다. 원문은 중첩마다 방어력이 증가한다고 설명하며 탄환 자원 조건은 제시하지 않습니다.",
+      "correction": "탄환 자원 조건을 제거하세요."
+    },
+    {
+      "id": "Graves.E",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Stacks grant him 7/10/13/16/19 Armor and 3.5/5/6.5/8/9.5 Magic Resist.",
+      "issue": "마법 저항력 증가 조건으로도 장전 탄환 수 `one`을 사용했습니다. 원문은 각 중첩이 마법 저항력을 준다고 설명할 뿐 탄환 자원 조건을 두지 않습니다.",
+      "correction": "탄환 자원 조건을 제거하세요."
+    },
+    {
+      "id": "Graves.R",
+      "path": "rules.2.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After hitting an enemy champion or reaching the end of its range, the cartridge explodes outward",
+      "issue": "폭발 규칙에 챔피언 적중과 `activation = true`를 조건으로 넣어, 챔피언 적중만으로 제한하고 사거리 끝 도달 대안을 구조화된 규칙에서 제외했습니다. gap은 대안 조건을 언급하지만 규칙의 조건은 여전히 이를 요구하지 않습니다.",
+      "correction": "챔피언 적중과 사거리 끝 도달을 대체 조건으로 취급하세요. OR를 표현할 수 없다면 두 조건을 AND로 묶지 말고 설명과 gap에 보존하세요."
+    },
+    {
+      "id": "Graves.P",
+      "path": "rules.6.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Non-champions struck by multiple bullets are Knocked Back.",
+      "issue": "넉백 조건을 탄환 여러 발 적중이 아니라 `hit_count > two`로 고정해 원문에 없는 두 발 초과 기준을 추가했습니다. `two`는 재장전 전 발사 가능한 포탄 수이며, 넉백 기준을 뜻하지 않습니다.",
+      "correction": "임의의 수치 임계값 조건을 제거하고, 여러 탄환 적중이라는 원문 조건을 텍스트로 보존하세요."
+    },
+    {
+      "id": "Graves.P",
+      "path": "rules.3.effects.1.damageType",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Instead of normal Critical effects, Critical strikes fire 6 bullets and deal (-50% + (50% Critical Strike Damage)) more damage.",
+      "issue": "치명타 공격의 추가 피해를 물리 피해로 단정했습니다. 인용문은 추가 피해량을 말하지만 피해 유형은 지정하지 않습니다.",
+      "correction": "피해 유형을 미지정으로 두고, 추가 피해 효과만 원문대로 보존하세요."
+    },
+    {
+      "id": "Graves.Q",
+      "path": "rules.0.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Graves fires a powder round dealing (50/75/100/125/150 + (55% bonus Attack Damage)) physical damage.",
+      "issue": "발사 시 탄환이 주는 피해의 발동 주체와 대상을 모두 `unknown`으로 남겼습니다. 원문은 그레이브즈가 탄환을 발사해 피해를 준다고 명시합니다.",
+      "correction": "발동을 그레이브즈의 시전 또는 발사로, 피해 대상을 적으로 구조화하세요."
+    },
+    {
+      "id": "Graves.Q",
+      "path": "rules.1.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 1 second or after colliding with terrain, it detonates, dealing (80/125/170/215/260 + (45/60/75/90/105% bonus Attack Damage)) physical damage along the travel path again and to enemies near the blast.",
+      "issue": "폭발 피해의 발동 주체와 대상도 `unknown`입니다. 원문은 탄환이 폭발하고 이동 경로상의 적과 폭발 근처의 적에게 피해를 준다고 명시합니다.",
+      "correction": "폭발 이벤트를 탄환에 연결하고, 피해 대상을 이동 경로상 및 폭발 근처의 적으로 구조화하세요."
+    }
+  ],
+  "notes": []
+}

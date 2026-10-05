@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
+      - name: Detect champion mechanics changes
+        run: npm run llm:mechanics-drift
+
       - name: Type-check and lint
         run: |
           npm run type-check
@@ -42,6 +45,18 @@ jobs:
         env:
           NODE_OPTIONS: --test-reporter=dot
         run: npm run test:data
+
+      - name: Check champion mechanics answer regressions
+        run: npm run llm:mechanics-eval -- research/champion-mechanics/reports/answer-quality.json --check
+
+      - name: Upload champion mechanics change report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: champion-mechanics-drift
+          path: research/champion-mechanics/reports/*
+          retention-days: 14
+          if-no-files-found: ignore
 
   # master 에서는 update-static-data 가 같은 스모크를 돌린다. 화면을 바꾼 브랜치도 합치기 전에 본다.
   e2e:

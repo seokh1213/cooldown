@@ -1,0 +1,209 @@
+{
+  "id": "Nautilus.Q",
+  "sourceHash": "6731e7430496a05f0e10586581efc332ecb713c510dc35438eb17f659447a1da",
+  "beforeCandidateHash": "55a15f19143ba61bda8a625eac3305da7e7fe94f966a5d863fd0d6812a82679a",
+  "candidateHash": "7d5426e5c6dd4d534809e47882a9f17df1fcd5ae9b0d16636c847fb53af03fe0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "전방닻적중enemy서로끌기/magic/briefstun과terrain끌기/CD50%/mana50%를대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy범위·시전자와피해자양방끌기·85/125/165/205/245+90%APmagic/잠시stun. champion제한제거.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 닻에 적중한 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "85",
+              "value": 85,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "125",
+              "value": 125,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "165",
+              "value": 165,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "205",
+              "value": 205,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "245",
+              "value": 245,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "90%",
+              "value": 90,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "terrain은structure아님. 지형닻적중시에시전자끌기·QCD50%감소·소모mana50%환급.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 닻이 지형에 적중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "resource_refund",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1,gaps",
+      "issue": "enemy를champion한정·terrain을structure·대상끌기효과누락.",
+      "correction": "enemy/지형명시조건과대상movement.",
+      "sourceId": "en:body",
+      "quote": "If the anchor hits terrain, Nautilus will drag himself towards it. If Nautilus's hook hits terrain, this Ability's Cooldown is reduced by 50%, and 50% of the Mana cost is refunded."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 332,
+      "verdict": "repaired",
+      "reason": "챔피언조건삭제하고적범위복원."
+    },
+    {
+      "index": 333,
+      "verdict": "repaired",
+      "reason": "구조물조건삭제,닻지형적중텍스트조건으로수정."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "마나 환급 비율은 있지만 실제 환급 마나량을 계산하는 데 필요한 스킬 마나 비용은 주어지지 않았습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "적중한적의briefstun은구체초가공급되지않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

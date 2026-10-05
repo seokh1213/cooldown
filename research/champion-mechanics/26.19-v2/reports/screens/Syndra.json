@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Syndra.W",
+      "sourceHash": "a83c4e755f2fc69e3ca12b9e042ce781e17a812d987f6ef359d87ea08c09ea8b",
+      "candidateHash": "35bf7e7b65f27e82831e9f01da5dff55619c1938a24213923d50de91c53649bb"
+    },
+    {
+      "id": "Syndra.E",
+      "sourceHash": "1deb6ccf9bc4492999c2139f157ffb1c0ce7f3c8cc476bb9955d679b46df8212",
+      "candidateHash": "35ef76df4f8fc8e72075d19af529d565d25185a49fd896887841b6f00a6926a1"
+    },
+    {
+      "id": "Syndra.P",
+      "sourceHash": "693dc78f109325bc5d16deed5e2d966e00abf5e79442339d3d7c89b94cfb7e28",
+      "candidateHash": "358eacb5e795ebf0024cbb89de0c22a79df8dda3a0397fa96c4c7cf488d079f1"
+    },
+    {
+      "id": "Syndra.Q",
+      "sourceHash": "5a4631fce2c7a5e6eb7cf6fc209cd1b849198b2e4d2200f218b28c6fc3493565",
+      "candidateHash": "477e6137649698d1e14ceb1bef74daae20c4da77ed4d3404fe469263442dcdaa"
+    },
+    {
+      "id": "Syndra.R",
+      "sourceHash": "1f4bfe5ae96c0cd4f5717ccac2c75b1f286dfb571c1e69e4fc205c404c1d01d5",
+      "candidateHash": "023c99972618d00da0fe31dff2b99e2b765fc9ce04f4d15bc27cba04e36a67b4"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Syndra.E",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Syndra projects a wave of force, Knocking Back enemies and Dark Spheres and dealing (60/95/130/165/200 + (60% Ability Power)) magic damage.",
+      "issue": "피해 효과를 ‘힘의 파동에 맞음’ 조건에 묶었지만, 원문은 파동이 적과 어둠 구체를 밀쳐내며 피해를 준다고만 합니다. 명중 조건을 별도로 명시하지 않습니다.",
+      "correction": "조건을 제거하거나, 원문에 없는 적중 조건을 추가하지 않도록 피해 효과의 텍스트만으로 기록하세요."
+    },
+    {
+      "id": "Syndra.P",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(1 ~ 3) Splinter(s) when damaging enemy champions with two Abilities within 4 seconds (8s Cooldown)",
+      "issue": "‘두 스킬로 피해를 입힘’을 대상의 hit_count가 2 이상인 조건으로 표현해, 대상에게 두 번 적중하면 충족되는 것처럼 읽힙니다. 원문 조건은 두 개의 서로 다른 스킬로 피해를 주는 것입니다.",
+      "correction": "hit_count 조건을 제거하고, 두 스킬로 피해를 입혔다는 조건을 text/unknown으로 보존하세요."
+    },
+    {
+      "id": "Syndra.P",
+      "path": "rules.3.evidence.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "These enhance Syndra's Abilities and restore (20 ~ 199) Mana each time she claims one from an enemy.",
+      "issue": "대형 미니언 처치로 조각을 얻는 규칙의 근거에 마나 회복 문구를 넣어, 이 규칙에서도 마나 회복이 발생한다고 오해하게 할 수 있습니다. 원문은 마나 회복을 ‘적에게서’ 조각을 획득할 때로 한정합니다.",
+      "correction": "이 규칙의 근거에서는 마나 회복 문구를 빼고, 처치 보상 문구만 인용하세요."
+    },
+    {
+      "id": "Syndra.R",
+      "path": "rules.1.effects.0.parameters.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Each Dark Sphere deals (80/120/160 + (20% Ability Power)) magic damage (max (560/840/1120 + (140% Ability Power)) magic damage).",
+      "issue": "최대 피해의 주문력 계수 140%가 기본 피해의 계수 20%와 같은 stat_coefficient 역할로 들어갔습니다. 원문은 140%를 별도의 최대 피해 공식에 붙입니다.",
+      "correction": "최대 피해 공식을 별도 매개변수 또는 text/unknown으로 기록해 기본 피해 계수와 구분하세요."
+    }
+  ],
+  "notes": []
+}

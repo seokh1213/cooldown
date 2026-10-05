@@ -1,0 +1,70 @@
+{
+  "id": "Nasus.Q",
+  "sourceHash": "3d415522f5598c0c9712e4fbeddec03e95c3bf9b4190aa898dc87fcd023bd469",
+  "beforeCandidateHash": "dca5e677d091e8f0625b5971396ead2d63daed78abd99c1d51931a43a1d44847",
+  "candidateHash": "8ecad6770eb71fac9d62858d601f95a504a2e368e0cc134c2fb0a58672bf128a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "다음 기본 공격의31/51/71/91/111+총공격력100% 물리 피해, 해당 공격 처치의 영구 피해4 또는 고급 대상10, 주문 효과 발동 및 원문 치명타1피해 문장을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster attack_modifier: 나서스의 다음 기본 공격을 준비한다. 그 공격은31/51/71/91/111+총공격력100%의 전체 물리 피해를 입힌다. [amount n0=31/n1=51/n2=71/n3=91/n4=111 rank_values; stat_coefficient n5=100% formula_components caster.totalAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.kill; 조건 caster.other eq 이 스킬의 다음 강화 기본 공격으로 적을 처치; target.other eq 챔피언, 대형 미니언, 대형 정글 몬스터가 아닌 적. caster other: 이 공격으로 적을 처치하면 흡수의 일격 피해량이 영구적으로 증가합니다. [amount n6=4 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 이 스킬의 강화 기본 공격이 피해를 입힘. target other: 피해를 입힐 때 주문 효과를 발동합니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 이 스킬의 강화 기본 공격에 치명타가 적용됨. target other: 원문은 이 스킬에 치명타가 적용될 수 있으며 그 경우1의 물리 피해를 입힌다고 명시한다. 이1과 정상 강화 공격 피해의 관계는 확정하지 않는다. [other n8=1 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.kill; 조건 caster.other eq 이 스킬의 다음 강화 기본 공격으로 적을 처치; target.other eq 챔피언 또는 대형 미니언 또는 대형 정글 몬스터. caster other: 해당 특수 대상 처치 시 Q의 영구 피해 증가량은4대신10이다. [amount n7=10 scalar] flags=replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-4;gaps",
+      "issue": "피해4/10을 모든 처치에 동시에 적용, Q발동 조건 주인을 target으로 지정, 치명타 여부 조건 없고 손상된1피해를 확정 계산으로 기록",
+      "correction": "강화는 다음 공격 준비 효과로, 처치는 Q공격에 한정하고 일반4와 특정대상10대체를 분리했다. 치명타1문구는 원문 보존하되 다른 공격 피해와 결합 방식은 미확정으로 기록했다.",
+      "sourceId": "en:body",
+      "quote": "Killing an enemy with this Attack permanently increases its damage by 4, increased to 10 against champions, large minions and large jungle monsters."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "양언어 본문이 치명타 적용 시1물리 피해라고 제공하지만 앞의 강화 공격 피해와 어떤 관계인지 설명하지 않는다. 이1을 정상 총피해 또는 별도 추가 피해로 실행하지 않고 원문 문구만 보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

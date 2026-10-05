@@ -1,0 +1,116 @@
+{
+  "id": "Sona.Q",
+  "sourceHash": "6b716a38c2877780fa69ab8a7de61b81567d82ad450d8cd730ab7708b33f5d6c",
+  "beforeCandidateHash": "5877eb8aeb30cf9930a409ca2bd9311f268eb865d3237ea91e01c46d93c558d0",
+  "candidateHash": "67b3e9ba7e3840f96c1d7136ab9d3fa2b848d9f1188acd29d151e486210b96f6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "가까운 두 적·챔피언 우선 피해, 피해 챔피언마다 중첩, 소나의3초 오라와 접촉한 아군 챔피언의5초 내 다음 공격 추가 피해, 스타카토 파워 코드 대체 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. nearby_enemies: 가장 가까운 적 둘에게 마법 피해를 줍니다. 챔피언을 우선 대상으로 합니다. (magic); amount=50/85/120/155/190  rank_values, ratio_output=40% caster의 abilityPower scalar, count=two  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion, target.other eq 이 스킬로 실제 피해를 입은 챔피언 적용. caster: 이 스킬로 피해를 입힌 챔피언마다 아첼레란도 중첩을 얻습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 소나가 새 멜로디를 시작하고 해당 시간 동안 오라를 얻는다. 오라에 닿은 아군 챔피언은 다음 공격 추가 피해 강화 효과를 받는다.; duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 attack 사건에서 ally.activation eq 소나 Q 오라에 닿아 받은 강화를 소비하는 다음 기본 공격, ally.target_type eq champion, ally.time lte 5 적용. target: 오라를 받은 아군 챔피언의 다음 공격은 적에게 추가 마법 피해를 줍니다. (magic); amount=10/15/20/25/30  rank_values, ratio_output=10% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 followup_attack 사건에서 caster.activation eq 스타카토로 강화된 파워 코드 다음 기본 공격 적용. target: 스타카토가 파워 코드 추가 피해를 대체합니다. (magic); min_amount=30  level_range, max_amount=360  level_range, ratio_output=30% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2,3",
+      "issue": "오라 지속시간·다음 공격 가능 시간·피해 지속시간 혼합",
+      "correction": "소나3초 오라와 아군5초 내 다음 공격 피해 조건 분리",
+      "sourceId": "en:body",
+      "quote": "Melody: Sona gains an aura for 3 seconds, granting allied champions an additional (10/15/20/25/30 + (10% Ability Power)) magic damage on their next Attack within 5 seconds."
+    },
+    {
+      "path": "rules.4.conditions",
+      "issue": "일반 강화 후속 공격에도 스타카토 적용 가능",
+      "correction": "스타카토 파워 코드 다음 공격으로 한정",
+      "sourceId": "en:body",
+      "quote": "Power Chord - Staccato: Power Chord bonus damage (((30 ~ 360) + (30% Ability Power)) total magic damage)."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "Q의 두 번째 적중 대상 선정에서 챔피언 우선순위가 동률일 때의 세부 우선순위는 원문에 없습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "스타카토 문장이 Q 본문에 있지만 기본 파워 코드 발동 횟수 조건과의 연결은 툴팁에 직접 적혀 있지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "요약은 챔피언과 몬스터 우선이라 하지만 본문은 챔피언 우선이라고만 구체적으로 제한한다. 본문 우선순위를 사용했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

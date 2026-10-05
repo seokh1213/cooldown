@@ -1,0 +1,148 @@
+{
+  "id": "Fizz.W",
+  "sourceHash": "b8b13e67aa70164ab67b9018ad38b34728c147f1ffd6fe4142ccc2e67f3b9b54",
+  "beforeCandidateHash": "9171d4032668f02a9dc4ee3bea50f8583615d8e50f9edb19156593e80fdd969e",
+  "candidateHash": "c2e5d76f9c09214b9d47f7a48fab540ca9830871ca296a20b76fd6a5f09dde07",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "3초 출혈, 다음 강화 공격과 처치·미처치 결과 및 몬스터·구조물 공격 효과를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "피즈 기본 공격이 적에게 총 30/45/60/75/90 + 주문력 25% 마법 출혈을 3초에 걸쳐 준다. 공급 공격 사건 이상으로 적중 횟수 조건을 만들지 않았다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전으로 다음 기본 공격이 50/75/100/125/150 + 주문력 45% 추가 마법 피해를 얻는다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "그 강화 공격이 대상을 처치한 경우에만 마나 30/40/50/60/70 환급과 W 쿨다운을 최종 1초로 바꾼다. 1초만큼 차감이 아니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 다음 강화 공격이 처치하지 못하면 5초간 후속 기본 공격에 20/25/30/35/40 + 주문력 30% 추가 마법 피해를 준다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정글 몬스터 공격의 추가 피해 90은 원문에 피해 유형이 없어 확정하지 않았다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "구조물 대상 기본 공격의 피해는 50%이며 해당 공격 수정의 주체는 피즈다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.subject",
+      "issue": "피즈의 공격 사건을 target의 공격으로 기록하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Fizz's Attacks cause his enemies to bleed, dealing (30/45/60/75/90 + (25% Ability Power)) magic damage over 3 seconds. Active: Fizz's next Attack deals an additional (50/75/100/125/150 + (45% Ability Power)) magic damage. If this Attack kills its target, Fizz refunds 30/40/50/60/70 Mana and reduces the cooldown of this Ability to 1 second. If it does not kill, Fizz's Attacks deal an additional (20/25/30/35/40 + (30% Ability Power)) magic damage for 5 seconds. Attacks deal 90 bonus damage to jungle monsters. Attacks deal 50% damage to structures."
+    },
+    {
+      "path": "rules.2.trigger.event",
+      "issue": "원문의 If this Attack kills its target라는 처치 사건이 빠져 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Fizz's Attacks cause his enemies to bleed, dealing (30/45/60/75/90 + (25% Ability Power)) magic damage over 3 seconds. Active: Fizz's next Attack deals an additional (50/75/100/125/150 + (45% Ability Power)) magic damage. If this Attack kills its target, Fizz refunds 30/40/50/60/70 Mana and reduces the cooldown of this Ability to 1 second. If it does not kill, Fizz's Attacks deal an additional (20/25/30/35/40 + (30% Ability Power)) magic damage for 5 seconds. Attacks deal 90 bonus damage to jungle monsters. Attacks deal 50% damage to structures."
+    },
+    {
+      "path": "rules.3.trigger.event",
+      "issue": "처치하지 못한 동일 후속 공격만 5초 추가 피해 버프를 준다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Fizz's Attacks cause his enemies to bleed, dealing (30/45/60/75/90 + (25% Ability Power)) magic damage over 3 seconds. Active: Fizz's next Attack deals an additional (50/75/100/125/150 + (45% Ability Power)) magic damage. If this Attack kills its target, Fizz refunds 30/40/50/60/70 Mana and reduces the cooldown of this Ability to 1 second. If it does not kill, Fizz's Attacks deal an additional (20/25/30/35/40 + (30% Ability Power)) magic damage for 5 seconds. Attacks deal 90 bonus damage to jungle monsters. Attacks deal 50% damage to structures."
+    },
+    {
+      "path": "rules.4.effects.0.kind",
+      "issue": "90 bonus damage의 유형을 magic으로 단정할 근거가 없다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Fizz's Attacks cause his enemies to bleed, dealing (30/45/60/75/90 + (25% Ability Power)) magic damage over 3 seconds. Active: Fizz's next Attack deals an additional (50/75/100/125/150 + (45% Ability Power)) magic damage. If this Attack kills its target, Fizz refunds 30/40/50/60/70 Mana and reduces the cooldown of this Ability to 1 second. If it does not kill, Fizz's Attacks deal an additional (20/25/30/35/40 + (30% Ability Power)) magic damage for 5 seconds. Attacks deal 90 bonus damage to jungle monsters. Attacks deal 50% damage to structures."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "두 결과 조건은 표현 가능하므로 거짓 스키마 한계 대신 실제 유형 미지정만 남겼다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Fizz's Attacks cause his enemies to bleed, dealing (30/45/60/75/90 + (25% Ability Power)) magic damage over 3 seconds. Active: Fizz's next Attack deals an additional (50/75/100/125/150 + (45% Ability Power)) magic damage. If this Attack kills its target, Fizz refunds 30/40/50/60/70 Mana and reduces the cooldown of this Ability to 1 second. If it does not kill, Fizz's Attacks deal an additional (20/25/30/35/40 + (30% Ability Power)) magic damage for 5 seconds. Attacks deal 90 bonus damage to jungle monsters. Attacks deal 50% damage to structures."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 62,
+      "verdict": "false_positive",
+      "reason": "원문 자체가 Fizz's Attacks cause his enemies to bleed라고 명시한다. rule 0은 attack이며 추가 hit_count 조건이 없어 원문 이상의 구체화가 아니다."
+    },
+    {
+      "index": 63,
+      "verdict": "repaired",
+      "reason": "kill 사건과 W 다음 강화 공격 처치 조건을 구조에 추가했다."
+    },
+    {
+      "index": 64,
+      "verdict": "repaired",
+      "reason": "W 다음 강화 공격의 미처치 조건을 명시해 처치 분기와 나눴다."
+    },
+    {
+      "index": 65,
+      "verdict": "repaired",
+      "reason": "몬스터 90 추가 피해를 other / damageType=null로 바꾸고 실제 유형 미지정 gap을 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "note": "정글 몬스터 공격의 90 추가 피해 유형은 공급 원문에 없다. 처치·미처치 조건은 텍스트 조건과 사건으로 표현 가능하여 기존 조건 표현 불가 gap은 제거했다."
+    }
+  ],
+  "validation": {
+    "id": "Fizz.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Volibear.E",
+      "sourceHash": "be38cd7c3d4c8c9554fbab1b0090ac292a2a11154f1724103fa23d478fcf0eb4",
+      "candidateHash": "be780359aef8ea07b64fc4c3b9181a56297288536ce9474644e434ccec762efa"
+    },
+    {
+      "id": "Volibear.P",
+      "sourceHash": "3aaca4220b4ac0d35365baa96b4a3d29e58965adec24bb0f94114da88959473f",
+      "candidateHash": "916f9dc085a29773139382a15a465d377d0cc3598b0dba3fbea789144a154d97"
+    },
+    {
+      "id": "Volibear.Q",
+      "sourceHash": "1425a9a3a6a39ea9921c0c36d4e6779c850ee7ce2bf0163eaa305b1c19d23398",
+      "candidateHash": "b0011df554dc6d287eaead1beba56bc7b0aad992ad6922e36261cbb6e4f95bc5"
+    },
+    {
+      "id": "Volibear.R",
+      "sourceHash": "177d07095c389957edacdbdfa2132364f673db87fce309ed3aa76af1326f8894",
+      "candidateHash": "8acc1093ce81246b2b8baec46f1dd0c7ec45e5313c187b176a71a45c62fcf5b4"
+    },
+    {
+      "id": "Volibear.W",
+      "sourceHash": "0c019e28c4b381b95810fe2f07e5d08e785dbdf970be41648ab9b54b4f8c8ea6",
+      "candidateHash": "534563ae60fb35ed06b2b16c633846bdae63b08156c1cc3b3838b05504f8a328"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Volibear.P",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "At 5 stacks, Volibear's claws ignite with lightning, causing his Attacks to deal an additional ((11 ~ 60) + (45% Ability Power) + (20% bonus Attack Damage)) magic damage to the target and 4 closest enemies.",
+      "issue": "조건을 `hit_count >= 5`로 표현해 공격 적중 횟수 5회로 읽히지만, 원문 조건은 공격 속도 중첩 5회입니다.",
+      "correction": "조건을 공격 속도 중첩이 5회인 상태로 표현하세요."
+    },
+    {
+      "id": "Volibear.W",
+      "path": "rules.2.effects.0.parameters.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "and Volibear restores 20/35/50/65/80 plus 8/11/14/17/20% missing Health.",
+      "issue": "회복량의 백분율을 `maxHealth` 기준으로 지정했지만 원문은 잃은 체력 비율입니다. 제공된 스탯 목록에 missingHealth가 없으므로 maxHealth로 치환할 수 없습니다.",
+      "correction": "이 값을 수치상 잃은 체력 비율로 유지하고 stat은 미지정으로 두거나 텍스트로 표현하며, 필요한 경우 스탯 매핑 공백을 기록하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,61 @@
+{
+  "id": "Velkoz.W",
+  "sourceHash": "d44691ae144e4c20276cd5d06a3018be62ba9a9b56e703687f157db078f31f58",
+  "beforeCandidateHash": "b896739c3e7633e677ef95c5500fef6eeb0a35317ca0f3d3c3cd64332fee9da6",
+  "candidateHash": "8e920daee107e41723748a97b4d435f48802d97570275af8ed48a57db92fe93d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "균열의초기30~110+20%주문력마법피해와지연뒤45~165+25%주문력마법피해,최대2충전·18~14초재충전을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. enemy: 균열이 열릴 때 마법 피해를 입힙니다. (magic); amount=30/50/70/90/110  rank_values, stat_coefficient=20% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 먼저 열린 이 균열이 지연 뒤 폭발함 적용. enemy: 균열이 폭발할 때 마법 피해를 입힙니다. (magic); amount=45/75/105/135/165  rank_values, stat_coefficient=25% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 스킬은 충전 방식으로 사용할 수 있으며 충전 회복 시간이 있습니다.; storage_cap=2  scalar, cooldown_seconds=18/17/16/15/14  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,2",
+      "issue": "후속폭발사건미상및2충전을시전횟수로표기",
+      "correction": "선행균열후속폭발조건과storage_cap2",
+      "sourceId": "en:body",
+      "quote": "The rift then erupts, dealing (45/75/105/135/165 + (25% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "id": "Rakan.R",
+  "sourceHash": "fc7c257fbeb5ff5485248bea53a3200310bb76192434086604c369d2c42ad008",
+  "beforeCandidateHash": "df467f69bb2d7d7fbbb61a517bd38dacbc0a1fe2ea9d90ca8ad6242084bfeec7",
+  "candidateHash": "29a48b3a6232890962f297e0d30773bb1240ca5e6aa1bb1ef70a468c3050b858",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "4초75%이속/각적처음접촉100~300+50%AP마법과1~1.5초매혹/첫챔피언접촉150%감소이속 및합산한계 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 라칸의 이동 속도가 증가한다.; 수치 amount en:body:n0=75%(백분율) caster.moveSpeed scalar / duration_seconds en:body:n1=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.activation eq 이번 R의4초활성상태 / enemy.hit_order eq 이번 R동안 각적별 최초접촉; enemy: 이번 R중 해당적과처음접촉할때100/200/300+50%AP마법피해를줍니다. 처음적하나로제한하지않습니다. [magic]; 수치 amount en:body:n2=100,en:body:n3=200,en:body:n4=300 상수 rank_values / stat_coefficient en:body:n5=50%(백분율) caster.abilityPower scalar; flags 없음 | enemy: 이번 R중 해당적과처음접촉할때1/1.25/1.5초매혹합니다. [charm]; 수치 duration_seconds en:body:n6=1,en:body:n7=1.25,en:body:n8=1.5 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.activation eq 이번 R의4초활성상태 / target.target_type eq 접촉대상이 챔피언 / target.hit_order eq 이번 R에서 처음접촉하는 챔피언; 앞서비챔피언접촉과무관; caster: 처음 닿은 챔피언이 라칸에게 점차 감소하는 이동 속도 증가 효과를 부여한다.; 수치 amount en:body:n9=150%(백분율) caster.moveSpeed formula_components; flags decays"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "피격적행위자·각적별최초/첫챔피언순서·4초효과scope·outputratio역할 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Rakan gains 75% Move Speed for 4 seconds. Rakan deals (100/200/300 + (50% Ability Power)) magic damage and Charms enemies for 1/1.25/1.5 second(s) the first time he touches them. The first champion touched grants Rakan 150% decaying Move Speed."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 391,
+      "verdict": "repaired",
+      "reason": "global first 대신 이번 R중각적별최초접촉으로 교정."
+    },
+    {
+      "index": 392,
+      "verdict": "repaired",
+      "reason": "챔피언들중첫접촉을명시하여 앞선비챔피언접촉과분리."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "처음 챔피언에게 닿아 얻는 감소하는 이동 속도 증가 효과의 지속시간은 원문에 제시되지 않았다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "처음챔피언접촉150%감소이속과기본75%이속의가산/대체관계,감소곡선은 원문이명시하지않는다. 두개백분율을임의가산하지않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

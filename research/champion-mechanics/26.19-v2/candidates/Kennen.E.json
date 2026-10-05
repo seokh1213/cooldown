@@ -1,0 +1,482 @@
+{
+  "summary": "케넨이 번개 구체로 변신해 이동 속도와 유체화 상태를 얻고, 지나치는 적에게 마법 피해를 입힙니다. 적에게 피해를 입히면 기력을 얻고, 변신이 끝나면 공격 속도를 얻습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "2초동안번개구체로변신해유체화되고다른유닛과의충돌을무시합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kennen turns into a ball of lightning, gaining 100% Move Speed, dealing (80/120/160/200/240 + (80% Ability Power)) magic damage to enemies he passes through, and becoming Ghosted for 2 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Ghosted units can pass through other units."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "케넨이 번개 구체 상태로 지나치는 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "지나치는 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "번개구체로지나친적에게폭풍의표식을남깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kennen turns into a ball of lightning, gaining 100% Move Speed, dealing (80/120/160/200/240 + (80% Ability Power)) magic damage to enemies he passes through"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Kennen turns into a ball of lightning, gaining 100% Move Speed, dealing (80/120/160/200/240 + (80% Ability Power)) magic damage to enemies he passes through, and becoming Ghosted for 2 seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "pass through units and apply a Mark of the Storm."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "entity_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n8"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번E번개구체가지나친적한명이상에게실제로피해를준경우"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "적에게 피해를 입히면 기력을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Kennen damages at least one enemy, he gains 40 Energy."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "번개 구체 효과가 종료됨 (만료 또는 재사용)"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이번E가만료또는재시전종료하면4초동안40/50/60/70/80%공격속도를얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After this ability ends, Kennen gains 40/50/60/70/80% Attack Speed for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "치명타 발동"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬 종료후 공격속도 효과"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "치명타공격으로공격속도효과남은지속을1초연장하지만최초지속4초를넘게연장할수없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Critical Strikes extend this duration by 1 second(s)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Duration cannot be extended beyond its initial value."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "번개 구체 변신을 일찍 끝냅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kennen can Recast to end this Ability early."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번E번개구체로지나쳐피해를줄때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "미니언에게 입히는 피해는 감소합니다. 미니언대상E피해배율은65%입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals 65% damage to minions and jungle monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "정글 몬스터"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번E번개구체로지나쳐피해를줄때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "정글 몬스터에게 입히는 피해는 감소합니다. 정글몬스터대상E피해배율은65%입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals 65% damage to minions and jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "40/50/60/70/80%공격속도는모든랭크%지만frozen숫자표는마지막만percent=true이다.전체단위를텍스트에보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "40/50/60/70/80% Attack Speed"
+        }
+      ]
+    }
+  ]
+}

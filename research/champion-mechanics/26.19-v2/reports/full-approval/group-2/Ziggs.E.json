@@ -1,0 +1,96 @@
+{
+  "id": "Ziggs.E",
+  "sourceHash": "0f16ff4653fc5666eb0794aa4ddae1951b65efdb1f616668ac4bcacc6bbdf0dc",
+  "beforeCandidateHash": "94e2f986cb69867ceaf42c5e11f9f099e74e30bc5b33c75d7363bada60fea19b",
+  "candidateHash": "b409d97a66e9433d068fe535e0142cd5f82bbeab19a7fc41329f18802fac3d41",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "지뢰접촉같은적첫30~190+25~45%AP/추가12~76+10~18%AP마법,10~50%1.5초둔화/10초지뢰수명 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq 같은적이 이 지뢰들을 연속으로 맞을 때 첫지뢰; target: 지뢰가 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=30,en:body:n1=70,en:body:n2=110,en:body:n3=150,en:body:n4=190 상수 rank_values / stat_coefficient en:body:n5=25(백분율),en:body:n6=30(백분율),en:body:n7=35(백분율),en:body:n8=40(백분율),en:body:n9=45%(백분율) caster.abilityPower rank_values; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.activation eq 이 지뢰와 접촉하여 폭발에 적중; target: 지뢰가 적을 둔화시킵니다. [slow]; 수치 amount en:body:n10=10(백분율),en:body:n11=20(백분율),en:body:n12=30(백분율),en:body:n13=40(백분율),en:body:n14=50%(백분율) 상수 rank_values / duration_seconds en:body:n15=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq 같은적이 이 지뢰들을 연속으로 맞을 때 첫지뢰 이후; target: 첫 지뢰 이후의 지뢰가 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n17=12,en:body:n18=28,en:body:n19=44,en:body:n20=60,en:body:n21=76 상수 rank_values / stat_coefficient en:body:n22=10(백분율),en:body:n23=12(백분율),en:body:n24=14(백분율),en:body:n25=16(백분율),en:body:n26=18%(백분율) caster.abilityPower rank_values; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; unknown: 이 지뢰들은10초동안 유지됩니다.; 수치 duration_seconds en:body:n16=10 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "행위자·같은대상첫/추가지뢰관계·수명summary누락·구체화summary를충돌로쓴gap 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Ziggs scatters proximity mines that detonate on enemy contact, dealing (30/70/110/150/190 + (25/30/35/40/45% Ability Power)) magic damage and Slows by 10/20/30/40/50% for 1.5 seconds. Mines last 10 seconds. Mines beyond the first deal (12/28/44/60/76 + (10/12/14/16/18% Ability Power)) damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "같은대상연속지뢰 감소는summary에 있고body의추가지뢰와모순되지 않는다. 연속적중집계의리셋조건/세부범위는 공급원문에 없다.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

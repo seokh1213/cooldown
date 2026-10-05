@@ -1,0 +1,128 @@
+{
+  "id": "Khazix.R",
+  "sourceHash": "7225c9dde8f222a692f01f477b7fa73956d701adf918ee071b843d9f30cc5017",
+  "beforeCandidateHash": "30c155202653cd88ce92de30872c8a737ce557c7b9e67a239434895a6d4fe089",
+  "candidateHash": "478a36c5537b44262d54949e69ed1d211ef01e5f7f3badfccbddbfa1ce3cc73e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 12,
+  "checkedGapCount": 2,
+  "summaryCheck": "궁극기 각 랭크의 스킬 하나 진화, 기본1.25초 은신/40%이속/12초 내1회 재사용, 진화별Q쿨45%·W세가시40%둔화·E처치관여 초기화·R2초은신2회재사용 및 은신 노출 예외를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 공허의 습격 스킬 랭크가 증가함. caster ui_information: 이 스킬을 레벨 업하면 스킬 하나를 진화시켜 추가 효과를 얻습니다. [count n0=1 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form neq Void Assault 진화. caster visibility: 투명 상태가 됩니다. [duration_seconds n0=1.25 scalar] / caster stat_modifier: 이동 속도가 증가합니다. [amount n1=40% scalar] / caster other: 투명 상태가 보이지 않는 위협을 발동시킵니다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.time lte n2=12; caster.form neq Void Assault 진화; caster.other eq time은 최초 공허의 습격 사용 후 경과한 초이며 허용 재사용 횟수가 남아 있음. caster ui_information: 이 스킬을 재사용할 수 있습니다. [count n3=1 scalar] / caster visibility: 투명 상태가 됩니다. [duration_seconds n0=1.25 scalar] / caster stat_modifier: 이동 속도가 증가합니다. [amount n1=40% scalar] / caster other: 투명 상태가 보이지 않는 위협을 발동시킵니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.time lte n2=12; caster.form eq Void Assault 진화; caster.other eq time은 최초 공허의 습격 사용 후 경과한 초이며 허용 재사용 횟수가 남아 있음. caster ui_information: 활성 보호색 진화 시 총 두 번 재사용할 수 있다. [count n6=2 scalar] / caster visibility: 활성 보호색 진화로 2초 동안 투명 상태가 된다. [duration_seconds n7=2 scalar] / caster stat_modifier: 이동 속도가 증가합니다. [amount n1=40% scalar] / caster other: 투명 상태가 보이지 않는 위협을 발동시킵니다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq Void Assault 진화. caster visibility: 활성 보호색 진화로 2초 동안 투명 상태가 된다. [duration_seconds n7=2 scalar] / caster stat_modifier: 이동 속도가 증가합니다. [amount n1=40% scalar] / caster other: 투명 상태가 보이지 않는 위협을 발동시킵니다. []"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.form eq 거대 갈고리 진화. caster attack_modifier: 거대 갈고리 진화는 공포 감지와 기본 공격의 사거리를 증가시킨다. []"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 거대 갈고리 진화; caster.other eq 공포 감지 사용; target.mark eq isolated. caster cooldown_change: 진화 공포 감지를 고립 대상에게 사용하면 그 스킬의 재사용 대기시간이45% 감소한다. [amount n4=45% scalar]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 가시 어깨 진화; caster.other eq 공허의 가시 사용. caster other: 진화 공허의 가시는 세 가시를 발사한다. [count n5=3 scalar]"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.form eq 가시 어깨 진화; caster.other eq 공허의 가시 적중. target crowd_control slow: 진화 가시에 맞은 적이40% 둔화된다. 고립 대상에게는 더 강하다. [amount n6=40% scalar]"
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.form eq 날개 진화. caster other: 도약의 사거리가 증가한다. []"
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.takedown; 조건 caster.form eq 날개 진화; target.target_type eq champion. caster cooldown_change: 챔피언 처치 관여 시 도약의 재사용 대기시간이 초기화된다. []"
+    },
+    {
+      "index": 11,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.visibility eq 투명 상태. caster visibility: 투명 상태의 유닛은 포탑 또는 절대 시야 외에는 드러나지 않는다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-10;gaps",
+      "issue": "stat_gain 임의 사건, 진화 효과 gap에만 보존, 재사용 시 실제 은신 효과 누락, 진화 재사용 횟수1 오기",
+      "correction": "궁극기 랭크 증가 사건과 진화별 조건 규칙을 추가하고 재사용에도 은신과 이동 속도를 부여했다. 한글 2회 수치 참조 및2초 대체 은신, 노출 예외를 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Void Assault: Invisibility duration lasts 2 seconds and gains second Recast."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "진화별 효과는 form 조건으로 모두 보존했다. 이 슬롯에는 진화 Q/기본 공격 및 E 사거리 증가량, 고립 W 둔화 증가량과 둔화 지속시간이 제공되지 않아 확정하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "진화 R은 한글 본문이 두 번 재사용 가능을 명시하여 총2회로 보존했다. 12초 재사용 창이 두 번째 재사용 이후 새로 시작하는지까지는 공급 원문이 명시하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

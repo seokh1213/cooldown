@@ -1,0 +1,75 @@
+{
+  "id": "Briar.Q",
+  "sourceHash": "0a81d5587ca5ead0a1840c737a9939564b216940a5b40d5dbec9c01678ec7028",
+  "beforeCandidateHash": "ca223e0a1244f953c2645fb4ffbd6fbbdccd93f208850a534cabb6426a50cfdf",
+  "candidateHash": "984bf4e4e85cda3276d8a8ee57d81ee3d7bf2131fbda000cd652f40b62f748a9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "대상 도약·0.85초 기절·60~160+AP60%+추가AD80% 물리 피해·5초10~20% 방어력/마법 저항력 감소·적중 효과·광분 중 미니언 또는 몬스터 우선 변경을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 대상에게 도약합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → target: 물리 피해를 입힙니다. [physical] / amount=60/85/110/135/160 [rank_values]; stat_coefficient=60% (caster abilityPower) [scalar]; stat_coefficient=80% (caster bonusAttackDamage) [scalar] | target: 기절시킵니다. [stun] / duration_seconds=0.85 [scalar] | target: 방어력과 마법 저항력을 감소시킵니다. / amount=10/12.5/15/17.5/20% [rank_values]; duration_seconds=5 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → target: 적중 시 효과를 적용합니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster form eq Blood Frenzy; target target_type eq 미니언 또는 몬스터 → caster: 핏빛 광분 중 미니언이나 몬스터에게 시전하면 챔피언 우선 공격을 중단합니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2.trigger.subject",
+      "issue": "스킬 행위자가 대상",
+      "correction": "시전자로 수정",
+      "sourceId": "en:body",
+      "quote": "Briar leaps to a target"
+    },
+    {
+      "path": "rules.3.conditions.1",
+      "issue": "몬스터 시전의 우선 변경 누락·요약은 모든 비챔피언",
+      "correction": "미니언 또는 몬스터 조건과 요약으로 통일",
+      "sourceId": "en:body",
+      "quote": "if she casts this Ability on a minion or monster during Blood Frenzy."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

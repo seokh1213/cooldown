@@ -1,0 +1,120 @@
+{
+  "id": "Twitch.E",
+  "sourceHash": "c9d604673db0894fd934a4a49b1b2c3cfee825dc473b06f905d36606cf00a71b",
+  "beforeCandidateHash": "b743c8f8d4ff7b54d3bfbaf8a2b71ee0188b6bfd048c1f2277ea836088f98e4f",
+  "candidateHash": "f500d883a0c7d5a3f35879e2236c773bff54e6917ca3a4d50c00a3e2f6d5abe8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "맹독주변적기본물리피해,각대상맹독중첩당추가물리/마법피해,별도표시된최대전체물리/마법피해를대조했다.20은중첩수가아니다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 nearby_enemies.mark present Deadly Venom 적용. nearby_enemies: 맹독에 감염된 주위 적 모두에게 물리 피해를 입힌다. (physical); amount=20/30/40/50/60  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 nearby_enemies.mark present Deadly Venom 적용. nearby_enemies: 맹독 중첩 하나당 추가 물리 피해를 입힌다. (physical); amount=15/20/25/30/35  formula_components, stat_coefficient=35% caster의 bonusAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 nearby_enemies.mark present Deadly Venom 적용. nearby_enemies: 맹독 중첩 하나당 추가 마법 피해를 입힌다. (magic); stat_coefficient=35% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 nearby_enemies.mark present Deadly Venom 적용. nearby_enemies: 맹독 중첩에 따른 최대 물리 피해량은 별도 수치와 추가 공격력 계수로 표시된다. 해당최대전체합계는별도추가타격으로합산하지않는다.; amount=110/150/190/230/270  rank_values, stat_coefficient=210% caster의 bonusAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 nearby_enemies.mark present Deadly Venom 적용. nearby_enemies: 맹독 중첩에 따른 최대 마법 피해량은 주문력 계수로 표시된다. 해당최대전체합계는별도추가타격으로합산하지않는다.; stat_coefficient=210% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,2.parameters",
+      "issue": "기본피해20을중첩count로오참조",
+      "correction": "잘못된count제거,변동실제중첩수관계보존",
+      "sourceId": "en:body",
+      "quote": "plus an additional (15/20/25/30/35 + (35% bonus Attack Damage)) physical damage and (35% Ability Power) magical damage per stack of Deadly Venom."
+    },
+    {
+      "path": "rules.3,4.effects",
+      "issue": "최대합계를별도가하는피해로표기",
+      "correction": "최대전체합계UI정보로구별",
+      "sourceId": "en:body",
+      "quote": "Max Damage: (110/150/190/230/270 + (210% bonus Attack Damage)) physical damage and (210% Ability Power) magical damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 561,
+      "verdict": "repaired",
+      "reason": "기본20피해참조count를제거했다.실제대상별중첩곱은text/구성요소로보존했다."
+    },
+    {
+      "index": 562,
+      "verdict": "repaired",
+      "reason": "마법피해의잘못된20count도제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "중첩당물리/마법피해는각대상의실제맹독중첩수에곱해지는관계다.변동중첩수는공급숫자표의고정참조로표현되지않으므로20을count로대체하지않는다.최대전체합계와중첩당식을별도로보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

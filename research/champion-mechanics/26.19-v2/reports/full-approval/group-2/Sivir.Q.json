@@ -1,0 +1,160 @@
+{
+  "id": "Sivir.Q",
+  "sourceHash": "04fae762d231407ff9a1425cf35f95d519d79240e94f4aad0d9c79e95efc78cb",
+  "beforeCandidateHash": "ae94af5e39130b9237e7bf6114c5ce8b0051f2332d5485835d109b92bfb79431",
+  "candidateHash": "ee7120a85158434d0bf02308b13c556c728f87f4424f4512be26a08d7ecd923e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 5,
+  "summaryCheck": "왕복각각모든관통적피해,비챔피언이전적중뒤후속적감소최소40%·귀환시초기화,치명타확률/피해40%효율·공속시전감소 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 부메랑이왕복각각관통하는모든적에게명시된기본+bonusAD/AP피해를줍니다.피해유형은공급본문에없습니다.; 수치 amount en:body:n0=60,en:body:n1=85,en:body:n2=110,en:body:n3=135,en:body:n4=160 상수 rank_values / ratio_input en:body:n5=70%(백분율) caster.bonusAttackDamage formula_components / ratio_input en:body:n6=60%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type neq champion; secondary_targets: 비챔피언을 맞힌 뒤 이어지는 대상에게 주는 피해가 감소하며, 피해는 최소 비율까지 감소할 수 있습니다.; 수치 min_amount en:body:n7=40%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 unknown; 조건 unknown.activation eq 십자날검이귀환을시작함; unknown: 검이 돌아오기 시작하면 피해 감소가 초기화됩니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 별도 제한 없음; caster: 피해량은 시비르의 치명타 확률과 치명타 피해량의 영향을 각각 원문의 효율로 받습니다.; 수치 stat_coefficient en:body:n8=40%(백분율) caster.critChance formula_components / stat_coefficient en:body:n8=40%(백분율) caster.critDamage formula_components; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 공격 속도가 높을수록 시전 시간이 짧아집니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "원문없는physical단정·왕복/모든대상명시·귀환사건/번역대상차이 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Sivir hurls her crossblade like a boomerang, dealing (60/85/110/135/160 + (70% bonus Attack Damage) + (60% Ability Power)) to all enemies it cuts through. Hitting non-champions reduces the damage to subsequent targets, down to a minimum of 40%. The damage falloff resets upon beginning its return. Damage scales with Critical Strike Chance and Critical Strike Damage at 40% effectiveness. Cast time scales down with Attack Speed"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 484,
+      "verdict": "repaired",
+      "reason": "관통하는모든적왕복각피해로명시."
+    },
+    {
+      "index": 485,
+      "verdict": "false_positive",
+      "reason": "condition의target은감소발동을일으킨비챔피언,효과subject=secondary_targets로후속대상별도;후속적종류제한없음."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 비챔피언을 맞힌 뒤 이어지는 대상의 피해 감소를 설명하지만, 감소가 적용되는 개별 적중 순서와 대상별 적용 방식은 구체적으로 명시하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "치명타 확률과 치명타 피해량이 피해에 반영되는 구체적인 계산식은 원문에 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "공격 속도에 따른 시전 시간 감소의 구체적인 계산식은 원문에 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 3,
+      "reason": "missing_source",
+      "detail": "en/ko본문·요약은피해유형을미명시;physical단정을제거하고피해식은other에보존.",
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 4,
+      "reason": "source_conflict",
+      "detail": "영문모든적피해·비챔피언피격후후속대상감소와한국어모든챔피언피해·비챔피언자체감소의대상/순서차이;영문본문우선.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "5 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "id": "Pantheon.E",
+  "sourceHash": "91b0bbba948ecdc7bd9000ccce54458919d130c2752c939616f25336e276407b",
+  "beforeCandidateHash": "295bb959fd9ab3dd88d744bb68edc1af0561de6acdbf9dda5caed647ed80cd19",
+  "candidateHash": "1d40f5c1e38d9703294495f2bf5558d399a81b291d70fde2b7c08826c2d3636f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "방향별 포탑 외 피해 면역, 지속 물리 피해, 종료 방패 타격과 재사용 조기 종료를 원문과 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "1.5초 방향별 비포탑 피해 면역 및 지속시간 전체의 공격력 100% 물리 피해를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "채널 종료 시 55/105/155/205/255 + 추가 공격력 150% 방패 타격이며 조기 종료도 마지막 타격을 유지한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Recast가 채널을 일찍 끝내도 방패 마지막 타격을 유지한다는 문장을 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 효과는 시전 시점이 아니라 방패 타격 때 발동한다. 방어력·마법 저항력 각각 5~30 + 추가 체력 2.5%를 4초, 이동 속도 60%를 1.5초 유지함을 대조했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언 피해 50% 감소를 E 전체 적중에 적용하고 종료 타격에만 묶지 않았다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.2.parameters.0.role",
+      "issue": "100% Attack Damage는 공격력 계수이므로 일반 피해 감쇠 배율과 구분했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Pantheon braces his shield and engages enemies in a chosen direction for 1.5 seconds, becoming immune to non-tower damage from that direction and dealing (100% Attack Damage) physical damage over the duration. After channeling Pantheon slams with his shield, dealing (55/105/155/205/255 + (150% bonus Attack Damage)) physical damage. Mortal Will Bonus: When Pantheon slams his shield he gains ((5 ~ 30) + (2.5% bonus Health)) Armor and ((5 ~ 30) + (2.5% bonus Health)) Magic Resist for 4 seconds, and 60% Move Speed for 1.5 seconds. Recast to end early (Pantheon still slams with his shield as the last hit). Damage to minions is reduced by 50%."
+    },
+    {
+      "path": "rules.3.trigger.event",
+      "issue": "강화 방어·이동 속도는 When Pantheon slams his shield에 발동하며 시전 때 발동하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Pantheon braces his shield and engages enemies in a chosen direction for 1.5 seconds, becoming immune to non-tower damage from that direction and dealing (100% Attack Damage) physical damage over the duration. After channeling Pantheon slams with his shield, dealing (55/105/155/205/255 + (150% bonus Attack Damage)) physical damage. Mortal Will Bonus: When Pantheon slams his shield he gains ((5 ~ 30) + (2.5% bonus Health)) Armor and ((5 ~ 30) + (2.5% bonus Health)) Magic Resist for 4 seconds, and 60% Move Speed for 1.5 seconds. Recast to end early (Pantheon still slams with his shield as the last hit). Damage to minions is reduced by 50%."
+    },
+    {
+      "path": "rules.4.trigger.event",
+      "issue": "미니언 감소는 E 피해 전체의 문장으로, expiry에만 제한할 근거가 없다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Pantheon braces his shield and engages enemies in a chosen direction for 1.5 seconds, becoming immune to non-tower damage from that direction and dealing (100% Attack Damage) physical damage over the duration. After channeling Pantheon slams with his shield, dealing (55/105/155/205/255 + (150% bonus Attack Damage)) physical damage. Mortal Will Bonus: When Pantheon slams his shield he gains ((5 ~ 30) + (2.5% bonus Health)) Armor and ((5 ~ 30) + (2.5% bonus Health)) Magic Resist for 4 seconds, and 60% Move Speed for 1.5 seconds. Recast to end early (Pantheon still slams with his shield as the last hit). Damage to minions is reduced by 50%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Pantheon.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

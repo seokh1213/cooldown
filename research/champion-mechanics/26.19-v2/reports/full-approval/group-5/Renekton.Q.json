@@ -1,0 +1,842 @@
+{
+  "id": "Renekton.Q",
+  "sourceHash": "7d3ed59898fde1084620ddd0985923a359844a3558a3f23db467704e8f52074d",
+  "beforeCandidateHash": "bd8c6fb8a9799a5053735bea359a535a664852ad63ae409844a85ce7dc7aedd4",
+  "candidateHash": "67a8c3017ea5ece23ef39eb58336e5216d5b12ed1105647a7f81bd1faf84463a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 12,
+  "checkedGapCount": 0,
+  "summaryCheck": "비강화/강화 피해,챔피언/비챔피언별 회복과 분노,강화 분노생성 없음,분노30 및 회복상한 두 종류를 모두 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비강화 물리60~180+추가AD100%.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "180",
+              "value": 180,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비챔피언당 자기회복2~6+추가AD2%.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "2%",
+              "value": 2,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언당 자기회복12~44+추가AD17%.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n12",
+            "en:body:n13",
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "12",
+              "value": 12,
+              "percent": false
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            },
+            {
+              "id": "en:body:n14",
+              "raw": "28",
+              "value": 28,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "36",
+              "value": 36,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "44",
+              "value": 44,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n17"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n17",
+              "raw": "17%",
+              "value": 17,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비강화 비챔피언당 분노2.5.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n18"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n18",
+              "raw": "2.5",
+              "value": 2.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비강화 챔피언당 분노10.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n19"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n19",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 피해90~270+추가AD140%로 대체하며 기본식과 조건상 상호배타.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n20",
+            "en:body:n21",
+            "en:body:n22",
+            "en:body:n23",
+            "en:body:n24"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n20",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            },
+            {
+              "id": "en:body:n22",
+              "raw": "180",
+              "value": 180,
+              "percent": false
+            },
+            {
+              "id": "en:body:n23",
+              "raw": "225",
+              "value": 225,
+              "percent": false
+            },
+            {
+              "id": "en:body:n24",
+              "raw": "270",
+              "value": 270,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n25"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n25",
+              "raw": "140%",
+              "value": 140,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 비챔피언당 자기회복6~18+추가AD6%.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n26",
+            "en:body:n27",
+            "en:body:n28",
+            "en:body:n29",
+            "en:body:n30"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n26",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            },
+            {
+              "id": "en:body:n27",
+              "raw": "9",
+              "value": 9,
+              "percent": false
+            },
+            {
+              "id": "en:body:n28",
+              "raw": "12",
+              "value": 12,
+              "percent": false
+            },
+            {
+              "id": "en:body:n29",
+              "raw": "15",
+              "value": 15,
+              "percent": false
+            },
+            {
+              "id": "en:body:n30",
+              "raw": "18",
+              "value": 18,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n31"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n31",
+              "raw": "6%",
+              "value": 6,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 챔피언당 자기회복36~132+추가AD51%.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n32",
+            "en:body:n33",
+            "en:body:n34",
+            "en:body:n35",
+            "en:body:n36"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n32",
+              "raw": "36",
+              "value": 36,
+              "percent": false
+            },
+            {
+              "id": "en:body:n33",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n34",
+              "raw": "84",
+              "value": 84,
+              "percent": false
+            },
+            {
+              "id": "en:body:n35",
+              "raw": "108",
+              "value": 108,
+              "percent": false
+            },
+            {
+              "id": "en:body:n36",
+              "raw": "132",
+              "value": 132,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n37"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n37",
+              "raw": "51%",
+              "value": 51,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 사용은 분노를 생성하지 않으며 자원 소진 사건에만 묶지 않음.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비강화 시전 회복 합계 상한50~150;추가 회복 지급이 아님.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n39",
+            "en:body:n40",
+            "en:body:n41",
+            "en:body:n42",
+            "en:body:n43"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n39",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            },
+            {
+              "id": "en:body:n40",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n41",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n42",
+              "raw": "125",
+              "value": 125,
+              "percent": false
+            },
+            {
+              "id": "en:body:n43",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 시전 회복 합계 상한200~600.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n44",
+            "en:body:n45",
+            "en:body:n46",
+            "en:body:n47",
+            "en:body:n48"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n44",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            },
+            {
+              "id": "en:body:n45",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            },
+            {
+              "id": "en:body:n46",
+              "raw": "400",
+              "value": 400,
+              "percent": false
+            },
+            {
+              "id": "en:body:n47",
+              "raw": "500",
+              "value": 500,
+              "percent": false
+            },
+            {
+              "id": "en:body:n48",
+              "raw": "600",
+              "value": 600,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전 분노 획득 합계 최대30을 빠뜨리지 않고 보존.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n38"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n38",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.8.trigger/rules.11",
+      "issue": "분노생성 금지를 자원소진 사건으로 한정하고 시전당 분노30상한을 누락했다.",
+      "correction": "강화cast에서 생성금지,분노 생성합계30상한 추가.",
+      "sourceId": "en:body",
+      "quote": "Does not generate any Fury. Max 30 Fury per cast."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

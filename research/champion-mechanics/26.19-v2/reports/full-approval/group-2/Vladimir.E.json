@@ -1,0 +1,127 @@
+{
+  "id": "Vladimir.E",
+  "sourceHash": "04bcf9a193823a78fbdc867d268dc9653b67a7df8c93f23ecef230ca7acc81da",
+  "beforeCandidateHash": "5c9122867f35413aad0642c4e8a1395d6565e7258b71d5e6b1c9220b591b4ed5",
+  "candidateHash": "376d89e5ff0f743aa29515f7c1d64be06c080566d5395e5d149a575bec0d7e81",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "충전 체력 지출 상한과 완충 자기 둔화, 방출 최소·최대식, 1초 이상 충전 둔화, 1.5초 자동 방출, 첫 투사체만 피해 및 유닛에 차단됨을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 충전하며 시전자 체력 기준 최대 8%의 체력을 소모합니다. Health의 정확한 통계는 원문에 없습니다.; 수치 max_amount en:body:n0=8%(백분율) 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq full charge; caster: 완전히 충전된 동안 자신을 둔화시킵니다. [slow]; 수치 amount en:body:n1=20%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 충전 해제하여 방출 / target.hit_order eq 이 방출에서 대상별 첫 투사체 적중; nearby_enemies: 방출 시 충전 시간에 따른 최소식 (기본 피해 + 1.5% Health + 35% AP)부터 최대식 (기본 피해 + 6% Health + 80% AP)의 마법 피해를 줍니다. 한 대상은 첫 투사체에만 피해를 받으며 적 유닛이 투사체를 막을 수 있습니다. [magic]; 수치 min_amount en:body:n2=30,en:body:n3=45,en:body:n4=60,en:body:n5=75,en:body:n6=90 상수 rank_values / stat_coefficient en:body:n7=1.5%(백분율) 상수 formula_components / stat_coefficient en:body:n8=35%(백분율) caster.abilityPower formula_components / max_amount en:body:n9=60,en:body:n10=90,en:body:n11=120,en:body:n12=150,en:body:n13=180 상수 rank_values / stat_coefficient en:body:n14=6%(백분율) 상수 formula_components / stat_coefficient en:body:n15=80%(백분율) caster.abilityPower formula_components; flags per_target"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.time gte en:body:n16=1 / caster.activation eq 충전 해제하여 방출; nearby_enemies: 1초 이상 충전한 뒤 방출 시 대상을 40/45/50/55/60% 둔화시킵니다. [slow]; 수치 amount en:body:n17=40(백분율),en:body:n18=45(백분율),en:body:n19=50(백분율),en:body:n20=55(백분율),en:body:n21=60%(백분율) 상수 rank_values / duration_seconds en:body:n22=0.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: expiry 사건의 행위자 caster; 조건 caster.time gte en:body:n23=1.5; caster: 충전이 일정 시간 지나면 스킬이 자동으로 방출됩니다.; 수치 duration_seconds en:body:n23=1.5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "Health를 maxHealth로 단정; 방출 피해의 최소/최대 계수 합산과 대상별 첫 투사체 범위 미구조화 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Vladimir charges up a reservoir of blood, spending up to (8% Health) Health. While at full charge, Vladimir is Slowed by 20%. Release: Vladimir unleashes a torrent of blood missiles at surrounding enemies, dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time. If this Ability was charged for at least 1 second, it also Slows targets by 40/45/50/55/60% for 0.5 seconds. This Ability releases automatically after 1.5 seconds. Enemies can be hit by multiple blood missiles, but take no damage after the first."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 628,
+      "verdict": "repaired",
+      "reason": "Health 통계는 미명시; maxHealth 제거 및 지출 기준 텍스트 보존."
+    },
+    {
+      "index": 629,
+      "verdict": "repaired",
+      "reason": "1.5% Health를 최대 체력 계수로 실행하지 않음."
+    },
+    {
+      "index": 630,
+      "verdict": "repaired",
+      "reason": "6% Health를 최대 체력 계수로 실행하지 않음."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "지출 상한·피해식의 Health는 구체 체력 스탯이 아니므로 maxHealth 단정을 제거; 시전자 체력 기준을 수식 구성요소로 보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "충전 시간별 최소/최대식의 계수는 각 끝점 식에만 속하며 모두 합산하는 선형식이 아님. 중간 충전 보간은 원문에 없음.",
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

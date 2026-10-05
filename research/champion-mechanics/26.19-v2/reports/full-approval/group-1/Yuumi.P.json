@@ -1,0 +1,62 @@
+{
+  "id": "Yuumi.P",
+  "sourceHash": "0f5d5250b7b36d089531f3e66d7d93941ac9f857f2d186ddd378e11b7202e529",
+  "beforeCandidateHash": "481fb300f511e177f57c2f670dbb92025a5b2029e76e7e6215aae6747f10069d",
+  "candidateHash": "5b9776ebe5e9345b5b978cdcf23569afde3c5eb8ca57f4dcde1d62bb0306ba0e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "챔피언 평타/스킬 적중 자기회복20~110+AP30%,20~8초쿨,4초내 붙은 아군 또는 이미 붙은아군 동일 회복, 붙은아군 처치우정과 단짝밀착 추가효과를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.target_type eq champion; caster.other eq 이 지속 효과의 재사용 대기시간이 준비됨. caster heal: 유미가 챔피언에게 기본 공격 또는 스킬을 적중시키면 자신을 회복합니다. [amount n0=20/n1=110 level_range; stat_coefficient n2=30% scalar caster.abilityPower] / caster cooldown_change: 효과에는 재사용 대기시간이 있습니다. [cooldown_seconds n4=20/n5=8 level_range]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 챔피언 적중으로 이 회복 효과 발동 후4초 안에 아군에게 밀착하거나 발동 당시 이미 밀착. ally heal: 유미가 적중 후 정해진 시간 안에 아군에게 밀착하면 해당 아군도 회복합니다. 이미 아군에게 밀착한 상태라면 회복이 자동으로 발동합니다. [amount n0=20/n1=110 level_range; stat_coefficient n2=30% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, ally.kill; 조건 caster.other eq 처치한 아군에게 밀착 중; target.other eq 처치 대상은 챔피언 또는 미니언. caster other: 밀착한 아군이 챔피언 또는 미니언을 처치하면 그 아군과 우정을 쌓는다. 우정이 가장 많은 아군이 단짝이 된다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 우정이 가장 많은 단짝에게 밀착 중. caster other: 단짝에게 밀착한 동안 유미의 스킬이 추가 효과를 얻는다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/new",
+      "issue": "챔피언/쿨조건·밀착마감 역할·아군회복양·처치/밀착조건 누락",
+      "correction": "챔피언 및 효과준비조건, 마감텍스트와 동일회복양, 우정/단짝 규칙분리",
+      "sourceId": "en:body",
+      "quote": "If Yuumi Attaches to an ally within 4 seconds, they are healed as well."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 681,
+      "verdict": "repaired",
+      "reason": "4초는 회복 지속시간이 아닌 밀착 마감이다. duration parameter를 제거하고 동일 heal양을 붙였다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

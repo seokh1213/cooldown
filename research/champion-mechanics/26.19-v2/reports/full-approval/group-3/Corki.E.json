@@ -1,0 +1,67 @@
+{
+  "id": "Corki.E",
+  "sourceHash": "b369b40b8a2f254940dc150932a0a0da7e472741edc9993103c2717b24c855f9",
+  "beforeCandidateHash": "646a0e428096c37f449de0021d021f5ce342fe408e682d1f53419086a0509a3a",
+  "candidateHash": "756919537eb6792e62d3d1efe5ef0430219c20c71990e94315513f0d1de91a91",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "전방원뿔4초총80/130/180/230/280+추가AD240%물리피해,맞힌적의방어력과마저각최대12/14/16/18/20감소/적중후2초유지를대조했다. 누적감소량증가세부식은본문미명시다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 enemy other eq 코르키앞원뿔개틀링건에맞은적 → enemy: 전방원뿔의적에게4초에걸쳐총80/130/180/230/280+추가공격력240%물리피해를입힙니다. [physical] / amount=80/130/180/230/280 [rank_values]; stat_coefficient=240% (caster bonusAttackDamage) [formula_components]; duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 enemy other eq 코르키앞원뿔개틀링건에맞은적 → enemy: 적의방어력을최대12/14/16/18/20감소시키며감소효과는적중후2초남습니다. / max_amount=12/14/16/18/20 (enemy armor) [rank_values]; duration_seconds=2 [scalar] | enemy: 적의마법저항력을최대12/14/16/18/20감소시키며감소효과는적중후2초남습니다. / max_amount=12/14/16/18/20 (enemy magicResist) [rank_values]; duration_seconds=2 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1/gaps.0",
+      "issue": "피해원뿔/4초총량이불명확하고적중행위자가enemy이며Armor/MR입력이분리되지않은것을원문한계로잘못기록했다.",
+      "correction": "전방원뿔범위/총4초피해/시전자적중과각각Armor/MR감소상한을명시하고실제누적식부족만기록했다.",
+      "sourceId": "en:body",
+      "quote": "shredding up to 12/14/16/18/20 Armor and Magic Resist. The shred lingers for 2 seconds after being hit."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "방어력및마법저항력각각의감소상한12~20은명시되지만적중별증가량이나누적진행계산식은공급본문에없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

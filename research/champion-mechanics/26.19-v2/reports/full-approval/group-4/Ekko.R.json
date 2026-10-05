@@ -1,0 +1,117 @@
+{
+  "id": "Ekko.R",
+  "sourceHash": "42eeaafa06c834f3055a28feaeff4edf760bee9073dcfa61df02488df3d7fa88",
+  "beforeCandidateHash": "3c413719b3a4b32578c6b3fd608a780e73cbb548f7e0cc5178e14c8e2f3f4278",
+  "candidateHash": "e81127a3c118cfa005375c5a31983f6ca17e7eef94f82f4697b70cf10aa40b66",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "4초전위치로이동중경직·무적·대상지정불가/행동불가,착지주변마법피해,기본회복과최근4초손실1%당회복3%증가,통과한W구체폭발을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 순간이동하는 동안 경직 상태가 됩니다. 이 상태에서는 움직이거나 행동할 수 없으며 무적이고 대상으로 지정할 수 없습니다. (stasis);  / caster: 4초전에있던지점으로순간이동한다.4초는이동지속시간이아니라과거위치기준이다.; other=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 궁극기로 과거 위치에 도착함 적용. nearby_enemies: 궁극기로도착한지점주변의적에게마법피해를입힌다. (magic); amount=200/350/500  rank_values, stat_coefficient=175% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 기본회복량에최근4초동안잃은체력1%당회복량3%증가가적용된다.; amount=100/150/200  formula_components, stat_coefficient=60% caster의 abilityPower formula_components, ratio_output=3%  formula_components, ratio_input=1%  formula_components, other=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 enter_area 사건에서 caster.activation eq 궁극기 이동 중 평행 시간 교차의 구체를 통과함 적용. caster: 통과한평행시간교차(W)의구체를폭발시킨다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1.parameters",
+      "issue": "4초전위치를이동지속시간으로오표기",
+      "correction": "과거위치기준other역할",
+      "sourceId": "en:body",
+      "quote": "while teleporting to where he was 4 seconds ago"
+    },
+    {
+      "path": "rules.1",
+      "issue": "주변피해를시전순간/시전자현재주변으로표시",
+      "correction": "착지위치사건및주변적조건",
+      "sourceId": "en:summary",
+      "quote": "Enemies near his arrival zone take massive damage."
+    },
+    {
+      "path": "rules.2,3",
+      "issue": "회복증가관계와4초이력기준불명확,W통과폭발이gap에만존재",
+      "correction": "원문회복관계와통과폭발규칙보완",
+      "sourceId": "en:body",
+      "quote": "Will detonate the chronosphere from Parallel Convergence [W] if Ekko passed through it."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 50,
+      "verdict": "repaired",
+      "reason": "4초는과거위치기준other로정정했다."
+    },
+    {
+      "index": 51,
+      "verdict": "repaired",
+      "reason": "제공요약의착지구역을근거로도착위치주변피해로명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "회복은(기본회복+주문력계수)에최근4초체력손실1%당3%증가를적용한다.손실비율스탯은계약에없어중첩식구성요소로보존한다.손실비율분모/누적산식은원문이재명시하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "평행 시간 교차의 구체를 통과하면 폭발한다고 명시되어 있으나, 폭발의 구체적 효과는 이 tooltip에서 설명하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

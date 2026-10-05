@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Gragas.P",
+      "sourceHash": "c911a57c82feff1d2044fe9dd660c3b3169ef578fd00efbde209ce3aadf5df03",
+      "candidateHash": "f68c63a40a9ae2a48b9706b073ac0580098e46672c65f5bce6e373e7e890fc2e"
+    },
+    {
+      "id": "Gragas.R",
+      "sourceHash": "73cabf5c512aa7c3f70ed99404ea1ef561cd17aca5baf5e5164b73dca0460f37",
+      "candidateHash": "d0fc3b10d1bc54a0e09ab4a457f07ac855dbfe994319d42d8dbba56b5a16f8c5"
+    },
+    {
+      "id": "Gragas.Q",
+      "sourceHash": "7b9ee79422c4f2a65623324e110717436eed28b45c5d6eaf6be4d6a3819272f5",
+      "candidateHash": "054efa8f8777031bf13e2bb4957e01039077f0a0c3b153cf1028b3e9323d8e84"
+    },
+    {
+      "id": "Gragas.E",
+      "sourceHash": "ca11bde4264fa6459804b10915731baa55a334fb507ae8a2a283bb03cb460e3a",
+      "candidateHash": "24f0f16641b2f4cbfa3b3858d954f30887915d3e02f7745b9feaf1cc4d52f8c6"
+    },
+    {
+      "id": "Gragas.W",
+      "sourceHash": "cb6462469b40b1b16d438e2cb184cd2095392e0ae8bed53145698799d7121f91",
+      "candidateHash": "5bbed691312f43af6a52e738c3f712d36c3eb11d0ffe7a7b47cdc25f16afad00"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Gragas.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Gragas charges forward, colliding with the first enemy, Knocking Up nearby enemies for 1 second and dealing (80/125/170/215/260 + (60% Ability Power)) magic damage to them.",
+      "issue": "피해 효과에 ‘가장 먼저 부딪힌 적’ 조건을 붙였지만, 원문에서 first는 충돌 대상만 특정합니다. 피해와 공중 띄우기는 주변 적에게 적용된다고 명시되어 있습니다.",
+      "correction": "첫 충돌 조건은 충돌 대상에만 연결하고, 주변 적에게 적용되는 피해는 그 조건 없이 기록하세요."
+    },
+    {
+      "id": "Gragas.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Gragas charges forward, colliding with the first enemy, Knocking Up nearby enemies for 1 second and dealing (80/125/170/215/260 + (60% Ability Power)) magic damage to them.",
+      "issue": "공중 띄우기 효과도 ‘첫 번째 적과 충돌’ 조건에 묶여 있습니다. 원문상 군중 제어 대상은 첫 충돌 대상이 아니라 주변 적입니다.",
+      "correction": "주변 적 대상 공중 띄우기에서 첫 충돌 대상 조건을 제거하세요."
+    },
+    {
+      "id": "Gragas.W",
+      "path": "rules.0.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Gragas samples his brew, reducing incoming damage by (10/14/18/22/26% + (4% per 100 Ability Power)) for 2.5 seconds",
+      "issue": "피해 감소량의 계수 ‘주문력 100당 4%’에 100을 독립적인 other 값으로 기록했습니다. 원문에서 100은 계수의 분모로, 자체 효과량이 아닙니다.",
+      "correction": "100을 독립 효과값처럼 기록하지 말고, 4% 계수의 ‘주문력 100당’ 기준으로 표현하세요."
+    },
+    {
+      "id": "Gragas.W",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Max Health damage is capped at 300 versus jungle monsters.",
+      "issue": "정글 몬스터 상한을 적용하는 조건이 ‘강화 공격 대상이 몬스터’입니다. 원문은 정글 몬스터라고 범위를 좁히므로 일반 몬스터까지 조건에 포함하면 범위가 넓어집니다.",
+      "correction": "조건을 정글 몬스터로 특정하거나, 구분할 수 없다면 이 조건은 미해결 범위로 남기세요."
+    },
+    {
+      "id": "Gragas.W",
+      "path": "rules.4.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals 50% damage to structures.",
+      "issue": "구조물 대상 50% 피해를 강화 공격의 기본 피해 전체를 대체하는 효과로 기록했습니다. 원문은 구조물에 주는 피해가 50%라고만 하며, 기본 공격 피해까지 대체한다고 밝히지 않습니다.",
+      "correction": "50% 적용 대상을 원문이 구체화하지 않는다고 남기고, 기본 피해 대체로 단정하지 마세요."
+    }
+  ],
+  "notes": []
+}

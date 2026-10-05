@@ -1,0 +1,389 @@
+{
+  "summary": "혀 채찍은 처음 적중한 적에게 피해를 주고 둔화시킨다. 챔피언 적중 시 회복하고 절대 미각 중첩을 적용하며, 이미 중첩이 충분한 챔피언은 기절시키고 중첩을 소모한다. 혀가 날아가는 동안 집어삼키기를 시전하면 조건을 충족한 챔피언을 원거리에서 삼킬 수 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "처음 적중한 적에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "처음 적중한 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (75/120/165/210/255 + (100% Ability Power)) magic damage to the first enemy hit and Slows them by 50% for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "자신의 잃은 체력5/5.5/6/6.5/7% +10/15/20/25/30을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "적중한 챔피언에게 절대 미각 중첩을 적용한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적중한 챔피언에게 절대 미각의 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On champion hit, heals Tahm for 10/15/20/25/30 + 5/5.5/6/6.5/7% of his missing Health and applies a stack of An Acquired Taste dealing ((5 ~ 60) + (4% bonus Health) + (0% Ability Power)) extra magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적중 전에 절대 미각 3중첩"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 기절시키고 절대 미각 중첩을 소모한다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "대상의 절대 미각 중첩을 소모한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If that champion already had 3 stacks of An Acquired Taste, they will also be Stunned for 1.5 seconds, consuming the stacks."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "혀가 공중에 있는 동안 집어삼키기 활성화"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "절대 미각 3중첩"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "혀가 공중에 있는 동안 집어삼키기를 시전했다면, 조건을 충족한 적 챔피언 적중 시 원거리에서 해당 챔피언을 삼킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Activate Devour while your tongue is in midair to devour enemy champions who already have 3 stacks of An Acquired Taste from a distance when you hit them."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "탐 켄치의 크기가 커질수록 혀 채찍의 사거리가 늘어난다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tongue Lash's range increases with Tahm Kench's size"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "잃은 체력은 스키마 stat 목록에 없으므로 최대체력계수로 실행하지 않는다. 자기 잃은 체력이라는 소유자와비율은효과텍스트에보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "of his missing Health"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "혀 채찍의 크기에 따른 사거리 증가량과 적용 조건은 수치화되어 있지 않다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tongue Lash's range increases with Tahm Kench's size"
+        }
+      ]
+    }
+  ]
+}

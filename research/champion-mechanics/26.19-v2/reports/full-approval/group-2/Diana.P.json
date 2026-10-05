@@ -1,0 +1,77 @@
+{
+  "id": "Diana.P",
+  "sourceHash": "1c91a31cfa13b178d8c1b9c7d39f1702ac4bb64d287af35f8d74bca7c087a45d",
+  "beforeCandidateHash": "a55bdf3fe3046e1c56729a5a240bedea339401422ba65c090fcbb6600700d9f1",
+  "candidateHash": "2f175b429b0b28e7e47b54501ea24d414723522cae37eb8dc824dcb256c1b8cf",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "레벨범위기본공속15~35%/스킬후5초대신45~105%,세번째평타마다주변레벨기본+50%AP추가마법 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 공격 속도가 증가합니다.; 수치 amount en:body:n0=15%(백분율),en:body:n1=35%(백분율) 상수 level_range; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 스킬 사용 후5초동안공격속도증가율이기본15~35%대신45~105%로증가합니다.; 수치 amount en:body:n2=45%(백분율),en:body:n3=105%(백분율) 상수 level_range / duration_seconds en:body:n4=5 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.hit_count eq 기본 공격 순서가 세 번째일 때마다; nearby_enemies: 세 번째 기본 공격은 주위 적들을 베어 추가 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n5=20,en:body:n6=220 상수 level_range / stat_coefficient en:body:n7=50%(백분율) caster.abilityPower scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "공속대체관계와3번째반복공격조건누락 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Diana gains (15% ~ 35%) Attack Speed, increased to (45% ~ 105%) for 5 seconds after using an Ability. Every third Attack cleaves nearby enemies for an additional ((20 ~ 220) + (50% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 44,
+      "verdict": "repaired",
+      "reason": "기본증가율대신45~105%로증가하는관계를명시."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 세 번째 기본 공격마다 발동한다고 명시하지만, 제공된 numbers에는 해당 순번의 숫자 ID가 없고 hit_count 조건만으로 공격의 순번을 안전하게 표현할 수 없습니다. 원문 조건을 effect.text에 보존했습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

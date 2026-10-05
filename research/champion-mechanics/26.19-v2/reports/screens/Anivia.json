@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Anivia.E",
+      "sourceHash": "ec6d7582766885ae546893d002b493cdf7913abe36a373abc8b10cbf4d8b877d",
+      "candidateHash": "d9ae7b8500c475663e9d217972abeef01abd5bde1b209a13249cb63ff5c3d922"
+    },
+    {
+      "id": "Anivia.W",
+      "sourceHash": "ee431f961d6f68429c3881ac391b604c3d853c11169d9018383b26bb9a564d18",
+      "candidateHash": "993b6be965347d84368188b5f3e79819cccec17c52189e4ed32eaed4862b13e7"
+    },
+    {
+      "id": "Anivia.P",
+      "sourceHash": "4869ddd6d74eff662377a98b89d5ca0ae86455b807e911f0c377acd4410d7c10",
+      "candidateHash": "046ef3970c8cadd8f35f362212538a0d8279e0fcbc520a6fafae14ee7cd5f12b"
+    },
+    {
+      "id": "Anivia.Q",
+      "sourceHash": "4ff609dac5c374c85ceb3bf178069b2d54204534897aed8f108731d9b458ca8c",
+      "candidateHash": "f742f80f172d15a6e875c8ee3ef21583973d248e19a9076e00971eba3a04ac7c"
+    },
+    {
+      "id": "Anivia.R",
+      "sourceHash": "5704ac37da6ac1854f786896e330acf385c97b49c713230f8dcfe8a544df4049",
+      "candidateHash": "cfc958bf199d40ca53aae3bd82bb5eae927d8f84ac71849de4cef99a118a1c44"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Anivia.Q",
+      "path": "rules.0.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Anivia fires a massive chunk of ice, dealing (50/70/90/110/130 + (25% Ability Power)) magic damage and Chilling enemies for 3 seconds, Slowing them by 20/30/40%.",
+      "issue": "첫 규칙이 시전 즉시 피해와 둔화를 적용하는 것으로 기록되어 있습니다. 원문은 얼음 덩어리가 날아가 적에게 피해를 주고 둔화시킨다고 하지만, 시전 자체가 적용 이벤트라고 명시하지 않습니다.",
+      "correction": "시전 트리거를 비행 중 적중 등 원문이 뒷받침하는 이벤트로 바꾸거나, 적용 이벤트를 미상으로 남기세요."
+    },
+    {
+      "id": "Anivia.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "At the end of its range, the ice detonates, Stunning enemies for 1.1/1.2/1.3/1.4/1.5 seconds and dealing (60/95/130/165/200 + (45% Ability Power)) magic damage.",
+      "issue": "조건이 폭발을 ‘사거리 끝 도달’에 한정하지만, 요약은 폭발 시 기절과 피해를 일반적으로 서술하고 재사용 조기 폭발도 별도 규칙으로 기록합니다. 원문은 조기 폭발 때도 폭발 효과가 적용되는지 명시하지 않으므로, 이를 사거리 끝 도달 조건으로 확정하면 근거를 넘어섭니다.",
+      "correction": "조건을 ‘사거리 끝에서 폭발’로 한정해 원문을 보존하되, 요약에서도 기절·피해가 모든 폭발에 적용되는 듯한 표현을 피하고 조기 폭발 효과는 미상으로 유지하세요."
+    },
+    {
+      "id": "Anivia.R",
+      "path": "gaps.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Toggle: Anivia calls forth a driving rain of ice and hail",
+      "issue": "토글 입력 방식은 미상으로 기록했지만, 자원 소모 세부 조건은 해당 인용문에서 다루지 않습니다. 이를 미해결 조건으로 제시하면 출처가 요구하는 정보처럼 보입니다.",
+      "correction": "자원 소모 세부 조건에 대한 gap을 삭제하고, 토글 입력의 세부 방식만 미상으로 남기세요."
+    }
+  ],
+  "notes": []
+}

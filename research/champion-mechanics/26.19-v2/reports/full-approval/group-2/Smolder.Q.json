@@ -1,0 +1,149 @@
+{
+  "id": "Smolder.Q",
+  "sourceHash": "d83b2484b6d3a1a5d5e3fb0849fdd060c6f6619de4411c4b0a0da4fea47e8d8b",
+  "beforeCandidateHash": "4447d04e7068a6e37af6f22762ba3950c5e48ddb910538c2b0fb2b0250a52a4c",
+  "candidateHash": "0271fa047d1311b4ff5605d819adaec5d05ce739353afd0fec15f229f8e2bc22",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 3,
+  "summaryCheck": "물리+마법 기본 피해, 대상 사망 환급 15마나 시전당 1회, 25/125/225중첩 진화·50% 폭발·3초 화상·6.5% 미만 불타는 챔피언 처형, 온힛·흡혈50%·치명타75%와 대상별 1회 피해를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 불꽃을 내뿜어 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n0=60,en:body:n1=70,en:body:n2=80,en:body:n3=90,en:body:n4=100 상수 rank_values / stat_coefficient en:body:n5=130%(백분율) caster.bonusAttackDamage formula_components; flags 없음 | target: 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n6=0.25 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: death 사건의 행위자 target; 조건 target.other eq 이 시전의 대상이 사망하고 아직 마나 환급을 받지 않음; caster: 대상이 사망하면 마나를 돌려받습니다. 시전당 한 번만 발동합니다.; 수치 resource_refund en:body:n7=15 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.resource gte en:body:n8=25; secondary_targets: 대상 주변의 모든 적에게 피해를 입힙니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.resource gte en:body:n9=125; secondary_targets: 대상 너머로 원문상 2.008개 폭발을 보내 이 스킬 피해의 50%를 입힙니다. 피해 유형은 단일 물리로 한정하지 않습니다.; 수치 count en:body:n10=2.008 상수 unknown / damage_multiplier en:body:n11=50%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.resource gte en:body:n12=225; target: 용 훈련 225중첩부터 3초에 걸쳐 (0.01% + 추가 공격력 100당 2.5%) × 최대 체력 고정 피해를 줍니다. 최대 체력 소유자는 미명시입니다. [true]; 수치 ratio_output en:body:n13=0.01%(백분율) unknown.maxHealth formula_components / ratio_output en:body:n14=2.5%(백분율) 상수 formula_components / ratio_input en:body:n15=100 caster.bonusAttackDamage formula_components / duration_seconds en:body:n16=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.target_type eq champion / target.health_threshold lt en:body:n17=6.5%(백분율) / target.other eq 불타는 중; target: 불타는 동안 체력이 기준 아래로 떨어진 적 챔피언을 즉시 처치합니다.; 수치 amount en:body:n17=6.5%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 기본 공격으로 간주되며 적중 시 효과와 생명력 흡수 효과를 적용합니다.; 수치 damage_multiplier en:body:n18=50%(백분율) 상수 scalar; flags 없음 | caster: 치명타 확률과 치명타 피해량에 따라 피해량이 증가합니다.; 수치 damage_multiplier en:body:n19=75%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 이 시전에서 각 대상에게 한 번만 피해를 입힐 수 있습니다.; 수치 count en:body:n20=one 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "시전 사건의 행위자, 사망/처치 구분, 혼합 피해를 단일 물리로 단정, 마나 환급 횟수의 무관 숫자, 화상 체력 수식 정보 누락을 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Smolder belches flame, dealing (60/70/80/90/100 + (130% bonus Attack Damage)) physical damage + 0.25 magic damage. If the target dies, Smolder refunds 15 Mana, once per cast. Based on stacks of Dragon Practice, this Ability evolves to gain the following effects:25 Stacks: Damages all enemies surrounding the target.125 Stacks: Sends 2.008 explosions beyond the target that deal 50% of this Ability's damage.225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds. Enemy champions that drop below 6.5% total health while burning are killed instantly. Super Scorcher Breath is considered a basic Attack, applies On-Hit effects, and applies Life Steal at 50% effectiveness. Damage is increased by Critical Strike Chance and Critical Strike Damage at 75% effectiveness. This Ability can only damage each target one time per cast."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "용 훈련 중첩을 resource 조건으로 보존하되 자원의 이름·다른 자원과 구별은 원문 텍스트로 확인해야 함.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "화상은 최대 체력에 (0.01% + 추가 공격력 100당 2.5%)를 곱하는 복합식이며 선형 피해 합산 금지; 최대 체력 소유자 미명시. 2.008 폭발은 공급 원문 값으로 유지하며 정수로 임의 수정하지 않음.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "치명타 확률과 피해량 75% 효율은 두 입력의 결합식이 없어 단일 피해 75% 배율로 실행하지 않음.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.7",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

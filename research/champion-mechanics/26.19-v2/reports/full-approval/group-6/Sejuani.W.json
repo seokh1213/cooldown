@@ -1,0 +1,125 @@
+{
+  "id": "Sejuani.W",
+  "sourceHash": "180eb86769ba90dfa7cc6ceb8ca481c45e9903617be8e68d3dcd7dd48b22eeb7",
+  "beforeCandidateHash": "4be863cbbdd01ef00565cc6289775941d420e35c4bc1829ed3d1f1c4a5d15c9b",
+  "candidateHash": "4f49f8d966a9701378fa94e2864f46b3c2aa90da6a9db101d792d93b428e3f42",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "두 번의 물리 피해, 첫 타격의 미니언·정글 몬스터 밀치기와 둘째 둔화 및 각 타격의 서리 중첩을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫 휘두르기 5/15/25/35/45 + 주문력 30% + Health 4%를 확인했다. 원문이 Health의 소유자·최대 또는 추가 체력 종류를 명시하지 않아 caster maxHealth 확정을 제거했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫 휘두르기에 적중한 미니언만 뒤로 밀리도록 단계 조건과 knockback을 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫 휘두르기의 정글 몬스터 knockback 분기를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "둘째 휘두르기 5/25/45/65/85 + 주문력 60% + Health 8%를 확인하고 불명확한 체력 스탯을 확정하지 않았다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "잠깐 둔화는 둘째 휘두르기 적중에만 적용한다. 수치 없는 지속 시간은 gap에 보존했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "두 휘두르기의 ability_hit 각각 만년 서리 중첩을 적용하며 일반 attack 이벤트로 확대하지 않았다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.2.stat",
+      "issue": "Health 계수에 caster maxHealth가 확정되어 있지만 공급 원문은 체력 종류와 소유자를 명시하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Sejuani swings her flail, dealing (5/15/25/35/45 + (30% Ability Power) + (4% Health)) physical damage and Knocking Back minions and jungle monsters. She then lashes out again, dealing (5/25/45/65/85 + (60% Ability Power) + (8% Health)) physical damage and briefly Slowing targets. Both swings apply stacks of Permafrost."
+    },
+    {
+      "path": "rules.1.conditions.1",
+      "issue": "뒤로 밀치기 적용 단계가 구조 조건에 없어 둘째 타격으로 확대될 수 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Sejuani swings her flail, dealing (5/15/25/35/45 + (30% Ability Power) + (4% Health)) physical damage and Knocking Back minions and jungle monsters. She then lashes out again, dealing (5/25/45/65/85 + (60% Ability Power) + (8% Health)) physical damage and briefly Slowing targets. Both swings apply stacks of Permafrost."
+    },
+    {
+      "path": "rules.4.conditions.0",
+      "issue": "둔화는 둘째 타격 효과이므로 일반 적중 조건을 좁혔다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Sejuani swings her flail, dealing (5/15/25/35/45 + (30% Ability Power) + (4% Health)) physical damage and Knocking Back minions and jungle monsters. She then lashes out again, dealing (5/25/45/65/85 + (60% Ability Power) + (8% Health)) physical damage and briefly Slowing targets. Both swings apply stacks of Permafrost."
+    },
+    {
+      "path": "rules.5.trigger.event",
+      "issue": "Both swings만 중첩을 주므로 일반 기본 공격을 포함하는 trigger를 제거했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Sejuani swings her flail, dealing (5/15/25/35/45 + (30% Ability Power) + (4% Health)) physical damage and Knocking Back minions and jungle monsters. She then lashes out again, dealing (5/25/45/65/85 + (60% Ability Power) + (8% Health)) physical damage and briefly Slowing targets. Both swings apply stacks of Permafrost."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "note": "Health 4%·8%는 추가 체력이라고 명시된 계수가 아니다. 원문은 체력 종류와 소유자를 명시하지 않아 caster maxHealth 또는 bonusHealth로 계산하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "note": "둔화 지속 시간이 'briefly'로만 제시된다."
+    }
+  ],
+  "validation": {
+    "id": "Sejuani.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

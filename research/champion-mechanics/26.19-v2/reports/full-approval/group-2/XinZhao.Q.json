@@ -1,0 +1,49 @@
+{
+  "id": "XinZhao.Q",
+  "sourceHash": "f95bd7a90558eb96e287e2b2ebabde8e32ec40e4c62303b788c13b92413594cc",
+  "beforeCandidateHash": "fd5f664e74e0f974a1b3373677b5c9eee8696ed71ae6784ef8c82722fb08dca8",
+  "candidateHash": "3b6e0bda70355096a60a1555e4cc81c8e83d70d36e35f7915a49aed0ce27431b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "다음3평타bonusAD추가물리/각다른스킬쿨1초감소·그중3번째0.75초띄움 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 다음 세 번의 기본 공격은 추가 물리 피해를 입히고 다른 스킬의 재사용 대기시간을 줄입니다.; 수치 count en:body:n0=3 상수 scalar / amount en:body:n1=15,en:body:n2=30,en:body:n3=45,en:body:n4=60,en:body:n5=75 상수 rank_values / stat_coefficient en:body:n6=40%(백분율) caster.bonusAttackDamage scalar / cooldown_seconds en:body:n7=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq Q사용후다음세기본공격중 / caster.hit_count eq Q후속세공격중세번째공격; target: 세 번째 강화 기본 공격은 대상을 띄웁니다. [knockup]; 수치 duration_seconds en:body:n8=0.75 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "평타행위자와Q후속세공격중순서조건 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Xin Zhao's next 3 Attacks deal an additional (15/30/45/60/75 + (40% bonus Attack Damage)) physical damage and reduces his other Ability's Cooldowns by 1 second. The third Attack also Knocks Up for 0.75 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

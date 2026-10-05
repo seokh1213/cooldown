@@ -1,0 +1,65 @@
+{
+  "summary": "조이는 근처 위치로 순간이동하고 잠시 후 원래 위치로 돌아옵니다. 순간이동 중에는 스킬과 기본 공격을 사용할 수 있지만 이동할 수 없으며, 벽 너머를 볼 수 있습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "근처 위치로 순간이동한 뒤 지속 시간이 끝나면 원래 위치로 돌아옵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "순간이동 중 스킬과 기본 공격을 사용할 수 있지만 이동할 수 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "순간이동 중 벽 너머를 볼 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zoe teleports to a nearby position for 1 second. Afterwards, she teleports back. Zoe can use Abilities and Attack, but can't move during this time. Zoe can also see over walls during the teleport."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

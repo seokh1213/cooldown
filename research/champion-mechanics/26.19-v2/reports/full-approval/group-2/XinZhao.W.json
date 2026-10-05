@@ -1,0 +1,148 @@
+{
+  "id": "XinZhao.W",
+  "sourceHash": "99ba5332a49bed00f0c64916ad48fe808a8219a5f89d337c78977cf814fbb3a0",
+  "beforeCandidateHash": "52f0b6fda6482b27117149b4fec8864cce150f8292d1d6d766f0459f28f810f6",
+  "candidateHash": "ae47d598d05576a27a97ad06e0e9bdd76068fe8d629713c41e6d07dd6b76834f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 3,
+  "summaryCheck": "가르기물리와찌르기AD/AP전체×치명타배율/33.3%상한,찌르기50%·AP가산초둔화,챔피언/대형몬스터3초도전·비은신드러냄,두공격흡혈33%/미니언50~100% 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 창을 가를 때 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n0=30,en:body:n1=40,en:body:n2=50,en:body:n3=60,en:body:n4=70 상수 rank_values / stat_coefficient en:body:n5=30%(백분율) caster.totalAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 찌르기피해는(기본+90%AD+65%AP)×(1+33.3%치명타확률)의식이며증가율상한33.3%입니다. [physical]; 수치 amount en:body:n6=50,en:body:n7=85,en:body:n8=120,en:body:n9=155,en:body:n10=190 상수 formula_components / stat_coefficient en:body:n11=90%(백분율) caster.totalAttackDamage formula_components / stat_coefficient en:body:n12=65%(백분율) caster.abilityPower formula_components / damage_multiplier en:body:n13=1,en:body:n14=33.3%(백분율) caster.critChance formula_components / other en:body:n19=33.3%(백분율) 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 찌르기에 적중; target: 찌르기적중시50%둔화의지속시간은1.5+0.5%AP초입니다. [slow]; 수치 amount en:body:n15=50%(백분율) 상수 scalar / duration_seconds en:body:n16=1.5 상수 formula_components / stat_coefficient en:body:n17=0.5%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 caster.activation eq 이W가르기또는찌르기적중; caster: 두 공격 모두 생명력 흡수 효과가 적용됩니다.; 수치 amount en:body:n22=33%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq minion; target: 미니언에게이W피해의50~100%비율을적용합니다. 숫자표는%를개별인식하지못하므로절대피해량으로실행하지않습니다. [physical]; 수치 min_amount en:body:n20=50 상수 level_range / max_amount en:body:n21=100 상수 level_range; flags replaces_base"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 찌르기에 적중 / target.target_type eq 챔피언또는대형몬스터; target: 찌르기에 적중한 챔피언과 대형 몬스터를 도전 받은 상태로 표시하고, 은신 상태가 아니면 드러냅니다.; 수치 duration_seconds en:body:n18=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 찌르기에 적중 / target.target_type eq 챔피언또는대형몬스터 / target.visibility eq 은신상태가아님; target: 찌르기에 맞은 챔피언과 대형 몬스터는 은신 상태가 아니면 드러납니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "도전/시야의대상과비은신조건누락·AP기간계수누락·치명타주인/상한역할·퍼센트범위단위 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Xin Zhao slashes, dealing (30/40/50/60/70 + (30% Attack Damage)) physical damage, then thrusts, dealing (50/85/120/155/190 + (90% Attack Damage) + (65% Ability Power)) × (1 + 33.3% Critical Strike Chance). Enemies hit by the thrust are Slowed by 50% for (1.5 + (0.5% Ability Power)) seconds. Champions and Large Monsters hit by the thrust are marked as Challenged for 3 seconds and revealed unless Stealthed. The thrust's damage is increased by up to 33.3% based on Xin Zhao's Critical Strike Chance. Deals (50 ~ 100)% damage to minions. Applies Lifesteal at 33% effectiveness on both attacks."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 660,
+      "verdict": "repaired",
+      "reason": "33.3%는피해상한아닌증가율상한other/구성요소로보존."
+    },
+    {
+      "index": 661,
+      "verdict": "repaired",
+      "reason": "도전표시는3초유지,드러냄3초는근거불분명하여제거."
+    },
+    {
+      "index": 662,
+      "verdict": "documented_gap",
+      "reason": "frozenpercent=false는변경불가;50~100%텍스트와lexical단위실행제한gap보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "미니언 대상 피해 비율의 적용 방식 및 변동 조건은 원문에서 구체적으로 설명되지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "(50~100)%의숫자표percent=false; lexical숫자표만으로단위를실행하지말것.비율텍스트보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "찌르기괄호전체×치명타확률배율과둔화AP가산시간은복합식구성요소;독립선형피해/지속시간합산금지.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "findings": [
+    {
+      "id": "Smolder.P",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hitting champions with Abilities and killing enemies with Super Scorcher Breath grants a stack of Dragon Practice, which improves Smolder's basic Abilities.",
+      "issue": "처치 조건 설명에서 초강력 화염 숨결 사용 조건이 빠져 있어, 다른 방식으로 처치해도 중첩을 얻는 것처럼 읽힙니다.",
+      "correction": "초강력 화염 숨결로 적을 처치하면 용 훈련 중첩을 얻는다고 명시하세요."
+    },
+    {
+      "id": "Smolder.P",
+      "path": "rules.1.evidence.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This Ability can only damage each target one time per cast.",
+      "issue": "대상당 시전 1회 피해 제한을 중첩 획득 규칙의 근거로 연결했습니다. 해당 인용문은 피해 횟수만 제한하므로 중첩 획득 효과를 뒷받침하지 않습니다.",
+      "correction": "중첩 획득 규칙의 근거에서 이 인용문을 제거하세요."
+    },
+    {
+      "id": "Smolder.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Super Scorcher Breath: Deal an additional 0.25 magic damage and gain new effects at 25, 125, and 225 stacks.",
+      "issue": "조건이 초강력 화염 숨결의 효과에 25중첩 이상을 요구하는 것으로 설정되어 있어, 원문에 명시된 125·225중첩 효과까지 같은 조건에 묶입니다. 이는 효과 단계들을 25중첩부터 모두 적용되는 것처럼 만듭니다.",
+      "correction": "조건 필드를 제거하고, 25·125·225중첩의 각 효과 임계값을 텍스트와 gap에 그대로 보존하세요."
+    },
+    {
+      "id": "Smolder.Q",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "125 Stacks: Sends 2.008 explosions beyond the target that deal 50% of this Ability's damage.",
+      "issue": "2.008은 폭발 개수로 기록되어 개수를 2.008개로 표현합니다. 이 값은 개수로 해석하기 어렵고, 출처만으로 올바른 폭발 횟수를 확정할 수도 없습니다.",
+      "correction": "개수 필드에서 제거하고, 원문 표현과 그 의미가 불확실하다는 gap을 보존하세요."
+    },
+    {
+      "id": "Smolder.Q",
+      "path": "rules.1.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If the target dies, Smolder refunds 15 Mana, once per cast.",
+      "issue": "마나 환급 규칙의 근거에 대상당 시전 1회 피해 제한 인용문이 추가되어 있습니다. 그 인용문은 환급 조건이나 횟수를 설명하지 않습니다.",
+      "correction": "환급 규칙의 근거에서 피해 제한 인용문을 제거하세요."
+    },
+    {
+      "id": "Smolder.Q",
+      "path": "rules.4.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds.",
+      "issue": "화상 피해의 계수가 붙는 max Health를 소유자 없는 비율 입력으로 기록해, 피해 대상의 최대 체력 기준이라는 연결이 빠졌습니다.",
+      "correction": "가능한 경우 비율 입력의 대상을 화상 피해를 받는 대상으로 표시하고, 지원되지 않으면 소유자를 확정하지 말고 원문 텍스트와 gap으로 보존하세요."
+    },
+    {
+      "id": "Smolder.Q",
+      "path": "rules.5.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Enemy champions that drop below 6.5% total health while burning are killed instantly.",
+      "issue": "조건이 6.5% 미만이라는 현재 체력 임계값으로 설정됐습니다. 원문은 현재 체력이 아니라 총 체력(total health)을 기준으로 하므로 의미가 다릅니다.",
+      "correction": "현재 체력 임계값 조건을 제거하고, 총 체력 기준이라는 원문 표현을 텍스트와 gap으로 보존하세요."
+    },
+    {
+      "id": "Smolder.Q",
+      "path": "rules.6.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Super Scorcher Breath is considered a basic Attack, applies On-Hit effects, and applies Life Steal at 50% effectiveness.",
+      "issue": "요약 설명에서 생명력 흡수의 50% 적용률이 빠져 효과를 완전 적용하는 것처럼 읽힙니다.",
+      "correction": "생명력 흡수는 50% 효율로 적용된다고 명시하세요."
+    },
+    {
+      "id": "Smolder.R",
+      "path": "rules.1.effects.0.parameters.1.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies in the center take (225/375/525 + (150% bonus Attack Damage) + (150% Ability Power)) physical damage instead and are Slowed by 40% for 2 seconds.",
+      "issue": "화염 중심 피해의 추가 공격력 계수를 caster 소유로 고정했습니다. 원문은 어미가 피해를 준다고 밝히지만 계수의 능력치 소유자를 명시하지 않습니다.",
+      "correction": "caster 소유자를 제거하고, 원문 텍스트와 소유자 미확정 gap을 유지하세요."
+    },
+    {
+      "id": "Smolder.R",
+      "path": "rules.1.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies in the center take (225/375/525 + (150% bonus Attack Damage) + (150% Ability Power)) physical damage instead and are Slowed by 40% for 2 seconds.",
+      "issue": "둔화 효과에 연결된 규칙이지만, 해당 효과 설명 자체에는 2초 지속시간이 없습니다. 현재 구조로는 2초가 둔화가 아닌 대체 피해의 지속시간으로 오해될 수 있습니다.",
+      "correction": "2초를 둔화 효과의 지속시간에 연결하세요."
+    },
+    {
+      "id": "Smolder.R",
+      "path": "rules.4.effects.0.parameters.1.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Smolder's mom heals her son for (100/135/170 + (50% bonus Attack Damage) + (75% Ability Power)) Health if she hits him.",
+      "issue": "회복 계수의 추가 공격력을 caster 소유로 고정했습니다. 원문은 회복 주체가 어미라고 밝히지만, 스키마의 caster가 어미를 뜻하는지는 확정되지 않았습니다.",
+      "correction": "소유자를 어미로 확정할 수 있는 스키마 주체가 없다면 caster 지정을 제거하고 미확정 gap을 유지하세요."
+    }
+  ],
+  "notes": []
+}

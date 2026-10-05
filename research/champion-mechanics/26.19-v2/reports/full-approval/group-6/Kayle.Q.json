@@ -1,0 +1,92 @@
+{
+  "id": "Kayle.Q",
+  "sourceHash": "63123c87f5acec19ef9f448acf8ec6b099f409ce1610f7f87d5799ce371e51fb",
+  "beforeCandidateHash": "511d648ac66a63df1f1f55325f540634bb5830293b67cb5b91b099463f86ac4b",
+  "candidateHash": "aba70a68db0afecee1f98c718a987cf821a259918dcbb81604ab1e703f4dc92c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫 적중에서 멈추는 검과 첫 대상·뒤의 적 피해, 둔화 및 두 저항력 감소를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "60/90/120/150/180 + 주문력 50% + 추가 공격력 60% 마법 피해를 첫 대상과 뒤의 적 모두에게 적용한다. secondary_targets로 첫 대상이 배제되지 않도록 범위 조건을 명시했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 대상 범위의 25/30/35/40/45% 2초 둔화를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "방어력과 마법 저항력 각각 15% 4초 감소를 두 stat_modifier로 분리했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.subject",
+      "issue": "secondary_targets는 첫 대상까지 포함하는 공급 범위를 정확히 나타내지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Kayle fires a celestial sword that stops on the first enemy hit, dealing (60/90/120/150/180 + (50% Ability Power) + (60% bonus Attack Damage)) magic damage, Slowing by 25/30/35/40/45% for 2 seconds, and removing 15% Armor and Magic Resist for 4 seconds from the target and enemies behind them."
+    },
+    {
+      "path": "rules.2.effects.0.statTo",
+      "issue": "방어력·마법 저항력을 하나의 statTo 없는 효과로 합쳐 실제 저항력 변경 종류가 누락됐다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Kayle fires a celestial sword that stops on the first enemy hit, dealing (60/90/120/150/180 + (50% Ability Power) + (60% bonus Attack Damage)) magic damage, Slowing by 25/30/35/40/45% for 2 seconds, and removing 15% Armor and Magic Resist for 4 seconds from the target and enemies behind them."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "대상 범위는 텍스트로 표현 가능하므로 근사라고 주장한 gap을 제거하고 실제 단위 한계만 보존했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Kayle fires a celestial sword that stops on the first enemy hit, dealing (60/90/120/150/180 + (50% Ability Power) + (60% bonus Attack Damage)) magic damage, Slowing by 25/30/35/40/45% for 2 seconds, and removing 15% Armor and Magic Resist for 4 seconds from the target and enemies behind them."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "25/30/35/40/45% 둔화 배열의 앞 항목은 frozen percent=false다. 실제로 모두 퍼센트이므로 lexical 숫자표만으로 단위를 실행하지 말 것. 첫 대상과 뒤의 적 범위는 텍스트 조건으로 정확히 표현된다."
+    }
+  ],
+  "validation": {
+    "id": "Kayle.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

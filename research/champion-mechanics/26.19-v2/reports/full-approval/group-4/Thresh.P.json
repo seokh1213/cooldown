@@ -1,0 +1,43 @@
+{
+  "id": "Thresh.P",
+  "sourceHash": "7ee7551734dd82902f1a7d00fe3b9888be10ecf44acd6fbad65636791b5ae667",
+  "beforeCandidateHash": "d836478c083ba8b669853c225bb1fe2f18518fe226cfb8eb6da51faa96ffff2f",
+  "candidateHash": "e9deddda9d4d1d4aba099e5537b9eb78e31382a1fbdccc1ca5be2e3f56886bea",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "죽은 적 근처로 걸어가 영혼을 하나 수집할 때 쓰레쉬의 방어력 1과 주문력 1이 각각 영구 증가한다는 획득·스탯·영구성 관계를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 죽은 적 근처로 걸어가 영혼을 하나 수집함 적용. caster: 수집한 영혼 하나마다 쓰레쉬 방어력이 영구적으로 1 증가합니다.; amount=1  scalar / caster: 수집한 영혼 하나마다 쓰레쉬 주문력이 영구적으로 1 증가합니다.; amount=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions,effects",
+      "issue": "영혼 수집 조건이 구조적으로 없고 방어력·주문력 증가를 숫자 하나와 미지정 스탯으로 합친다.",
+      "correction": "영혼 하나를 실제 수집한 조건과 방어력 1·주문력 1을 각 스탯 효과로 분리했다.",
+      "sourceId": "en:body",
+      "quote": "Each Soul grants him 1 Armor and 1 Ability Power."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

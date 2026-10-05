@@ -1,0 +1,66 @@
+{
+  "id": "Singed.R",
+  "sourceHash": "3b6f15183c663aa350ae31384de955dd4d414ce5deeeacacc9ef279cf0eb412f",
+  "beforeCandidateHash": "e0f73a33e447bd2d8060d2aa15b701cff61987b84d04391a185c103fdbca693a",
+  "candidateHash": "6d22a3d15b61d7626d36cfa75527b5692ff777ee901c5fc292a15ee220e1babd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "25초 자기 주문력/방어력/마저/이속/체력재생/마나재생25/55/85증가, 효과 중 독 자취의40%고통스러운상처1초를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 주문력이 증가한다. [amount n0=25/n1=55/n2=85 rank_values; duration_seconds n3=25 scalar] / caster stat_modifier: 방어력이 증가한다. [amount n0=25/n1=55/n2=85 rank_values; duration_seconds n3=25 scalar] / caster stat_modifier: 마법 저항력이 증가한다. [amount n0=25/n1=55/n2=85 rank_values; duration_seconds n3=25 scalar] / caster stat_modifier: 이동 속도가 증가한다. [amount n0=25/n1=55/n2=85 rank_values; duration_seconds n3=25 scalar] / caster stat_modifier: 체력 재생력이 증가한다. [amount n0=25/n1=55/n2=85 rank_values; duration_seconds n3=25 scalar] / caster other: 신지드의 마나 재생력이25초 동안25/55/85증가한다. [amount n0=25/n1=55/n2=85 rank_values; duration_seconds n3=25 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 25초 광기의 물약 효과가 활성 중; target.other eq 신지드의 독 자취가 이 대상에게 적용됨. target mark: 맹독의 자취가 고통스러운 상처를 적용한다. [amount n4=40% scalar; duration_seconds n5=1 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.5;rules.1.trigger,conditions;gaps",
+      "issue": "마나 재생 규칙 누락과 고통스러운 상처 행위자 target",
+      "correction": "허용 statTo가 없는 마나 재생을 other효과로25/55/85·25초 보존하고 자기 독 자취 적용 사건으로 고쳤다.",
+      "sourceId": "en:body",
+      "quote": "Singed drinks a potent brew of chemicals, granting him 25/55/85 Ability Power, Armor, Magic Resist, Move Speed, Health Regen, and Mana Regen for 25 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 477,
+      "verdict": "repaired",
+      "reason": "healthRegen효과는 체력 재생만 기록하여 오합산은 없었으나 마나 재생은gap에만 있었다. 별도 수치·시간 규칙으로 복구했다."
+    },
+    {
+      "index": 478,
+      "verdict": "false_positive",
+      "reason": "원문이 Poison Trail also applies라고 하므로 독 자취가 대상에게 적용되는 조건은 효과의 직접 적용 사건이며 임의 추가 요구가 아니다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "마나 재생력은 허용 stat목록에 없어 other효과에 수치와25초 시간을 보존한다. healthRegen과 합산하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "독 자취의 적용 대상에게 고통스러운 상처를 보존했다. 대상 선정/적용 tick 등 세부 판정은 이 슬롯 본문에 없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": "MissFortune.R",
+  "sourceHash": "7491585af22ec65f1b3968248352e7bced86f5834adf5071efe1706149774f6b",
+  "beforeCandidateHash": "bec6db948b0eb462adfc697cfd0cbb059b812375c8dc75a399c6f65bc5a31b1b",
+  "candidateHash": "7abeabffaea506d6d6caaf887c1fbef6bafdb149307fcffc2ea1034b3c5692e5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "전방원뿔3초14/16/18차례포격,각차례물리피해와전체일반합계,실제치명타시각차례기본식×(0.7+30%시전자치명타피해량)을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 nearby_enemies.distance eq 시전자 전방 원뿔 포격 범위의 적 적용. nearby_enemies: 정신 집중 중 원뿔 범위에 여러 차례 총알을 발사해 매회 물리 피해를 입힙니다. (physical); count=14/16/18  rank_values, duration_seconds=3  scalar, amount=20/30/40  rank_values, stat_coefficient=60% caster의 totalAttackDamage formula_components, stat_coefficient=25% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. nearby_enemies: 모든일반발사차례가적중했을때의전체물리피해표시다.각차례피해에더하는별도타격이아니다.; amount=280/480/720  rank_values, stat_coefficient=840/960/1080% caster의 totalAttackDamage rank_values, stat_coefficient=350/400/450% caster의 abilityPower rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.activation eq 궁극기의 해당 발사 차례가 실제 치명타로 적중함, nearby_enemies.distance eq 시전자 전방 원뿔 포격 범위의 적 적용. nearby_enemies: 각 발사는 치명타가 적용될 수 있으며, 치명타 시 해당 발사의 물리 피해가 증가합니다. (physical); amount=20/30/40  formula_components, stat_coefficient=60% caster의 totalAttackDamage formula_components, stat_coefficient=25% caster의 abilityPower formula_components, ratio_output=0.7  formula_components, stat_coefficient=30% caster의 critDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "전체합계를각차례피해와중복하는damage로표기",
+      "correction": "전체일반포격합계UI정보로정정",
+      "sourceId": "en:body",
+      "quote": "total (280/480/720 + (840/960/1080% Attack Damage) + (350/400/450% Ability Power)) physical damage"
+    },
+    {
+      "path": "rules.2",
+      "issue": "무조건치명타피해와치명타스탯입력누락",
+      "correction": "실제치명타차례대체조건·caster치명타계수및중첩식보존",
+      "sourceId": "en:body",
+      "quote": "Each wave can critically strike for (20/30/40 + (60% Attack Damage) + (25% Ability Power)) × (0.7 + 30% Critical Strike Damage) physical damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 299,
+      "verdict": "false_positive",
+      "reason": "기존총피해파라미터에총공격력/AP계수가모두보존된다.text가이를반복하지않은점은누락이아니다.별도의총합계중복피해문제는수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "각치명타차례피해는기본전체차례피해식×(0.7+30%치명타피해량)의중첩곱이다.구성요소를단순선형피해로합산하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

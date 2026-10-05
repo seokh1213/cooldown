@@ -1,0 +1,50 @@
+{
+  "id": "Fizz.P",
+  "sourceHash": "dff440309a7dba03c5c02262461c362cbd3dfbc24f87a2b5857bd69f0ef4dcfa",
+  "beforeCandidateHash": "90b5a51aaf86aa040e61646915b72daba502b2f5c9dc9ca29b53cbb0e554645d",
+  "candidateHash": "23ccb32dbdfd00b44abddd942f54621738802b8b661ece68284c308368af58dd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "유닛 통과와 모든 출처 피해의 고정량 감소를 양 언어와 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "유체화로 유닛을 통과하며 모든 출처의 받은 피해가 4 + 주문력 1%라는 고정량만큼 감소한다. 받은 피해의 1% 감소로 오해하지 않도록 단위를 명시했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "유체화의 유닛 통과 의미를 공급 요약대로 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Fizz can move through units and takes a flat amount of reduced damage from all sources"
+    },
+    {
+      "path": "rules.0.effects.1.text",
+      "issue": "flat damage reduction과 주문력 계수를 구분해 실제 감소량 의미를 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz is Ghosted and takes (4 + (1% Ability Power)) reduced damage from all sources."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Fizz.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

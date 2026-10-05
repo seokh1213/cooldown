@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Twitch.E",
+      "sourceHash": "c9d604673db0894fd934a4a49b1b2c3cfee825dc473b06f905d36606cf00a71b",
+      "candidateHash": "b743c8f8d4ff7b54d3bfbaf8a2b71ee0188b6bfd048c1f2277ea836088f98e4f"
+    },
+    {
+      "id": "Twitch.P",
+      "sourceHash": "8378aaaa59f8021c039ff00edde7b333c1929fb382719c4fd82fd9297b6617d4",
+      "candidateHash": "8cbf82c1b5bd4e3f422d999caba21d7e335c88eccd76f206f9427f7acaddb8da"
+    },
+    {
+      "id": "Twitch.Q",
+      "sourceHash": "6ef775043f7dcee7c849d25e738e04f2e5de4754b99222e3d527789a3b58e944",
+      "candidateHash": "435b2345094dba2b291070bee1c27eb5712edef5351b04bf7f79f08da16f7350"
+    },
+    {
+      "id": "Twitch.R",
+      "sourceHash": "416e65a93f5262ca01ea948b1a1555027f000d8d4aba5b62971264ef0b12c461",
+      "candidateHash": "a5b619c3a29f7bc2ce80ee554386aba1a6afc2a06cdb0e1d3831af1ca9a7643c"
+    },
+    {
+      "id": "Twitch.W",
+      "sourceHash": "5bbce6cf74c1d7405c89ba33d0bf44a7dda4a19be872d0389101325b57d70a7f",
+      "candidateHash": "149ab12cb7335e85aeafd381f189336d3f3f16bf7cee3575341e92e321258a2b"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Twitch.E",
+      "path": "rules.1.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "plus an additional (15/20/25/30/35 + (35% bonus Attack Damage)) physical damage and (35% Ability Power) magical damage per stack of Deadly Venom.",
+      "issue": "중첩당 추가 피해의 `count`에 20을 참조했습니다. 원문에서 20은 기본 물리 피해의 첫 번째 랭크 값이지 맹독 중첩 수가 아닙니다.",
+      "correction": "맹독 중첩당 피해라는 문구만 기록하고 중첩 수를 나타내는 수치 매개변수는 제거하세요."
+    },
+    {
+      "id": "Twitch.E",
+      "path": "rules.2.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "plus an additional (15/20/25/30/35 + (35% bonus Attack Damage)) physical damage and (35% Ability Power) magical damage per stack of Deadly Venom.",
+      "issue": "중첩당 마법 피해의 `count`에도 기본 피해의 첫 번째 랭크 값 20을 사용했습니다. 이 값은 중첩 수를 뜻하지 않습니다.",
+      "correction": "중첩당 피해라는 서술을 유지하고, 근거 없는 `count` 매개변수는 제거하세요."
+    },
+    {
+      "id": "Twitch.P",
+      "path": "rules.0.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Twitch's Attacks infect his target On-Hit, dealing ((1 ~ 5) + (3% Ability Power)) true damage per second for 6 seconds, stacking up to 6 times.",
+      "issue": "발동 주체를 `target`으로 기록했지만 독을 적용하는 것은 트위치의 공격입니다. 대상은 감염되는 주체입니다.",
+      "correction": "발동 이벤트의 주체를 `caster`로 바꾸세요."
+    },
+    {
+      "id": "Twitch.W",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Twitch hurls a cask that adds a stack of Deadly Venom to all enemies struck and leaves behind a toxic cloud that persists for 3 seconds.",
+      "issue": "명중 시 적용하는 맹독 중첩 수의 `count`에 독구름 지속 시간인 3초를 연결했습니다. 원문은 맞은 적마다 중첩 하나를 적용한다고 설명할 뿐, 3을 중첩 수로 쓰지 않습니다.",
+      "correction": "중첩 하나 적용을 텍스트로 보존하고, 3초 참조는 독구름 지속 효과에만 연결하세요."
+    },
+    {
+      "id": "Twitch.W",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Twitch hurls a cask that adds a stack of Deadly Venom to all enemies struck and leaves behind a toxic cloud that persists for 3 seconds.",
+      "issue": "독구름 지속시간 3초가 `other` 효과의 지속시간으로 구조화되어 있지만, 효과 텍스트는 시간을 정하지 않은 채 독구름이 지속된다고만 기록합니다. 이로 인해 3초 지속 효과라는 정보가 구조 데이터에서 누락됩니다.",
+      "correction": "이 효과를 독구름 생성/지속 효과로 명시하고, 3초를 그 지속시간으로 연결하세요."
+    },
+    {
+      "id": "Twitch.W",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies that remain within the cloud are Slowed by (30/35/40/45/50 + (6% Ability Power))and receive an additional stack of Deadly Venom each second.",
+      "issue": "매초 적용되는 맹독 중첩의 `count`가 독구름의 지속시간 3초를 참조합니다. 원문에서 3은 구름 지속시간이고, 이 효과의 주기는 매초입니다.",
+      "correction": "중첩이 매초 추가된다는 이벤트 주기를 텍스트로 보존하고 `count`에서 3초 참조를 제거하세요."
+    }
+  ],
+  "notes": []
+}

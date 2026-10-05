@@ -1,0 +1,67 @@
+{
+  "id": "JarvanIV.P",
+  "sourceHash": "37d49e99239f72f2d95845d06c153e3729ae73cfce2d21a4f56f747813acab51",
+  "beforeCandidateHash": "3e45850556da2ea4218d9b3a7f7714c51d5925b84cbba453c261dee576f00051",
+  "candidateHash": "e79caede26d7930d8f9598d0cb481ced83df6a10271f5ad9df9e72e960a40a43",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "대상현재HP8%추가물리피해와대상별6~3초쿨타임을대조했다. 첫공격은해당대상효과가준비된공격을의미하며현재HP전용스탯부재만실제한계로유지했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target other eq 이적대상에대한패시브가아직발동하지않았거나대상별6~3초쿨타임이완료된상태 → target: 효과가준비된적을기본공격하면그대상의현재체력8%추가물리피해를입힙니다. [physical] / ratio_output=8% [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target other eq 이적대상에대한패시브가아직발동하지않았거나대상별6~3초쿨타임이완료된상태 → target: 이패시브가발동한대상에대해레벨별6~3초재사용대기시간이시작됩니다. / cooldown_seconds=6/3 [level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1/gaps.1",
+      "issue": "공격행위자가target이고실제대상별쿨타임이UI로만선언되어매공격피해를주며준비조건을불명확gap으로숨겼다.",
+      "correction": "시전자공격/대상별준비조건/6~3초실제쿨타임으로정정하고불필요한gap을제거했다.",
+      "sourceId": "en:body",
+      "quote": "This effect has a (6 ~ 3) second Cooldown per target."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "피해 비율의 기준은 대상의 현재 체력이지만, 허용된 stat 목록에 현재 체력이 없어 이를 stat으로 구조화하지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "id": "Lissandra.Q",
+  "sourceHash": "7417d86c99b884c8bb21e6571735e3c7c534467e583d5f58f6b034c77b1347b7",
+  "beforeCandidateHash": "6ff42eb0eeaa924d8773d4b8949f3e19eb140e95b0d7783f6bdd07df1df76683",
+  "candidateHash": "f5e2a893fde8ea0d98c038af2922738b55704db9fafcfcde7450e4c76bf5eb0d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫적중적80/115/150/185/220+AP75%마법피해와1.5초20/24/28/32/36%둔화,그뒤파편적중적도동일피해/둔화를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first → target: 얼음창이 적중 대상에게 마법 피해를 준다. [magic] / amount=80/115/150/185/220 [rank_values]; stat_coefficient=75% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first → target: 얼음창이 적중 대상을 둔화시킨다. 둔화량은20/24/28/32/36%이며1.5초 지속됩니다. [slow] / amount=20/24/28/32/36% [rank_values]; duration_seconds=1.5 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 secondary_targets hit_order neq first; secondary_targets other eq 첫 적중 적 뒤에서 지나가는 얼음파편에 맞은 적 → secondary_targets: 얼음 파편이 첫 적중 대상 뒤의 적에게도 같은 마법 피해를 준다. [magic] / amount=80/115/150/185/220 [rank_values]; stat_coefficient=75% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 secondary_targets hit_order neq first; secondary_targets other eq 첫 적중 적 뒤에서 지나가는 얼음파편에 맞은 적 → secondary_targets: 얼음 파편이 첫 적중 대상 뒤의 적도 둔화시킨다. 둔화량은20/24/28/32/36%이며1.5초 지속됩니다. [slow] / amount=20/24/28/32/36% [rank_values]; duration_seconds=1.5 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.*.trigger/conditions",
+      "issue": "적중행위자가target/secondary_targets이고후속적중의뒤쪽파편범위가텍스트에만있었다.",
+      "correction": "시전자스킬적중과뒤쪽파편범위조건을보존했다.",
+      "sourceId": "en:body",
+      "quote": "and also damaging and slowing the enemies behind them."
+    },
+    {
+      "path": "rules.1/3/gaps",
+      "issue": "랭크별%둔화단위가숫자표에보존되지않았다.",
+      "correction": "전체랭크%단위와한계를기록했다.",
+      "sourceId": "en:body",
+      "quote": "20/24/28/32/36%"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "20/24/28/32/36%는모든랭크%둔화지만frozen숫자표는마지막값만percent=true다. 모든%단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

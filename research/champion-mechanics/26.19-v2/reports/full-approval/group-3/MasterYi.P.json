@@ -1,0 +1,43 @@
+{
+  "id": "MasterYi.P",
+  "sourceHash": "48a76076e62103f9c5bb96c68f2248bf4b40146bf63a10c912a6484c623df88a",
+  "beforeCandidateHash": "02ccf9153e2d613f1dff1d3eee406ebc3b49b80734c5be4cc828d9df78c3c607",
+  "candidateHash": "0680c0e740561d1d129757c0b9d8526c5280bf6fe187e1ca57112cf22881a61a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "매4번째추가공격의자기AD50%를직접피해계수로확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster hit_count eq 4 → target: 기본 공격의 두 번째 공격을 가한다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 followup_attack / 조건 caster hit_count eq 4 → target: 두 번째 공격이 물리 피해를 입힌다. [physical] / stat_coefficient=50% (caster totalAttackDamage) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0.parameters.0.role",
+      "issue": "피해의AD50%가ratio_input으로기록",
+      "correction": "stat_coefficient로피해계수역할수정",
+      "sourceId": "en:body",
+      "quote": "The second Attack deals (50% Attack Damage) physical damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

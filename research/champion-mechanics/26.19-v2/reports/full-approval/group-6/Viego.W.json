@@ -1,0 +1,88 @@
+{
+  "id": "Viego.W",
+  "sourceHash": "6b0381fb5230d161e42ff4acf467477e060ebdf1de57d012aa7252943549a938",
+  "beforeCandidateHash": "0aad13f470e2da0c49c8915b1d14a071895eac33b81f18dbfbfe146cc8627fa6",
+  "candidateHash": "3af0c0e468b8b77c414500a48b868a9de9a88dcfd85db77c0e717820314000b6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "충전 시 자기 10% 둔화, 발사 돌진·마법 피해, 첫 적 기절 0.25~1.25초 및 충전 방해 시 CD 3초를 두 본문과 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "충전 시작 시 자신 이동 속도 10% 감소."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "발사 시 전방 돌진과 안개 마법 피해 80/135/190/245/300+자신 AP100%."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫 적의 기절은 충전 시간에 따른 0.25~1.25초. 피해 amount로 분류하지 않는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "충전이 방해받은 사건에 CD를 3초로 설정. 평타 취소 사건과 다르다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.effects.0.parameters.0.role",
+      "issue": "기절 초를 min_amount로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Viego begins gathering Mist, Slowing himself by 10%. Release: Viego dashes forward and hurls the gathered Mist. Deals (80/135/190/245/300 + (100% Ability Power)) magic damage and Stuns the first enemy hit for 0.25 to 1.25 seconds based on charge time. This Ability's Cooldown is set to 3 seconds when interrupted."
+    },
+    {
+      "path": "rules.2.effects.0.parameters.1.role",
+      "issue": "기절 초를 max_amount로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Viego begins gathering Mist, Slowing himself by 10%. Release: Viego dashes forward and hurls the gathered Mist. Deals (80/135/190/245/300 + (100% Ability Power)) magic damage and Stuns the first enemy hit for 0.25 to 1.25 seconds based on charge time. This Ability's Cooldown is set to 3 seconds when interrupted."
+    },
+    {
+      "path": "rules.3.trigger.event",
+      "issue": "스킬 충전 방해를 공격 취소로 기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Viego begins gathering Mist, Slowing himself by 10%. Release: Viego dashes forward and hurls the gathered Mist. Deals (80/135/190/245/300 + (100% Ability Power)) magic damage and Stuns the first enemy hit for 0.25 to 1.25 seconds based on charge time. This Ability's Cooldown is set to 3 seconds when interrupted."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Viego.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

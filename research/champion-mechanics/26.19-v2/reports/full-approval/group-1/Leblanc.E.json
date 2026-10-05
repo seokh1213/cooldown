@@ -1,0 +1,42 @@
+{
+  "id": "Leblanc.E",
+  "sourceHash": "4c7318f81303adb0082e5a951379722269abe2f89e0bf982418bc86eb1d6244a",
+  "beforeCandidateHash": "1623b8112a8f0b36841143c541dc4e784d75ee63df1fc3c5693bbc195f73ce63",
+  "candidateHash": "f08b381264bc2b44c501136af812a308df3bfa960afeeb1ffb838346aa6fcb58",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫 적중 적의 사슬·마법 피해·절대 시야, 동일 대상이 1.5초 연속 묶일 때 1.5초 속박과 추가 마법 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_order eq first. target other: 처음 명중한 적을 사슬에 묶는다. [] / target damage magic: 마법 피해를 입힌다. [amount n0=50/n1=70/n2=90/n3=110/n4=130 rank_values; stat_coefficient n5=40% scalar caster.abilityPower] / target visibility: 사슬에 처음 명중한 대상에 대한 절대 시야를 얻는다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.other; 조건 target.time gte n6=1.5; target.other eq 이 사슬에 1.5초 연속 묶인 동일 대상이며 time은 사슬 연결 후 경과시간. target crowd_control root: 대상이 계속 사슬에 묶여 있으면 속박한다. [duration_seconds n7=1.5 scalar] / target damage magic: 추가 마법 피해를 입힌다. [amount n8=80/n9=120/n10=160/n11=200/n12=240 rank_values; stat_coefficient n13=85% scalar caster.abilityPower]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.2;rules.1.conditions",
+      "issue": "절대 시야 대상과 사슬 지속 시간 기준이 명확하지 않음",
+      "correction": "사슬 대상 절대 시야와 해당 사슬에 연속 묶인 시간 조건을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "If they remain shackled for 1.5 seconds, LeBlanc Roots them for 1.5 seconds and deals an additional (80/120/160/200/240 + (85% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

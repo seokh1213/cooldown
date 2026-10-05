@@ -1,0 +1,76 @@
+{
+  "id": "Yuumi.W",
+  "sourceHash": "c18c7d85ab3fe5ebf412ec781e0d03a745b82a62af916f6062d6a2ef70e9adf1",
+  "beforeCandidateHash": "fe568a0440846c7d096a9c9f3c32d1fef5fd09a0a723082ab300e7b50e346323",
+  "candidateHash": "dd49cf3c88b0971d316960f77e6af246ce403d780430329f79072bc5d3417856",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "단짝밀착 회복보호막증폭4~8%/단짝온힛3~7+AP3%, 유미돌진·밀착·포탑외지정불가,이동불가5초쿨·기본쿨10~0/밀착중전환해제,아군위치시전/Teleport해제를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.form eq 단짝에게 밀착. caster stat_modifier: 단짝에게 밀착한 동안 유미의 회복 및 보호막 효과가 증가합니다. [amount n0=4%/n1=5%/n2=6%/n3=7%/n4=8% rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, ally.attack_or_ability_hit; 조건 caster.form eq 단짝에게 밀착; ally.other eq 단짝의 적중 시 효과 발동. ally heal: 단짝은 적중 시 체력을 회복한다. [amount n5=3/n6=4/n7=5/n8=6/n9=7 rank_values; stat_coefficient n10=3% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 유미가 아군 챔피언에게 돌진해 밀착합니다. 밀착 중에는 아군의 이동을 따라가며 포탑을 제외하고 대상 지정 불가 상태가 됩니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 없음. caster cooldown_change: 유미에게 이동 불가 효과가 적용되면 이 스킬에 재사용 대기시간이 적용됩니다. [cooldown_seconds n11=5 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 없음. caster other: 이미 밀착 중이면 이 스킬을 사용해 다른 친구로 전환하거나 밀착을 해제할 수 있으며, 밀착한 아군이 순간이동을 사용하면 밀착을 해제합니다. [cooldown_seconds n12=10/n13=0 level_range]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 아군에게 밀착 중. caster other: 유미의 스킬은 밀착한 아군의 위치를 기준으로 사용된다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.1/2/4/new",
+      "issue": "일반방해로면역쿨확장·온힛기본공격한정·유미돌진주체ally·위치시전누락",
+      "correction": "이동불가,적중조건, caster이동및위치시전 별도규칙",
+      "sourceId": "en:body",
+      "quote": "Yuumi's Abilities will use her Attached ally's position instead of hers."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 686,
+      "verdict": "repaired",
+      "reason": "On-Hit는 기본공격 일반상식으로 제한하지 않고 단짝 적중시 회복으로 표현했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

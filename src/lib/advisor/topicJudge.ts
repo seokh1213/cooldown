@@ -9,6 +9,7 @@
  * 이 파일이 같은 문구를 쓴다.
  */
 import type { NoteCategory, NotePerspective } from "./noteSelect";
+import { asksCombo } from "./comboIntent";
 
 export type TopicLabel = NoteCategory | "general";
 
@@ -97,6 +98,7 @@ const TOPIC_WORDS: Array<[RegExp, TopicLabel]> = [
 ];
 
 export function topicFromWords(question: string, names: string[] = []): TopicLabel | undefined {
+  if (asksCombo(question)) return "combo";
   // "피오라 W 어떻게 빼" — 챔피언 이름 바로 뒤의 슬롯. 스킬 하나를 묻는 것이다.
   for (const name of names) {
     if (new RegExp(`${name}\\s*(의\\s*)?[QWER](?![A-Za-z])|${name}\\s*(궁|궁극기|패시브)`).test(question)) return "skill";

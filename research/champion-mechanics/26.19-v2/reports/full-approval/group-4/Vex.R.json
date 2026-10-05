@@ -1,0 +1,86 @@
+{
+  "id": "Vex.R",
+  "sourceHash": "dc10b3610cf071290f66538a9b80d045534d26c554d7eefeea28ca6a02b20fad",
+  "beforeCandidateHash": "32baf77118eb48db3a71bfb1ab826dad71b02fc212fdba4282ad04f2616d46ee",
+  "candidateHash": "de9b1467a7c9e38fd848a284f3b4865c8d674c9115a3b7bbcb0baddd816c3969",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "초기그림자피해와첫챔피언4초표식,이궁극기표식챔피언재돌진/도착피해,표식됐던대상이R피해후8초이내사망시일시쿨초기화를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 그림자가 전방으로 나아가 적중한 대상에게 마법 피해를 줍니다. (magic); amount=75/125/175  rank_values, stat_coefficient=20% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion, target.hit_order eq first 적용. target: 첫 번째로 적중한 적 챔피언에게 표식을 남깁니다.; duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 target.target_type eq champion, target.mark eq 이 궁극기의 표식이 남아 있는 챔피언 적용. caster: 벡스가 표식이 있는 챔피언에게 돌진합니다.;  / target: 돌진 도착 시 표식 대상에게 마법 피해를 줍니다. (magic); amount=150/250/350  rank_values, stat_coefficient=50% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "target의 death 사건에서 target.target_type eq champion, target.other eq 이 궁극기로 표식된 챔피언이 이 스킬 피해 후8초 이내에 사망함 적용. caster: 표식 대상이 이 능력으로 피해를 받은 뒤 조건 시간 내에 사망하면 이 능력의 재사용 대기시간이 일시적으로 초기화됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3",
+      "issue": "시전/적중시점과궁극기표식종류불명확,사망당시표식존재및8초쿨다운추정",
+      "correction": "초기적중·이궁극기표식·표식이력/피해후8초사망조건으로정정",
+      "sourceId": "en:body",
+      "quote": "If the marked champion dies within 8 seconds of taking damage from this Ability, its Cooldown is temporarily reset."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 607,
+      "verdict": "repaired",
+      "reason": "현재표식존재조건을궁극기로표식됐던대상및피해후8초이력조건으로바꿨다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "쿨다운이일시적으로초기화된다고만명시하며초기화유효기간은공급원문에없다.8초는피해후사망인정창이지초기화지속시간이아니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

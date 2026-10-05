@@ -1,0 +1,91 @@
+{
+  "id": "Elise.E",
+  "sourceHash": "88ad094393a340b9338f02f5f18a42635b4a6d42addc4c9ccd334bf89d02fc4b",
+  "beforeCandidateHash": "78149d0ff96150670e1d01e942ac2955be48e07a0b31c73cfc6f1442549d9e34",
+  "candidateHash": "c59f5e7b9dcdde4cec99dd1da24d1369452e233fe98c8420f87ebe4090dc2b09",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "인간첫적중기절및비은신적드러내기,거미자기/새끼거미상승·최대2초대상지정불가와대상적하강,실제하강후5초패시브추가피해/회복40~100%강화를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "form:A:en"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 처음 적중한 적을 기절시킵니다. (stun); duration_seconds=1.6/1.8/2/2.2/2.4  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "form:B:en"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq Spider Form 적용. caster: 엘리스와 새끼 거미들이 공중으로 올라가 최대 지속 시간 동안 대상으로 지정할 수 없는 상태가 됩니다.; duration_seconds=2  scalar / caster: 대상으로 지정한 적에게 하강합니다.;  / summon: 엘리스가 대상으로 지정한 적에게 함께 하강합니다.;  / summon: 새끼거미들도공중에올라있는동안최대2초대상으로지정할수없다.; duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "form:B:en"
+      ],
+      "note": "caster의 other 사건에서 caster.form eq Spider Form, caster.activation eq 대상 적에게 실제로 하강함 적용. caster: 적에게 하강한 뒤 거미 여왕의 추가 피해와 회복량이 증가합니다.; amount=40/55/70/85/100%  rank_values, duration_seconds=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "form:A:en",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first, target.visibility eq 은신 상태가 아닌 적 적용. target: 처음 적중한 적의 위치를 드러냅니다.; duration_seconds=1.6/1.8/2/2.2/2.4  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,3",
+      "issue": "적중행위자enemy,드러내기지속시간및비은신조건누락",
+      "correction": "caster의첫대상기절과비은신대상동일기간드러내기분리",
+      "sourceId": "en:summary",
+      "quote": "Human Form: Stuns the first enemy unit hit and reveals them if they are not stealthed."
+    },
+    {
+      "path": "rules.1,2",
+      "issue": "새끼거미대상지정불가효과및실제하강조건불명확",
+      "correction": "자기/새끼거미혜택과하강사건조건명시",
+      "sourceId": "form:B:en",
+      "quote": "Spider Form: Elise and her Spiderlings lift into the air, becoming Untargetable for up to 2 seconds and descending on enemies she targets."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

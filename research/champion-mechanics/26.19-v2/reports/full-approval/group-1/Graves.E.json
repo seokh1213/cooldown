@@ -1,0 +1,111 @@
+{
+  "id": "Graves.E",
+  "sourceHash": "69c1c2de77b6edb714b0f235a4eea8dfac2b53a700a265d5ce8949c970ece4de",
+  "beforeCandidateHash": "79eca9b38fd22e0dda537f82745b751a757f9f33ccd2251a8bc837db700f97a6",
+  "candidateHash": "000eda86900a7de9d3cb918e01ca922ffd844d3dfe59952f5e95b78b449f13f5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 3,
+  "summaryCheck": "돌진/탄환1reload,4초1stack/max8 또는챔프향해2대체,stack당armor7~19/MR3.5~9.5,nonminion피해로refresh/평타탄환매적중0.5초쿨감 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 전방으로 돌진한다. [] / caster resource_change: 산탄총에 탄환을 장전한다. [count n0=1 scalar] / caster stat_modifier: 진정한 용기 중첩을 얻고, 중첩은 일정 시간 유지되며 최대 보유량이 있다. [count n1=1 scalar; duration_seconds n1=4 scalar; storage_cap n2=8 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 적 챔피언을 향해 돌진. caster stat_modifier: 적 챔피언을 향해 돌진하면 중첩을 두 개 얻는다. 이는 기본 돌진의 중첩 획득을 대신한다. [count n3=2 scalar] flags=replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.resource present 진정한 용기 중첩. caster stat_modifier: 각 중첩이 방어력을 증가시킨다. [amount n4=7/n5=10/n6=13/n7=16/n8=19 rank_values]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.resource present 진정한 용기 중첩. caster stat_modifier: 각 중첩이 마법 저항력을 증가시킨다. [amount n9=3.5/n10=5/n11=6.5/n12=8/n13=9.5 rank_values]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.target_type neq minion; caster.other eq 미니언이 아닌 대상에 실제 피해를 가함. caster stat_modifier: 미니언이 아닌 대상에게 피해를 주면 진정한 용기 중첩을 갱신한다. [duration_seconds n1=4 scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 기본 공격의 각 탄환 적중. caster cooldown_change: 그레이브즈의 기본 공격 탄환이 적중할 때마다 이 스킬의 재사용 대기시간을 줄인다. [cooldown_seconds n14=0.5 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/5/gaps",
+      "issue": "시간을stack수·stack2를거리·탄환1을stack기준·피해가함을damageTaken·적중없는쿨감",
+      "correction": "정확ko1참조/방향/중첩보유,가한피해/탄환적중조건",
+      "sourceId": "en:body",
+      "quote": "Stacks are refreshed when damaging a non-minion."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 89,
+      "verdict": "repaired",
+      "reason": "4는시간이다. ko본문중첩1을count로바꿨다."
+    },
+    {
+      "index": 90,
+      "verdict": "repaired",
+      "reason": "two는중첩수이지거리2가아니다. 향해돌진텍스트조건으로교체했다."
+    },
+    {
+      "index": 91,
+      "verdict": "repaired",
+      "reason": "장전탄환one는stack조건에무관하다. 진정한용기중첩보유조건과statToarmor로수정했다."
+    },
+    {
+      "index": 92,
+      "verdict": "repaired",
+      "reason": "동일오류를중첩보유/statToMR로수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "입력 조건 스키마에는 돌진 방향을 표현하는 필드가 없어, 적 챔피언을 향해 돌진했는지 구조화할 수 없다. 해당 문구는 효과 설명에 보존했다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "원문은 중첩이 4초 동안 유지된다고 하지만 중첩별 만료 처리 방식을 명시하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "요약은기본공격적중이저항효과갱신이라하나본문은non-minion피해전체를말한다.ko본문중첩초기화표현은영문refreshed를우선하여지속시간갱신으로보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

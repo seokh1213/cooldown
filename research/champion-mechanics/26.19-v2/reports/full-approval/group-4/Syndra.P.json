@@ -1,0 +1,153 @@
+{
+  "id": "Syndra.P",
+  "sourceHash": "693dc78f109325bc5d16deed5e2d966e00abf5e79442339d3d7c89b94cfb7e28",
+  "beforeCandidateHash": "358eacb5e795ebf0024cbb89de0c22a79df8dda3a0397fa96c4c7cf488d079f1",
+  "candidateHash": "0e299fa4bcd84fb200e1b3f17ad87f907e4f172c77304b7e13ffc6a9a4b9b11f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "최대120조각및스킬강화종류,적획득당마나20~199,4초두스킬챔피언피해조각1~3/8초쿨다운,스킬포인트5·대형미니언1,120조각주문력15%를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 분노의 조각을 모아 스킬을 강화할 수 있습니다.; storage_cap=120  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion, caster.other eq 4초 안에 적 챔피언에게 두 스킬로 피해를 입힘, caster.spell_ready eq ready 적용. caster: 분노의 조각을 획득합니다.; min_amount=1  scalar, max_amount=3  scalar, cooldown_seconds=8  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 스킬 포인트 사용 적용. caster: 분노의 조각을 획득합니다.; amount=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "caster의 kill 사건에서 target.target_type eq minion, target.other eq 대형 미니언 적용. caster: 분노의 조각을 획득합니다.; amount=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 stat_gain 사건에서 caster.resource eq 분노의 조각120개를 보유함 적용. caster: 주문력이 15% 증가합니다.; amount=15%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 stat_gain 사건에서 caster.other eq 적에게서 분노의 조각 하나 획득 적용. caster: 마나를 회복합니다.; min_amount=20  level_range, max_amount=199  level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 조각으로기본스킬이강화된다:어둠구체추가충전량,의지의힘추가고정피해,적군와해넓이증가와둔화,풀려난힘의낮은체력대상처형.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "두스킬을두적중으로왜곡",
+      "correction": "4초두스킬실제피해조건및8초준비조건보존",
+      "sourceId": "en:body",
+      "quote": "(1 ~ 3) Splinter(s) when damaging enemy champions with two Abilities within 4 seconds (8s Cooldown)"
+    },
+    {
+      "path": "rules.3",
+      "issue": "대형미니언1숫자를관계없는one문장에서참조",
+      "correction": "대형미니언원문과한국어1숫자에연결",
+      "sourceId": "en:body",
+      "quote": "1 Splinter on killing large minions"
+    },
+    {
+      "path": "rules.4,6",
+      "issue": "120조각이무엇인지조건불명확및개별강화종류누락",
+      "correction": "120조각보유와요약강화종류보완",
+      "sourceId": "en:body",
+      "quote": "At 120 Splinters of Wrath, Syndra increases her Ability Power by 15%."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 502,
+      "verdict": "repaired",
+      "reason": "두스킬피해를적중횟수로단순화하지않는다.서로다른스킬이름이라는추가추정도하지않았다."
+    },
+    {
+      "index": 503,
+      "verdict": "repaired",
+      "reason": "관계없는마나회복인용과숫자참조를정확한대형미니언처치1개근거로교체했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "두스킬로4초안에피해를줘야한다.적중횟수2와동일하지않으며별도스킬종류여부등추가판정은공급원문이정의하지않는다.text조건으로보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "조각 획득으로 회복하는 마나량의 범위는 제시되지만, 범위 내 값이 결정되는 수식이나 조건은 명시되지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

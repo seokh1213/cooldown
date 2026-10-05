@@ -1,0 +1,91 @@
+{
+  "id": "Khazix.W",
+  "sourceHash": "a9367748e4db6fa615740e7e8909370a07599570606ddc55805ec51b59c929a6",
+  "beforeCandidateHash": "27999df05aeaab26ef5041353a8b9b055de38938e40ff17ef57cd5fb0b7ff0b2",
+  "candidateHash": "2468b24bfa6b3bbf56fef4f03f5f665b99edfd91dee6ff174b4777aee4a4bcac",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫 충돌 적과 주변 작은 범위 물리 피해, 카직스가 폭발 반경 안일 때 자기 회복, 가시 어깨 진화의 세 가시·둔화·적 챔피언2초 노출·고립 강화 둔화를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_order eq first. target damage physical: 가시가 좁은 범위에서 첫 적중 대상에게 물리 피해를 줍니다. [amount n0=75/n1=105/n2=135/n3=165/n4=195 rank_values; stat_coefficient n5=100% formula_components caster.bonusAttackDamage] / nearby_enemies damage physical: 처음 적중한 적 주변의 좁은 폭발 반경에도 같은 물리 피해를 입힌다. [amount n0=75/n1=105/n2=135/n3=165/n4=195 rank_values; stat_coefficient n5=100% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 카직스가 가시의 폭발 반경 안에 있음. caster heal: 체력을 회복합니다. [amount n6=55/n7=75/n8=95/n9=115/n10=135 rank_values; stat_coefficient n11=50% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 가시 어깨 진화 선택. caster other: 가시 어깨 진화 공허의 가시는 세 가시를 원뿔 형태로 발사한다. [count n0=3 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.form eq 가시 어깨 진화 선택. target crowd_control slow: 진화 가시에 적중한 적이 둔화된다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.form eq 가시 어깨 진화 선택; target.target_type eq champion. target visibility: 진화 가시에 적중한 적 챔피언을 2초 동안 드러낸다. [duration_seconds n1=2 scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.form eq 가시 어깨 진화 선택; target.mark eq isolated. target other: 고립된 대상은 진화 가시의 둔화 효과가 더욱 증가한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-5;summary;gaps",
+      "issue": "주변 범위 피해와 진화 효과 누락, 문자 거리값에 lte 사용",
+      "correction": "충돌 적 및 주변 피해, 폭발 반경 포함 조건, 진화 효과의 공급된 설명을 규칙으로 복구했다. 진화 둔화량 부족은 gap으로 남긴다.",
+      "sourceId": "ko:body",
+      "quote": "카직스가 가시를 발사하여 처음 적중하는 적과 그 주변 좁은 반경에 (75/105/135/165/195 + (100% 추가 공격력))의 물리 피해를 입힙니다."
+    },
+    {
+      "path": "rules.2.effects.0.parameters;rules.4.effects.0.parameters.0",
+      "issue": "진화가시노출2초에세가시의3참조를연결",
+      "correction": "가시수3은count,n1의2는노출지속시간으로각각연결했다.",
+      "sourceId": "en:summary",
+      "quote": "Void Spike now fires three spikes in a cone, slow enemies hit, and reveals enemy champions hit for 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 206,
+      "verdict": "repaired",
+      "reason": "한글 본문은 처음 적중하는 적과 주변 좁은 반경에 피해를 명시한다. 첫 적중 사건에 주변 피해를 추가했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "진화 가시의 기본/고립 둔화량과 둔화 시간은 요약에 없어 수치를 확정하지 않는다. 세 가시와 적 챔피언2초 노출은 숫자표의 각 문맥에 맞는 참조로 보존했다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

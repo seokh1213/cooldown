@@ -1,0 +1,386 @@
+{
+  "champion": "Warwick",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Warwick lunges forward and bites his target, dealing damage based on their maximum health and healing for damage dealt.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Tap: Warwick lunges forward and bites, dealing ((120% Attack Damage) + (100% Ability Power)) plus 6/7/8/9/10% max Health magic damage and healing for 25/37.5/50/62.5/75% of the damage dealt. Hold: Warwick lunges and clamps his jaws on the target, leaping behind them. While clamped, Warwick follows all movement of the target. After releasing his hold, he does the same damage and healing. This Ability applies On-Hit and On-Attack effects, and does not Critically Strike. While clamped, Warwick is immune to displacement.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "워윅이 앞으로 도약해 대상을 물고 대상 최대 체력에 비례한 피해를 입힙니다. 이때 워윅은 입힌 피해량만큼 체력을 회복합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "짧게 누를 때: 워윅이 앞으로 도약한 후 대상을 물어 ((120% 공격력) + (100% 주문력)) + 최대 체력의 6/7/8/9/10%에 해당하는 마법 피해를 입히고 입힌 피해량의 25/37.5/50/62.5/75%만큼 체력을 회복합니다. 길게 누를 때: 워윅이 도약한 후 대상을 꽉 물며 뒤로 넘어 갑니다. 꽉 문 동안 워윅은 대상이 이동할 때 같이 이동합니다. 대상을 놓은 후에는 같은 양의 피해를 입히고 체력을 회복합니다. 이 스킬은 적중 및 공격 시 효과를 적용하며 치명타를 적용하지 않습니다. 꽉 문 동안 워윅은 이동 효과에 면역이 됩니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Jaws of the Beast",
+      "ko": "야수의 송곳니"
+    },
+    "cooldownSeconds": [
+      8,
+      7.5,
+      7,
+      6.5,
+      6
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      365,
+      365,
+      365,
+      365,
+      365
+    ],
+    "cost": {
+      "values": [
+        80,
+        85,
+        90,
+        95,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Healing",
+        "values": "25%/37.5%/50%/62.5%/75%"
+      },
+      {
+        "label": "% Health damage",
+        "values": "6%/7%/8%/9%/10%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "8/7.5/7/6.5/6"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "80/85/90/95/100"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:BaseBiteDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "BaseBiteDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "terms": [
+          {
+            "stat": "totalAttackDamage",
+            "coefficientsByRank": [
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158
+            ]
+          },
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Warwick.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Warwick.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 49,
+      "end": 53
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 72,
+      "end": 76
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 98,
+      "end": 99
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": true,
+      "start": 100,
+      "end": 101
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": true,
+      "start": 102,
+      "end": 103
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "9",
+      "value": 9,
+      "percent": true,
+      "start": 104,
+      "end": 105
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 106,
+      "end": 109
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 150,
+      "end": 152
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "37.5",
+      "value": 37.5,
+      "percent": true,
+      "start": 153,
+      "end": 157
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": true,
+      "start": 158,
+      "end": 160
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "62.5",
+      "value": 62.5,
+      "percent": true,
+      "start": 161,
+      "end": 165
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "75%",
+      "value": 75,
+      "percent": true,
+      "start": 166,
+      "end": 169
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 32,
+      "end": 36
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 45,
+      "end": 49
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 65,
+      "end": 66
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": true,
+      "start": 67,
+      "end": 68
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": true,
+      "start": 69,
+      "end": 70
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "9",
+      "value": 9,
+      "percent": true,
+      "start": 71,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 73,
+      "end": 76
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 102,
+      "end": 104
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "37.5",
+      "value": 37.5,
+      "percent": true,
+      "start": 105,
+      "end": 109
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": true,
+      "start": 110,
+      "end": 112
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "62.5",
+      "value": 62.5,
+      "percent": true,
+      "start": 113,
+      "end": 117
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "75%",
+      "value": 75,
+      "percent": true,
+      "start": 118,
+      "end": 121
+    }
+  ],
+  "sourceHash": "226a1c26d848a529ae832c9b94b436a23d94ea82bd0c380e0c5c73f005dc126a",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

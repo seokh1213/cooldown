@@ -1,0 +1,414 @@
+{
+  "summary": "레넥톤이 돌진하며 경로의 대상에게 물리 피해를 입히고 적중한 대상 유형에 따라 분노를 얻습니다. 한 명 이상의 적에게 적중하면 일정 시간 안에 한 번 재사용할 수 있습니다. 강화 재사용은 물리 피해를 입히고 방어력을 감소시키며 분노를 생성하지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "돌진 경로의 유닛에게 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Renekton dashes, dealing (40/70/100/130/160 + (90% bonus Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "챔피언이 아닌 대상 적중 시 분노를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He generates 2 Fury per non-champion"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "He generates 2 Fury per non-champion and 10 Fury per champion hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "챔피언 적중 시 분노를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and 10 Fury per champion hit."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "He generates 2 Fury per non-champion and 10 Fury per champion hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "entity_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n8"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "적어도 한 명의 적에게 적중하면 이 스킬을 한 번 재사용할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting at least one enemy allows Renekton to Recast this Ability once for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "재사용 시 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "재사용 돌진으로 물리 피해를 입히며 기본 피해 수치를 대체합니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "secondary_targets",
+          "text": "방어력을 일정 시간 감소시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20"
+              ],
+              "stat": "armor",
+              "statSubject": "target",
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Recast dash deals (70/115/160/205/250 + (135% bonus Attack Damage)) physical damage instead and removes 25/27.5/30/32.5/35% Armor for 4 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Fury Bonus: The Recast dash deals (70/115/160/205/250 + (135% bonus Attack Damage)) physical damage instead and removes 25/27.5/30/32.5/35% Armor for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "resource_depleted",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "강화 재사용은 분노를 생성하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Does not generate Fury."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "시전당 분노 생성량에는 상한이 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Max 30 Fury per cast."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

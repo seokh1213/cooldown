@@ -1,0 +1,111 @@
+{
+  "id": "Naafiri.Q",
+  "sourceHash": "18f0898a4df99b64529ba65974f0516aa7c62d89cbc382dc66597764d01dabcc",
+  "beforeCandidateHash": "0226c20d2d7ca812730b018ba71616318f3ed4fef3596fb617f5cc7bbf5058f4",
+  "candidateHash": "3442f80bd59ec5e367221cdebbaaa9cbff8b2bf2ba46bd81acf860707d5b54ed",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 3,
+  "summaryCheck": "최대2칼날재사용/즉시물리35~55+AD20%와5초출혈35~135+AD80%,이미Q출혈시잔여출혈+missingHP최저/최대식대체,해당챔프/대형몬스터heal,처음챔프/몬스터2초무리,비에픽/공격로처형을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. target damage physical: 칼날 적중 시 물리 피해를 입힌다. [amount n0=35/n1=40/n2=45/n3=50/n4=55 rank_values; stat_coefficient n5=20% scalar caster.bonusAttackDamage] / target damage physical: 칼날은 출혈을 일으켜5초에걸쳐별도의총물리피해를입힌다. [amount n6=35/n7=60/n8=85/n9=110/n10=135 rank_values; stat_coefficient n11=80% scalar caster.bonusAttackDamage; duration_seconds n12=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 이미 이 스킬로 인한 출혈 상태이며, 이 스킬에 다시 적중. target damage physical: 대상이 이 스킬로 인한 출혈 상태라면 남은 출혈 피해에 더해 잃은 체력에 따라 물리 피해를 입힌다. [min_amount n13=30/n14=42.5/n15=55/n16=67.5/n17=80 formula_components; stat_coefficient n18=40% formula_components caster.bonusAttackDamage; max_amount n19=60/n20=85/n21=110/n22=135/n23=160 formula_components; stat_coefficient n24=140% formula_components caster.bonusAttackDamage] flags=replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 이미 이 Q로 출혈 중이며 이 Q가 다시 적중한 챔피언 또는 대형 몬스터. caster heal: 대상이 이 스킬로 인한 출혈 상태이고 챔피언 또는 대형 몬스터이면 나피리가 체력을 회복한다. [amount n25=45/n26=60/n27=75/n28=90/n29=105 rank_values; stat_coefficient n30=40% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 이번 Q에 처음 적중한 챔피언 또는 몬스터. summon movement: 무리가 스킬에 처음 적중한 챔피언 또는 몬스터에게 도약한다. [] / summon attack_followup: 무리가 해당 대상에게 공격을 이어간다. [duration_seconds n31=2 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 공격로 미니언 또는 비에픽 몬스터; target.health_threshold lt 현재체력이(30~70)health처형기준미만. target execute: 기준 체력 미만인 공격로 미니언과 비에픽 몬스터를 처형한다. [amount n32=30/n33=70 level_range]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 없음. caster other: 이 스킬은 재사용하여 최대두개의칼날을던질수있다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/new/gaps",
+      "issue": "즉시/지속합산·OR를AND로·qualifying첫적범위·재사용누락",
+      "correction": "효과분리,출혈대체복합식,분기OR및최초조건,최대2칼날재사용정보",
+      "sourceId": "en:body",
+      "quote": "Executes lane minions and non-epic monsters below (30 ~ 70) health."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 316,
+      "verdict": "repaired",
+      "reason": "즉시/출혈 피해를별도effect로분리해5초를출혈에만연결했다."
+    },
+    {
+      "index": 317,
+      "verdict": "false_positive",
+      "reason": "If that target는직전alreadybleeding 분기의target를지칭한다. 회복은Q출혈중적재적중문맥에속한다. genericmark는specificQ출혈텍스트로정리했다."
+    },
+    {
+      "index": 318,
+      "verdict": "false_positive",
+      "reason": "무리공격지속2초를attack_followup.duration_seconds로두는것은원문과일치한다."
+    },
+    {
+      "index": 319,
+      "verdict": "repaired",
+      "reason": "minion AND non-epicmonster는불가능하다. 단일OR텍스트조건으로바꿨다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "처형 대상에는 공격로 미니언과 비에픽 몬스터가 포함되지만, 단일 target_type 조건으로 두 유형을 별도로 표현할 수 없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "회복 및 무리 도약 조건은 챔피언과 대형 몬스터 또는 몬스터의 선택 대상 관계이나, 단일 target_type 값으로 그 범위를 완전히 표시하기 어렵다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "their missingHealth는피해대상의잃은체력을뜻하지만,스키마에missingHealth가없고최저/최대사이의정확한증가함수가명시되지않는다. 잔여출혈피해와가산피해끝식을구성요소로보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

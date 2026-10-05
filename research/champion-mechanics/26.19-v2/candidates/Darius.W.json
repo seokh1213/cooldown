@@ -1,0 +1,199 @@
+{
+  "summary": "다리우스의 다음 기본 공격을 강화해 물리 피해를 주고 둔화시킨다. 이 스킬로 대상을 처치하면 소모 마나를 돌려받고 재사용 대기시간을 줄인다. 피해를 입힐 때 주문 효과를 발동한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_followup",
+          "subject": "target",
+          "text": "다음 기본 공격이 강화되어 물리 피해를 주고 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Darius' next Attack deals (140/145/150/155/160% Attack Damage) physical damage and Slows by 90% for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "강화된 기본 공격이 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Darius' next Attack deals (140/145/150/155/160% Attack Damage) physical damage and Slows by 90% for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "이 스킬로 강화된 다음 기본 공격이 대상을 처치하면 이 스킬의 소모 마나를 돌려받습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "이 스킬로 강화된 다음 기본 공격이 대상을 처치하면 이 스킬의 재사용 대기시간이 50% 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability refunds its Mana cost and reduces its Cooldown by 50% if it kills the target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "피해를 입히면 주문 효과를 발동시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability triggers spell effects upon dealing damage."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

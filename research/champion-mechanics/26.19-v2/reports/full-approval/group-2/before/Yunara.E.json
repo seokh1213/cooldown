@@ -1,0 +1,131 @@
+{
+  "summary": "칸메이의 발자취는 이동 속도를 높이고 적 챔피언에게 접근할 때 더 크게 증가합니다. 초월 상태에서는 닿지 않는 그림자로 대체되어 지정 방향으로 돌진합니다. 기본 형태는 유체화 상태도 부여합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "Transcendent State"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가하고, 적 챔피언에게 접근할 때 증가량이 더 커집니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yunara gains 30/35/40/45/50% Move Speed, increased to 45/52.5/60/67.5/75% Move Speed when moving toward an enemy champion, for 1.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Kanmei's Steps causes Yunara to become Ghosted."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Transcendent State"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "유나라가 지정 방향으로 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Transcendent State - Untouchable Shadow: Yunara dashes in a direction."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "이동 속도 증가 및 유체화가 어느 시간 구간에 적용되는지, 영구적인지 원문만으로 구체적이지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kanmei's Steps causes Yunara to become Ghosted."
+        }
+      ]
+    }
+  ]
+}

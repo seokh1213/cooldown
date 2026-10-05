@@ -1,0 +1,238 @@
+{
+  "id": "Nilah.Q",
+  "sourceHash": "e09fa1ea08a7856b600e1278cf5b77c33c783c889cafeca086168e77ad008a7c",
+  "beforeCandidateHash": "71af83a5ac05fb00cd3bcf9498c81380546d05a442f616ad59c48562ccb357e1",
+  "candidateHash": "a9fa001d5db153832b1015cdf93578ccfd4ee277aba784c616900e1ea4adc92b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 10,
+  "checkedGapCount": 5,
+  "summaryCheck": "치명타 확률 기반 관통·챔피언 공격 회복·초과 회복 보호막, 직선 피해와 적중 강화, 급류 중 파도, 광역 미니언/몬스터 배율·처형 및 치명타70% 효과를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 치명타 확률에 비례해 방어구 관통력이 증가합니다.; stat_coefficient=30% caster의 critChance formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.target_type eq champion 적용. caster: 챔피언에게 기본 공격으로 입힌 피해에, 닐라 치명타 확률의 해당 비율을 곱한 만큼 체력을 회복한다.; stat_coefficient=20% caster의 critChance formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other present Q 기본 지속 효과의 회복량이 최대 체력을 초과함 적용. caster: 초과 회복량이 보호막으로 전환됩니다.; duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 닐라 Q의 채찍날에 적중한 적 적용. target: 지정 방향으로 채찍날을 휘둘러 물리 피해를 줍니다. (physical); amount=0/10/20/30/40  rank_values, stat_coefficient=100% caster의 totalAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 이 스킬에 적중한 적 유닛 또는 구조물 적용. caster: 적 유닛 또는 구조물에 공격이 적중하면 공격 사거리가 증가합니다.; distance_units=125  scalar, duration_seconds=4  scalar / caster: 이 스킬에 적중하면 해당 범위의 백분율(%)만큼 공격 속도가 해당 지속시간 동안 증가한다.; min_amount=10  unknown, max_amount=60  unknown, duration_seconds=4  scalar / caster: 지속시간 동안 기본 공격이 원뿔 범위로 적중합니다.; duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq 급류 사용 중에 Q를 시전함 적용. enemy: 급류 사용 중 시전하면 닐라의 경로상 모든 적을 공격하는 물결을 만듭니다. (physical);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq minion, caster.other eq 이 스킬의 광역 공격 적용. target: 광역 공격 피해는 미니언에게 감소 적용됩니다. (physical); damage_multiplier=33%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq monster, caster.other eq 이 스킬의 광역 공격 적용. target: 광역 공격 피해는 몬스터에게 적용됩니다. (physical); damage_multiplier=100%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq minion, target.health_threshold lt 낮은 체력 적용. target: 체력이 낮은 미니언을 즉시 처치합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 이 스킬의 피해량 결정 적용. caster: 이 스킬 피해는 닐라의 치명타 확률과 치명타 피해에 의해 해당 백분율 효율로 증가한다. 구체적인 증가식은 공급 원문에서 확정되지 않는다.; other=70%  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "30%를 입력/출력 양쪽 전환비로 중복",
+      "correction": "치명타 확률 기반 추가 관통 stat_modifier로 보존",
+      "sourceId": "en:body",
+      "quote": "Passive: Nilah gains (30% Critical Strike Chance) Armor Penetration,"
+    },
+    {
+      "path": "rules.1",
+      "issue": "회복식의 치명타 확률 입력 누락",
+      "correction": "실제 피해 × 치명타 확률 ×20% 관계 명시",
+      "sourceId": "en:body",
+      "quote": "her Attacks against champions restore (20% Critical Strike Chance) damage dealt as Health."
+    },
+    {
+      "path": "rules.3-7",
+      "issue": "피해 적중 범위·급류 시전 조건·광역 배율·공격 속도 단위 불명확",
+      "correction": "정확한 범위와 조건/단위를 보완",
+      "sourceId": "en:body",
+      "quote": "If an enemy unit or structure is hit, Nilah gains 125 Attack Range and (10 ~ 60)% Attack Speed, and her Attacks hit in a cone for 4 seconds."
+    },
+    {
+      "path": "rules.9",
+      "issue": "70% 치명타 피해 증가 주장이 gap에만 있음",
+      "correction": "확정된 증가 주장과 효율 규칙 보존",
+      "sourceId": "en:body",
+      "quote": "Damage is increased by her Critical Strike Chance and Critical Strike Damage at 70% effectiveness."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 341,
+      "verdict": "repaired",
+      "reason": "전환에 의한 입력 제거가 아니라 치명타 확률 기반 추가 관통이다. stat_modifier로 정확히 표현했다."
+    },
+    {
+      "index": 342,
+      "verdict": "repaired",
+      "reason": "중복30% 입력/출력비를 하나의 치명타 확률 계수로 수정했다."
+    },
+    {
+      "index": 343,
+      "verdict": "false_positive",
+      "reason": "4초 duration_seconds가 보호막에 이미 있다."
+    },
+    {
+      "index": 344,
+      "verdict": "repaired",
+      "reason": "적중 사건과 실제 채찍날 적중 대상 조건을 보완했다."
+    },
+    {
+      "index": 345,
+      "verdict": "false_positive",
+      "reason": "계약에 attackRange stat은 없다. 원문 텍스트는 사거리 증가를 명시하며 distance_units 역할로 보완했다."
+    },
+    {
+      "index": 346,
+      "verdict": "documented_gap",
+      "reason": "frozen 숫자표는 수정하지 않는다. 실제 백분율을 effect.text와 lexical 단위 gap에 보존했다."
+    },
+    {
+      "index": 347,
+      "verdict": "false_positive",
+      "reason": "한 문장으로 얻는 사거리·공격 속도·원뿔 공격 강화가4초 문맥을 공유한다. 원뿔만4초라 단정할 근거는 없으며 기존 지속 범위를 보존했다."
+    },
+    {
+      "index": 348,
+      "verdict": "repaired",
+      "reason": "폼을 제거하고 급류 사용 중 Q 시전 상태로 수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "치명타 확률 및 치명타 피해량에 따른 피해 증가율은 tooltip에서 '70% effectiveness'로만 제시되어 있어 적용되는 정확한 수식이 불명확합니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "Q 피해에 치명타 확률과 치명타 피해량이 반영되는 조건의 적용 범위가 불분명해 기본 피해 규칙에 합치지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "적중 시 공격 속도 증가량의 값이 레벨에 따른 범위인지 스킬 랭크에 따른 범위인지 tooltip만으로 확정할 수 없습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 3,
+      "reason": "unsupported_formula",
+      "detail": "기본 공격 회복량은 실제 입힌 피해 × (치명타 확률 × 20%)이며 피해량 스탯은 계약에 없다. 계수를 직접 치유량으로 실행하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 4,
+      "reason": "unresolved_number",
+      "detail": "공격 속도 (10 ~ 60)%는 백분율 범위인데 lexical 숫자표의 두 끝값 percent=false다. 효과 text의 백분율을 우선하고 절대값 증가로 실행하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "5 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": "LeeSin.W",
+  "sourceHash": "168add4efaded036b001900de909e51b7465e4d9045645cf97de73714807e555",
+  "beforeCandidateHash": "97c77097e5d84979109b8ade558530f055b0366b56d001b615e08cd2ba1cafb0",
+  "candidateHash": "a1db40c16a893d918f0795735928f52b9aef0f0c16bac59ecb306e2dcb5b00a8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "아군 또는 와드 돌진, 챔피언 대상일 때 아군·본인의 2초 보호막, 3초 재사용 가능과 재사용의 4초 10/14/18/22/26% 모든 피해 흡혈을 확인했다. 요약은 자기 보호막을 포괄적으로 말하나 본문은 챔피언 대상 조건으로 더 구체적이어서 본문을 적용했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.other eq 선택한 아군 또는 와드 적용. caster: 아군이나 와드를 향해 돌진한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq champion, target.other eq 방호로 선택한 아군 챔피언 적용. target: 대상 아군에게 보호막을 부여한다.; amount=60/105/150/195/240  rank_values, stat_coefficient=80% caster의 abilityPower scalar, duration_seconds=2  scalar / caster: 자신에게 보호막을 부여한다.; amount=60/105/150/195/240  rank_values, stat_coefficient=80% caster의 abilityPower scalar, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 방호 후 정해진 시간 동안 재사용할 수 있다.; duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 caster.other eq 방호 사용 후 3초 안의 재사용 적용. caster: 방호 사용 후 3초 안에 재사용하면 4초 동안 10/14/18/22/26% 모든 피해 흡혈을 얻습니다.; amount=10/14/18/22/26%  rank_values, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.conditions",
+      "issue": "돌진 대상 아군·와드와 보호막의 아군 챔피언 조건이 구조적으로 부족하다.",
+      "correction": "선택한 아군·와드 및 아군 챔피언 대상 범위를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Lee Sin dashes to an ally or ward."
+    },
+    {
+      "path": "rules.3.conditions,effects",
+      "issue": "강철의 의지에 방호 후 3초 재사용 조건이 빠졌다.",
+      "correction": "3초 재사용 시간과 4초 흡혈 퍼센트 범위를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Lee Sin may Recast for the next 3 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "Omnivamp는 허용된 statTo 통계 목록에 없으므로 statTo는 null로 두고 효과 텍스트와 amount로 보존했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "요약은 아군에게 돌진하면서 리 신 자신에게 보호막을 부여한다고 포괄적으로 말하지만 본문은 대상이 챔피언일 경우 대상과 자신 모두 보호막을 얻는다고 조건을 붙인다. 규칙은 더 구체적인 본문의 챔피언 대상 조건을 따른다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

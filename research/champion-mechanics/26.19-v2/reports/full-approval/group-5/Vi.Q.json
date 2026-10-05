@@ -1,0 +1,350 @@
+{
+  "id": "Vi.Q",
+  "sourceHash": "0596b0a16f7971d6ac1beb4ddd0cb8d58f3ec412ceaf5f27fe10be4413a3149a",
+  "beforeCandidateHash": "e82f61149cb4eeee48a04ea0c72b4145af8fbff39b0d96be54e114001808f477",
+  "candidateHash": "a8a93cc61cab33da7c063186432958d1d101e4e6cf6762ab7f29c50529064379",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "충전 시작15%자가둔화, 해제 전진 돌진, 충전시간 피해 범위·전 적중 찌그러뜨리기, 챔피언 충돌 정지/밀쳐내기와 비챔피언 끌기, 방해 시3초CD를 모두 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전으로 충전을 시작하고 충전 중 자신15%둔화. 충전 자체를 이동으로 분류하지 않았고 임의 ready 조건을 제거했다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "15%",
+              "value": 15,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Release에 전방 돌진. 별도 variantID 없이 base의 해제 사건으로 충분히 기록 가능하다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충전한 금고 부수기를 해제함"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "돌진 적중한 모든 적에 물리 피해: 최소 기본5값+bonusAD60%, 최대 기본5값+bonusAD150% 중 충전시간에 따른 식. 찌그러뜨리기1중첩은 전 적중 적에 적용한다.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충전 해제 후 바이의 돌진에 부딪친 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n12"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "150%",
+              "value": 150,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적 챔피언 충돌 시 돌진 정지 및 그 챔피언 knockback. 챔피언이 아닌 적과 구별한다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "돌진 중 바이와 충돌한 적 챔피언"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비챔피언 적중은 바이 방향으로 pull 이동이다. 본문 방향이 요약의 포괄 knockback보다 구체적이다.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "돌진에 맞은 비챔피언 적"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "충전이 방해받으면 이 스킬CD3초. 실제 충전 중단 조건이며 돌진 피해에 부착한 지속시간이 아니다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "금고 부수기 충전이 방해로 중단됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules;gaps",
+      "issue": "충전 시작만 저장하고 모든 해제·충돌·중단 효과를 variant 부족 gap으로 누락함",
+      "correction": "base 안에 해제·적중·챔피언/비챔피언·중단 규칙을 복원하고 실제 보간/언어 scope한계만 기록했다.",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Vi begins charging a powerful punch, Slowing herself by 15%. Release: Vi dashes forward dealing between (40/60/80/100/120 + (60% bonus Attack Damage)) and (100/150/200/250/300 + (150% bonus Attack Damage)) physical damage based on charge time and applying Denting Blows to all enemies hit."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 609,
+      "verdict": "repaired",
+      "reason": "variantID는 추가 메커닉 기록의 전제조건이 아니다. 해제 돌진·시간 의존 피해·찌그러뜨리기와 후속 충돌/중단 효과를 base규칙으로 전부 복원했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "피해가 충전시간에 의존한다는 최소·최대 끝점은 명시되지만 최소/최대 충전시간과 중간 보간식은 공급되지 않아 선형 증가를 확정하지 않습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "요약은 적중 적을 일반적으로 밀쳐낸다고 하지만 본문은 챔피언은 knockback, 비챔피언은 바이 쪽으로 pull이라고 명시합니다. 구체적인 본문 분기를 적용했습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

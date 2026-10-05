@@ -1,0 +1,185 @@
+{
+  "summary": "사냥 대상으로 지정된 적의 처치에 관여하면 표식을 얻어 기본 스킬이 강화됩니다. 표식 누적에 따라 공격 사거리도 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "takedown",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "사냥 대상으로 지정된 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "사냥 대상 처치에 관여하면 표식을 얻고 기본 스킬이 강화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Getting a takedown on a hunted target grants Kindred a Mark, empowering them."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "stat_gain",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "mark",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "표식 기준에 도달하면 공격 사거리가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After 4 Marks, Kindred gains 75 Attack Range."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "stat_gain",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "mark",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n2"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "네 번째 표식 이후 표식을 3개 더 얻을 때마다"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "네 번째 표식 이후 표식 기준을 충족할 때마다 공격 사거리가 추가로 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 3 Marks after the fourth grants a further 25 Attack Range."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "스키마에 사냥 대상 지정 여부를 직접 나타내는 조건이 없어, 대상이 사냥 대상으로 지정됐다는 조건은 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Getting a takedown on a hunted target grants Kindred a Mark, empowering them."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "표식 수 조건은 mark 필드로 표현했지만, 네 번째 표식 이후 3개씩 추가될 때마다 반복 적용되는 조건을 스키마 조건 필드로 정확히 표현할 수 없어 텍스트에 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 3 Marks after the fourth grants a further 25 Attack Range."
+        }
+      ]
+    }
+  ]
+}

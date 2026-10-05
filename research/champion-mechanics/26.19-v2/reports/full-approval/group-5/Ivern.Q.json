@@ -1,0 +1,280 @@
+{
+  "id": "Ivern.Q",
+  "sourceHash": "e8161b1c3ab9b20b31a5d07bcaabff92aee36c52c215d37c7dee20c948cead04",
+  "beforeCandidateHash": "c16779cfd9817c04f6f4bffee7fae6c55658a107edd64ed8c24eb6ab4c5c0d33",
+  "candidateHash": "8c7e509bd66642405727c248576e017d39d3337e394b492b4de732555423e088",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫 적중 마법80~260+AP70%와root1.6~2초, Q속박 적 공격 아군의공격사거리돌진,재사용자기직접돌진,비에픽50%쿨감소를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "덩굴 첫적중마법80/125/170/215/260+자기AP70%.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "125",
+              "value": 125,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "170",
+              "value": 170,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "215",
+              "value": 215,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "260",
+              "value": 260,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "70%",
+              "value": 70,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫적중target root1.6/1.7/1.8/1.9/2초.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "1.6",
+              "value": 1.6,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "1.7",
+              "value": 1.7,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "1.8",
+              "value": 1.8,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "1.9",
+              "value": 1.9,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이Q속박적을공격한아군이자기공격사거리안까지돌진.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 덩굴뿌리에 속박된 적"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "재사용아이번은같은Q속박적에게바로돌진.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 덩굴뿌리에 속박된 적"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비에픽몬스터조건과쿨감소50%,절대50초아님.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "에픽 몬스터가 아닌 몬스터"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions/rules.2.conditions/rules.3.conditions/rules.4.effects.0.text",
+      "issue": "첫적중피해및이Q속박참조/쿨백분율불완전.",
+      "correction": "첫적중조건,이Q속박대상연결,50%쿨감소명시했다.",
+      "sourceId": "en:body",
+      "quote": "Ivern conjures a vine dealing (80/125/170/215/260 + (70% Ability Power)) magic damage and Rooting the first enemy hit"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

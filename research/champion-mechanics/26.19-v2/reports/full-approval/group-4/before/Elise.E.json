@@ -1,0 +1,208 @@
+{
+  "summary": "인간 형태는 처음 적중한 적을 기절시키고 드러냅니다. 거미 형태는 엘리스와 새끼 거미들을 공중으로 올려 대상 적에게 내려오게 하며, 하강 후 일정 시간 동안 거미 여왕의 추가 피해와 회복을 강화합니다.",
+  "rules": [
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "처음 적중한 적을 기절시킵니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:A:en:n0",
+                "form:A:en:n1",
+                "form:A:en:n2",
+                "form:A:en:n3",
+                "form:A:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "enemy",
+          "text": "처음 적중한 적의 위치를 드러냅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Human Form: Elise fires a cocoon, Stunning and revealing the first enemy hit for 1.6/1.8/2/2.2/2.4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Spider Form"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "엘리스와 새끼 거미들이 공중으로 올라가 최대 지속 시간 동안 대상으로 지정할 수 없는 상태가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:B:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "대상으로 지정한 적에게 하강합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "summon",
+          "text": "엘리스가 대상으로 지정한 적에게 함께 하강합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Spider Form: Elise and her Spiderlings lift into the air, becoming Untargetable for up to 2 seconds and descending on enemies she targets."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Spider Form"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "적에게 하강한 뒤 거미 여왕의 추가 피해와 회복량이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n1",
+                "form:B:en:n2",
+                "form:B:en:n3",
+                "form:B:en:n4",
+                "form:B:en:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:B:en:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Upon descending, she increases the bonus damage and healing from Spider Queen by 40/55/70/85/100% for 5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "고치 설명은 처음 적중한 적에게 기절과 드러내기를 함께 서술하고, 드러내기 지속시간이 기절 지속시간과 같은지 별도로 명시하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Stunning and revealing the first enemy hit for 1.6/1.8/2/2.2/2.4 seconds."
+        }
+      ]
+    }
+  ]
+}

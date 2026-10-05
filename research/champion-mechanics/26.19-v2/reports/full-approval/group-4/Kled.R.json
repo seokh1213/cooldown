@@ -1,0 +1,104 @@
+{
+  "id": "Kled.R",
+  "sourceHash": "221c5ba0a58bb2b788b3e1c7dd0cebc16a6f2cc8c5cc548b9b89ef609611e1e5",
+  "beforeCandidateHash": "8b82d1f4537e7080042c1cfb26b25bdf514790906cf90c5cda05e561e294a12e",
+  "candidateHash": "28be87d2482a46d935c8a7a7aa440038d9ddf8e2cedf820502cf3772ebb37151",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "아군 경로 증가 이동 속도, 돌진 중/종료 후 2초 보호막, 첫 조우 챔피언의 거리별 최대 체력 비례 마법 피해와 짧은 밀치기, 돌진 3초 최대치 도달을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. ally: 돌진 경로가 그 위의 아군에게 점차 증가하는 이동 속도를 부여하며, 돌진 시간이 기준에 도달하면 최대 증가량이 된다.; other=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 돌진 중 점차 증가하는 보호막을 얻으며 기준 돌진 시간에 최대 흡수량이 된다. 보호막은 돌진 종료 후에도 해당 지속시간 동안 유지된다.; max_amount=200/300/400  rank_values, stat_coefficient=300% caster의 bonusAttackDamage formula_components, duration_seconds=2  scalar, other=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 ability_hit 사건에서 target.target_type eq champion, target.hit_order eq first 적용. target: 스칼이 돌진 경로에서 처음 만나는 적 챔피언에게 이동 거리에 따라 달라지는 최대 체력 비례 마법 피해를 입힌다. 하한/상한의 비율에 각각 추가 공격력 100당 비율이 더해지며 돌진 기준 시간 뒤 최대치에 도달한다. (magic); min_amount=4/6/8% unknown의 maxHealth formula_components, stat_coefficient=3% caster의 bonusAttackDamage formula_components, ratio_input=100  formula_components, max_amount=12/18/24% unknown의 maxHealth formula_components, stat_coefficient=9% caster의 bonusAttackDamage formula_components, ratio_input=100  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 ability_hit 사건에서 target.target_type eq champion, target.hit_order eq first 적용. target: 처음 만나는 적 챔피언을 잠시 뒤로 밀쳐낸다. (knockback);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1.parameters",
+      "issue": "3초 최대치 도달을 효과 지속시간으로 기록하고 최대 보호막을 고정 amount로 표시",
+      "correction": "최대치 도달 시간은 other, 보호막은 max_amount로 정정",
+      "sourceId": "en:body",
+      "quote": "The damage, Move Speed, and Shield reach their max values after 3 second(s) of charging."
+    },
+    {
+      "path": "rules.2.parameters",
+      "issue": "체력 소유자 추정 및 하한/상한 중첩식 선형화 위험",
+      "correction": "unknown 소유자 및 formula_components로 보존",
+      "sourceId": "en:body",
+      "quote": "Skaarl rams the first enemy champion encountered, dealing (4/6/8% + (3% per 100 bonus Attack Damage)) to (12/18/24% + (9% per 100 bonus Attack Damage)) max Health magic damage (based on distance travelled) and briefly Knocking Back."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 235,
+      "verdict": "false_positive",
+      "reason": "공급 숫자 표는 슬래시로 연결된 랭크 값을 percent=true로 전파한다. raw가 4/6이어도 백분율 의미는 보존된다."
+    },
+    {
+      "index": 236,
+      "verdict": "false_positive",
+      "reason": "규칙은 champion+first를 함께 제한하고 효과 텍스트도 처음 만나는 적이라고 명시한다."
+    },
+    {
+      "index": 237,
+      "verdict": "false_positive",
+      "reason": "ratio_input en:body:n9=100이 이미 별도 매개변수로 있다. 중첩식과 보간 한계는 gap으로 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "최소·최대 피해 비율은 이동 거리에 따라 달라지며 돌진 3초 후 최대치에 도달하지만, 거리와 피해 사이의 구체적인 보간식은 원문에 제시되지 않는다. 추가 공격력 계수의 산출식도 원문이 'per 100 bonus Attack Damage'로만 제시하므로 수식 표현에는 한계가 있다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "max Health 피해의 체력 소유자가 원문에 명시되지 않아 unknown으로 보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

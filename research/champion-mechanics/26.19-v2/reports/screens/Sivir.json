@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Sivir.E",
+      "sourceHash": "c92337300600321100ac3dab5ecd5de9236ecd0b238b344a70dfe18ce86cfc34",
+      "candidateHash": "869eabda928c0d23d2f7881af92e4e663702e14af5fa08e91bcb3c44f79e9520"
+    },
+    {
+      "id": "Sivir.P",
+      "sourceHash": "4fb2d22c37a341e47dc6ba9ed8499763982f5551cd01f322526e6cf1cf4f5487",
+      "candidateHash": "f7fae8b2be5e0e23e01fafe75f19c0c1d86a4c3dbf6f725811dc85f99b6ad4e8"
+    },
+    {
+      "id": "Sivir.Q",
+      "sourceHash": "04fae762d231407ff9a1425cf35f95d519d79240e94f4aad0d9c79e95efc78cb",
+      "candidateHash": "ae94af5e39130b9237e7bf6114c5ce8b0051f2332d5485835d109b92bfb79431"
+    },
+    {
+      "id": "Sivir.R",
+      "sourceHash": "74edada087d950e15c5c7f8ec2ead7a1d0a23c676061df7bc9cc86956faa7129",
+      "candidateHash": "f52b52e29556b5feac4d2b292496984e43a0bf00100e44235c7a886017f2a997"
+    },
+    {
+      "id": "Sivir.W",
+      "sourceHash": "587c5815a6ccb63cf2159e272968f27f70704cd36e093903b463848c798cc574",
+      "candidateHash": "63aeafb58126c6549f3e2f241281447e7dad3dbb341f23a639ee4a36e37258c1"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Sivir.E",
+      "path": "rules.1.trigger.event",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If an ability is blocked, Sivir restores ((60/65/70/75/80% Attack Damage) + (50% Ability Power)) health and triggers Fleet of Foot.",
+      "issue": "조건부 회복 발동을 `ability_hit`으로 기록해, 보호막이 실제 적 스킬을 막은 사건이라는 점이 불명확합니다. 보호막이 준비된 동안 단순히 스킬에 적중해도 발동하는 것으로 읽힐 수 있습니다.",
+      "correction": "트리거를 적 스킬 차단 사건으로 표현하고, 보호막이 준비된 상태에서 차단된 경우에만 회복하도록 기록하세요."
+    },
+    {
+      "id": "Sivir.E",
+      "path": "rules.2.trigger.event",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If an ability is blocked, Sivir restores ((60/65/70/75/80% Attack Damage) + (50% Ability Power)) health and triggers Fleet of Foot.",
+      "issue": "재빠른 발놀림 발동도 `ability_hit`으로 기록되어 실제 차단 사건이 트리거라는 점이 빠졌습니다.",
+      "correction": "트리거를 적 스킬 차단 사건으로 표현하세요."
+    },
+    {
+      "id": "Sivir.Q",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Sivir hurls her crossblade like a boomerang, dealing (60/85/110/135/160 + (70% bonus Attack Damage) + (60% Ability Power)) to all enemies it cuts through.",
+      "issue": "설명문은 관통하는 적 전원에게 피해를 준다는 원문의 범위를 옮기지 않고, 피해 대상이 단지 관통하는 적인 것으로 축약했습니다.",
+      "correction": "관통하는 모든 적에게 피해를 준다고 명시하세요."
+    },
+    {
+      "id": "Sivir.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Hitting non-champions reduces the damage to subsequent targets, down to a minimum of 40%.",
+      "issue": "조건이 비챔피언 적중으로만 한정되어, 감소 피해가 적용되는 ‘그 이후 대상’의 범위가 비챔피언으로 잘못 제한됩니다.",
+      "correction": "비챔피언을 맞힌 뒤의 후속 대상에 피해 감소가 적용된다고 기록하고, 대상 유형은 원문에 없는 한정 없이 두세요."
+    },
+    {
+      "id": "Sivir.R",
+      "path": "rules.2.effects.0.kind",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Takedowns on recently damaged enemies refreshes the duration of the hunt.",
+      "issue": "사냥 개시 지속시간 갱신을 `cooldown_change`로 분류해 효과 종류가 원문과 맞지 않습니다.",
+      "correction": "효과를 사냥 개시 지속시간 갱신/초기화로 표현하세요."
+    },
+    {
+      "id": "Sivir.W",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Can only hit each target a maximum of two times.",
+      "issue": "요약에서 각 대상에게 최대 두 번 적중한다는 제한이 빠져, 튕김 규칙을 이해하는 데 중요한 범위가 누락되었습니다.",
+      "correction": "요약에 각 대상은 최대 두 번까지 적중당한다고 추가하세요."
+    },
+    {
+      "id": "Sivir.W",
+      "path": "rules.2.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Bounces deal 65% damage to minions.",
+      "issue": "튕김 피해 효과가 모든 비챔피언 대상에 적용되는 것으로 조건을 넓혔지만, 원문은 미니언만을 지정합니다.",
+      "correction": "대상 조건을 미니언으로 한정하세요."
+    }
+  ],
+  "notes": []
+}

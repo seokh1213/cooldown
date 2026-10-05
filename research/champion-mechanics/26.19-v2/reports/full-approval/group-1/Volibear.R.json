@@ -1,0 +1,64 @@
+{
+  "id": "Volibear.R",
+  "sourceHash": "177d07095c389957edacdbdfa2132364f673db87fce309ed3aa76af1326f8894",
+  "beforeCandidateHash": "8acc1093ce81246b2b8baec46f1dd0c7ec45e5313c187b176a71a45c62fcf5b4",
+  "candidateHash": "2168f1c40ddbfae4baa4c3020928b05666f874750501c47ba8f9088e6eefb80f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "변신도약/12초bonusHP175/350/525와사거리50,착지주변적포탑2/3/4초disable/물리,주변적50%1초감쇠slow/바로아래적물리를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster transform: 변신해 지정한 위치로 도약한다. [] / caster stat_modifier: 추가 체력을 얻는다. [amount n0=175/n1=350/n2=525 rank_values; duration_seconds n4=12 scalar] / caster attack_modifier: 공격 사거리가 증가한다. [distance_units n3=50 scalar; duration_seconds n4=12 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 도약 후 착지 시; target.target_type eq structure; target.other eq 착지 위치 근처 적 포탑. target damage physical: 착지 시 근처 적 포탑에 물리 피해를 입힌다. [amount n8=300/n9=500/n10=700 rank_values; stat_coefficient n11=125% formula_components caster.abilityPower; stat_coefficient n12=250% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 도약 후 착지 시; target.target_type eq structure; target.other eq 착지 위치 근처 적 포탑. target other: 착지 시 근처 적 포탑을 일시적으로 비활성화한다. [duration_seconds n5=2/n6=3/n7=4 rank_values]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 도약 후 착지 시. nearby_enemies crowd_control slow: 주변 적을 둔화시키며 둔화 효과가 1초에 걸쳐 감소한다. [amount n13=50% scalar; duration_seconds n14=1 scalar] flags=decays"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 target.distance eq 볼리베어 바로 아래; caster.other eq 도약 후 착지 시. target damage physical: 볼리베어 바로 아래에 있는 적에게 물리 피해를 입힌다. [amount n15=300/n16=500/n17=700 rank_values; stat_coefficient n18=125% formula_components caster.abilityPower; stat_coefficient n19=250% formula_components caster.bonusAttackDamage]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/gaps",
+      "issue": "summary의bonusHealth근거무시·포탑종류/착지조건누락",
+      "correction": "bonusHealth및summary근거,착지및structure타입/근처포탑조건,잘못gap삭제",
+      "sourceId": "en:summary",
+      "quote": "while gaining bonus Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

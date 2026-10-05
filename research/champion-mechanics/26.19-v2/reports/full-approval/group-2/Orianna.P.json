@@ -1,0 +1,97 @@
+{
+  "id": "Orianna.P",
+  "sourceHash": "d6659cc79a09b1d43b0b774cab04d329b07aa7cfb988a6da91d4f28d2a0806f1",
+  "beforeCandidateHash": "17da65d6e58ba846e2cc4d8ca243ac364d2d5566ce0a9edfe4adf7938f9f1f17",
+  "candidateHash": "54ab47665011676671b20a4c4817609c0ff1b59cc5bfd19af76ba3805c5950ea",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "구체스킬시작/자동귀환, 기본10~50+15%AP마법,4초 동일대상후속증분2~8+2.25%AP/최대3~15+4.5%AP 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 별도 제한 없음; target: 기본공격은(10~50+15%AP)의 추가 마법 피해를 줍니다. 범위의 변화 기준은 공급본문에 없습니다. [magic]; 수치 min_amount en:body:n0=10 상수 formula_components / max_amount en:body:n1=50 상수 formula_components / stat_coefficient en:body:n2=15%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.activation eq 직전 기본공격과 동일한 대상 / target.time eq 동일대상 직전공격 후4초 안; target: 4초 안 동일대상 후속공격은(2~8+2.25%AP)의 마법 피해 증가분을 더하며, 해당 증가분의 최대식은(3~15+4.5%AP)입니다. 증가분식과 최대식의 계수를 합산하지 않습니다. [magic]; 수치 min_amount en:body:n4=2 상수 formula_components / max_amount en:body:n5=8 상수 formula_components / stat_coefficient en:body:n6=2.25%(백분율) caster.abilityPower formula_components / min_amount en:body:n7=3 상수 formula_components / max_amount en:body:n8=15 상수 formula_components / stat_coefficient en:body:n9=4.5%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 오리아나의 스킬은 구체에서 시작합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.distance eq 구체에서 너무 멀리 떨어짐; summon: 오리아나가 구체에서 너무 멀리 떨어지면 구체는 자동으로 오리아나에게 돌아옵니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "누락된구체 두사실 추가·가짜same_target표식 제거·범위레벨단정/증분최대 계수합산 방지",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Orianna's Abilities originate from her Ball. Orianna's Ball automatically returns to her if she is too far away from it. Orianna's Attacks deal an additional ((10 ~ 50) + (15% Ability Power)) magic damage. Subsequent Attacks against the same target within 4 seconds deal an additional ((2 ~ 8) + (2.25% Ability Power)) magic damage (max of ((3 ~ 15) + (4.5% Ability Power)) damage)."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "기본10~50/후속증분2~8/최대증분3~15 범위의 변화 기준이나 누적식은 주어지지 않았다. 레벨비례 또는 증분 두배의 기본수치를 추정하지 않고 원문 최대식을 보존한다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "구체 자동귀환의 너무멀리 거리 임계값이 공급원문에 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

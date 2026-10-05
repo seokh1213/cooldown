@@ -1,0 +1,146 @@
+{
+  "id": "Jax.R",
+  "sourceHash": "54367d7dbd7c137d79732b313c5745f563e409dea0b994bc9819dfb8ab341dcb",
+  "beforeCandidateHash": "0dbdb33d2725d468b56eaf2d219e912d560c5c2c50635c4f38db58be9aed7994",
+  "candidateHash": "a079c69aa330c7ab90e1dc97df6cb2911c06f7bdd09ba92b7085a029c08e5541",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 5,
+  "summaryCheck": "2.5초내매3공격추가마법75~185+AP60%·주변활성100~250+추가AP100%·첫/추가챔피언자기방어력/MR8초·그동안매2공격·구조물50%를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster hit_count eq 세 번째 공격; caster time lte 2.5; caster activation absent 이 스킬의 8초 강화 효과 → target: 조건을 만족하는 공격은 추가 마법 피해를 입힙니다. [magic] / amount=75/130/185 [rank_values]; stat_coefficient=60% (caster abilityPower) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → nearby_enemies: 주변적에게100/175/250 + 자기추가주문력100% 마법피해를준다. [magic] / amount=100/175/250 [rank_values]; stat_coefficient=100% (caster abilityPower) [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order eq 이번 시전에서 첫 챔피언 적중 → caster: 챔피언을 맞히면 방어력과 마법 저항력이 증가합니다. / amount=45/60/75 (caster armor) [rank_values]; stat_coefficient=40% (caster bonusAttackDamage) [scalar]; duration_seconds=8 [scalar] | caster: 챔피언을 맞히면 방어력과 마법 저항력이 증가합니다. / amount=27/36/45 (caster magicResist) [rank_values]; stat_coefficient=24% (caster bonusAttackDamage) [scalar]; duration_seconds=8 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order neq 이번 시전에서 첫 챔피언 적중 → caster: 맞힌 추가 챔피언마다 방어력이 추가로 증가합니다. / amount=20/25/30 (caster armor) [rank_values]; stat_coefficient=10% (caster bonusAttackDamage) [scalar]; duration_seconds=8 [scalar] | caster: 맞힌 추가 챔피언마다 마법 저항력이 추가로 증가합니다. / amount=12/15/18 (caster magicResist) [rank_values]; stat_coefficient=6% (caster bonusAttackDamage) [scalar]; duration_seconds=8 [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster hit_count eq 두 번째 공격; caster time lte R 효과 지속 중 → target: 이 시간 동안 두 번째 공격마다 추가 마법 피해를 입힙니다. [magic]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 target target_type eq structure; caster activation eq 이 스킬의 피해 → target: 구조물에게는이 스킬 피해의50%를입힌다. [magic] / damage_multiplier=50% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions",
+      "issue": "활성8초중에도매3공격기본규칙중복",
+      "correction": "강화효과없을때매3공격",
+      "sourceId": "en:body",
+      "quote": "every second Attack deals additional magic damage instead of every third."
+    },
+    {
+      "path": "rules.2-3.conditions",
+      "issue": "첫챔피언에도추가분적용·기본값도매챔피언마다반복",
+      "correction": "시전첫챔피언/추가챔피언조건분리",
+      "sourceId": "en:body",
+      "quote": "per additional champion hit"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 136,
+      "verdict": "repaired",
+      "reason": "추가분rule3은이번시전의첫챔피언이아닌경우에만적용되며기본값rule2는첫챔피언으로한정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "세 번째 및 두 번째 공격은 hit_count에 허용된 숫자 참조로 표현할 수 없어 서수 조건을 텍스트로 보존했습니다. 2.5초 시간 창은 숫자 참조로 포함했지만, 공격 간격의 정확한 창 의미는 별도 gap으로 남깁니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "추가 챔피언 적중당 증가 효과에는 추가 적중 수가 명시되어 있으나, 허용된 entity_count 조건으로 추가 챔피언 적중분을 정확히 셀 수 없어 조건을 완전히 구조화하지 못했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_number",
+      "detail": "지속 중 두 번째 공격의 추가 마법 피해량은 원문에서 별도 수치가 제시되지 않아 parameters를 비워 두었습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 3,
+      "reason": "unresolved_condition",
+      "detail": "구조물 피해가 주변 적 대상 피해를 대체하는 것으로 표현했으나, 구조물이 주변 적 범위에 포함되는 조건은 원문에서 구체화되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 4,
+      "reason": "scope_ambiguous",
+      "detail": "활성피해의100% bonus Ability Power는추가AP가스키마에없어abilityPower로연결하되텍스트의추가범위를우선한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "5 unresolved source gaps"
+      }
+    ]
+  }
+}

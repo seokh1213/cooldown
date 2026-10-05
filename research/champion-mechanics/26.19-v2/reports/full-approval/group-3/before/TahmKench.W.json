@@ -1,0 +1,286 @@
+{
+  "summary": "잠수한 뒤 지정 위치에 나타나며, 범위 내 적에게 마법 피해와 공중 띄우기를 적용한다. 적 챔피언을 하나 이상 적중시키면 재사용 대기시간과 마나 소모량의 일부를 돌려받는다. 삼킨 아군을 함께 이동시킬 수 있고, 정신 집중 중 도착 지점은 일정 시간이 지난 뒤 적에게 보인다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "잠수한 뒤 지정 위치에 다시 나타난다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Dive down and then re-appear at target location"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "nearby_enemies"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "범위 내 모든 적에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "범위 내 모든 적을 공중으로 띄운다.",
+          "damageType": null,
+          "crowdControl": "knockup",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (100/135/170/205/240 + (150% Ability Power)) magic damage and Knock Up all enemies in an area for 1 second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Dive down and then re-appear at target location, dealing (100/135/170/205/240 + (150% Ability Power)) magic damage and Knock Up all enemies in an area for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "nearby_enemies",
+          "field": "entity_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n7"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "적 챔피언을 하나 이상 적중시키면 재사용 대기시간의 일부를 돌려받는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "적 챔피언을 하나 이상 적중시키면 소모한 마나의 일부를 돌려받는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_refund",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting at least one enemy champion refunds 40/42.5/45/47.5/50% of the Cooldown and Mana cost."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Devour로 삼킨 아군과 동행 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "삼킨 아군을 데리고 이동할 수 있으며, 아군은 이동 중 언제든 일찍 나올 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Devoured allies can be taken along for the ride (but can always hop out early)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "unseen"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n13"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "enemy",
+          "text": "정신 집중 시작 후 지정 위치는 적에게 보이지 않는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies cannot see where you are headed to until 0.75 seconds into the channel."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

@@ -1,0 +1,86 @@
+{
+  "id": "Jinx.Q",
+  "sourceHash": "834526f1c793f36706ec7b19d4f536e32bdc2e79d976aa15302923b6e69a48f2",
+  "beforeCandidateHash": "3e5f4992d9198092188edd581e83c6e1c89b45f4d3897eb6127d8bbdd1b4e119",
+  "candidateHash": "74e0719b6eedcae72c148cc8822116a535fea5e6257e9948dabab63c4f663eb5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "weapon전환,rocket주타깃/근처AD110%물리/사거리100~200/mana/bonusAS스케일10%감소,미니건2.5초최대3stack/전체최대AS30~130%/한개씩만료/전환후첫rocket만buff를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.weapon eq 로켓 런처. target damage physical: 대상에게 물리 피해를 입힙니다. [damage_multiplier n0=110% scalar caster.totalAttackDamage] flags=replaces_base / nearby_enemies damage physical: 주변 적에게도 물리 피해를 입힙니다. [damage_multiplier n0=110% scalar caster.totalAttackDamage] flags=replaces_base,per_target / caster other: 기본 공격 사거리가 증가하고, 추가 공격 속도에 비례하는 계수가 낮아지며 마나를 소모합니다. [distance_units n1=100/n2=125/n3=150/n4=175/n5=200 rank_values; other n6=10% formula_components caster.bonusAttackSpeed]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.weapon eq 미니건. caster stat_modifier: 미니건 기본 공격으로 공격 속도를 얻습니다. 중첩은 지정된 시간 동안 지속되며 하나씩 감소하고, 최대 중첩 수에 도달할 수 있습니다. [duration_seconds n7=2.5 scalar; storage_cap n8=3 scalar; max_amount n9=30%/n10=55%/n11=80%/n12=105%/n13=130% rank_values] flags=decays"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.weapon eq 로켓 런처; caster.other eq 미니건에서 로켓 런처로 전환한 뒤 첫 기본 공격. caster stat_modifier: 미니건 중첩은 로켓 런처로 전환한 뒤 징크스의 첫 기본 공격에만 적용됩니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster transform: 로켓 런처와 미니건을 서로 전환한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/new",
+      "issue": "공격행위자·거리role·AS감소기준주인·한도count·전환자체누락/첫공격조건",
+      "correction": "caster,거리및bonusAS수정,storagecap,전환후첫공격텍스트및weapon변환",
+      "sourceId": "en:body",
+      "quote": "Jinx swaps weapons between Fishbones the rocket launcher and Pow-Pow the minigun."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 145,
+      "verdict": "repaired",
+      "reason": "사거리role를distance_units로고쳤다."
+    },
+    {
+      "index": 146,
+      "verdict": "false_positive",
+      "reason": "현재frozen number표n9~n13는모두percent=true이며30/55/80/105/130%로일관된다. 지적은현원문숫자표에적용되지않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "로켓 런처의 마나 소모량이 명시되지 않아 수치 매개변수를 두지 않았습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "추가 공격 속도에 비례하는 계수가 낮아지는 방식의 구체적인 계산식은 원문에 없습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "미니건 중첩이 첫 로켓 런처 공격에 적용된다는 사실은 명시되어 있지만, 적용되는 중첩 수나 구체적인 공격 속도량은 해당 조건별로 명시되어 있지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,253 @@
+{
+  "summary": "세트는 양옆의 적들을 서로 부딪치게 해 물리 피해를 입히고 둔화시킵니다. 양쪽에서 각각 적을 하나 이상 붙잡았으면 부딪힌 모든 적을 기절시킵니다. 몬스터에게는 추가 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "세트 양옆에서 잡힌 적에게 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "양옆의 적을 세트 쪽으로 끌어당겨 서로 부딪치게 한다.",
+          "damageType": null,
+          "crowdControl": "pull",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sett smashes enemies on either side of him into each other, dealing (50/70/90/110/130 + (60% Attack Damage)) physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (125 ~ 250) bonus damage against monsters."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sett smashes enemies on either side of him into each other, dealing (50/70/90/110/130 + (60% Attack Damage)) physical damage and Slowing them by 70% for 0.5 seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Sett pulls in all enemies on opposite sides of him"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "세트 양쪽에서 서로 부딪히는 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sett smashes enemies on either side of him into each other, dealing (50/70/90/110/130 + (60% Attack Damage)) physical damage and Slowing them by 70% for 0.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "양쪽에서 각각 적을 하나 이상 붙잡음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "부딪힌 모든 적을 기절시킨다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Sett grabbed at least one enemy on each side, all enemies are Stunned for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "몬스터에게 추가 피해125~250을 입힌다. 이 문장은 피해 유형을 직접 명시하지 않는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sett smashes enemies on either side of him into each other, dealing (50/70/90/110/130 + (60% Attack Damage)) physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (125 ~ 250) bonus damage against monsters."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sett smashes enemies on either side of him into each other, dealing (50/70/90/110/130 + (60% Attack Damage)) physical damage and Slowing them by 70% for 0.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "missing_source",
+      "detail": "몬스터추가피해문장은독립타입을명시하지않아타입단정없이other에양을보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (125 ~ 250) bonus damage against monsters."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "summary는양쪽잡으면slow대신stun이라하지만본문은기본slow뒤양쪽stun추가로서대체관계를명시하지않는다.본문규칙을우선하고독립stun/slow를보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "If enemies were only on one side, they are slowed instead of stunned."
+        }
+      ]
+    }
+  ]
+}

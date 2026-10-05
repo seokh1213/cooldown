@@ -1,0 +1,134 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Teemo.W",
+      "sourceHash": "32da4a2db4f880d27e563d3784b6e07a5897683a71a478b19405bcdefc287ef8",
+      "candidateHash": "83a2be07573d4700aa0644ddfd071388c625a89df50810a73f60f11255b590d0"
+    },
+    {
+      "id": "Teemo.E",
+      "sourceHash": "c364952dadcb6e69271a778268e07d2c2d74b7fb9ec3817a8fd0789401437136",
+      "candidateHash": "c52e7abc5ecc2dd5d25fa579403cf57817326af9d14305ed8f7b6b5f6b990327"
+    },
+    {
+      "id": "Teemo.P",
+      "sourceHash": "08cdd91249c3a45bfa5c9f7599cf6804fd4bf6c30a2933c25f9c2814a48756f6",
+      "candidateHash": "6504687585029b51cd9d05400dddbed1c2806854e67b2f0deb8bc61ac26282b7"
+    },
+    {
+      "id": "Teemo.Q",
+      "sourceHash": "c49723b75b45378ffbadc5e0407a8a5eaaf86036935ee42c7b182489b980983c",
+      "candidateHash": "a2719c5322f9c2f196d68dce2c00ae778785ac78fb13501ae54eb3920705ec04"
+    },
+    {
+      "id": "Teemo.R",
+      "sourceHash": "4407b89de74fc2c80174c1a28150a33dbf954e532edd1c8b3e6d415e7795cd66",
+      "candidateHash": "a2edb163bc431db26e1f2f4f5fab4a8d94e332ccd881fb2f558fb36489e8ae20"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Teemo.E",
+      "path": "rules.0.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Passive: Teemo's Attacks apply poison On-Hit",
+      "issue": "기본 공격 적중 효과인데 trigger가 attack_or_ability_hit으로 지정되어 능력 적중에도 발동하는 것으로 읽힙니다.",
+      "correction": "trigger.event를 기본 공격 적중으로 제한하세요."
+    },
+    {
+      "id": "Teemo.E",
+      "path": "rules.1.conditions.0.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This poison deals 160% damage to jungle monsters.",
+      "issue": "조건이 모든 monster로 되어 있어 정글 몬스터가 아닌 몬스터까지 포함합니다.",
+      "correction": "대상을 정글 몬스터로 한정하세요."
+    },
+    {
+      "id": "Teemo.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Teemo stands still for 1.5 seconds without being damaged",
+      "issue": "1.5초 정지 조건과 피해를 받지 않는 조건이 별도 조건으로 표현되지 않았습니다. 현재 time 조건은 무엇을 측정하는지 불명확합니다.",
+      "correction": "1.5초간 정지와 그동안 피해를 받지 않음을 각각 조건으로 표현하세요."
+    },
+    {
+      "id": "Teemo.P",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Upon exiting this Invisibility, Teemo gains (20% ~ 80%) Attack Speed for 5 seconds.",
+      "issue": "투명 상태에서 벗어나는 사건인데 trigger가 transform으로 지정되어 실제 이탈 사건과 다릅니다.",
+      "correction": "trigger.event를 투명 상태 이탈 사건으로 표현하세요."
+    },
+    {
+      "id": "Teemo.Q",
+      "path": "rules.1.conditions.0.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minions and jungle monsters are Blinded for 200% longer.",
+      "issue": "미니언 조건만으로는 정글 몬스터에 해당 효과가 적용되지 않습니다.",
+      "correction": "미니언과 정글 몬스터를 각각 포함하도록 조건을 표현하세요."
+    },
+    {
+      "id": "Teemo.Q",
+      "path": "rules.2.conditions.0.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minions and jungle monsters are Blinded for 200% longer.",
+      "issue": "monster 전체에 적용하는 조건은 정글 몬스터로 명시된 원문보다 범위가 넓습니다.",
+      "correction": "대상을 정글 몬스터로 한정하세요."
+    },
+    {
+      "id": "Teemo.R",
+      "path": "rules.1.effects.0.parameters.0.numbers.2.percent",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The traps Slow by 30/40/50%",
+      "issue": "첫 두 둔화 수치의 percent가 false로 기록되어 백분율 값이 누락됐습니다.",
+      "correction": "30과 40도 percent: true로 기록하세요."
+    },
+    {
+      "id": "Teemo.R",
+      "path": "rules.1.effects.1.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "deal (200/325/450 + (50% Ability Power)) magic damage over 4 seconds.",
+      "issue": "피해 효과에 4초 지속시간이 빠져 있습니다. 같은 문장에서 추출된 4초는 시야 공개 효과에만 연결되어 있습니다.",
+      "correction": "피해 효과에도 4초 지속시간을 연결하세요."
+    },
+    {
+      "id": "Teemo.R",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The traps Slow by 30/40/50% and deal (200/325/450 + (50% Ability Power)) magic damage over 4 seconds.",
+      "issue": "둔화와 지속 피해는 함정 폭발 시 발생하지만 trigger가 적의 enter_area로 표현되어 폭발 사건을 특정하지 않습니다.",
+      "correction": "trigger.event를 함정이 밟혀 폭발하는 사건으로 표현하세요."
+    },
+    {
+      "id": "Teemo.R",
+      "path": "rules.3.effects.0.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Traps last 5 minutes and are stealthed.",
+      "issue": "5분은 함정의 지속시간인데 expiry 효과의 duration_seconds로 붙어 만료 사건의 길이처럼 표현됩니다.",
+      "correction": "5분을 함정 지속시간으로 기록하고, 만료 효과 자체에는 지속시간을 붙이지 마세요."
+    },
+    {
+      "id": "Teemo.R",
+      "path": "rules.4.conditions.0.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "A mushroom tossed onto another mushroom bounces before landing at its position.",
+      "issue": "조건이 버섯끼리의 위치 관계만 기록해, 새 버섯이 기존 버섯 위에 던져지는 조건을 명확히 나타내지 않습니다.",
+      "correction": "새로 던진 버섯이 다른 버섯 위에 떨어지는 조건으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,70 @@
+{
+  "id": "Lulu.W",
+  "sourceHash": "d36443264b1ca1c6df428c8a8f9c35cbfa1c974236e22389192158fe8e53ba59",
+  "beforeCandidateHash": "587525447e679b4315ee18df6bf8aa8c09de398b4b85f7674896d473ba378d94",
+  "candidateHash": "0d42202b5086b978e4a9bc34694f1ee5dcb471eeae41204f0763646abd55b2e1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "아군이속25%+100AP당5%/공속20~30%3~4초,적변이1.2~2초와그동안침묵·공격불가·60둔화(%없음) 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.other eq 아군 대상; target: 아군의 이동속도가25%+(룰루AP/100)×5%만큼3/3.25/3.5/3.75/4초 증가합니다. AP계수5%를100당이라는 분모 없이 직접 곱하지 않습니다.; 수치 amount en:body:n0=25%(백분율) 상수 formula_components / stat_coefficient en:body:n1=5%(백분율) caster.abilityPower formula_components / ratio_input en:body:n2=100 상수 formula_components / duration_seconds en:body:n8=3,en:body:n9=3.25,en:body:n10=3.5,en:body:n11=3.75,en:body:n12=4 상수 rank_values; flags 없음 | target: 공격 속도가 증가합니다.; 수치 amount en:body:n3=20(백분율),en:body:n4=22.5(백분율),en:body:n5=25(백분율),en:body:n6=27.5(백분율),en:body:n7=30%(백분율) 상수 rank_values / duration_seconds en:body:n8=3,en:body:n9=3.25,en:body:n10=3.5,en:body:n11=3.75,en:body:n12=4 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.other eq 적 대상; target: 변이시킵니다. [polymorph]; 수치 duration_seconds en:body:n13=1.2,en:body:n14=1.4,en:body:n15=1.6,en:body:n16=1.8,en:body:n17=2 상수 rank_values; flags 없음 | target: 변이된 대상은 침묵 상태가 됩니다. 이 효과는 해당 변이기간 동안입니다. [silence]; 수치 duration_seconds en:body:n13=1.2,en:body:n14=1.4,en:body:n15=1.6,en:body:n16=1.8,en:body:n17=2 상수 rank_values; flags 없음 | target: 변이된 대상은 무장 해제 상태가 됩니다. 이 효과는 해당 변이기간 동안입니다. [disarm]; 수치 duration_seconds en:body:n13=1.2,en:body:n14=1.4,en:body:n15=1.6,en:body:n16=1.8,en:body:n17=2 상수 rank_values; flags 없음 | target: 변이기간1.2/1.4/1.6/1.8/2초 동안 수치60의둔화입니다. 공급원문은60뒤에%를 붙이지 않습니다. [slow]; 수치 amount en:body:n18=60 상수 scalar / duration_seconds en:body:n13=1.2,en:body:n14=1.4,en:body:n15=1.6,en:body:n16=1.8,en:body:n17=2 상수 rank_values; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "AP100당분모연산 명시·변이하위CC기간 연결·단위추정방지gap 추가",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "When used on an ally, Lulu grants (25% + (5% per 100 Ability Power)) Move Speed and 20/22.5/25/27.5/30% Attack Speed for 3/3.25/3.5/3.75/4 seconds. When used on an enemy, Lulu Polymorphs them for 1.2/1.4/1.6/1.8/2 seconds. Polymorphed targets are Silenced, Disarmed, and Slowed by 60."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "변이둔화는영문 Slowed by60/한국어60둔화로 백분율기호가없다. 수치60을60%로 바꾸지 않으며 정확한단위는 공급표기한계로 보존한다.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

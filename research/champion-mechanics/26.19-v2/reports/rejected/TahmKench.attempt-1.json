@@ -1,0 +1,1693 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "기본 공격은 추가 마법 피해를 입히며, 적 챔피언에게 피해를 주면 절대 미각 중첩을 쌓는다. 중첩이 충분하면 해당 챔피언을 대상으로 혀 채찍과 집어삼키기가 강화된다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "기본 공격이 추가 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "bonusHealth",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Attacks deal ((5 ~ 60) + (4% bonus Health) + (0% Ability Power)) bonus magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "적 챔피언에게 피해를 주면 절대 미각 중첩을 부여한다. 중첩은 일정 시간 유지되고 최대 중첩 횟수에 도달하면 더 쌓이지 않는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Against champions, they add a stack of An Acquired Taste for 5 seconds, up to 3 times."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "절대 미각 3중첩"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "target",
+              "text": "절대 미각 중첩이 충분한 챔피언을 대상으로 혀 채찍과 집어삼키기가 강화된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "At 3 stacks, Tongue Lash and Devour become empowered against that champion."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "혀 채찍은 처음 적중한 적에게 피해를 주고 둔화시킨다. 챔피언 적중 시 회복하고 절대 미각 중첩을 적용하며, 이미 중첩이 충분한 챔피언은 기절시키고 중첩을 소모한다. 혀가 날아가는 동안 집어삼키기를 시전하면 조건을 충족한 챔피언을 원거리에서 삼킬 수 있다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "처음 적중한 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 적중한 적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Deals (75/120/165/210/255 + (100% Ability Power)) magic damage to the first enemy hit and Slows them by 50% for 2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "적 챔피언 적중 시 잃은 체력에 비례해 회복한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "적중한 챔피언에게 절대 미각 중첩을 적용한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "적중한 챔피언에게 절대 미각의 추가 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": "bonusHealth",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "On champion hit, heals Tahm for 10/15/20/25/30 + 5/5.5/6/6.5/7% of his missing Health and applies a stack of An Acquired Taste dealing ((5 ~ 60) + (4% bonus Health) + (0% Ability Power)) extra magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "적중 전에 절대 미각 3중첩"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "대상을 기절시키고 절대 미각 중첩을 소모한다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n23"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "대상의 절대 미각 중첩을 소모한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If that champion already had 3 stacks of An Acquired Taste, they will also be Stunned for 1.5 seconds, consuming the stacks."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "절대 미각 3중첩"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "혀가 공중에 있는 동안 집어삼키기를 시전했다면, 조건을 충족한 적 챔피언 적중 시 원거리에서 해당 챔피언을 삼킨다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Activate Devour while your tongue is in midair to devour enemy champions who already have 3 stacks of An Acquired Taste from a distance when you hit them."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "탐 켄치의 크기가 커질수록 혀 채찍의 사거리가 늘어난다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tongue Lash's range increases with Tahm Kench's size"
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "잃은 체력 비율 회복의 stat 필드에는 체력이 별도 통계로 없으며, 툴팁의 missing Health를 허용 통계로 특정할 수 없어 계수의 statSubject와 정확한 stat을 확정하지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "of his missing Health"
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "혀 채찍의 크기에 따른 사거리 증가량과 적용 조건은 수치화되어 있지 않다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tongue Lash's range increases with Tahm Kench's size"
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "잠수한 뒤 지정 위치에 나타나며, 범위 내 적에게 마법 피해와 공중 띄우기를 적용한다. 적 챔피언을 하나 이상 적중시키면 재사용 대기시간과 마나 소모량의 일부를 돌려받는다. 삼킨 아군을 함께 이동시킬 수 있고, 정신 집중 중 도착 지점은 일정 시간이 지난 뒤 적에게 보인다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "잠수한 뒤 지정 위치에 다시 나타난다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Dive down and then re-appear at target location"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "범위 내 모든 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "범위 내 모든 적을 공중으로 띄운다.",
+              "damageType": null,
+              "crowdControl": "knockup",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing (100/135/170/205/240 + (150% Ability Power)) magic damage and Knock Up all enemies in an area for 1 second."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Dive down and then re-appear at target location, dealing (100/135/170/205/240 + (150% Ability Power)) magic damage and Knock Up all enemies in an area for 1 second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "nearby_enemies",
+              "field": "entity_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n7"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "적 챔피언을 하나 이상 적중시키면 재사용 대기시간의 일부를 돌려받는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "적 챔피언을 하나 이상 적중시키면 소모한 마나의 일부를 돌려받는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "resource_refund",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hitting at least one enemy champion refunds 40/42.5/45/47.5/50% of the Cooldown and Mana cost."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Devour로 삼킨 아군과 동행 중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "ally",
+              "text": "삼킨 아군을 데리고 이동할 수 있으며, 아군은 이동 중 언제든 일찍 나올 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Devoured allies can be taken along for the ride (but can always hop out early)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "unseen"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n13"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "visibility",
+              "subject": "enemy",
+              "text": "정신 집중 시작 후 지정 위치는 적에게 보이지 않는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies cannot see where you are headed to until 0.75 seconds into the channel."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "기본 지속 효과로 받은 피해의 일부를 회색 체력으로 비축하며, 근처 적 챔피언 수가 조건을 충족하면 비축 비율이 증가한다. 일정 시간 피해를 받지 않으면 비축분을 빠르게 소모해 회복한다. 사용하면 비축분 전부를 일시적인 보호막으로 전환한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "entity_count",
+              "operator": "lt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n10"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "받은 피해의 일부를 회색 체력으로 비축한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "15/23/31/39/47% of damage Tahm Kench takes is stored by his Thick Skin, increased to 42/44/46/48/50% if there are at least 2 nearby enemy champions."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: 15/23/31/39/47% of damage Tahm Kench takes is stored by his Thick Skin, increased to 42/44/46/48/50% if there are at least 2 nearby enemy champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "entity_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n10"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "받은 피해의 증가한 비율을 회색 체력으로 비축한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "increased to 42/44/46/48/50% if there are at least 2 nearby enemy champions."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: 15/23/31/39/47% of damage Tahm Kench takes is stored by his Thick Skin, increased to 42/44/46/48/50% if there are at least 2 nearby enemy champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n11"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "resource",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "회색 체력"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "일정 시간 피해를 받지 않으면 회색 체력을 빠르게 소모해 그 가치의 일부만큼 회복한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Kench has not taken damage within 4 seconds, Thick Skin will rapidly be consumed to heal Tahm for (60% ~ 100%) of its value."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "resource",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "회색 체력"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "비축한 두꺼운 피부를 전부 보호막으로 전환한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Convert all your stored Thick Skin into a Shield, lasting 2.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "회색 체력은 최대 체력의 일정 비율까지 비축된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Grey Health is capped at (300% Health)"
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "적 챔피언은 절대 미각 중첩 조건을 충족해야 삼킬 수 있고, 삼키는 동안 최대 지속 시간 후 내뱉을 수 있으며 마법 피해를 받는다. 아군 챔피언을 삼키면 보호막을 얻고 일찍 나올 수 있다. 대상에 따라 탐 켄치에게 적용되는 이동 제한과 둔화, 아군 삼키기 중의 시전 가능 및 이동 속도 증가가 다르다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "절대 미각 3중첩"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "적 챔피언을 삼킨다. 재시전하면 대상을 내뱉을 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tahm Kench devours a champion for a few seconds. He can Recast to spit them out. Enemy Champions: Require 3 stacks of An Acquired Taste. Are devoured for up to 3 seconds"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Are devoured for up to 3 seconds and take 100/250/400 ( + (15% + (7% per 100 Ability Power)) of their Max Health) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "삼킨 적 챔피언에게 마법 피해를 입히며, 피해량은 대상 최대 체력 비율과 주문력에 따라 결정된다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "other",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemy Champions: Require 3 stacks of An Acquired Taste. Are devoured for up to 3 seconds and take 100/250/400 ( + (15% + (7% per 100 Ability Power)) of their Max Health) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "적 챔피언을 삼키는 동안 둔화되고 고정된다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "적 챔피언을 삼키는 동안 고정된다.",
+              "damageType": null,
+              "crowdControl": "ground",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tahm Kench is Slowed by 40% and Grounded during this effect."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "삼킨 아군"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "ally",
+              "text": "삼킨 아군은 내뱉어진 뒤 점차 감소하는 보호막을 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Ally Champions: Are devoured for up to 3 seconds and are granted (650/800/950 + (100% Ability Power)) Shield which decays gradually after being spit out."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "삼켜진 아군"
+              }
+            },
+            {
+              "subject": "ally",
+              "field": "time",
+              "operator": "lt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n1"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "ally",
+              "text": "삼켜진 아군은 더 일찍 나올 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Allies can also choose to exit early."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Are devoured for up to 3 seconds and take 100/250/400 ( + (15% + (7% per 100 Ability Power)) of their Max Health) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "삼킨 아군"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "아군을 삼키는 동안 고정된다.",
+              "damageType": null,
+              "crowdControl": "ground",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "아군을 삼키는 동안 심연 잠수를 시전할 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "아군을 삼킨 동안 이동 속도가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Tahm Kench is Grounded during this effect, but can cast Abyssal Dive and gains 60% Move Speed for 3 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "삼켜진 아군"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "ally",
+              "text": "아군은 체력 바 옆에서 이 스킬의 다음 사용 가능 상태를 확인할 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "ui_information",
+              "subject": "enemy",
+              "text": "적은 이 스킬의 다음 사용 가능 상태를 확인할 수 없다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Allies can see when this spell is available next to your health bar (enemies cannot)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "삼켜진 아군"
+              }
+            },
+            {
+              "subject": "ally",
+              "field": "time",
+              "operator": "gt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n9"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "ally",
+              "text": "보호막은 초당 일정량 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Shield decays by 200 per second."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Ally Champions: Are devoured for up to 3 seconds and are granted (650/800/950 + (100% Ability Power)) Shield which decays gradually after being spit out."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "적 최대 체력 피해 계산에 포함된 100/250/400의 피해와 대상 최대 체력에 적용되는 괄호 수식 사이의 연산 방식 및 스탯 계수 표기를 스키마의 parameters만으로 확정할 수 없어 수식 요소를 근거 범위에서 보존했다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "take 100/250/400 ( + (15% + (7% per 100 Ability Power)) of their Max Health) magic damage."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "아군 보호막이 내뱉은 후 점차 감소한다는 정보와 초당 감소량은 있으나, 감소량이 삼킨 아군의 보호막에만 적용되는지 문장만으로 분명하지 않다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Shield decays by 200 per second."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "TahmKench.Q",
+      "errors": [
+        {
+          "code": "first_hit",
+          "path": "rules.3",
+          "detail": "First-hit restriction is not stated by this rule's evidence"
+        }
+      ]
+    }
+  ]
+}

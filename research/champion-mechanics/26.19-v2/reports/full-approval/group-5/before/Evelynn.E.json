@@ -1,0 +1,337 @@
+{
+  "summary": "대상을 채찍으로 공격해 마법 피해를 입히고 이동 속도를 얻습니다. 악의 장막이 활성화되면 재사용 대기시간이 초기화되고 스킬이 강화되어 대상에게 돌진하며 경로의 적에게도 피해를 줍니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상에게 마법 피해를 입힙니다. 피해에는 대상 최대 체력 비율과 주문력에 따른 비율이 포함되지만, 주문력 단위당 비율 계산식의 완전한 의미는 확정할 수 없습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Evelynn whips an enemy, dealing 60/90/120/150/180 plus (3% + (1.5% per 100 Ability Power)) max Health magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Evelynn gains 30/35/40/45/50% Move Speed for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Demon Shade"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "악의 장막에 들어가면 이 스킬의 재사용 대기시간이 초기화되고 스킬이 강화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Entering Demon Shade refreshes this Ability's cooldown and empowers it."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "강화된 스킬 사용 시 대상에게 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상과 경로에 있는 적에게 마법 피해를 입힙니다. 대상 최대 체력과 주문력 비례 피해의 계산식은 완전히 확정할 수 없습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When this Ability is empowered, Evelynn dashes to the target and deals 80/120/160/200/240 plus (4% + (2.5% per 100 Ability Power)) max Health magic damage to her target and everyone she passes through instead."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "대상 적에게 적중 시 효과를 적용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability applies On-Hit Effects to the targeted enemy."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "최대 체력 피해의 주문력 보정은 주문력 100당 비율로 제시되어 있으나, 입력 스키마의 수치 표현으로 계산식을 온전히 표현할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(3% + (1.5% per 100 Ability Power)) max Health magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "(4% + (2.5% per 100 Ability Power)) max Health magic damage"
+        }
+      ]
+    }
+  ]
+}

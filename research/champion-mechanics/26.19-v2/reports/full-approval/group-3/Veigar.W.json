@@ -1,0 +1,57 @@
+{
+  "id": "Veigar.W",
+  "sourceHash": "86e7962122ab6829783ed69339922798a4a0094bcba7c3f85c5d2ee2a10d3117",
+  "beforeCandidateHash": "0338ad900ea79c98d653b94dc64e070705f3d0386accbdf4b73cce2f59bb3a10",
+  "candidateHash": "46fa4cf8b2c039dfb6637c2951d24c96bf84168a865a94bf39f8c64ea6ec7e59",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "암흑물질착지85/140/195/250/305+AP70/80/90/100/110%마법피해,극악완전50중첩묶음마다W쿨타임10%감소를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast → target: 지정위치의암흑물질착지에맞은적에게85/140/195/250/305+주문력70/80/90/100/110%마법피해를입힙니다. [magic] / amount=85/140/195/250/305 [rank_values]; stat_coefficient=70/80/90/100/110% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster resource gte 50 → caster: 극악의완전한50중첩묶음마다이W재사용대기시간이10%감소합니다. 단순히50개이상을보유한동안계속추가감소가발동하는뜻이아닙니다. / amount=10% [scalar]; other=50 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1/gaps",
+      "issue": "피해랭크AP%와착지사건범위가불명확하고쿨타임조건이>=50보유로만작성되어50묶음마다의의미가손실됐다.",
+      "correction": "착지피해전체%계수와완전50중첩묶음당10%감소를명시하고누적식한계를남겼다.",
+      "sourceId": "en:body",
+      "quote": "Every 50 stacks of Phenomenal Evil reduce this Ability's Cooldown by 10%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "AP70/80/90/100/110%의모든랭크%단위가frozen표에마지막만표시된다.전체%텍스트를보존한다.또50중첩묶음당10%쿨타임감소의누적연산식은원문에미명시다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

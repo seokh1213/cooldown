@@ -1,0 +1,129 @@
+{
+  "id": "Kennen.R",
+  "sourceHash": "ae2381bb8b3e748f19c6764516fdf2dc9478aa93ef4719395b003fe494447ddb",
+  "beforeCandidateHash": "25cae24b4b5028b9bf33f249597c60027528b18f6e59bf4f2e74c6114506657a",
+  "candidateHash": "4eeba615d09b6857f1bdc289cf7b63f7216241c9895a3ea5f9edde37852eb9e8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "en/ko 본문의 전체 적 대상·0.5초 주기 피해·3초 방어력/마법 저항력·동일 적 이전 적중당 10% 증가·이 시전 표식 부여 최대 3회를 대조했다. 요약의 챔피언 한정은 본문의 전체 적과 다르므로 본문을 우선하고 충돌을 기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster other eq 활성 폭풍이 0.5초 간격으로 적중할 때 → nearby_enemies: 활성 폭풍이 0.5초마다 주변 모든 적에게 마법 피해를 입힙니다. [magic] / amount=40/80/120 [rank_values]; stat_coefficient=25% (caster abilityPower) [formula_components]; other=0.5 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 방어력과 마법 저항력을 얻습니다. / amount=25/50/75 (caster armor) [rank_values]; amount=25/50/75 (caster magicResist) [rank_values]; duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이번 폭풍에 앞서 적중한 적에게 다시 적중할 때 → target: 동일한 적이 이번 폭풍에 앞서 맞은 횟수마다 이번 적중 피해가 10%씩 증가합니다. [magic] / other=10% [unknown]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이번 시전에서 이 적에게 부여한 폭풍의 표식이 아직 3회 미만일 때 → target: 폭풍 적중 시 폭풍의 표식을 부여하며, 이번 시전으로 한 적에게 부여하는 표식은 최대 3회입니다. / count=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "주기 피해가 단일 시전 피해로 읽히며 간격 숫자의 의미가 불명확했다.",
+      "correction": "활성 폭풍의 0.5초 주기 적중 사건을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "all nearby enemies every 0.5 seconds"
+    },
+    {
+      "path": "rules.2",
+      "issue": "방어력 지속시간 3초를 피해 증가의 3회 초과 적중 조건으로 사용하고 10%를 단순 피해 배율로 지정했다.",
+      "correction": "잘못된 숫자 조건을 제거하고 이전 적중마다 +10% 증가하는 복합 의미와 시전자 적중을 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Successive hits deal 10% increased damage for each hit the enemy has already suffered."
+    },
+    {
+      "path": "rules.3",
+      "issue": "시전별 표식 부여 횟수 상한이 현재 표식 보유량 storage_cap으로 읽혔다.",
+      "correction": "시전별 해당 적에게 부여한 횟수 최대 3회를 텍스트 조건/count로 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Enemies can only receive 3 stacks of Mark of the Storm from this ability."
+    },
+    {
+      "path": "gaps.2",
+      "issue": "요약과 본문의 대상 범위 충돌이 기록되지 않았다.",
+      "correction": "챔피언 요약과 모든 적 본문의 충돌을 기록했다.",
+      "sourceId": "en:body",
+      "quote": "all nearby enemies"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 199,
+      "verdict": "repaired",
+      "reason": "본문 every 0.5 seconds를 반복 적중 사건과 텍스트/숫자 간격으로 보존했다."
+    },
+    {
+      "index": 200,
+      "verdict": "repaired",
+      "reason": "n11=3은 방어력 지속시간이다. gt3 조건을 제거하고 이전 폭풍 적중마다 10% 증가하는 조건을 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "피해 증가는 적이 이전에 받은 적중 횟수마다 적용되지만, 기존 조건 필드만으로 이전 적중 횟수에 따른 증가를 정확히 표현할 수 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "10% 증가가 이전 적중 횟수마다 적용된다는 사실은 보존했지만, 전체 피해 배율 수식을 원문만으로 확정하지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "요약은 주변 적 챔피언을 대상으로 적지만 en/ko 본문은 주변 모든 적을 명시하므로 본문 범위를 사용했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

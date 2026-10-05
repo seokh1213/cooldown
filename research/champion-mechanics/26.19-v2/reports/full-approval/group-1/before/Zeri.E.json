@@ -1,0 +1,347 @@
+{
+  "summary": "스파크 돌진은 짧은 거리를 돌진하며, 접촉한 지형을 뛰어넘으면 돌진 거리가 크게 늘어납니다. 이후 집중 사격은 일정 시간 동안 적을 관통하고, 기본 공격 적중은 재사용 대기시간을 줄입니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "짧은 거리를 돌진하며 접촉한 지형을 뛰어넘습니다. 지형을 뛰어넘으면 돌진 거리가 크게 늘어납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zeri dashes a short distance and vaults over any terrain she touches, greatly extending the dash range."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "정해진 시간 동안 집중 사격의 탄환이 첫 대상 이후의 적에게 관통 피해를 입힙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "첫 적중 대상에게 적중 시 마법 피해를 추가로 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "적을 기본 공격으로 맞히면 재사용 대기시간이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting an enemy with an Attack reduces this Ability's cooldown by 0.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "치명타 적중 시 재사용 대기시간이 대신 더 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Critical strikes reduce the cooldown by 1.5 seconds instead."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "추가 적중 시 피해는 제리의 치명타 확률과 치명타 피해량에 따라 증가합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "critChance",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "critDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On-hit damage is increased by Zeri's Critical Strike Chance and Critical Strike Damage at 100% effectiveness."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "관통 피해는 치명타가 적용될 수 있지만 적중 시 효과는 적용되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Pierce damage can critically strike but does not apply On-Hit effects."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "치명타 적중으로 재사용 대기시간이 감소하는 문장에는 기본 공격이라는 제한이 명시되어 있지 않아, 발동 가능한 적중 종류를 확정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Critical strikes reduce the cooldown by 1.5 seconds instead."
+        }
+      ]
+    }
+  ]
+}

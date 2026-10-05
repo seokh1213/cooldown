@@ -1,0 +1,180 @@
+{
+  "id": "Kennen.E",
+  "sourceHash": "a8b69a0768f964f2be90aa7ab9c48da18045b16ecf30ac293f8737adc3f09e4f",
+  "beforeCandidateHash": "ec19595bcd8b96c67ad0d2dc910a02cb6a5fb6165661d81d023a58b8300c549a",
+  "candidateHash": "bdf2d07761b28635d15a06c4a928ae722f5b9bcf67730e1e9163a4978dace519",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "2초번개구체/충돌무시/MS100%,지나친적80~240+AP80%마법피해와폭풍표식,이E로적1명이상실제피해시기력40,효과종료AS40/50/60/70/80%4초/치명타1초연장(남은최대4초),재시전종료/미니언·정글65%를재검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 2초동안번개구체로변신해유체화되고다른유닛과의충돌을무시합니다. / duration_seconds=2 [scalar] | caster: 이동 속도를 얻습니다. / amount=100% (caster moveSpeed) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other present 케넨이 번개 구체 상태로 지나치는 적 → target: 지나치는 적에게 마법 피해를 입힙니다. [magic] / amount=80/120/160/200/240 [rank_values]; stat_coefficient=80% (caster abilityPower) [formula_components] | target: 번개구체로지나친적에게폭풍의표식을남깁니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 enemy entity_count gte one; caster other eq 이번E번개구체가지나친적한명이상에게실제로피해를준경우 → caster: 적에게 피해를 입히면 기력을 얻습니다. / amount=40 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster activation eq 번개 구체 효과가 종료됨 (만료 또는 재사용) → caster: 이번E가만료또는재시전종료하면4초동안40/50/60/70/80%공격속도를얻습니다. / amount=40/50/60/70/80% (caster attackSpeed) [rank_values]; duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other present 치명타 발동; caster activation present 이 스킬 종료후 공격속도 효과 → caster: 치명타공격으로공격속도효과남은지속을1초연장하지만최초지속4초를넘게연장할수없다. / duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast → caster: 번개 구체 변신을 일찍 끝냅니다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq minion; caster other eq 이번E번개구체로지나쳐피해를줄때 → target: 미니언에게 입히는 피해는 감소합니다. 미니언대상E피해배율은65%입니다. / damage_multiplier=65% [scalar]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq monster; target other eq 정글 몬스터; caster other eq 이번E번개구체로지나쳐피해를줄때 → target: 정글 몬스터에게 입히는 피해는 감소합니다. 정글몬스터대상E피해배율은65%입니다. / damage_multiplier=65% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.trigger",
+      "issue": "케넨피해가하기를enemy damage_taken으로서술",
+      "correction": "caster ability_hit",
+      "sourceId": "en:body",
+      "quote": "If Kennen damages at least one enemy"
+    },
+    {
+      "path": "rules.4.conditions/text",
+      "issue": "치명타아닌모든공격에서연장·최초상한텍스트누락",
+      "correction": "치명타/AS효과중조건·최대최초4초잔여지속명시",
+      "sourceId": "en:body",
+      "quote": "Duration cannot be extended beyond its initial value."
+    },
+    {
+      "path": "rules.7.conditions",
+      "issue": "정글이아닌모든몬스터에65%",
+      "correction": "정글조건",
+      "sourceId": "en:body",
+      "quote": "Deals 65% damage to minions and jungle monsters."
+    },
+    {
+      "path": "rules.0-1",
+      "issue": "최종재검수에서요약의폭풍표식효과누락및유체화충돌무시와MS증가분류가불완전함을확인했다.",
+      "correction": "E지나친적표식/충돌무시/MS스탯증가를복구했다.",
+      "sourceId": "en:summary",
+      "quote": "pass through units and apply a Mark of the Storm."
+    },
+    {
+      "path": "rules.2/6/7",
+      "issue": "기력/감소배율사건이이번E실제피해로명시되지않고65%배율에기본대체플래그가있었다.",
+      "correction": "이번E실제피해조건/피해배율수정으로정정했다.",
+      "sourceId": "en:body",
+      "quote": "Deals 65% damage to minions and jungle monsters."
+    },
+    {
+      "path": "rules.3/gaps",
+      "issue": "전체랭크AS퍼센트단위가숫자표에서손실됐다.",
+      "correction": "전체40/50/60/70/80%와숫자표한계를보존했다.",
+      "sourceId": "en:body",
+      "quote": "40/50/60/70/80% Attack Speed"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 194,
+      "verdict": "repaired",
+      "reason": "피해가해는케넨의이능력적중사건으로수정했다."
+    },
+    {
+      "index": 195,
+      "verdict": "false_positive",
+      "reason": "정글몬스터감소는별도rule7로이미존재한다.미니언rule6은그분기다."
+    },
+    {
+      "index": 196,
+      "verdict": "repaired",
+      "reason": "rule7에정글몬스터조건을추가했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "40/50/60/70/80%공격속도는모든랭크%지만frozen숫자표는마지막만percent=true이다.전체단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

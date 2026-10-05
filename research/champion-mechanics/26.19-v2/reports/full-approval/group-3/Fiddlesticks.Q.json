@@ -1,0 +1,163 @@
+{
+  "id": "Fiddlesticks.Q",
+  "sourceHash": "eca2de175f03ded05d3e0b19cbedc0be07e24db3b9156f3f117f2b5e56af436c",
+  "beforeCandidateHash": "3da5dff23930855c6ec9aa9eed638186d43c114f775fa07daa5eaeb8a25e8f53",
+  "candidateHash": "71746098657288ca4841945821d34d6166b04643f88bd6821c45662af0399aac",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 5,
+  "summaryCheck": "(비시야+비전투)또는허수아비흉내시스킬피해공포·활성공포/대상현재HP복합피해·최근자신공포대상대체비율/최소·미니언/정글400상한을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster other eq (적에게 보이지 않으며 전투에서 벗어남) 또는 허수아비를 흉내냄 → target: 스킬로 피해를 입힌 적을 공포에 빠뜨립니다. [fear] / duration_seconds=1.2/1.4/1.6/1.8/2 [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target mark absent 최근 피들스틱에게 공포를 당함 → target: 적에게 현재 체력 기준으로, 기본 비율에 주문력에 따른 추가 비율을 더한 마법 피해를 입힙니다. 현재 체력 기준은 제공된 통계 항목으로 표현할 수 없습니다. 대상현재체력 × (4/4.5/5/5.5/6% + 자신AP100당3%)다. AP항을독립피해로합산하지않는다. [magic] / amount=4/4.5/5/5.5/6% [rank_values]; ratio_output=3% [formula_components]; ratio_input=100 (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target mark present 최근 피들스틱에게 공포를 당함 → target: 최근 피들스틱에게 공포를 당한 대상에게 현재 체력 기준으로, 기본 비율에 주문력에 따른 추가 비율을 더한 마법 피해를 입힙니다. 현재 체력 기준은 제공된 통계 항목으로 표현할 수 없습니다. 대상현재체력 × (8/9/10/11/12% + 자신AP100당6%)다. AP항을독립피해로합산하지않는다. [magic] / amount=8/9/10/11/12% [rank_values]; ratio_output=6% [formula_components]; ratio_input=100 (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target mark absent 최근 피들스틱에게 공포를 당함 → target: 대상에게 최소 마법 피해를 입힙니다. [magic] / min_amount=40/60/80/100/120 [rank_values]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target mark present 최근 피들스틱에게 공포를 당함 → target: 최근 피들스틱에게 공포를 당한 대상에게 대체 최소 마법 피해를 입힙니다. [magic] / min_amount=80/120/160/200/240 [rank_values]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target other eq 대상이 미니언 또는 정글 몬스터 → target: 미니언과 정글 몬스터에게 입히는 피해에는 최대치가 적용됩니다. [magic] / max_amount=400 [scalar]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → target: 적을 공포에 빠뜨립니다. [fear] / duration_seconds=1.2/1.4/1.6/1.8/2 [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions",
+      "issue": "허수아비흉내에도비시야를필수로부가",
+      "correction": "(비시야AND비전투)OR흉내텍스트조건",
+      "sourceId": "en:body",
+      "quote": "While unseen and out of combat or impersonating an Effigy"
+    },
+    {
+      "path": "rules.1/3.conditions",
+      "issue": "최근공포대상에기본피해/최소피해도중복적용",
+      "correction": "기본값은최근공포없는대상·공포CC효과별도",
+      "sourceId": "en:body",
+      "quote": "If the target has recently been Feared by Fiddlesticks, instead deal"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 55,
+      "verdict": "repaired",
+      "reason": "원문의대안괄호관계를보존해허수아비흉내에서비시야필수조건을삭제했다."
+    },
+    {
+      "index": 56,
+      "verdict": "repaired",
+      "reason": "기본최소피해는최근공포없음,대체최소피해는최근자신공포있음으로분리했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "패시브조건은(비시야AND비전투)OR허수아비흉내라는대안분기를텍스트로보존한다.허수아비흉내에비시야를추가필수로요구하지않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "현재 체력 기준 피해는 제공된 stat enum에 없으므로 계수들을 파라미터에 보존하고 현재 체력 기준이라는 문구를 텍스트에 남겼습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "최근 공포의 구체적인 시간 범위는 원문에 명시되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 3,
+      "reason": "unresolved_condition",
+      "detail": "최대 피해 제한의 대상은 미니언 또는 정글 몬스터입니다. 고정 조건 형식에 OR 결합자가 없어 대상 유형을 텍스트 조건으로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 4,
+      "reason": "source_conflict",
+      "detail": "한국어본문최소피해문장은최근공포대상에게두최소값을모두서술하나영문은기본40~120/최근공포80~240을명확히구분한다.영문구체조건을우선한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "5 unresolved source gaps"
+      }
+    ]
+  }
+}

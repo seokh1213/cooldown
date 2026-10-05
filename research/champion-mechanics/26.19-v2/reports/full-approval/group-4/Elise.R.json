@@ -1,0 +1,60 @@
+{
+  "id": "Elise.R",
+  "sourceHash": "7d5b17a4495fac02a4e7446a98c23910d6d3640d60dabade2d02e8f38eadb332",
+  "beforeCandidateHash": "e15be38b137a318d77e82ec2a39f7ac07ca7dbe72c1afdc08881fa7e891db909",
+  "candidateHash": "10c963d1c7a98d0390f24371194e8daa837180aa89f6a11976a66f7fc3f2bc43",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "인간에서거미변신시근접/거미스킬/휴면거미전부소환,거미에서인간복귀시남은거미휴면,요약의거미형태이동속도증가를variant별대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "form:A:en",
+        "en:summary"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq Human Form 적용. caster: 거미 형태로 변신해 근접 형태가 되고 거미 형태 스킬을 사용할 수 있습니다.;  / summon: 휴면 상태인 새끼 거미를 모두 소환합니다.;  / caster: 거미형태로변신하면이동속도가증가한다.증가량은공급원문에없다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "form:B:en"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq Spider Form 적용. caster: 인간 형태로 돌아갑니다.;  / summon: 남아 있는 새끼 거미들이 휴면 상태가 됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects",
+      "issue": "제공요약의형태변신이동속도효과누락",
+      "correction": "수치추정없이이동속도증가보존",
+      "sourceId": "en:summary",
+      "quote": "reducing her attack range in exchange for Move Speed, new abilities, and a Spiderling swarm that will attack her foes."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

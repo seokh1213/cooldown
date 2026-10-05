@@ -1,0 +1,85 @@
+{
+  "id": "Akali.E",
+  "sourceHash": "1d24311e9124229d2c711e2eb46ece763ecce27983229d528807690b2bcebe94",
+  "beforeCandidateHash": "c25aa02c6aca15a396f75db6322c1ca46e4e7acf53958cebd7cf885ee12eac1c",
+  "candidateHash": "7dd81cf545887f79a1d5676d34a24be613415bc6d877613e75e8fc0db635ab96",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "뒤로공중제비/전방표창,첫적중적21/42/63/84/105+총AD30%+AP33%마법피해,첫적또는연막표식,1회재시전표식대상돌진/49/98/147/196/245+총AD70%+AP77%추가마법피해를대조했다. 연막대상돌진은보존하되연막자체피해의대상범위는명확히한계기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 뒤로 공중제비를 돌며 표창을 던진다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first; target other eq 표창에처음맞은적또는연막 → target: 처음 맞은 적 또는 연막에 표식을 남긴다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast / 조건 target mark present 이E로남긴표식; caster other eq 이시전의재사용을아직사용하지않아1회재시전가능할때 → caster: 표식을 남긴 대상에게 돌진한다. | enemy: 표식이있는적대상에게돌진해49/98/147/196/245+총공격력70%+주문력77%마법피해를입힙니다.연막자체에주는피해는원문미명시입니다. [magic] / amount=49/98/147/196/245 [rank_values]; stat_coefficient=70% (caster totalAttackDamage) [formula_components]; stat_coefficient=77% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first; target other eq 표창에처음맞은적 → enemy: 표창이 적중한 적에게 마법 피해를 입힌다. [magic] / amount=21/42/63/84/105 [rank_values]; stat_coefficient=30% (caster totalAttackDamage) [formula_components]; stat_coefficient=33% (caster abilityPower) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3",
+      "issue": "표창시전으로피해가즉시발생하며표식사건주인이target이고any표식/무제한재시전조건이었다.",
+      "correction": "시전자첫적중피해/첫적또는연막E표식/1회E표식재시전으로분리했다.",
+      "sourceId": "en:body",
+      "quote": "Akali can Recast this once to dash to the marked target"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "표식대상은적또는연막이지만재시전피해문장은연막자체에도피해를주는지설명하지않는다.연막으로돌진은보존하고피해는적대상으로기록한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

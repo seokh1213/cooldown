@@ -1,0 +1,66 @@
+{
+  "id": "Rakan.P",
+  "sourceHash": "3469441fcfd4412de0c43974f55df57986a40923ed8959ff9142cd492bf7ce11",
+  "beforeCandidateHash": "c1ca5706f049f5e76ea2964f4bc0210d8a4cabf9a366810b38057713dc100436",
+  "candidateHash": "478be6f6114ae82c262ac33c28562e3450905f926494df1e890ef6cf074e099b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "자기주기40~14.5초보호막30~225+95%AP,적챔피언공격/스킬적중쿨1초감소,자야라칸공동귀환 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 매40~14.5초마다 라칸 자신에게30~225+95%AP 보호막이 생깁니다. 각범위의 변화기준은 공급원문에 없습니다.; 수치 amount en:body:n2=30,en:body:n3=225 상수 formula_components / stat_coefficient en:body:n4=95%(백분율) caster.abilityPower scalar / cooldown_seconds en:body:n0=40.0,en:body:n1=14.5 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 라칸의 보호막 재사용 대기시간이 감소한다.; 수치 cooldown_seconds en:body:n5=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; ally: 자야와 라칸은 함께 귀환할 수 있다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "피격대상을공격행위자로쓴오류·범위레벨단정 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Every (40.0 ~ 14.5) seconds, Rakan gains ((30 ~ 225) + (95% Ability Power)) Shield. Rakan's Attacks and Abilities against enemy champions reduce this Cooldown by 1 second. Lover's Leap - Xayah and Rakan can recall together."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "주기40~14.5초와보호막30~225 범위의 변화기준/중간식은 공급원문에 없어 레벨비례를 추정하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

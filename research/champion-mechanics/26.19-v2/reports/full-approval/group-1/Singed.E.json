@@ -1,0 +1,69 @@
+{
+  "id": "Singed.E",
+  "sourceHash": "0f72455e0438bc323026935f25a98c16e6a52634e76d478e55da80d103736895",
+  "beforeCandidateHash": "54ab1808c1e01330506e868d5497e59b6d01f14180ef7f4a98207a21c18f77a0",
+  "candidateHash": "254a276802167a54cfbdaeac5be9fbccea53572f6adf55228d6d125d96b7ec45",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "적을 신지드 뒤로 넘기는 이동, 기본/AP/최대 체력 비율 마법 피해, 접착제 착지 시랭크별1~2초속박 및 미니언/정글 몬스터 체력 비례 피해분만300상한을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. target damage magic: 적을 던지며50/60/70/80/90+신지드 주문력55%에 최대 체력6/6.5/7/7.5/8%를 더한 마법 피해를 입힌다. 최대 체력 주인은 원문에서 명시되지 않았다. [amount n0=50/n1=60/n2=70/n3=80/n4=90 rank_values; stat_coefficient n5=55% formula_components caster.abilityPower; other n6=6%/n7=6.5%/n8=7%/n9=7.5%/n10=8% formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 신지드가 이 스킬로 뒤로 던진 적이 자신의 초강력 접착제에 착지함. target crowd_control root: 대상이 속박된다. [duration_seconds n11=1/n12=1.25/n13=1.5/n14=1.75/n15=2 rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 이 스킬로 던지는 적. target movement: 적을 어깨 너머 신지드 뒤편으로 높이 던진다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 이 스킬의 대상이 미니언 또는 정글 몬스터. target other: 해당 대상에게는 이 스킬의 최대 체력 비례 피해분만300피해 상한이다. 기본/AP피해분의 상한이 아니다. [max_amount n16=300 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3;gaps.0",
+      "issue": "300피해 상한을 모든 대상 및 최대 체력 스탯 상한으로 기록, 던지는 이동 누락, 임의any 조건",
+      "correction": "대상 유형별 체력 비례 피해분 상한으로 분리하고 뒤로 던지기 이동과 접착제 착지 조건을 명시했다. 체력의 주인 단정 없이 복합식으로 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Max Health damage is capped at 300 against minions and jungle monsters."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "300은 최대 체력 스탯의 상한이 아닌 최대 체력 비례 피해분의 상한으로 보존했다. 피해식의 최대 체력 주인은 공급 문장에 명시되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "대상을 던져 넘기는 이동 효과의 세부 거리와 방향 조건은 툴팁에 수치로 제시되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

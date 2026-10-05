@@ -1,0 +1,103 @@
+{
+  "id": "Rengar.P",
+  "sourceHash": "77a3071eeed9818de521a8f1a7bf625832a2c3cafb250e7fa054ad2b74fb96a4",
+  "beforeCandidateHash": "424b66aa06876195ee9435a202facbfb82b8cccd226341b2c473685574d8799e",
+  "candidateHash": "0b5fc54ae949a292710143520f666d830ed77253a7dc089be3ef3f3f6162e743",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "수풀 평타 도약, 비궁극기 시전 야성1, 현재 야성에 도약 획득분이 없을 때 도약 시작 야성1, 야성4 다음 비궁극기 강화, 강화시전 이속범위/1.5초, 고유 챔피언 처치 관여 공격력 증가를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.other eq 수풀 안에서 기본 공격; caster: 기본 공격 대상에게 도약한다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.other neq 궁극기; caster: 야성 중첩을 얻는다.; 수치 amount en:body:n0=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.other eq 도약 시작 시 현재 야성 중첩 중 도약으로 생성된 것이 없음; caster: 야성 중첩을 얻는다.; 수치 amount en:body:n1=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.resource eq en:body:n2=4 / caster.other neq 궁극기; caster: 다음 비궁극기 스킬이 강화된다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered; caster: 이동 속도가 증가한다.; 수치 min_amount en:body:n3=30%(백분율) 상수 level_range / max_amount en:body:n4=50%(백분율) 상수 level_range / duration_seconds en:body:n5=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: takedown 사건의 행위자 caster; 조건 target.target_type eq champion / target.other eq 고유 처치; caster: 뼈이빨 목걸이를 통해 공격력이 증가한다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "비궁극기 조건과 강화효과의 주체를 caster로 교정; 이속 범위 형태 및 챔피언 조건 근거 보완",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "While in Brush, Rengar leaps to enemies he Attacks. Rengar generates 1 Ferocity when he uses a non-ultimate Ability. At the start of the leap Unseen Predator will generate 1 Ferocity if none of his current Ferocity was generated this way. At 4 Ferocity, his next non-ultimate Ability is empowered. Casting an empowered Ability grants Rengar (30% ~ 50%) Move Speed for 1.5 seconds. Unique takedowns increase Rengar's Attack Damage from Bonetooth Necklace."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

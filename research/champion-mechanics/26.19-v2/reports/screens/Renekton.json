@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Renekton.E",
+      "sourceHash": "5e23ca44ec13e5e310a7a915029c55ae50a61b92d3ea7a9c030b50bb2fd20d67",
+      "candidateHash": "b57182e31bf2718f71cd7e3aa41889183c59e67d8e547a01ceec55d73799e3c8"
+    },
+    {
+      "id": "Renekton.P",
+      "sourceHash": "1cbd67258fb902de7352f08a9db4d9172166c9e81f18b2de5c3731abf7b213e6",
+      "candidateHash": "cd4457156033c84613dd6ad69ebe4be3198ed34f5e635c7beca7bbe0e516860d"
+    },
+    {
+      "id": "Renekton.Q",
+      "sourceHash": "7d3ed59898fde1084620ddd0985923a359844a3558a3f23db467704e8f52074d",
+      "candidateHash": "bd8c6fb8a9799a5053735bea359a535a664852ad63ae409844a85ce7dc7aedd4"
+    },
+    {
+      "id": "Renekton.R",
+      "sourceHash": "0efb311a425184fa2527d666be336a660a0f79b83df22249007d02baaa2afe4b",
+      "candidateHash": "c907a71ee64e09f9a45424efcd61ecdf505df133483bf5873aea9e85b308e9f0"
+    },
+    {
+      "id": "Renekton.W",
+      "sourceHash": "6aec24faad069c9416d8c7968c7b725539f405f159b6c40ed99924abe6f465d9",
+      "candidateHash": "dd0f02fbac4a0de4549ea9009e337608f9a08a963cce67673bb0096e21902aa6"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Renekton.P",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "While above 50 Fury, his next Ability spends it to become empowered.",
+      "issue": "요약은 분노가 50을 초과하면 다음 스킬이 강화된다고 하지만, 강화 효과를 발동하려면 그 시점의 분노를 소모한다는 점이 빠져 있습니다.",
+      "correction": "분노가 50을 초과하면 다음 스킬 사용 시 분노를 소모해 강화됩니다."
+    },
+    {
+      "id": "Renekton.W",
+      "path": "rules.0.effects.0.parameters.0.numbers.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Renekton's next Attack strikes twice",
+      "issue": "일반 강화 공격의 공격 횟수로 출처 근거가 없는 `3`을 연결했습니다. 본문은 두 번 공격한다고 명시합니다.",
+      "correction": "일반 공격 횟수를 2로 연결하고, `3`은 분노 강화 공격 규칙에만 연결하세요."
+    },
+    {
+      "id": "Renekton.W",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Renekton's next Attack strikes twice",
+      "issue": "기절 효과를 `attack` 이벤트에 연결해 기본 공격 자체가 발생할 때 적용되는 것처럼 표현했습니다. 출처는 다음 공격의 적중으로 발동하는 효과를 설명합니다.",
+      "correction": "기절 발동을 공격 적중 이벤트에 연결하세요."
+    },
+    {
+      "id": "Renekton.W",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hitting a champion generates an additional 10 Fury.",
+      "issue": "챔피언 적중 시 분노 획득을 `ability_hit` 이벤트로 기록했습니다. 출처는 능력 적중이 아니라 챔피언을 때리는 공격을 가리킵니다.",
+      "correction": "공격 적중 이벤트로 바꾸세요."
+    },
+    {
+      "id": "Renekton.W",
+      "path": "rules.5.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "All Attacks apply On-hit effects separately.",
+      "issue": "적중 시 효과의 적용을 `attack` 이벤트에 연결했습니다. 출처는 공격이 적중할 때마다 효과가 각각 적용된다고 설명합니다.",
+      "correction": "공격 적중 이벤트에 연결하세요."
+    },
+    {
+      "id": "Renekton.W",
+      "path": "rules.6.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Does not break shields on monsters.",
+      "issue": "몬스터 대상 보호막 예외를 공격 이벤트에 연결했습니다. 출처가 말하는 것은 몬스터를 공격했을 때 보호막을 파괴하지 않는다는 효과 제한입니다.",
+      "correction": "공격 적중 이벤트에 연결하세요."
+    }
+  ],
+  "notes": []
+}

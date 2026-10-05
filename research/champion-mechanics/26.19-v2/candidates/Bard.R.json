@@ -1,0 +1,54 @@
+{
+  "summary": "바드가 지정한 지역에 보호 에너지를 던져 적중한 유닛과 구조물을 일정 시간 경직시킨다. 경직된 유닛은 움직이거나 행동할 수 없고 무적 및 대상으로 지정 불가 상태가 된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적중한 유닛과 구조물을 경직시킨다.",
+          "damageType": null,
+          "crowdControl": "stasis",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "경직 상태에서는 움직이거나 행동할 수 없으며, 무적이고 대상으로 지정할 수 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard hurls magical protective energy to an area, placing all units and structures hit into Stasis for 2.5 seconds. Units in Stasis cannot move or act, and are invulnerable and Untargetable."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

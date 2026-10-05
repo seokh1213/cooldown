@@ -1,0 +1,96 @@
+{
+  "id": "Alistar.P",
+  "sourceHash": "c7ddcf1400c103f40c2a90056a57e5a4bfcc410bc385d725340205760d24ce8f",
+  "beforeCandidateHash": "7bdcd02fece4d6bff513a1d264fb3cb9c2fdec822fdafa9022e1310b4e96beea",
+  "candidateHash": "f454376ce5e69897f2154f33152e713d6c2d838b3b9be009c32c15bba8089f28",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 4,
+  "summaryCheck": "적 챔피언 기절/띄우기/넉백과 적 사망의 포효 중첩, 챔피언/에픽 몬스터사망 시최대 충전,7중첩 도달 시자기5%체력·근처아군챔피언7%체력 회복을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 enemy.target_type eq champion; caster.other eq 적 챔피언을 기절시키거나 공중으로 띄우거나 뒤로 밀쳐냄. caster other: 적 챔피언에게 기절, 공중 띄우기 또는 넉백을 적용하면 포효 중첩을 얻는다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, enemy.death; 조건 enemy.other eq 적 챔피언 또는 에픽 정글 몬스터 이외의 적. caster other: 적이 죽으면 중첩을 얻습니다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, enemy.death; 조건 enemy.target_type eq champion. caster other: 적 챔피언이 죽으면 이 스킬이 최대 중첩에 도달합니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, enemy.death; 조건 enemy.target_type eq monster; enemy.other eq epic jungle monster. caster other: 에픽 정글 몬스터가 죽으면 이 스킬이 최대 중첩에 도달합니다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.resource gte n0=7; caster.other eq resource는 포효 중첩이며7중첩에 도달하여 포효함. caster heal: 자기 체력을 체력 기준5%만큼 회복한다. 해당 체력의 현재/최대 기준 및 소유자는 원문 미명시이다. [other n1=5% formula_components]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.resource gte n0=7; caster.other eq resource는 포효 중첩이며7중첩에 도달하여 포효함; ally.other eq 근처의 모든 아군 챔피언 중 수혜자. ally heal: 근처의 모든 아군 챔피언 체력을 체력 기준7%만큼 회복한다. 해당 체력의 현재/최대 기준 및 소유자는 원문 미명시이다. [other n2=7% formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,4,5",
+      "issue": "띄우기 획득 조건 누락, 일반 죽음과 완전 충전의 중첩 오합산 가능, resource종류 모호/백분율 회복을 절대량으로 실행 가능/아군 대상 제한 불명확",
+      "correction": "띄우기를 포함하고 일반 사망/완전 충전 대상을 구분했다. 포효7중첩 도달과 근처아군챔피언을 분리하고 체력 기준 미확정 회복식으로 보존했다.",
+      "sourceId": "ko:body",
+      "quote": "알리스타가 적 챔피언을 기절시키거나, 공중으로 띄워 올리거나, 뒤로 밀어내거나, 적이 죽을 때마다 중첩을 얻습니다."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "회복량의 Health 기준 스탯이 원문에 명시되지 않아 stat과 statSubject를 지정하지 않았습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "요약은 근처 적의 죽음만 언급하지만 툴팁 본문은 적의 죽음 전반을 언급합니다. 본문 문구로 규칙을 보존하고 범위 차이를 기록합니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "resource조건은 포효 중첩 수임을 명시했고7에 도달하는 발동 사건을 보존했다. 회복 이후 중첩 초기화/재충전 세부 방식은 공급 원문이 명시하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 3,
+      "reason": "unresolved_condition",
+      "detail": "적 챔피언 및 에픽 정글 몬스터의 즉시 최대 충전은 별도 효과로 분리했습니다. 스키마의 monster enum은 에픽 여부를 구별할 수 없어 epic jungle monster 조건은 텍스트로 보존합니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

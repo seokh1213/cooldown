@@ -1,0 +1,137 @@
+{
+  "summary": "세트의 기본 공격은 왼쪽과 오른쪽 주먹을 번갈아 사용합니다. 왼쪽 주먹 뒤 빠르게 이어지는 오른쪽 주먹은 추가 물리 피해를 입힙니다. 세트는 잃은 체력 5%당 체력 재생을 얻습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "왼쪽 주먹 뒤 빠르게 이어지는 오른쪽 주먹"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "왼쪽 주먹 뒤 빠르게 이어지는 오른쪽 주먹이 추가 물리 피해를 입힌다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Right punches follow the left quickly and deal an additional ((5 ~ 90) + (55% bonus Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "잃은 체력 5%당 체력 재생을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "healthRegen",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sett gains (0.15 ~ 2.00) Health Regeneration for each 5% missing Health."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문은 잃은 체력 5% 단위로 체력 재생량을 설명하지만, 잃은 체력의 기준 스탯은 명시하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sett gains (0.15 ~ 2.00) Health Regeneration for each 5% missing Health."
+        }
+      ]
+    }
+  ]
+}

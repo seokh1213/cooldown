@@ -1,0 +1,54 @@
+{
+  "summary": "질리언은 경험치를 보존하고, 아군의 레벨을 올릴 만큼 모이면 우클릭으로 아군에게 전달한다. 전달한 만큼의 경험치를 질리언도 얻는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "gte",
+          "value": {
+            "kind": "text",
+            "value": "보유 경험치가 아군의 레벨을 올릴 만큼 모임"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "ally",
+          "text": "질리언이 우클릭한 아군에게 보존한 경험치를 전달한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "질리언은 아군에게 전달한 만큼의 경험치를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When he has enough Experience to finish an ally's level up, he can right-click them to impart it. Zilean receives as much Experience as he gives."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

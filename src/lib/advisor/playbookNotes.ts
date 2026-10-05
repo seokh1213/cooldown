@@ -5,6 +5,7 @@ import { josa } from "@/lib/knowledge/text";
 import { selectNotes, type NoteCategory, type NotePerspective, type SelectedNotes } from "./noteSelect";
 import type { MatchupNotes } from "./answer";
 import type { AdvisorData } from "./context";
+import { selectComboNotes } from "./comboNotes";
 
 /*
  * 상성 해설 재료를 따로 만들던 `buildMatchupTips` 는 걷어냈다.
@@ -132,6 +133,9 @@ export function championNotes(
     playing: source.playing.filter(entry => !entry.when?.enemyIds?.length && !entry.when?.lanes?.length),
     against: source.against.filter(entry => !entry.when?.enemyIds?.length && !entry.when?.lanes?.length),
   };
+  if (judged?.topic === "combo" && forced === "playing") {
+    return selectComboNotes(book.playing, { question, locale: data.locale, translations: data.noteTranslations });
+  }
   /*
    * 영어·중국어는 옮겨 둔 노트만 싣는다. 상성(`matchupNotes`)은 그렇게 하고 있었는데 챔피언 하나를 묻는 길은
    * 빠져 있어서, 영어 화면의 "Tell me about Malphite" 에 "**Playing it** 말파이트에게 방어력은 …" 처럼 한국어 원문이 나갔다.

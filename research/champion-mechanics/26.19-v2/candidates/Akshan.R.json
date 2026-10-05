@@ -1,0 +1,332 @@
+{
+  "summary": "아크샨은 챔피언을 조준해 제한 시간 동안 총을 과충전하고 탄환을 저장합니다. 재사용하면 저장한 탄환을 발사하며, 각 탄환은 처음 적중한 적 또는 구조물에게 최소 피해를 주고 대상의 잃은 체력에 따라 피해가 증가해 최대치에 도달합니다. 탄환은 미니언을 처형하고 생명력 흡수가 적용되며, 치명타 확률과 치명타 피해량의 영향을 받습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "아크샨이 챔피언을 조준하고 최대 2.5초 동안 총을 과충전해 탄환을 최대 5/6/7개 저장합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akshan locks onto a champion and begins overcharging his gun for up to 2.5 seconds, storing up to 5/6/7 bullets."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Akshan unleashes the stored bullets, each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bullets execute minions and apply Lifesteal."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "아크샨이 저장한 탄환을 발사합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Akshan unleashes the stored bullets, each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨 R 탄환이 처음 적중한 적 또는 구조물"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "아크샨 R 탄환 하나가 처음 적중한 적 또는 구조물에게 최소 물리 피해를 입힙니다. 최소 피해의 Attack Damage 계수는 15%입니다. 대상의 잃은 체력에 따라 피해 결과가 최대치까지 증가하며 최대 피해 공식은 별도 상한 정보로 보존합니다. 치명타 확률과 치명타 피해량은 원문에 명시된 30% 효율로 피해량에 영향을 주지만, 정확한 계산식은 주어지지 않았습니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "대상의 잃은 체력에 따라 피해가 증가하는 최대 피해 상한은 별도 공식입니다. 상한의 Attack Damage 계수는 45%이며 기본 최소 피해에 더하는 별도 피해가 아닙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "탄환 피해는 치명타 확률과 치명타 피해량의 영향을 원문상 30% 효율로 받습니다. 이 계수를 적용하는 정확한 계산식은 주어지지 않았습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Akshan unleashes the stored bullets, each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "아크샨 R 탄환은 처음 적중한 미니언을 처형합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullets execute minions and apply Lifesteal."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨 R 탄환의 첫 적중 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "아크샨 R 탄환 피해에 생명력 흡수가 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullets execute minions and apply Lifesteal."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "탄환 피해의 치명타 확률 및 치명타 피해량 반영 공식은 주어지지 않아 계산식으로 구조화하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "탄환 피해는 실제 적중 대상의 잃은 체력에 따라 증가하지만 잃은 체력 보간식은 제시되지 않아 최소·최대 사이의 계산식을 확정하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "치명타 확률 및 치명타 피해량이 각각 30% 효율로 피해에 반영된다는 문장은 보존했지만, 30% 효율의 계산식이나 각 항의 결합 방식은 입력에 없어 damage_multiplier로 해석하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ]
+    }
+  ]
+}

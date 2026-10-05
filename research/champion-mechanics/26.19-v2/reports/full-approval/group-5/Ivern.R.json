@@ -1,0 +1,444 @@
+{
+  "id": "Ivern.R",
+  "sourceHash": "86ecdf6fe4eafb96346d65ef5c9dbd09259a4254ea9a1f46a5c2efd66c5f295a",
+  "beforeCandidateHash": "d15177b5f79f9a9b867fc006486b5ec25bc20a5156940725c48503b8b5c2f2d6",
+  "candidateHash": "a3a671c5b8f42bd08b1608b1d3648cd577cfc583070decb3cf990d43e6c0a6ae",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "데이지45초소환/재사용명령,같은챔피언/에픽3번째연속공격 충격파90/140/190+AP50%/1초knockup 및3초재발동제한,소환물HP/방어/MR/AD를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "소환주체아이번/효과대상데이지/45초지속.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "45",
+              "value": 45,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "데이지동일챔피언/에픽3번째연속공격이3초제한충족시충격파,모든적중적마법90/140/190+아이번AP50%와knockup1초.",
+      "verifiedConditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "같은 챔피언 또는 에픽 몬스터를 상대로 한 세 번째 연속 공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언 또는 에픽 몬스터"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 충격파는3초에한번만발동가능"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "140",
+              "value": 140,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "190",
+              "value": 190,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "충격파3초최소간격은보유3회/공격3회와다른재발동제한.",
+      "verifiedConditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "충격파 발동 간격"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n7"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "재사용은데이지공격또는이동명령.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "데이지스탯설정:HP1000~4400+아이번AP50%,armor/MR30~90,AD70/100/130+아이번AP15%;범위레벨기준미확정.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "1000",
+              "value": 1000,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "4400",
+              "value": 4400,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 3,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 3,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n18"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n18",
+              "raw": "15%",
+              "value": 15,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/rules.4/gaps",
+      "issue": "실제충격파규칙에3초제한없고소환물스탯대상필드/레벨범위추론및허위ADgap이불완전했다.",
+      "correction": "발동조건3초제한,소환물statTo/설정flags,unknown범위와실제숫자기준gap으로수정했다.",
+      "sourceId": "en:body",
+      "quote": "This effect can only occur once every 3 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "세 번째 연속 공격 조건은 hit_count로 표현하지 않고 문구를 보존했다. 허용 조건 필드에는 연속 공격 대상과 공격 순서를 온전히 표현할 수 없다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "데이지HP1000~4400,armor/MR30~90의범위증가기준은본문에없다.아이번AP계수는원문대로보존한다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

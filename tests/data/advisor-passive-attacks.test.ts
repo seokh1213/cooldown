@@ -35,7 +35,7 @@ for (const question of [
   assert.equal(reply.answer?.kind, "spell");
   if (reply.answer?.kind !== "spell") assert.fail("패시브 카드여야 한다");
   assert.equal(reply.answer.spell.slot, "P");
-  assert.match(reply.text, /두 번째 공격.*취소하면 이동 속도/);
+  assert.match(reply.text, /(?:두 번째|추가) 공격.*취소하면.*이동 속도/);
   assert.doesNotMatch(reply.text, /플레이할 때|상대할 때|악당|부활|세 번째/);
 });
 
@@ -47,16 +47,16 @@ test("직접 계획기와 앱의 대화 계획기는 같은 평타 근거를 쓴
 
 test("세 번째 적중 질문은 이동 속도 대신 추가 피해와 보호막을 답한다", async () => {
   const { reply } = await answerDialogue("아크샨 평타 세대 맞추면 어떻게 돼?", context(), deps);
-  assert.match(reply.text, /세 번째.*마법 피해/);
-  assert.match(reply.text, /대상이 챔피언.*보호막/);
+  assert.match(reply.text, /(?:세 번째|3회 적중).*마법 피해/);
+  assert.match(reply.text, /(?:대상이 챔피언|대상 종류: 챔피언).*보호막/);
   assert.doesNotMatch(reply.text, /취소하면 이동 속도|악당/);
 });
 
-test("한 대만 때려도 보호막이 생기는지 물으면 세 번째 적중 조건을 보여준다", async () => {
+test("한 대만 때린 경우 보호막의 세 번째 적중 조건이 충족되지 않았다고 답한다", async () => {
   const { reply } = await answerDialogue("아크샨 평타 한대만 치면 보호막 생겨?", context(), deps);
-  assert.match(reply.text, /세 번째.*마법 피해/);
-  assert.match(reply.text, /대상이 챔피언.*보호막/);
-  assert.doesNotMatch(reply.text, /취소하면 이동 속도/);
+  assert.match(reply.text, /1회 적중.*3회 적중 조건에 해당하지/);
+  assert.match(reply.text, /챔피언.*보호막 사용 가능/);
+  assert.doesNotMatch(reply.text, /보호막을 얻는다|취소하면 이동 속도/);
 });
 
 test("저장 복원 뒤 이름을 생략한 평타 질문도 같은 패시브를 유지한다", async () => {
@@ -65,7 +65,7 @@ test("저장 복원 뒤 이름을 생략한 평타 질문도 같은 패시브를
     answer: first.reply.answer, memory: first.reply.memory });
   const restored = reviveTurn(JSON.parse(JSON.stringify(saved)), context().data!)!;
   const next = await answerDialogue("그럼 평타 세대 맞추면?", { ...context(), turns: [restored] }, deps);
-  assert.match(next.reply.text, /세 번째.*마법 피해/);
+  assert.match(next.reply.text, /(?:세 번째|3회 적중).*마법 피해/);
   assert.match(next.reply.text, /보호막/);
   assert.equal(next.reply.memory.spell?.champion, "Akshan");
 });
@@ -83,7 +83,7 @@ for (const [lang, question, expected] of [
 for (const [question, champion, expected] of [
   ["세트 평타 한대 치면 어떻게 돼?", "Sett", /왼쪽 주먹.*오른쪽 주먹/],
   ["마스터 이 평타 네대 치면 어떻게 돼?", "MasterYi", /4번째.*2번/],
-  ["루시안 스킬 쓰고 평타 한대 치면?", "Lucian", /스킬을 사용한 후.*두 번/],
+  ["루시안 스킬 쓰고 평타 한대 치면?", "Lucian", /스킬(?:을)? (?:사용한|사용) 후.*(?:두 번|두 발)/],
 ] as const) test(`다른 챔피언도 자기 패시브의 조건을 보존한다: ${question}`, async () => {
   const { reply } = await answerDialogue(question, context(), deps);
   if (reply.answer?.kind !== "spell") assert.fail("패시브 카드");

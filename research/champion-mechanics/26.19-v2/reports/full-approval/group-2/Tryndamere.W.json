@@ -1,0 +1,71 @@
+{
+  "id": "Tryndamere.W",
+  "sourceHash": "f4162c83beacc30b2c4cb1c38fdd9669edef383a80129ccf2d8e72140e114068",
+  "beforeCandidateHash": "90a7dbff68262968ef62403f2b5d5fae7eb0f644cdc371b3f72cbcbd05adb62f",
+  "candidateHash": "80061340175bc7da63828f8e565d709f621c41b1e0f3da702ac5bb8f252f6092",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "주변챔피언 AD20~80 감소4초, 등을 돌린 대상30~50%둔화3.25초 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion / target.distance eq 트린다미어 주변; enemy: 챔피언의 공격력을 감소시킵니다.; 수치 amount en:body:n0=20,en:body:n1=35,en:body:n2=50,en:body:n3=65,en:body:n4=80 상수 rank_values / duration_seconds en:body:n5=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion / target.activation eq 트린다미어에게서 등을 돌린 상태 / target.distance eq 트린다미어 주변; enemy: 트린다미어에게서 등을 돌리며 움츠리는 적을 둔화시킵니다. [slow]; 수치 amount en:body:n6=30(백분율),en:body:n7=35(백분율),en:body:n8=40(백분율),en:body:n9=45(백분율),en:body:n10=50%(백분율) 상수 rank_values / duration_seconds en:body:n11=3.25 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "고립 조건을 원문 방향 조건으로 교정하고 주변 범위 summary evidence 연결",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Tryndamere hurls insults, reducing champions' Attack Damage by 20/35/50/65/80 for 4 seconds and Slowing by 30/35/40/45/50% while cowering from him for 3.25 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "summary는 등을 돌린 상태를 명시한다. body의 cowering/도망침 표현을 이 방향 조건으로 보존하되 수치 각도나 갱신 방식은 공급원문에 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

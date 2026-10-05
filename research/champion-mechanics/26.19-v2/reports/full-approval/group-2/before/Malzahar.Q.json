@@ -1,0 +1,105 @@
+{
+  "summary": "두 개의 문에서 안쪽으로 발사되는 투사체가 적에게 마법 피해를 주고 침묵시킵니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "투사체가 적중한 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar opens two portals to the Void that fire projectiles inward, dealing (70/105/140/175/210 + (55% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar opens two portals to the Void that fire projectiles inward, dealing (70/105/140/175/210 + (55% Ability Power)) magic damage and Silencing for 1/1.25/1.5/1.75/2 second(s)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "투사체가 적중한 적을 침묵시킵니다.",
+          "damageType": null,
+          "crowdControl": "silence",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Silencing for 1/1.25/1.5/1.75/2 second(s)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar opens two portals to the Void that fire projectiles inward, dealing (70/105/140/175/210 + (55% Ability Power)) magic damage and Silencing for 1/1.25/1.5/1.75/2 second(s)."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

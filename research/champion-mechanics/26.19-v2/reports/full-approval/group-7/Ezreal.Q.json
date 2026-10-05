@@ -1,0 +1,275 @@
+{
+  "id": "Ezreal.Q",
+  "sourceHash": "da32d936fc9e0852f81059e9f8f3a26dca5eacca3fea306ad0dccb4f951f5b3c",
+  "beforeCandidateHash": "b11756ea623c855b2a85e36537801be30b285c2656f3eb1abd3dbd394e0e2440",
+  "candidateHash": "4a39239a265668a02a28ee5e24d13233e00b2507c5eab3a6fe74ac9102875eb9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫 적중 적의 물리 피해20~120+전체AD130%+AP40%, 자기 스킬 쿨1.5초 감소 및 적중시 효과 적용 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자 Q의 첫 적 유닛 적중에20~120+전체AD130%+AP40% 물리 피해."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 첫 적중 사건에서 시전자 스킬 쿨1.5초 감소. 1.5는 피해량이 아닌 초 단위."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "처음 맞은 적에게 on-hit 효과를 적용하며 임의 모든 스킬 적중으로 범위를 넓히지 않음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.*.trigger/conditions",
+      "issue": "적중 사건 주체가 target이고 쿨/on-hit의 첫 적 유닛 조건이 구조에 없었음",
+      "correction": "caster 적중과 첫 적 유닛 조건을 세 결과와 원문 인용에 보존",
+      "sourceId": "en:body",
+      "quote": "physical damage to the first enemy hit and reducing his Ability Cooldowns by 1.5 seconds."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.0.role",
+      "issue": "초 단위 쿨 감소를 일반 amount로 기록",
+      "correction": "cooldown_seconds로 역할 명시",
+      "sourceId": "en:body",
+      "quote": "reducing his Ability Cooldowns by 1.5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "화살이 처음 적중한 적에게 물리 피해를 입힙니다. 적 유닛에게 명중하면 이즈리얼의 스킬 재사용 대기시간을 줄이고, 적중 시 효과를 적용합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "처음 적중한 적 유닛"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "화살이 처음 적중한 적에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a bolt of energy, dealing (20/45/70/95/120 + (130% Attack Damage) + (40% Ability Power)) physical damage to the first enemy hit"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a bolt of energy, dealing (20/45/70/95/120 + (130% Attack Damage) + (40% Ability Power)) physical damage to the first enemy hit and reducing his Ability Cooldowns by 1.5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a bolt of energy, dealing (20/45/70/95/120 + (130% Attack Damage) + (40% Ability Power)) physical damage to the first enemy hit and reducing his Ability Cooldowns by 1.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "처음 적중한 적 유닛"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "적 유닛에게 명중하면 이즈리얼의 스킬 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a bolt of energy, dealing (20/45/70/95/120 + (130% Attack Damage) + (40% Ability Power)) physical damage to the first enemy hit and reducing his Ability Cooldowns by 1.5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a bolt of energy, dealing (20/45/70/95/120 + (130% Attack Damage) + (40% Ability Power)) physical damage to the first enemy hit and reducing his Ability Cooldowns by 1.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "처음 적중한 적 유닛"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "이 스킬은 적중 시 효과를 적용합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability applies On-Hit effects."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a bolt of energy, dealing (20/45/70/95/120 + (130% Attack Damage) + (40% Ability Power)) physical damage to the first enemy hit and reducing his Ability Cooldowns by 1.5 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

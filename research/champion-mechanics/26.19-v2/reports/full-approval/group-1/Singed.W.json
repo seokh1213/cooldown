@@ -1,0 +1,36 @@
+{
+  "id": "Singed.W",
+  "sourceHash": "c29bed212f593d4cf2c57058d89636f54aeb7fda210b06c949c45b13b36c7ea1",
+  "beforeCandidateHash": "b817268c23945ef8bb8c78cdcf3bd9eb076011dab0f18232bbf2136dfcc3ae64",
+  "candidateHash": "b37c1f21e085c1ce4a697b4d28babb0ccacfe42b2da6b40be6c595a67f7f933f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "접착제 영역에 있는/위로 지나가는 적의3초50/55/60/65/70%둔화와 이동 스킬 사용 불가 ground를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 enemy.other eq 이 스킬의 활성 접착제 영역 안에 있거나 그 위를 지나감. enemy crowd_control slow: 영역 안의 적을 둔화시키고 이동 스킬을 사용할 수 없게 한다. [amount n0=50%/n1=55%/n2=60%/n3=65%/n4=70% rank_values; duration_seconds n5=3 scalar] / enemy crowd_control ground: 영역 안의 적은 이동 스킬을 사용할 수 없다. [duration_seconds n5=3 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger,conditions",
+      "issue": "처음 시전 사건만으로 영역 안에 들어오는 적의 상태 효과를 충분히 표현하지 않음",
+      "correction": "접착제 영역이 활성이고 적이 그 안에 있는 상태에 적용하도록 명시했다.",
+      "sourceId": "en:summary",
+      "quote": "Throws a vial of mega adhesive on the ground, slowing and grounding enemies who walk on it."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

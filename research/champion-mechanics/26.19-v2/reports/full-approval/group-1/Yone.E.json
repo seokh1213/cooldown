@@ -1,0 +1,76 @@
+{
+  "id": "Yone.E",
+  "sourceHash": "4a4de3de2e0d7847c54e0562be3c8e43c39cddc26b2cb5640edec37f190cfb16",
+  "beforeCandidateHash": "1cd4752271622a75ecf6bfe1f82a5b4b15a8dcd1bec3392111aa2889d650cdf9",
+  "candidateHash": "fdaa53d88e79a48483073954bed81b4404bd323f6d0f70dfc653fde114350f2a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "5초영혼/10→30%점증이속,종료/재사용시몸복귀와그동안챔피언에게가한Attack/Ability피해25~35%재적용,hardCC중복귀불가를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster transform: 영혼 상태가 되어 지속시간 동안 몸을 떠난다. [duration_seconds n0=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 영혼 상태 동안 이동 속도가 점차 증가한다. [min_amount n1=10% scalar; max_amount n2=30% scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 target.target_type eq champion; caster.other eq 영혼 상태 종료 시(지속시간 만료 또는 재사용 종료). target other: 영혼 상태 동안 챔피언에게 가한 기본 공격 및 스킬 피해의 일부를 다시 입힌다. [damage_multiplier n3=25%/n4=27.5%/n5=30%/n6=32.5%/n7=35% rank_values] flags=per_target"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.form eq 영혼 상태. caster transform: 영혼 상태를 일찍 끝낸다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other present 강력한 군중 제어 효과의 영향; caster.other eq 영혼 상태 종료 시(지속시간 만료 또는 재사용 종료). caster other: 강력한 군중 제어 효과를 받는 동안에는 몸으로 돌아올 수 없다. []"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 영혼 상태 종료 시(지속시간 만료 또는 재사용 종료); caster.other absent 강력한 군중 제어 영향. caster movement: 영혼 상태가 끝나면 육신으로 돌아온다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/2/4/new",
+      "issue": "점증반전및스탯참조·재사용종료때효과범위/몸복귀누락",
+      "correction": "statTo moveSpeed/flags빈배열,영혼종료OR텍스트/몸복귀허용과hardCC금지",
+      "sourceId": "en:body",
+      "quote": "When the spirit form ends, Yone snaps back to his body"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 666,
+      "verdict": "repaired",
+      "reason": "ramping은증가이므로decays반전flag삭제했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

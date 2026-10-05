@@ -1,0 +1,128 @@
+{
+  "id": "Lucian.P",
+  "sourceHash": "388a28559a59c687a667d450f8925d2f46e29e23cdac08ce66f3cb2fa416313d",
+  "beforeCandidateHash": "70a6efffe6691c19c52b0e9339983310213c3055d9ae36077fbf0e4052aff226",
+  "candidateHash": "9c8b2ceee1bbcac77c5ce600025553e4e6713f1a7b4052cbbb82931d0b101a38",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "스킬 후 3.5초 다음 공격의 두 탄환, 둘째 탄환 미니언 예외와 경계 발동·다음 두 공격 추가 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "스킬 후 3.5초 안에 하는 다음 공격이 두 발을 발사한다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "그 공격의 두 번째 탄환만 비미니언 대상에 공격력 50~60% 물리 피해다. !=minion은 모든 비미니언을 포괄한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 두 번째 탄환은 미니언에 공격력 100% 물리 피해다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군의 직접 회복 또는 보호막으로 경계를 발동해 다음 두 공격을 과충전한다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "근처 적 챔피언의 Immobilized도 같은 과충전 발동이다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "경계의 다음 두 기본 공격 각각 5 + 공격력 15% 추가 마법 피해이며 모든 강화 공격의 피해가 아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions.1",
+      "issue": "둘째 탄환 한정과 시간·다음 공격 조건이 실제 피해 규칙에도 필요하다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "After using an Ability, Lucian's next Attack within 3.5 seconds will fire two shots. The second shot deals ((50% ~ 60%) Attack Damage) physical damage to the target, increased to (100% Attack Damage) against minions. Vigilance: When Lucian is directly healed or shielded by an ally, or when a nearby enemy Champion is Immobilized, his pistols become Overcharged with energy, causing his next 2 basic attacks to deal an additional (5 + (15% Attack Damage)) magic damage."
+    },
+    {
+      "path": "rules.3.conditions.0",
+      "issue": "과충전은 이 직접 수혜 사건에만 발동한다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "After using an Ability, Lucian's next Attack within 3.5 seconds will fire two shots. The second shot deals ((50% ~ 60%) Attack Damage) physical damage to the target, increased to (100% Attack Damage) against minions. Vigilance: When Lucian is directly healed or shielded by an ally, or when a nearby enemy Champion is Immobilized, his pistols become Overcharged with energy, causing his next 2 basic attacks to deal an additional (5 + (15% Attack Damage)) magic damage."
+    },
+    {
+      "path": "rules.5.conditions.1",
+      "issue": "추가 마법 피해는 경계의 다음 2 공격으로 제한된다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "After using an Ability, Lucian's next Attack within 3.5 seconds will fire two shots. The second shot deals ((50% ~ 60%) Attack Damage) physical damage to the target, increased to (100% Attack Damage) against minions. Vigilance: When Lucian is directly healed or shielded by an ally, or when a nearby enemy Champion is Immobilized, his pistols become Overcharged with energy, causing his next 2 basic attacks to deal an additional (5 + (15% Attack Damage)) magic damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 268,
+      "verdict": "false_positive",
+      "reason": "!=minion은 이미 모든 비미니언을 포괄하며 챔피언 제한이 없다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "id": "Lucian.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

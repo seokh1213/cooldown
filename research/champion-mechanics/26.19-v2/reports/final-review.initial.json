@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 2,
+  "patch": "26.19",
+  "counts": {
+    "champions": 173,
+    "common": 173,
+    "abilities": 865,
+    "total": 1038,
+    "authored": 865,
+    "validated": 865,
+    "reviewed": 91,
+    "pendingSemanticReview": 774,
+    "deployment": "not_integrated"
+  },
+  "author": {
+    "model": "gpt-6-luna",
+    "effort": "medium",
+    "draftConcurrency": 12,
+    "recoveryConcurrency": 4,
+    "screenMaxConcurrency": 16,
+    "commonAuthor": "code"
+  },
+  "timing": {
+    "sampleKits": 161,
+    "meanSeconds": 161,
+    "medianSeconds": 148,
+    "p95Seconds": 301,
+    "unit": "one champion kit; retries and initially failed calls included; recovery/review time excluded"
+  },
+  "checks": {
+    "abilityStructureAndEvidence": {
+      "checked": 865,
+      "valid": 865
+    },
+    "commonAgainstFreshSources": {
+      "checked": 173,
+      "matched": 173
+    },
+    "exportAgainstSourcesAndCandidates": {
+      "checked": 865,
+      "matched": 865
+    },
+    "focusedUnitTests": {
+      "passed": 26
+    },
+    "scriptTypecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "fullSemanticReview": {
+    "highRiskSlots": 90,
+    "rootAdditionalSlots": 1,
+    "accepted": 91,
+    "initialFindingsInHighRiskSample": 159,
+    "initialFindingsResolved": 159,
+    "remainingConcreteFindingsInFinalHighRiskReports": 0,
+    "selection": "purposeful high-risk selection, not a random quality sample",
+    "reports": [
+      "reports/semantic-review-wave1.json",
+      "reports/semantic-final-wave2.json",
+      "reports/semantic-final-wave3.json",
+      "reports/semantic-final-wave4.json",
+      "reports/semantic-final-wave5.json",
+      "reports/semantic-final-wave6.json"
+    ],
+    "ledger": "review-ledger.json"
+  },
+  "automaticScreening": {
+    "reportCount": 158,
+    "freshSnapshotSlots": 777,
+    "rootVerifiedDeltaSlots": 2,
+    "staleSnapshotsExcluded": 11,
+    "coverageIncludingFullReviews": 865,
+    "proposalsExcludedForFullReviewedSlots": 2,
+    "proposalsResolvedInFinalDelta": 2,
+    "auditedFalsePositivesExcluded": 3,
+    "pendingProposals": {
+      "total": 736,
+      "high": 65,
+      "medium": 671,
+      "affectedSlots": 373
+    }
+  },
+  "automaticAudit": {
+    "purposefulSample": {
+      "selected": 10,
+      "confirmed": 7,
+      "falsePositive": 3,
+      "ambiguous": 0
+    },
+    "confirmedRepairsPreserved": 7,
+    "finalAdditionalCorrections": 2,
+    "populationAccuracyEstimate": null,
+    "latestVerification": "reports/final-delta-review.json"
+  },
+  "limitations": [
+    "Structural validation and exact source citations do not establish correct semantic meaning.",
+    "Only 91 abilities have complete supplied-source final review approval; 774 remain candidates pending complete semantic review.",
+    "Unverified automatic proposals include real errors and false positives; they are not an established defect count.",
+    "Text conditions, gaps and unknown fields are descriptive extraction, not complete executable game rules.",
+    "Hidden interactions absent from supplied tooltips require separate sourced research.",
+    "No chatbot retrieval/generation integration or deployed app quality evaluation was performed in this extraction phase."
+  ],
+  "artifacts": {
+    "common": "overview/",
+    "abilities": "records/",
+    "inputs": "inputs/",
+    "drafts": "candidates/",
+    "pendingSemanticReview": "reports/review-queue.json",
+    "pendingProposals": "reports/unverified-screen-proposals.json"
+  },
+  "conclusion": "Full generation and uniform-schema export are complete. Quality supervision found significant semantic errors and corrected the reviewed subset. Keep the remaining candidates outside trusted factual answering until source review is complete."
+}

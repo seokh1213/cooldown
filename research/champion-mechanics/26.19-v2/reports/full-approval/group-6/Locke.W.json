@@ -1,0 +1,152 @@
+{
+  "id": "Locke.W",
+  "sourceHash": "282f1849ffb2862af2a5f39456c48d1d827ecc3820fec9b0e857ec7679dbdc6a",
+  "beforeCandidateHash": "1426be288c289edc290fd5abae287ffd3d589637fb42ea4c92b02ad0293e5f75",
+  "candidateHash": "03ac3504830c2535801b44395634e60b7e8d1f91b74ecaa13f3facc9bdce11e2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "자신AS40~70%,MS40%+AP100당2%의2초감쇠,6초간매초현재HP2%고정자해, 종료회복 두식과 남은HP상한,조기종료·disabled사용·유체화를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "AS40~70%와MS40%+자신AP100당2%를 얻는다.2초감쇠는 MS에 적용,AP100은 비율분모."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "효과활성6초동안 매초자신 현재HP2%고정피해. maxHealth가 아니며MS감쇠2초를 피해주기로 쓰지 않는다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "종료 시 마지막 받은40/60/80/100/120+AP100% 피해를 회복한다. 마지막피해 한계의 정확한식은gap으로 두고 replace_input 추정 제거."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "추가 회복40~200+AP20%는 잃은HP와시간에 의존, 최대남은HP150~450+AP60% 표현을 별도상한식으로 유지. 계수들을 한 선형식으로 더하지 않는다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "재사용은 조기종료."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Disabled 동안에도 이 스킬사용가능. CC면역까지 확대하지 않는다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "지속시간6초유체화, 유닛통과. 조기종료 시 지속효과가 끝남."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1.parameters.1.role",
+      "issue": "AP100당2%를 AP1당2% 계수로 기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke ignites his own soul, gaining (40% ~ 70%) Attack Speed and (40% + (2% per 100 Ability Power)) Move Speed that decays over 2 seconds. For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining. Can be Recast to end early. This Ability can be used while Disabled. Locke is Ghosted for the duration. Ghosted units can pass through other units."
+    },
+    {
+      "path": "rules.1.conditions.1",
+      "issue": "활성효과 조건 누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke ignites his own soul, gaining (40% ~ 70%) Attack Speed and (40% + (2% per 100 Ability Power)) Move Speed that decays over 2 seconds. For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining. Can be Recast to end early. This Ability can be used while Disabled. Locke is Ghosted for the duration. Ghosted units can pass through other units."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.0.stat",
+      "issue": "현재HP피해를 maxHealth 기준으로 기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke ignites his own soul, gaining (40% ~ 70%) Attack Speed and (40% + (2% per 100 Ability Power)) Move Speed that decays over 2 seconds. For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining. Can be Recast to end early. This Ability can be used while Disabled. Locke is Ghosted for the duration. Ghosted units can pass through other units."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.1",
+      "issue": "MS감쇠2초를 자해수치로 참조",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke ignites his own soul, gaining (40% ~ 70%) Attack Speed and (40% + (2% per 100 Ability Power)) Move Speed that decays over 2 seconds. For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining. Can be Recast to end early. This Ability can be used while Disabled. Locke is Ghosted for the duration. Ghosted units can pass through other units."
+    },
+    {
+      "path": "rules.2.effects.0.flags",
+      "issue": "회복에 출처 없는 replace_input 판정",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke ignites his own soul, gaining (40% ~ 70%) Attack Speed and (40% + (2% per 100 Ability Power)) Move Speed that decays over 2 seconds. For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining. Can be Recast to end early. This Ability can be used while Disabled. Locke is Ghosted for the duration. Ghosted units can pass through other units."
+    },
+    {
+      "path": "rules.3.effects.0.parameters",
+      "issue": "두 레벨범위를 독립min/max 피해와 혼동",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke ignites his own soul, gaining (40% ~ 70%) Attack Speed and (40% + (2% per 100 Ability Power)) Move Speed that decays over 2 seconds. For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining. Can be Recast to end early. This Ability can be used while Disabled. Locke is Ghosted for the duration. Ghosted units can pass through other units."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 266,
+      "verdict": "repaired",
+      "reason": "본문은 current Health이고 스키마 currentHealth 통계가 없어 maxHealth를 제거하고자기현재HP2%를 텍스트에 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "현재 체력의 비율을 매초 피해로 받는 조건은 확인되지만, 피해를 매초 현재 체력의 어느 시점 값으로 계산하는지에 대한 별도 계산 규칙은 없습니다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "note": "마지막으로 받은 피해를 회복하는 규칙과 추가 회복의 정확한 계산식·순서 및 'Health remaining' 최대치의 계산 기준은 본문만으로 확정할 수 없습니다."
+    }
+  ],
+  "validation": {
+    "id": "Locke.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "id": "KogMaw.R",
+  "sourceHash": "de83bff438f2aeb37c407142285457afaaa05c586d2abd4aff9c33d5232c2bd8",
+  "beforeCandidateHash": "3d862ad662e189058e9e238fd982095a4486a0cd012b87da6514719689f0aebc",
+  "candidateHash": "bb2687f26629d46a87c8a0d8782d6fd5fdaf686913d79f581e94c22ac9110291",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "범위 적중의 기본 마법 피해와 저체력 대체 피해, 비은신 적의 2초 위치 공개, 8초 안 후속 시전의 추가 40 마나 및 400 마나 상한을 대조했다. 40% 경계의 언어 차이와 잃은 체력 비례식·마나 상한 적용 범위는 한계로 보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.health_threshold gte 40% 적용. target: 100/140/180 + 시전자 주문력의 35/40/45% + 시전자 추가 공격력의 75%를 기본 구성으로, 대상의 잃은 체력 1%당 0.833%라는 추가 비율 문구에 따라 마법 피해를 입힙니다. 추가 비율의 결합 방식은 gap을 확인해야 합니다. (magic); amount=100/140/180  rank_values, stat_coefficient=35/40/45% caster의 abilityPower rank_values, stat_coefficient=75% caster의 bonusAttackDamage scalar, ratio_output=0.833%  formula_components, ratio_input=1%  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.health_threshold lt 40% 적용. target: 기본 피해 대신 별도의 마법 피해를 입힙니다. (magic); amount=200/280/360  rank_values, stat_coefficient=70/80/90% caster의 abilityPower rank_values, stat_coefficient=150% caster의 bonusAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 산성에 적중한 은신하지 않은 적 적용. target: 적중한 적의 위치를 드러냅니다.; duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.other eq 최근 8초 안에 사용한 이 궁극기의 후속 시전 적용. caster: 8초 안에 이 궁극기를 후속 시전하면 추가로 40 마나를 소모합니다. 원문의 최대 400 마나는 비용 상한이며 추가 비용과 전체 비용 중 적용 범위는 gap에 보존합니다.; resource_cost=40  scalar, max_amount=400  scalar, other=8  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2.trigger",
+      "issue": "시전만으로 피해와 위치 공개가 적용되며 실제 적중 조건이 빠졌다.",
+      "correction": "산성 적중 사건으로 피해와 위치 공개를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "revealing enemies hit for 2 seconds."
+    },
+    {
+      "path": "rules.0.effects.0",
+      "issue": "잃은 체력 비례 추가분을 실행 가능한 단순식으로 오해할 여지가 있다.",
+      "correction": "기본 구성과 1%당 0.833%의 추가 비율을 분리하여 결합 한계를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "plus 0.833% per 1% missing Health"
+    },
+    {
+      "path": "rules.2.conditions",
+      "issue": "요약의 비은신 대상 공개 범위가 빠졌다.",
+      "correction": "은신하지 않은 적 조건과 요약 근거를 추가했다.",
+      "sourceId": "en:summary",
+      "quote": "revealing non-stealthed targets"
+    },
+    {
+      "path": "rules.3.conditions,effects",
+      "issue": "8초가 임의 시전자 시간이고 400 마나를 보유량 상한으로 표현한다.",
+      "correction": "이 궁극기 후속 시전의 8초와 비용 상한으로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "Subsequent shots within 8 seconds cost an additional 40 Mana (max: 400 Mana)."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 242,
+      "verdict": "documented_gap",
+      "reason": "영문 below 40%의 보완 범위는 40% 이상이므로 현재 gte는 영문 우선 선택으로 타당하다. 한국어 40% 이하와의 경계 충돌은 source_conflict에 남겨 실제 동작을 확정하지 않았다."
+    },
+    {
+      "index": 243,
+      "verdict": "repaired",
+      "reason": "revealing enemies hit는 실제 적중을 요구하므로 cast를 ability_hit로 수정하고 요약의 비은신 대상 조건도 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문 툴팁은 체력이 40% 미만일 때 별도 피해라고 하고 한국어 툴팁은 40% 이하일 때라고 합니다. 규칙은 영문 기준으로 구성해 경계값은 기본 피해 쪽에 두었으나, 실제 경계 동작은 출처 간 차이가 있습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력 비율에 따른 추가 비율의 정확한 적용 방식은 툴팁 문구만으로 특정하기 어려워, 계수와 입력 비율을 별도로 보존했습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "추가 마나 상한이 누적 추가 비용에 적용되는지는 문구만으로 확정되지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "Cassiopeia.W",
+  "sourceHash": "317b3dd34c08b3cab524cf8c8373ff4b666be41b7990916aa751177e9e423546",
+  "beforeCandidateHash": "b90165df04cd34143f48627942951e0a23d88f1c5dfa6f24286b36a5ab81fb9e",
+  "candidateHash": "2a3c3f4614173883dc8cb04762fc785311aa5fa25835c5a9b9e3e292a092c891",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "독구름5초생성,내부적초당20/25/30/35/40+AP10%마법피해/중독/ground이동스킬금지/40/50/60/70/80%둔화를대조했다.초당피해를5초총피해와혼동하지않았다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → unknown: 5초동안지속되는독구름을남깁니다. / duration_seconds=5 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: enemy의 passive / 조건 enemy other present 독구름 안 → enemy: 독구름 안의 적에게 초당 마법 피해를 입힙니다. [magic] / amount=20/25/30/35/40 [rank_values]; stat_coefficient=10% (caster abilityPower) [formula_components] | enemy: 독구름 안의 적을 중독시킵니다. | enemy: 독구름 안의 적에게 Grounded 상태를 적용해 이동 스킬 사용을 막습니다. [ground] | enemy: 이독구름안의적을40/50/60/70/80%둔화시킵니다. [slow] / amount=40/50/60/70/80% [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.3/gaps",
+      "issue": "전체랭크둔화퍼센트단위가숫자표에서손실됐다.",
+      "correction": "모든랭크%를효과텍스트에보존하고입력한계를기록했다.",
+      "sourceId": "en:body",
+      "quote": "Slowed by 40/50/60/70/80%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "40/50/60/70/80%는모든랭크%둔화인데frozen숫자표는마지막만percent=true이다.전체단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "LeeSin.Q",
+      "sourceHash": "e76ef3ee64b0a5e96b1068da12688525e73ca36f50c180bba115097c146d7196",
+      "candidateHash": "37d8f4f177232cdf9a2bd46f0d18f6ea81697791d62dab08001609c3e5e5331d"
+    },
+    {
+      "id": "LeeSin.E",
+      "sourceHash": "2b5265191a4e1997f103d2e87b88a3a5031fb6081866bf3ed3ca40455059d547",
+      "candidateHash": "af3647fd16847b9b7004a31837eec3c64d15eef4a0e9a8f4073d123280b5a0e3"
+    },
+    {
+      "id": "LeeSin.P",
+      "sourceHash": "6fab71733cde0ee91cae5e1028cdd8a45ef0bd864c2550473146ae7da65b1184",
+      "candidateHash": "d72e685debf31416c54a94143625367b5da0cc020446ff8dac1434c83e0b2547"
+    },
+    {
+      "id": "LeeSin.R",
+      "sourceHash": "48635df999ad5d1b5c533fcf3032089e9689f8670d6afa249afcceb69477f427",
+      "candidateHash": "77277bb60df6c4dfea8b55d214cae1c77855dc58e0eaef56ceaa9622a61a5686"
+    },
+    {
+      "id": "LeeSin.W",
+      "sourceHash": "168add4efaded036b001900de909e51b7465e4d9045645cf97de73714807e555",
+      "candidateHash": "97c77097e5d84979109b8ade558530f055b0366b56d001b615e08cd2ba1cafb0"
+    }
+  ],
+  "findings": [
+    {
+      "id": "LeeSin.P",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The first Attack restores (20 ~ 40) Energy and the second restores (10 ~ 20) Energy.",
+      "issue": "첫 번째 공격의 기력 회복 조건이 target의 hit_order로 지정되어 있어, 공격한 주체의 공격 순서를 나타내지 않습니다.",
+      "correction": "허용된 조건 필드에 공격 주체의 순서를 표현할 방법이 없다면 구조화 조건을 제거하고 첫 번째 공격이라는 조건을 텍스트와 갭에 보존하세요."
+    },
+    {
+      "id": "LeeSin.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The first Attack restores (20 ~ 40) Energy and the second restores (10 ~ 20) Energy.",
+      "issue": "두 번째 공격의 조건 값이 enum이 아닌 text로 입력되어 첫 번째 조건과 타입이 일치하지 않습니다.",
+      "correction": "두 번째 공격 순서를 스키마가 허용하는 hit_order enum으로 표현하고, 허용되지 않는다면 조건을 텍스트와 갭에 보존하세요."
+    },
+    {
+      "id": "LeeSin.R",
+      "path": "rules.1.effects.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Lee Sin performs a powerful roundhouse kick Knocking Back an enemy champion and dealing (175/400/625 + (200% bonus Attack Damage)) physical damage.",
+      "issue": "같은 적 챔피언을 밀쳐내는 사실이 crowd_control 효과와 movement 효과에 중복 기록되어 있습니다.",
+      "correction": "knockback 사실은 한 효과로만 표현하고, 별도 movement 효과는 중복 사실을 만들지 않도록 정리하세요."
+    }
+  ],
+  "notes": []
+}

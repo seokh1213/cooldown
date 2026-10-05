@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "AurelionSol.P",
+      "sourceHash": "41cde4c66aeefa8665e30615459dbfa069485295af236ac4ff275d8a39694caa",
+      "candidateHash": "57cc8df5f401bc69490beb3d522f74bba582bb513f8433c465847524263faca8"
+    },
+    {
+      "id": "AurelionSol.E",
+      "sourceHash": "dfbeb4941dcf7c310abbbdda8d87e1709dd4e875f391dcb4e7d23a64ff18382c",
+      "candidateHash": "0d6509023124e1e0bcfaaa909d8dd47ade2a4f65b37f912883ce42ecdea2e6b8"
+    },
+    {
+      "id": "AurelionSol.Q",
+      "sourceHash": "c6d86cc11686bd662247199e3e2c11f3b2e1c803971811e673a955f22c46c252",
+      "candidateHash": "1883f91f0a479ab879eb4ad4f0ab5018bdf9b01352f24f31c02ab93082c41444"
+    },
+    {
+      "id": "AurelionSol.R",
+      "sourceHash": "44cb3d847b4d51d29779d698b14cccc5ef22f5b83a5198718c9fc95bfe2ec7a8",
+      "candidateHash": "6bd3fb3cb705056f24bbaa97cdd69ebc0883c6e2132792540bc1c82bcada5da1"
+    },
+    {
+      "id": "AurelionSol.W",
+      "sourceHash": "09cf4be45f280c6f63aa1481275e25e164a88c67a70a994591b856a9e8387931",
+      "candidateHash": "a41ee00df9e3b1e3059861789976154a0763faccc6466d3fc8f580b8ed447158"
+    }
+  ],
+  "findings": [
+    {
+      "id": "AurelionSol.Q",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Aurelion Sol breathes starfire for up to 3.25/3.25/3.25/3.25/9999 seconds",
+      "issue": "정신 집중 최대 시간이 피해량 파라미터에 함께 들어가 있습니다. 이 때문에 순위별 피해량으로 잘못 읽힐 수 있습니다.",
+      "correction": "최대 집중 시간 수치와 초당 피해량 수치를 분리해 주세요."
+    },
+    {
+      "id": "AurelionSol.R",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Gathering 75 Stardust transforms the next Falling Star into The Skies Descend.",
+      "issue": "천상 강림 발동 조건을 현재 시전의 강화 상태로만 표현해, 별가루 75개를 모아 다음 유성이 변환되는 선행 관계가 빠졌습니다.",
+      "correction": "별가루 75개 누적으로 다음 유성이 천상 강림으로 변환된다는 조건을 보존해 주세요."
+    },
+    {
+      "id": "AurelionSol.W",
+      "path": "rules.0.effects.1.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "its flat damage is increased by 8/9/10/11/12%.",
+      "issue": "순위별 증가율에서 앞의 네 값은 백분율 단위가 빠진 채 입력되어 있습니다.",
+      "correction": "8/9/10/11/12%를 모두 퍼센트 값으로 기록해 주세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,117 @@
+{
+  "id": "Yasuo.P",
+  "sourceHash": "66708dccb4cd69716a64cb7b360e67f3ae08c6365ec8860102c225f91c9704b0",
+  "beforeCandidateHash": "ed798853abb328fed3b67bbf33816790b5a9af9cf2b7d3d352970db8caf9a86e",
+  "candidateHash": "584af4016be1f135beea3ac4a39b2e7aec39fbcbfb77a327d2b46daeeb5106e3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "이동 기류와 최대 기류의 챔피언·몬스터 피해 보호막, 치명타 확률·피해 및 초과 치명타 변환을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최대 기류에서 챔피언 피해로 125~600 보호막을 잠깐 얻는다. 범위 두 끝을 별도 min/max로 계산하지 않게 하나의 level_range로 합쳤다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "동일 최대 기류에서 몬스터 피해도 같은 보호막을 주므로 별도 분기가 존재한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이동으로 기류가 늘고 빠른 이동은 더 많은 기류를 주며 자원 바에 표시된다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "치명타 확률 100% 증가와 치명타 피해가 (100% Critical Strike Damage)로 감소하는 출력은 별도 statTo다. 원문 표현 이상으로 감소 식을 추정하지 않았다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "치명타 확률 100% 초과분 1%당 추가 공격력 0.5 변환이며 전체 확률의 초과분이다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "125~600 보호막 값 범위는 min/max 각각 level_range가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Resolve: Moving grants Flow, which is tracked on Yasuo's resource bar. Moving faster grants more Flow. At maximum Flow, damage from a champion or monster briefly grants (125 ~ 600) Shield. Intent: Yasuo's Critical Strike Chance is increased by 100% but his Critical Strike Damage is reduced to (100% Critical Strike Damage). Gain 0.5 Bonus Attack Damage for every 1% Critical Strike Chance above 100%."
+    },
+    {
+      "path": "rules.3.effects.1",
+      "issue": "치명타 확률과 치명타 피해가 하나의 critChance 출력 효과에 혼합됐다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Resolve: Moving grants Flow, which is tracked on Yasuo's resource bar. Moving faster grants more Flow. At maximum Flow, damage from a champion or monster briefly grants (125 ~ 600) Shield. Intent: Yasuo's Critical Strike Chance is increased by 100% but his Critical Strike Damage is reduced to (100% Critical Strike Damage). Gain 0.5 Bonus Attack Damage for every 1% Critical Strike Chance above 100%."
+    },
+    {
+      "path": "rules.4.conditions.0",
+      "issue": "100%를 넘는 치명타 확률 전체의 초과분이며 bonus stat_scope라는 조건은 원문에 없다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Resolve: Moving grants Flow, which is tracked on Yasuo's resource bar. Moving faster grants more Flow. At maximum Flow, damage from a champion or monster briefly grants (125 ~ 600) Shield. Intent: Yasuo's Critical Strike Chance is increased by 100% but his Critical Strike Damage is reduced to (100% Critical Strike Damage). Gain 0.5 Bonus Attack Damage for every 1% Critical Strike Chance above 100%."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 664,
+      "verdict": "false_positive",
+      "reason": "rule 0은 챔피언 전용 분기이며 rule 1에 몬스터 피해 분기가 이미 존재한다. 두 분기를 합칠 필요가 없다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "note": "보호막 유지 시간은 briefly로만 명시되어 정확한 초 수는 없다. 치명타 피해의 reduced to (100% Critical Strike Damage) 표기는 원문 그대로 보존하며 별도의 감소율을 계산할 추가 설명이 없다."
+    }
+  ],
+  "validation": {
+    "id": "Yasuo.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

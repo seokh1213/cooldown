@@ -1,0 +1,92 @@
+{
+  "id": "Twitch.Q",
+  "sourceHash": "6ef775043f7dcee7c849d25e738e04f2e5de4754b99222e3d527789a3b58e944",
+  "beforeCandidateHash": "435b2345094dba2b291070bee1c27eb5712edef5351b04bf7f79f08da16f7350",
+  "candidateHash": "b30f951df9ea619e6b12b171f04cfd54301eb0ea7bc5442e6269ecbb3c98b2a3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "10~14초위장·10%이동속도,트위치를못보는주변챔피언시30%대체이속,위장종료후6초공속,독챔피언사망쿨초기화,위장감지예외를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 위장 상태가 된다. 적 챔피언이 감지 범위 안에 있으면 위장 상태의 유닛이 보인다.; duration_seconds=10/11/12/13/14  rank_values / caster: 위장 중 이동 속도가 증가한다.; amount=10%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.form eq 위장 중, nearby_enemies.target_type eq champion, nearby_enemies.distance eq 트위치 주변에 있음, caster.visibility eq 해당 주변 적 챔피언이 트위치를 볼 수 없음 적용. caster: 위장 중 자신을 볼 수 없는 적 챔피언 근처에서는 이동 속도가 더 증가한다.; amount=30%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 위장 상태에서 벗어남 적용. caster: 위장에서 나온 뒤 공격 속도가 일정 시간 증가한다.; amount=40/45/50/55/60%  rank_values, duration_seconds=6  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "target의 death 사건에서 target.target_type eq champion, target.mark present Venom 적용. caster: 맹독에 걸린 적 챔피언이 죽으면 이 스킬의 재사용 대기시간이 초기화된다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "적챔피언unseen을트위치를못봄으로잘못치환,위장조건및30%대체관계누락",
+      "correction": "적의트위치시야조건/위장/근접/대체이속명시",
+      "sourceId": "en:body",
+      "quote": "The Move Speed increases to 30% while near an enemy champion that can't see him."
+    },
+    {
+      "path": "rules.2,3",
+      "issue": "위장시간만료로만공속발동제한및사망주체불일치",
+      "correction": "모든위장종료사건및target사망으로명시",
+      "sourceId": "en:body",
+      "quote": "After exiting Camouflage, Twitch gains 40/45/50/55/60% Attack Speed for 6 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "적 챔피언 감지 범위의 거리 조건은 tooltip에 수치로 제시되지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

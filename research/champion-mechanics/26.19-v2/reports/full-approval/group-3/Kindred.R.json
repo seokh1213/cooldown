@@ -1,0 +1,106 @@
+{
+  "id": "Kindred.R",
+  "sourceHash": "bf4b870e39d8d98d4387d0809012387fbc52917c98df8eddedc6e3308c2b38db",
+  "beforeCandidateHash": "d864be91f3dd7ce2a6250a667718f029f8c26784f747a362f8cabd0fd5ddb339",
+  "candidateHash": "717f5032c8744a13213035a0b4f62509de58f11d663426d79ed99c840f511fd1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "4초영역내아군/적/중립모두사망방지·체력10%도달후영역내피해/회복금지·종료시모든영역유닛225/300/375회복을확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 unknown distance lte 축복 영역 안 → unknown: 영역 안에서는 유닛이 사망하지 않습니다. 아군, 적, 중립 유닛에 적용됩니다. / duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 other / 조건 unknown health_threshold eq 10%; unknown distance lte 축복 영역 안; unknown activation eq 영역 안에서 체력10%에 도달함 → unknown: 해당 체력 기준에 도달한 유닛은 영역 안에 있는 동안 피해를 받거나 치유되지 않습니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 expiry / 조건 unknown distance lte 축복 영역 안 → unknown: 축복이 끝날 때 영역 안의 모든 유닛이 회복합니다. 아군, 적, 중립 유닛에 적용됩니다. / amount=225/300/375 [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.kind",
+      "issue": "죽음방지를사후부활로분류",
+      "correction": "사망방지other",
+      "sourceId": "en:body",
+      "quote": "allowing no unit, ally, enemy, or neutral to die while inside."
+    },
+    {
+      "path": "rules.1.conditions",
+      "issue": "체력10%도달조건을10%이하로단정",
+      "correction": "10%도달eq및상태조건보존",
+      "sourceId": "en:body",
+      "quote": "Upon reaching 10% Health"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 214,
+      "verdict": "repaired",
+      "reason": "10%도달조건으로수정하며10%이하임의상태까지확장하지않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "허용된 subject 값에 neutral 유닛이 없어 영역 안의 중립 유닛을 unknown으로 표현했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

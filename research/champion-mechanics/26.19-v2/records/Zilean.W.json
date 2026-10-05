@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 2,
+  "id": "Zilean.W",
+  "champion": "Zilean",
+  "slot": "W",
+  "patch": "26.19",
+  "sourceHash": "962acbe9734468f7d32cd5e388f3ed2d4311a2e4164884cc14e9146bc4d1b285",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Rewind",
+      "ko": "되감기"
+    },
+    "cooldownSeconds": [
+      14,
+      12,
+      10,
+      8,
+      6
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      600,
+      600,
+      600,
+      600,
+      600
+    ],
+    "cost": {
+      "values": [
+        35,
+        35,
+        35,
+        35,
+        35
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "14/12/10/8/6"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Zilean.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Zilean can prepare himself for future confrontations, reducing the cooldowns of his other basic abilities.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Zilean turns time, reducing his other basic Ability Cooldowns by 10 seconds.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "질리언이 기본 스킬 재사용 대기시간을 줄여 이후 시작될 전투를 준비할 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "질리언이 시간을 돌려 다른 기본 스킬의 재사용 대기시간을 10초 감소시킵니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 65,
+      "end": 67
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 32,
+      "end": 34
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "질리언은 다른 기본 스킬의 재사용 대기시간을 줄인다.",
+  "rules": [
+    {
+      "id": "519d635f67c55704e6c3",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "다른 기본 스킬의 재사용 대기시간을 감소시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zilean turns time, reducing his other basic Ability Cooldowns by 10 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "6e345ca8eb482c1bac758a94d1ac2b9a80143552491f6048da0615354e501d9f"
+}

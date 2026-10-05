@@ -1,0 +1,67 @@
+{
+  "id": "Velkoz.P",
+  "sourceHash": "33444e7ef9065cb9c706006952cb120430b72925662689e324ee25d5d37ccdb7",
+  "beforeCandidateHash": "9ca07ba17944b42652614008db75d20d1589894d3cfec2ad0a8801a980c33a41",
+  "candidateHash": "5b51b3f10a22d4e9425b8c5d60bd2c8cbeec686b840ee27672d612a4cc69f83a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "스킬적중분해7초,대상분해3중첩소모의35~180+60%벨코즈주문력고정피해,기본공격은기간갱신만하고새중첩없음을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 적중대상에게7초동안분해중첩을하나적용한다.; duration_seconds=7  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "target의 other 사건에서 target.mark eq 분해가3중첩 쌓인 적 적용. target: 분해 중첩을 모두 소모하고 고정 피해를 입힙니다. (true); min_amount=35  level_range, max_amount=180  level_range, stat_coefficient=60% caster의 abilityPower scalar / target: 분해3중첩을모두소모한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.mark eq 분해 중첩이 있는 적 적용. target: 대상에게 적용된 분해 중첩의 지속시간을 초기화합니다. 기본 공격은 새 중첩을 추가하지 않습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "공격/스킬주체enemy및3중첩을3적중으로혼동",
+      "correction": "caster행위자·분해3중첩조건·소모효과명시",
+      "sourceId": "en:body",
+      "quote": "Enemies with 3 stacks consume them and take ((35 ~ 180) + (60% Ability Power)) true damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 600,
+      "verdict": "repaired",
+      "reason": "hit_count를명시적인분해3중첩mark조건으로교체했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

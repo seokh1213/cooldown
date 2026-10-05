@@ -1,0 +1,128 @@
+{
+  "id": "Illaoi.E",
+  "sourceHash": "a037800af2a91a5f4c0ad229c1ae353197cf9f0570e4afefca4b37e598f89af0",
+  "beforeCandidateHash": "89e013a2547651f17576497aed9ff9b9dff42acf4f0794cfdba9cb445158c9d4",
+  "candidateHash": "2f8071fee6476a80ad61f25651716aa42f984e7b33c2f5e0e060355ec92b23d8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "챔피언영혼7초분리·영혼은챔피언처럼피해받음·주인에게복합비율전이,영혼사망또는범위이탈4초표식/80%1.5초둔화/가능시촉수·짧은시야,촉수는영혼OR표식적4~3초자동후려치기 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; summon: 적 챔피언에게서 영혼을 분리합니다.; 수치 duration_seconds en:body:n0=7 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: damage_taken 사건의 행위자 summon; 조건 summon.other eq spirit damage; target: 영혼이 받은 피해 일부가 원래 소유자에게 전이됩니다.; 수치 amount en:body:n1=25(백분율),en:body:n2=30(백분율),en:body:n3=35(백분율),en:body:n4=40(백분율),en:body:n5=45%(백분율) 상수 formula_components / stat_coefficient en:body:n6=8%(백분율) 상수 formula_components / ratio_input en:body:n7=100 caster.totalAttackDamage formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: death 사건의 행위자 summon; 조건 summon.other eq 이 스킬로 분리한 영혼이 사망; target: 대상에게 표식을 남깁니다.; 수치 duration_seconds en:body:n8=4 상수 scalar; flags 없음 | target: 대상을 둔화시킵니다. [slow]; 수치 amount en:body:n9=80%(백분율) 상수 scalar / duration_seconds en:body:n10=1.5 상수 scalar; flags 없음 | summon: 표식이 남은 적은 가능할 경우 촉수를 생성합니다.; 수치 없음; flags 없음 | target: 표식이 남은 적의 위치가 잠깐 드러납니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 target; 조건 target.distance eq 원래 소유자가 분리된 영혼의 범위 밖으로 나감; target: 대상에게 표식을 남깁니다.; 수치 duration_seconds en:body:n8=4 상수 scalar; flags 없음 | target: 대상을 둔화시킵니다. [slow]; 수치 amount en:body:n9=80%(백분율) 상수 scalar / duration_seconds en:body:n10=1.5 상수 scalar; flags 없음 | summon: 표식이 남은 적은 가능할 경우 촉수를 생성합니다.; 수치 없음; flags 없음 | target: 표식이 남은 적의 위치가 잠깐 드러납니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 summon; 조건 target.other eq 분리된 영혼 또는 이 스킬의 표식이 남은 적; enemy: 촉수는 영혼과 이 스킬의 표식이 남은 적에게4~3초마다 자동으로 후려치기를 사용합니다.; 수치 cooldown_seconds en:body:n11=4.0,en:body:n12=3.0 상수 level_range; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "미명시피해유형단정,범위이탈을시야이탈로혼동,영혼대상이표식필수로누락된조건 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Illaoi pulls the spirit from an enemy champion for 7 seconds. The spirit can be damaged like a champion, with (25/30/35/40/45% + (8% per 100 Attack Damage)) of that damage echoing to its owner. If the spirit dies or the target leaves its range, the target becomes marked for 4 seconds and is Slowed by 80% for 1.5 seconds. Marked enemies spawn Tentacles if possible. Tentacles will automatically Slam at spirits and marked enemies once every (4.0 ~ 3.0) seconds. Marked enemies are revealed for a short time."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "대상이 영혼의 사거리 밖으로 나가는 거리는 수치로 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "영혼에 전이되는 피해 비율에 공격력 환산식이 포함되지만, 두 비율 항의 결합을 parameters로 완전히 표현할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "전이피해유형이이슬롯본문에미명시하여physical로단정하지않음.후려치기는행동명령으로보존하며피해식은이슬롯미명시.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

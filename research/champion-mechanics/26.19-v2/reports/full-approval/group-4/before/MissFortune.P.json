@@ -1,0 +1,111 @@
+{
+  "summary": "새로운 대상에게 기본 공격을 하면 추가 물리 피해를 입힙니다. 사랑의 한 방 발동은 활보의 재사용 대기시간을 줄입니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "새로운 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "새로운 대상에게 기본 공격하면 추가 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Miss Fortune's Attacks deal an additional ((50% ~ 100%) Attack Damage) physical damage when she attacks a new target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "사랑의 한 방 발동"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "활보의 재사용 대기시간이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Triggering Love Tap reduces the cooldown of Strut by 2 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

@@ -1,0 +1,79 @@
+{
+  "id": "Varus.R",
+  "sourceHash": "b1c366db5ce2b7d22d98e17fe1dbb115be386f08f9a7d328253d88818c88fdb7",
+  "beforeCandidateHash": "5fe9f0efd3a1651c13a6bad647e57e35021d258d5a99cab87a969c20128e84a4",
+  "candidateHash": "2e87a46b5130e5367f8f3ad54ba047ebbff7ba071c55e22df78e21e9395c3e69",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫챔피언2초속박/150~350+AP100%마법피해·속박지속중3역병·감염되지않은적챔피언전파동일피해/속박을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order eq first → target: 처음 맞은 챔피언을 속박합니다. [root] / duration_seconds=2 [scalar] | target: 처음 맞은 챔피언에게 마법 피해를 줍니다. [magic] / amount=150/250/350 [rank_values]; stat_coefficient=100% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target other present 이 스킬로 속박됨 → target: 속박된 적은 지속 시간에 걸쳐 역병 중첩을 얻습니다. / count=3 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 secondary_targets target_type eq champion; secondary_targets other eq 이 부패에 감염되지 않은 적 챔피언 → secondary_targets: 촉수가 퍼져 감염되지 않은 적 챔피언에게 닿으면 동일한 마법 피해를 줍니다. [magic] / amount=150/250/350 [rank_values]; stat_coefficient=100% (caster abilityPower) [formula_components] | secondary_targets: 촉수가 퍼져 감염되지 않은 적 챔피언에게 닿으면 속박합니다. [root] / duration_seconds=2 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.conditions.1",
+      "issue": "미감염을모든mark없음으로단정",
+      "correction": "부패미감염텍스트조건보존",
+      "sourceId": "en:body",
+      "quote": "uninfected enemy champions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 591,
+      "verdict": "repaired",
+      "reason": "임의표식부재판정을제거하고부패에감염되지않은적챔피언조건으로보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 퍼지는 대상이 감염되지 않은 챔피언이라고 하지만 감염 판정이 이 R의 역병 표식인지 일반 감염 상태인지 구체적으로 정의하지 않아 mark 부재 조건으로는 확정할 수 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "id": "Lucian.R",
+  "sourceHash": "8841bd9c9e44a261f16d516126dde1fbb1b2a77e53297b1bd17d368d43dae9c1",
+  "beforeCandidateHash": "3647c2e33825690d487996be985f2a881738ab0b0e17f244ba222b7c1fb497a0",
+  "candidateHash": "09043464eda54726728df3ed1d3e297430e79b348581232a82b941beed711951",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "3초 또는 재사용까지 난사, 탄환당 최초 적중 피해와 E 사용, 치명타 탄환 수 변화·미니언 두 배를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "기본 22발을 3초 또는 재사용까지 발사하며 탄환마다 첫 적에게 15/30/45 + 공격력 25% + 주문력 15% 물리 피해다. count는 발사 수이며 대상당 별도 피해 기본값은 정확하다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "재사용 시 난사를 중단한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "난사 중 E를 사용할 수 있다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "치명타 확률과 치명타 피해는 탄환 수에 100% 효율로 영향을 주지만 정확한 식은 없다. 해당 효율을 각각 100%씩 두 번 적용하는 확정 변환으로 보지 않는다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언 탄환 피해는 기존 피해의 200%라는 수정이며 별도 독립 damage 사건이 아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0",
+      "issue": "first enemy hit를 대상별 구조 조건으로도 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Lucian rapidly fires 22 shots in a direction for 3 seconds or until he Recasts. Each shot deals (15/30/45 + (25% Attack Damage) + (15% Ability Power)) physical damage to the first enemy hit. While firing, Lucian may use Relentless Pursuit. Total Damage: 22 × (15/30/45 + 25% Attack Damage + 15% Ability Power) physical damage Number of shots scales with Lucian's Critical Strike chance and Critical Strike damage at 100% effectiveness. Deals 200% damage to minions."
+    },
+    {
+      "path": "rules.3.effects.0.parameters.0.role",
+      "issue": "정확한 변환식 없는 100% effectiveness는 계산 가능한 ratio_output으로 확정하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Lucian rapidly fires 22 shots in a direction for 3 seconds or until he Recasts. Each shot deals (15/30/45 + (25% Attack Damage) + (15% Ability Power)) physical damage to the first enemy hit. While firing, Lucian may use Relentless Pursuit. Total Damage: 22 × (15/30/45 + 25% Attack Damage + 15% Ability Power) physical damage Number of shots scales with Lucian's Critical Strike chance and Critical Strike damage at 100% effectiveness. Deals 200% damage to minions."
+    },
+    {
+      "path": "rules.4.effects.0.kind",
+      "issue": "200%는 기존 탄환 피해 수정이며 별도 피해 효과가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Lucian rapidly fires 22 shots in a direction for 3 seconds or until he Recasts. Each shot deals (15/30/45 + (25% Attack Damage) + (15% Ability Power)) physical damage to the first enemy hit. While firing, Lucian may use Relentless Pursuit. Total Damage: 22 × (15/30/45 + 25% Attack Damage + 15% Ability Power) physical damage Number of shots scales with Lucian's Critical Strike chance and Critical Strike damage at 100% effectiveness. Deals 200% damage to minions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 269,
+      "verdict": "false_positive",
+      "reason": "제안 자체가 실제 표현은 원문과 일치한다고 인정한다. rank_values와 target/per_target은 탄환당 최초 대상 피해와 충돌하지 않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "치명타 확률과 치명타 피해량이 탄환 수를 어떤 식으로 바꾸는지 툴팁에 구체적인 공식이 없어 계산식을 확정할 수 없다."
+    }
+  ],
+  "validation": {
+    "id": "Lucian.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

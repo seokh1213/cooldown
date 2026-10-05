@@ -1,0 +1,82 @@
+{
+  "id": "Fiora.P",
+  "sourceHash": "1f1c503368f17f22c58c273d711d06542a8129df8dd3cec8cf150f2bff61aaac",
+  "beforeCandidateHash": "80d7ba8809ef69a9da3fbde9b3b8624a080d6618a81bbb8a3749031d3251e4b4",
+  "candidateHash": "e1e1febf52e4545a17e6a9a244d5301ae06592704c5048c069958c476b7105f8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "실제급소공격/스킬가격시대상maxHP×(3%+자기추가AD100당4%)고정피해·MS20~50%2초감쇠·35~100회복·적챔피언급소표시/15초또는가격후교체를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 target target_type eq champion; target mark present Vital; target other eq 표시된 급소를 가격 → target: 급소가격시대상최대체력 × (3% + 자신의추가AD100당4%) 추가고정피해다.스탯계수를독립선형피해로합산하지않는다. [true] / amount=3% (target maxHealth) [scalar]; stat_coefficient=4% (caster bonusAttackDamage) [formula_components]; ratio_input=100 (caster bonusAttackDamage) [formula_components] | caster: 이동 속도가 상승하고 시간에 걸쳐 감소한다. / amount=20/30/40/50% [rank_values]; duration_seconds=2 [scalar] | caster: 체력을 회복한다. / min_amount=35 [scalar]; max_amount=100 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 target target_type eq champion → target: 적 챔피언의 급소를 드러낸다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: target의 expiry / 조건 target time gte 15 → target: 새 급소를 드러낸다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 target mark present Vital; target other eq 표시된 급소를 가격 → target: 새 급소를 드러낸다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/3.conditions",
+      "issue": "급소표식보유만으로모든공격발동",
+      "correction": "실제급소가격조건",
+      "sourceId": "en:body",
+      "quote": "Hitting this Vital with an Attack or Ability"
+    },
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "현재체력비율식대상maxHP연결없음및4%중복입출력",
+      "correction": "maxHP×(3%+추가AD100당4%)복합식명시/중복파라미터삭제",
+      "sourceId": "en:body",
+      "quote": "(3% + (4% per 100 bonus Attack Damage)) max Health true damage"
+    },
+    {
+      "path": "rules.2",
+      "issue": "15초를새급소유지시간처럼분류",
+      "correction": "이전급소15초경과조건",
+      "sourceId": "en:body",
+      "quote": "Fiora reveals a new Vital after 15 seconds or after striking one."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

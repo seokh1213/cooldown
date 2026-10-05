@@ -1,0 +1,357 @@
+{
+  "id": "Rumble.P",
+  "sourceHash": "cb5d2728e0377dd86944b7aa1ef29ef04530cf4358897b38879c68375c5aecef",
+  "beforeCandidateHash": "ea688bf3ad0e28a07ff55ee2ad89c034e39d8968355b78886635b0f9510af805",
+  "candidateHash": "ee497fc40ad38c145f3a84b12d07b7529eeb9998eb993501b19d17d0d878e14b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 5,
+  "summaryCheck": "스킬 열기, Danger Zone 임계,150과열4초/자기침묵/AS범위/공격추가마법/몬스터비례성분상한을 대조했다. 본문과 요약의 임계 충돌을 유지했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "스킬 시전의 자기 Heat생성;양 미제공.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "en body기준Heat>50 위험상태 기본스킬 추가효과;언어 경계충돌기록.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Heat150도달시4초과열,자기silence와AS30~100%;level기준단정제거.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "과열 공격 추가마법5~40+자기AP25%+maxHP4%;HP소유자미확정.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "overheated"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "unknown",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "4%",
+              "value": 4,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몬스터에게 비례성분의 cap90~175;추가피해지급이 아닌상한.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "overheated"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "175",
+              "value": 175,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2/rules.3/rules.4/gaps",
+      "issue": "원문없는레벨범위/HP소유자단정 및 상한을 독립피해로분류했다.",
+      "correction": "unknown범위/HP주인,other상한,언어경계와범위gap을보존했다.",
+      "sourceId": "en:body",
+      "quote": "Percent damage is limited to (90 ~ 175) damage on Monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 422,
+      "verdict": "repaired",
+      "reason": "원문이HP주인을직접명시하지 않고 기존gap도미확정이었다. statSubject를unknown으로맞췄다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "스킬이 생성하는 열기의 양은 본문에 명시되어 있지 않다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "위험 상태 기준은 요약문에서 50% Heat, 본문에서 50 Heat 초과로 다르다. 과열 기준도 요약문은 100% Heat, 본문은 150 Heat로 다르다. 규칙에는 본문 표현을 반영했다. en body의 above50(>50)와 ko body의50도달(≥50)도 충돌한다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "과열 중 공격의 최대 체력 비례 피해에서 대상 최대 체력과 공격 대상의 관계를 명시하지 않았다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 3,
+      "reason": "unresolved_number",
+      "detail": "몬스터 대상 체력 비례 피해 상한의 범위가 무엇에 따라 달라지는지 원문에서 설명하지 않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 4,
+      "reason": "unresolved_number",
+      "detail": "과열AS30%~100% 및 기본피해5~40 증가 기준은 본문에 없다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "5 unresolved source gaps"
+      }
+    ]
+  }
+}

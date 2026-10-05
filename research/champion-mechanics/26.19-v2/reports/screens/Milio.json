@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Milio.E",
+      "sourceHash": "52112667d55564953b094075b5db0d0e317578ede767e0ac2f4c24c56ebe64a7",
+      "candidateHash": "4a841fbe0b8e8b8e84ba80a8d19f4342564ab39519133deebd98dda2fcc4b4d5"
+    },
+    {
+      "id": "Milio.P",
+      "sourceHash": "9ebf28792b526adc02d5700af4046f77b62f46dae47a68944cccae5c1d7d641f",
+      "candidateHash": "bce600d3d9e5f547d055aa52651be12434af277280a721698e424ae07806c8a4"
+    },
+    {
+      "id": "Milio.R",
+      "sourceHash": "dc4415048b94e2750842d5281d63ca18e22f8c1e22ed7d91318d9eca58140baa",
+      "candidateHash": "9fbc10e58ef9c29faeed62156fdbee55e99d59e54dd8ec94fc02efbc93c2599f"
+    },
+    {
+      "id": "Milio.Q",
+      "sourceHash": "e7ddb515d40f983c05c114b4871016936edd6f6c90c6e1d8d391b900a56ee6d4",
+      "candidateHash": "6407b6820be30e899ec0e103cebe83b0d71a646ec4befa7b173078bc3dcaf092"
+    },
+    {
+      "id": "Milio.W",
+      "sourceHash": "3c3e37e52a6a7a4f66dd5fcee5b46aeaa055f0a347fd00b992c8890164cac123",
+      "candidateHash": "2442f06b60d38c70e31af3ef9249de818326d5ed11b3d2037e289a9c2de2d831"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Milio.Q",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hitting at least one enemy champion with Ultra Mega Fire Kick refunds 50% of it's Mana cost.",
+      "issue": "`hit_count >= 1`는 적중 횟수를 뜻하지만, 원문은 적중한 적 챔피언 수가 한 명 이상이면 환급된다는 조건입니다. 현재 조건은 챔피언 한 명을 여러 번 맞힌 경우도 잘못 포함할 수 있습니다.",
+      "correction": "조건을 적중한 적 챔피언 수가 1명 이상인 것으로 표현하세요. 해당 구분을 지원하지 않으면 조건을 텍스트로 보존하고 구조화된 `hit_count` 조건은 제거하세요."
+    },
+    {
+      "id": "Milio.Q",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minions and monsters are knocked further and create a larger explosion.",
+      "issue": "미니언 대상 규칙의 설명은 더 멀리 밀리고 폭발도 커진다고 하지만, 조건은 `minion`만 지정하고 있습니다. 설명에 적힌 효과의 대상 범위와 조건이 일치하지 않습니다.",
+      "correction": "이 규칙의 대상 조건에 몬스터도 포함하세요."
+    },
+    {
+      "id": "Milio.W",
+      "path": "rules.0.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Milio creates a hearth that follows ally champions for 6 seconds.",
+      "issue": "온기가 따라가는 대상은 아군 챔피언인데 소환 효과의 주체가 `unknown`으로 되어 있어 대상 정보가 빠졌습니다.",
+      "correction": "온기가 아군 챔피언을 따라간다고 주체 또는 텍스트에 명시하세요."
+    }
+  ],
+  "notes": []
+}

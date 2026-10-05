@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "MissFortune.E",
+      "sourceHash": "b70aeb707c8aed7d0b763a13821a6365380ed6071387425ecc8ef1d1409f5bf7",
+      "candidateHash": "21871f40f1ee1ae1f883f4ae3bbc99c92c2e739d09fb5fcfa9d899546f622e71"
+    },
+    {
+      "id": "MissFortune.P",
+      "sourceHash": "5149f4029f5b0be273c81705e8a6d913526b579d874e09f2b3a678c4248d8643",
+      "candidateHash": "4920091e0ed7121afc6039957be96658d4b3d01d599959dc94eb852ac4999bfe"
+    },
+    {
+      "id": "MissFortune.Q",
+      "sourceHash": "29cd6136af2ad6a143aaa0d58d3b1a101b4eef2f238c8d5bfe0a7d0a88a14c48",
+      "candidateHash": "a42c93f5e9233b2d5e7bcc8397b7cf19ec4dfead52ec541648bf25d04e8addde"
+    },
+    {
+      "id": "MissFortune.R",
+      "sourceHash": "7491585af22ec65f1b3968248352e7bced86f5834adf5071efe1706149774f6b",
+      "candidateHash": "bec6db948b0eb462adfc697cfd0cbb059b812375c8dc75a399c6f65bc5a31b1b"
+    },
+    {
+      "id": "MissFortune.W",
+      "sourceHash": "4aca9fea4047e4dcb99ef92e0fd37cac0c3f53c0f3cea6278f8e230f0099c0b3",
+      "candidateHash": "b62f6b4d8f712af856b6748cdf5f1c87380dd1f7e8623414c424a9a53b8df14c"
+    }
+  ],
+  "findings": [
+    {
+      "id": "MissFortune.E",
+      "path": "rules.0.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Miss Fortune rains bullets, revealing an area",
+      "issue": "시야 효과의 대상이 `nearby_enemies`로 되어 있어, 지역을 드러내는 효과를 주변 적에게 적용하는 것으로 오해하게 합니다.",
+      "correction": "지역 시야 공개 효과의 대상을 `area` 또는 이에 해당하는 지역 대상으로 표현하세요."
+    },
+    {
+      "id": "MissFortune.E",
+      "path": "rules.1.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Slowing by (40% + (6% per 100 Ability Power))",
+      "issue": "둔화량 수식의 `100 Ability Power`가 `ratio_input`으로 구조화됐지만, `6% per 100 AP`는 주문력 100당 둔화량이 6% 증가한다는 의미입니다. 현재 구조는 입력값 100을 별도 기준치로 나타내지 않아 수식 의미가 불완전합니다.",
+      "correction": "주문력 100당 6% 증가라는 비례 기준을 명시하거나, 수식을 텍스트/미해결 값으로 보존하세요."
+    },
+    {
+      "id": "MissFortune.P",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Triggering Love Tap reduces the cooldown of Strut by 2 seconds.",
+      "issue": "사랑의 한 방 발동 조건이 대상의 `other` 필드에 연결되어 있고, 이벤트도 `attack`으로 되어 있어 발동 사건을 정확히 표현하지 못합니다.",
+      "correction": "발동 주체를 시전자와 연결하고, 사랑의 한 방 발동을 공격 이벤트와 별개의 조건으로 표현하세요."
+    },
+    {
+      "id": "MissFortune.Q",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "It always critically strikes if the first shot kills its target.",
+      "issue": "조건은 첫 사격이 대상을 맞힌 뒤 후속 사격이 발사됐는지만 나타내며, 첫 대상 처치 여부를 나타내지 않습니다. 따라서 이 조건만으로는 두 번째 사격의 확정 치명타를 뒷받침할 수 없습니다.",
+      "correction": "첫 사격이 대상을 처치했다는 조건을 추가하거나, 해당 조건을 구조화할 수 없다면 규칙을 미해결 상태로 남기세요."
+    },
+    {
+      "id": "MissFortune.R",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "total (280/480/720 + (840/960/1080% Attack Damage) + (350/400/450% Ability Power)) physical damage",
+      "issue": "총 피해 문구가 `총 발사 횟수만큼의` 피해라고만 해, 총 피해의 공격력·주문력 계수가 요약 문구에서 빠졌습니다.",
+      "correction": "총 피해 문구에 840/960/1080% 공격력 및 350/400/450% 주문력 계수를 포함하세요."
+    },
+    {
+      "id": "MissFortune.W",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After another 3 seconds, this increases to 60/70/80/90/100.",
+      "issue": "두 번째 이동 속도 값이 첫 단계에 더해지는 추가량처럼 서술됐지만, 원문은 이동 속도 증가 효과가 해당 값까지 올라간다고 설명합니다.",
+      "correction": "두 번째 단계의 이동 속도 증가량이 60/70/80/90/100까지 증가한다고 표현하세요."
+    },
+    {
+      "id": "MissFortune.W",
+      "path": "rules.2.effects.1.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "40/55/70/85/100% Attack Speed for 4 seconds",
+      "issue": "4초 지속 시간이 공격 속도 증가량 파라미터에 붙어 있어, 기본 지속 효과의 최대 이동 속도 보너스도 4초 동안만 유지되는 것으로 읽힐 수 있습니다. 원문은 4초를 공격 속도 증가에만 명시합니다.",
+      "correction": "지속 시간을 공격 속도 효과에만 연결하거나, 이동 속도 효과의 지속 시간은 미상으로 보존하세요."
+    },
+    {
+      "id": "MissFortune.W",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Love Taps reduce the Cooldown of this Ability by 2 seconds.",
+      "issue": "사랑의 한 방 발동 조건이 대상의 `other` 필드에 연결되어 있어, 쿨다운 감소를 일으키는 발동 사건을 정확히 표현하지 못합니다.",
+      "correction": "발동 주체를 시전자와 연결하고, 사랑의 한 방 발동을 공격 이벤트와 별개의 조건으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

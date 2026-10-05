@@ -1,0 +1,102 @@
+{
+  "id": "Olaf.P",
+  "sourceHash": "dcc6934de7cbfefda82ebcf6df0386c70cbe69008fd2f0504ea2c6132846f9b8",
+  "beforeCandidateHash": "ddddbfaa2e6469e765b65c0d73407b5e44bf1ca309fb598157195a4641763841",
+  "candidateHash": "da84eaf133b000705d3fdadf7189fed96dcc9e9433bb72d01157f332e6dfe9a4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "잃은체력에비례하는AS와lifesteal의최대범위를대조했다. 상한낮은끝을실제최소보너스로오해하지않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기잃은HP기반up to AS50~100%/LS8~25%. 각각상한범위이며low끝min_amount아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n2",
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "8%",
+              "value": 8,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "up to범위를최소/최대보너스로기록.",
+      "correction": "최대범위unknown과정확문구·실제보간한계gap.",
+      "sourceId": "en:body",
+      "quote": "Olaf gains up to (50% ~ 100%) Attack Speed and (8% ~ 25%) Life Steal, based on his missing Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "두상한범위가변하는기준과잃은체력에따른보간식은미공급이다.50%AS/8%흡혈을무조건최소보너스로실행하지않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

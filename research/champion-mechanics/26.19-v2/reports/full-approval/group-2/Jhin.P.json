@@ -1,0 +1,120 @@
+{
+  "id": "Jhin.P",
+  "sourceHash": "6900ea50294bb9367ffa9e67b6d32a66967839baca5cf7a7a6c2821e1791e59a",
+  "beforeCandidateHash": "bec753448d2d332c31bbe57e01532bd32b62772476587e397b46a9081fafdf83",
+  "candidateHash": "33feb88951cad27fc56c053af6f47383baeb1217477bfa463c206832286452ca",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "고정 공속/4발 재장전,4번째 확정 치명타·대상 잃은체력 추가물리, 추가공격력 구성식, 치명타피해25% 감소·2초이속의 추가공속 계수를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 속삭임은 고정된 공격 속도로 발사되며, 탄환을 모두 발사한 뒤 재장전해야 한다.; 수치 count en:body:n0=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.other eq 네 번째 탄환; target: 네 번째 탄환은 항상 치명타를 적중시키고 대상의 잃은 체력에 비례한 추가 물리 피해를 입힌다.; 수치 min_amount en:body:n2=15%(백분율) 상수 level_range / max_amount en:body:n3=25%(백분율) 상수 level_range; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: ((4%~44%) + 35% 치명타 확률 + 30% 추가 공격 속도)로 표현된 추가 공격력을 얻습니다. 비율의 기준 공격력과 정확한 결합식은 미명시입니다.; 수치 min_amount en:body:n4=4%(백분율) 상수 formula_components / max_amount en:body:n5=44%(백분율) 상수 formula_components / stat_coefficient en:body:n6=35%(백분율) caster.critChance formula_components / stat_coefficient en:body:n7=30%(백분율) caster.bonusAttackSpeed formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 치명타; caster: 진의 치명타 피해량은 감소한다.; 수치 amount en:body:n8=25%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 치명타; caster: 진의 치명타는 진에게 이동 속도를 부여한다.; 수치 amount en:body:n9=14%(백분율) 상수 scalar / stat_coefficient en:body:n10=44%(백분율) caster.bonusAttackSpeed scalar / duration_seconds en:body:n11=2 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "복합 공격력식을 선형 상수 증가로 실행할 위험과 부정확한 gap; 요약 지속시간 보완",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Jhin's hand cannon has a fixed Attack Speed and can be fired 4 times before needing to be reloaded. The 4th shot always critically strikes, and deals an additional (15% ~ 25%) missing health physical damage. In addition:Jhin gains ((4% ~ 44%) + (35% Critical Strike Chance) + (30% bonus Attack Speed)) bonus Attack DamageJhin's critical strikes deal 25% less damage but grant him (14% + (44% bonus Attack Speed)) Move Speed for 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 140,
+      "verdict": "repaired",
+      "reason": "2초 이동속도 지속을 요약에 명시."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력은 대상의 잃은 체력으로 한국어 본문에 명시되지만 스키마에 해당 통계 키가 없어 15~25% 추가 물리 피해를 텍스트/비율 구성요소로 보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "네 번째 탄환 조건은 허용된 구조화 조건 값에 해당 항목이 없어 텍스트 조건으로 보존했다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "추가 공격력 계산의 기준 공격력과 비율·스탯 항 결합 방식은 본문에 없어 수식 구성요소로 보존하며 상수/AP 등 선형 덧셈으로 실행하지 않음.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

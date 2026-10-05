@@ -1,0 +1,89 @@
+{
+  "id": "Lulu.E",
+  "sourceHash": "889fcb1969fa139d03bc0856bb6766f49369ce445433aa1dee4a820e222594f4",
+  "beforeCandidateHash": "72a46a249b527b91e6ce6b95b75d54db6fc7e2cc02b299b6bb9e9c152ff643b0",
+  "candidateHash": "b90da496451e24d268eadd5611922db9a1465169815cf63264b97aab2eec87a2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "아군Pix부착6초공격지원,아군챔피언70~230+50%AP보호막2.5초;적챔피언70~230+50%AP마법/Pix따름/4초절대시야;summary범위차이 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.other eq 아군 대상; target: 픽스가 대상에게 이동해 따라다니며, 대상에게 요정 친구 픽스 효과를 부여합니다.; 수치 duration_seconds en:body:n0=6 상수 scalar; flags 없음 | summon: 픽스가 지정한 아군에게 날아가6초 따라다니며 그 아군의 공격을 돕습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.other eq 아군 챔피언 대상; target: 보호막을 부여합니다.; 수치 amount en:body:n1=70,en:body:n2=110,en:body:n3=150,en:body:n4=190,en:body:n5=230 상수 rank_values / stat_coefficient en:body:n6=50%(백분율) caster.abilityPower scalar / duration_seconds en:body:n7=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.other eq 적 챔피언 대상; target: 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n8=70,en:body:n9=110,en:body:n10=150,en:body:n11=190,en:body:n12=230 상수 rank_values / stat_coefficient en:body:n13=50%(백분율) caster.abilityPower scalar; flags 없음 | caster: 대상에 대한 절대 시야를 얻습니다.; 수치 duration_seconds en:body:n14=4 상수 scalar; flags 없음 | summon: 픽스가 지정한 적챔피언에게 날아가 그 적을 따라다닙니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "이동·따름·공격지원summary누락 복원·대상유형충돌gap 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "When used on an ally, Pix jumps to them and grants Pix, Faerie Companion for 6 seconds. If the ally is a champion, Pix also grants (70/110/150/190/230 + (50% Ability Power)) Shield for 2.5 seconds. When used on an enemy champion, Pix hampers them, dealing (70/110/150/190/230 + (50% Ability Power)) magic damage and granting True Sight of them for 4 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "summary는아군전체보호막/적전체사용으로 넓게서술하지만 body는아군챔피언만보호막/적챔피언에사용으로 한정. 구체적인body를 우선해 유형제한을 보존한다.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

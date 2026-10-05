@@ -1,0 +1,109 @@
+{
+  "id": "Rengar.Q",
+  "sourceHash": "e23dfaa499d8532a1552d3bfc74e906f6b99c541d09f5600115f6c4ec47ff35f",
+  "beforeCandidateHash": "60641a580835e83c184ed980e6fa3c4cbf5907aa434e84ce11aa27924d844249",
+  "candidateHash": "d92d653fbdac9e08dc216cb8f4677045b5d0e1585f57a1cb5fb42865efb8581d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "Q 다음 두 공격40% 공속, 첫 공격의 일반/최대 야성 피해식, 강화 첫 공격 후5초 50~101%공속을 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: Q 사용 후 다음 두 번의 기본 공격에 40% 공격 속도 증가가 적용됩니다.; 수치 count en:body:n0=2 상수 scalar / amount en:body:n1=40%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.hit_order eq 이 Q 사용 후 다음 두 번의 공격 중 첫 번째 / caster.activation neq empowered; target: 첫 공격이 물리 피해를 준다. [physical]; 수치 amount en:body:n2=20,en:body:n3=55,en:body:n4=90,en:body:n5=125,en:body:n6=160 상수 rank_values / stat_coefficient en:body:n7=100%(백분율) caster.totalAttackDamage formula_components / stat_coefficient en:body:n8=5%(백분율) caster.totalAttackDamage formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.hit_order eq 이 Q 사용 후 다음 두 번의 공격 중 첫 번째 / caster.activation eq empowered; target: 강화된 첫 공격이 물리 피해를 준다. [physical]; 수치 min_amount en:body:n9=35 상수 level_range / max_amount en:body:n10=240 상수 level_range / stat_coefficient en:body:n11=100%(백분율) caster.totalAttackDamage formula_components / stat_coefficient en:body:n12=20%(백분율) caster.totalAttackDamage formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq empowered / caster.hit_order eq 최대 야성 Q 사용 후 첫 번째 공격; caster: 강화된 공격의 공격 속도가 증가한다.; 수치 amount en:body:n13=50%(백분율),en:body:n14=101%(백분율) 상수 level_range / duration_seconds en:body:n15=5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "공격 이미 발사 전제 제거, Q 후속 공격 순서 명시, 강화 공속의 첫 공격 제한 복원",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Rengar's next 2 Attacks gain 40% Attack Speed. The first Attack deals (20/55/90/125/160 + (100% Attack Damage) + (5% Attack Damage)) physical damage. Max Ferocity: The first Attack deals ((35 ~ 240) + (100% Attack Damage) + (20% Attack Damage)) physical damage and grants Rengar (50% ~ 101%) Attack Speed for 5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 411,
+      "verdict": "repaired",
+      "reason": "시전 후 다음 두 공격 적용으로 변경하고 fired 전제 제거."
+    },
+    {
+      "index": 412,
+      "verdict": "repaired",
+      "reason": "일반 Q 후속 첫 공격 순서로 명시."
+    },
+    {
+      "index": 413,
+      "verdict": "repaired",
+      "reason": "최대 야성 Q 후속 첫 공격 순서로 명시."
+    },
+    {
+      "index": 414,
+      "verdict": "repaired",
+      "reason": "강화 Q 첫 공격에만 공속 부여 조건 추가."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "첫 번째 공격의 Q 기본 공격 속도 증가 효과가 강화 상태에서도 별도로 적용되는지 원문에서 명확하지 않다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

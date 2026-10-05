@@ -1,0 +1,431 @@
+{
+  "id": "Ambessa.R",
+  "sourceHash": "324b69c41b11cb60e72d4b2e4739794b10c96512dc23f13bc94e3108b64b4e06",
+  "beforeCandidateHash": "4e64e44d1fc868df40fe413c2c574e386ea1f20436aeac85ffae97c6ddc6e899",
+  "candidateHash": "b970a4e8e971e22a8786e59962ca6ea7447e4146163a09d2cbe59e7e350eca86",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 0,
+  "summaryCheck": "자기 방어구 관통력, 스킬 실제 피해×(기본 회복률+생명력 흡수 계수), 가장 먼 직선 챔피언 순간이동/제압/후속 강타와 기절, 비챔피언 회복25%효율을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기 armorPenetration10/20/30%이며 절대 관통 수치가 아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2"
+          ],
+          "stat": "armorPenetration",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "10",
+              "value": 10,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기 스킬 실제 피해가 회복 입력; 15~20%+자기 lifeSteal50%를 먼저 합해 곱하는 중첩 식.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "암베사의 스킬이 실제 피해를 입힘"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "15",
+              "value": 15,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "17.5",
+              "value": 17.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "20%",
+              "value": 20,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "lifeSteal",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "저지불가 자기 상태와 직선 가장 먼 적 챔피언으로 순간이동.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "그 선택 챔피언을 도착 후 suppression0.75초.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "선택한 일직선에서 가장 먼 적 챔피언으로 이 스킬이 순간이동한 대상"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "0.75",
+              "value": 0.75,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "제압 후 동일 적에게 물리150/250/350+추가 AD80%.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "선택한 일직선에서 가장 먼 적 챔피언으로 이 스킬이 순간이동한 대상"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "350",
+              "value": 350,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "80%",
+              "value": 80,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강타 대상 stun0.4초이며 suppression과 순서 구분.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "선택한 일직선에서 가장 먼 적 챔피언으로 이 스킬이 순간이동한 대상"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "0.4",
+              "value": 0.4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언 스킬 피해의 패시브 회복은 정상 회복량25% 효율.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몬스터 스킬 피해 회복도25% 효율; 일반 회복과 추가 회복으로 중복하지 않음.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/rules.1/rules.3/rules.4/rules.5/rules.6/rules.7/gaps",
+      "issue": "회복률 중첩식이 단순 선형량처럼 표시되고 피해대상/순서 및 비챔피언 회복효율 역할이 불완전했다. 패시브 일반 적용을 부족으로 기록한 gap도 과도했다.",
+      "correction": "퍼센트/중첩식/실제 피해 조건/선택 대상과 순서/효율 other를 명시하고 근거 없는 gap을 제거했다.",
+      "sourceId": "en:body",
+      "quote": "her Abilities heal her for (15/17.5/20% + (50% Lifesteal)) of the damage she dealt."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 12,
+      "verdict": "false_positive",
+      "reason": "현재 요약은 이미 미니언과 몬스터에게 입힌 피해에 대한 회복 효율이 감소한다고 명시해 회복 범위를 보존한다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

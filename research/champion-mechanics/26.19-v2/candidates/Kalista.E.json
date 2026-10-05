@@ -1,0 +1,385 @@
+{
+  "summary": "기본 공격으로 박힌 창은 일정 시간 유지되고 무제한 중첩됩니다. 사용하면 근처 적의 창을 뽑아 피해와 둔화를 줍니다. 이 스킬로 적을 처치하면 재사용 대기시간이 초기화되고 마나를 돌려받습니다. 에픽 정글 몬스터에게는 피해가 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "칼리스타의 창이 대상에게 박혀 일정 시간 유지되며 중첩 수에는 제한이 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Kalista's spears linger in their target for 4 seconds, stacking any number of times."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "nearby_enemies",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "창이 박혀 있는 근처 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "근처 각 적의 창을 뽑아 (5/15/25/35/45+AD70%+AP65%) + (창수-1)×(7/14/21/28/35+AD20/27.5/35/42.5/50%+AP50%) 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kalista rips the spears from nearby enemies, dealing (5/15/25/35/45 + (70% Attack Damage) + (65% Ability Power)) plus (7/14/21/28/35 + (20/27.5/35/42.5/50% Attack Damage) + (50% Ability Power)) physical damage per spear beyond the first."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "nearby_enemies",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 창 뽑기에 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "적중한 적을10/18/26/34/42% + AP100당5% 둔화시키며2초 지속됩니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n26"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Slows enemies hit by (10/18/26/34/42% + (5% per 100 Ability Power)) for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬이 적어도 한 대상을 처치"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "이 스킬로 대상을 처치하면 재사용 대기시간이 초기화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this Ability kills at least one target, its Cooldown is refreshed"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬이 적어도 한 대상을 처치"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "스킬이 대상을 처치하면 마나를 돌려받습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_refund",
+              "numberRefs": [
+                "en:body:n28",
+                "en:body:n29",
+                "en:body:n30",
+                "en:body:n31",
+                "en:body:n32"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this Ability kills at least one target, its Cooldown is refreshed and it refunds 10/15/20/25/30 Mana."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬에 맞은 에픽 정글 몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "nearby_enemies",
+          "text": "에픽 정글 몬스터에게 주는 피해는 기본 피해의 절반입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n33"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability deals 50% damage to epic jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "피해는창수-1을추가항에곱하는식이다. 숫자표를선형합산하면안된다. 슬래시AD/slow수치는공통%단위를문구대로해석한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kalista rips the spears from nearby enemies, dealing (5/15/25/35/45 + (70% Attack Damage) + (65% Ability Power)) plus (7/14/21/28/35 + (20/27.5/35/42.5/50% Attack Damage) + (50% Ability Power)) physical damage per spear beyond the first."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "한국어요약은재시전이라고하나두본문의Active/사용시를따라cast로기록한다.",
+      "evidence": [
+        {
+          "sourceId": "ko:summary",
+          "quote": "재시전하면 대상에 박힌 창을 뜯어내서 둔화시키며, 주는 피해량이 증가합니다."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kalista rips the spears from nearby enemies"
+        }
+      ]
+    }
+  ]
+}

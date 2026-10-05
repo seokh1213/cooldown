@@ -1,0 +1,87 @@
+{
+  "id": "Sett.W",
+  "sourceHash": "353291f30b0f71f2f9506b28b9af3d2595d29f2ef1c9257cb519c3ccbe56c37d",
+  "beforeCandidateHash": "50b9f7d5f9729e46a7c37caef22f65b974a8db67bd2fdcec8c3c87a9c46a6f51",
+  "candidateHash": "5d1f8f49ba43d2c00780bfe1d95e73d29a2d3e333ac26c9ad801d3aa8e6fd940",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "피해100%Grit/Health50%cap/피해4초후감쇠,사용시전부소모/소모Grit100%shield3초감쇠,중심80~160+(25%+.25%bonusAD)consumedGrittrue/외곽동일physical관계및원문max식 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.damage_taken; 조건 없음. caster resource_change: 받은 피해100%를 투지로 저장하며 상한은 Health50%이다. Health의 현재/최대 기준은 원문에 명시되지 않았다. [other n0=100% formula_components; storage_cap n1=50% formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.time gte n2=4. caster resource_change: 피해를 받은 뒤4초가 지나면 투지가 빠르게 감소한다. [other n2=4 scalar] flags=decays"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster resource_change: 저장된 투지를 모두 소모한다. [] / caster shield: 소모한 투지100%만큼 보호막을 얻으며3초에 걸쳐 감소한다. [other n3=100% formula_components; duration_seconds n4=3 scalar] flags=decays"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 펀치 중심에 있음. target damage true: 펀치 중심의 적에게 고정 피해를 입힌다. 피해는 기본 피해와 소모한 투지에 비례하는 추가분으로 구성되며, 최대치는 체력 기준 상한과 추가 공격력 계수에 따른다. [amount n5=80/n6=100/n7=120/n8=140/n9=160 formula_components; ratio_output n10=25% formula_components; stat_coefficient n11=0.25% formula_components caster.bonusAttackDamage] / target other: 원문은 피해 최대식을(50% Health)×(25%+0.25% 추가AD)로 제시한다. 이 최대식은 별도 추가 피해가 아니다. [max_amount n12=50% formula_components; ratio_output n13=25% formula_components; stat_coefficient n14=0.25% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other neq 펀치 중심에 있음. target damage physical: 중심 밖의 펀치 범위에 맞은 적은 동일 펀치 피해를 대신 물리 피해로 받는다. [amount n5=80/n6=100/n7=120/n8=140/n9=160 formula_components; ratio_output n10=25% formula_components; stat_coefficient n11=0.25% formula_components caster.bonusAttackDamage]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/gaps",
+      "issue": "피해일부vs100%·4초지연duration·Gritshield100%flat·범위주인/최대피해식합산·외곽대체추론누락",
+      "correction": "100%피해저장/지연roleother,자원소모/구성shield,중심피해와max식분리,외곽대체양",
+      "sourceId": "en:body",
+      "quote": "Enemies not in the center instead take physical damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 453,
+      "verdict": "false_positive",
+      "reason": "원duration_seconds3과decaysflag는원문3초감쇠를정확히표현한다. text에도3초를명시했다."
+    },
+    {
+      "index": 454,
+      "verdict": "documented_gap",
+      "reason": "Health의현재/최대범위는공급본문에서미명시다. maxHealth로실행하지않고Health50%와곱식범위를text/구성요소/gap에명확히남겼다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "투지 저장 상한과 최대 고정 피해 식에서 Health가 어떤 체력 기준인지 원문만으로 확정할 수 없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "피해는기본값+(25%+.25%bonusAD)×소모Grit복합식이다. 원문최대식은Health50%와비율곱이며일반최대피해최저분리/체력종류가불명확하여텍스트구성요소로보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

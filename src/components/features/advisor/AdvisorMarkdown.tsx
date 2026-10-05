@@ -1,87 +1,56 @@
-/**
- * 조언 본문 서식
- *
- * 답변은 코드가 조립하거나 모델이 쓴 평문이다. 둘 다 `## 소제목` 과 `- 항목` 을 쓰는데
- * 그대로 뿌리면 우물 정 두 개가 화면에 보인다. 규칙 답변은 모델을 거치지 않고
- * 그대로 나가기 때문에 특히 눈에 띈다.
- *
- * 마크다운 파서를 들이지 않는다. 우리가 만드는 문법이 위 세 가지뿐이라 그만큼만 그린다.
- * HTML 문자열을 만들지 않고 React 노드로 조립하므로 본문이 태그로 해석될 여지가 없다.
- */
+/** 답변의 제목·목록·강조·코드를 안전한 React 요소로 표시한다. */
 import type { ReactNode } from "react";
+import { publicAnswerText } from "@/lib/advisor/publicAnswerText";
 
-/** `**굵게**` 와 `_출처_` 만 인라인으로 처리한다 */
 function inline(text: string): ReactNode {
-  const parts = text.split(/(\*\*[^*]+\*\*|_[^_]+_)/g);
-  if (parts.length === 1) return text;
-  return parts.map((part, index) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={index}>{part.slice(2, -2)}</strong>;
+  return text.split(/(`[^`]+`|\*\*[^*]+\*\*|_[^_]+_|\[[^\]]+\]\([^\s)]+\))/g).map((part, index) => {
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return <code key={index} className="rounded bg-muted px-1 py-0.5 font-mono text-[0.92em]">{part.slice(1, -1)}</code>;
     }
-    if (part.startsWith("_") && part.endsWith("_") && part.length > 2) {
-      return (
-        <em key={index} className="not-italic text-muted-foreground">
-          {part.slice(1, -1)}
-        </em>
-      );
+    if (part.startsWith("**") && part.endsWith("**")) return <strong key={index}>{part.slice(2, -2)}</strong>;
+    if (part.startsWith("_") && part.endsWith("_")) {
+      return <em key={index} className="not-italic text-muted-foreground">{part.slice(1, -1)}</em>;
     }
     return part;
   });
 }
 
+function listItem(line: string) {
+  const match = /^\s*(?:(\d+)[.)]|([-*·]))\s+(.*)$/.exec(line);
+  return match ? { ordered: Boolean(match[1]), start: Number(match[1]), text: match[3] } : undefined;
+}
+
 export function AdvisorMarkdown({ text }: { text: string }): ReactNode {
   const nodes: ReactNode[] = [];
-  const lines = text.split("\n");
-
-  for (let i = 0; i < lines.length; i += 1) {
+  const lines = publicAnswerText(text).split("\n");
+  for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    // 줄 전체가 굵은 글씨면 구획 머리말로 본다.
-    // 해설이 "**플레이할 때**" / "**상대할 때**" 로 두 관점을 가르는데, 그냥 굵은
-    // 글씨로 두면 본문에 묻힌다. 상성 제목보다 작은 소제목으로 구분한다.
+    const item = listItem(line);
+    if (item) {
+      const start = i;
+      const items: ReactNode[] = [];
+      while (i < lines.length) {
+        const next = listItem(lines[i]);
+        if (!next || next.ordered !== item.ordered) break;
+        items.push(<li key={i} className="pl-1">{inline(next.text)}</li>);
+        i++;
+      }
+      i--;
+      const classes = "ml-5 space-y-1.5 pl-1 marker:text-muted-foreground";
+      nodes.push(item.ordered
+        ? <ol key={start} start={item.start} className={`${classes} list-decimal`}>{items}</ol>
+        : <ul key={start} className={`${classes} list-disc`}>{items}</ul>);
+      continue;
+    }
+    const heading = /^#{1,3}\s+(.*)$/.exec(line);
     const boldOnly = /^\s*\*\*(.+?)\*\*\s*$/.exec(line);
-    const section = /^#{2,3}\s+(.*)$/.exec(line);
-    if (section) {
-      nodes.push(<h3 key={i} className="mt-6 border-b pb-2 text-base font-semibold leading-6 text-foreground text-balance first:mt-0">{inline(section[1])}</h3>);
-      continue;
-    }
-    const heading = boldOnly;
     if (heading) {
-      nodes.push(
-        <p
-          key={i}
-          className="mt-3 text-xs font-semibold leading-5 text-foreground/80 first:mt-0"
-        >
-          {inline(heading[1])}
-        </p>,
-      );
-      continue;
+      nodes.push(<h3 key={i} className="mt-6 border-b pb-2 text-base font-semibold leading-6 text-foreground text-balance first:mt-0">{inline(heading[1])}</h3>);
+    } else if (boldOnly) {
+      nodes.push(<p key={i} className="mt-3 text-xs font-semibold leading-5 text-foreground/80 first:mt-0">{inline(boldOnly[1])}</p>);
+    } else if (line.trim()) {
+      nodes.push(<p key={i}>{inline(line)}</p>);
     }
-    // 하위 항목은 앞 항목의 예시라 한 단계 더 들여쓴다
-    const child = /^\s*·\s+(.*)$/.exec(line);
-    if (child) {
-      nodes.push(
-        <p key={i} className="ml-5 text-muted-foreground before:mr-1 before:content-['·']">
-          {inline(child[1])}
-        </p>,
-      );
-      continue;
-    }
-    const bullet = /^\s*[-*]\s+(.*)$/.exec(line);
-    if (bullet) {
-      nodes.push(
-        <p key={i} className="ml-1 before:mr-1 before:content-['–']">
-          {inline(bullet[1])}
-        </p>,
-      );
-      continue;
-    }
-    if (!line.trim()) continue;
-    nodes.push(
-      <p key={i} className="mt-1 first:mt-0">
-        {inline(line)}
-      </p>,
-    );
   }
-
-  return <div className="space-y-0.5 break-words">{nodes}</div>;
+  return <div className="space-y-2 break-words">{nodes}</div>;
 }

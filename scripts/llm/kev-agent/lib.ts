@@ -9,6 +9,7 @@ import * as path from "node:path";
 import type { ChampionCard } from "../../../src/lib/knowledge/facts";
 import { indexRules, type RuleNotes } from "../../../src/lib/knowledge/rules";
 import { championAliases, collectEffectTags, type AdvisorData } from "../../../src/lib/advisor/context";
+import { abilityIndex, type AbilityBundle } from "../../../src/lib/advisor/mechanics/types";
 import { encodeJudgeRow, JUDGE_SPECIAL, readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "../../../src/lib/advisor/judge";
 import { AutoTokenizer, type PreTrainedTokenizer } from "@huggingface/transformers";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
@@ -51,6 +52,8 @@ export function loadData(lang: Lang): AdvisorData {
     tips: knowledge.tips,
     ruleIndex: indexRules(knowledge.rules ?? []),
     mechanics: knowledge.mechanics ?? [],
+    abilityRules: abilityIndex(fs.existsSync(path.join(DATA, "llm/champion-mechanics.json"))
+      ? read<AbilityBundle>(path.join(DATA, "llm/champion-mechanics.json")) : undefined, PATCH),
     effectTags: collectEffectTags(cards),
     items: read<{ items: unknown[] }>(path.join(DATA, `items-normalized-${lang}.json`)).items,
     runes: read<{ runes: unknown[] }>(path.join(DATA, `runes-normalized-${lang}.json`)).runes,
@@ -111,7 +114,7 @@ export function hiddenJudge(url: string): Judge {
   };
 }
 
-/** 같은 질문을 kev 서버에 묻는다(헤드 이름은 무시 — kev 는 헤드 하나로 모든 질문을 받는다). */
+/** 같은 질문을 System One 서버에 묻는다(헤드 이름은 무시 — 서버가 모든 질문을 받는다). */
 export function kevJudge(url: string): Judge {
   const cache = new Map<string, number[][]>();
   return async (_head, state, questions) => {
@@ -123,7 +126,7 @@ export function kevJudge(url: string): Judge {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         // Jeff(Jev 형식 서버)는 model 을 요구한다. kev 서버는 모르는 칸을 무시한다.
-        model: "jeff-latest",
+        model: process.env.JUDGE_MODEL ?? "jeff-latest",
         state,
         questions: Object.fromEntries(
           questions.map((q, i) => [`q${i}`, { type: "choice", instructions: q.instructions, criteria: Object.fromEntries(q.options.map((o) => [o.name, o.description ?? null])) }]),
@@ -147,7 +150,7 @@ export function offlineFileJudge(): Judge {
 }
 
 /** 앱 판정기와 같은 답: 질문마다 선택지 확률 */
-/** JUDGE_URL 을 주면 앱 판정기 자리에 kev 서버를 끼운다(B 의 판정기로 A 를 다시 잴 때). */
+/** JUDGE_URL 을 주면 앱 판정기 자리에 System One 서버를 끼운다. Ollama 는 JUDGE_MODEL 로 모델을 지정한다. */
 /** HIDDEN_JUDGE 를 주면 앱 그래프·앱 헤드 그대로(`hiddenJudge`) 잰다. */
 /** JUDGE=offline 이면 모델 없이 오프라인 판정기(`offlineFileJudge`)로 잰다 — 서버가 필요 없다. */
 const judgeOverride =

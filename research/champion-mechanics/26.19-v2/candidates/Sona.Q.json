@@ -1,0 +1,332 @@
+{
+  "summary": "주변에서 가장 가까운 적 둘에게 마법 피해를 줍니다. 챔피언을 우선 대상으로 하며, 적중한 챔피언마다 아첼레란도 중첩을 얻습니다. 시전 뒤 새 멜로디를 시작하고, 오라를 받은 아군 챔피언은 제한 시간 안의 다음 공격에 추가 마법 피해를 줍니다. 스타카토 파워 코드는 파워 코드 추가 피해량을 대체합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "가장 가까운 적 둘에게 마법 피해를 줍니다. 챔피언을 우선 대상으로 합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sona deals (50/85/120/155/190 + (40% Ability Power)) magic damage to the nearest two enemies, prioritizing champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬로 실제 피해를 입은 챔피언"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이 스킬로 피해를 입힌 챔피언마다 아첼레란도 중첩을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Gain a stack of Accelerando for every champion you damage with this."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "소나가 새 멜로디를 시작하고 해당 시간 동안 오라를 얻는다. 오라에 닿은 아군 챔피언은 다음 공격 추가 피해 강화 효과를 받는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Melody: Sona gains an aura for 3 seconds, granting allied champions an additional (10/15/20/25/30 + (10% Ability Power)) magic damage on their next Attack within 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "소나 Q 오라에 닿아 받은 강화를 소비하는 다음 기본 공격"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n14"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "오라를 받은 아군 챔피언의 다음 공격은 적에게 추가 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "granting allied champions an additional (10/15/20/25/30 + (10% Ability Power)) magic damage on their next Attack within 5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Melody: Sona gains an aura for 3 seconds, granting allied champions an additional (10/15/20/25/30 + (10% Ability Power)) magic damage on their next Attack within 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스타카토로 강화된 파워 코드 다음 기본 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "스타카토가 파워 코드 추가 피해를 대체합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Power Chord - Staccato: Power Chord bonus damage (((30 ~ 360) + (30% Ability Power)) total magic damage)."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "Q의 두 번째 적중 대상 선정에서 챔피언 우선순위가 동률일 때의 세부 우선순위는 원문에 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "the nearest two enemies, prioritizing champions."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "스타카토 문장이 Q 본문에 있지만 기본 파워 코드 발동 횟수 조건과의 연결은 툴팁에 직접 적혀 있지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Power Chord - Staccato: Power Chord bonus damage (((30 ~ 360) + (30% Ability Power)) total magic damage)."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "요약은 챔피언과 몬스터 우선이라 하지만 본문은 챔피언 우선이라고만 구체적으로 제한한다. 본문 우선순위를 사용했다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "prioritizing champions and monsters."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "prioritizing champions."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "id": "Nocturne.W",
+  "sourceHash": "af93454be013aa2be437f0d19b9b16aa56fd163293ed31914dba4d34fcabed0c",
+  "beforeCandidateHash": "28453d1fd864c595dd2216bfe75166168fc28d5c5453d18aaf1a43c45b3999cd",
+  "candidateHash": "e60866afd8675046575d2178c6708648c3a1ce2337711f06d6b3ce1bf06851c3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "패시브공속30~50%,1.5초다음적스킬1회장벽,성공시대신60~100%공속5초,궁비행중장벽유지 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 기본 지속 효과로 공격 속도가 증가합니다.; 수치 amount en:body:n0=30(백분율),en:body:n1=35(백분율),en:body:n2=40(백분율),en:body:n3=45(백분율),en:body:n4=50%(백분율) 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 적의 다음 스킬을 막는 그림자 장벽을 만듭니다.; 수치 duration_seconds en:body:n5=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.other eq 이 스킬의 그림자 장벽으로 적의 다음 스킬을 방어한 사건; caster: 적 스킬을 막으면 일정 시간 기본 지속 효과의 공격 속도 증가량이 강화됩니다.; 수치 amount en:body:n6=60(백분율),en:body:n7=70(백분율),en:body:n8=80(백분율),en:body:n9=90(백분율),en:body:n10=100%(백분율) 상수 rank_values / duration_seconds en:body:n11=5 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 피해망상 비행 중; caster: 피해망상 비행 중에도 이 스킬은 활성 상태를 유지합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "조건주체unknown·form any를실제차단/비행상황으로명시하고공속대체표시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Nocturne gains 30/35/40/45/50% Attack Speed. Active: Nocturne creates a shadow barrier for 1.5 seconds that blocks the next enemy Ability. If an Ability is blocked, this Ability's passive effect is increased to 60/70/80/90/100% Attack Speed for 5 seconds. This Ability will remain active during Paranoia's flight."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 352,
+      "verdict": "documented_gap",
+      "reason": "스킬차단성공의전용이벤트가없어other/text조건;이미unresolved_condition에비실행조건한계기록."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "장벽이 적 스킬을 방어한 사건을 trigger 이벤트의 허용값으로 정확히 표현할 수 없다. 원문의 방어 성공 조건은 text 조건으로 보존했다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "피해망상 비행 중 스킬이 활성 상태를 유지한다는 상황을 허용된 조건 필드로 정확히 나타낼 수 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

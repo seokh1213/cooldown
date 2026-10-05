@@ -1,0 +1,123 @@
+{
+  "id": "Viktor.P",
+  "sourceHash": "542e50b0ad2cbe8f9dce0617931b2b1c305253a6953a44ecae1c2d44fd797d04",
+  "beforeCandidateHash": "4d386c63af779ae93a35ded9c709bce855b5e91d108aeb85e6b5b47c31e1055d",
+  "candidateHash": "b15989fdfe780afdb8ec6efcbd7bb696e1be8a4b26dd20c5423aa83f6ddaa4d8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "일반미니언1·공성10·챔피언처치관여20파편,100개획득마다영구스킬증강,모든기본증강후추가100개로궁극기증강 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: kill 사건의 행위자 caster; 조건 별도 제한 없음; caster: 적 처치는 마공학 파편을 주며 대상별 구체 수량은 아래 별도 규칙에 기록합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: kill 사건의 행위자 caster; 조건 target.target_type eq minion / target.other eq 공성 미니언이 아닌 일반 미니언; caster: 빅토르가 미니언 처치 시 마공학 파편을 얻습니다.; 수치 amount en:body:n1=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: kill 사건의 행위자 caster; 조건 target.target_type eq minion / target.other eq 공성 미니언; caster: 빅토르가 공성 미니언 처치 시 마공학 파편을 얻습니다.; 수치 amount en:body:n2=10 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: takedown 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 빅토르가 챔피언 처치 관여 시 마공학 파편을 얻습니다.; 수치 amount en:body:n3=20 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.resource eq 다음 스킬 증강에 필요한 마공학 파편100개 획득 / caster.other eq 기본 스킬 증강 선택; 궁극기는 기본 스킬 모두 증강 후 가능; caster: 마공학 파편을 모을 때마다 사용 스킬 하나가 영구적으로 업그레이드됩니다.; 수치 ratio_input en:body:n0=100 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.resource eq 다음 스킬 증강에 필요한 마공학 파편100개 획득 / caster.other eq 기본 스킬을 모두 업그레이드함; caster: 기본 스킬을 모두 업그레이드한 뒤 마공학 파편을 모으면 궁극기를 업그레이드할 수 있습니다.; 수치 ratio_input en:summary:n1=100 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "처치행위자/공성조건·중복파편획득·보유량을획득사건으로혼동·스킬증강효과분류 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Viktor gains Hex Fragments whenever he kills an enemy. Every 100 Hex Fragments Viktor obtains will permanently upgrade an active Ability. After upgrading all of his basic Abilities, Viktor can upgrade his Ultimate Ability. Killing minions grants 1 Hex Fragment. Killing cannon minions grants 10 Hex Fragments. Champion takedowns grant 20 Hex Fragments."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 621,
+      "verdict": "repaired",
+      "reason": "공성미니언 조건 명시하고 일반미니언과 구분."
+    },
+    {
+      "index": 622,
+      "verdict": "repaired",
+      "reason": "보유100이상 반복전제 대신 다음증강에필요한100개획득 사건으로 보존."
+    },
+    {
+      "index": 623,
+      "verdict": "false_positive",
+      "reason": "기존 rule5 조건에 resource gte en:summary:n1=100이 이미 존재; 다만 효과의100은 입력요구량 역할로 정리."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "id": "Ryze.R",
+  "sourceHash": "2ef52a9f0b9b629f761ba9d87ad02ee9c6205d3de6a006d09a1d95a78c607b20",
+  "beforeCandidateHash": "88df21b60ab66a3951cb9eee41d951f8c02f2fc422e67821eaa9cd37d060b645",
+  "candidateHash": "84d1c95cf0175ece395ef186bcdad3939e90fe2b35722218c90670ac92c3c0b2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "Flux대상Q증가율40/65/90%, 차원문2초뒤근처모든아군순간이동/라이즈이동불가또는스킬사용불가시취소 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.mark present Flux / caster.activation eq 과부하 피해 적용; target: 전이(Flux) 대상의 과부하 피해 증가율을40/65/90%로 높입니다. 과부하 기본피해에 이 증가분을 적용하며 이 퍼센트를 별도의 절대피해로 합산하지 않습니다.; 수치 other en:body:n0=40(백분율),en:body:n1=65(백분율),en:body:n2=90%(백분율) 상수 formula_components; flags replaces_base"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 다른 위치로 이어지는 차원문을 연다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: expiry 사건의 행위자 caster; 조건 ally.distance lte 차원문 근처 / caster.time eq 차원문을 연 뒤2초 / caster.activation eq 차원문이 취소되지 않고 유지됨; ally: 차원문 근처의 모든 아군을 해당 위치로 순간이동시킨다. 차원문을 연 뒤 2초가 지나면 순간이동한다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.other eq 이동 불가 또는 스킬 사용 불가 상태가 됨; caster: 차원문을 취소한다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "R의Q증가율을독립마법피해로 오해한 규칙 교정·2초/취소상태 조건 연결",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Overload damage bonus against targets with Flux increased to 40/65/90%. Active: Ryze opens a portal to another location. After 2 seconds, all allies near the portal are teleported to that location. If Ryze becomes Immobilized or Disabled, the portal is cancelled."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "차원문 근처로 판정되는 거리 범위는 명시되지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

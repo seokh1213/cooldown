@@ -1,0 +1,94 @@
+{
+  "summary": "매 4번째 기본 공격에서 두 번째 공격을 추가로 가하며, 두 번째 공격은 공격력에 비례한 물리 피해를 입힌다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_followup",
+          "subject": "target",
+          "text": "기본 공격의 두 번째 공격을 가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 4th Attack, Master Yi strikes twice."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "두 번째 공격이 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The second Attack deals (50% Attack Damage) physical damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Every 4th Attack, Master Yi strikes twice."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

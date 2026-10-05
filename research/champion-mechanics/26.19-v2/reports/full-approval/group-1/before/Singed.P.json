@@ -1,0 +1,71 @@
+{
+  "summary": "신지드가 근처 아군 또는 적 챔피언을 지나치면 이동 속도가 증가하며, 효과는 챔피언별 재사용 대기시간이 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "신지드가 근처 아군 또는 적 챔피언을 지나치면 이동 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Singed drafts off of nearby allied or enemy champions, gaining 25% Move Speed for 2 seconds. This effect has an 8 second Cooldown per champion."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

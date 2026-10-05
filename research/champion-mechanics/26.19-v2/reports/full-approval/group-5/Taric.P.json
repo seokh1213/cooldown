@@ -1,0 +1,192 @@
+{
+  "id": "Taric.P",
+  "sourceHash": "94f879ee83d90d6dbffb4c61952730cac03d07906b3bbf18a1cf4afac878bdbe",
+  "beforeCandidateHash": "0fe1e53ac7e73adbaf371788509de1993ba13e77e4ef639ee6483d7f92377d5e",
+  "candidateHash": "57545ab39917444b8d4b3586a339ad3389bc5d598d85a55cef3f6ba108e2e45e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "양언어 본문·요약의 시전 후 다음 2회/5초, 공격 속도 증가·추가 마법 피해·기본 스킬 재사용 감소를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전 후 다음 2회/5초의 공격 강화이며 UI 알림이 아니다. count 2·duration 5의 참조를 확인했다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "담대함 공격에 공격 속도 보너스100%, 마법 피해25~93+추가 방어력15%, 기본 스킬 CD1초 감소가 각각 적용된다. 공격 속도100%는 기존 공격 속도에 곱하는 독립 피해 계수가 아니며 횟수는 다음 두 기본 공격이다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "스킬 사용 후 5초 안에 하는 다음 2회 담대함 기본 공격"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": "attackSpeed",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "93",
+              "value": 93,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusArmor",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "15%",
+              "value": 15,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules",
+      "issue": "공격 강화의 UI 분류·AS 스탯 누락·피해 범위의 레벨 단정·CD 시간 역할 오류",
+      "correction": "공격 강화와 스탯 계수·CD 초 역할을 정정하고 25~93 기준 부족을 기록했다.",
+      "sourceId": "en:body",
+      "quote": "After using an Ability, Taric's next 2 Attacks within 5 seconds gain 100% Attack Speed, deal an additional ((25 ~ 93) + (15% bonus Armor)) magic damage, and reduce his basic Ability Cooldowns by 1 second."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "25~93의 변화 기준은 본문에 명시되지 않아 레벨별 보간을 확정하지 않습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

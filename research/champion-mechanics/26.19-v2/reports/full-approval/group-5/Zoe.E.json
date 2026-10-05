@@ -1,0 +1,504 @@
+{
+  "id": "Zoe.E",
+  "sourceHash": "c90c0167bba27748f3a429fee417486e95e4ead1594246cb68ed543edac26b2d",
+  "beforeCandidateHash": "84387d82ecedd841872b71e4561d331765b0bf09bdbab62a8a528416932b8be3",
+  "candidateHash": "15ebabe25b55f26c4d8842ee7bf705235981fdce673c3ad1d3cce5c66239a178",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "방울/덫·지형사거리·챔피언CD환급·졸음slow/수면2초/MR30%감소·첫기상피해double과true상한을대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적중70/110/150/190/230+45%AP magic.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "190",
+              "value": 190,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "230",
+              "value": 230,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "45%",
+              "value": 45,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아무것도맞히지않은방울만덫으로남음.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "방울이 아무것도 맞히지 않음"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "방울/덫이적챔피언맞힐때E대기시간16/19.5/23/26.5/30%환급.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "방울 또는 덫이 적중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "16",
+              "value": 16,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "19.5",
+              "value": 19.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "23",
+              "value": 23,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "26.5",
+              "value": 26.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "졸음상태와실제점증slow를분리. max10/15/20/25/30%는slow상한이다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "방울 적중 후 수면 전"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n19",
+            "en:body:n20",
+            "en:body:n21",
+            "en:body:n22",
+            "en:body:n23"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n19",
+              "raw": "10",
+              "value": 10,
+              "percent": true
+            },
+            {
+              "id": "en:body:n20",
+              "raw": "15",
+              "value": 15,
+              "percent": true
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n22",
+              "raw": "25",
+              "value": 25,
+              "percent": true
+            },
+            {
+              "id": "en:body:n23",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "지연후sleep2초와MR30%감소2초.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "졸음 지연 후 수면에 듦"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": "magicResist",
+          "statSubject": "target",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫기상공격/스킬의두배피해와true상한70/110/150/190/230+45%AP. cap수치를damage_multiplier로읽으면안됨. 원문산출범위한계유지.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "대상은 수면 중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n13",
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n14",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "190",
+              "value": 190,
+              "percent": false
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "230",
+              "value": 230,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n18"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n18",
+              "raw": "45%",
+              "value": 45,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "지형을날아넘는방울사거리증가를복원.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이E 방울이 지형을 넘어감"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.5-6",
+      "issue": "truecap수치를damage_multiplier로기록·지형사거리효과누락.",
+      "correction": "cap/계수역할과원문두배보정other·사거리복원.",
+      "sourceId": "en:body",
+      "quote": "Attacks and Ability hits wake them up but deal double damage, up to (70/110/150/190/230 + (45% Ability Power)) true damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "수면 중 공격/스킬 적중 시 두 배가 적용되는 피해의 산출 기준과 고정 피해 상한 적용 방식이 원문만으로 완전히 특정되지 않습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "졸음에서수면까지의delay초와덫지속초는공급되지않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

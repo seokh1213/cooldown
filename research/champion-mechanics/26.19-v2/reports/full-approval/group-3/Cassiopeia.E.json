@@ -1,0 +1,139 @@
+{
+  "id": "Cassiopeia.E",
+  "sourceHash": "93aac469eb3beedd4e35b757031e1e200e11c671934a159a11029ade43dc0a1d",
+  "beforeCandidateHash": "80f2b5684f1e3fd5da00584a442d01fd3c1ea34097318766163f7b52ecb55245",
+  "candidateHash": "65029b39aa06254a2cd9e2d70ab678fe6fcf886412e8d6a7725a3151b21e077c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "기본50~120+AP20%마법피해,중독대상추가20/45/70/95/120+AP45%,중독대상일반회복AP10/11.5/13/14.5/16%/공격로미니언또는작은몬스터대체AP2.5/2.875/3.25/3.625/4%,이E킬40마나회복을대조했다. 요약피해비례회복과본문AP비례회복충돌을기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → target: 대상에게 마법 피해를 입힙니다. [magic] / amount=50/120 [level_range]; stat_coefficient=20% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target mark present Poisoned → target: 중독된 대상에게 추가 마법 피해를 입힙니다. [magic] / amount=20/45/70/95/120 [rank_values]; stat_coefficient=45% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target mark present Poisoned; target other eq 공격로미니언또는작은몬스터 → caster: 중독된공격로미니언또는작은몬스터에게이E적중시일반회복대신자신의주문력2.5/2.875/3.25/3.625/4%만큼체력을회복합니다. / stat_coefficient=2.5/2.875/3.25/3.625/4% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target mark present Poisoned; target other eq 공격로미니언도작은몬스터도아닌적 → caster: 중독된대상이공격로미니언도작은몬스터도아니면자신의주문력10/11.5/13/14.5/16%만큼체력을회복합니다. / stat_coefficient=10/11.5/13/14.5/16% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 kill / 조건 caster other eq 이E의피해로해당대상을처치했을때 → caster: 이E로대상을처치하면마나40을회복합니다. / amount=40 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-3",
+      "issue": "heal이healthRegen+AP계수두개로중복기록되고일반/감소회복이중복되며작은몬스터분기가누락됐다.",
+      "correction": "순수AP비율회복으로수정하고공격로미니언또는작은몬스터/그외중독대상분기를상호배타로보존했다.",
+      "sourceId": "en:body",
+      "quote": "reduced to (2.5/2.875/3.25/3.625/4% Ability Power) Health against lane minions and small monsters."
+    },
+    {
+      "path": "rules.4/gaps",
+      "issue": "원문40마나회복을조건필드없음gap으로숨겨전체핵심효과가누락됐다.",
+      "correction": "kill사건과이E킬조건으로40마나회복을복구하고falsegap을제거했다.",
+      "sourceId": "en:body",
+      "quote": "If this kills the target, Cassiopeia restores 40 Mana."
+    },
+    {
+      "path": "rules.0/gaps",
+      "issue": "50~120레벨기본피해범위가분할되고회복출처충돌/랭크%한계가누락됐다.",
+      "correction": "기본범위를묶고실제출처충돌및숫자표한계를기록했다.",
+      "sourceId": "en:body",
+      "quote": "((50 ~ 120) + (20% Ability Power))"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 40,
+      "verdict": "repaired",
+      "reason": "중독된공격로미니언또는작은몬스터OR조건으로복구하고일반회복에서두범위를제외했다."
+    },
+    {
+      "index": 41,
+      "verdict": "repaired",
+      "reason": "healthRegen amount중복을삭제하고일반회복에caster AP랭크별%계수만남겼다."
+    },
+    {
+      "index": 42,
+      "verdict": "repaired",
+      "reason": "감소회복의healthRegen amount중복을삭제하고caster AP랭크별%계수만남겼다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "lane minion과small monster전용enum이없어공격로미니언또는작은몬스터라는정확한OR조건을텍스트보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "요약은피해량비례회복처럼서술하지만en/ko본문은중독대상적중시AP기준랭크별회복을명시한다.더구체적인본문의중독/AP회복분기를보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "10/11.5/13/14.5/16%와2.5/2.875/3.25/3.625/4%는모든랭크AP비율인데frozen숫자표는각마지막만percent=true이다.전체랭크%단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

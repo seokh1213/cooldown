@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Seraphine.E",
+      "sourceHash": "b9e4fb2fde8d52ee19bea83fe5d13558c0b5dfa4914d8562737f2fe502246f9a",
+      "candidateHash": "7ea6ece804a45f5df85d7e1565f93878f67a3c92b5e5faaa32c76904f4d2e999"
+    },
+    {
+      "id": "Seraphine.P",
+      "sourceHash": "e8cb4cf422e694867cec1173dac286ae6a472993f584bb5cf4d40041bcf03546",
+      "candidateHash": "b8b760c326a71d465fe3a0aa2be95126fb50ac2db06f2ec36bd5139579c469ff"
+    },
+    {
+      "id": "Seraphine.Q",
+      "sourceHash": "873ccf16ed3f526c57fcf372a9f8bb1625068c4b7bec878c46c751c7b0e62bfd",
+      "candidateHash": "1d4d2a1f2d636c884f677ef89170f174858333ce742fad28403332bc6eb369d7"
+    },
+    {
+      "id": "Seraphine.R",
+      "sourceHash": "26c62cd64e5e76a7cca10c20e0b30c8c5e7f3a9ca6cfd5dd830b10c83be0f3c8",
+      "candidateHash": "460b6e260162ef89bbcac4277d6b6d301a0d541e89006006d9d2aa47bca9f80f"
+    },
+    {
+      "id": "Seraphine.W",
+      "sourceHash": "a0c06380b0172e8d1637eb503ea08e5b83a2d4aa9b3f665fe2329f13b0581c7f",
+      "candidateHash": "b823995f7979743278bea049e03d4e81a636e0fd9c3fd077ecf9320d6ef92bed"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Seraphine.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every third basic Ability Seraphine casts will echo, automatically casting a second time.",
+      "issue": "조건이 “세 번째 기본 스킬” 자체에만 걸려 세 번째마다 발동한다는 반복 주기가 빠졌습니다. 현재 표현은 특정 세 번째 시전에만 해당하는 것으로 읽힙니다.",
+      "correction": "조건을 기본 스킬 시전 횟수가 세 번째일 때마다 발동하도록 표현하세요."
+    },
+    {
+      "id": "Seraphine.R",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Any champions struck (including allies) become part of the performance, extending the range of this Ability.",
+      "issue": "챔피언 적중 조건으로 피해 효과를 제한해 비챔피언 적중 시 피해가 없다고 표현합니다. 원문은 피해를 챔피언으로 한정하지 않습니다.",
+      "correction": "피해 효과에서 챔피언 조건을 제거하고, 피해 대상 범위가 불명확하면 대상 범위는 텍스트로 유지하거나 미정으로 두세요."
+    },
+    {
+      "id": "Seraphine.W",
+      "path": "rules.0.effects.0.parameters.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "granting them (8% + (0.8% per 100 Ability Power)) Move Speed, herself (20% + (2% per 100 Ability Power)) decaying Move Speed and both (60/80/100/120/140 + (20% Ability Power)) Shield for 2.5 seconds.",
+      "issue": "아군 이동 속도 증가에 보호막의 2.5초 지속시간을 붙였습니다. 원문은 2.5초를 보호막에만 명시하고 이동 속도 지속시간은 밝히지 않습니다.",
+      "correction": "이동 속도 효과에서 duration_seconds를 제거하고, 보호막 효과에만 2.5초를 유지하세요."
+    },
+    {
+      "id": "Seraphine.W",
+      "path": "rules.3.effects.0.parameters.0.numbers.4",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "restoring 8/10/12/14/16% missing Health to them after a 2.5 second delay.",
+      "issue": "마지막 회복값의 raw 값이 16%인데, 인식된 수치 값은 16으로 percent 표시만으로 처리되어 단위 추출이 다른 값들과 일치하지 않습니다.",
+      "correction": "마지막 항목도 16%로 인식해 나머지 회복 비율 값과 같은 단위를 유지하세요."
+    }
+  ],
+  "notes": []
+}

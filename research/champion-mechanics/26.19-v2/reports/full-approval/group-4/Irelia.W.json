@@ -1,0 +1,133 @@
+{
+  "id": "Irelia.W",
+  "sourceHash": "ea86a3c0f5956adab343f02f3971e6fffe98d14f29b7bfb0cc05018cd29f97f3",
+  "beforeCandidateHash": "12ed30fdae33f178b43644e06282819070ed8e7023609d78750f431510ddf6e8",
+  "candidateHash": "f8159286624f7fd3a7ad1795f1e94552a36a33445ed888f24a46cac1689b71a0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "최대1.5초 방어 태세/행동 불가, 물리·마법 피해 감소 두 식, 발사 기본~최대 피해, 0.75초 최대치 도달, 충전 종료 자동 발사/중단 불가를 대조했다. 피해 감소 단위는 공급 원문이 명시하지 않는다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 최대 해당 시간까지 방어 태세를 유지하며 행동할 수 없다.; duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq 충전 중 적용. caster: 충전 중 받는 물리 피해를 줄입니다.; min_amount=40  formula_components, max_amount=70  formula_components, stat_coefficient=8% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq 충전 중 적용. caster: 충전 중 받는 마법 피해를 줄입니다.; min_amount=20  formula_components, max_amount=35  formula_components, stat_coefficient=4% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 충전 후 발사됨 적용. target: 검을 날려 물리 피해를 입힙니다. 피해는 충전 시간에 따라 기본 피해에서 최대 피해까지 증가합니다. (physical); min_amount=10/20/30/40/50  formula_components, stat_coefficient=40% caster의 totalAttackDamage formula_components, stat_coefficient=50% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.time gte 0.75, caster.activation eq 충전 후 발사됨 적용. target: 해당 충전 시간에 최대치에 도달한 전체 물리 피해를 입힌다. 기본 피해와 별도로 합산되는 추가 타격이 아니다. (physical); amount=30/60/90/120/150  rank_values, stat_coefficient=120% caster의 totalAttackDamage scalar, stat_coefficient=150% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 별도 조건 없이 적용. caster: 충전 시간이 끝나면 발사가 자동으로 일어나며 중단할 수 없습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,2",
+      "issue": "피해 감소 적용 충전 조건과 결과 단위 미확정",
+      "correction": "충전 조건과 formula_components/단위 gap 보완",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Irelia enters a defensive stance for up to 1.5 seconds, becoming unable to act but reducing physical damage taken by ((40 ~ 70) + (8% Ability Power))and magic damage taken by ((20 ~ 35) + (4% Ability Power))."
+    },
+    {
+      "path": "rules.3,4",
+      "issue": "자동 발사를 포함하지 못하는 recast 사건 및 기본/최대 피해 중복",
+      "correction": "발사 사건 및 최대 피해 대체 관계로 정정",
+      "sourceId": "en:body",
+      "quote": "The Release will happen automatically at the end of the Charge and cannot be interrupted."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 123,
+      "verdict": "false_positive",
+      "reason": "본문 increased up to의 최대 수식은 전체 피해 수식이며 기본식에 더하는 증가분이 아니다. 최대 피해 규칙에 replaces_base와 전체 피해 설명을 보완했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "충전 시간에 따른 기본 피해와 최대 피해 사이의 증가식은 제시되지 않아 보간식을 기록하지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "받는 피해 감소 식 ((40 ~ 70) + (8% Ability Power)) 및 ((20 ~ 35) + (4% Ability Power))는 결과의 단위(고정량/백분율)를 공급 en/ko 본문 모두 명시하지 않는다. 구성요소만 보존하며 확정 계산으로 실행하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

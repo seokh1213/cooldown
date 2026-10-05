@@ -1,0 +1,93 @@
+{
+  "id": "Yone.Q",
+  "sourceHash": "acea5ba467e3526d5f048380ff39bc55ec885b2e40dd2af1e2902c5ceef1caa7",
+  "beforeCandidateHash": "6610301b1b92fb53b367ae60c56fb0f3f4e1e9541b7b837aca418f0b2ff317d1",
+  "candidateHash": "3355b11b2953d498eeffc624e2596d56854b78d692b32cbb3cda6350166caff9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 1,
+  "summaryCheck": "일직선적물리25~125+총AD110%,적중1stack6초/현재2stack 돌진knockup0.75와피해,치명0%AD원문값/첫적온힛LS/CC중단/AS시간단축을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.resource neq n7=2. target damage physical: 전방으로 찔러 물리 피해를 입힌다. [amount n0=25/n1=50/n2=75/n3=100/n4=125 rank_values; stat_coefficient n5=110% formula_components caster.totalAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. caster mark: 적중 시 중첩을 얻는다. [duration_seconds n6=6 scalar; count n7=1 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.resource eq n7=2. caster movement: 돌풍과 함께 전방으로 돌진한다. [] / target crowd_control knockup: 돌풍에 맞은 적을 공중으로 띄운다. [duration_seconds n8=0.75 scalar] / target damage physical: 돌풍으로 물리 피해를 입힌다. [amount n9=25/n10=50/n11=75/n12=100/n13=125 rank_values; stat_coefficient n14=110% formula_components caster.totalAttackDamage]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 이 스킬이 치명타로 적중. target damage physical: 이 스킬은 공격처럼 치명타를 낼 수 있으며, 치명타 피해량은 별도로 정해져 있다. [amount n15=25/n16=50/n17=75/n18=100/n19=125 rank_values; stat_coefficient n20=0% formula_components caster.totalAttackDamage] flags=replaces_base"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.hit_order eq first; caster.other eq 강철의Q가적중. target attack_modifier: 처음 맞힌 적에게 적중 시 효과와 생명력 흡수를 적용한다. []"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_cancelled; 조건 없음. caster other: 군중 제어기에 의해 중단될 수 있다. []"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster cooldown_change: 공격 속도에 따라 재사용 대기시간과 시전 시간이 줄어든다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/gaps",
+      "issue": "적중1stack을2로/중첩보유오인·치명타별도무조건피해·스킬범위누락",
+      "correction": "ko1참조/resource2,기본/강화분기및치명조건대체,Q온힛조건과actor",
+      "sourceId": "en:body",
+      "quote": "On hit, grants a stack for 6 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 667,
+      "verdict": "repaired",
+      "reason": "2는현재중첩보유량이지적중횟수가아니다.resource eq2로수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "치명타공격력계수가0%로공급되어있다.본문수치를그대로보존하며다른치명계수를배경지식으로추정하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

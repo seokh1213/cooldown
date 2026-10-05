@@ -1,0 +1,182 @@
+{
+  "id": "Karthus.R",
+  "sourceHash": "3c1774666eb83948b27f477fe19a8af4e41f19c0989ee4879e9bfee814f15371",
+  "beforeCandidateHash": "0d9d71368feabb8ab01aa8dd97454c2e986de69062e4de6ed4cbfe819234d270",
+  "candidateHash": "6ca683710ca0bf5f14e60dcc561f455f2ccffcf53e49da8a1e478eb174d0d817",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "3초정신집중후모든적챔피언에거리무관200/350/500+AP70%마법피해.시전즉시피해/임의3초타이머로확대하지않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster시전은3초정신집중을시작하며피해는별도후속사건."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "동일궁정신집중완료의expiry에모든적챔피언마법피해.참조AP주인은시전자이며사거리제한추측없음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions",
+      "issue": "3초expiry만으로같은궁정신집중완료가특정되지않음",
+      "correction": "이궁극기채널완료및모든적챔피언범위명시",
+      "sourceId": "en:body",
+      "quote": "Karthus channels for 3 seconds, then deals (200/350/500 + (70% Ability Power)) magic damage to enemy champions, regardless of distance."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "카서스가 3초 동안 정신 집중한 뒤 거리에 관계없이 모든 적 챔피언에게 마법 피해를 입힙니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "카서스가 피해를 입히기 전에 정신 집중을 합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Karthus channels for 3 seconds, then deals (200/350/500 + (70% Ability Power)) magic damage to enemy champions, regardless of distance."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "eq",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "이 궁극기의 3초 정신 집중이 완료됨"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "모든 적 챔피언, 거리 무관"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "정신 집중이 끝나면 모든 적 챔피언에게 거리에 관계없이 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Karthus channels for 3 seconds, then deals (200/350/500 + (70% Ability Power)) magic damage to enemy champions, regardless of distance."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

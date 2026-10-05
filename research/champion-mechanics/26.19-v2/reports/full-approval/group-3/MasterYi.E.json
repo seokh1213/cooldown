@@ -1,0 +1,54 @@
+{
+  "id": "MasterYi.E",
+  "sourceHash": "ca8f0deada9f87920ddb523ffebb5948d4aa46703dbdba9c5b38bfe460bfe052",
+  "beforeCandidateHash": "3e41b6fdccb6aeb73a719f9aceb0971ce88a99c4fbcebd7ccdb0567e217352ac",
+  "candidateHash": "4160c04f09b66fac59412d8dfc5a639ccc288f9de0a95cdef10ef9a6e6f363ee",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "5초공격추가고정피해의자기추가AD35%를직접계수로확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster time lte 5 → target: 기본 공격이 추가 고정 피해를 입힌다. [true] / amount=20/25/30/35/40 [rank_values]; stat_coefficient=35% (caster bonusAttackDamage) [formula_components]; duration_seconds=5 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster form eq Alpha Strike or Meditate active → caster: 우주류 검술의 지속시간이 일시 정지된다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.1.role",
+      "issue": "추가AD35%피해계수가ratio_input으로기록",
+      "correction": "stat_coefficient로수정",
+      "sourceId": "en:body",
+      "quote": "(35% bonus Attack Damage)"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

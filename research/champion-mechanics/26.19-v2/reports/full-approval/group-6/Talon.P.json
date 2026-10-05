@@ -1,0 +1,96 @@
+{
+  "id": "Talon.P",
+  "sourceHash": "4511d6b3efbe30407942dfad3ab1e26eb46e89533949254d92654ee1a55a478e",
+  "beforeCandidateHash": "1a9938454527e6dc62c7d6b03210912b22bfd9eefad7de6f099214c97fa25566",
+  "candidateHash": "b81387de774f9a8ad41c90deedfecf9374170eb16896ad108275db9c29de0f70",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "챔피언·대형 정글 몬스터의 6초 상처·최대 3중첩과 최대 중첩 대상 기본 공격의 2초 출혈을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언에게 스킬 피해를 주면 상처 한 중첩이 생겨 6초 유지되며 최대 3이다. count 3을 한 번의 획득량으로 넣지 않았다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 상처 조건이 대형 정글 몬스터에 별도 규칙으로 존재한다. monster와 대형 정글 몬스터 텍스트 조건을 함께 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "상처 3중첩 대상 기본 공격이 80~280 + 추가 공격력 210% 추가 물리 피해를 총 2초에 걸쳐 준다. 요약은 챔피언, 본문은 target으로 표현해 적용 범위 차이를 gap에 남겼다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.1",
+      "issue": "3은 최대 중첩이며 한 번에 부여하는 상처 수가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon's Abilities apply a stack to champions and large jungle monsters they damage for 6 seconds (max 3 stacks). When Talon Attacks a target with 3 stacks, he deals an additional ((80 ~ 280) + (210% bonus Attack Damage)) physical damage over 2 seconds."
+    },
+    {
+      "path": "rules.2.effects.0.parameters",
+      "issue": "80~280 기본 출혈 값 범위를 하나로 보존했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon's Abilities apply a stack to champions and large jungle monsters they damage for 6 seconds (max 3 stacks). When Talon Attacks a target with 3 stacks, he deals an additional ((80 ~ 280) + (210% bonus Attack Damage)) physical damage over 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 519,
+      "verdict": "false_positive",
+      "reason": "rule 1이 대형 정글 몬스터 전용 상처 규칙으로 이미 존재한다."
+    },
+    {
+      "index": 520,
+      "verdict": "false_positive",
+      "reason": "rule 1의 monster와 대형 정글 몬스터 조건은 함께 적용되어 다른 몬스터를 포함하지 않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "note": "양 요약은 3중첩 챔피언 공격의 출혈을 설명하지만 본문은 3중첩 target이라고 쓰며 챔피언으로 제한하지 않는다. 구체적인 본문의 대상 표현을 보존하고 대형 몬스터 출혈 가능 여부는 요약과 차이를 남긴다."
+    }
+  ],
+  "validation": {
+    "id": "Talon.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "id": "Ekko.W",
+  "sourceHash": "803f96acd8225277fdbd044f653022941402ca0ace557e24db3a86da635606f2",
+  "beforeCandidateHash": "e2b6d737b3cecb658a2a9556e9712eeed464a9166c60ab68d4709824d00e5fd9",
+  "candidateHash": "0b4aa615809aaf1559470c1d19c2866796a7efa0595ad68db7f5135cf6e929b2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "적체력30%미만의평타잃은체력마법피해와주문력100당계수,지연후1.5초구체·범위40%둔화,자기진입의범위2.25초기절/자기보호막,미니언/몬스터추가피해15~150을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.health_threshold lt 30% 적용. target: 대상의잃은체력에(기본3%+에코주문력100당3%)를곱한추가마법피해를입힌다. (magic); ratio_output=3%  formula_components, stat_coefficient=3% caster의 abilityPower formula_components, ratio_input=100  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 지연 후 시간의 구체를 발사합니다. 구체는 명시된 시간 동안 지속됩니다.; duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "nearby_enemies의 other 사건에서 nearby_enemies.other eq 지연 뒤 만들어진 이 스킬의 구체 안에 있는 적 적용. nearby_enemies: 구체 안의 적을 둔화시킵니다. (slow); amount=40%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 enter_area 사건에서 caster.activation eq 구체 안에 진입, nearby_enemies.other eq 에코가 진입해 폭발시킨 구체 안의 적 적용. nearby_enemies: 구체를 폭발시켜 적을 기절시킵니다. (stun); duration_seconds=2.25  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 enter_area 사건에서 caster.activation eq 구체 안에 진입 적용. caster: 보호막을 얻습니다.; amount=100/120/140/160/180  rank_values, stat_coefficient=150% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.target_type eq 미니언 또는 몬스터, target.health_threshold lt 30% 적용. target: 미니언과 몬스터에게 적용되는 추가 공격 피해의 최소값과 최대값입니다.; min_amount=15  scalar, max_amount=150  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "공격행위자와주문력100당3%계수역할누락",
+      "correction": "caster공격및시전자주문력계수/100입력보완",
+      "sourceId": "en:body",
+      "quote": "Passive: Ekko's Attacks against enemies below 30% Health deal (3% + (3% per 100 Ability Power)) missing Health magic damage."
+    },
+    {
+      "path": "rules.2,3,5",
+      "issue": "둔화/기절영역및미니언/몬스터피해상한범위불명확",
+      "correction": "실제구체내적과패시브저체력미니언/몬스터범위명시",
+      "sourceId": "en:body",
+      "quote": "Bonus Attack damage deals a min of 15 and a max of 150 damage against minions and monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 52,
+      "verdict": "repaired",
+      "reason": "기본공격행위자를caster로정정했다."
+    },
+    {
+      "index": 53,
+      "verdict": "repaired",
+      "reason": "미니언또는몬스터조건과해당저체력패시브문맥을보완했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "구체 발사의 지연 시간은 원문에서 구체적으로 제시하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "수식의관계는(3%+주문력100당3%)×잃은체력으로명시된다.계약에잃은체력스탯이없으므로복합식을구성요소와text로보존하며일반선형피해로실행하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

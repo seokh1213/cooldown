@@ -1,0 +1,487 @@
+{
+  "report": "semantic-repair-wave1",
+  "sourceReport": "semantic-review-wave1",
+  "generatedAt": "2026-10-04",
+  "hashAlgorithm": "SHA-256 of final candidate file bytes",
+  "reviewedFindingCount": 30,
+  "resolvedCount": 30,
+  "declinedCount": 0,
+  "items": [
+    {
+      "findingId": "Azir.P:ap-owner",
+      "id": "Azir.P",
+      "status": "resolved",
+      "resolution": "수정 반영: Do not assert summon AP. Use caster only if the extraction convention establishes caster-owned tooltip coefficients; otherwise use unknown and add a scope_ambiguous gap. This review does not infer the owner from outside game knowledge.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Sun Disc deals ((230 ~ 410) + (40% Ability Power)) magic damage"
+        }
+      ],
+      "candidateHash": "cf9ee3ef7cf877f3c2ccf44458cc980205629913455c991d53ae88c20d169aae"
+    },
+    {
+      "findingId": "Azir.Q:damage-as-hit-count",
+      "id": "Azir.Q",
+      "status": "resolved",
+      "resolution": "수정 반영: Remove the invented hit_count condition. Apply damage and slow to enemies the soldiers pass through; preserve no extra damage from multiple soldiers separately or in explicit text.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (75/95/115/135/155 + (35/40/45/50/55% Ability Power)) magic damage to enemies they pass through and Slowing them by 25% for 1 second."
+        }
+      ],
+      "candidateHash": "a5c0a79fa154921db97d7fa301acd7038529def1e8e2e52de1e61048bcce1be2"
+    },
+    {
+      "findingId": "Azir.W:onhit-target-restriction",
+      "id": "Azir.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Require the primary attack target and a soldier attack, without inventing a champion-only restriction.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sand Soldiers apply On-hits at 50% damage once per attack to Azir's primary target."
+        }
+      ],
+      "candidateHash": "d00f24ba98308bb8ee29601dce4f164c65868276b2eb808375c9cb18f7ce9fee"
+    },
+    {
+      "findingId": "Azir.W:charge-as-hit-count",
+      "id": "Azir.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Use a condition for subsequent soldiers striking the same target during this attack, using hit_order != first or explicit relation text rather than a charge numeral. Mark the reduced damage as replacing normal soldier damage. Add an independent ability-charge capacity rule.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sand Soldiers that strike the same targets deal 25% damage after the first."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability has 2 charges."
+        }
+      ],
+      "candidateHash": "d00f24ba98308bb8ee29601dce4f164c65868276b2eb808375c9cb18f7ce9fee"
+    },
+    {
+      "findingId": "Azir.W:target-relation-field",
+      "id": "Azir.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Preserve explicit text conditions: same target as the earlier soldier in this attack; or not Azir's primary attack target. Use field other if no dedicated relationship field fits. Narrow the gap to unknown interpolation, not the clearly named reference target.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sand Soldiers deal (20% ~ 100%)damage to enemies that are not Azir's Attack target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sand Soldiers that strike the same targets deal 25% damage after the first."
+        }
+      ],
+      "candidateHash": "d00f24ba98308bb8ee29601dce4f164c65868276b2eb808375c9cb18f7ce9fee"
+    },
+    {
+      "findingId": "Azir.W:secondary-damage-ratio",
+      "id": "Azir.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Use damage_multiplier with both endpoints and shape level_range, retaining replaces_base. Do not infer intermediate percentages or encode the percentage endpoints as absolute damage.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sand Soldiers deal (20% ~ 100%)damage to enemies that are not Azir's Attack target."
+        }
+      ],
+      "candidateHash": "d00f24ba98308bb8ee29601dce4f164c65868276b2eb808375c9cb18f7ce9fee"
+    },
+    {
+      "findingId": "Azir.W:proximity-actor",
+      "id": "Azir.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Make summon the subject of the proximity condition and keep the enemy turret as the relation target in text.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sand Soldiers expire twice as fast when near an enemy turret."
+        }
+      ],
+      "candidateHash": "d00f24ba98308bb8ee29601dce4f164c65868276b2eb808375c9cb18f7ce9fee"
+    },
+    {
+      "findingId": "Azir.W:attack-replacement-omitted",
+      "id": "Azir.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Preserve the replacement in effect text or an attack_modifier effect. Do not imply the soldier damage is an extra normal Azir attack.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "replacing his basic attack against targets within the soldier's range"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "When Azir Attacks an enemy near a Sand Soldier, he instead orders the soldiers to stab"
+        }
+      ],
+      "candidateHash": "d00f24ba98308bb8ee29601dce4f164c65868276b2eb808375c9cb18f7ce9fee"
+    },
+    {
+      "findingId": "Bard.P:meep-consumption-omitted",
+      "id": "Bard.P",
+      "status": "resolved",
+      "resolution": "수정 반영: Add a resource_change effect or explicit consumption text for the same attack; apply it once to the attack, not once per affected enemy.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard's Attacks consume a Meep to deal an additional"
+        }
+      ],
+      "candidateHash": "55641d8fd9d42f56167fa24762a340cf7327107948cb01137de12d8bb6ecc97b"
+    },
+    {
+      "findingId": "Bard.P:locale-timer-conflict",
+      "id": "Bard.P",
+      "status": "resolved",
+      "resolution": "수정 반영: Keep the English duration interpretation and add source_conflict with both exact excerpts. Do not change the effect to a 20-second waiting requirement.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "gaining 24% Move Speed (stacking up to 10 times) while out of combat for 20 seconds"
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "20초 동안 전투에서 벗어나 있으면 이동 속도가 24% 증가합니다."
+        }
+      ],
+      "candidateHash": "55641d8fd9d42f56167fa24762a340cf7327107948cb01137de12d8bb6ecc97b"
+    },
+    {
+      "findingId": "Bard.P:enough-strict-threshold",
+      "id": "Bard.P",
+      "status": "resolved",
+      "resolution": "수정 반영: Use a text condition for having collected enough Chimes, or gte against the unresolved required threshold. Retain the unresolved-number/condition gap.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "When Bard has collected enough Chimes"
+        }
+      ],
+      "candidateHash": "55641d8fd9d42f56167fa24762a340cf7327107948cb01137de12d8bb6ecc97b"
+    },
+    {
+      "findingId": "Bard.P:random-chimes-omitted",
+      "id": "Bard.P",
+      "status": "resolved",
+      "resolution": "수정 반영: Preserve random Chime appearance around the map as text in a passive summon/other effect without inventing a spawn schedule or locations.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard attracts Chimes randomly around the map."
+        }
+      ],
+      "candidateHash": "55641d8fd9d42f56167fa24762a340cf7327107948cb01137de12d8bb6ecc97b"
+    },
+    {
+      "findingId": "Bard.Q:first-two-targets",
+      "id": "Bard.Q",
+      "status": "resolved",
+      "resolution": "수정 반영: Represent first and second enemy targets explicitly, using hit order text or separate first/second target rules. Remove target hit_count as a substitute for projectile target order.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "magic damage to the first two enemies hit."
+        }
+      ],
+      "candidateHash": "9eea569e9e0ba4474c671adc46149f9c8c0d92d2729dc1907e31182b064ebf59"
+    },
+    {
+      "findingId": "Bard.Q:second-enemy-not-second-hit",
+      "id": "Bard.Q",
+      "status": "resolved",
+      "resolution": "수정 반영: Require the bolt to hit another enemy after the first and identify the first and second enemies as stun recipients. Preserve the rank-based duration.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the bolt hits a second enemy or a wall, any enemies hit are Stunned"
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "if it strikes another enemy, it will stun them both."
+        }
+      ],
+      "candidateHash": "9eea569e9e0ba4474c671adc46149f9c8c0d92d2729dc1907e31182b064ebf59"
+    },
+    {
+      "findingId": "Bard.Q:wall-stun-omitted",
+      "id": "Bard.Q",
+      "status": "resolved",
+      "resolution": "수정 반영: Add the wall-after-first-enemy branch that stuns the enemy already hit. Remove the unsupported disagreement claim; a text collision condition is available even without a dedicated wall enum.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "If it strikes a wall, it will stun the initial target"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If the bolt hits a second enemy or a wall, any enemies hit are Stunned"
+        }
+      ],
+      "candidateHash": "9eea569e9e0ba4474c671adc46149f9c8c0d92d2729dc1907e31182b064ebf59"
+    },
+    {
+      "findingId": "Bard.W:maturity-not-heal-expiry",
+      "id": "Bard.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Trigger mature healing when the first ally enters a shrine whose age is at least five seconds. Keep five seconds only as a shrine-age condition. Preserve the smaller heal as the minimum bound or an immature-entry case, without two unconditional healing applications.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The shrine grows to restore (50/87.5/125/162.5/200 + (70% Ability Power)) Health after existing for 5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Health to the first ally to enter."
+        }
+      ],
+      "candidateHash": "f3ca05ff31140f02bac0f9ac41789f27888a835fb890ae2666e163245173aee4"
+    },
+    {
+      "findingId": "Bard.W:ap-per-hundred",
+      "id": "Bard.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Keep the per-100 relationship explicitly. Use ratio_input/ratio_output or text plus a truthful unsupported_formula gap if needed; never encode the denominator as a separate flat amount.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(20/22.5/25/27.5/30% + (6% per 100 Ability Power)) Move Speed"
+        }
+      ],
+      "candidateHash": "f3ca05ff31140f02bac0f9ac41789f27888a835fb890ae2666e163245173aee4"
+    },
+    {
+      "findingId": "Bard.W:shrine-consumption-omitted",
+      "id": "Bard.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Add a disappearance/consumption effect when the first ally activates the shrine. Keep enemy-entry destruction as its separate branch.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "disappearing after healing and speeding up the first ally that touches it."
+        }
+      ],
+      "candidateHash": "f3ca05ff31140f02bac0f9ac41789f27888a835fb890ae2666e163245173aee4"
+    },
+    {
+      "findingId": "Bard.W:capacity-not-summon-count",
+      "id": "Bard.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Use storage_cap for the simultaneous maximum and keep the single shrine creation distinct from that capacity.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard can have up to 3 shrines at once."
+        }
+      ],
+      "candidateHash": "f3ca05ff31140f02bac0f9ac41789f27888a835fb890ae2666e163245173aee4"
+    },
+    {
+      "findingId": "Bard.E:oneway-as-distance",
+      "id": "Bard.E",
+      "status": "resolved",
+      "resolution": "수정 반영: Remove the distance parameter. Preserve one-way traversal in text. Update the gap so it truthfully describes excluding the lexical number rather than claiming exclusion while it remains.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard opens a one-way portal through Terrain for 10 seconds."
+        }
+      ],
+      "candidateHash": "9889ec6daf1809ab9bd159f7f669e693cfd074317041ba2ef76ea8105e2c647b"
+    },
+    {
+      "findingId": "Annie.P:casts-not-hits",
+      "id": "Annie.P",
+      "status": "resolved",
+      "resolution": "수정 반영: Represent prior ability casts as a resource/other text condition rather than hit_count. Separate building readiness from the next damaging ability hit that applies the stun; preserve the empowerment condition.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using 4 Abilities, Annie's next damaging Ability Stuns"
+        }
+      ],
+      "candidateHash": "755bb60c6c2edb65d1c719eaa789681754123e4fb97bd73d7b32e260ccda3d26"
+    },
+    {
+      "findingId": "Annie.P:ready-gates-ready-transition",
+      "id": "Annie.P",
+      "status": "resolved",
+      "resolution": "수정 반영: Preserve game start and respawn as lifecycle triggers/explicit text conditions that grant readiness. Remove the circular already-ready prerequisite; use a state/resource/other effect rather than treating this as only interface information.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Annie begins the game and respawns with Pyromania available."
+        }
+      ],
+      "candidateHash": "755bb60c6c2edb65d1c719eaa789681754123e4fb97bd73d7b32e260ccda3d26"
+    },
+    {
+      "findingId": "Annie.Q:refund-causal-kill",
+      "id": "Annie.Q",
+      "status": "resolved",
+      "resolution": "수정 반영: Tie the target death/kill to this fireball destroying the target, retaining a text relation condition if needed. Do not refund for arbitrary later target deaths.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "refunding the Mana cost if it destroys the target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If the target dies, Annie refunds the Mana cost and reduces the Cooldown by 50%."
+        }
+      ],
+      "candidateHash": "16f22a5eca9dce00af652479dee8e9140dc68c538c91219b8176ab8a9984c81f"
+    },
+    {
+      "findingId": "Annie.W:cone-shape-omitted",
+      "id": "Annie.W",
+      "status": "resolved",
+      "resolution": "수정 반영: Preserve the cone and enemies within it in text; no new schema field is necessary.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Annie casts a blazing cone of fire, dealing damage to all enemies in the area."
+        }
+      ],
+      "candidateHash": "437f8118dfd632bbb31c2ae70710f556ad046d5d741801cadad8f663b07f054f"
+    },
+    {
+      "findingId": "Annie.E:shield-value-as-retaliation-count",
+      "id": "Annie.E",
+      "status": "resolved",
+      "resolution": "수정 반영: Remove the count=60 parameter and the invented fired gate. Preserve the retaliation limit using an explicit text condition for this enemy/current shield and retain an honest representation gap if needed. Keep shield-active gating separate.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "magic damage once per shield."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Annie grants an ally champion (60/95/130/165/200"
+        }
+      ],
+      "candidateHash": "0467a9be36e4a01d00d78574a255ccf42d30219e4f0fdda7a803ca6bc8b6cd01"
+    },
+    {
+      "findingId": "Annie.E:shield-value-as-tibbers-count",
+      "id": "Annie.E",
+      "status": "resolved",
+      "resolution": "수정 반영: Remove the invented numeric threshold. Preserve Tibbers being summoned/present as the condition and always granting the described shield effects.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tibbers always gains the effects of Molten Shield when summoned."
+        }
+      ],
+      "candidateHash": "0467a9be36e4a01d00d78574a255ccf42d30219e4f0fdda7a803ca6bc8b6cd01"
+    },
+    {
+      "findingId": "Annie.E:self-cast-omitted",
+      "id": "Annie.E",
+      "status": "resolved",
+      "resolution": "수정 반영: Preserve both caster and allied champion recipients, including the retaliation branch for the shielded caster. The English body's ally champion wording does not establish an exclusion of self.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Grants Annie or an ally a shield, a burst of Move Speed"
+        }
+      ],
+      "candidateHash": "0467a9be36e4a01d00d78574a255ccf42d30219e4f0fdda7a803ca6bc8b6cd01"
+    },
+    {
+      "findingId": "Annie.R:enrage-causes-not-fired",
+      "id": "Annie.R",
+      "status": "resolved",
+      "resolution": "수정 반영: Remove the invented fired gate. Represent the three alternative causes in separate trigger rules, or keep them in explicit condition text with a truthful typed limitation gap. Do not invent disagreement from source silence. The Korean tooltip omits the on-summon clause, which is source asymmetry rather than an explicit denial.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tibbers becomes enraged when summoned, if Annie stuns an enemy champion, and if Annie dies."
+        }
+      ],
+      "candidateHash": "0f6c95b9da9206e8e090c93c13c2bccfb1a72cc111c2745615349fb3975f3560"
+    },
+    {
+      "findingId": "Annie.R:recast-as-cast",
+      "id": "Annie.R",
+      "status": "resolved",
+      "resolution": "수정 반영: Use trigger.event = recast and remove the invented spell_ready gate.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Manually issue orders to Tibbers."
+        }
+      ],
+      "candidateHash": "0f6c95b9da9206e8e090c93c13c2bccfb1a72cc111c2745615349fb3975f3560"
+    },
+    {
+      "findingId": "Annie.R:stats-gated-on-fired",
+      "id": "Annie.R",
+      "status": "resolved",
+      "resolution": "수정 반영: Remove the fired condition; use summon existence/presence if a condition is needed. This finding concerns the invented gate, not the openly unresolved pooled formula representation.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tibbers has: ((1150 ~ 3500) + (50% Ability Power)) Health"
+        }
+      ],
+      "candidateHash": "0f6c95b9da9206e8e090c93c13c2bccfb1a72cc111c2745615349fb3975f3560"
+    }
+  ],
+  "validation": {
+    "checked": 15,
+    "valid": 15,
+    "note": "validateDraft/checker pass is structural validation only; this report does not grant semantic or production approval."
+  },
+  "followupFindings": [
+    {
+      "findingId": "Bard.W:continuous-shrine-heal-bound",
+      "id": "Bard.W",
+      "status": "resolved",
+      "resolution": "Removed fixed pre-maturity minimum and mature-only maximum branches. The first ally entry now triggers one heal with minimum and mature upper bounds, gradual growth stated in text, and an interpolation gap; five seconds is the shrine-age endpoint, not a healing duration.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The shrine grows to restore (50/87.5/125/162.5/200 + (70% Ability Power)) Health after existing for 5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "restores at least (25/50/75/100/125 + (40% Ability Power)) Health to the first ally to enter."
+        }
+      ],
+      "candidateHash": "f3ca05ff31140f02bac0f9ac41789f27888a835fb890ae2666e163245173aee4"
+    },
+    {
+      "findingId": "Bard.W:movement-speed-stat-owner",
+      "id": "Bard.W",
+      "status": "resolved",
+      "resolution": "Assigned the move-speed ratio output to the ally who receives the shrine buff; the Ability Power ratio input remains caster-owned.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard creates a Health shrine that grants (20/22.5/25/27.5/30% + (6% per 100 Ability Power)) Move Speed decaying over 1.5 seconds"
+        }
+      ],
+      "candidateHash": "f3ca05ff31140f02bac0f9ac41789f27888a835fb890ae2666e163245173aee4"
+    },
+    {
+      "findingId": "Annie.E:recipient-branch-gating",
+      "id": "Annie.E",
+      "status": "resolved",
+      "resolution": "Added distinct textual recipient-selection conditions to Annie-self and allied-champion shield/speed rules; retaliation branches remain tied to the selected recipient’s active shield.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Grants Annie or an ally a shield, a burst of Move Speed"
+        }
+      ],
+      "candidateHash": "0467a9be36e4a01d00d78574a255ccf42d30219e4f0fdda7a803ca6bc8b6cd01"
+    }
+  ]
+}

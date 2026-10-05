@@ -1,0 +1,67 @@
+{
+  "id": "Zeri.P",
+  "sourceHash": "5fe860c6095e59fa77c6b5438ce239478bc1830dde80ef8b8bcf7be9b14eb475",
+  "beforeCandidateHash": "a2cfc6cd7d7a865339c7d3550e55b964909cbef413d6cf91456f4d5a580140b4",
+  "candidateHash": "f636e47a5e334049829d062ae40da9417c282e20749306557a091c7f475f5aa1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "기본공격의 스킬 취급, 이동/Q충전, 미충전 피해/처형/일부소모 및 완충 피해/전부소모를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Zeri 공격은 Attacks대신 Abilities라는 원문과 정확히 일치한다. target.activation any는 불필요하다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이동 또는 BurstFire 사용으로 충전. 원문은 내부 수치나 속도를 제시하지 않는다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미충전 공격 마법10~25+3% caster AP, 처형 대상체력은70~160+20% AP 미만, 일부 충전 소모를 확인했다. 범위는 전체 min/max가 아닌 amount 범위다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "완충 공격 마법75~160+110% caster AP+1~11% target.maxHealth 및 전충전 소모. 체력비례를 stat_coefficient로 구분했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions/rules.2/3.parameters",
+      "issue": "무의미 조건 및 범위 끝을 전체최소/최대로 해석",
+      "correction": "any 삭제·amount/계수 level_range로 합치고 충전 전부소모 별도 효과",
+      "sourceId": "en:body",
+      "quote": "A fully charged Attack deals ((75 ~ 160) + (110% Ability Power)) + (1% ~ 11%) max Health magic damage and consumes all charge."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 712,
+      "verdict": "false_positive",
+      "reason": "기본 공격 대신 스킬로 취급은 en Abilities instead of Attacks와 같은 의미이며 반전이 아니다."
+    },
+    {
+      "index": 713,
+      "verdict": "false_positive",
+      "reason": "uncharged는 원문의 상태를 그대로 text로 보존한다. 내부 enum이나 특정 charge값을 새로 정의하지 않았다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "Fiora.E",
+  "sourceHash": "4bf2d96b3ed74a5e97216e17a3a9985b9a283deb12a5b9df9aece40b9cacd350",
+  "beforeCandidateHash": "dda85af4cc57769e85bae3277f4caecb7c9d3bdbbc53f49f240560d1eb99ee71",
+  "candidateHash": "cd13739af34475bb6b205a03cbe363f7be8dc5b3a005f352c97f5a3b3d80c1aa",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "다음2공격AS50~90%·첫강화공격1초30%둔화·두번째강화공격항상치명타160~200%를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 다음 두 번의 공격에 공격 속도를 높인다. / amount=50/60/70/80/90% [rank_values]; count=two [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster hit_order eq first; caster activation present 이 스킬로 강화된 다음 두 기본 공격 → target: 이동 속도를 둔화시킨다. [slow] / amount=30% [scalar]; duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster activation present 이 스킬로 강화된 다음 두 기본 공격; caster hit_order eq 두 강화 공격 중 두 번째 → target: 두 번째 공격은 항상 치명타로 적중하며 피해량이 증가한다. / damage_multiplier=160/170/180/190/200% [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.conditions",
+      "issue": "항상치명타가모든공격에적용되도록두번째조건없음",
+      "correction": "E강화두공격중두번째조건",
+      "sourceId": "en:body",
+      "quote": "The second Attack always critically strikes"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 57,
+      "verdict": "repaired",
+      "reason": "시전자공격행위자와E강화공격중두번째순서조건을추가했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

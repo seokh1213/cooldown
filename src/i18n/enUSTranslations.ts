@@ -388,6 +388,9 @@ export const enUSTranslations: Translations = {
     emptyHint: "Ask about matchups or ability usage. Answered on your device.",
     rateUp: "Helpful",
     rateDown: "Wrong or lacking",
+    copyAnswer: "Copy answer",
+    answerCopied: "Copied",
+    answerCopyFailed: "Copy failed. Please try again.",
     errorPrefix: "Error",
   },
 };

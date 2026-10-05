@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "id": "Vayne.P",
+  "champion": "Vayne",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "f23dd875603872cd06b2145c077808dc501087252eb9690f2a2bcf48a7ead9f3",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Night Hunter",
+      "ko": "어둠 사냥꾼"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Vayne.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Vayne ruthlessly hunts evil-doers, gaining Move Speed when moving toward nearby enemy champions.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Vayne ruthlessly hunts evil-doers, gaining 30 Move Speed when moving toward nearby enemy champions.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "베인이 악당을 무자비하게 사냥합니다. 근처 적 챔피언에게 접근할 때 이동 속도가 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "베인이 악당을 무자비하게 사냥합니다. 근처 적 챔피언에게 접근할 때 이동 속도가 30만큼 증가합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 43,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "근처 적 챔피언에게 접근할 때 이동 속도가 증가한다.",
+  "rules": [
+    {
+      "id": "15495e2fcd2fa843efab",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "nearby_enemies",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "근처 적 챔피언을 향해 이동 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "근처 적 챔피언에게 접근하는 동안 이동 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vayne ruthlessly hunts evil-doers, gaining 30 Move Speed when moving toward nearby enemy champions."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "cddbbf0413e40c9cf65fd244f56bed3a7a576467b3b8918becd0cf1960d65b20"
+}

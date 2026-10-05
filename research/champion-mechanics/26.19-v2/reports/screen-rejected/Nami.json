@@ -1,0 +1,77 @@
+{
+  "findings": [
+    {
+      "id": "Nami.E",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nami empowers an allied champion's next 3 Attacks and Abilities for 6 seconds",
+      "issue": "요약 효과문은 공격과 스킬만 언급하고 다음 3회 및 6초 제한을 생략합니다. 규칙에는 횟수와 시간이 있으나, 효과 설명만 보면 강화 범위가 무제한인 것처럼 읽힐 수 있습니다.",
+      "correction": "아군 챔피언의 다음 공격과 스킬 3회를 6초 동안 강화한다고 명시합니다."
+    },
+    {
+      "id": "Nami.E",
+      "path": "rules.3.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals (33% ~ 66%) damage to non-champions when empowering area of effect Abilities.",
+      "issue": "비챔피언 대상 조건만 있고 광역 스킬 조건이 누락되어, 단일 대상 스킬로도 비챔피언 피해 조정이 적용되는 것으로 표현됩니다.",
+      "correction": "광역 스킬 강화 시에만 적용된다는 조건을 추가합니다."
+    },
+    {
+      "id": "Nami.R",
+      "path": "rules.0.effects.1.parameters.1.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The duration of the Slow increases based on distance the wave traveled, up to 4 seconds. ... The Slow has a minimum duration of 2 seconds.",
+      "issue": "둔화 지속시간의 상한 4초와 하한 2초가 `max_amount`·`min_amount`로 표현되어 둔화량의 상하한처럼 읽힙니다.",
+      "correction": "두 값을 둔화 지속시간의 최대·최소로 연결해 표현합니다."
+    },
+    {
+      "id": "Nami.R",
+      "path": "rules.2.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Allies hit by the wave gain double the effect of Surging Tides.",
+      "issue": "아군 대상 조건이 챔피언으로 한정되어 있지만 원문은 ‘Allies’라고만 하며 챔피언 제한을 두지 않습니다.",
+      "correction": "대상을 아군으로만 한정하고 챔피언 조건은 제거합니다."
+    },
+    {
+      "id": "Nami.W",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Each champion can only be hit once, and it hits up to 3 targets.",
+      "issue": "요약의 ‘최대치까지 이어집니다’는 대상 수 상한을 구체적으로 전달하지 않습니다.",
+      "correction": "각 챔피언은 한 번만 맞고 최대 3명의 대상을 맞힌다고 명시합니다."
+    },
+    {
+      "id": "Nami.W",
+      "path": "rules.0.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nami unleashes a stream of water that bounces between allied and enemy champions.",
+      "issue": "시전 시 조건에 target을 챔피언으로 요구하지만, 원문은 아군·적 챔피언 사이에서 튕기는 효과로 설명할 뿐 최초 대상 선택을 조건으로 제시하지 않습니다.",
+      "correction": "시전 규칙에서 근거 없는 target 챔피언 조건을 제거합니다."
+    },
+    {
+      "id": "Nami.W",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Can only bounce to visible enemies.",
+      "issue": "가시성 조건을 적 챔피언에게 가하는 피해 효과 자체에 붙였습니다. 원문은 피해 적용이 아니라 다음으로 튕길 적의 가시성을 제한합니다.",
+      "correction": "조건을 피해 규칙에서 다음 적 대상으로 튕기는 규칙에 연결합니다."
+    },
+    {
+      "id": "Nami.W",
+      "path": "rules.3.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The damage and healing value is modified by (-20% + (0.15% Ability Power)) each bounce.",
+      "issue": "매 튕김마다 적용되는 피해량·회복량 조정이 ‘값이 조정됩니다’로만 요약되어, 조정 수치가 빠졌습니다.",
+      "correction": "각 튕김마다 피해량과 회복량이 (-20% + 주문력의 0.15%)만큼 조정된다고 적습니다."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,88 @@
+{
+  "id": "Syndra.R",
+  "sourceHash": "1f4bfe5ae96c0cd4f5717ccac2c75b1f286dfb571c1e69e4fc205c404c1d01d5",
+  "beforeCandidateHash": "023c99972618d00da0fe31dff2b99e2b765fc9ce04f4d15bc27cba04e36a67b4",
+  "candidateHash": "18de7dea362b786952dfa071687fa2d45bda1fdae98b0eb96bca9281f8e15a24",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "궁극기랭크마다Q스킬10가속,주변자기구체3+근처최대4를적챔피언에게발사,구체당피해와최대7개합계,100조각대상의15%미만처형을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 풀려난힘의스킬랭크하나당어둠구체(Q)스킬에추가스킬가속10이적용된다.구체유닛의능력치가아니다.; amount=10  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion 적용. target: 각 어둠 구체가 마법 피해를 입힙니다. (magic); amount=80/120/160  rank_values, stat_coefficient=20% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.resource eq 분노의 조각100개 이상을 보유함, target.health_threshold lt 15%, target.target_type eq champion 적용. target: 처형합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq champion 적용. caster: 신드라 주위를 도는 어둠 구체 3개와 주변의 최대 4개 추가 어둠 구체를 적 챔피언에게 날립니다.; count=3/4  formula_components / target: 표시된최대7개구체의전체합계마법피해다.구체1개피해에더해지는추가피해가아니다.; max_amount=560/840/1120  rank_values, stat_coefficient=140% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "Q스킬가속을소환구체능력치로지정",
+      "correction": "caster의Q스킬가속으로명시",
+      "sourceId": "en:body",
+      "quote": "Passive: Dark Sphere gains an additional 10 Ability Haste for each rank of Unleashed Power."
+    },
+    {
+      "path": "rules.1,3",
+      "issue": "구체당피해와최대합계계수혼합,발사를새소환으로분류",
+      "correction": "개별피해와3+최대4발사/최대합계표시분리",
+      "sourceId": "en:body",
+      "quote": "Each Dark Sphere deals (80/120/160 + (20% Ability Power)) magic damage (max (560/840/1120 + (140% Ability Power)) magic damage)."
+    },
+    {
+      "path": "rules.2,gaps",
+      "issue": "처형의적챔피언대상및조각기준불명확,다중대상배분을근거없이gap으로제시",
+      "correction": "적중챔피언과100조각조건,원문이한대상에게전부발사함을반영",
+      "sourceId": "en:body",
+      "quote": "launching the 3 Dark Spheres orbiting her plus up to 4 more nearby at an enemy champion."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 504,
+      "verdict": "repaired",
+      "reason": "140%는최대전체합계식으로분리했고구체당20%피해와합산되지않는다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

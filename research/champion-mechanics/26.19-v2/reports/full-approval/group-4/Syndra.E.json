@@ -1,0 +1,138 @@
+{
+  "id": "Syndra.E",
+  "sourceHash": "1deb6ccf9bc4492999c2139f157ffb1c0ce7f3c8cc476bb9955d679b46df8212",
+  "beforeCandidateHash": "35ef76df4f8fc8e72075d19af529d565d25185a49fd896887841b6f00a6926a1",
+  "candidateHash": "8f340b88e8db00f1b4c5061a12ddf3d082691e4f76ba3b7c4ba72a0053afecbe",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "파동의적/구체밀치기와마법피해,밀린구체의1.25초기절과피해,80조각넓이증가/70%1.25초둔화,시전당동일대상피해·밀치기1회제한을확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 힘의 파동에 맞음 적용. target: 힘의 파동이 마법 피해를 입힙니다. 이스킬한번의시전으로같은적에게피해를중복적용하지않는다. (magic); amount=60/95/130/165/200  rank_values, stat_coefficient=60% caster의 abilityPower scalar / target: 적을 밀어냅니다. (knockback);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 밀려난 어둠 구체에 맞음 적용. target: 적을 기절시킵니다. (stun); duration_seconds=1.25  scalar / target: 마법 피해를 입힙니다. 이스킬한번의시전으로같은적에게피해를중복적용하지않는다. (magic); amount=60/95/130/165/200  rank_values, stat_coefficient=60% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.resource eq 분노의 조각80개 이상을 보유함 적용. caster: 스킬의 폭이 증가합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. enemy: 한 번의 시전에서 적은 이 스킬로 한 번만 피해를 받고 한 번만 밀려납니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.resource eq 분노의 조각80개 이상을 보유함, target.other eq 이 스킬에 적중한 적 적용. target: 적을 둔화시킵니다. (slow); amount=70%  scalar, duration_seconds=1.25  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 summon.other eq 힘의 파동에 맞은 어둠 구체 적용. summon: 어둠구체를뒤로밀어낸다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2,4",
+      "issue": "80조각능력폭과적중둔화의발동범위혼합및피해중복제한불명확",
+      "correction": "상시폭증가와적중둔화분리및두피해규칙의시전당제한명시",
+      "sourceId": "en:body",
+      "quote": "Enemies can only take damage and be Knocked Back from this Ability once per cast."
+    },
+    {
+      "path": "rules.5",
+      "issue": "어둠구체밀어내기누락",
+      "correction": "구체이동규칙보완",
+      "sourceId": "en:body",
+      "quote": "Knocking Back enemies and Dark Spheres"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 501,
+      "verdict": "false_positive",
+      "reason": "공급요약도파동이적을밀치며피해를준다고확인한다.실제파동적중조건은원문보다과한제약이아니며,별도구체적중규칙도보존되어있다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "원문은 시전당 피해 및 밀쳐내기 횟수를 제한하지만, 파동 피해와 밀려난 구체 피해가 동시에 해당 제한에 어떻게 포함되는지 순서는 명시하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "한국어첫문장은파동피해를어둠구체충돌적처럼서술하지만영문은파동자체가적/구체를밀치며피해를입힌다고서술한다.영문의파동과구체효과를구별했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

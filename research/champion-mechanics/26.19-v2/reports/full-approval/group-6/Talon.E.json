@@ -1,0 +1,85 @@
+{
+  "id": "Talon.E",
+  "sourceHash": "d7253f0283bfe0db43c7a8c063343858065ef705a26b4165ccaeaceb358ac713",
+  "beforeCandidateHash": "c390ef63941580e0f03aa08b732d25a0686e01285b094996c6ddce464c24a62c",
+  "candidateHash": "49c762259702dd20e0fa7d430a0aaef864d836e4a3af7cbbf9b77b728bf0124e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "가장 가까운 지형·구조물 도약, 같은 지형 제한과 짧은 스킬 쿨다운·최대 거리 개념을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "가장 가까운 지형 또는 구조물을 뛰어넘는다. 해당 지형의 재사용 제한이 끝나야 다시 넘는다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 지형을 160/135/110/85/60초 동안 다시 넘지 못한다. 지형 제한과 스킬 자체 쿨다운을 구분했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "요약은 스킬 자체 쿨다운이 짧고 최대 도약 거리가 있다고 설명하지만 해당 수치는 공급 원문에 없다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0",
+      "issue": "같은 지형 제한을 실제 이동의 사용 조건에도 보존했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon vaults over the nearest terrain or structure. Talon cannot dash over the same terrain more than once every 160/135/110/85/60 seconds."
+    },
+    {
+      "path": "rules.2",
+      "issue": "요약의 스킬 자체 쿨다운과 지형 제한 차이 및 최대 거리를 보존했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Talon vaults over any terrain or structure, up to a max distance. This ability has a low cooldown, but puts the used terrain on a long cooldown."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "note": "최대 도약 거리와 스킬 자체의 짧은 쿨다운 수치는 공급 원문에 없다. 지형별 160/135/110/85/60초 제한과 혼동하지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "Talon.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

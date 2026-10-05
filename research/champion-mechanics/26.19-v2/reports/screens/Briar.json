@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Briar.E",
+      "sourceHash": "b4ada7429f50cfea66c8056e8a0f8c4813b8e5927ac64d5816bc3d56d1b9dc32",
+      "candidateHash": "09188448eba3e5e96848489fd26bd36a450943a8c0cc94fc525633a2cd24f937"
+    },
+    {
+      "id": "Briar.Q",
+      "sourceHash": "0a81d5587ca5ead0a1840c737a9939564b216940a5b40d5dbec9c01678ec7028",
+      "candidateHash": "ca223e0a1244f953c2645fb4ffbd6fbbdccd93f208850a534cabb6426a50cfdf"
+    },
+    {
+      "id": "Briar.R",
+      "sourceHash": "ed51d9970cff44abe388ec98fc8eeeb505ed2f7741c717689191f0a33688854c",
+      "candidateHash": "dfa945c328c7d2c715c3e50a7525c2e2772ab08e7d99b6470dfb62dcd87718ae"
+    },
+    {
+      "id": "Briar.P",
+      "sourceHash": "d305c9d2b4078e23043dea9d7c581c81f24811c95edb40696d6ccf8d75b229ba",
+      "candidateHash": "43675c4a210db1f5cf41cc2f2daf7193b563bbba5852e6bc7211e6814f621f87"
+    },
+    {
+      "id": "Briar.W",
+      "sourceHash": "82e690b3ba95bf0163f7a0f603290c6a0cc89992e89fb1ed77b2c638446185d1",
+      "candidateHash": "5d9b5485e8f8763835910044a3b4f4f5628b7d19ba8f9fe8f50e6f7149891069"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Briar.P",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Briar's Attacks and Abilities apply a bleed for 5 seconds, stacking up to 5 times.",
+      "issue": "스킬 적중으로만 출혈을 적용한다고 제한했지만, 원문은 스킬 전반이 출혈을 적용한다고 합니다.",
+      "correction": "트리거를 스킬 사용으로 넓히거나, 적중 조건이 원문에 없음을 보존하세요."
+    },
+    {
+      "id": "Briar.P",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The bleed deals ((10 ~ 50) + (50% bonus Attack Damage)) to ((20 ~ 100) + (100% bonus Attack Damage)) physical damage based on stacks",
+      "issue": "출혈 피해를 만료 시점으로 한정했지만, 원문은 피해가 만료 때 발생한다고 하지 않습니다.",
+      "correction": "만료 트리거를 제거하거나 발동 시점은 미확정으로 남기세요."
+    },
+    {
+      "id": "Briar.P",
+      "path": "rules.3.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "and Heals Briar for 25% of the pre-mitigation damage.",
+      "issue": "회복을 만료 시점으로 한정했지만, 원문은 회복 시점을 명시하지 않습니다.",
+      "correction": "만료 트리거를 제거하거나 회복 시점은 미확정으로 남기세요."
+    },
+    {
+      "id": "Briar.W",
+      "path": "rules.0.effects.1.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Briar leaps and enters a Blood Frenzy, self-taunting to the nearest enemy for 5 seconds, prioritizing Champions.",
+      "issue": "도발 효과의 주체를 브라이어로 기록했습니다. 원문상 도발 대상은 가장 가까운 적이며 챔피언 우선입니다.",
+      "correction": "주체를 가장 가까운 적으로 지정하고 챔피언 우선 조건을 보존하세요."
+    },
+    {
+      "id": "Briar.W",
+      "path": "rules.3.effects.0.parameters.1.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage",
+      "issue": "105% Attack Damage를 계수 값만으로 기록하고 공격력 스탯 연결을 누락했습니다.",
+      "correction": "공격력 유형은 단정하지 말고 Attack Damage 계수라는 텍스트와 미확정 상태를 보존하세요."
+    },
+    {
+      "id": "Briar.W",
+      "path": "rules.4.effects.0.parameters.0.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt.",
+      "issue": "회복 계수를 maxHealth로 지정했지만, 원문은 Health라고만 하며 최대 체력이라고 특정하지 않습니다.",
+      "correction": "maxHealth 연결을 제거하고 Health 유형은 텍스트 또는 미확정 상태로 보존하세요."
+    },
+    {
+      "id": "Briar.W",
+      "path": "rules.5.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The bite deals 10% increased damage to minions and monsters (Max 400 missing health damage).",
+      "issue": "설명은 강화 공격 피해 전체가 증가한다고 읽히지만, 원문은 미니언·몬스터 대상 베어 먹기 공격이 10% 증가한다고 명시합니다.",
+      "correction": "대상 조건이 적용된 베어 먹기 피해의 10% 증가라고 명확히 쓰세요."
+    }
+  ],
+  "notes": []
+}

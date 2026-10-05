@@ -1,0 +1,67 @@
+{
+  "id": "Senna.R",
+  "sourceHash": "b5e22a069f4228afba62efedac905bd8d2aca7876be25d6cf538f14cd43e54d7",
+  "beforeCandidateHash": "6e4eb64e76fc1169cf364928a4cdc558aa0bf4b27e25d9cecb50c946b765f0e1",
+  "candidateHash": "fe09a886445a34702edf097115630cb6b49c3bb5cd02e9890c76b33c2d4e4763",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "적챔피언물리피해250/400/550+AP70%+추가AD115%,더넓은영역아군3초121.5/161.5/201.5+AP50%보호막및안개강화(계수미명시)를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target other present enemy → target: 빛줄기에 적중한 적 챔피언에게 물리 피해를 준다. [physical] / amount=250/400/550 [rank_values]; stat_coefficient=70% (caster abilityPower) [scalar]; stat_coefficient=115% (caster bonusAttackDamage) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 ally target_type eq champion → ally: 더 넓은 범위에 적중한 아군 챔피언에게 보호막을 부여하며, 보호막의 세기는 세나가 모은 안개 양에 따라 증가한다. / amount=121.5/161.5/201.5 [rank_values]; stat_coefficient=50% (caster abilityPower) [scalar]; duration_seconds=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.trigger.subject",
+      "issue": "스킬적중행위자가피격적/아군",
+      "correction": "caster",
+      "sourceId": "en:body",
+      "quote": "Senna fires a beam of light"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "보호막 범위가 피해 범위보다 넓다는 사실은 원문에 있으나, 범위의 거리나 판정 기준은 명시되지 않았다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "모은안개양에따른보호막강화는본문에있으나중첩당계수/대응식은명시되지않아추가수치를실행하지않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

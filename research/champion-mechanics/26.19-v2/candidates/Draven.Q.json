@@ -1,0 +1,271 @@
+{
+  "summary": "회전 도끼를 준비하면 다음 공격이 추가 물리 피해를 입히고 도끼가 공중으로 튕깁니다. 도끼를 잡으면 다시 준비하며, 일정 시간 공격하지 않거나 포탑·구조물을 공격하면 도끼를 잃거나 튕기지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "강화된 다음 기본 공격이 추가 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Draven readies a Spinning Axe, causing his next Attack to deal an additional (40/45/50/55/60 + (75/85/95/105/115% bonus Attack Damage)) physical damage and ricochet into the air."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "강화된 공격이 구조물이 아닌 대상을 공격하면 도끼가 튕겨 나옵니다. 포탑 또는 구조물 공격은 도끼를 튕겨내지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Draven readies a Spinning Axe, causing his next Attack to deal an additional (40/45/50/55/60 + (75/85/95/105/115% bonus Attack Damage)) physical damage and ricochet into the air."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Attacking a turret or structure will not cause Draven's Spinning Axes to richochet."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공중에 뜬 회전 도끼를 잡음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_followup",
+          "subject": "caster",
+          "text": "드레이븐이 회전 도끼를 잡으면 회전 도끼를 다시 준비합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Draven catches it, he readies another Spinning Axe."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n11"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "해당 시간 동안 공격하지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "드레이븐이 6초 동안 공격하지 않으면 준비된 회전 도끼를 떨어뜨립니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Draven will drop any Spinning Axes if he does not attack for 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "드레이븐은 동시에 최대 두 개의 회전 도끼를 보유할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Draven can hold two Spinning Axes at once."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "도끼 준비 동작 및 강화 공격 활성 상태의 판정 조건이 원문에 구체적으로 설명되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Draven readies a Spinning Axe, causing his next Attack"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "회전 도끼를 잡는 사건의 구체적인 판정 방식은 설명되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Draven catches it, he readies another Spinning Axe."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "Galio.P",
+  "sourceHash": "1b9f2cd946afb3bbe100bdff4ecd2c0b516fddae12d7077facc12f604df41300",
+  "beforeCandidateHash": "2b4b3ae408c10fb18cdd406469cc24edde43f7b4f842c59d36fa996bdb550656",
+  "candidateHash": "738cc0fe03ac6781a4ab547bcf16daa0970f7f602f81246b2a379f97c53a932e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "주기적다음강화공격공속/주변마법15~115+총AD100%+AP40%+bonusMR60%,챔프or에픽Abilityhit시3초쿨감시전1회까지 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 쿨다운이 준비된 다음 강화 기본 공격. caster attack_modifier: 기본 공격의 공격 속도가 증가합니다. [] / nearby_enemies damage magic: 기본 공격이 주변 적에게 마법 피해를 입힙니다. [amount n0=15/n1=115 level_range; stat_coefficient n2=100% formula_components caster.totalAttackDamage; stat_coefficient n3=40% formula_components caster.abilityPower; stat_coefficient n4=60% formula_components caster.bonusMagicResist]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 적 챔피언 또는 에픽 몬스터; caster.other eq 이 시전에서 이 쿨다운 감소가 아직 발동하지 않음. caster cooldown_change: 적 챔피언 또는 에픽 몬스터에게 스킬을 적중시키면 이 효과의 재사용 대기시간이 감소합니다. 스킬 시전당 한 번만 감소합니다. [cooldown_seconds n5=3 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.0/1/gaps",
+      "issue": "주기적다음공격범위/에픽예외/시전한번조건누락·4아닌3초amount",
+      "correction": "다음강화공격조건,챔프orepic및시전1회,cooldownseconds3",
+      "sourceId": "en:body",
+      "quote": "This effect's cooldown is reduced by 3 seconds when Galio hits an enemy champion or epic monster with an ability, once per cast."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 66,
+      "verdict": "repaired",
+      "reason": "챔피언only조건에서원문의championorepicmonster OR로복원했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

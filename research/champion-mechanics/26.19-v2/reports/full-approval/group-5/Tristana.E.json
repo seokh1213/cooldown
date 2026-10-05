@@ -1,0 +1,576 @@
+{
+  "id": "Tristana.E",
+  "sourceHash": "b14c24c6df7a05c75516bbee300ecdcec8fe0160f34ab01dae3ff45888b63f8f",
+  "beforeCandidateHash": "bf2feb96cc2e2411cecc94073d098bfcce4f5d7c4b011e02245cc37c3eac8c71",
+  "candidateHash": "0a28b83b3e93bbd991a71d899ba862471dd81e2b65c4c7cc09da5e822db9362f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "기본공격처치passive와적/포탑폭탄4초/공격·스킬중첩25%/4중첩즉시폭발·crit40%효율·포탑반경두배를전부대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "기본공격처치시에만주변45/60/75/90/105+25%AP magic. fired만으로원인대체안함.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격으로 적을 처치"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "45",
+              "value": 45,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적또는포탑에E폭탄부착.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "선택한 적 또는 포탑"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "4초자연폭발의기본식에누적25%중첩보정을적용. 즉시폭발한폭탄은반복폭발하지않음.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭발 화약"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭탄 부착4초가 지났으며 먼저4중첩폭발하지 않은 대상"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "85",
+              "value": 85,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "160",
+              "value": 160,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "80%",
+              "value": 80,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "폭탄붙은대상자기공격/스킬마다25%증가·최대4중첩. count시간refn13오류를stackcapn15로수정.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭발 화약"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "storage_cap",
+          "numberRefs": [
+            "en:body:n15"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "4중첩즉시폭발120/170/220/270/320+160%bonusAD+100%AP physical.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭발 화약"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭탄이 4중첩 상태"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n17",
+            "en:body:n18",
+            "en:body:n19",
+            "en:body:n20",
+            "en:body:n21"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n17",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "170",
+              "value": 170,
+              "percent": false
+            },
+            {
+              "id": "en:body:n19",
+              "raw": "220",
+              "value": 220,
+              "percent": false
+            },
+            {
+              "id": "en:body:n20",
+              "raw": "270",
+              "value": 270,
+              "percent": false
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "320",
+              "value": 320,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n22"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n22",
+              "raw": "160%",
+              "value": 160,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n23"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n23",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "모든active폭탄피해의critChance/critDamage40%효율. 포탑전용조건없음.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n24"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n24",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "포탑부착만폭발반경두배. 모든구조물로확대안함.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭탄이 부착된 구조물은 포탑"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules,gaps",
+      "issue": "4중첩cap에4초ref·최소중첩피해누락·원인/포탑범위조건모호·대체관계부족gap.",
+      "correction": "n15stackcap·중첩곱식·실제공격kill/포탑조건·폭발경로배타.",
+      "sourceId": "en:body",
+      "quote": "The damage is increased by 25% each time Tristana hits an Attack or Ability (max 4 stacks)."
+    },
+    {
+      "path": "rules.2.effects.0.text",
+      "issue": "조기 폭발 예외 텍스트가 4중첩 전이라고 잘못 표현됨",
+      "correction": "4초 전에4중첩으로 이미 폭발한 경우 시간 경과 폭발을 다시 적용하지 않는다고 정정했다.",
+      "sourceId": "en:body",
+      "quote": "At 4 stacks, the bomb explodes immediately"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 545,
+      "verdict": "repaired",
+      "reason": "n13은4초다. 실제max4stacks의n15로바꾸고보유상한역할로표현했다."
+    },
+    {
+      "index": 546,
+      "verdict": "false_positive",
+      "reason": "원래rules.5조건target_type=any로structure가아니다. 치명타효율은전체active범위로정확하다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "치명타 확률과 치명타 피해량이 폭탄 피해 증가에 적용되는 구체적인 계산식은 제시되지 않습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "중첩수에따라기본식을곱한다. 숫자표를단순합산하지않으며,치명타증가는40%효율이라고만하여세부합성식은확정하지않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

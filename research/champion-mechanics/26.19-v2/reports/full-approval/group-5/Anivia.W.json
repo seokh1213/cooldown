@@ -1,0 +1,104 @@
+{
+  "id": "Anivia.W",
+  "sourceHash": "ee431f961d6f68429c3881ac391b604c3d853c11169d9018383b26bb9a564d18",
+  "beforeCandidateHash": "993b6be965347d84368188b5f3e79819cccec17c52189e4ed32eaed4862b13e7",
+  "candidateHash": "2f6707e58e98b228650419966d48e50fd843eaefbee406d26ed5731967b1c37e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "양언어 요약의 통과 불가 이동 차단과 본문의 폭400~800·지속5초를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "caster가 생성하는 얼음 벽 자체의 폭 다섯 랭크와 지속5초이다. 피해나 밀쳐내기를 공급원문에 추가하지 않았으며 요약이 통과불가 이동차단을 명시한다. 생성 주체는 Anivia로 명확하다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "distance_units",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "400",
+              "value": 400,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "500",
+              "value": 500,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "600",
+              "value": 600,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "700",
+              "value": 700,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "800",
+              "value": 800,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0;gaps",
+      "issue": "생성 주체가 불명이라는 거짓 gap 및 원문에 없는 밀쳐내기 고려",
+      "correction": "벽 수혜 subject summon과 폭/지속을 명시하고 근거 없는 gap을 제거했다.",
+      "sourceId": "en:body",
+      "quote": "Anivia summons a wall of ice 400/500/600/700/800 units wide. The wall lasts for 5 seconds before it melts."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

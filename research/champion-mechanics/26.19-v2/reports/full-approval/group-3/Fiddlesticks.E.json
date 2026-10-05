@@ -1,0 +1,68 @@
+{
+  "id": "Fiddlesticks.E",
+  "sourceHash": "7532455d48b8a35f7e5b79ce2dd229eaa654102321c309d53e8de6441c500b48",
+  "beforeCandidateHash": "ede26e0731b0c0dfd1eabe476c1adb5e684be57c276c8b2a706a8346bd1cf78a",
+  "candidateHash": "87eefb5cfe75a8222cf94e13d8001087995c7676bab0ebdf9edb26ab04e3da99",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "마법70~210+AP50%·1.25초30~50%둔화·범위중앙만동일1.25초침묵을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → target: 적에게 마법 피해를 입힙니다. [magic] / amount=70/105/140/175/210 [rank_values]; stat_coefficient=50% (caster abilityPower) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → target: 적을 둔화시킵니다. [slow] / amount=30/35/40/45/50% [rank_values]; duration_seconds=1.25 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target distance eq 베기 영역의 중앙에 위치 → target: 범위 중심에 있는 적을 침묵시킵니다. [silence] / duration_seconds=1.25 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.conditions.0",
+      "issue": "중앙을고립isolated로오분류",
+      "correction": "영역중앙텍스트조건",
+      "sourceId": "en:body",
+      "quote": "Enemies in the center"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "침묵대상은베기영역중앙이며고립(isolated)상태가아니다.중앙거리/너비수치는공급원문에없어텍스트조건으로보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": "Malphite.R",
+  "sourceHash": "fb56a392900478445c850d713bf61f5be06febf2c003e65974be507a56fb12b3",
+  "beforeCandidateHash": "c66afcb573cf83e5df7677352b96e68e15f94b8dcdc42b12641488f7359bb238",
+  "candidateHash": "4f8b3918ce0991fc2df0cbee2799c359e91f80ab3311abb252c3747934df0465",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "목표위치로 저지불가 돌진,돌진종료1.5초띄우기와200/300/400+AP90%마법피해를양언어본문/요약과대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 목표 위치로 저지 불가 상태로 돌진합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster time eq 돌진 종료 시 → target: 대상을 공중으로 띄워 올립니다. [knockup] / duration_seconds=1.5 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster time eq 돌진 종료 시 → target: 대상에게 마법 피해를 입힙니다. [magic] / amount=200/300/400 [rank_values]; stat_coefficient=90% (caster abilityPower) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/2",
+      "issue": "목표위치 이동 근거와복합AP계수shape가불완전했다.",
+      "correction": "요약의목표위치와본문의복합AP계수를보존했다.",
+      "sourceId": "en:summary",
+      "quote": "Malphite launches himself to a location at high speed"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Aatrox.E",
+      "sourceHash": "893a84bf9985318ed03ef2724009740376d2c01235cb87a5a763247584558e43",
+      "candidateHash": "9fa431b16052603bbe4d2addfcc658062f95612d916d5a2899e58f7b4f89b67b"
+    },
+    {
+      "id": "Aatrox.P",
+      "sourceHash": "1a9c8d1df51c7faca3e3776ff504ca1722abf31dce4ad050def1b56e12211c17",
+      "candidateHash": "904fc3778537b5a799fe7adfdfeb7ac606a257179e73ea9712ceaf2637695610"
+    },
+    {
+      "id": "Aatrox.Q",
+      "sourceHash": "47e9010e548843c4025cd9c4024796786da4bf5626ceef8c640214a00d471a4c",
+      "candidateHash": "44651be99804449451283889c4c772e7a56b880bd5a0ece963f0d976e8b83f6e"
+    },
+    {
+      "id": "Aatrox.R",
+      "sourceHash": "a625e022674df0a1d6f3c0cd1f985a8e1dad2dd6ec4443d86f4c80274dff05b8",
+      "candidateHash": "8c8da0eac78eb29ff72b3264888e8b23c85ed55739ca295d845d4023df981faa"
+    },
+    {
+      "id": "Aatrox.W",
+      "sourceHash": "cd7a94d5d79a0a861da15fa5e92d140ec5c363455b0433c9ec52298e7b0a63c4",
+      "candidateHash": "fdd645fbcb59805f081eabbef6934cf9b1072fd6ce902de1a2c41ddf298e5db4"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Aatrox.Q",
+      "path": "rules.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Aatrox slams his greatsword, dealing (10/25/40/55/70 + (60/67.5/75/82.5/90% Attack Damage)) physical damage.",
+      "issue": "첫 타격의 피해 효과가 모든 시전 시 피해를 주는 것으로 기록되어 있습니다. 원문은 재사용 타격의 피해가 직전 타격보다 25% 증가한다고 구분하므로, 기본 피해 규칙이 재사용 타격에도 적용되는지 중복·과적용을 일으킬 수 있습니다.",
+      "correction": "첫 시전의 기본 피해로 범위를 한정하거나, 재사용 시 피해 규칙과 기본 피해의 관계를 명시하세요."
+    },
+    {
+      "id": "Aatrox.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If they are hit on the edge, they are briefly Knocked Up and they take (17.5/43.75/70/96.25/122.5 + (105/118.125/131.25/144.375/157.5% Attack Damage)) instead.",
+      "issue": "끝부분 적중 조건이 있지만 같은 규칙의 공중 띄우기 효과에서 ‘briefly’에 해당하는 지속시간이 빠져 있습니다. 끝부분 적중 시 잠깐 띄운다는 효과가 요약에만 남았습니다.",
+      "correction": "공중 띄우기 효과에 지속시간이 짧다는 원문 정보를 텍스트로 보존하세요."
+    },
+    {
+      "id": "Aatrox.Q",
+      "path": "rules.4.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Knock Up duration against monsters is doubled and it deals 25 bonus damage.",
+      "issue": "조건이 몬스터를 공중으로 띄운 경우로 제한되어 있습니다. 원문은 몬스터 대상 공중 띄우기 지속시간이 두 배라고 하지만, 추가 피해는 별도로 ‘it deals 25 bonus damage’라고 명시되어 이 제한을 확정하지 않습니다.",
+      "correction": "추가 피해의 몬스터 대상 여부를 유지하되, 공중 띄우기 발생을 추가 피해의 필수 조건으로 단정하지 않도록 조건을 분리하거나 불확실성을 텍스트로 보존하세요."
+    },
+    {
+      "id": "Aatrox.R",
+      "path": "rules.1.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "gaining 60/80/100% Move Speed decaying over 10 seconds. He also gains 20/30/40% Attack Damage and increases self-healing by 50/75/100% for the duration.",
+      "issue": "이동 속도 증가량의 매개변수 역할이 amount로만 기록되어, 이동 속도가 60/80/100% 증가한다는 단위가 구조화 정보에서 빠졌습니다.",
+      "correction": "이동 속도 증가량을 퍼센트로 표시하거나 텍스트에 백분율 단위를 명시하세요."
+    },
+    {
+      "id": "Aatrox.R",
+      "path": "rules.1.effects.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "gaining 60/80/100% Move Speed decaying over 10 seconds. He also gains 20/30/40% Attack Damage and increases self-healing by 50/75/100% for the duration.",
+      "issue": "공격력 증가량의 매개변수 역할이 amount로만 기록되어, 20/30/40% 증가라는 단위가 구조화 정보에서 빠졌습니다.",
+      "correction": "공격력 증가량을 퍼센트로 표시하거나 텍스트에 백분율 단위를 명시하세요."
+    },
+    {
+      "id": "Aatrox.R",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Champion takedowns extend the duration of this effect by 5 seconds and refresh the Move Speed effect.",
+      "issue": "처치 관여 조건의 대상이 champion으로 기록됐지만, takedown은 챔피언 처치 관여 이벤트 자체입니다. 이 조건은 처치한 대상 유형을 별도로 제한하는 것처럼 해석될 수 있습니다.",
+      "correction": "챔피언 처치 관여를 이벤트 조건에 반영하고, 대상 유형 조건은 제거하거나 스키마상 필요하다면 그 의미가 처치 대상임을 명확히 하세요."
+    },
+    {
+      "id": "Aatrox.W",
+      "path": "rules.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Aatrox fires a chain, Slowing the first enemy hit by 25/27.5/30/32.5/35% for 1.5 seconds and dealing (30/40/50/60/70 + (40% Attack Damage)) physical damage.",
+      "issue": "감속 규칙은 첫 적중 대상으로 제한했지만, 기본 피해 규칙은 적중한 모든 대상에게 적용됩니다. 원문은 첫 적중 대상에게 감속과 피해를 모두 준다고 명시합니다.",
+      "correction": "기본 피해 규칙에도 첫 적중 대상 조건을 추가하세요."
+    },
+    {
+      "id": "Aatrox.W",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Champions and large jungle monsters have 1.5 seconds to leave the impact area or be Pulled back to the center and damaged again for the same amount.",
+      "issue": "1.5초 조건이 LTE로 기록되어, 제한 시간이 지나기 전뿐 아니라 정확히 1.5초가 된 순간도 포함한다고 단정합니다. 원문은 그 시간 안에 벗어나야 한다고만 합니다.",
+      "correction": "경계 시점을 확정할 근거가 없으므로 시간 조건을 텍스트로 보존하거나 등호 포함 여부를 미정으로 남기세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,69 @@
+{
+  "id": "Shaco.Q",
+  "sourceHash": "d12fc2d2f1963dc31628730c23539ed3eb0522889a024e594d6b853654d31678",
+  "beforeCandidateHash": "e284f03e52ca7bc401e21974140129e1974edd56713f274af704df5cdcf2871d",
+  "candidateHash": "3a4056f4fa9cf77a6634fb171cec3b044ad5b0f7dd35ef499a81e020dabaa357",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "순간이동·투명2.5~3.5초, W/R 유지, 투명 중 다음 평타 추가물리/후방 치명타 및 포탑·절대시야 예외를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 샤코가 지정 위치로 순간이동합니다. [] / caster visibility: 샤코가 잠시 투명해집니다. 깜짝 상자나 환각을 사용해도 투명 상태가 유지됩니다. 투명 유닛은 포탑이나 절대 시야로만 드러난다. [duration_seconds n0=2.5/n1=2.75/n2=3/n3=3.25/n4=3.5 rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.visibility eq unseen; caster.activation eq empowered; caster.other eq 속임수 은신 중 가하는 다음 기본 공격 한 번. target damage physical: 투명 상태에서 다음 기본 공격이 추가 물리 피해를 입히며, 추가 피해에도 치명타가 적용될 수 있습니다. [amount n5=25/n6=35/n7=45/n8=55/n9=65 rank_values; stat_coefficient n10=60% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.visibility eq unseen; caster.activation eq empowered; target.other eq 대상이 샤코를 등지고 있음; caster.other eq 속임수 은신 중 가하는 다음 기본 공격 한 번. caster attack_modifier: 뒤에서 해당 다음 공격을 가하면 치명타로 적중하며 원문의 피해식은(40%+치명타 피해량60%)이다. 그 구성요소를 각각 독립 배율로 실행하지 않는다. [other n11=40% formula_components; stat_coefficient n12=60% formula_components caster.critDamage]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2",
+      "issue": "공격 행위자·공격 강화 주체·투명 드러내기 예외 누락",
+      "correction": "caster 공격/강화 및 투명 예외 문구 인용 추가",
+      "sourceId": "en:body",
+      "quote": "Invisible units cannot be revealed except by turrets or True Sight."
+    },
+    {
+      "path": "rules.1,2;gaps",
+      "issue": "다음공격1회제한모호및후방치명타40%를단독배율로실행가능",
+      "correction": "속임수다음공격한번과복합치명타식한계를명시했다.",
+      "sourceId": "en:body",
+      "quote": "If striking from behind, this Attack critically strikes for (40% + (60% Critical Strike Damage)) damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 455,
+      "verdict": "documented_gap",
+      "reason": "원문은후방공격이치명타로적중하며(40%+치명타피해량60%)피해를명시한다.단독40%damage_multiplier로실행할근거가없어구성요소와수식한계로보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "속임수 후방 치명타의40%+치명타피해량60%가 어떤 공격 피해 기준에 결합되는지는 이 문장만으로 완전하지 않다. 구성요소와 치명타 확정 여부를 보존하며 선형 추가 피해나 단독40%배율로 실행하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

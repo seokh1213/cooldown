@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Xerath.E",
+      "sourceHash": "fe9546b8d5ef6668490c0c929a789e74ae2879c66664676da39a667c37866f9b",
+      "candidateHash": "d2ddd593d2d0ca0daf130c3ec46b6e7b9edc7631e626d20019fb913536ec4b2c"
+    },
+    {
+      "id": "Xerath.P",
+      "sourceHash": "fe550ed298225c5e4d3d298e6d17f8dcf48910385715eb395c3b759ad58778d3",
+      "candidateHash": "63a051e3904b99b75ef171ef02a225ad19b38482a25c8a3683374c911eb3cad6"
+    },
+    {
+      "id": "Xerath.Q",
+      "sourceHash": "48f7b5f2c8328cce8a426c7012c62e0a66a57f380e35247f50a77208eeefd706",
+      "candidateHash": "01eac30652b448ce78fb7d03102901e469d487c77991ca0be4e9b4c798872173"
+    },
+    {
+      "id": "Xerath.R",
+      "sourceHash": "e8691db2224a63791f265f434b8f17be0027770cb6d8282204f7a94bb136e531",
+      "candidateHash": "d4b4164362eaa2b7b0b30744bbac3b4607477bbd7e6388b5dc71704ad85e982f"
+    },
+    {
+      "id": "Xerath.W",
+      "sourceHash": "f77874fc9abf5485cea451586ce4b143a10f6d7ddeeebc71d10cc6682bb7a726",
+      "candidateHash": "0182aa928e1d2f423db61b11d10178fd7345f087f8298b9a6c00719ac10786c8"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Xerath.P",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "It restores (30 ~ 195) Mana if attacking minions, jungle monsters or structures.",
+      "issue": "조건이 `minion`만 허용해 정글 몬스터와 구조물 대상 발동을 누락합니다. 효과 설명에는 두 대상이 있지만 조건과 모순됩니다.",
+      "correction": "대상 조건이 미니언, 정글 몬스터, 구조물을 모두 포함하도록 표현하거나, 원문상 열거 대상 전체를 포괄하는 미확정 대상 조건으로 남기세요."
+    },
+    {
+      "id": "Xerath.R",
+      "path": "rules.1.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "During this time he may Recast up to 4/5/6 times.",
+      "issue": "재사용 횟수 상한의 첫 값 `4`를 적중 횟수 조건으로 사용하고 있어 포격을 빗맞혀도 재사용 횟수가 소진되는 사실을 표현하지 못합니다. 재사용 가능 횟수를 적중 수로 판정합니다.",
+      "correction": "이 조건을 적중 횟수가 아닌 재사용 횟수/시전 횟수 상한으로 모델링하세요. 툴팁만으로 랭크별 상한 적용 조건이 불명확하므로 그 범위는 gap으로 유지하세요."
+    },
+    {
+      "id": "Xerath.R",
+      "path": "rules.3.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If Xerath does not Recast at all, this Ability's Cooldown is reduced by 50%.",
+      "issue": "`hit_count = 4`는 한 번도 재사용하지 않은 상태와 모순되며, 재사용 상한 값도 무재사용 여부를 판정하는 값으로 쓸 수 없습니다.",
+      "correction": "무재사용 조건을 재사용 횟수 0으로 표현하세요. 재사용 횟수를 별도 모델링할 수 없다면 조건을 텍스트/미확정으로 남기세요."
+    },
+    {
+      "id": "Xerath.W",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Xerath calls down a blast of arcane energy, dealing (50/85/120/155/190 + (65% Ability Power)) magic damage and Slowing them by 25% for 2.5 seconds.",
+      "issue": "일반 피해 규칙에 `distance != isolated`를 부과하지만 원문은 중심이 아닌 적까지의 거리나 고립 상태를 조건으로 제시하지 않습니다. 이 조건은 원문에 없는 판정을 추가하고 대상을 잘못 제한할 수 있습니다.",
+      "correction": "원문에 없는 거리 조건을 제거하고 일반 피해의 대상 범위를 텍스트/갭으로 두세요. 중심 적 규칙은 별도로 유지할 수 있습니다."
+    },
+    {
+      "id": "Xerath.W",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies in the center take (83.35/141.695/200.04/258.385/316.73 + (108.355% Ability Power)) magic damage instead and are Slowed by 60/65/70/75/80%, decaying over 2.5 seconds.",
+      "issue": "중심 판정을 `distance = isolated`로 표현하지만 원문은 고립 여부를 말하지 않고 범위 중심 위치를 말합니다. 자체 gap도 중심 판정의 거리나 기하 조건이 없다고 설명하므로 typed 조건이 설명과 맞지 않습니다.",
+      "correction": "`isolated` 거리 조건을 제거하고 중심 판정을 텍스트/미확정 조건으로 남기세요."
+    }
+  ],
+  "notes": []
+}

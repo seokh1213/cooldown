@@ -1,0 +1,77 @@
+{
+  "id": "Zeri.Q",
+  "sourceHash": "c5e58e5a9408e13879daa27ae33d3e8b226105dbbaf4cdad54f994679052ea9c",
+  "beforeCandidateHash": "bd3ab20f097a19fb05682b7fb865c2337f31d46f36c1a4b84d10e1dc21ba48e0",
+  "candidateHash": "22b3e6df8a0a27f9f1886549d0d5b037224ac5688245f6b6b809436996e23d75",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "7발 첫 적 물리22~38+102~110%총AD, 공격 취급/치명타/대상당온힛1회, 공격속도에 따른 시간 감소와1.5회초당 상한, 초과AS60%전환을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.hit_order eq first. target damage physical: 일곱 탄환으로 이루어진 한 번의 집중 사격이 첫 적중 적에게22/26/30/34/38+총공격력102/104/106/108/110%의 물리 피해를 입힌다. 이 피해를 탄환 수7로 다시 곱하지 않는다. [amount n1=22/n2=26/n3=30/n4=34/n5=38 rank_values; stat_coefficient n6=102%/n7=104%/n8=106%/n9=108%/n10=110% rank_values caster.totalAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster attack_modifier: 이 스킬은 기본 공격으로 취급되며 치명타가 적용될 수 있고, 대상당 한 번 적중 시 효과를 적용합니다. 기본 공격이 가능한 대상을 맞힐 수 있습니다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster cooldown_change: 재사용 대기시간과 시전 시간은 공격 속도에 따라 감소합니다. 초당 공격 횟수에는 상한이 적용됩니다. [max_amount n11=1.5 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.stat_gain; 조건 caster.other eq 초당1.5회 공격속도 상한을 초과한 공격 속도. caster other: 공격 속도 초과분의 60%를 공격력으로 전환한다. 일반 추가 공격속도 전체가 아니라 상한 초과분이다. [other n12=60% formula_components caster.attackSpeed]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 집중 사격은한발사동작에서탄환일곱개를발사한다. [count n0=7 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions/rules.3",
+      "issue": "첫 적 범위가 텍스트만 존재, 초과AS를 보너스AS로 오해하고 입력/출력 모두60% 사용",
+      "correction": "hit_order first, 초과AS 텍스트 조건과 60%전환 구성요소/표현한계 보존",
+      "sourceId": "en:body",
+      "quote": "60% of excess Attack Speed is converted into Attack Damage."
+    },
+    {
+      "path": "rules.0.effects.0;rules.4",
+      "issue": "탄환7개를피해효과count로연결해버스트피해7배실행가능",
+      "correction": "탄환수를발사규칙으로분리하고피해식은원문의한버스트피해로보존했다.",
+      "sourceId": "en:body",
+      "quote": "Zeri fires a burst of 7 rounds that deals (22/26/30/34/38 + (102/104/106/108/110% Attack Damage)) physical damage to the first enemy hit."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "초과AS의60%를 AD로 전환하지만 입력/출력 단위비가 원문에 없고 source 숫자에 입력1단위가 없다. ratio_input=60%,ratio_output=60%로 같은 비율을 실행하면 오해되므로 전환을 텍스트 및60% 구성요소로 보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

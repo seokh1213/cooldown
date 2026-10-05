@@ -1,0 +1,76 @@
+{
+  "id": "Jhin.W",
+  "sourceHash": "bd0e6fc247ce6c1634926402620adc17bd81bb034fceb0b8010a2a62f562e8e6",
+  "beforeCandidateHash": "4743ae2be89c0239dc14b7540c34878d666189f609c2d84d9195f7bea455f81e",
+  "candidateHash": "21b42e18934815d585540827e04818e02c9eac9f8f6fd51c40a9b9d1da022534",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "경로 적과 첫 챔피언 물리피해·미니언/몬스터 관통·챔피언 정지, 미니언75%, 최근4초 아군/자기 피해의 챔피언 속박·자신 이속, 함정 밟은 챔피언 추가 속박을 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 탄환은 처음 적중한 챔피언과 경로상의 다른 적에게 물리 피해를 입힌다. 미니언과 몬스터를 관통하고 첫 챔피언에서 멈춥니다. [physical]; 수치 amount en:body:n0=70,en:body:n1=105,en:body:n2=140,en:body:n3=175,en:body:n4=210 상수 rank_values / stat_coefficient en:body:n5=50%(백분율) caster.totalAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq minion; target: 이 스킬은 미니언에게 감소한 피해를 입힌다. [physical]; 수치 damage_multiplier en:body:n12=75%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / target.other eq 최근 4초 안에 진 또는 아군 챔피언에게 피해를 입은 챔피언; target: 최근 아군 챔피언에게 피해를 입은 챔피언을 이 스킬로 맞히면 속박한다. [root]; 수치 duration_seconds en:body:n7=1.25,en:body:n8=1.5,en:body:n9=1.75,en:body:n10=2,en:body:n11=2.25 상수 rank_values; flags 없음 | caster: 조건을 만족하는 챔피언을 이 스킬로 맞히면 진은 속삭임의 이동 속도를 얻는다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / target.other eq 강제 관람의 함정을 밟은 챔피언; target: 강제 관람의 함정을 밟은 챔피언도 속박될 수 있다. [root]; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "적중 행위자·감소대체·자기피해 조건·함정 종류 없는 bool marker를 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Jhin fires a long range shot dealing (70/105/140/175/210 + (50% Attack Damage)) physical damage to the first champion hit and other enemies along the way. If this skill strikes a champion that has been damaged by an allied champion within the last 4 seconds, it will Root them for 1.25/1.5/1.75/2/2.25 seconds and grant Jhin Whisper's Move Speed. This ability deals 75% damage to minions. Champions that step on a trap from Captive Audience can also be rooted."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 142,
+      "verdict": "false_positive",
+      "reason": "기존 요약은 이미 처음 적중한 챔피언과 경로상의 다른 적에게 물리 피해를 준다고 명시함."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

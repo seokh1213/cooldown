@@ -1,0 +1,109 @@
+{
+  "id": "Leona.W",
+  "sourceHash": "5e0d454d791aef4fa9be3396339af9c0e0fc1627a3ab0b1cd39d3c98d14fa9b5",
+  "beforeCandidateHash": "54780682e48217d9b02abe39b2d7dd5ddbed2a57c79c1804a690a2577ed28dcf",
+  "candidateHash": "b061acbab830f786e77ff88c1c6658a38ad3fa6dffde29e50612b00985ed2028",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "받는 피해의 절대량 8/12/16/20/24 감소·원래 피해 50% 하한과, 3초 방어력·마법 저항력의 각 20/27.5/35/42.5/50 + 각 추가 저항력 20%를 대조했다. 첫 효과 종료 폭발 피해와 실제 적 한 명 이상 적중 시 두 저항력의 추가 3초를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 받는 피해를 절대량 8/12/16/20/24만큼 줄이되, 이 감소로 피해를 원래 피해의 50% 미만으로 낮출 수 없습니다.; amount=8/12/16/20/24  rank_values, min_amount=50%  formula_components / caster: 3초 동안 방어력 20/27.5/35/42.5/50 + 레오나 추가 방어력의 20%를 얻습니다.; amount=20/27.5/35/42.5/50  rank_values, stat_coefficient=20% caster의 bonusArmor formula_components, duration_seconds=3  scalar / caster: 3초 동안 마법 저항력 20/27.5/35/42.5/50 + 레오나 추가 마법 저항력의 20%를 얻습니다.; amount=20/27.5/35/42.5/50  rank_values, stat_coefficient=20% caster의 bonusMagicResist formula_components, duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.other eq 방어력·마법 저항력 증가의 최초 3초가 끝나 방패가 폭발함 적용. nearby_enemies: 방패가 폭발해 주변 적에게 마법 피해를 입힌다. (magic); amount=55/85/115/145/175  rank_values, stat_coefficient=40% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.hit_count gte one, caster.other eq 이 방패 폭발이 실제 적에게 적중함 적용. caster: 폭발이 실제 적을 하나 이상 맞히면 방어력 증가 효과가 추가 3초 유지됩니다.; duration_seconds=3  scalar / caster: 폭발이 실제 적을 하나 이상 맞히면 마법 저항력 증가 효과가 추가 3초 유지됩니다.; duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "피해 감소에 저항력 증가의 3초와 감소량으로 읽히는 50%가 붙었다.",
+      "correction": "피해 감소의 명시되지 않은 지속시간을 제거하고 원래 피해 50%의 결과 하한으로 표현했다.",
+      "sourceId": "en:body",
+      "quote": "Damage reduction effect can't reduce the damage below 50%."
+    },
+    {
+      "path": "rules.0.effects.1-2",
+      "issue": "방어력과 마법 저항력의 서로 다른 기본·계수 묶음이 스탯 없는 하나의 효과로 합쳐졌다.",
+      "correction": "각 스탯의 수치·추가 스탯 계수·3초를 분리했다.",
+      "sourceId": "en:body",
+      "quote": "gaining (20/27.5/35/42.5/50 + (20% bonus Armor)) Armor and (20/27.5/35/42.5/50 + (20% bonus Magic Resist)) Magic Resist for 3 seconds."
+    },
+    {
+      "path": "rules.1-2.trigger,conditions,effects",
+      "issue": "폭발의 최초 지속시간 종료와 실제 적중 조건이 빠져 주변 인원수로 연장을 판단한다.",
+      "correction": "최초 3초 종료 폭발과 실제 한 명 이상 적중으로 각각 방어력·마법 저항력 3초 연장을 연결했다.",
+      "sourceId": "en:body",
+      "quote": "If she hits at least one, she retains the Armor and Magic Resist bonuses for an additional 3 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 254,
+      "verdict": "repaired",
+      "reason": "3초는 문법상 방어력·마법 저항력 획득에 직접 연결되므로 피해 감소에서 제거하고 정확한 지속시간 한계를 남겼다."
+    },
+    {
+      "index": 255,
+      "verdict": "repaired",
+      "reason": "50%는 감소량이 아니라 감소 후 피해의 원래 피해 대비 하한이다. min_amount 구성 및 명시적 text로 수정했다."
+    },
+    {
+      "index": 256,
+      "verdict": "false_positive",
+      "reason": "기존 parameters.4는 실제 존재하며 방어력·마법 저항력 공통의 3초 duration_seconds다. 경로 부재 주장은 오탐이다. 두 스탯 값은 의미를 분명히 하려고 각각의 효과로 분리했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "본문의 for 3 seconds는 방어력·마법 저항력 증가에 직접 연결된다. 피해 감소의 지속시간이나 적중 시 연장 여부는 별도로 특정하지 않아 3초 지속시간과 연장을 피해 감소에 부여하지 않았다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "영문은 피해 감소가 피해를 원래의 50% 미만으로 낮추지 못한다고 명시하지만 한국어는 50% 아래의 공격에는 감소가 적용되지 않는다고 표현하여 기준이 모호하다. 규칙은 영문의 명확한 피해 하한을 따른다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "id": "Katarina.R",
+  "sourceHash": "69cd200e68f37f25408d496426ec9608e9f5448e97ad298e118a819bff88025e",
+  "beforeCandidateHash": "69e1b52d51a7e37cc4957e6e9329059452770f54b8c2a0ae439582d979acb128",
+  "candidateHash": "3b1238e73132e2990c1e2a2e935c32c5d6c8eab53fcd59c5478b1053f0287704",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "채널링최근3챔피언 각단검25~50+19%AP마법/16%추가AD물리/40%치감3초;2.5초총계375~750+285%AP/240%추가AD;온힛·온어택25/30/35%,치명·흡혈없음/공속증폭 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 nearby_enemies.target_type eq champion / nearby_enemies.distance eq 채널링 중 가장 가까운 적챔피언 세 명; nearby_enemies: 가장 가까운 적 챔피언 세 명을 공격하는 동안 각 단검이 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n1=25,en:body:n2=37.5,en:body:n3=50 상수 rank_values / stat_coefficient en:body:n4=19%(백분율) caster.abilityPower scalar; flags per_target | nearby_enemies: 각 단검이 추가 공격력에 비례한 물리 피해를 입힙니다. [physical]; 수치 stat_coefficient en:body:n5=16%(백분율) caster.bonusAttackDamage scalar; flags per_target | nearby_enemies: 각 단검이 3초 동안 고통스러운 상처를 적용합니다.; 수치 amount en:body:n6=40%(백분율) 상수 scalar / duration_seconds en:body:n7=3 상수 scalar; flags per_target | nearby_enemies: 한 대상에게2.5초동안 모든단검을 맞힌 경우 총마법(375/562.5/750+285%AP) 피해의 요약 수치입니다. 위 단검별 피해와 별도 피해로 합산하지 않습니다.; 수치 amount en:body:n9=375,en:body:n10=562.5,en:body:n11=750 상수 rank_values / stat_coefficient en:body:n12=285%(백분율) caster.abilityPower scalar / duration_seconds en:body:n8=2.5 상수 scalar; flags per_target | nearby_enemies: 한 대상에게2.5초동안 모든단검을 맞힌 경우 총물리240%추가AD 피해의 요약 수치입니다. 위 단검별 피해와 별도 피해로 합산하지 않습니다.; 수치 stat_coefficient en:body:n13=240%(백분율) caster.bonusAttackDamage scalar / duration_seconds en:body:n8=2.5 상수 scalar; flags per_target"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이 스킬은 적중 시 및 공격 시 효과를 피해량의 일부로 적용하고, 치명타와 생명력 흡수를 적용하지 않습니다.; 수치 damage_multiplier en:body:n14=25(백분율),en:body:n15=30(백분율),en:body:n16=35%(백분율) 상수 rank_values; flags 없음 | caster: 물리 피해는 공격 속도에 따라 추가로 증가합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "단검별실피해와총계피해를중복가산하지 않게 총계는정보로 분리·3최근대상조건 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Katarina becomes a flurry of blades, rapidly attacking the three nearest enemy champions with a flurry of knives. Each knife deals (25/37.5/50 + (19% Ability Power)) magic damage and (16% bonus Attack Damage) physical damage, and applies 40% Grievous Wounds for 3 seconds. Total over 2.5 seconds to each enemy: (375/562.5/750 + (285% Ability Power)) magic damage and (240% bonus Attack Damage) physical damage. This Ability applies On-Hit and On-Attack effects at 25/30/35% damage, and does not Critically Strike or apply Life Steal. The physical damage additionally increases with Attack Speed."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 177,
+      "verdict": "false_positive",
+      "reason": "원본 rules0.effects2.parameters1은duration_seconds ref en:body:n7=3으로 정확히 구조화되어 있다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "물리 피해의 공격 속도에 따른 증가량은 명시되지 않아 수치화할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "missing_source",
+      "detail": "단검별피해와2.5초총피해를 구분했다. 채널링의 단검발사 간격/실제적중수/공속추가증폭식은 공급원문에 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

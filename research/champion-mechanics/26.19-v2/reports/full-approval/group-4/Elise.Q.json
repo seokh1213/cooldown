@@ -1,0 +1,81 @@
+{
+  "id": "Elise.Q",
+  "sourceHash": "d81d4af28f4ef2958f2fe6106059bdaa283c24ed521abb587e92c6918947bd6b",
+  "beforeCandidateHash": "2f5c6f7ea37c53eb45db6e0d77b024c0aed8df2d937d9d1770b6281b869b4b4e",
+  "candidateHash": "e7b7ca00c96997c3c2e4e48dd2a1103fed157de5d3ce41cfdd2729feba491c4e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "인간현재체력식40~160+체력비율/거미잃은체력식50~170+체력비율·자기돌진·1회적중효과,두형태체력비례성분몬스터상한을variant원문과대조했다.거미상한은인간문서가두형태를명시한교차근거다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "form:A:en"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq Human Form 적용. target: 신경독을 주입해 대상의 현재 체력에 비례한 마법 피해를 입힙니다. (magic); amount=40/70/100/130/160  rank_values, ratio_output=4%  formula_components, ratio_output=3% caster의 abilityPower formula_components, ratio_input=100 caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "form:B:en"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq Spider Form 적용. caster: 독이빨로 적에게 뛰어듭니다.;  / target: 대상의 잃은 체력에 비례한 마법 피해를 입힙니다. (magic); amount=50/80/110/140/170  rank_values, ratio_output=8%  formula_components, ratio_output=3% caster의 abilityPower formula_components, ratio_input=100 caster의 abilityPower formula_components / target: 대상에게 적중 시 적중 시 효과를 한 번 적용합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "form:A:en"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq monster 적용. target: 인간 형태의 체력 비례 피해량은 몬스터를 상대로 상한이 적용됩니다. (magic); max_amount=65/85/105/125/145  rank_values, stat_coefficient=90% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "form:B:en",
+        "form:A:en"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq monster 적용. target: 거미 형태의 체력 비례 피해량은 몬스터를 상대로 상한이 적용됩니다. (magic); max_amount=65/85/105/125/145  rank_values, stat_coefficient=90% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2,3.trigger.subject",
+      "issue": "몬스터적중행위자를target로지정",
+      "correction": "caster로정정",
+      "sourceId": "form:A:en",
+      "quote": "Human Form and Spider Form percent Health damage is capped at (65/85/105/125/145 + (90% Ability Power)) against monsters."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "인간은고정피해+(4%+시전자주문력100당3%)×대상현재체력,거미는고정피해+(8%+시전자주문력100당3%)×대상잃은체력이다.currentHealth/missingHealth스탯은계약에없어구성요소와text로보존한다.몬스터상한은각체력비례성분에만적용된다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

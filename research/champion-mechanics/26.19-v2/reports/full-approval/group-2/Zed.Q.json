@@ -1,0 +1,65 @@
+{
+  "id": "Zed.Q",
+  "sourceHash": "e5236718694d6314f53c022070b578eb488e6567dc5c89acd48b4a230b6d8db4",
+  "beforeCandidateHash": "8d0830fdcc22e3db858470bcf44278b21130d718fb3d3cbf839daad29050605b",
+  "candidateHash": "5a24db065dacd0c8e82264a15e2f0029285965442d8ab023fbe1545bda6804a2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "제드와 각그림자 표창마다 첫 적80~240+100%추가AD, 해당표창추가적48~144+60%추가AD물리를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq 제드 또는 각 그림자가 던진 해당 표창이 처음 통과한 적; target: 각 제드/그림자 표창의 첫 적에게 해당 식의 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n0=80,en:body:n1=120,en:body:n2=160,en:body:n3=200,en:body:n4=240 상수 rank_values / stat_coefficient en:body:n5=100%(백분율) caster.bonusAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq 제드 또는 각 그림자가 던진 해당 표창이 첫 적 통과 후 맞힌 추가 적; target: 각 제드/그림자 표창의 첫 적 이후 추가 적에게 해당 식의 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n6=48,en:body:n7=72,en:body:n8=96,en:body:n9=120,en:body:n10=144 상수 rank_values / stat_coefficient en:body:n11=60%(백분율) caster.bonusAttackDamage scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "표창별 적중순서·발생사건을 명확히 함",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Zed and his Shadows throw their shurikens, each dealing (80/120/160/200/240 + (100% bonus Attack Damage)) physical damage to the first enemy they pass through, and (48/72/96/120/144 + (60% bonus Attack Damage)) physical damage to each additional enemy."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 707,
+      "verdict": "repaired",
+      "reason": "첫 적 조건을 제드/각그림자 해당 표창별 첫통과 적으로 명시."
+    },
+    {
+      "index": 708,
+      "verdict": "repaired",
+      "reason": "neq first 대신 해당표창 첫 적 이후 추가적이라는 관계로 명시."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

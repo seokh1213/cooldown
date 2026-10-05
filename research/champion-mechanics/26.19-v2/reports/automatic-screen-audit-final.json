@@ -1,0 +1,296 @@
+{
+  "scope": "Verify resolution of only the seven source-confirmed findings from automatic-screen-audit.json in five repaired candidate slots.",
+  "boundary": "This is a targeted repair verification against frozen source extraction. It does not approve complete candidate slots, reclassify the three false positives, review all 865 slots, validate live-game mechanics, or estimate population accuracy.",
+  "method": "Read both audit and repair reports, reread the five updated candidates and their source text, inspect the seven changed paths and related effects, and compare canonical current hashes to repair-report hashes. Honest text/gaps are allowed when a dedicated executable representation is unavailable.",
+  "auditReportPath": "reports/automatic-screen-audit.json",
+  "auditReportHash": "01d17a7d804912041b2428a67d0c57339260434fb9a6946664e0bfec5c19f818",
+  "repairReportPath": "reports/automatic-screen-audit-repair.json",
+  "repairReportHash": "2deadeda6d82b35b3b80dc59ec40142a76ee5a9ee6be0caaeef8534249d51062",
+  "hashAlgorithm": "sources.digest: SHA-256 of JSON.stringify(parsed object). sourceHash is the frozen input job sourceHash.",
+  "pathConvention": "JSON Pointer into candidates/<id>.json. previousActualCandidatePath is historical and can point to a parameter removed by repair; currentPaths and observations refer to the current candidate.",
+  "reviewedIds": [
+    "Graves.P",
+    "Graves.Q",
+    "Morgana.W",
+    "Malzahar.W",
+    "Nami.E"
+  ],
+  "counts": {
+    "verifiedFindings": 7,
+    "resolved": 7,
+    "needsRevision": 0,
+    "repairedSlots": 5,
+    "unchangedFalsePositiveHashChecks": 3
+  },
+  "entries": [
+    {
+      "auditId": "screen-audit-1",
+      "id": "Graves.P",
+      "status": "resolved",
+      "errorType": "reduction_as_remaining_multiplier",
+      "previousIssue": "The scalar damage_multiplier is the source 25% reduction, so the typed record applies 0.25 rather than retaining the source's remaining portion (0.75). The effect text only says reduced damage and no alternate rule repairs this number meaning.",
+      "previousCandidateHash": "be998fac4af31b679a4c37c3d936f69f8fb6ac4342ed107206c6818f686b342d",
+      "previousActualCandidatePath": "/rules/4/effects/0/parameters/0",
+      "candidatePath": "candidates/Graves.P.json",
+      "candidateHash": "2de7d345e9a60645f813a7fb4675dc273bf2f5c649ba8b043ec6dc1e363498f6",
+      "sourceHash": "feefb7483056a9489a0b43cf3085066571548b6b0837fa77c085b756cc183389",
+      "sourceId": "en:body",
+      "sourceQuote": "Structures take 25% reduced damage.",
+      "currentPaths": [
+        "/rules/4/effects/0/parameters/0",
+        "/rules/4/effects/0/text",
+        "/gaps/2"
+      ],
+      "resolution": "The 25% source reduction is now an other/unknown numeric annotation. The effect text explicitly says damage is reduced by 25%, and there is no false remaining damage_multiplier=25%. Source relationship is retained without inventing a new residual-factor ref.",
+      "observations": [
+        {
+          "path": "/rules/4/effects/0/parameters/0/role",
+          "value": "other"
+        },
+        {
+          "path": "/rules/4/effects/0/parameters/0/shape",
+          "value": "unknown"
+        },
+        {
+          "path": "/rules/4/effects/0/parameters/0/numberRefs",
+          "value": [
+            "en:body:n9"
+          ]
+        }
+      ],
+      "repairReportStatus": "resolved",
+      "repairHashMatches": true,
+      "sourceHashUnchanged": true
+    },
+    {
+      "auditId": "screen-audit-2",
+      "id": "Graves.Q",
+      "status": "resolved",
+      "errorType": "or_scope_encoded_as_and",
+      "previousIssue": "The only explosion rule requires time=1 AND terrain-collision activation. Both tooltips give alternatives, and even the candidate gap describes OR. No separate time-only or collision-only explosion rule preserves the missing alternatives.",
+      "previousCandidateHash": "3ec35759180c0a6c4040176dd87a5d97795e2102cad9e9278b1b5c4c7e1a6430",
+      "previousActualCandidatePath": "/rules/1/conditions",
+      "candidatePath": "candidates/Graves.Q.json",
+      "candidateHash": "0f32492cd3441c714527b6d495c63afd4c5a2e42f05b0d9b28b8de1bd529db48",
+      "sourceHash": "08e5d88dc2f6298af922c6d481b6a96017a860bbdf4a5d83b675b70920f359f2",
+      "sourceId": "en:body",
+      "sourceQuote": "After 1 second or after colliding with terrain, it detonates",
+      "currentPaths": [
+        "/rules/1/conditions",
+        "/gaps/0"
+      ],
+      "resolution": "The time=1 AND terrain-collision conjunction is removed. One explicit text condition now says 1 second elapsed OR terrain collision, and the gap honestly records the non-executable OR representation. Explosion damage remains linked to that alternative trigger.",
+      "observations": [
+        {
+          "path": "/rules/1/conditions/0/value/value",
+          "value": "1초 경과 또는 지형 충돌"
+        }
+      ],
+      "repairReportStatus": "resolved",
+      "repairHashMatches": true,
+      "sourceHashUnchanged": true
+    },
+    {
+      "auditId": "screen-audit-6",
+      "id": "Morgana.W",
+      "status": "resolved",
+      "errorType": "heal_event_encoded_as_incoming_damage",
+      "previousIssue": "The source reduces cooldown on Soul Siphon healing, but the sole cooldown rule requires damage_taken by caster plus a healed-by-Soul-Siphon predicate. The predicate does not replace the wrong event; incoming damage is an extra unsupported requirement.",
+      "previousCandidateHash": "a128462e0d6a3d26979007178801fd8726692caa3c9c7ee8f138b12190fa792f",
+      "previousActualCandidatePath": "/rules/1/trigger/event",
+      "candidatePath": "candidates/Morgana.W.json",
+      "candidateHash": "2607d9d27037b0876bcac149f2a7e6e50c05cafd38a0e0c1b505c43ec6698148",
+      "sourceHash": "5bdaf02e656234f52179921cad1cc4b87847100a3f15f0cce9d7d41032eae32a",
+      "sourceId": "en:body",
+      "sourceQuote": "This Ability's Cooldown is reduced by 5% every time Morgana is healed by Soul Siphon.",
+      "currentPaths": [
+        "/rules/1/trigger",
+        "/rules/1/conditions/0",
+        "/rules/1/effects/0"
+      ],
+      "resolution": "Cooldown reduction no longer requires incoming damage. The caster other event and named Soul Siphon healing predicate preserve every Soul Siphon heal, with source 5% cooldown reduction and matching effect text.",
+      "observations": [
+        {
+          "path": "/rules/1/trigger/event",
+          "value": "other"
+        },
+        {
+          "path": "/rules/1/conditions/0/value/value",
+          "value": "Soul Siphon으로 회복함"
+        }
+      ],
+      "repairReportStatus": "resolved",
+      "repairHashMatches": true,
+      "sourceHashUnchanged": true
+    },
+    {
+      "auditId": "screen-audit-7",
+      "id": "Malzahar.W",
+      "status": "resolved",
+      "errorType": "stack_cap_used_as_summon_count",
+      "previousIssue": "The summon effect's count ref is en:body:n0=2, which comes from max stack cap. The source and effect text instead give one base Voidling plus one per stack, hence a variable summon count. Correct text does not repair a constant count=2.",
+      "previousCandidateHash": "98acdd983752e0e21667146d7927b8a545b7fd38db90a27dbce9d5622d16065f",
+      "previousActualCandidatePath": "/rules/1/effects/0/parameters/0",
+      "candidatePath": "candidates/Malzahar.W.json",
+      "candidateHash": "694b051596dc7e2be23602d7c0fa4818a28bbffaf04eeb4d5ddf5fb6f8b4d677",
+      "sourceHash": "0f76c6b8fc8890b7d3f0f3acfbd4324cb84bb1f58c72d44e001c6b54859f60c8",
+      "sourceId": "en:body",
+      "sourceQuote": "Active: Malzahar summons a Voidling plus an additional Voidling per stack.",
+      "currentPaths": [
+        "/rules/1/effects/0/parameters",
+        "/rules/1/effects/0/text",
+        "/gaps/2"
+      ],
+      "resolution": "The erroneous constant summon count=2 is removed. The summon effect now preserves one base Voidling plus one per held stack in text, with a gap for the variable total representation. The original stack-cap source is not reused as total summon count.",
+      "observations": [
+        {
+          "path": "/rules/1/effects/0/parameters",
+          "value": []
+        },
+        {
+          "path": "/rules/1/effects/0/text",
+          "value": "기본 공허충 한 마리와 보유 중첩마다 공허충 한 마리를 추가로 소환합니다."
+        }
+      ],
+      "repairReportStatus": "resolved",
+      "repairHashMatches": true,
+      "sourceHashUnchanged": true
+    },
+    {
+      "auditId": "screen-audit-8",
+      "id": "Malzahar.W",
+      "status": "resolved",
+      "errorType": "epic_only_modifier_applied_to_all_monsters",
+      "previousIssue": "The only typed condition is target_type=monster, so the replacement 50% multiplier applies to ordinary monsters too. Epic is present in effect text, but no epic-only predicate or separate rule restricts the typed scope. The source explicitly limits this modifier to epic monsters.",
+      "previousCandidateHash": "98acdd983752e0e21667146d7927b8a545b7fd38db90a27dbce9d5622d16065f",
+      "previousActualCandidatePath": "/rules/5/conditions/0",
+      "candidatePath": "candidates/Malzahar.W.json",
+      "candidateHash": "694b051596dc7e2be23602d7c0fa4818a28bbffaf04eeb4d5ddf5fb6f8b4d677",
+      "sourceHash": "0f76c6b8fc8890b7d3f0f3acfbd4324cb84bb1f58c72d44e001c6b54859f60c8",
+      "sourceId": "en:body",
+      "sourceQuote": "Voidlings deal 50% damage to epic monsters.",
+      "currentPaths": [
+        "/rules/5/conditions",
+        "/rules/5/effects/0/parameters/0",
+        "/rules/5/effects/0/flags"
+      ],
+      "resolution": "The target condition now requires monster type AND a named epic-monster predicate. The source 50% replacement multiplier therefore no longer applies to ordinary monsters.",
+      "observations": [
+        {
+          "path": "/rules/5/conditions/1/value/value",
+          "value": "에픽 몬스터"
+        },
+        {
+          "path": "/rules/5/effects/0/parameters/0/numberRefs",
+          "value": [
+            "en:body:n16"
+          ]
+        }
+      ],
+      "repairReportStatus": "resolved",
+      "repairHashMatches": true,
+      "sourceHashUnchanged": true
+    },
+    {
+      "auditId": "screen-audit-9",
+      "id": "Nami.E",
+      "status": "resolved",
+      "errorType": "empowerment_owner_is_caster_instead_of_ally",
+      "previousIssue": "The cast creates the mark on ally and the attack/ability trigger is ally, but proc conditions test caster.mark=empowered. This checks Nami's mark instead of the empowered ally's mark, contradicting the source and mark creation. The same ownership error also appears in the slow and area branches.",
+      "previousCandidateHash": "515bdadd993a8aa7eb4b04ea23dfbdad34385467ecadd28135bd726c4ec2d7ad",
+      "previousActualCandidatePath": "/rules/2/conditions/0",
+      "candidatePath": "candidates/Nami.E.json",
+      "candidateHash": "f7f1ea737f5905380259ba558b528dc721a08ce6f7f8e6f02c9ed27a1f05819f",
+      "sourceHash": "e1e5ee83d9980502d088b299bd92a80c25f129b606b2f751669485570bdfbdf9",
+      "sourceId": "en:body",
+      "sourceQuote": "Nami empowers an allied champion's next 3 Attacks and Abilities for 6 seconds",
+      "currentPaths": [
+        "/rules/0/effects/0/subject",
+        "/rules/1/conditions/0",
+        "/rules/2/conditions/0",
+        "/rules/3/conditions/0"
+      ],
+      "resolution": "All three affected proc branches now test ally.mark=empowered, matching the ally mark creation and ally attack/ability triggers. Caster AP ownership remains separate from the empowered ally's mark.",
+      "observations": [
+        {
+          "path": "/rules/1/conditions/0/subject",
+          "value": "ally"
+        },
+        {
+          "path": "/rules/2/conditions/0/subject",
+          "value": "ally"
+        },
+        {
+          "path": "/rules/3/conditions/0/subject",
+          "value": "ally"
+        }
+      ],
+      "repairReportStatus": "resolved",
+      "repairHashMatches": true,
+      "sourceHashUnchanged": true
+    },
+    {
+      "auditId": "screen-audit-10",
+      "id": "Nami.E",
+      "status": "resolved",
+      "errorType": "stat_ratio_denominator_encoded_as_flat_amount",
+      "previousIssue": "The slow effect's en:body:n8=100 is role amount, not the denominator of its 5%-per-100-AP coefficient. The substantive error exists, but the automated pointer rules.2.effects.0.parameters.1 actually targets the damage effect's 20% AP coefficient. This finding has a valid issue and an incorrect localization.",
+      "previousCandidateHash": "515bdadd993a8aa7eb4b04ea23dfbdad34385467ecadd28135bd726c4ec2d7ad",
+      "previousActualCandidatePath": "/rules/1/effects/0/parameters/2",
+      "candidatePath": "candidates/Nami.E.json",
+      "candidateHash": "f7f1ea737f5905380259ba558b528dc721a08ce6f7f8e6f02c9ed27a1f05819f",
+      "sourceHash": "e1e5ee83d9980502d088b299bd92a80c25f129b606b2f751669485570bdfbdf9",
+      "sourceId": "en:body",
+      "sourceQuote": "(5% per 100 Ability Power)",
+      "currentPaths": [
+        "/rules/1/effects/0/parameters/1",
+        "/rules/1/effects/0/parameters/2",
+        "/rules/1/effects/0/text"
+      ],
+      "resolution": "At the audit-corrected actual path, the 100-AP denominator is now ratio_input rather than flat amount. The 5% caster AP coefficient and text explicitly preserve its additive per-100 relation with the ranked slow amount.",
+      "observations": [
+        {
+          "path": "/rules/1/effects/0/parameters/2/role",
+          "value": "ratio_input"
+        },
+        {
+          "path": "/rules/1/effects/0/parameters/2/numberRefs",
+          "value": [
+            "en:body:n8"
+          ]
+        }
+      ],
+      "repairReportStatus": "resolved",
+      "repairHashMatches": true,
+      "sourceHashUnchanged": true
+    }
+  ],
+  "unchangedFalsePositiveChecks": [
+    {
+      "id": "Kayn.P",
+      "status": "unchanged_hash_verified",
+      "candidateHash": "3fb8be958101b640d38d32f2a2ba2b411355dcf1cb6daf0262b0ef5f23c9d251",
+      "sourceHash": "0cb64b258e6a7f605ce5fab719b9841414f0d9714e626e1cc336663b1fe77335",
+      "basis": "Current canonical hash equals the original audited hash and repair-report hash. No new semantic review or repair approval is claimed for this false-positive candidate."
+    },
+    {
+      "id": "Kayn.R",
+      "status": "unchanged_hash_verified",
+      "candidateHash": "3776791e74c17c864d39a3d1029e784041061ce89d973df2a93ff9353762117a",
+      "sourceHash": "20936130fc07cd4d22443473e852e640ccd89f1da5c077e2fa7436798b07c61c",
+      "basis": "Current canonical hash equals the original audited hash and repair-report hash. No new semantic review or repair approval is claimed for this false-positive candidate."
+    },
+    {
+      "id": "Morgana.P",
+      "status": "unchanged_hash_verified",
+      "candidateHash": "1cc99e767b233d8dcd588427d842c284f05ecfc03ca33d5d4ec6bcfa57630947",
+      "sourceHash": "b417a9da265294a7cb96f3d4d1f45bc3248273f7e9fa0501ac3c0907eda89109",
+      "basis": "Current canonical hash equals the original audited hash and repair-report hash. No new semantic review or repair approval is claimed for this false-positive candidate."
+    }
+  ],
+  "newFindings": [],
+  "limitations": [
+    "Resolution means the seven specific sampled defects were corrected at these snapshots; unrelated candidate effects were not accepted or audited anew.",
+    "Graves P reduction, Graves Q alternative trigger and Malzahar W variable summon count may remain explicit text/gaps instead of fully executable formulas."
+  ]
+}

@@ -1,0 +1,409 @@
+{
+  "summary": "아이번은 데이지를 소환해 함께 전투하게 합니다. 데이지가 같은 챔피언 또는 에픽 몬스터를 상대로 세 번째 연속 공격을 하면 충격파가 적중한 적에게 마법 피해와 공중 띄우기를 적용합니다. 재사용하면 데이지에게 공격 또는 이동을 지시합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "아이번이 데이지를 소환해 전투에 참여시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ivern summons his sentinel friend Daisy to leap into the fray for 45 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "같은 챔피언 또는 에픽 몬스터를 상대로 한 세 번째 연속 공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언 또는 에픽 몬스터"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 충격파는3초에한번만발동가능"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "데이지의 충격파가 적중한 모든 적에게 마법 피해를 준다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "secondary_targets",
+          "text": "충격파에 적중한 적을 공중으로 띄운다.",
+          "damageType": null,
+          "crowdControl": "knockup",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Daisy's 3rd consecutive Attack on the same champion or epic monster will launch a shockwave, dealing (90/140/190 + (50% Ability Power)) magic damage to all enemies hit as well as Knocking Up for 1 second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Daisy, Slam!: Daisy's 3rd consecutive Attack on the same champion or epic monster will launch a shockwave, dealing (90/140/190 + (50% Ability Power)) magic damage to all enemies hit as well as Knocking Up for 1 second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This effect can only occur once every 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "충격파 발동 간격"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n7"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "summon",
+          "text": "이 효과는 정해진 간격보다 자주 발생할 수 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This effect can only occur once every 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "summon",
+          "text": "아이번이 데이지에게 공격 또는 이동을 지시한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Instruct Daisy to Attack or move."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "summon"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "summon",
+          "text": "데이지의 체력은 범위로 제시되며 주문력 계수가 더해진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "maxHealth",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replace_input"
+          ]
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "summon",
+          "text": "데이지의 방어력은 범위로 제시된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": [
+            "replace_input"
+          ]
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "summon",
+          "text": "데이지의 마법 저항력은 범위로 제시된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "magicResist",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": [
+            "replace_input"
+          ]
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "summon",
+          "text": "데이지의 공격력은 랭크별 수치와 주문력 계수로 제시된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "totalAttackDamage",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replace_input"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Daisy has: ((1000 ~ 4400) + (50% Ability Power)) Health (30 ~ 90) Armor (30 ~ 90) Magic Resist (70/100/130 + (15% Ability Power)) Attack Damage"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "세 번째 연속 공격 조건은 hit_count로 표현하지 않고 문구를 보존했다. 허용 조건 필드에는 연속 공격 대상과 공격 순서를 온전히 표현할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Daisy's 3rd consecutive Attack on the same champion or epic monster"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "데이지HP1000~4400,armor/MR30~90의범위증가기준은본문에없다.아이번AP계수는원문대로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Daisy has: ((1000 ~ 4400) + (50% Ability Power)) Health (30 ~ 90) Armor (30 ~ 90) Magic Resist (70/100/130 + (15% Ability Power)) Attack Damage"
+        }
+      ]
+    }
+  ]
+}

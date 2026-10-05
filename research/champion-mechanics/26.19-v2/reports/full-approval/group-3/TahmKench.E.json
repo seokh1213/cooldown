@@ -1,0 +1,106 @@
+{
+  "id": "TahmKench.E",
+  "sourceHash": "404961ba9a6df137b4a37bfb616b29a4ae5ddeab95174fbebcc76e3802febec2",
+  "beforeCandidateHash": "74842b85798fe3a33e8fdc3e2064b797af5c95b6fb0e5f7ac0ad84829ee9dd83",
+  "candidateHash": "57d3d24c4edb38788301a8313bdb66d2fb1a41db950e4d2d4831e7688368bc3d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "피해비축기본15~47%/적챔피언2이상42~50%·4초무피해소모회복60~100%·전량2.5초보호막·체력300%회색비축상한을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 damage_taken / 조건 nearby_enemies entity_count lt 2; nearby_enemies target_type eq champion → caster: 받은 피해의 일부를 회색 체력으로 비축한다. / amount=15/23/31/39/47% [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 damage_taken / 조건 nearby_enemies entity_count gte 2; nearby_enemies target_type eq champion → caster: 받은 피해의 증가한 비율을 회색 체력으로 비축한다. / amount=42/44/46/48/50% [rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster time gte 4; caster resource present 회색 체력; caster other eq 지난 4초 동안 피해를 받지 않음 → caster: 일정 시간 피해를 받지 않으면 회색 체력을 빠르게 소모해 그 가치의 일부만큼 회복한다. / amount=60%/100% [level_range]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster resource present 회색 체력 → caster: 비축한 두꺼운 피부를 전부 보호막으로 전환한다. / duration_seconds=2.5 [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 회색 체력은 체력(종류 미명시)의300%까지 비축된다. / storage_cap=300% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.conditions",
+      "issue": "강화비축인원수를모든적에서세도록기록",
+      "correction": "적챔피언대상조건추가",
+      "sourceId": "en:body",
+      "quote": "at least 2 nearby enemy champions."
+    },
+    {
+      "path": "rules.2.conditions",
+      "issue": "단순경과4초만조건으로무피해구간불명확",
+      "correction": "지난4초무피해조건보존",
+      "sourceId": "en:body",
+      "quote": "If Kench has not taken damage within 4 seconds"
+    },
+    {
+      "path": "rules.4.effects.0",
+      "issue": "Health를maxHealth로추정",
+      "correction": "미명시체력300%텍스트·gap",
+      "sourceId": "en:body",
+      "quote": "Grey Health is capped at (300% Health)"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "회색 체력 상한의 Health는 본문이 최대/현재 체력 종류를 명시하지 않는다.300% 체력이라는 표현을 보존하며maxHealth로실행하지않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "id": "Seraphine.P",
+  "sourceHash": "e8cb4cf422e694867cec1173dac286ae6a472993f584bb5cf4d40041bcf03546",
+  "beforeCandidateHash": "b8b760c326a71d465fe3a0aa2be95126fb50ac2db06f2ec36bd5139579c469ff",
+  "candidateHash": "6e16428e6d814d444d38e8c6288ec05cc61d810e626eaf5e396a257eb043d744",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "기본스킬3번째마다자동두번째시전,모든스킬시전주변아군당음표,음표당사거리25/추가레벨마법/AP·공격시소모를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.other eq 기본 스킬 시전 횟수가 세 번째일 때마다; caster: 시전한 기본 스킬이 메아리쳐 자동으로 두 번째 시전됩니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 스킬을 시전할 때마다 주변 아군 하나당 음표 하나를 생성합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.resource eq 이 패시브로 생성된 음표 보유; caster: 음표 하나당 기본 공격 사거리가25 증가합니다.; 수치 distance_units en:body:n0=25 상수 scalar; flags 없음 | target: 각 음표마다4~25+4%AP추가마법피해를입힙니다. [magic]; 수치 min_amount en:body:n1=4 상수 level_range / max_amount en:body:n2=25 상수 level_range / stat_coefficient en:body:n3=4%(백분율) caster.abilityPower scalar; flags 없음 | caster: 기본 공격 시 음표를 소모합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "반복주기표현과음표자원식별·공격사거리단위·추가마법피해분류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Every third basic Ability Seraphine casts will echo, automatically casting a second time. Additionally, Seraphine draws inspiration from the music within her allies, creating a Note for each nearby ally whenever she casts an Ability. For each Note, Seraphine's Attacks gain 25 Attack Range and deal an additional ((4 ~ 25) + (4% Ability Power)) magic damage and consume the Notes."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 441,
+      "verdict": "repaired",
+      "reason": "세번째일때마다발동하는반복주기를명시."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

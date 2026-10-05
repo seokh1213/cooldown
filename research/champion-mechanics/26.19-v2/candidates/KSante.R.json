@@ -1,0 +1,367 @@
+{
+  "summary": "적 챔피언을 뒤로 밀쳐내며 물리 피해를 입히고, 적이 벽에 부딪힐 상황이면 벽 너머로 밀쳐낸 뒤 다시 공격해 피해를 입힙니다. 이후 총공세 상태가 되어 능력치가 변하고 스킬이 강화됩니다. 시전 중 저지 불가 상태이며 대상을 속박합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적 챔피언에게 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적 챔피언을 뒤로 밀쳐냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "대상 적 챔피언 뒤로 돌진한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "총공세 상태에 일정 시간 돌입한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "K'Sante shatters his ntofos to Knock Back an enemy champion, dealing 80/115/150 physical damage, then dashes behind them and goes All Out for 15s."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적이 벽에 부딪힐 상황"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적을 벽 너머로 밀쳐냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적을 다시 공격해 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the enemy would hit a wall, they are Knocked Back through the wall and K'Sante strikes them again for (80/115/150 + (5% bonus Health)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "All Out"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "총공세 중 크산테의 스킬이 업그레이드됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "공격 속도가 40/60/80% 증가하고 추가 방어구 관통력 50%, 모든 피해 흡혈 20%를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "armorPenetration",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While All Out, K'Sante's Abilities are upgraded and he gains 40/60/80% Attack Speed, 50% Bonus Armor Penetration, and 20% Omnivamp,"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "While All Out, K'Sante's Abilities are upgraded and he gains 40/60/80% Attack Speed, 50% Bonus Armor Penetration, and 20% Omnivamp, but loses 35% max Health, 85% Bonus Armor, and 85% Bonus Magic Resistance."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "All Out"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "최대 체력, 추가 방어력, 추가 마법 저항력을 잃습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "bonusArmor",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "bonusMagicResist",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "but loses 35% max Health, 85% Bonus Armor, and 85% Bonus Magic Resistance."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "While All Out, K'Sante's Abilities are upgraded and he gains 40/60/80% Attack Speed, 50% Bonus Armor Penetration, and 20% Omnivamp, but loses 35% max Health, 85% Bonus Armor, and 85% Bonus Magic Resistance."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "이 스킬을 시전하는 동안 저지 불가 상태가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "시전하는 동안 대상을 속박합니다.",
+          "damageType": null,
+          "crowdControl": "root",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "K'Sante is Unstoppable and Roots his target while casting this Ability."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "스키마에Omnivamp전용stat이없으므로lifeSteal로치환하지않고텍스트와20%를보존한다. AS40/60/80%의각랭크는백분율이며lexical표에서앞값raw에%가없어도절대AS로실행하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "he gains 40/60/80% Attack Speed, 50% Bonus Armor Penetration, and 20% Omnivamp"
+        }
+      ]
+    }
+  ]
+}

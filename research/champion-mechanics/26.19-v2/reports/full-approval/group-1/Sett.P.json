@@ -1,0 +1,62 @@
+{
+  "id": "Sett.P",
+  "sourceHash": "aaaca7c5e58f321be35fcdcfbc405e2ef2d16b7e37a8b1124627e8baf47a542f",
+  "beforeCandidateHash": "33716160684f6be4ab69f956a83b075178267bf98e5608498b5079ae2e0be9b4",
+  "candidateHash": "82592517248674faed3da0fb4ba7e934da6355fce6741183d8ef1b5990167193",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "좌우주먹교대/왼쪽다음오른쪽빠름/오른쪽5~90+bonusAD55%추가물리,자기missingHP5%당HPregen0.15~2를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 왼쪽 주먹 뒤 빠르게 이어지는 오른쪽 주먹. target damage physical: 왼쪽 주먹 뒤 빠르게 이어지는 오른쪽 주먹이 추가 물리 피해를 입힌다. [amount n0=5/n1=90 level_range; stat_coefficient n2=55% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 없음. caster stat_modifier: 세트 자신이 잃은 체력5%마다 체력 재생0.15~2.00을 얻는다. 기본/최대 체력에 단순 계수로 곱하지 않는다. [other n3=0.15/n4=2 formula_components; other n5=5% unknown]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 없음. caster attack_modifier: 기본 공격은 왼쪽 주먹과 오른쪽 주먹을 번갈아 사용한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/new",
+      "issue": "오른주먹물리피해를타입없는공격수정·범위끝/HPregen복합식·교대규칙누락",
+      "correction": "physicaldamage/amount범위,HPregen구성요소,좌우교대passive",
+      "sourceId": "en:body",
+      "quote": "Sett's Attacks alternate between left and right punches."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 447,
+      "verdict": "false_positive",
+      "reason": "조건은왼쪽주먹뒤빠르게이어지는오른쪽주먹이라고순서를정확히명시한다. 원문관계가누락되지않았다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "원문은 잃은 체력 5% 단위로 체력 재생량을 설명하지만, 잃은 체력의 기준 스탯은 명시하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

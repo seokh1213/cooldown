@@ -1,0 +1,113 @@
+{
+  "id": "Kaisa.W",
+  "sourceHash": "6fa6d442eec9a3546511e9ba01a43a0b39418e62418035a81719f42d117a7264",
+  "beforeCandidateHash": "090dc68a4cf2889572f669d1cb4b0b7eefd35bf9cdf505b4e17fc74a57a59696",
+  "candidateHash": "7dc01c3cf14da399541feab753c2cc8e49f2bc79f2a24bc2dea0af6d42130976",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫적중대상의 마법 피해·플라즈마2중첩·4초절대시야,진화시대신3중첩과챔피언75%쿨다운감소,진화진행100주문력표시 및플라즈마의패시브피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 적중한 대상에게 마법 피해를 입힌다. (magic); amount=30/55/80/105/130  rank_values, stat_coefficient=130% caster의 totalAttackDamage scalar, stat_coefficient=45% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. caster: 처음 적중한 적에 대한 절대 시야를 얻는다.; duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.form eq 진화, target.hit_order eq first 적용. target: 플라즈마 중첩을 적용한다.; count=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.form eq 진화, target.target_type eq champion, target.hit_order eq first 적용. caster: 적중 시 재사용 대기시간이 감소한다.; amount=75%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 이 스킬로 적용한 플라즈마는 두 번째 피부의 피해를 입힌다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first, caster.form eq 미진화 적용. target: 플라즈마 중첩을 적용한다.; count=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 공허추적자 진화 진행은 현재 주문력?/요구량100으로 표시된다.; other=100 caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3,5",
+      "issue": "시전/적중 행위자와첫적중범위 및2/3중첩 대체관계 부정확",
+      "correction": "첫 적중 사건·미진화2/진화3중첩 대체를 분리",
+      "sourceId": "en:body",
+      "quote": "Kai'Sa fires a void blast that deals (30/55/80/105/130 + (130% Attack Damage) + (45% Ability Power)) magic damage, applies 2 stacks of Plasma, and grants True Sight of the first enemy hit for 4 seconds."
+    },
+    {
+      "path": "rules.4,6,gaps",
+      "issue": "진화진행100을 플라즈마피해에 연결하고 진화쿨다운조건 미상으로 취급",
+      "correction": "100주문력진행을 UI규칙으로 분리하고영문의명확한진화범위유지",
+      "sourceId": "en:body",
+      "quote": "Evolved: Kai'Sa instead applies 3 stacks of Plasma and hitting a champion reduces the Cooldown by 75%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "진화 요구량100주문력은 표시되어 있으나 현재 주문력 값은?로 미해결이다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

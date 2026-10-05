@@ -1,0 +1,108 @@
+{
+  "id": "Fiddlesticks.W",
+  "sourceHash": "96d7278ddfe7aef87f87b85818155632c79921b1c48c9322b1ef510950bc1e12",
+  "beforeCandidateHash": "d52cdbd70ed0b36e0a208a92a32c5330a5a065b299d7576898bec62915c66f05",
+  "candidateHash": "3af849f80fdb805c2c425e8d383e0b312eb2c0f46c989f982b8942c7570638f9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 3,
+  "summaryCheck": "2초초당60~180+AP45%마법·종료대상잃은HP12~22%·감소전피해25~55%회복·끝까지무방해잔여쿨60%감소·몬스터135%/45%회복·미니언50%/15%회복을확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → nearby_enemies: 정신 집중 중 주변 적에게 초당 마법 피해를 입힙니다. [magic] / amount=60/90/120/150/180 [rank_values]; stat_coefficient=45% (caster abilityPower) [scalar]; duration_seconds=2 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 expiry → nearby_enemies: 집중이 끝날 때 주변 적에게 대상의 잃은 체력 비례 마법 피해를 입힙니다. 잃은 체력 기준은 제공된 통계 항목으로 표현할 수 없습니다. [magic] / amount=12/14.5/17/19.5/22% [rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type neq monster; target target_type neq minion → caster: 주변 적에게 입힌 피해량의 일정 비율만큼 체력을 회복합니다. 회복량은 경감 전 피해를 기준으로 합니다. / amount=25/32.5/40/47.5/55% [rank_values]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 expiry / 조건 caster activation eq 정신 집중을 방해 없이 끝까지 완료 → caster: 방해 없이 집중을 끝내면 남은 재사용 대기시간이 감소합니다. / amount=60% [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq monster → target: 몬스터에게 입히는 피해는 조정됩니다. [magic] / damage_multiplier=135% [scalar] | caster: 몬스터에게 입힌 피해량의 일정 비율만큼 체력을 회복합니다. / amount=45% [scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq minion → target: 미니언에게 입히는 피해는 조정됩니다. [magic] / damage_multiplier=50% [scalar] | caster: 미니언에게 입힌 피해량의 일정 비율만큼 체력을 회복합니다. / amount=15% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.conditions",
+      "issue": "기본회복과몬스터/미니언별도회복이중적용",
+      "correction": "기본회복은기타대상으로분기",
+      "sourceId": "en:body",
+      "quote": "Against monsters, this Ability deals 135% damage and heals 45% of damage done. Against minions, this Ability deals 50% damage and heals 15% of damage done."
+    },
+    {
+      "path": "rules.3.conditions.0",
+      "issue": "무방해완료를fired로치환",
+      "correction": "방해없이끝까지완료텍스트조건",
+      "sourceId": "en:body",
+      "quote": "ends the channel without interruption"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력 비례 피해 기준인 missing Health를 제공된 stat enum으로 표현할 수 없어 텍스트에 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "방해 없이 집중을 끝내는 조건은 fixed followup_status의 fired 값으로 정확히 표현할 수 없어 조건과 효과를 텍스트에 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "몬스터와미니언은별도회복45%/15%가명시되어기본25~55%회복과중복하지않게대상분기한다.회복은본문감소전피해기준문구를따른다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

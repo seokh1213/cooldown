@@ -1,0 +1,108 @@
+{
+  "id": "MissFortune.Q",
+  "sourceHash": "29cd6136af2ad6a143aaa0d58d3b1a101b4eef2f238c8d5bfe0a7d0a88a14c48",
+  "beforeCandidateHash": "a42c93f5e9233b2d5e7bcc8397b7cf19ec4dfead52ec541648bf25d04e8addde",
+  "candidateHash": "7d537313d4682c0982c75d80566cceaf8d009bd9278806e6dcc795e91e8778ee",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "주대상과그뒤다른대상의동일물리피해,두번째실제치명타의중첩곱수식,첫사격처치시두번째확정치명타,두사격적중효과/사랑한방가능을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 첫 번째 적에게 물리 피해를 입힙니다. (physical); amount=20/45/70/95/120  rank_values, stat_coefficient=100% caster의 totalAttackDamage formula_components, stat_coefficient=35% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. secondary_targets: 첫 번째 적 뒤의 다른 적에게 물리 피해를 입힙니다. (physical); amount=20/45/70/95/120  rank_values, stat_coefficient=100% caster의 totalAttackDamage formula_components, stat_coefficient=35% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 secondary_targets.activation eq 두 번째 사격이 실제 치명타로 적중함 적용. secondary_targets: 두 번째 사격은 치명타가 될 수 있으며, 치명타가 되면 물리 피해를 입힙니다. (physical); amount=20/45/70/95/120  formula_components, stat_coefficient=100% caster의 totalAttackDamage formula_components, stat_coefficient=35% caster의 abilityPower formula_components, ratio_output=0.5  formula_components, stat_coefficient=50% caster의 critDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 이 스킬의 첫 번째 사격으로 대상이 처치됨 적용. secondary_targets: 두 번째 사격은 항상 치명타가 됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 첫사격은적중시효과를적용하며사랑의한방이발동할수있다.;  / secondary_targets: 두번째사격도적중시효과를적용하며사랑의한방이발동할수있다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2",
+      "issue": "실제치명타발생조건및치명타스탯소유자누락",
+      "correction": "두번째실제치명타조건·caster치명타피해량·대체관계",
+      "sourceId": "en:body",
+      "quote": "The second shot can critically strike for (20/45/70/95/120 + (100% Attack Damage) + (35% Ability Power)) × (0.5 + 50% Critical Strike Damage) physical damage."
+    },
+    {
+      "path": "rules.3",
+      "issue": "첫대상처치대신첫적중/후속발사만조건",
+      "correction": "첫사격으로첫대상처치조건명시",
+      "sourceId": "en:body",
+      "quote": "It always critically strikes if the first shot kills its target."
+    },
+    {
+      "path": "rules.4",
+      "issue": "두사격적중효과의효과대상구분누락",
+      "correction": "주대상/후속대상각효과와요약LoveTap가능근거보완",
+      "sourceId": "en:body",
+      "quote": "Both strikes apply on-hit effects."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 298,
+      "verdict": "repaired",
+      "reason": "첫사격의첫대상처치라는실제원문조건으로정정하고표현불가gap을제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "두번째치명타피해는기본전체피해×(0.5+50%시전자치명타피해량)이다.중첩곱수식을구성요소로보존하며일반선형합으로실행하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

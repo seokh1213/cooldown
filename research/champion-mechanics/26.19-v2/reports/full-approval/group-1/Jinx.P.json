@@ -1,0 +1,81 @@
+{
+  "id": "Jinx.P",
+  "sourceHash": "ace8eac04296bfbc368ad376dc353d03add1f42246e607e068eeb76ba7f9a22f",
+  "beforeCandidateHash": "ba362af9b6b5d37fce1812727ba2f33ccf818516443bf99c3e735ba9e0d9ddef",
+  "candidateHash": "79383ead64a05651a479fada38f3c95a5637651a78740546a40f902145819064",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 3,
+  "summaryCheck": "해당챔프/에픽몬스터/structure에3초내피해후처치파괴시6초MS175%감쇠/AS25%,챔프takedown만AS최대5중첩을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.takedown; 조건 target.target_type eq champion; caster.time lte n0=3; target.other present 징크스가 해당 챔피언에게 피해를 입힘; caster.other eq time은해당사망/파괴대상에게징크스가마지막으로피해를준후경과한초. caster stat_modifier: 이동 속도가 증가했다가 점차 감소합니다. [amount n1=175% scalar; duration_seconds n3=6 scalar] flags=decays / caster stat_modifier: 공격 속도가 증가합니다. 챔피언 처치 관여 시 이 공격 속도 중첩은 최대 한도까지 쌓입니다. [amount n2=25% scalar; duration_seconds n3=6 scalar; storage_cap n4=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.death; 조건 target.target_type eq monster; target.other eq epic monster; caster.time lte n0=3; target.other present 징크스가 해당 몬스터에게 피해를 입힘; caster.other eq time은해당사망/파괴대상에게징크스가마지막으로피해를준후경과한초. caster stat_modifier: 이동 속도가 증가했다가 점차 감소합니다. [amount n1=175% scalar; duration_seconds n3=6 scalar] flags=decays / caster stat_modifier: 공격 속도가 증가합니다. [amount n2=25% scalar; duration_seconds n3=6 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.other; 조건 target.target_type eq structure; caster.time lte n0=3; target.other present 징크스가 해당 구조물에 피해를 입힘; target.other eq 해당 구조물이 파괴됨; caster.other eq time은해당사망/파괴대상에게징크스가마지막으로피해를준후경과한초. caster stat_modifier: 이동 속도가 증가했다가 점차 감소합니다. [amount n1=175% scalar; duration_seconds n3=6 scalar] flags=decays / caster stat_modifier: 공격 속도가 증가합니다. [amount n2=25% scalar; duration_seconds n3=6 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2",
+      "issue": "takedown/kill행위자혼동·cap역할·structure파괴사건조건",
+      "correction": "castertakedown/monsterdeath,storage_cap5및파괴조건",
+      "sourceId": "en:body",
+      "quote": "Champion takedowns stack the Attack Speed up to 5 times."
+    },
+    {
+      "path": "rules.*.conditions",
+      "issue": "3초조건의기준피해시점미명시",
+      "correction": "해당대상에게마지막으로피해를입힌후3초조건임을명시했다.",
+      "sourceId": "en:body",
+      "quote": "Whenever a champion, epic monster, or structure that Jinx has dealt damage to within the last 3 seconds is killed or destroyed, she gains 175% decaying Move Speed and 25% Attack Speed for 6 seconds. Champion takedowns stack the Attack Speed up to 5 times."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 144,
+      "verdict": "false_positive",
+      "reason": "후보는champ/epicmonster/structure를각규칙으로나눠같은조건/효과를모두적용한다. 원문범위누락이나중복결함이없다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "정해진 시간 안에 피해를 입힌 조건은 기록했지만, 입력 스키마의 조건 필드에는 해당 대상에게 피해를 입혔는지를 정확히 표현할 전용 값이 없어 조건 문장으로 보존했습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "에픽 몬스터는 일반 몬스터와 구분해 텍스트 조건으로 보존했습니다. 스키마에는 에픽 몬스터 전용 대상 값이 없습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "공격 속도 중첩 한도는 챔피언 처치 관여에만 명시되어 있으며, 에픽 몬스터 처치 및 구조물 파괴 발동의 중첩 처리는 명시되지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

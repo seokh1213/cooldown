@@ -1,0 +1,105 @@
+{
+  "id": "Nunu.E",
+  "sourceHash": "ed2bcbeb8973bd7f3ceae9445d9bc0f24f8dc370a2aa4a68e785753cd4eee3ce",
+  "beforeCandidateHash": "0f854ef31f5486f8e26fdd166d33bc8d803b9b36231ab3adde4b97cac73574fd",
+  "candidateHash": "b4758c2954457589602c03f117db4f300370215e0e01de350bc250595c5e563a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "한 번에 눈덩이 세 개의 개별 피해, 같은 투사 묶음 모두 적중해야 하는 한 번의 둔화, 두 번 더 재사용, 3초 뒤 이미 둔화됐던 주변 적의 속박과 추가 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 던진 눈덩이 하나당 마법 피해를 줍니다. (magic); amount=15/22.5/30/37.5/45  rank_values, stat_coefficient=12% caster의 abilityPower formula_components, count=three  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_count gte three, target.other eq 이번 시전의 눈덩이 세 개 모두에 적중함, target.other eq 이번 스킬 사용에서 아직 둔화되지 않은 적 적용. target: 눈덩이를 모두 맞은 적을 둔화시킵니다. (slow); amount=30/35/40/45/50%  rank_values, duration_seconds=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "caster의 recast 사건에서 별도 조건 없이 적용. caster: 최대 두 번 더 재사용할 수 있습니다.; count=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 nearby_enemies.other eq 앞서 이 스킬의 눈덩이에 의해 둔화된 적, nearby_enemies.distance present 주변, caster.time gte 3 적용. nearby_enemies: 눈덩이에 의해 앞서 둔화된 주변 적을 해당 최소~최대 시간(초) 동안 속박한다. (root); min_amount=0.5  scalar, max_amount=1.5  scalar / nearby_enemies: 추가 마법 피해를 줍니다. (magic); amount=20/30/40/50/60  rank_values, stat_coefficient=80% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,3",
+      "issue": "눈덩이 적중 행위자 및 묶음/한 번 둔화/선행 둔화 범위 불명확",
+      "correction": "피해 적중 사건과 묶음별 전체 적중·이미 둔화되지 않음·주변 적 선행 둔화 조건 보완",
+      "sourceId": "en:body",
+      "quote": "Nunu can only Slow each enemy once with this Ability."
+    },
+    {
+      "path": "rules.2",
+      "issue": "두 번 재사용 count에 지연 3초 참조",
+      "correction": "한국어 본문의 2 숫자 참조와 재사용 근거만 연결",
+      "sourceId": "en:body",
+      "quote": "Nunu can Recast this up to twice more."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 353,
+      "verdict": "repaired",
+      "reason": "두 번 더의 count는 한국어 본문의 2를 참조하도록 수정했다."
+    },
+    {
+      "index": 354,
+      "verdict": "repaired",
+      "reason": "3초 속박 근거를 재사용 횟수 규칙에서 제거하고 정확한 한국어 재사용 근거로 교체했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "각 적을 한 번만 둔화시키는 판정이 여러 번 재사용하는 경우 어떻게 적용되는지는 툴팁에 자세히 명시되지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "요약은 눈덩이에 맞은 챔피언/대형 몬스터 속박을 말하지만 본문은 눈덩이로 둔화된 모든 주변 적이라고 더 구체적으로 명시한다. 본문의 대상/선행 둔화 조건을 우선했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

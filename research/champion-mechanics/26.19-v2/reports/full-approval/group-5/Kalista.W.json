@@ -1,0 +1,412 @@
+{
+  "id": "Kalista.W",
+  "sourceHash": "1cb90785dbde343dd7a6f1e4837acf6c1990475448b1314e298bd833674f4c90",
+  "beforeCandidateHash": "61f4bd381393912dfbf2e91df788f212d46ae5c96b2e04be7a843096ac89172e",
+  "candidateHash": "c9a82eff12e9443125c0f75ac8e6afb43959aefaff11fba9281e6503b671c737",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "같은대상에칼리스타/계약자양측기본공격시HP%magic,대상별10초/비챔피언cap,혼순찰/전방시야/발견챔피언4초/2충전을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "양측이실제로같은적을기본공격,상대표식요건아님. maxHP10/12/14/16/18%magic 및대상별10초준비조건.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "칼리스타와 계약자 양쪽의 기본 공격에 맞은 동일 대상"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 W 지속 효과 대기시간이 준비됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "10",
+              "value": 10,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "12",
+              "value": 12,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "14",
+              "value": 14,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "16",
+              "value": 16,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "18%",
+              "value": 18,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비챔피언100/125/150/175/200cap는이패시브피해보정other.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "칼리스타와 계약자 양쪽의 기본 공격에 맞은 동일 대상"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 W 지속 효과 대기시간이 준비됨"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "125",
+              "value": 125,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "175",
+              "value": 175,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "혼하나의세바퀴순찰,3소환체수가아님. KO왕복과ENlaps묘사수치3동일.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "three",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "혼이발견한챔피언을4초드러냄.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "순찰 중인 이 혼에게 발견됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "2는최대보유충전이며90/80/70/60/50초당1회회복. recharge의cooldown_seconds역할을명시문구로구분.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "storage_cap",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17",
+            "en:body:n18"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "요약의혼전방지역시야도보존.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules,gaps",
+      "issue": "same_target을실제표식으로요구·cap별도damage·3을혼count·2를사용회수로해석가능·전방시야누락.",
+      "correction": "실제양측공격조건·capother·lapsother·storagecap/회복명시·전방시야복원.",
+      "sourceId": "en:body",
+      "quote": "This ability has 2 charges (90/80/70/60/50 second refresh)."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 165,
+      "verdict": "repaired",
+      "reason": "원문에표식이없어same_target mark제거하고양쪽공격동일대상조건으로바꿨다."
+    },
+    {
+      "index": 166,
+      "verdict": "false_positive",
+      "reason": "frozen en:body:n4는raw18%이다. 입력을변경하지않고모든값의실제%단위를문구에도명시했다."
+    },
+    {
+      "index": 167,
+      "verdict": "repaired",
+      "reason": "3을투사체/혼수가아닌순찰laps로명시하고other로바꿨다."
+    },
+    {
+      "index": 168,
+      "verdict": "false_positive",
+      "reason": "계약에는recharge전용역할이없어cooldown_seconds는합당한시간보존이다. 문구를충전1회회복으로명확히했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

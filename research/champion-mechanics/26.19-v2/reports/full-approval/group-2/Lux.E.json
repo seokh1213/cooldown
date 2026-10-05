@@ -1,0 +1,71 @@
+{
+  "id": "Lux.E",
+  "sourceHash": "0e8ae14419a107000b7ac9d5b9c70a350165e9119189e6b65d9fbeaee0cdfc83",
+  "beforeCandidateHash": "fbd96e48e691cd6b6229de59061ce9a571a754f9bf4a5fd94055d8db8700d780",
+  "candidateHash": "967eee954984a0fbc2e0f9ffd5459fd7797d73157621d0e458d73c1a5781ee74",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "빛영역25~45%둔화/지역시야,그영역5초또는재사용에한번폭발65~265+80%AP마법/추가둔화1초 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 nearby_enemies.distance eq 생성된 빛의 영역 안; nearby_enemies: 빛의 영역 안 적을25/30/35/40/45% 둔화시킵니다. [slow]; 수치 amount en:body:n0=25(백분율),en:body:n1=30(백분율),en:body:n2=35(백분율),en:body:n3=40(백분율),en:body:n4=45%(백분율) 상수 rank_values; flags 없음 | unknown: 빛의 영역이 해당 지역을 드러냅니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 caster.activation eq 이 빛의 영역이 아직 폭발하지 않고 유지됨 / nearby_enemies.distance eq 이번 빛의 영역 폭발 범위 안 적; nearby_enemies: 빛의 영역이 폭발해 지역 안의 적에게 마법 피해를 줍니다. [magic]; 수치 amount en:body:n6=65,en:body:n7=115,en:body:n8=165,en:body:n9=215,en:body:n10=265 상수 rank_values / stat_coefficient en:body:n11=80%(백분율) caster.abilityPower formula_components; flags 없음 | nearby_enemies: 빛의 영역이 폭발한 후에도 추가1초 둔화합니다. [slow]; 수치 duration_seconds en:body:n12=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: expiry 사건의 행위자 caster; 조건 caster.time eq 이 빛의 영역 생성 후5초가 끝남 / caster.activation eq 이 빛의 영역이 아직 폭발하지 않고 유지됨 / nearby_enemies.distance eq 이번 빛의 영역 폭발 범위 안 적; nearby_enemies: 빛의 영역이 폭발해 지역 안의 적에게 마법 피해를 줍니다. [magic]; 수치 amount en:body:n6=65,en:body:n7=115,en:body:n8=165,en:body:n9=215,en:body:n10=265 상수 rank_values / stat_coefficient en:body:n11=80%(백분율) caster.abilityPower formula_components; flags 없음 | nearby_enemies: 빛의 영역이 폭발한 후에도 추가1초 둔화합니다. [slow]; 수치 duration_seconds en:body:n12=1 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "폭발범위·5초기준·한영역중복폭발금지·AP계수역할 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Lux creates a light zone that Slows by 25/30/35/40/45% and reveals the area. After 5 seconds or on Recasting this Ability, it detonates, dealing (65/115/165/215/265 + (80% Ability Power)) magic damage and Slowing for an additional 1 second."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

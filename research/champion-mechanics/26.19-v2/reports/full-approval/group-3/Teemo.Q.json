@@ -1,0 +1,89 @@
+{
+  "id": "Teemo.Q",
+  "sourceHash": "c49723b75b45378ffbadc5e0407a8a5eaaf86036935ee42c7b182489b980983c",
+  "beforeCandidateHash": "a2719c5322f9c2f196d68dce2c00ae778785ac78fb13501ae54eb3920705ec04",
+  "candidateHash": "07a71b2a42f54e16ad4b658ec0d9012533983706cbd032103aa49e4f43063cc6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "대상실명2/2.25/2.5/2.75/3초와80/125/170/215/260+AP70%마법피해,미니언/정글몬스터실명200%더길게(기본의3배)를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → target: 다트가 대상을 실명시킵니다. [blind] / duration_seconds=2/2.25/2.5/2.75/3 [rank_values] | target: 다트가 대상에게 마법 피해를 입힙니다. [magic] / amount=80/125/170/215/260 [rank_values]; stat_coefficient=70% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq minion → target: 미니언에게는위기본실명지속시간이200%더길어져기본의3배가됩니다. 별도실명중복발동이아닙니다. / other=200% [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq monster; target other eq 정글몬스터 → target: 정글몬스터에게는위기본실명지속시간이200%더길어져기본의3배가됩니다. 별도실명중복발동이아닙니다. / other=200% [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2",
+      "issue": "연장200%수치가효과에서누락되고별도실명발동으로읽혔다.",
+      "correction": "기본실명지속시간+200%=3배변경효과와정글몬스터한정을보존했다.",
+      "sourceId": "en:body",
+      "quote": "Minions and jungle monsters are Blinded for 200% longer."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 535,
+      "verdict": "false_positive",
+      "reason": "원본rules.1은minion이고rules.2가monster로별도구현되어미니언/정글몬스터양범위를이미포함한다."
+    },
+    {
+      "index": 536,
+      "verdict": "repaired",
+      "reason": "monsterenum외에정글몬스터텍스트한정을추가해원문의정확한범위를보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "미니언과 정글 몬스터의 실명 지속시간이 200% 더 길다는 조건은 원문에 있지만, 스키마에 지속시간 증가 배율을 나타내는 parameter 역할이 없어 수치 계산식은 구조화하지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

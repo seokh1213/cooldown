@@ -1,0 +1,63 @@
+{
+  "id": "Swain.Q",
+  "sourceHash": "05f94da209dce3f5a5d97830fe8c2de57cd90f5bbdd64151b5b75f8894af7b8a",
+  "beforeCandidateHash": "d415e9095d23b423008952ebb60b3c911b22983c63fd731c9111f1ac1d77b224",
+  "candidateHash": "87fe867f679b27062f8d23dc4e65e909ebcaa5416abbc9ca6927d7d588fab5aa",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 2,
+  "summaryCheck": "번개5개·적관통,첫번개기본식/동일대상추가번개별증분식/총피해최대식의랭크와AP계수를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 번개5개는 적을 관통하며 첫 적중 기본식 + 같은대상 첫번개이후번개수×추가식으로 마법피해를 줍니다. 총피해는 별도최대식(랭크120~360+90%AP)으로 제한됩니다. [magic]; 수치 count en:body:n0=5 상수 scalar / amount en:body:n1=60,en:body:n2=90,en:body:n3=120,en:body:n4=150,en:body:n5=180 상수 formula_components / stat_coefficient en:body:n6=45%(백분율) caster.abilityPower formula_components / amount en:body:n7=15,en:body:n8=22.5,en:body:n9=30,en:body:n10=37.5,en:body:n11=45 상수 formula_components / stat_coefficient en:body:n12=11.25%(백분율) caster.abilityPower formula_components / max_amount en:body:n13=120,en:body:n14=180,en:body:n15=240,en:body:n16=300,en:body:n17=360 상수 formula_components / stat_coefficient en:body:n18=90%(백분율) caster.abilityPower formula_components; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "기본·증분·최대식의선형합산위험과관통누락/번역충돌 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Swain unleashes 5 eldritch bolts, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage plus (15/22.5/30/37.5/45 + (11.25% Ability Power)) magic damage per bolt past the first (max (120/180/240/300/360 + (90% Ability Power)) magic damage)."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "기본식+추가번개수×증분식과최대식은서로다른구성요소로보존; 세 AP계수를독립피해로합산하지않음.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "영문요약은적관통,한국어요약은적이죽으면관통으로다름;영문관통우선.",
+      "sourceIds": [
+        "en:summary",
+        "ko:summary"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

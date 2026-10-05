@@ -1,0 +1,146 @@
+{
+  "id": "Shyvana.Q",
+  "sourceHash": "33caaf419cc7a1a1c6333ee7a70faa0777e384d7675e7e59459fcc4b1058a722",
+  "beforeCandidateHash": "451dca328b99286b663c388fcf2f04955681a65faeb0ce83d4a2c3eeb115e6e7",
+  "candidateHash": "d0c4d217878083a6f5b5279aa811c04eb9d398f5cbc34e2848810fa2b984da82",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 2,
+  "summaryCheck": "적중 시 비구조물 최대 체력 피해/쿨 감소, 강화 다음 공격 물리 피해, 공격 또는 대기 후 4초 재사용, 용 형상 추가 마지막 공격 고정 피해 및 치명타 불가를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type neq structure; target: 기본 공격 적중 시 최대 체력에 비례한 마법 피해를 줍니다. 구조물에는 적용되지 않습니다. [magic]; 수치 ratio_input en:body:n0=1%(백분율) unknown.maxHealth formula_components / stat_coefficient en:body:n1=1.1%(백분율),en:body:n2=100 caster.bonusAttackDamage formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이 스킬의 재사용 대기시간을 줄입니다.; 수치 cooldown_seconds en:body:n3=0.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 쉬바나의 다음 공격이 대상을 포함한 주변 지역을 타격해 물리 피해를 줍니다.; 수치 amount en:body:n4=10,en:body:n5=15,en:body:n6=20,en:body:n7=25,en:body:n8=30 상수 rank_values / stat_coefficient en:body:n9=110%(백분율) caster.totalAttackDamage formula_components / stat_coefficient en:body:n10=30%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 caster.activation eq 기본 공격 후 또는 짧은 대기 후, 다음 4초 이내; caster: 공격 후 또는 잠시 기다린 뒤 다음 4초 안에 재사용할 수 있습니다.; 수치 duration_seconds en:body:n11=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 caster.form eq Dragon Form / caster.activation eq 용 형상의 추가 마지막 재사용; target: 용 형상에서 추가 재사용하면 다음 공격의 대상을 물어뜯어 고정 피해를 줍니다.; 수치 amount en:body:n12=15,en:body:n13=22.5,en:body:n14=30,en:body:n15=37.5,en:body:n16=45 상수 rank_values / stat_coefficient en:body:n17=165%(백분율) caster.totalAttackDamage formula_components / stat_coefficient en:body:n18=45%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq 용 형상의 마지막 재사용 공격; target: 용 형상의 마지막 재사용으로 입히는 피해는 치명타가 적용되지 않습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type eq monster; target: 몬스터에게 추가 피해를 줍니다. 적용되는 공격과 피해 유형은 문구에 특정되지 않습니다.; 수치 amount en:body:n19=10 상수 scalar; flags 없음"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type neq structure / target.target_type neq champion; target: 챔피언이 아닌 대상의 최대 체력 비례 피해에 하한과 상한이 적용됩니다. [magic]; 수치 min_amount en:body:n20=10 상수 scalar / max_amount en:body:n21=200 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,3,4,5,6,7",
+      "issue": "체력 주체 단정·하한상한 범위·행위자·OR 재사용·마지막 공격 제한·몬스터 추가 피해 유형 오류",
+      "correction": "소유자 unknown; 비챔피언 clamp 별도 규칙; 시전자 공격; 재사용 OR; 치명타 불가 attack_modifier; 몬스터 피해 범위 미확정 보존",
+      "sourceId": "en:body",
+      "quote": "Passive: Shyvana's Attacks deal (1% + (1.1% per 100 bonus Attack Damage)) max Health magic damage On-Hit and reduce this Ability's Cooldown by 0.5 seconds. Active: Shyvana's next Attack strikes the target and the surrounding area dealing (10/15/20/25/30 + (110% Attack Damage) + (30% Ability Power)) physical damage. This Ability may be Recast after an Attack or short delay within the next 4 seconds. Dragon Form: Shyvana gains an additional Recast, causing her to bite the target of her next Attack dealing (15/22.5/30/37.5/45 + (165% Attack Damage) + (45% Ability Power)) true damage. Deals 10 additional damage to monsters. Maximum health damage does not affect structures and against non-champions has a minimum of 10 and maximum of 200. Dragon Form's final Recast cannot critically strike."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 469,
+      "verdict": "repaired",
+      "reason": "본문은 max Health의 소유자를 명시하지 않아 unknown으로 변경하고 기존 gap 유지."
+    },
+    {
+      "index": 470,
+      "verdict": "repaired",
+      "reason": "치명타 불가 문구는 별도 damage 발생이 아니므로 attack_modifier로 변경."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "기본 지속 효과의 최대 체력 피해에서 기준이 되는 최대 체력의 소유자는 원문에 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "몬스터 추가 피해 문구는 적용 공격·피해 유형을 명시하지 않으므로 용 형상 마지막 공격의 고정 피해로 단정하지 않음.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

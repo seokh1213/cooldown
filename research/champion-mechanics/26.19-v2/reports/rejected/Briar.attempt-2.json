@@ -1,0 +1,640 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "기본 공격과 스킬이 출혈을 중첩시키며, 출혈 피해의 일부를 회복하고 잃은 체력에 따라 회복량이 증가합니다. 스킬 사용 시 현재 체력을 소모하며 기본 체력 재생은 없습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "기본 공격과 스킬이 출혈을 적용합니다. 출혈은 중첩 수에 따라 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "감소 전 출혈 피해의 일부만큼 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Briar's Attacks and Abilities apply a bleed for 5 seconds, stacking up to 5 times. The bleed deals ((10 ~ 50) + (50% bonus Attack Damage)) to ((20 ~ 100) + (100% bonus Attack Damage)) physical damage based on stacks, and Heals Briar for 25% of the pre-mitigation damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "잃은 체력에 따라 회복량이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": "bonusHealth",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Briar gains up to (40 + (2.5% bonus Health)) increased Healing based on her missing Health."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "스킬 시전 시 현재 체력을 소모합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "resource_cost",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "her Abilities cost 5% current Health to cast."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "She has no Base Health Regeneration and her Abilities cost 5% current Health to cast."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "caster",
+              "text": "기본 체력 재생이 없습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "She has no Base Health Regeneration"
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "W": {
+      "summary": "도약해 핏빛 광분에 진입하고 가장 가까운 적을 추격하며 챔피언을 우선합니다. 광분 중 공격 속도와 이동 속도가 증가하고 기본 공격이 대상 주변에 피해를 줍니다. 재사용하면 다음 기본 공격을 강화합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "도약해 핏빛 광분 상태에 진입합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "가장 가까운 적에게 자신을 도발시킵니다. 챔피언을 우선합니다.",
+              "damageType": null,
+              "crowdControl": "taunt",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "핏빛 광분 중 공격 속도와 이동 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": "attackSpeed",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Briar leaps and enters a Blood Frenzy, self-taunting to the nearest enemy for 5 seconds, prioritizing Champions. While in Blood Frenzy she gains 55/65/75/85/95% Attack Speed and 24/33/42/51/60% Move Speed, and her Attacks deal (60/70/80/90/100% Attack Damage) physical damage to enemies surrounding her target."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Blood Frenzy"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "핏빛 광분 중 기본 공격은 대상 주변 적에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "her Attacks deal (60/70/80/90/100% Attack Damage) physical damage to enemies surrounding her target."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "While in Blood Frenzy she gains 55/65/75/85/95% Attack Speed and 24/33/42/51/60% Move Speed, and her Attacks deal (60/70/80/90/100% Attack Damage) physical damage to enemies surrounding her target."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "attack_followup",
+              "subject": "target",
+              "text": "다음 기본 공격을 강화합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Briar can Recast this Ability to empower her next Attack."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "강화된 공격은 잃은 체력에 비례하는 물리 피해를 입힙니다. 공격력 유형은 원문에 구체적으로 명시되지 않았습니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19",
+                    "en:body:n20"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n23"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "체력에 비례하는 양과 입힌 피해 일부만큼 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n24"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n25",
+                    "en:body:n26",
+                    "en:body:n27",
+                    "en:body:n28",
+                    "en:body:n29"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "minion or monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "강화 공격은 미니언과 몬스터에게 피해가 증가합니다. 잃은 체력 비례 피해에는 최대 피해 제한이 있습니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n30"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n31"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The bite deals 10% increased damage to minions and monsters (Max 400 missing health damage)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "이 스킬은 불가항력적 죽음의 강화된 핏빛 광분을 제거하거나 대체하지 않습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This ability does not remove or replace Certain Death's empowered Blood Frenzy."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "강화 공격의 105% Attack Damage는 공격력 유형이 명시되지 않아 스탯 종류를 확정할 수 없습니다. 5% Health의 Health가 현재 체력인지 최대 체력인지도 원문만으로 구분할 수 없습니다. 잃은 체력 비례 피해의 정확한 수식 표기도 모호합니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "최대 400 피해 제한이 잃은 체력 비례 피해에 적용된다고 원문은 명시하지만, 그 피해 항목을 별도 효과로 나누는 구조나 정확한 한도 계산식은 특정되지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The bite deals 10% increased damage to minions and monsters (Max 400 missing health damage)."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Briar.W",
+      "errors": [
+        {
+          "code": "stat_owner",
+          "path": "rules.3",
+          "detail": "A stat reference needs its owner; a constant uses null"
+        }
+      ]
+    }
+  ]
+}

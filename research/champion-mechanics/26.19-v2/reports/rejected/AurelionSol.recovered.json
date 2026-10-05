@@ -1,0 +1,1885 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "스킬로 피해를 입히면 별가루를 획득하고, 별가루는 각 스킬을 영구히 강화합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "스킬로 피해를 입히면 별가루를 획득합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "Aurelion Sol's damaging Abilities break down enemies into stacks of Stardust, which permanently improves each of his abilities."
+            },
+            {
+              "sourceId": "ko:summary",
+              "quote": "아우렐리온 솔이 스킬로 피해를 입히면 각 스킬을 영구히 강화하는 별가루를 획득합니다."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "resource",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "별가루"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "별가루를 모으면 각 스킬이 영구히 강화됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "Aurelion Sol's damaging Abilities break down enemies into stacks of Stardust, which permanently improves each of his abilities."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "성운파를 최대 지속시간 동안 내뿜어 처음 적중한 적에게 초당 마법 피해를 주고 주변 적에게 감소한 피해를 줍니다. 같은 적을 온전히 1초간 계속 맞히면 추가 마법 피해와 대상 최대 체력 비례 피해를 주며, 그 대상이 챔피언이면 별가루를 흡수합니다. 빠르게 취소하면 스킬이 잠깁니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "성운파를 내뿜습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Aurelion Sol breathes starfire for up to 3.25/3.25/3.25/3.25/9999 seconds"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "성운파가 처음 적중한 적에게 초당 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing (45/60/75/90/105 + (55% Ability Power)) magic damage per second to the first enemy hit"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "secondary_targets"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "secondary_targets",
+              "text": "성운파가 주변 적에게 주 대상 피해의 일부를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replace_input"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "50% of the damage to surrounding enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "text",
+                "value": "같은 적을 온전히 1초 동안 집중해서 맞힐 때"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "같은 적을 온전히 1초 동안 맞히면 폭발 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n17"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n18"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each full second of breath on the same enemy deals a burst of (60/70/80/90/100 + (30% Ability Power)) magic damage plus 0.03% max Health magic damage"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "text",
+                "value": "같은 적을 온전히 1초 동안 집중해서 맞힐 때"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "챔피언 대상에게서 별가루를 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "absorbs 2 Stardust if they are a champion."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_cancelled",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n22"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "시전 후 짧은 시간 안에 취소하면 스킬이 잠깁니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n23"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Canceling this Ability within 0.25 seconds of casting it will lock the Ability for 1 second."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "시전마다 최소 마나를 소모합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "resource_cost",
+                  "numberRefs": [
+                    "en:body:n24",
+                    "en:body:n25",
+                    "en:body:n26",
+                    "en:body:n27",
+                    "en:body:n28"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Minimum mana cost of 30/35/40/45/50 per cast."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "비례 피해량은 정글 몬스터에게 제한됩니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n29"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Percent damage deals a max of 300 magic damage against jungle monsters."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "첫 적중 대상이 아닌 주변 적들에게 적용되는 판정과, 하나의 적에게 매초 폭발이 발생하는 정확한 틱 시점은 툴팁만으로 확정하지 못했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each full second of breath on the same enemy"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "50% of the damage to surrounding enemies."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "‘비례 피해’ 상한이 최대 체력 비례 피해에만 적용되는지, 다른 비례 피해까지 포함하는지 툴팁에서 범위를 명확히 하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Percent damage deals a max of 300 magic damage against jungle monsters."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "지정한 방향으로 비행합니다. 비행 중 빛의 숨결은 재사용 대기시간과 최대 정신 집중 시간이 없고 고정 피해량이 증가합니다. 최근 피해를 준 챔피언 처치 관여 시 재사용 대기시간 일부를 돌려받으며, 재시전으로 비행을 일찍 종료할 수 있습니다. 비행 중 빛의 숨결을 사용하면 비행 속도가 감소합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "지정한 방향으로 비행합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Aurelion Sol flies in a direction."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "비행 중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "빛의 숨결은 재사용 대기시간과 최대 정신 집중 시간이 없으며 고정 피해량이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "While flying, Breath of Light has no Cooldown, no max channel duration, and its flat damage is increased by 8/9/10/11/12%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "takedown",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n5"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "피해를 준 뒤 정해진 시간 안에 해당 챔피언 처치에 관여하면 이 스킬의 재사용 대기시간 일부를 돌려받습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "resource_refund",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Takedowns on champions within 3 seconds of damaging them refunds 90% of this Ability's Cooldown."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "비행을 일찍 종료합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Recast: End flight early."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "비행 중"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "빛의 숨결 시전"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "비행 중 빛의 숨결을 사용하면 비행 속도가 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Casting Breath of Light while flying reduces flight speed by 50%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "비행 중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "비행 속도는 이동 속도에 따라 결정됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Flight speed is (340 + (100% Movement Speed))."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "처치 관여 문구는 요약문에서 적 챔피언의 사망을, 본문에서 챔피언 처치 관여를 가리킵니다. 실제 판정 주체와 어시스트 포함 여부는 본문만으로 더 구체화하지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "Astral Flight's remaining cooldown is reduced whenever an enemy champion dies after being recently damaged by Aurelion Sol."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Takedowns on champions within 3 seconds of damaging them refunds 90% of this Ability's Cooldown."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "블랙홀을 소환해 영역 안의 적에게 지속 피해를 주고 중심으로 끌어당깁니다. 영역 안에서 사망한 유닛과 영역 안에 있는 적 챔피언에게서 별가루를 흡수합니다. 중심의 체력이 기준 미만인 적은 즉사하며 에픽 몬스터는 처형되지 않습니다. 영역 안의 공격로 미니언과 정글 몬스터는 이동 속도가 0이 됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "unknown",
+              "text": "블랙홀을 소환해 적을 중심으로 끌어당깁니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Aurelion Sol summons a black hole, dealing (10/15/20/25/30 + (12% Ability Power)) magic damage per second and Dragging enemies towards the center for 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 안"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "블랙홀 안의 적에게 초당 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing (10/15/20/25/30 + (12% Ability Power)) magic damage per second"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 안"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "enemy",
+              "text": "블랙홀 안의 적을 중심으로 천천히 끌어당깁니다.",
+              "damageType": null,
+              "crowdControl": "pull",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Dragging enemies towards the center for 5 seconds"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 중심"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "execute",
+              "subject": "enemy",
+              "text": "블랙홀 중심에서 기준 체력 미만인 적은 즉사합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "enemy",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies in the center below 5.03% max Health die instantly."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 안"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "structure"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "블랙홀 안에서 유닛이 사망하면 별가루를 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The black hole absorbs Stardust when enemies die within it"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 안"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "블랙홀 안에 있는 적 챔피언에게서 매초 별가루를 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Absorbs 1 Stardust per second from Champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "death",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 안"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "블랙홀 안에서 사망한 챔피언에게서 별가루를 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Champions: 2 Stardust"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "death",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 안"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "블랙홀 안에서 사망한 에픽 몬스터 또는 대형 몬스터에게서 별가루를 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13",
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "unknown"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Epic monsters: 2 StardustLarge monsters: 2 Stardust"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "death",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 안"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "블랙홀 안에서 사망한 공성 미니언에게서 별가루를 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Siege minions: 2 Stardust"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "death",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "visibility",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "블랙홀 안"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "블랙홀 안에서 사망한 미니언 및 작은 몬스터에게서 별가루를 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Minions and small monsters: 1 Stardust"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "enemy",
+              "text": "블랙홀 안의 공격로 미니언은 이동 속도가 0이 됩니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "enemy",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Lane minions and jungle monsters inside have 0 Movement Speed."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_number",
+          "detail": "블랙홀 안에서 사망한 적에게 주는 별가루량은 유닛별로 제공되었지만, 요약 tooltip에는 ‘별가루를 흡수’만 있고 상세 본문에는 해당량이 있습니다. 유닛 종류의 판정 범위 및 미니언/작은 몬스터 구분을 더 구체화할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Absorbs Stardust from units that die in the black hole:"
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "에픽 몬스터는 처형할 수 없다고 명시되지만, 처형 이외의 일반 피해 및 끌어당김 면역 여부는 이 툴팁으로 알 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Epic monsters cannot be executed."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "영역 안에서 이동 속도가 0이 되는 대상에는 공격로 미니언과 정글 몬스터가 포함되지만, 입력 enum으로 해당 대상을 각각 정확히 표현할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Lane minions and jungle monsters inside have 0 Movement Speed."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "유성은 별을 떨어뜨려 적에게 마법 피해와 기절을 주고, 적중한 챔피언마다 별가루를 흡수합니다. 별가루가 기준량에 도달하면 다음 유성이 천상 강림으로 변합니다. 천상 강림은 넓은 범위에 더 큰 마법 피해와 공중 띄우기를 주며, 충격파는 챔피언과 에픽 몬스터에게 마법 피해를 주고 적중한 모든 적을 둔화시킵니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "resource",
+              "operator": "lt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n6"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "유성이 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing (150/250/350 + (75% Ability Power)) magic damage"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "기본 유성 적중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "유성에 적중한 적을 기절시킵니다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Stunning enemies 1 second"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "기본 유성"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "적중한 챔피언마다 별가루를 흡수합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "absorbing 5 Stardust for each champion hit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "resource",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n6"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "transform",
+              "subject": "caster",
+              "text": "별가루가 기준량에 도달하면 다음 유성을 천상 강림으로 변환합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gathering 75 Stardust transforms the next Falling Star into The Skies Descend."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "강화 유성"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "천상 강림이 넓은 범위의 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing (187.5/312.5/437.5 + (93.75% Ability Power)) magic damage in a larger area"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "강화 유성"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "천상 강림에 적중한 적을 공중에 띄웁니다.",
+              "damageType": null,
+              "crowdControl": "knockup",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Knocking Up enemies hit for 1 second"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "강화 유성"
+              }
+            },
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "천상 강림의 충격파는 챔피언과 에픽 몬스터에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "shockwave that deals (135/225/315 + (67.5% Ability Power)) magic damage to champions and Epic Monsters"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "강화 유성"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "천상 강림의 충격파에 적중한 모든 적을 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Slows all enemies hit by 50% for 1 second."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "‘별가루가 75개’ 조건은 누적 별가루가 임계점에 도달하면 다음 유성이 강화된다는 뜻이나, 변환 후 누적량 처리 방식은 제공된 tooltip에서 확인할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gathering 75 Stardust transforms the next Falling Star into The Skies Descend."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "천상 강림 충격파 피해는 챔피언과 에픽 몬스터로 명시되지만, 툴팁에는 충격파의 별도 적중 순서·범위 판정이 구체적으로 설명되지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "shockwave that deals (135/225/315 + (67.5% Ability Power)) magic damage to champions and Epic Monsters"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "AurelionSol.E",
+      "errors": [
+        {
+          "code": "crowd_control",
+          "path": "rules.2",
+          "detail": "CC type belongs only on a CC effect"
+        },
+        {
+          "code": "crowd_control",
+          "path": "rules.10",
+          "detail": "CC type belongs only on a CC effect"
+        }
+      ]
+    },
+    {
+      "id": "AurelionSol.R",
+      "errors": [
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n6"
+        }
+      ]
+    }
+  ]
+}

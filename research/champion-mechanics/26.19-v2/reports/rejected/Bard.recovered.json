@@ -1,0 +1,789 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "바드는 고대의 종을 모아 경험치, 마나, 비전투 이동 속도를 얻습니다. 기본 공격 시 정령을 소모해 추가 마법 피해를 입히며, 종 수에 따라 피해가 증가하고 추가 효과가 적용됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "고대의 종 근처"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "비전투 상태에서 이동 속도가 증가하며 중첩됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "경험치를 얻고 최대 마나의 일부를 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "maxMana",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "other",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "unknown"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When Bard moves near a Chime he collects it, gaining 24% Move Speed (stacking up to 10 times) while out of combat for 20 seconds, ? Experience, and restoring 12% max Mana."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "resource",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "정령"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "기본 공격이 정령을 소모해 추가 마법 피해를 입힙니다. 수집한 고대의 종 수에 따라 추가 피해가 붙습니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bard's Attacks consume a Meep to deal an additional (30 + (40% Ability Power)) plus 6 per 5 Chimes magic damage, plus additional effects based on Chimes collected."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_number",
+          "detail": "정령 생성 주기와 최대 보유 수, 종 획득 시 경험치 수치가 원문에서 미확정(?)으로 표시됩니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bard attracts a Meep every ? seconds (max: ?)."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "? Experience"
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "정령의 종 수에 따른 추가 효과의 구체적 조건과 효과가 제공되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "plus additional effects based on Chimes collected."
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "summary": "바드가 광선을 발사해 처음 적중한 두 적에게 마법 피해를 입힙니다. 첫 번째 적은 둔화되며, 광선이 두 번째 적 또는 벽에 부딪히면 적중한 적들이 기절합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_count",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n6"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "광선이 적중한 처음 두 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bard fires an energy bolt, dealing (80/120/160/200/240 + (80% Ability Power)) magic damage to the first two enemies hit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 적중한 적을 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The first target hit is Slowed by 60% for 1/1.2/1.4/1.6/1.8s."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n6"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "광선이 두 번째 적에게 적중하면 적중한 적들을 기절시킵니다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the bolt hits a second enemy or a wall, any enemies hit are Stunned for 1/1.2/1.4/1.6/1.8s."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "벽 충돌은 두 번째 적중 횟수 조건과 별도이며, 벽에 맞았을 때 기절 대상 범위를 요약문은 최초 대상, 툴팁은 적중한 적들로 서술합니다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "If it strikes a wall, it will stun the initial target; if it strikes another enemy, it will stun them both."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "If the bolt hits a second enemy or a wall, any enemies hit are Stunned for 1/1.2/1.4/1.6/1.8s."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "바드가 성소를 설치합니다. 처음 들어온 아군은 이동 속도 증가와 체력 회복을 얻으며, 성소는 시간이 지나며 회복량이 커집니다. 적 챔피언이 들어오면 성소가 파괴됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "체력 회복 성소를 생성합니다. 동시에 최대 보유 수를 넘는 성소는 둘 수 없습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bard creates a Health shrine"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Bard can have up to 3 shrines at once."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "hit_count",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "ally",
+              "text": "처음 성소에 들어온 아군에게 이동 속도 증가 효과를 부여하며, 효과는 지속시간 동안 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            },
+            {
+              "kind": "heal",
+              "subject": "ally",
+              "text": "처음 들어온 아군의 체력을 회복시킵니다. 성소가 존재한 시간이 길수록 회복량이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bard creates a Health shrine that grants (20/22.5/25/27.5/30% + (6% per 100 Ability Power)) Move Speed decaying over 1.5 seconds and restores at least (25/50/75/100/125 + (40% Ability Power)) Health to the first ally to enter. The shrine grows to restore (50/87.5/125/162.5/200 + (70% Ability Power)) Health after existing for 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "summon",
+              "text": "적 챔피언이 들어오면 성소가 파괴됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If an enemy champion enters a shrine, it is destroyed."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "바드가 지형을 통과하는 일방통행 차원문을 엽니다. 입구 근처에서 차원문으로 이동하는 모든 챔피언이 이용할 수 있으며, 아군은 적보다 더 빠르게 이동합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "ally",
+              "text": "지형을 통과하는 일방통행 차원문을 열며, 아군 챔피언은 적 챔피언보다 빠르게 이동합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bard opens a one-way portal through Terrain for 10 seconds. Any champion can enter the portal by moving onto it while near the entrance. Allies travel 33% faster than enemies."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "바드가 지정 지역에 보호 에너지를 던져 적중한 모든 유닛과 구조물을 잠시 경직시킵니다. 경직 중에는 움직이거나 행동할 수 없고, 무적이며 대상으로 지정할 수 없습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적중한 유닛과 구조물을 경직 상태로 만듭니다. 경직 중에는 움직이거나 행동할 수 없고, 무적이며 대상으로 지정할 수 없습니다.",
+              "damageType": null,
+              "crowdControl": "stasis",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "visibility",
+              "subject": "target",
+              "text": "경직 중에는 대상으로 지정할 수 없습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "경직 중에는 무적이며 움직이거나 행동할 수 없습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bard hurls magical protective energy to an area, placing all units and structures hit into Stasis for 2.5 seconds. Units in Stasis cannot move or act, and are invulnerable and Untargetable."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  },
+  "failures": [
+    {
+      "id": "Bard.P",
+      "errors": [
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n4"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.1",
+          "detail": "Number reference lacks quoted evidence: en:body:n8"
+        }
+      ]
+    },
+    {
+      "id": "Bard.Q",
+      "errors": [
+        {
+          "code": "number_evidence",
+          "path": "rules.2",
+          "detail": "Number reference lacks quoted evidence: en:body:n6"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "Jax.W",
+  "sourceHash": "5ae1a6b9663a257e864a7fb1e8a424191dbb0de6803e0644c563c17af46d91fa",
+  "beforeCandidateHash": "c1e1bfc6ece5f257b1000476733b9897a10aa9fc86ba8b701938a228d91568a5",
+  "candidateHash": "431e6e2d2a0004f0baefb5b317d3b96fbc936783c91082b2db834a7f6d77fb59",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "다음기본공격또는Q추가마법50~190+AP60%·피해시주문효과·구조물50%피해를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 무기를 강화하여 다음 기본 공격 또는 도약 공격에 추가 피해를 부여합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 caster activation eq W로 강화된 다음 기본 공격 또는 도약 공격; target target_type neq structure → target: 강화된 다음 기본 공격 또는 도약 공격이 추가 마법 피해를 입힙니다. [magic] / amount=50/85/120/155/190 [rank_values]; stat_coefficient=60% (caster abilityPower) [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 caster activation eq W로 강화된 다음 기본 공격 또는 도약 공격; target target_type eq structure → target: 강화된 다음 기본 공격 또는 도약 공격이 구조물에 감소한 추가 마법 피해를 입힙니다. [magic] / amount=50/85/120/155/190 [rank_values]; stat_coefficient=60% (caster abilityPower) [scalar]; damage_multiplier=50% [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 caster activation eq 이 스킬의 추가 피해 발생 → caster: 이 스킬은 피해를 입힐 때 주문 효과를 발동합니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2.trigger.event",
+      "issue": "Q강화피해가followup_attack에만연결",
+      "correction": "공격또는스킬적중+W다음공격/Q조건",
+      "sourceId": "en:body",
+      "quote": "his next Attack or Leap Strike"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

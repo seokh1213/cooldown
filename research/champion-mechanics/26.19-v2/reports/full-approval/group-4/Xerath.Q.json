@@ -1,0 +1,115 @@
+{
+  "id": "Xerath.Q",
+  "sourceHash": "48f7b5f2c8328cce8a426c7012c62e0a66a57f380e35247f50a77208eeefd706",
+  "beforeCandidateHash": "01eac30652b448ce78fb7d03102901e469d487c77991ca0be4e9b4c798872173",
+  "candidateHash": "548e58d6ce6492963a0704bc8562e3d7910c67c331d48dd50227027b35864a08",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "충전 시작의 점증 자기 둔화 최대 50%, 충전 시간에 따른 광선 사거리 증가, 발사 후 적중 전부의 70/110/150/190/230 + 제라스 주문력 90% 마법 피해와 미발사 시 비용 절반 환급을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.other eq 비전 광선 충전을 시작하여 충전하는 동안 적용. caster: 광선을 충전하는 동안 자신이 점차 둔화됩니다. (slow); max_amount=50%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 발사된 광선에 적중한 모든 대상 적용. target: 광선을 발사해 적중한 대상에게 마법 피해를 줍니다. (magic); amount=70/110/150/190/230  rank_values, stat_coefficient=90% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.other eq 충전한 비전 광선을 발사할 때 적용. unknown: 광선의 사거리는 충전 시간에 따라 늘어납니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 충전한 광선을 발사하지 않은 경우 적용. caster: 광선을 발사하지 않으면 소모된 마나의 절반을 돌려받습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions",
+      "issue": "충전 시작을 강화 공격 activation=empowered로 잘못 제한한다.",
+      "correction": "광선 충전 시작과 충전 중 조건을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Xerath begins charging an arcane beam, Slowing himself gradually up to 50%."
+    },
+    {
+      "path": "rules.1-2",
+      "issue": "시전만으로 광선 피해가 발생하며 발사와 사거리 조건이 빠졌다.",
+      "correction": "발사 광선의 적중 사건과 발사 시 충전 시간 사거리를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "Release: Xerath fires the beam, dealing (70/110/150/190/230 + (90% Ability Power)) magic damage."
+    },
+    {
+      "path": "rules.3.trigger,conditions",
+      "issue": "스킬 미발사를 기본 공격 취소로 표현한다.",
+      "correction": "광선 미발사 조건의 일반 사건으로 비용 절반 환급을 보존했다.",
+      "sourceId": "en:body",
+      "quote": "If Xerath does not release the beam, half the cost is refunded."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "충전 종료와 발사 실패가 어떤 게임 이벤트로 구분되는지 원문에서 특정되지 않아 취소 규칙의 발동 조건은 확정할 수 없습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "미발사 시 비용 절반 환급은 확정된 문구이나 frozen 숫자표에 half의 숫자 참조가 없다. 효과 text의 절반을 보존하며 다른 숫자를 환급 비율로 대체하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

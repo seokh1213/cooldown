@@ -1,0 +1,75 @@
+{
+  "summary": "바이가 충전한 뒤 전방으로 돌진해 적중한 적에게 피해와 찌그러뜨리기를 적용합니다. 챔피언과 충돌하면 멈추고 밀쳐내며, 비챔피언은 바이 쪽으로 끌어당깁니다. 충전 중 방해받으면 재사용 대기시간이 적용됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "강력한 한 방을 충전하기 시작합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "caster",
+          "text": "충전 중 자신이 둔화됩니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Begin Charging: Vi begins charging a powerful punch, Slowing herself by 15%."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "missing_variant",
+      "detail": "충전 해제와 돌진의 별도 발동 변형을 나타내는 variant ID가 제공되지 않아 해당 효과를 규칙으로 구성하지 못했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Release: Vi dashes forward dealing between (40/60/80/100/120 + (60% bonus Attack Damage)) and (100/150/200/250/300 + (150% bonus Attack Damage)) physical damage based on charge time and applying Denting Blows to all enemies hit."
+        }
+      ]
+    }
+  ]
+}

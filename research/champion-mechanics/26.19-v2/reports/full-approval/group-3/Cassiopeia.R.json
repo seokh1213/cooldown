@@ -1,0 +1,69 @@
+{
+  "id": "Cassiopeia.R",
+  "sourceHash": "e19ff4e1ad40976cbfa73e282c27c1ec6100ae1ed34dae98d9a69063a72a49f2",
+  "beforeCandidateHash": "b49ab6bedce300440b46d555bee6b544e9fa64149480e0699d01525c06a1bd9a",
+  "candidateHash": "f45af6fc746dcac91d677069ca039edd3e4fe507174fb8f61e36cbd6df6448bc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "정면응시범위125/225/325+AP75%마법피해,자신을바라보는적2초기절/등진적대신40%둔화2초감쇠를대조했다. 방향분기는같은정면범위안에서상호배타다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 enemy other eq 카시오페아정면에서이석화의응시에맞은적 → enemy: 적에게 마법 피해를 입힙니다. [magic] / amount=125/225/325 [rank_values]; stat_coefficient=75% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 enemy other eq facing Cassiopeia; enemy other eq 카시오페아정면에서이석화의응시에맞은적 → enemy: 카시오페아를 바라보는 적을 기절시킵니다. [stun] / duration_seconds=2 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 enemy other eq facing away from Cassiopeia; enemy other eq 카시오페아정면에서이석화의응시에맞은적 → enemy: 같은정면응시범위안에서카시오페아를등진적은기절대신2초동안40%둔화되며그동안둔화가감소합니다. [slow] / amount=40% [scalar]; duration_seconds=2 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.*.conditions",
+      "issue": "정면응시범위가빠져모든적에게피해/방향별CC가발생했다.",
+      "correction": "요약이명시한정면응시적중범위를모든규칙에보존했다.",
+      "sourceId": "en:summary",
+      "quote": "any enemies in front of her"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

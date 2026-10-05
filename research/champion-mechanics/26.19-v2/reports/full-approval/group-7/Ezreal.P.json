@@ -1,0 +1,89 @@
+{
+  "id": "Ezreal.P",
+  "sourceHash": "35ce91f83707aff1a0cfc09e1441676321820618f166425a67eea860cf488648",
+  "beforeCandidateHash": "93b87aee29815d1cde391b7f79a8cbe54504b54efe7e387b453e974f37291fc9",
+  "candidateHash": "93b87aee29815d1cde391b7f79a8cbe54504b54efe7e387b453e974f37291fc9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "스킬 적중으로 자신에게 공격속도10%·6초·최대5중첩. 시전만으로 생기는 효과가 아님을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ability_hit caster, 자기 AS10%,6초 duration,5는storage_cap으로 중첩 상한. 숫자5를 적중횟수 조건으로 쓰지 않음."
+    }
+  ],
+  "repairs": [],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "draft": {
+      "summary": "이즈리얼이 스킬을 적중시키면 공격 속도가 증가하고, 효과는 중첩됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "스킬 적중 시 일정 시간 동안 공격 속도를 얻으며, 효과가 중첩됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal's Ability hits grant him 10% Attack Speed for 6 seconds, stacking up to 5 times."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

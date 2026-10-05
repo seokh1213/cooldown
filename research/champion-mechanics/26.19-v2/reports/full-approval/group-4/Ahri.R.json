@@ -1,0 +1,100 @@
+{
+  "id": "Ahri.R",
+  "sourceHash": "b38f908a3f0d4a72d5c65e54dcfe2477f7a86ef631e76e3f843a08e7324c67f0",
+  "beforeCandidateHash": "19244a835d313898d03f44de6557249125c81cb75c336c04cf3c709b3daf882b",
+  "candidateHash": "43ad8d02d0c4e0021ecfc90430b220e8bcb317b79c223f3977ce3153e92e03e5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "각질주의자기이동/3개챔피언우선탄과개별마법피해,15초내2회추가재사용,창내챔피언정기소모시재사용1회획득·최대3보유·최대10초연장을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 민첩하게 질주합니다.;  / caster: 혼령의 정기 세 개를 근처 적에게 발사하며 챔피언을 우선 대상으로 삼습니다.; count=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 각 혼령의 정기가 적중할 때마다 마법 피해를 입힙니다. (magic); amount=75/125/175  rank_values, stat_coefficient=35% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 15초 안에 최대 두 번 더 재시전할 수 있습니다.; count=2  scalar, duration_seconds=15  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 caster.other eq 현재 재사용 창 안에서 재시전 적용. caster: 민첩하게 질주합니다.;  / caster: 혼령의 정기 세 개를 근처 적에게 발사하며 챔피언을 우선 대상으로 삼습니다.; count=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 정기 흡수로 챔피언의 정기를 소비하며, 현재 재사용 창 안에서 발생 적용. caster: 재사용 가능 횟수가 하나 늘고 재사용 창이 최대 10초 연장됩니다.; storage_cap=3  scalar, other=10  scalar, count=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,3",
+      "issue": "탄적중행위자target및재시전실제돌진/발사가누락",
+      "correction": "caster적중과재시전돌진/3개탄발사연결",
+      "sourceId": "en:body",
+      "quote": "Spirit Rush can be Recast up to 2 more times within 15 seconds."
+    },
+    {
+      "path": "rules.4.parameters",
+      "issue": "추가재사용1회와연장시간역할불명확",
+      "correction": "한국어1회참조및시간연장other역할보완",
+      "sourceId": "en:body",
+      "quote": "Consuming a champion's Essence with Essence Theft during this period extends the recast window by up to 10 seconds and grants an additional recast of Spirit Rush (up to 3 stored)."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "정기소모시재사용창이최대10초늘어난다고명시되지만실제연장량을정하는상세조건은공급원문에없다.1회획득/최대3보유와기본15초창은명시된대로보존했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

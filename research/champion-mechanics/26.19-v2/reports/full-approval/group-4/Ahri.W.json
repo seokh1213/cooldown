@@ -1,0 +1,129 @@
+{
+  "id": "Ahri.W",
+  "sourceHash": "c9dfe43b854a0a68008c733096c6cef8d3b2cc838ac6f87951ee830223721ee6",
+  "beforeCandidateHash": "17b1125da345f391cfe12a51ec353637fc01e027d7a652f29140aa92701955f1",
+  "candidateHash": "eca8a22ecb6a675f967b91ac96e173a9234e488af6de6130352db63532cad5d3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 3,
+  "summaryCheck": "세여우불방출·초기/추가감소피해의서로다른수식,40%2초감소이동속도,매혹챔피언/아리공격적/다른챔피언우선순위,20%미만미니언200%배율을대조했다.첫판정기준은추정하지않았다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 여우불 세 개를 방출해 근처 적을 찾아갑니다.; count=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 여우불의 첫 피해 판정에 해당함(순서의 적용 기준은 미확정) 적용. target: 첫 번째 여우불이 입힙니다. (magic); amount=40/60/80/100/120  rank_values, stat_coefficient=40% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 여우불의 첫 피해 이후 감소 피해 판정에 해당함(순서의 적용 기준은 미확정) 적용. target: 첫 번째 이후 여우불이 입힙니다. (magic); amount=16/24/32/40/48  rank_values, stat_coefficient=16% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 이동 속도가 증가하고 시간이 지나며 감소합니다.; amount=40%  scalar, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq minion, target.health_threshold lt 20% 적용. target: 체력 20% 미만인 미니언은 배율 피해를 받습니다. (magic); damage_multiplier=200%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 여우불은매혹에맞은챔피언을우선하고,아리가공격한적,그밖의챔피언순으로대상을선정한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-4",
+      "issue": "방출및적중주체미상/target,첫피해관계를발사체순서로단정",
+      "correction": "caster행위자와초기/감소피해text조건·배율대체로정정",
+      "sourceId": "en:body",
+      "quote": "Ahri releases 3 fox-fires that seek nearby enemies and deal (40/60/80/100/120 + (40% Ability Power)) magic damage, reduced to (16/24/32/40/48 + (16% Ability Power)) damage beyond the first."
+    },
+    {
+      "path": "rules.5",
+      "issue": "대상우선순위가gap에만존재",
+      "correction": "타겟선정규칙보완",
+      "sourceId": "en:body",
+      "quote": "Fox-fires prioritize champions hit by Charm, enemies Ahri has attacked, then other champions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 9,
+      "verdict": "repaired",
+      "reason": "여우불방출효과주체는caster로수정했다."
+    },
+    {
+      "index": 10,
+      "verdict": "documented_gap",
+      "reason": "원문은beyond the first로만서술한다.적중/발사체전체순서중어느것인지확정하지않고첫피해와추가감소피해관계및한계를기록했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "여우불 대상 우선순위는 매혹에 적중한 챔피언, 아리가 공격한 적, 이후 다른 챔피언 순이다. 허용된 조건 필드로 순서를 완전히 표현할 수 없어 문장으로 보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "본문beyond the first는첫피해와추가피해를구별하지만첫순서가각대상별인지전체발사체순서인지명시하지않는다.첫피해관계를보존하고둘중하나로추정하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "영문 툴팁은 체력 20% 미만(below 20%)이라고 하나 한국어 툴팁은 20% 이하라고 하여 경계값이 다르다. 영문 툴팁에 따라 미만 조건을 적용했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

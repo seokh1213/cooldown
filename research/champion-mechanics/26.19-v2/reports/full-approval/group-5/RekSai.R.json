@@ -1,0 +1,263 @@
+{
+  "id": "RekSai.R",
+  "sourceHash": "89a858312c86a2a04792be97b42d431346efa52dc2a8f1f05ecfab73aa4455a1",
+  "beforeCandidateHash": "69fc7063e13ca46e6317db7451f305bd77b30136caed69b981edf668a7b45a48",
+  "candidateHash": "291674b3fcf70820c32b3fe211dd685c52414d166f909803b60915f01be2f0f1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "본인이5초내피해입힌enemy선택·비대상화·후속불가항력도약·물리복합식·Wreset를확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "실제피해를준적표식. 모든공격적중을실제피해로자동간주하지않음.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "대상에게 실제 피해를 입힘"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최근5초내본인이피해준적이시전대상. 공급enemy를champion으로좁히지않음. untargetability other.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "최근5초 이내 렉사이에게 피해를 입은 적"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "땅속진입뒤동일적에멈출수없는도약,기본공격사건아님.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이R로 땅속에 들어간 뒤 선택한 동일 적에게 도약"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "150/250/350+100%bonusAD+대상maxHP15/20/25% physical. 모든3계수퍼센트.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이R로 땅속에 들어간 뒤 선택한 동일 적에게 도약"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "350",
+              "value": 350,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "15",
+              "value": 15,
+              "percent": true
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이R도약후매복/돌출Wreset. 일반후속공격reset으로확대하지않음.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이R로 땅속에 들어간 뒤 선택한 동일 적에게 도약"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules,gaps",
+      "issue": "enemy를champion한정·untargetvisibility·도약을followupattack·인과부족gap.",
+      "correction": "enemy범위와실제피해조건·other도약/비대상화·정확계수명시.",
+      "sourceId": "en:body",
+      "quote": "Rek'Sai targets an enemy damaged by her in the last 5 seconds and then dives underground, becoming Untargetable."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 400,
+      "verdict": "repaired",
+      "reason": "champion조건제거하고공급enemy범위로복원."
+    },
+    {
+      "index": 401,
+      "verdict": "repaired",
+      "reason": "도약을other사건으로수정하고이R인과명시."
+    },
+    {
+      "index": 402,
+      "verdict": "false_positive",
+      "reason": "frozen앞두percent=false,마지막25%true는lexical표기다. 실제피해계수는세값모두%여서문구/역할명시. 입력은변경하지않음."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

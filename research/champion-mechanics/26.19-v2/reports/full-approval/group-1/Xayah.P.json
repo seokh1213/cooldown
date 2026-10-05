@@ -1,0 +1,49 @@
+{
+  "id": "Xayah.P",
+  "sourceHash": "7f90217b2296787052bd409251418a25df2ca5f6fc034eb2e9485882c0b78498",
+  "beforeCandidateHash": "281e2d743c0f756792d9eb1ec490d55dc4392f27d2d79ac2c5ac946f6d88506d",
+  "candidateHash": "2f60bb4d5324fef5cc77a9b61396944c28dc77d1304246764c74bd3eb11ad4f7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "스킬 사용 후 다음3회 기본 공격의 경로상 다른 대상 피해, 깃털6초 유지, ?% 미확정 비율 및 라칸과 동시 귀환을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 스킬 사용 후 다음3회 기본 공격 중 하나. secondary_targets attack_modifier: 스킬 사용 후 다음3회 기본 공격은 경로상 다른 모든 대상에게 ?% 피해를 입힌다. count는 강화되는 공격의 총횟수이며 피해 중첩 수가 아니다. [count n0=3 scalar] / unknown other: 해당 기본 공격이 깃털을 남기며 그 깃털은6초 유지된다. [duration_seconds n1=6 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 없음. ally ui_information: 자야와 라칸은 함께 귀환할 수 있습니다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions,effects",
+      "issue": "강화 상태만으로 발동해 스킬 이후 다음3회 제한 불명확, 깃털6초를 경로 피해 지속시간으로 결합",
+      "correction": "다음3회 기본 공격 조건을 명시하고 깃털 잔류와 피해 효과의 시간을 분리했다.",
+      "sourceId": "en:body",
+      "quote": "After using an Ability, Xayah's next 3 Attacks will deal ?% damage to all other targets along their path and leave a Feather for 6 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "강화 기본 공격이 다른 대상에게 입히는 피해 비율이 원문에서 ?%로 표시되어 있습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

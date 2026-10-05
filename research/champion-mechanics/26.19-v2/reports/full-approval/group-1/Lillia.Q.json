@@ -1,0 +1,62 @@
+{
+  "id": "Lillia.Q",
+  "sourceHash": "01d636df381f23bdbca30c1543bc554dca3a823d0b9311f62de1dc53bc9a7ad3",
+  "beforeCandidateHash": "2cde1e01434b5b008a7908b20edca0b621715ef9b9ed2b3e580429deb361cb26",
+  "candidateHash": "866ede5e25fa7cbc6448e260a64110b5ed6beec4e92ce8ebfba0011741b63e50",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "모든 스킬 적중의6.5초 최대4중첩 이속(랭크3~7%+AP100당3%), 사용의 주변 마법 피해 및 가장자리 동일 기본값 추가 고정 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. caster stat_modifier: 스킬 적중마다6.5초 동안 이동 속도가 (3/4/5/6/7% + 주문력100당3%) 증가하며 최대4회 중첩된다. [amount n0=3%/n1=4%/n2=5%/n3=6%/n4=7% rank_values; ratio_input n6=100 formula_components caster.abilityPower; ratio_output n5=3% formula_components; duration_seconds n7=6.5 scalar; storage_cap n8=4 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. nearby_enemies damage magic: 릴리아가 향로를 휘둘러 주변 적에게 마법 피해를 입힌다. [amount n9=35/n10=45/n11=55/n12=65/n13=75 rank_values; stat_coefficient n14=35% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 바깥 가장자리에 적중. target damage true: 바깥 가장자리에 적중한 적에게 추가 고정 피해를 입힌다. [amount n15=35/n16=45/n17=55/n18=65/n19=75 rank_values; stat_coefficient n20=35% formula_components caster.abilityPower]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,2",
+      "issue": "스킬 행위자 enemy, 비율 입력3% 오인과 중복3% 참조, 선형 피해 주문력 계수 역할 오류",
+      "correction": "스킬 적중 행위자 caster 및 AP100:3%비율, 마법/고정 피해의 stat_coefficient로 바로잡았다.",
+      "sourceId": "en:body",
+      "quote": "Passive: Lillia's Ability hits grant (3/4/5/6/7% + (3% per 100 Ability Power)) Move Speed for 6.5 seconds, stacking up to 4 times."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 257,
+      "verdict": "repaired",
+      "reason": "ratio_input을3%가 아닌 AP100으로, ratio_output을3%로 고쳤다. 식의 퍼센트 합산·중첩 한계는 gap과 효과 텍스트로 유지했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "퍼센트 기본 증가율+주문력100당3%와 최대4중첩을 구성요소·텍스트로 보존한다. 단순 AP 피해 계수나 절대 이동 속도 합으로 실행하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

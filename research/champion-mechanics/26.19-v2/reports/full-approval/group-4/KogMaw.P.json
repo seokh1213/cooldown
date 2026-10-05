@@ -1,0 +1,49 @@
+{
+  "id": "KogMaw.P",
+  "sourceHash": "5a98645d29b33f4d2b093b2dc3bbcb311f56fd9b78a2079211144dc972be40ba",
+  "beforeCandidateHash": "55ac7214a9f095721221e2aa1972ce5c353bd2438a15d0212155331e4368aee4",
+  "candidateHash": "97a1a07a0edf9f0b744e6fd5e066dffcd212665dddfd24ec0c03419ed1b8116d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "사망후4초이동가능/유닛통과와10%에서50%까지증가하는이속,그4초종료주변140~650고정피해를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 death 사건에서 별도 조건 없이 적용. caster: 유닛을 통과해 계속 움직일 수 있습니다.; duration_seconds=4  scalar / caster: 이동 속도가 처음 증가하고 지속시간 동안 더 증가합니다.; duration_seconds=4  scalar, amount=10%  scalar, max_amount=50%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.activation eq 사망 후4초의 지속 효과가 끝남 적용. nearby_enemies: 폭발하여 주변 적에게 고정 피해를 입힙니다. (true); min_amount=140  level_range, max_amount=650  level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1",
+      "issue": "이동가능/폭발을사망후4초창에명확히연결하지않음",
+      "correction": "이동4초지속및해당창종료폭발조건보완",
+      "sourceId": "en:body",
+      "quote": "For 4 seconds after dying, Kog'Maw can continue to move, can move through units"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

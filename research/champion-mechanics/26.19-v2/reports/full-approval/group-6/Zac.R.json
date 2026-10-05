@@ -1,0 +1,136 @@
+{
+  "id": "Zac.R",
+  "sourceHash": "7f99adea6e26a860320a8f5d0308a353210bcd669dbfe65b1c6253d936ed815d",
+  "beforeCandidateHash": "13ca0ddddb077d61aff06792497c95dc7acf11b968889ea730fb386612f1cadf",
+  "candidateHash": "c700bab1a1183b7668242ba2c81234656ac8555e27aa0e9dd4ee5dab1869d5e5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "4바운스·각적첫넉백/120~260+AP40%,후속60~130+AP20%와20%1초둔화,자신MS20→50%·W사용·유체화·총피해300/475/650+AP100%를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자4회바운스. 총피해300/475/650+AP100%는별도표시정보로보존."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "각적의첫바운스명중은knockback및120/190/260+AP40%마법.전역첫적순서와혼동하지않음."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은적의후속바운스60/95/130+AP20%마법과20%1초둔화."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "효과동안MS증가량20%에서50%까지시간따라증가.중간진행식추정없음."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "바운스동안WUnstableMatter시전가능."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "바운스동안자신유체화는유닛충돌무시이동판정이며시야효과가아님."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1",
+      "issue": "총피해수치가gap에만존재",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Zac bounces 4 times. The first bounce to hit each enemy Knocks them back and deals (120/190/260 + (40% Ability Power)) magic damage. Subsequent bounces deal (60/95/130 + (20% Ability Power)) magic damage and Slow by 20% for 1 second. Zac gains up to 50% Move Speed over time and can cast Unstable Matter while bouncing. Total Damage: (300/475/650 + (100% Ability Power)) magic damage Move Speed increases from 20% to 50% over the duration. During Let's Bounce!, Zac is Ghosted. Ghosted units ignore collision with other units."
+    },
+    {
+      "path": "rules.3.conditions.0",
+      "issue": "MS지속효과조건누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Zac bounces 4 times. The first bounce to hit each enemy Knocks them back and deals (120/190/260 + (40% Ability Power)) magic damage. Subsequent bounces deal (60/95/130 + (20% Ability Power)) magic damage and Slow by 20% for 1 second. Zac gains up to 50% Move Speed over time and can cast Unstable Matter while bouncing. Total Damage: (300/475/650 + (100% Ability Power)) magic damage Move Speed increases from 20% to 50% over the duration. During Let's Bounce!, Zac is Ghosted. Ghosted units ignore collision with other units."
+    },
+    {
+      "path": "rules.5.effects.0.kind",
+      "issue": "유체화를visibility로분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Zac bounces 4 times. The first bounce to hit each enemy Knocks them back and deals (120/190/260 + (40% Ability Power)) magic damage. Subsequent bounces deal (60/95/130 + (20% Ability Power)) magic damage and Slow by 20% for 1 second. Zac gains up to 50% Move Speed over time and can cast Unstable Matter while bouncing. Total Damage: (300/475/650 + (100% Ability Power)) magic damage Move Speed increases from 20% to 50% over the duration. During Let's Bounce!, Zac is Ghosted. Ghosted units ignore collision with other units."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "요약CC종류충돌미기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Zac bounces 4 times. The first bounce to hit each enemy Knocks them back and deals (120/190/260 + (40% Ability Power)) magic damage. Subsequent bounces deal (60/95/130 + (20% Ability Power)) magic damage and Slow by 20% for 1 second. Zac gains up to 50% Move Speed over time and can cast Unstable Matter while bouncing. Total Damage: (300/475/650 + (100% Ability Power)) magic damage Move Speed increases from 20% to 50% over the duration. During Let's Bounce!, Zac is Ghosted. Ghosted units ignore collision with other units."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 701,
+      "verdict": "false_positive",
+      "reason": "현재최종후보는이미knockback이며text도뒤로밀어냄이다.원문본문에부합한다."
+    },
+    {
+      "index": 702,
+      "verdict": "false_positive",
+      "reason": "현재후보는min_amount20%와max_amount50%를모두가지고있다.누락지적은현재후보에해당하지않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "note": "툴팁의 총 피해량은 별도로 제시되지만, 각 적중 피해와 총 피해량의 적용 범위 관계가 명시되지 않아 별도 규칙으로 구조화하지 않았습니다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "note": "두요약은knockup이라고하나두본문은첫명중knockback을명시한다.본문을우선한다."
+    }
+  ],
+  "validation": {
+    "id": "Zac.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

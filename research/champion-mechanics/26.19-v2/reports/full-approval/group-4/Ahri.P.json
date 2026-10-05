@@ -1,0 +1,79 @@
+{
+  "id": "Ahri.P",
+  "sourceHash": "a3a4613c60db7580d9145ec0e1303d494de83b5760df84a976531b6540649755",
+  "beforeCandidateHash": "59f7215549de18e81891368d8de91b9ce8620596c44a190f0cc4ae7c9ba82d3d",
+  "candidateHash": "ea00b17ab6aef0c3ac19c1a88060fa0207b36c5e95d52b85959b202248b4fa11",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "미니언/몬스터처치의정기조각,9개획득후소모·자기회복,해당챔피언피해후3초이내처치관여의더큰회복을대조했다.각회복의능력치소유자는아리다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.target_type eq 미니언 또는 몬스터 적용. caster: 미니언이나 몬스터를 처치하면 정기 조각을 얻습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.resource eq 정기 조각9개를 획득함 적용. caster: 모은 정기 조각을 전부 소모합니다.; count=9  scalar / caster: 체력을 회복합니다.; min_amount=35  level_range, max_amount=95  level_range, stat_coefficient=20% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 takedown 사건에서 target.target_type eq champion, target.other eq 아리가 피해를 입힌 뒤3초 이내에 해당 챔피언 처치에 관여함 적용. caster: 적 챔피언의 정기를 흡수해 체력을 회복합니다.; min_amount=75  level_range, max_amount=165  level_range, stat_coefficient=30% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "정기조각획득을모든대상처치로확대",
+      "correction": "미니언또는몬스터로한정",
+      "sourceId": "en:body",
+      "quote": "Killing minions or monsters grants Ahri an Essence Fragment."
+    },
+    {
+      "path": "rules.1,2,gaps",
+      "issue": "조각자원및피해후3초관계불명확,표현불가gap으로오류보류",
+      "correction": "정확한조각/이력text조건및회복주문력계수보존",
+      "sourceId": "en:body",
+      "quote": "When Ahri scores a takedown against an enemy champion within 3 seconds of damaging them, she feasts upon their Essence, restoring ((75 ~ 165) + (30% Ability Power)) Health."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 8,
+      "verdict": "repaired",
+      "reason": "any를미니언또는몬스터text조건으로수정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "id": "Kindred.P",
+  "sourceHash": "f176bca4c0344cada5ad2fab6ebfa09979f9b3d5ce35579121081a0b225a9228",
+  "beforeCandidateHash": "a5323217b6c6c54d79b849e949b08523e3fd5d6a80c4afdfa22ca2396dbc7aad",
+  "candidateHash": "9d6fc08b815515f85da46c3745e1091071576665bb38ced1fe7ebc6f7dfb8e02",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "챔피언수동/정글자동사냥지정·사냥대상처치관여표식·처음4개사거리75/이후3개마다25·기본스킬표식별QAS5%/W현재HP1%/E잃은HP0.5%강화를전부검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target other eq 사냥 대상으로 지정된 적 → caster: 사냥 대상 처치에 관여하면 표식을 얻고 기본 스킬이 강화됩니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 stat_gain / 조건 caster mark eq 4 → caster: 표식4개에도달할때공격사거리가75증가한다. / count=4 [scalar]; amount=75 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 stat_gain / 조건 caster other eq 네 번째 표식 이후 표식을 3개 더 얻을 때마다 → caster: 네번째표식이후3개를더획득할때마다공격사거리가25증가한다. / count=3 [scalar]; amount=25 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → target: 인벤토리위초상화클릭으로사냥챔피언을지정하며특정정글몬스터는미니맵아이콘으로자동지정한다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 표식은기본스킬을강화한다: 화살세례AS추가5%,늑대의광기현재체력피해추가1%,차오르는공포잃은체력피해추가0.5%. / other=5%/1%/0.5% [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.subject",
+      "issue": "사냥대상이처치관여행위자",
+      "correction": "caster",
+      "sourceId": "en:body",
+      "quote": "Getting a takedown on a hunted target"
+    },
+    {
+      "path": "rules.1.conditions",
+      "issue": "4이상보유시매stat_gain75사거리누적가능",
+      "correction": "처음4에도달75/이후3마다25분기",
+      "sourceId": "en:body",
+      "quote": "After 4 Marks, Kindred gains 75 Attack Range."
+    },
+    {
+      "path": "rules.3-4",
+      "issue": "사냥지정및기본스킬구체강화누락",
+      "correction": "수동/자동사냥지정과5%/1%/.5%강화복구",
+      "sourceId": "en:body",
+      "quote": "Marks empower Kindred's basic Abilities"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 209,
+      "verdict": "repaired",
+      "reason": "처치관여주체caster로수정했다."
+    },
+    {
+      "index": 210,
+      "verdict": "false_positive",
+      "reason": "trigger.event가takedown이므로사냥대상조건과처치관여사건을함께표현한다.다른상황에발동한다는지적은오탐이다."
+    },
+    {
+      "index": 211,
+      "verdict": "false_positive",
+      "reason": "count참조는n0=4표식수이고amount참조n1=75는사거리증가량이다."
+    },
+    {
+      "index": 212,
+      "verdict": "false_positive",
+      "reason": "count참조는n2=3표식수이고amount참조n3=25는사거리증가량이다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "스키마에 사냥 대상 지정 여부를 직접 나타내는 조건이 없어, 대상이 사냥 대상으로 지정됐다는 조건은 텍스트로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "표식 수 조건은 mark 필드로 표현했지만, 네 번째 표식 이후 3개씩 추가될 때마다 반복 적용되는 조건을 스키마 조건 필드로 정확히 표현할 수 없어 텍스트에 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "영문요약매4회완료사거리증가는본문처음4표식75/이후3마다25와다르므로구체본문을우선했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

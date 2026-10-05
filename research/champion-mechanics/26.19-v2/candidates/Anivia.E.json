@@ -1,0 +1,132 @@
+{
+  "summary": "적에게 냉기의 바람을 날려 마법 피해를 준다. 대상이 냉각 상태면 더 높은 피해를 준다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "Chilled"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "냉각 상태가 아닌 적에게 55/80/105/130/155+시전자 주문력55%의 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Anivia blasts an enemy with a freezing wind, dealing (55/80/105/130/155 + (55% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Chilled"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "냉각된 적에게 기본 피해 대신 110/160/210/260/310+시전자 주문력110%의 마법 피해를 줍니다. 요약은 최근 냉기 폭발(Q) 또는 최대 크기 얼음 폭풍(R) 적중 시 이 두 배 피해를 적용한다고 설명합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Against Chilled enemies, Anivia deals (110/160/210/260/310 + (110% Ability Power)) magic damage instead."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "If the target was recently hit by Flash Frost or damaged by a fully formed Glacial Storm, the damage they take is doubled."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

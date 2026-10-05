@@ -1,0 +1,56 @@
+{
+  "id": "Karma.W",
+  "sourceHash": "8795d4363a5d5dd8b9950e7ab52208a4809fb9dbf2ae490a7eb4e03f6052d4bc",
+  "beforeCandidateHash": "dc462e679d16a7ba4a1234ad14e3e7e301e9ad19b40221ffdbadba5710b4ab27",
+  "candidateHash": "923e7b99df4583aa59a5cc4ade48fbc6dc851e8dc7e6e00a67d40d754b5a17f9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "챔프/정글몬스터tether즉시40~140+AP45%마법/2초드러냄,unbroken추가동일피해/root1.6~2초,summary만강화selfheal/longerroot 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion or jungle monster. target damage magic: 대상에게 마법 피해를 입힙니다. [amount n0=40/n1=65/n2=90/n3=115/n4=140 rank_values; stat_coefficient n5=45% formula_components caster.abilityPower] / target visibility: 대상의 모습을 드러냅니다. [duration_seconds n6=2 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 target.other eq the tether remains unbroken; caster.other eq 연결이 끝까지 유지됨. target damage magic: 대상에게 마법 피해를 한 번 더 입힙니다. [amount n7=40/n8=65/n9=90/n10=115/n11=140 rank_values; stat_coefficient n12=45% formula_components caster.abilityPower] / target crowd_control root: 대상을 속박합니다. [duration_seconds n13=1.6/n14=1.7/n15=1.8/n16=1.9/n17=2 rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq empowered. caster other: 만트라로 결속을 강화하면 카르마 자신을 회복하고 대상 속박 지속시간을 늘린다. 이 슬롯 본문은 추가량을 제공하지 않는다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/new/gaps",
+      "issue": "대상이expiry행위자·Mantra summary내용누락",
+      "correction": "caster연결완료사건/유지조건,강화요약보존과상세부족gap",
+      "sourceId": "en:summary",
+      "quote": "Mantra Bonus: Karma strengthens the link, healing herself and extending the root duration."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "Mantra강화의회복양/속박추가시간은이슬롯summary에설명만있다.공급W본문밖수치를추정하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

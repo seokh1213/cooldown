@@ -1,0 +1,56 @@
+{
+  "id": "Karma.Q",
+  "sourceHash": "22f5410dcb2c9d63227327be259e7927b64841c27e62dd7d0d0eedb2c127a931",
+  "beforeCandidateHash": "36b660ee9167b6f3fd8b272dad8c1bcffb97f4f08f691b0873d39ded7e5b543f",
+  "candidateHash": "f574b32bab5435303af1edfdeb417c0b4caf14497dd1adaf5f6c3b3e4426e1fc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫적중대상과그주변적마법60~260+AP70%/slow40%1.5초,summary만제공된Mantra추가폭발/위력강화도보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_order eq first. target damage magic: 에너지 폭발이 처음 적중한 대상에게 마법 피해를 입힙니다. [amount n0=60/n1=110/n2=160/n3=210/n4=260 rank_values; stat_coefficient n5=70% formula_components caster.abilityPower] / target crowd_control slow: 처음 적중한 대상을 둔화시킵니다. [amount n6=40% scalar; duration_seconds n7=1.5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 최초 적중 대상 주변의 적. secondary_targets damage magic: 에너지 폭발이 처음 적중한 대상과 주변 적에게 마법 피해를 입힙니다. [amount n0=60/n1=110/n2=160/n3=210/n4=260 rank_values; stat_coefficient n5=70% formula_components caster.abilityPower] / secondary_targets crowd_control slow: 처음 적중한 대상과 주변 적을 둔화시킵니다. [amount n6=40% scalar; duration_seconds n7=1.5 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq empowered. caster other: 만트라 강화는 내면의 열정 위력을 높이고 기존 폭발에 더해 잠시 후 추가 폭발 피해를 준다. 강화 수치와 피해 유형의 별도 표기는 이 슬롯 본문에 없다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/new/gaps",
+      "issue": "firsttarget및주변피해를target하나에혼합·Mantra요약내용누락",
+      "correction": "주대상/secondary효과분리및hitorder, 강화요약other와수치부족gap",
+      "sourceId": "en:summary",
+      "quote": "Mantra increases the destructive power of her Inner Flame, creating a cataclysm which deals damage after a short delay."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "만트라 강화의위력증가/지연폭발은summary에있지만강화상세수치/시간/범위본문은이슬롯공급자료에없다.원문설명을규칙으로보존하고추정하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

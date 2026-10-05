@@ -1,0 +1,199 @@
+{
+  "id": "Trundle.W",
+  "sourceHash": "3b040cf897f0605809ce2c5f97ad96796218c5985ba2957ceabf798139c41223",
+  "beforeCandidateHash": "be7d7d360d91a53ad5dbe3db50dc160756588748b0062e3f8bea220b04a9470f",
+  "candidateHash": "d7cfdead51284a25837e9606b486b35fe264cf0d442e3c6cb6a5b7b4ec0d01d5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "8초지역생성과그안에있는본인만 MS20~52%/AS30~110%/모든출처회복25%증폭.지역을나간이후버프지속은원문에없음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전의8초영역생성은자기버프수치와분리."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "해당지역내본인에게만이속/공속증가와모든출처회복량25%증폭.아군/적에게확대하지않음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.evidence",
+      "issue": "모든출처회복이라는효과문장근거가본문인용에직접없음",
+      "correction": "all sources를명시한요약원문을함께인용",
+      "sourceId": "en:summary",
+      "quote": "increased healing from all sources while on it."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "트런들이 일정 시간 동안 지역을 얼립니다. 트런들이 그 안에 있는 동안 이동 속도, 공격 속도, 회복량이 증가합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "unknown",
+              "text": "목표 지점의 일정 지역을 얼립니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Trundle freezes an area for 8 seconds. While inside he gains 20/28/36/44/52% Move Speed, 30/50/70/90/110% Attack Speed, and 25% increased healing."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "얼린 지역 안에 있는 동안"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": "attackSpeed",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "모든 출처로부터 받는 회복량이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Trundle freezes an area for 8 seconds. While inside he gains 20/28/36/44/52% Move Speed, 30/50/70/90/110% Attack Speed, and 25% increased healing."
+            },
+            {
+              "sourceId": "en:summary",
+              "quote": "Trundle turns target location into his domain, gaining Attack Speed, Move Speed, and increased healing from all sources while on it."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

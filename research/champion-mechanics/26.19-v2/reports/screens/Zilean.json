@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Zilean.E",
+      "sourceHash": "1df188e25cdd64e02c7b2fdb784cec72be04556fa1cd9ecf9d282c37257e5789",
+      "candidateHash": "081895e0f802d12aa9e407057e428e3520b3712b44938a93c6499b33c3a45073"
+    },
+    {
+      "id": "Zilean.P",
+      "sourceHash": "41bbcea4791fb5975098ed6f3a57c2359c20e45711d479b4a37f5ced1d32e7d8",
+      "candidateHash": "830d78add53892ecded6ed3757b9fde4992d3477e5a77a57fd4efc1261585321"
+    },
+    {
+      "id": "Zilean.Q",
+      "sourceHash": "e91e170013929041c86bcf70e380afb67cc33e97ecf785e9515385fa1edc07bd",
+      "candidateHash": "5ec31fbbb771981d163d91a1ba8df5e45609d6cf8575cd7675bb6a6f4f88de18"
+    },
+    {
+      "id": "Zilean.R",
+      "sourceHash": "b79570c939922e0d8092f0a7b7e2ef55232c75e471e86eab55f5e83eca226b2b",
+      "candidateHash": "defd134d737654277fe4a5a2d5e30bec10b1a0992e7141352d094618c5e5d208"
+    },
+    {
+      "id": "Zilean.W",
+      "sourceHash": "962acbe9734468f7d32cd5e388f3ed2d4311a2e4164884cc14e9146bc4d1b285",
+      "candidateHash": "44f4c9f68aff52ce854e546cf4c6bdf037c2e7f794977cc8e76941f48bd0d581"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Zilean.P",
+      "path": "rules.0.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When he has enough Experience to finish an ally's level up, he can right-click them to impart it.",
+      "issue": "규칙은 우클릭 행동을 `other` 이벤트로 기록해, 스킬 시전처럼 보존 경험치를 전달하는 사건을 특정하지 않습니다.",
+      "correction": "트리거를 아군에게 경험치를 전달하는 우클릭으로 명시하세요."
+    },
+    {
+      "id": "Zilean.Q",
+      "path": "rules.1.effects.0.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 3 seconds it detonates, dealing (75/115/165/230/300 + (90% Ability Power)) magic damage.",
+      "issue": "3초는 폭발 피해량의 일부가 아니라 부착된 폭탄이 폭발하기까지의 지연 시간입니다. 피해 효과의 `duration_seconds`로 붙여 의미를 잘못 나타냅니다.",
+      "correction": "3초를 피해 파라미터에서 제거하고, 폭탄 부착 후 폭발까지의 지연 시간으로 기록하세요."
+    },
+    {
+      "id": "Zilean.Q",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Placing a second bomb on a unit that already has one detonates the first bomb immediately and Stuns enemies in the blast for 1.1/1.2/1.3/1.4/1.5 seconds.",
+      "issue": "두 번째 폭탄 설치로 기존 폭탄이 즉시 폭발하는 사건을 `cast`로만 기록해, 설치가 아닌 시전 일반에도 효과가 발동하는 것으로 보일 수 있습니다.",
+      "correction": "트리거를 이미 폭탄이 있는 유닛에 두 번째 폭탄을 설치하는 사건으로 명시하세요."
+    }
+  ],
+  "notes": []
+}

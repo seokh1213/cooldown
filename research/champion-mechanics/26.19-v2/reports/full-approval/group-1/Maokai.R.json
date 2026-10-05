@@ -1,0 +1,56 @@
+{
+  "id": "Maokai.R",
+  "sourceHash": "5709996f111d4a190906ffc9b015617fc4505c5dd7fe2eaba5ad84d3b6baeb72",
+  "beforeCandidateHash": "48d2e26edd5723d524cc4dcc2638464622643078dadede79ed0e36560fbcd10c",
+  "candidateHash": "5dafaf25006113b9f18d28b025cb4a8a1287988a4e110a136d27794a4176bba9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "전진가시벽맞은적0.75~2.25초root거리증가/마법150~300+AP75%,챔프적중caster40/50/60%MS2초감쇠를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. summon summon: 나뭇가지와 가시로 된 거대한 파동을 소환합니다. [] / summon movement: 파동이 천천히 전진합니다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.ability_hit; 조건 enemy.other eq 가시 파동에 적중. enemy crowd_control root: 파동에 맞은 적을 이동 거리에 따라 속박합니다. [duration_seconds n0=0.75/n1=2.25 level_range] / enemy damage magic: 파동에 맞은 적에게 마법 피해를 입힙니다. [amount n2=150/n3=225/n4=300 rank_values; stat_coefficient n5=75% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.ability_hit; 조건 target.target_type eq champion. caster stat_modifier: 적 챔피언을 맞히면 이동 속도가 증가하고 2초에 걸쳐 감소합니다. [amount n6=40%/n7=50%/n8=60% rank_values; duration_seconds n9=2 scalar] flags=decays"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/2",
+      "issue": "root시간을min/maxamount·맞은조건",
+      "correction": "duration_seconds범위및파동적중사건",
+      "sourceId": "en:body",
+      "quote": "Rooting enemies for 0.75 to 2.25 seconds, increasing with distance travelled"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "속박 지속 시간이 이동 거리에 따라 증가하지만, 거리와 지속 시간의 정확한 대응 관계는 제공되지 않았습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

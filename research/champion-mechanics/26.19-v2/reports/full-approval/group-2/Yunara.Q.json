@@ -1,0 +1,178 @@
+{
+  "id": "Yunara.Q",
+  "sourceHash": "d3cd598e32e679a319c44a7c4a2282ca05971177d0d7d3eab5922bc8641a1434",
+  "beforeCandidateHash": "e9b2f182bcd6ba5366e6e83c0eb007ff1d823a5d23ac26a14e3fb9fd43c2890d",
+  "candidateHash": "9f4ed5c9963b8cce4f9d3712e9631ce71a8aceeba97a91f2c45e38d1ec24aeb7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 9,
+  "checkedGapCount": 2,
+  "summaryCheck": "기본온힛5~25+20%AP/공격방출1·챔피언2;8소모5초공속20~60%·추가온힛/확산30%AD물리;초월즉시15초;확산치명·온힛30%/30%미만미니언250% 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 공격의 On-Hit 적용; target: 적중 시 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=5,en:body:n1=10,en:body:n2=15,en:body:n3=20,en:body:n4=25 상수 rank_values / stat_coefficient en:body:n5=20%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type neq champion; caster: 비챔피언을 공격하면 방출1을 얻습니다.; 수치 amount en:body:n6=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 챔피언을 공격하면 방출2를 얻습니다.; 수치 amount en:body:n7=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.form eq 초월상태 자동활성화가 아닌 일반사용 / caster.resource gte en:body:n8=8 / caster.resource eq 이8의 자원은 방출; caster: 방출을 소모합니다.; 수치 resource_cost en:body:n8=8 상수 scalar; flags 없음 | caster: 공격 속도가 증가합니다.; 수치 amount en:body:n10=20(백분율),en:body:n11=30(백분율),en:body:n12=40(백분율),en:body:n13=50(백분율),en:body:n14=60%(백분율) 상수 rank_values / duration_seconds en:body:n9=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: transform 사건의 행위자 caster; 조건 caster.form eq 초월 상태로 진입; caster: 초월상태에 진입하면 Q가 즉시15초 활성화됩니다. 방출소모 여부는 원문에 별도 명시되지 않습니다.; 수치 duration_seconds en:body:n22=15 상수 scalar; flags 없음 | caster: 초월상태의 자동활성화Q 동안 같은공속20~60%를15초 적용합니다.; 수치 amount en:body:n10=20(백분율),en:body:n11=30(백분율),en:body:n12=40(백분율),en:body:n13=50(백분율),en:body:n14=60%(백분율) 상수 rank_values / duration_seconds en:body:n22=15 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq Q활성효과가 유지되는 동안 On-Hit 적용; target: 적중 시 추가 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n15=5,en:body:n16=10,en:body:n17=15,en:body:n18=20,en:body:n19=25 상수 rank_values / stat_coefficient en:body:n20=20%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq Q활성효과가 유지됨 / secondary_targets.distance eq 공격대상 주변의 확산공격에 맞는 적들; secondary_targets: Q활성효과가 유지되는 동안 기본공격이 주변 적들에게 확산되어 유나라 공격력30%의 물리 피해를 줍니다. [physical]; 수치 stat_coefficient en:body:n21=30%(백분율) caster.totalAttackDamage formula_components; flags 없음"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 이 Q의 확산공격; caster: 확산공격은 치명타가 적용될 수 있고 On-Hit효과를30%효율로 적용합니다.30%는 확산기본피해의 배율이 아니라 On-Hit효율입니다.; 수치 other en:body:n23=30%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 이 Q의 확산공격 / secondary_targets.target_type eq minion / secondary_targets.health_threshold lt en:body:n25=30%(백분율); secondary_targets: 확산공격에 맞은 체력30%미만 미니언은 일반 확산공격 피해의250% 물리피해를 받습니다. [physical]; 수치 damage_multiplier en:body:n24=250%(백분율) 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "공격과스킬적중혼동·조건없는1/2자원·cast시즉시온힛피해·형상활성화와미니언조건 혼합·확산피해/효율/체력기준배율누락 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Yunara deal (5/10/15/20/25 + (20% Ability Power)) magic damage On-Hit and attacking grants 1 Unleash (2 Unleash for champions). Active: Yunara consumes 8 Unleash and for 5 seconds gains 20/30/40/50/60% Attack Speed and deals an additional (5/10/15/20/25 + (20% Ability Power)) magic damage On-Hit. During this time, her Attacks spread to nearby enemies dealing them (30% Attack Damage) physical damage. Transcendent State: This Ability is instantly activated for 15 seconds. Spread Attacks can Strike Critically and apply On-Hit effects at 30% effectiveness. Damage from spread Attacks deal 250% damage to minions below 30% Health."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 675,
+      "verdict": "repaired",
+      "reason": "초월진입 transform 사건에서 즉시15초활성화하도록 공격에서 분리."
+    },
+    {
+      "index": 676,
+      "verdict": "repaired",
+      "reason": "초월활성화 대상유형조건 제거; 저체력미니언250%는 별도확산피해규칙."
+    },
+    {
+      "index": 677,
+      "verdict": "repaired",
+      "reason": "On-Hit30%효율을 attack_modifier의 other역할로 분리.250%와체력30%를 혼동하지 않는다."
+    },
+    {
+      "index": 678,
+      "verdict": "repaired",
+      "reason": "확산물리피해30%를caster totalAttackDamage 계수로 명시."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "초월상태즉시활성화의 방출8소모 여부는 따로 명시되어 있지 않다. 후반의 Spread Attacks 일반설명에는 형상조건이 명시되지 않아 확산공격으로만 조건을 보존하며 초월상태로 추가제한하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "주변확산의 구체적거리/대상수와확산순서는 본문에 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

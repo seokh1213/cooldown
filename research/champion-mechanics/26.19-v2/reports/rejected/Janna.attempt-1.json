@@ -1,0 +1,504 @@
+{
+  "drafts": {
+    "E": {
+      "summary": "잔나가 아군 챔피언이나 포탑에게 보호막을 부여하고, 보호막이 유지되는 동안 대상의 공격력을 높입니다. 스킬로 적 챔피언의 이동을 방해하면 재사용 대기시간 일부를 돌려받습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "아군 챔피언 또는 포탑"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "ally",
+              "text": "아군 챔피언 또는 포탑에게 보호막을 부여합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Janna grants an ally champion or turret (80/120/160/200/240 + (55% Ability Power)) Shield for 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "아군 챔피언 또는 포탑"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "shield_ready",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "ally",
+              "text": "보호막이 유지되는 동안 대상의 공격력이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "totalAttackDamage",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "While shielded, they gain (10/15/20/25/30 + (10% Ability Power)) Attack Damage."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "스키마의 target_type 값에 아군 챔피언과 포탑을 각각 나타내는 값이 없어 두 대상 유형을 구조화된 target_type 조건으로 구분할 수 없습니다. 텍스트 조건에 원문 범위를 보존했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Janna grants an ally champion or turret"
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "재사용 대기시간 환급은 적 챔피언의 이동을 스킬로 방해할 때 발생하지만, 전용 이벤트가 없어 이동 방해 사건을 정확히 구조화할 수 없습니다. 또한 cooldown 비율을 나타내는 전용 parameter role이 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Janna refunds 20% of the cooldown whenever she impairs an enemy champion's movement with an Ability."
+            }
+          ]
+        }
+      ]
+    },
+    "P": {
+      "summary": "아군 챔피언이 잔나를 향해 움직이면 이동 속도가 증가합니다. 잔나는 적중 시 및 서풍으로 추가 이동 속도에 비례한 추가 마법 피해를 입힙니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "ally",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "잔나를 향해 이동"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "ally",
+              "text": "이동 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Ally champions gain 6% Move Speed moving towards Janna."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "잔나가 적중 시 및 서풍으로 추가 이동 속도에 비례한 추가 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Janna deals (30% bonus Movement Speed) bonus magic damage On-Hit and with Zephyr."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "피해량은 추가 이동 속도에 비례하지만, 허용된 stat 목록에 추가 이동 속도를 구분하는 통계가 없어 계수 parameter로 표현하지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Janna deals (30% bonus Movement Speed) bonus magic damage On-Hit and with Zephyr."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "잔나가 마법의 계절풍을 소환해 주변 적을 밀어낸 뒤 주변 아군을 치유합니다. 이동하거나 스킬을 사용하면 계절풍이 일찍 끝나며, 밀쳐내기는 적을 벽 너머로 보내지 않습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "주변 적들을 뒤로 밀어냅니다. 밀쳐내기는 적을 벽 너머로 보내지 않습니다.",
+              "damageType": null,
+              "crowdControl": "knockback",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Janna summons a magical monsoon, Knocking Back nearby enemies then healing nearby allies"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "The Knock Back cannot push enemies over walls."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "unknown",
+              "text": "주변 아군을 계절풍이 활성화되어 있는 동안 치유합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "After the storm has settled, soothing winds heal nearby allies while the ability is active."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Janna summons a magical monsoon, Knocking Back nearby enemies then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "이동하거나 스킬을 사용하면 계절풍이 일찍 끝납니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Moving or using an Ability ends the monsoon early."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "효과 주체 선택지에 아군이 있지만 nearby allies를 정확히 표현할 선택지가 없어, nearby_enemies로 잘못 지정하지 않고 unknown으로 보존했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "기본 지속 효과로 잔나의 이동 속도가 증가하고 유체화 상태가 됩니다. 사용한 뒤 원소가 적을 공격하면 둔화와 마법 피해를 입힙니다. 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "유체화 상태가 됩니다. 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Ghosted units ignore collision with other units."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_number",
+          "detail": "입력 numbers의 첫 네 이동 속도 랭크 값은 raw 값에 퍼센트 기호가 없지만, 인용한 원문에는 퍼센트 기호가 포함됩니다. 원문 표기를 따르기 위해 숫자 참조를 생략했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Janna.R",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.1.evidence.1",
+          "detail": "Quote is not an exact source substring"
+        }
+      ]
+    }
+  ]
+}

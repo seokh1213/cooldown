@@ -1,0 +1,43 @@
+{
+  "id": "Rammus.E",
+  "sourceHash": "7d60a54cfc258c957c5be885ed89a807de174e2ca0c71283c8e1e9d971f52cb9",
+  "beforeCandidateHash": "05edc96aabe370b81cfcb96722a024c75e3454ab59f896a8d8da8c66abc664d3",
+  "candidateHash": "268791ce84b0976c454fb7ed77c8313668d10615d03d2e127472ca442586af49",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "챔피언또는몬스터1.2~2초도발,몬스터만80~160+70%AP마법 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; target: 적 챔피언을 도발합니다. [taunt]; 수치 duration_seconds en:body:n0=1.2,en:body:n1=1.4,en:body:n2=1.6,en:body:n3=1.8,en:body:n4=2 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq monster; target: 몬스터를 도발합니다. [taunt]; 수치 duration_seconds en:body:n0=1.2,en:body:n1=1.4,en:body:n2=1.6,en:body:n3=1.8,en:body:n4=2 상수 rank_values; flags 없음 | target: 몬스터에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n5=80,en:body:n6=100,en:body:n7=120,en:body:n8=140,en:body:n9=160 상수 rank_values / stat_coefficient en:body:n10=70%(백분율) caster.abilityPower scalar; flags per_target"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "몬스터피해의AP계수를outputratio가 아닌 stat_coefficient로 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Rammus Taunts an enemy champion or monster for 1.2/1.4/1.6/1.8/2 seconds. Monsters are dealt (80/100/120/140/160 + (70% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

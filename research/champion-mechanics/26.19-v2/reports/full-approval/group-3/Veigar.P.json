@@ -1,0 +1,69 @@
+{
+  "id": "Veigar.P",
+  "sourceHash": "e23268485fa52f025012c3146c8cf139d6d9080064781cb4e1003b051976156d",
+  "beforeCandidateHash": "665b63e638277248c417643f63547165831017ad56aadb46b4ffe9bd68ddf098",
+  "candidateHash": "e96cffdac40d7767de31f755b17ec8ef4d71d8fffcddb011042e5239b0f76ec7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "적챔피언스킬적중극악1,챔피언처치관여추가5,각중첩당주문력1영구증가를양언어본문/요약과대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target other eq 적챔피언 → caster: 베이가가 극악 중첩을 얻습니다. / amount=1 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target target_type eq champion → caster: 베이가가 추가 극악 중첩을 얻습니다. / amount=5 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster resource present 극악 중첩 → caster: 극악1중첩당베이가의주문력이1영구증가합니다. / amount=1 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.trigger",
+      "issue": "스킬적중/처치관여의행위자가피해대상target이었다.",
+      "correction": "베이가caster행위자와적챔피언적중한정을보존했다.",
+      "sourceId": "en:body",
+      "quote": "Veigar's Abilities grant him 1 stack of Phenomenal Evil when they strike enemy champions."
+    },
+    {
+      "path": "summary/rules.2",
+      "issue": "중첩당주문력증가의영구성이빠졌다.",
+      "correction": "요약근거에따라영구주문력증가를명시했다.",
+      "sourceId": "en:summary",
+      "quote": "permanently increased Ability Power."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

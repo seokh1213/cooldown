@@ -1,0 +1,114 @@
+{
+  "id": "Ekko.Q",
+  "sourceHash": "9b61183be1962091cc54d19dd411fa42f864588a14b0f93c3536021e364e7ac3",
+  "beforeCandidateHash": "0cdd35ce5b64c9e6364a1817627ca6ef7a476aed0a323f3af6aa98e47d06da25",
+  "candidateHash": "7afcecbdab6a8f68c8ee5ba16ddf16a42c68f924068ca52fec3e88bb2b7a96c5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "투척피해,챔피언적중또는사거리끝의역장전개,역장안적둔화,전개뒤돌아오는장치피해를대조했다.플레이어재사용입력은공급본문에없다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 던진 장치가 적중한 대상에게 마법 피해를 입힙니다. (magic); amount=80/95/110/125/140  rank_values, stat_coefficient=30% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion 적용. nearby_enemies: 장치가 역장을 펼칩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 unknown.other eq 장치가 사거리 끝에 도달함 적용. nearby_enemies: 장치가 역장을 펼칩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "nearby_enemies의 other 사건에서 nearby_enemies.other eq 역장 안에 있음 적용. nearby_enemies: 역장 안의 적을 둔화시킵니다. (slow); amount=40/45/50/55/60%  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.other present 장치가 펼쳐진 뒤, target.other eq 역장이 펼쳐진 뒤 에코에게 돌아오는 장치에 맞은 적 적용. target: 돌아오는 장치가 적중한 대상에게 마법 피해를 입힙니다. (magic); amount=40/65/90/115/140  rank_values, stat_coefficient=70% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,4",
+      "issue": "적중피해와전개사건및귀환을재사용입력으로기록",
+      "correction": "스킬적중및돌아오는장치적중조건으로정정",
+      "sourceId": "en:body",
+      "quote": "After it expands, Ekko recalls it, dealing (40/65/90/115/140 + (70% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 47,
+      "verdict": "false_positive",
+      "reason": "사거리끝도달전개는별도규칙2로이미보존된다.OR대안은규칙분리로표현가능하다."
+    },
+    {
+      "index": 48,
+      "verdict": "false_positive",
+      "reason": "계약에사거리끝도달전용event는없으며other와사거리끝도달text조건이실제사건을명시한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "최초 투척 피해의 적중 대상 범위는 tooltip에 명시되지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

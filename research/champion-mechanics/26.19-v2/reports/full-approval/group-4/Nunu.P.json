@@ -1,0 +1,120 @@
+{
+  "id": "Nunu.P",
+  "sourceHash": "b9599c5086e084dde658659c57ec2312e55a739f210ec9ce4fb08e14375d9bb7",
+  "beforeCandidateHash": "cff80d2bb279a07d376b574a23585b8e91b68c7daaceeae274119ccc1f3d6cdc",
+  "candidateHash": "c63f48b4a0ead718413d3e3fadfd796435e1eadc2aaeabf0f0521e64794b5805",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "피해 발생 대상 세 종류, 누누/윌럼프와 주변 아군 한 명의 20% 공격 속도·10% 이동 속도 4초, 강화 중 원 공격 대상을 제외한 주변 적에게 30% 총 공격력 물리 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 target.target_type eq champion, caster.other eq 해당 대상에게 피해를 입힘 적용. caster: 누누와 윌럼프의 공격 속도가 증가합니다.; amount=20%  scalar, duration_seconds=4  scalar / ally: 주변 아군 한 명의 공격 속도가 증가합니다.; amount=20%  scalar, duration_seconds=4  scalar / caster: 누누와 윌럼프의 이동 속도가 증가합니다.; amount=10%  scalar, duration_seconds=4  scalar / ally: 주변 아군 한 명의 이동 속도가 증가합니다.; amount=10%  scalar, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 target.target_type eq monster, caster.other eq 해당 대상에게 피해를 입힘, target.other eq 대형 정글 몬스터 적용. caster: 누누와 윌럼프의 공격 속도가 증가합니다.; amount=20%  scalar, duration_seconds=4  scalar / ally: 주변 아군 한 명의 공격 속도가 증가합니다.; amount=20%  scalar, duration_seconds=4  scalar / caster: 누누와 윌럼프의 이동 속도가 증가합니다.; amount=10%  scalar, duration_seconds=4  scalar / ally: 주변 아군 한 명의 이동 속도가 증가합니다.; amount=10%  scalar, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 target.target_type eq structure, caster.other eq 해당 대상에게 피해를 입힘 적용. caster: 누누와 윌럼프의 공격 속도가 증가합니다.; amount=20%  scalar, duration_seconds=4  scalar / ally: 주변 아군 한 명의 공격 속도가 증가합니다.; amount=20%  scalar, duration_seconds=4  scalar / caster: 누누와 윌럼프의 이동 속도가 증가합니다.; amount=10%  scalar, duration_seconds=4  scalar / ally: 주변 아군 한 명의 이동 속도가 증가합니다.; amount=10%  scalar, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.other eq 이 기본 지속 효과의 강화 효과가 지속 중 적용. secondary_targets: 윌럼프의 기본 공격은 대상 주변의 다른 적에게 추가 물리 피해를 줍니다. (physical); stat_coefficient=30% caster의 totalAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "피해 발생을 적중 사건으로 좁히며 아군 한 명 범위 누락",
+      "correction": "피해 발생 사건과 아군 한 명 명시",
+      "sourceId": "en:body",
+      "quote": "When Nunu and Willump deal damage to champions, large jungle monsters, or structures, they and a nearby ally gain 20% Attack Speed and 10% Move Speed for 4 seconds."
+    },
+    {
+      "path": "rules.1.conditions",
+      "issue": "일반 몬스터까지 확대",
+      "correction": "대형 정글 몬스터 조건 추가",
+      "sourceId": "en:body",
+      "quote": "large jungle monsters"
+    },
+    {
+      "path": "gaps.0",
+      "issue": "스키마로 대형 몬스터 구분 불가라는 부정확한 한계",
+      "correction": "text 조건으로 해결하고 실제 한영 피해 표현 충돌 기록",
+      "sourceId": "en:body",
+      "quote": "Willump's Attacks deal an additional (30% Attack Damage) physical damage to other nearby enemies while he has this buff."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 355,
+      "verdict": "false_positive",
+      "reason": "챔피언·몬스터·구조물 각각 규칙0/1/2가 이미 있다. 일반 몬스터까지 넓힌 별도 문제는 조건 추가로 수정했다."
+    },
+    {
+      "index": 356,
+      "verdict": "repaired",
+      "reason": "원문은 deal damage이므로 피해 발생을 명시하는 other 사건으로 수정했다."
+    },
+    {
+      "index": 357,
+      "verdict": "false_positive",
+      "reason": "현재 effect.text가 이미 대상 주변의 다른 적이라고 명시하여 주 공격 대상을 제외한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문은 주변 다른 적에게 30% 공격력의 추가 피해라고 명시하지만 한국어 본문은 최대 30% 공격력이라고 표현한다. 구체적인 영문 피해식을 우선했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

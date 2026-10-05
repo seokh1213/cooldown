@@ -1,0 +1,113 @@
+{
+  "id": "Elise.W",
+  "sourceHash": "5ccb4a800646ca352f75661df3a35a0341e47fd0cb133db79637435a03b61ce6",
+  "beforeCandidateHash": "6e20816de33cfd6fbbf4eb5903275679bdee5826e43657d4d4ddb3e326c8b3ba",
+  "candidateHash": "65b595d15c7fb294dd5cf61d4e48b713e790f6a404b898a0e5c4079af24785ed",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "인간형태지정위치로가는폭발거미·적근접또는3초폭발과마법피해,거미형태새끼거미상시공속5~25%및자기/새끼거미70~130%3초공속을variant별대조했다.폭발실제범위는미상이다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "form:A:en"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq Human Form 적용. summon: 폭발하는 새끼 거미를 소환해 지정한 위치로 이동시킵니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "form:A:en"
+      ],
+      "note": "summon의 enter_area 사건에서 enemy.distance lte 가까운 거리 적용. unknown: 새끼 거미가 적에게 가까워지면 폭발해 마법 피해를 입힙니다. (magic); amount=60/100/140/180/220  rank_values, stat_coefficient=75% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "form:A:en"
+      ],
+      "note": "summon의 expiry 사건에서 summon.time gte 3 적용. unknown: 새끼 거미는 시간이 지나면 폭발해 마법 피해를 입힙니다. (magic); amount=60/100/140/180/220  rank_values, stat_coefficient=75% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "form:B:en"
+      ],
+      "note": "summon의 passive 사건에서 caster.form eq Spider Form 적용. summon: 새끼 거미의 공격 속도가 증가합니다.; amount=5/10/15/20/25%  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "form:B:en"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq Spider Form 적용. caster: 엘리스의 공격 속도가 증가합니다.; amount=70/85/100/115/130%  rank_values, duration_seconds=3  scalar / summon: 새끼 거미들의 공격 속도가 증가합니다.; amount=70/85/100/115/130%  rank_values, duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3,4.parameters",
+      "issue": "공격속도증가량에참조스탯인공격속도를불필요하게연결",
+      "correction": "출력statTo공격속도는유지하고단순백분율증가량은stat=null",
+      "sourceId": "form:B:en",
+      "quote": "Spider Form Passive: Spiderlings gain 5/10/15/20/25% Attack Speed."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "폭발 새끼 거미가 피해를 주는 대상의 범위가 원문에 명시되지 않아 피해 대상을 특정할 수 없습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "새끼 거미가 적에게 가까워졌을 때의 정확한 거리와 폭발 피해 범위가 원문에 명시되지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

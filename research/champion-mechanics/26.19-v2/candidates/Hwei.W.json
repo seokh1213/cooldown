@@ -1,0 +1,297 @@
+{
+  "summary": "평온 환상은 선택한 WQ, WW, WE 변형에 따라 아군 이동 속도 증가, 보호막, 또는 다음 세 번의 공격/스킬 강화와 마나 회복을 제공합니다.",
+  "rules": [
+    {
+      "variant": "WQ",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "흐웨이가 일직선의 물살을 발사해 아군 이동 속도를 증가시킵니다. 추가 계수는 주문력 100당 3%입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:WQ:en:n0",
+                "variant:WQ:en:n1",
+                "variant:WQ:en:n2",
+                "variant:WQ:en:n3",
+                "variant:WQ:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "variant:WQ:en:n5",
+                "variant:WQ:en:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:WQ:en",
+          "quote": "Fleeting Current Hwei launches a current of swift waters in a line that grants allies (30/32.5/35/37.5/40% + (3% per 100 Ability Power)) Move Speed."
+        }
+      ]
+    },
+    {
+      "variant": "WW",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "흐웨이 본인도 시간에 걸쳐 보호막을 얻지만, 본인에게 적용되는 수치는 원문에서 특정되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "웅덩이 안의 아군 챔피언에게 시간에 걸쳐 보호막을 부여하며, 아군 보호막은 15% 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:WW:en:n0",
+                "variant:WW:en:n1",
+                "variant:WW:en:n2",
+                "variant:WW:en:n3",
+                "variant:WW:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "variant:WW:en:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "variant:WW:en:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:WW:en",
+          "quote": "Pool of Reflection Hwei forms a protective pool that grants (100/140/180/220/260 + (60% Ability Power)) Shields over time to allied champions inside reduced by 15% for allies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hwei paints visions of serenity that provide utility for himself and allied champions."
+        }
+      ]
+    },
+    {
+      "variant": "WE",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "흐웨이가 다음 세 번의 스킬 또는 기본 공격을 강화하는 소용돌이치는 빛 세 개를 만듭니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "variant:WE:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:WE:en",
+          "quote": "Stirring Lights Hwei creates three swirling lights that empower his next three Abilities or Attacks to deal an additional (20/30/40/50/60 + (15% Ability Power)) magic damage and restore 45/50/55/60/65 Mana each."
+        }
+      ]
+    },
+    {
+      "variant": "WE",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "one of the next three Abilities or Attacks"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "강화된 스킬 또는 공격은 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:WE:en:n2",
+                "variant:WE:en:n3",
+                "variant:WE:en:n4",
+                "variant:WE:en:n5",
+                "variant:WE:en:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "variant:WE:en:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "강화된 각 스킬 또는 공격마다 마나를 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_refund",
+              "numberRefs": [
+                "variant:WE:en:n8",
+                "variant:WE:en:n9",
+                "variant:WE:en:n10",
+                "variant:WE:en:n11",
+                "variant:WE:en:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:WE:en",
+          "quote": "to deal an additional (20/30/40/50/60 + (15% Ability Power)) magic damage and restore 45/50/55/60/65 Mana each."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "주문력 계수는 100 주문력당 3%로 제시되어 두 구성 숫자를 함께 보존했습니다. 이를 단순 3% 주문력 비례로 환산하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "variant:WQ:en",
+          "quote": "(30/32.5/35/37.5/40% + (3% per 100 Ability Power)) Move Speed."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "영문 WW 문구는 보호막을 아군 챔피언에게 부여하고 아군에게 15% 감소한다고 적지만, 공통 본문은 흐웨이 자신과 아군 모두에게 이로운 효과가 있다고만 설명합니다. 흐웨이 본인의 보호막 효과는 보존하되, 본인용 수치와 15% 감소 적용 여부는 확정하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "variant:WW:en",
+          "quote": "Pool of Reflection Hwei forms a protective pool that grants (100/140/180/220/260 + (60% Ability Power)) Shields over time to allied champions inside reduced by 15% for allies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hwei paints visions of serenity that provide utility for himself and allied champions."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "WE는 다음 세 번의 스킬 또는 기본 공격을 강화하고 각각 피해와 마나 회복을 적용하지만, 원문은 강화 소모 시점을 시전/사용과 적중 중 어느 쪽으로 판정하는지 명시하지 않습니다. 이후 강화 사용 효과로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "variant:WE:en",
+          "quote": "Stirring Lights Hwei creates three swirling lights that empower his next three Abilities or Attacks to deal an additional (20/30/40/50/60 + (15% Ability Power)) magic damage and restore 45/50/55/60/65 Mana each."
+        }
+      ]
+    }
+  ]
+}

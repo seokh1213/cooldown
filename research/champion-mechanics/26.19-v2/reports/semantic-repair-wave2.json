@@ -1,0 +1,399 @@
+{
+  "reviewReport": "reports/semantic-review-wave2.json",
+  "validatedIds": [
+    "Chogath.P",
+    "Chogath.Q",
+    "Chogath.W",
+    "Chogath.E",
+    "Chogath.R",
+    "DrMundo.P",
+    "DrMundo.Q",
+    "DrMundo.W",
+    "DrMundo.E",
+    "DrMundo.R",
+    "Brand.P",
+    "Brand.Q",
+    "Brand.W",
+    "Brand.E",
+    "Brand.R"
+  ],
+  "findings": [
+    {
+      "finding": 1,
+      "id": "Chogath.E",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Removed hit_count from both follow-up attack rules; added a cast-time attack_modifier with count=3 and retained activation=empowered on the resulting spike attacks.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cho'Gath's next 3 Attacks launch spikes"
+        }
+      ],
+      "candidateHash": "4e7f08a2b1e94c70a4f000a645b142eaea3c4ed4e1b5f47a21e3c757e6e58d6a"
+    },
+    {
+      "finding": 2,
+      "id": "Chogath.E",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Removed the unsupported Feast-resource threshold and separated the ordinary flat/AP damage from the max-health component, so monster replacement affects only that component.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Percent Health damage against monsters is replaced with 80/110/140/170/200."
+        }
+      ],
+      "candidateHash": "4e7f08a2b1e94c70a4f000a645b142eaea3c4ed4e1b5f47a21e3c757e6e58d6a"
+    },
+    {
+      "finding": 3,
+      "id": "Chogath.R",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Separated ordinary Feast stack gain and benefits from the six-stack cap rule. The cap rule is conditioned only on minion or non-epic jungle monster kills; it no longer limits champion or other eligible target stacks.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this kills the target, Cho'Gath gains a stack, which causes him to grow in size and gain 80/120/160 max Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Only 6 stacks can be gained from minions and non-epic jungle monsters."
+        }
+      ],
+      "candidateHash": "9491c79f981f582f99f901281088dd6ec0e5c2eefe4aa7e66a7c5032495796ee"
+    },
+    {
+      "finding": 4,
+      "id": "DrMundo.P",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Changed the trigger from damage_taken to a retained other event for the first immobilizing effect that hits Mundo, preserving non-damaging immobilizing effects. Current-health loss remains text.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Dr. Mundo resists the first Immobilizing effect that hits him, instead losing 4% current Health and dropping a chemical cannister nearby for 7 seconds."
+        }
+      ],
+      "candidateHash": "2e68f8782acd3b9539c092622afce92fe01b4e4191b431c4422ccf73544a5af1"
+    },
+    {
+      "finding": 5,
+      "id": "DrMundo.P",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Removed the unsupported visible-activation condition from canister pickup.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Moving over it reduces this Ability's Cooldown by 15 seconds and restores 4% max Health."
+        }
+      ],
+      "candidateHash": "2e68f8782acd3b9539c092622afce92fe01b4e4191b431c4422ccf73544a5af1"
+    },
+    {
+      "finding": 6,
+      "id": "DrMundo.P",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Moved champion type to the moving enemy actor and retained the canister as the destruction target.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemy champions moving over the cannister destroy it."
+        }
+      ],
+      "candidateHash": "2e68f8782acd3b9539c092622afce92fe01b4e4191b431c4422ccf73544a5af1"
+    },
+    {
+      "finding": 7,
+      "id": "DrMundo.Q",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Removed maxHealth as the coefficient stat, preserved current-health scaling in text, and added an unsupported-formula gap.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing 20/22.5/25/27.5/30% current Health magic damage to the first enemy hit"
+        }
+      ],
+      "candidateHash": "b2247f857a0f6dc25b278317392925d96f8dc2f9c9533c017ffa3d4a70422dfc"
+    },
+    {
+      "finding": 8,
+      "id": "DrMundo.W",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Added active-W and activation-relative timer text conditions, bounded the later storage phase by the W duration, and stated that storage ends on recast or expiry.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "he stores (80% ~ 95%) of damage taken for the first 0.75 seconds and 25% for the remaining duration as gray health"
+        }
+      ],
+      "candidateHash": "cc1eb3256731f7bf81088b16ec7a4cee62a8ef7395d783ebd846dc697707b342"
+    },
+    {
+      "finding": 9,
+      "id": "DrMundo.W",
+      "ruleIndex": 3,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Added the summary-supported expiry trigger for burst damage and both champion-hit-dependent gray-health recovery branches.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "At the end of the duration or on Recast, Dr. Mundo deals a burst of damage to nearby enemies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If this hits at least one champion, Dr. Mundo restores 100% of gray health, otherwise he instead restores 50% of gray health."
+        }
+      ],
+      "candidateHash": "cc1eb3256731f7bf81088b16ec7a4cee62a8ef7395d783ebd846dc697707b342"
+    },
+    {
+      "finding": 10,
+      "id": "DrMundo.E",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Replaced stat_conversion with an additive stat_modifier to bonusAttackDamage scaled by caster maxHealth; removed replace_input and duplicate output ratio.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive - Dr. Mundo gains bonus Attack Damage, increasing based on his max Health."
+        }
+      ],
+      "candidateHash": "ed5b5b391da30f3f140c76016dc9f2eb2e1db0423d2ff99c9b5d628d21bfb0ec"
+    },
+    {
+      "finding": 11,
+      "id": "DrMundo.E",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Replaced the fixed 40% multiplier interpretation with an upper-bound text/unknown parameter and an unsupported-formula gap for missing-health dependence.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "increased by up to 40% based on his missing Health."
+        }
+      ],
+      "candidateHash": "ed5b5b391da30f3f140c76016dc9f2eb2e1db0423d2ff99c9b5d628d21bfb0ec"
+    },
+    {
+      "finding": 12,
+      "id": "DrMundo.E",
+      "ruleIndex": 3,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Moved path-contact to secondary_targets while retaining the killed, swatted primary target as context; bonusHealth remains owned by caster.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the enemy is killed, Mundo swats them away, dealing (5/15/25/35/45 + (5% bonus Health)) physical damage to enemies they pass through."
+        }
+      ],
+      "candidateHash": "ed5b5b391da30f3f140c76016dc9f2eb2e1db0423d2ff99c9b5d628d21bfb0ec"
+    },
+    {
+      "finding": 13,
+      "id": "DrMundo.R",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Removed the maxHealth input stat, retained missing-health scaling as null/untyped text, and added an unsupported-formula gap.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "gaining 15/20/25% of his missing Health as max Health"
+        }
+      ],
+      "candidateHash": "7518408fecbdfc59eb0f1044e7456131ebb943f79955472b396a3aa1ff7fc684"
+    },
+    {
+      "finding": 14,
+      "id": "Brand.P",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Replaced hit_count with an Ablaze mark presence and mark threshold using en:body:n5; a text target_type condition preserves both champion and large-jungle-monster branches, with the enum limitation documented.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When a champion or large jungle monster reaches 3 stacks"
+        }
+      ],
+      "candidateHash": "6e3452c12e43e2f427f08e242a03485eb86ce6351223a169f9bd31ccc5f66f04"
+    },
+    {
+      "finding": 15,
+      "id": "Brand.P",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Set both explosion max-health coefficient statSubject values to unknown and corrected the gap to match the unknown owner representation.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "max Health magic damage to surrounding enemies."
+        }
+      ],
+      "candidateHash": "6e3452c12e43e2f427f08e242a03485eb86ce6351223a169f9bd31ccc5f66f04"
+    },
+    {
+      "finding": 16,
+      "id": "Brand.P",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Removed the 2-second value from damage duration and represented delayed detonation as a separate text effect with a duration parameter.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "the Blaze will detonate after 2 seconds"
+        }
+      ],
+      "candidateHash": "6e3452c12e43e2f427f08e242a03485eb86ce6351223a169f9bd31ccc5f66f04"
+    },
+    {
+      "finding": 17,
+      "id": "Brand.Q",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Added hit_order=first to the stun rule and cited the full sentence sequence linking first-hit damage and Ablaze stun.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "magic damage to the first enemy hit. If the target is Ablaze, they will be Stunned for 1.75 seconds."
+        }
+      ],
+      "candidateHash": "933ce9b8f0d1a74c7dd440a64a9bb8e3cc5613d736edf3184d76d567cbf3114c"
+    },
+    {
+      "finding": 18,
+      "id": "Brand.E",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Changed the spread-range effect from movement of nearby enemies to an other effect on the caster, preserving the Ablaze condition and doubled spread text.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the target is Ablaze, the spread range is doubled."
+        }
+      ],
+      "candidateHash": "e0ecbde0323bceeab5d42bd64e503c761dd03d22248852285d129f2c9840ff65"
+    },
+    {
+      "finding": 19,
+      "id": "Brand.R",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Updated summary and effect text to say up to five bounces and include Brand as a possible bounce destination; damage remains per enemy hit.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "can bounce to Brand or another enemy up to 5 times"
+        }
+      ],
+      "candidateHash": "b798fabf4a748a86af4240bdf29f14c99733ed95a0864b3b83b0de4c27964791"
+    },
+    {
+      "finding": 20,
+      "id": "Brand.R",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "resolution": "Replaced min/max slow bounds with a single ordered rank_values amount parameter using 30/45/60%.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the target is Ablaze, they are briefly Slowed by 30/45/60%."
+        }
+      ],
+      "candidateHash": "b798fabf4a748a86af4240bdf29f14c99733ed95a0864b3b83b0de4c27964791"
+    },
+    {
+      "finding": 21,
+      "id": "Brand.R",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "status": "resolved",
+      "resolution": "Changed the UI information effect to an other gameplay effect and used the source wording for champion Blaze stacking priority without adding selection details.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bounces prioritize stacking Blaze to max on champions."
+        }
+      ],
+      "candidateHash": "b798fabf4a748a86af4240bdf29f14c99733ed95a0864b3b83b0de4c27964791"
+    }
+  ],
+  "declined": [],
+  "validation": {
+    "checked": 15,
+    "valid": 15,
+    "command": "node --import tsx scripts/llm/champion-mechanics/check.ts research/champion-mechanics/26.19-v2 Chogath.P Chogath.Q Chogath.W Chogath.E Chogath.R DrMundo.P DrMundo.Q DrMundo.W DrMundo.E DrMundo.R Brand.P Brand.Q Brand.W Brand.E Brand.R"
+  },
+  "followupCorrections": [
+    {
+      "id": "DrMundo.P",
+      "ruleIndex": 0,
+      "status": "resolved",
+      "resolution": "The first Immobilizing effect is not required to deal damage. The rule now uses other and a first-effect condition rather than damage_taken.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Dr. Mundo resists the first Immobilizing effect that hits him, instead losing 4% current Health and dropping a chemical cannister nearby for 7 seconds."
+        }
+      ],
+      "candidateHash": "2e68f8782acd3b9539c092622afce92fe01b4e4191b431c4422ccf73544a5af1"
+    },
+    {
+      "id": "DrMundo.E",
+      "ruleIndexes": [
+        4,
+        5
+      ],
+      "status": "resolved",
+      "resolution": "Removed target.activation=empowered and retained the 140% minion/monster values as unknown-shaped other parameters, explicitly stating that the source does not identify which E damage component receives the multiplier.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals 140% damage to minions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Deals 140% damage to jungle monsters."
+        }
+      ],
+      "candidateHash": "ed5b5b391da30f3f140c76016dc9f2eb2e1db0423d2ff99c9b5d628d21bfb0ec"
+    },
+    {
+      "id": "Chogath.R",
+      "ruleIndex": 4,
+      "status": "resolved",
+      "resolution": "Restricted the 6-stack storage-cap rule to kills of minions or non-epic jungle monsters; the general Feast kill stack rule is unbounded by that specific cap.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Only 6 stacks can be gained from minions and non-epic jungle monsters."
+        }
+      ],
+      "candidateHash": "9491c79f981f582f99f901281088dd6ec0e5c2eefe4aa7e66a7c5032495796ee"
+    }
+  ]
+}

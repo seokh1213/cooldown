@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Rengar.E",
+      "sourceHash": "a02c758e53afa169f36e2d6b2867a134a4811d598e25465223f9f4169a00a4a1",
+      "candidateHash": "34520f69b345d6b2b7727867350431a415a6cf902e1b201bfc540d96e2e09f60"
+    },
+    {
+      "id": "Rengar.P",
+      "sourceHash": "77a3071eeed9818de521a8f1a7bf625832a2c3cafb250e7fa054ad2b74fb96a4",
+      "candidateHash": "424b66aa06876195ee9435a202facbfb82b8cccd226341b2c473685574d8799e"
+    },
+    {
+      "id": "Rengar.Q",
+      "sourceHash": "e23dfaa499d8532a1552d3bfc74e906f6b99c541d09f5600115f6c4ec47ff35f",
+      "candidateHash": "60641a580835e83c184ed980e6fa3c4cbf5907aa434e84ce11aa27924d844249"
+    },
+    {
+      "id": "Rengar.R",
+      "sourceHash": "9993bc2abec76e93e04158c3b3d1f6658e45e99315d0fbef86fda3d500a00494",
+      "candidateHash": "26f7856f23223fec6884540e784562c0c94df93c9a4c37e53b7d9a1a98c63b56"
+    },
+    {
+      "id": "Rengar.W",
+      "sourceHash": "db093a4ef9fa504792e15f0bad9051ecbf04c37ee16c5d66639cd0f21e9dc48e",
+      "candidateHash": "4ccf56ca1162e9659cdee37e32e6272d22bcde3897e15e79daab9df7110e2be5"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Rengar.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Rengar's next 2 Attacks gain 40% Attack Speed.",
+      "issue": "조건이 `followup_status = fired`로 되어 있어 이미 공격이 발생한 뒤에만 공격 속도 증가 효과가 성립하는 것처럼 읽힙니다. 원문은 다음 2회 공격에 붙는 효과를 설명할 뿐, 공격 발생 여부를 조건으로 두지 않습니다.",
+      "correction": "`followup_status` 조건을 제거하고, 다음 2회 공격에 적용되는 효과로 기록하세요."
+    },
+    {
+      "id": "Rengar.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The first Attack deals (20/55/90/125/160 + (100% Attack Damage) + (5% Attack Damage)) physical damage.",
+      "issue": "`hit_order = first`는 대상의 첫 피격 순서로 해석될 수 있지만, 원문은 렝가의 강화된 다음 2회 공격 중 첫 번째 공격을 뜻합니다. 주체도 `caster`로 지정되어 있어 공격 순서를 명확히 표현하지 못합니다.",
+      "correction": "조건을 시전자의 Q 후속 공격 순서가 첫 번째인 경우로 표현하세요."
+    },
+    {
+      "id": "Rengar.Q",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Max Ferocity: The first Attack deals ((35 ~ 240) + (100% Attack Damage) + (20% Attack Damage)) physical damage",
+      "issue": "`hit_order = first`는 첫 번째 대상을 맞힌 순서로 읽힐 수 있습니다. 이 피해는 대상 피격 순서가 아니라 최대 야성 강화 후 첫 번째 공격에 적용됩니다.",
+      "correction": "조건을 시전자의 강화 Q 후속 공격 순서가 첫 번째인 경우로 표현하세요."
+    },
+    {
+      "id": "Rengar.Q",
+      "path": "rules.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Max Ferocity: The first Attack deals ((35 ~ 240) + (100% Attack Damage) + (20% Attack Damage)) physical damage and grants Rengar (50% ~ 101%) Attack Speed for 5 seconds.",
+      "issue": "강화 공격 속도 효과가 첫 공격에만 적용된다는 조건이 빠져 있습니다. 현재 규칙은 강화 상태에서 발생하는 공격마다 공격 속도를 부여하는 것으로 읽힙니다.",
+      "correction": "효과 조건에 강화 Q의 첫 번째 공격임을 명시하세요."
+    }
+  ],
+  "notes": []
+}

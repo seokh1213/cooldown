@@ -1,0 +1,64 @@
+{
+  "id": "Malphite.E",
+  "sourceHash": "4c1d1bbbf4f1f46d21dd8e43dffb31dad9d573303684b8c0df610f8e004d1c21",
+  "beforeCandidateHash": "584115660d769588205a2cf8b91a305a2d5ce12b901b9568c1ab6a924370cb1c",
+  "candidateHash": "11b44a61395d4068be7f26f92cbba18716eff58204279458af99f31bce042b7c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "주변적60/95/130/165/200+본인Armor40%+AP60%마법피해,해당적AS30/35/40/45/50%감소3초를양언어본문과대조했다. AS기준스탯세부미명시를유지했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: caster의 cast → nearby_enemies: 주변 적에게 방어력과 주문력에 비례하는 마법 피해를 입힙니다. [magic] / amount=60/95/130/165/200 [rank_values]; stat_coefficient=40% (caster armor) [formula_components]; stat_coefficient=60% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:summary"
+      ],
+      "note": "원문 대조: caster의 cast → nearby_enemies: 이 충격파에 맞은 주변 적의 공격 속도를3초 동안30/35/40/45/50% 감소시킵니다. / amount=30/35/40/45/50% (enemy attackSpeed) [rank_values]; duration_seconds=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1/gaps",
+      "issue": "AP/Armor복합계수shape와주변범위근거,랭크별AS%감소단위가명확하지않았다.",
+      "correction": "복합계수shape,한국어범위근거,전체퍼센트단위와숫자표한계를기록했다.",
+      "sourceId": "en:body",
+      "quote": "reducing Attack Speed by 30/35/40/45/50% for 3 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "공격 속도 감소량은 적의 공격 속도를 기준으로 한 비율이지만, 기준 공격 속도에 대한 명시적 표현은 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "AS감소30/35/40/45/50%는모든랭크%이지만frozen숫자표는마지막만percent=true다. 전체단위를효과텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

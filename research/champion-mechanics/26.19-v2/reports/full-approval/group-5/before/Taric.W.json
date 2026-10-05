@@ -1,0 +1,241 @@
+{
+  "summary": "타릭은 연결된 아군과 가까이 있을 때 아군의 방어력을 높이고 자신과 아군 양쪽에서 스킬을 사용합니다. 사용 시 아군 챔피언과 연결해 보호막을 부여합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "방어력이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "armor",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Taric gains (6/7/8/9/10% Armor) Armor and forms a tether between him and the ally bound by this Ability."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "near"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "연결된 아군의 방어력이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": "armor",
+              "statSubject": "ally",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "As long as they are near each other, the ally gains (6/7/8/9/10% Armor) Armor and Taric casts all his Abilities from both himself and his linked ally."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "near"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "ally",
+          "text": "타릭의 모든 스킬이 타릭과 연결된 아군 양쪽에서 발동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "As long as they are near each other, the ally gains (6/7/8/9/10% Armor) Armor and Taric casts all his Abilities from both himself and his linked ally."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "아군 챔피언에게 최대 체력에 비례한 보호막을 부여합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "ally",
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Taric binds to an ally champion, granting a 7/8/9/10/11% max Health Shield for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "ally",
+          "text": "타릭이 아군 챔피언과 연결됩니다. 한 번에 한 아군만 연결할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "모방한 스킬 효과는 중첩되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Mimicked spell effects do not stack. Only one ally can be bound at a time."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

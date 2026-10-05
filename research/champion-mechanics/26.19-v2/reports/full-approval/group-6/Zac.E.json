@@ -1,0 +1,146 @@
+{
+  "id": "Zac.E",
+  "sourceHash": "f407143d3b7f95399feaad35d1f675c2c0591806813cf61f04d4b48aeece45c9",
+  "beforeCandidateHash": "c06860938d92f1ccbf1dafd88de2ab11cf6f1eb84dc9724082ca2339dbf4c118",
+  "candidateHash": "46eadb43856135d354ccb2da5f9889a304df87a614b105120ebce64a3cb2be85",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "충전0.9~1.3초·발사몸날림/착지마법및최대1초넉업·챔피언당추가조각1·이동취소CD/비용절반환급대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "충전시작랭크별0.9/1/1.1/1.2/1.3초."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "발사몸날림·착지적60/105/150/195/240+AP80%마법."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "착지적넉업최대1초는충전시간기반."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언적중당몸조각하나.0.9초를count로쓰지않음."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이동취소시CD와비용절반환급.비용종류·양미제공gap보존."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0",
+      "issue": "충전/발사사건미분리",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Zac pulls himself taut, charging up a dash over 0.9/1/1.1/1.2/1.3 seconds. Release: Zac launches himself and Knocks Up enemies where he lands for up to 1 second (based on charge time), dealing them (60/105/150/195/240 + (80% Ability Power)) magic damage. Zac spawns an extra chunk of Goo for each enemy champion hit. Can be cancelled by moving. If cancelled, refunds half of the Ability's Cooldown and cost."
+    },
+    {
+      "path": "rules.1.effects.1",
+      "issue": "몸날림이동효과누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Zac pulls himself taut, charging up a dash over 0.9/1/1.1/1.2/1.3 seconds. Release: Zac launches himself and Knocks Up enemies where he lands for up to 1 second (based on charge time), dealing them (60/105/150/195/240 + (80% Ability Power)) magic damage. Zac spawns an extra chunk of Goo for each enemy champion hit. Can be cancelled by moving. If cancelled, refunds half of the Ability's Cooldown and cost."
+    },
+    {
+      "path": "rules.2.effects.0.parameters.0.role",
+      "issue": "넉업1초를max_amount분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Zac pulls himself taut, charging up a dash over 0.9/1/1.1/1.2/1.3 seconds. Release: Zac launches himself and Knocks Up enemies where he lands for up to 1 second (based on charge time), dealing them (60/105/150/195/240 + (80% Ability Power)) magic damage. Zac spawns an extra chunk of Goo for each enemy champion hit. Can be cancelled by moving. If cancelled, refunds half of the Ability's Cooldown and cost."
+    },
+    {
+      "path": "rules.3.effects.0.parameters",
+      "issue": "조각1개에충전0.9참조",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Zac pulls himself taut, charging up a dash over 0.9/1/1.1/1.2/1.3 seconds. Release: Zac launches himself and Knocks Up enemies where he lands for up to 1 second (based on charge time), dealing them (60/105/150/195/240 + (80% Ability Power)) magic damage. Zac spawns an extra chunk of Goo for each enemy champion hit. Can be cancelled by moving. If cancelled, refunds half of the Ability's Cooldown and cost."
+    },
+    {
+      "path": "rules.4",
+      "issue": "취소/환급핵심규칙이gap에만존재",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Zac pulls himself taut, charging up a dash over 0.9/1/1.1/1.2/1.3 seconds. Release: Zac launches himself and Knocks Up enemies where he lands for up to 1 second (based on charge time), dealing them (60/105/150/195/240 + (80% Ability Power)) magic damage. Zac spawns an extra chunk of Goo for each enemy champion hit. Can be cancelled by moving. If cancelled, refunds half of the Ability's Cooldown and cost."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 698,
+      "verdict": "repaired",
+      "reason": "0.9는충전초.조각count참조제거후챔피언당하나text보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "note": "취소 시 재사용 대기시간과 소모값의 절반을 돌려받지만, 소모값의 종류와 구체적인 양은 지정되지 않았습니다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "note": "원문은 이동으로 스킬이 취소된다고 하지만, 취소 시점 및 충전 중에만 해당하는지 여부를 더 구체적으로 밝히지 않습니다."
+    }
+  ],
+  "validation": {
+    "id": "Zac.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

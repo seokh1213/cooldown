@@ -1,0 +1,217 @@
+{
+  "id": "Quinn.W",
+  "sourceHash": "1267d494c6597774e3801a7d6838fd0f99712c994ec879d40a68c0784de2847f",
+  "beforeCandidateHash": "aef33cf1a36202a7e12d747f9e565a90e994e0615b6e7d2e48358129ca7b9819",
+  "candidateHash": "577357e7ac75b3ebcafa85076810ccb90027885550260ddac947689eedd1b933",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "Harrier공격뒤AS/MS2초와active큰지역시야2초를두언어에서확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Harrier대상공격의AS28/41/54/67/80%와MS20/25/30/35/40%둘다2초. 같은공급2초숫자참조가정확.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Harrier"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "28",
+              "value": 28,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "41",
+              "value": 41,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "54",
+              "value": 54,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "67",
+              "value": 67,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "80%",
+              "value": 80,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "25",
+              "value": 25,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "35",
+              "value": 35,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "사용하면발러가큰주변지역2초드러냄.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "any표식으로범위확장과공통%단위누락.",
+      "correction": "Harrier한정및AS/MS%·2초명시.",
+      "sourceId": "en:body",
+      "quote": "Passive: Attacking a Harrier target grants Quinn 28/41/54/67/80% Attack Speed and 20/25/30/35/40% Move Speed for 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 389,
+      "verdict": "false_positive",
+      "reason": "and로연결된AS/MS보너스모두같은2초지속이라고원문이명시한다. 두효과의동일duration참조는정확."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

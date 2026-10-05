@@ -1,0 +1,43 @@
+{
+  "id": "Soraka.P",
+  "sourceHash": "3ea2fc3844fc5a9d5bf7d490ea7b8d98c9374ce17f541af8d6b6e1e43e1dda61",
+  "beforeCandidateHash": "7e95240adbcbbb3ef217bc5633bf355497d0ee0c9858599c1c1333407b84a65d",
+  "candidateHash": "00b2bf6411657156339767d567a2d97049ee204196982f005c9e6832c93c02e1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "근처 아군챔피언으로 이동하는 동안 자기90%이속, 아군 체력40%영문미만/한글이하 경계 차이를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 ally.target_type eq champion; ally.health_threshold lt n1=40%; caster.other eq 근처의 해당 아군 챔피언을 향해 이동 중. caster stat_modifier: 이동 속도가 증가한다. [amount n0=90% scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.2;gaps",
+      "issue": "nearby 아군 범위 누락과양언어40%미만/이하 충돌 미기록",
+      "correction": "근처 아군으로 이동한다는 조건을 보존하고 영문본문lt를 유지하되 한글 경계 충돌을 기록했다.",
+      "sourceId": "en:summary",
+      "quote": "Soraka runs faster towards nearby low health allies."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문 본문은below40%(미만), 한글 본문은40%이하로 경계 포함 여부가 다르다. 영문lt 조건을 보존하며 정확히40%일 때 판정은 출처 충돌이다. nearby거리 수치는 제공되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

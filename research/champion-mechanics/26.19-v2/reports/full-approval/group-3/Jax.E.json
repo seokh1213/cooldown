@@ -1,0 +1,101 @@
+{
+  "id": "Jax.E",
+  "sourceHash": "791acfc0f271e85b86de90736daceebbdacfef76f66bb7a329e6521e1f5db502",
+  "beforeCandidateHash": "c1bb544ed4d4238d1c5ebdf728d9d47dc017ded1746f9fb8fbb2977c1c73c02b",
+  "candidateHash": "8eba9959159c4de7712537c2a839fa6936effc1f3a798066004a6706c68d5662",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "최대2초공격회피/AOE25%감소·2초만료또는재사용주변마법/1초기절·회피당20%증가및정해진최대피해를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 방어 태세 동안 기본 공격을 회피하고 광역 스킬로부터 받는 피해가 감소합니다. / duration_seconds=2 [scalar]; amount=25% [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast → nearby_enemies: 종료또는재사용시주변적에게40/70/100/130/160 + 자신의추가주문력70% + 최대체력4%(소유자미명시)마법피해를준다.회피한기본공격당20%증가하고전체최대는80/140/200/260/320 + 추가주문력140% + 최대체력8%다.최소/최대계수를합산하지않는다. [magic] / amount=40/70/100/130/160 [rank_values]; stat_coefficient=70% (caster abilityPower) [formula_components]; ratio_input=4% [scalar]; other=20% [scalar]; max_amount=80/140/200/260/320 [rank_values]; stat_coefficient=140% (caster abilityPower) [formula_components]; ratio_output=8% [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 expiry → nearby_enemies: 종료또는재사용시주변적에게40/70/100/130/160 + 자신의추가주문력70% + 최대체력4%(소유자미명시)마법피해를준다.회피한기본공격당20%증가하고전체최대는80/140/200/260/320 + 추가주문력140% + 최대체력8%다.최소/최대계수를합산하지않는다. [magic] / amount=40/70/100/130/160 [rank_values]; stat_coefficient=70% (caster abilityPower) [formula_components]; ratio_input=4% [scalar]; other=20% [scalar]; max_amount=80/140/200/260/320 [rank_values]; stat_coefficient=140% (caster abilityPower) [formula_components]; ratio_output=8% [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast → nearby_enemies: 재사용 시 주변 적을 기절시킵니다. [stun] / duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 expiry → nearby_enemies: 지속 시간이 끝나면 주변 적을 기절시킵니다. [stun] / duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster activation eq 이 방어 태세에서 들어오는 공격을 회피 → caster: 회피한 공격 횟수가 반격 피해 증가량에 반영됩니다. / other=20% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2.effects.0.parameters",
+      "issue": "체력항소유자자신단정및최소최대계수중복선형합가능",
+      "correction": "체력소유자미명시·최소최대전체식을텍스트와구성요소로보존",
+      "sourceId": "en:body",
+      "quote": "up to a maximum of (80/140/200/260/320 + (140% bonus Ability Power)) + 8% max Health."
+    },
+    {
+      "path": "rules.5.trigger.event",
+      "issue": "회피를자기공격취소로표현",
+      "correction": "들어오는공격회피other사건",
+      "sourceId": "en:body",
+      "quote": "per Attack dodged"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "본문70/140% bonus Ability Power는스키마에추가AP항목이없어abilityPower로표시하되추가범위를텍스트에보존한다.4/8% maxHealth는소유자를명시하지않아caster로확정하지않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

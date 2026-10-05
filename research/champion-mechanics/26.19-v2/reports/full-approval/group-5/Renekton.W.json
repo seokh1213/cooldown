@@ -1,0 +1,550 @@
+{
+  "id": "Renekton.W",
+  "sourceHash": "6aec24faad069c9416d8c7968c7b725539f405f159b6c40ed99924abe6f465d9",
+  "beforeCandidateHash": "dd0f02fbac4a0de4549ea9009e337608f9a08a963cce67673bb0096e21902aa6",
+  "candidateHash": "42c87569923993d65e553885c5b2f80dba3f6e93013837ae55eab78e71576994",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 10,
+  "checkedGapCount": 0,
+  "summaryCheck": "다음 기본공격의 일반2회/강화3회 총피해와 기절,챔피언 분노10,강화 분노생성금지,개별on-hit,몬스터 보호막 예외를 검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "일반 후속 공격2타 총10~130+총AD150%;잘못 연결한3 삭제;강화제외.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "150%",
+              "value": 150,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "일반 후속 공격 target stun0.75초;강화제외.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "0.75",
+              "value": 0.75,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "일반 W챔피언 공격 적중의 추가 Fury10;강화 Fury금지와 상호배타.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 후속공격3타,몬스터도 공격횟수 동일.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 총15~195+총AD225% 물리;일반식과 중복제거.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11",
+            "en:body:n12",
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "15",
+              "value": 15,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "195",
+              "value": 195,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "225%",
+              "value": 225,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화후속 공격 stun1.5초.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n15"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "1.5",
+              "value": 1.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이 W의 각 공격 타격마다on-hit 별도;일반스킬 적중으로 확대하지 않음.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몬스터 보호막 파괴금지를 유지.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화/후속 준비/비몬스터일 때 피해 전 보호막파괴;공격3타 규칙과 분리.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화공격의 분노생성금지를 별도 보존.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules",
+      "issue": "일반 공격2타에3을 연결,일반/강화 중복,강화 분노금지 누락,보호막파괴 예외/다음공격 범위가 불완전했다.",
+      "correction": "2타 텍스트 보존,강화상호배타 조건,후속 준비 조건,비몬스터 보호막규칙과분노금지 추가.",
+      "sourceId": "en:body",
+      "quote": "Renekton's next Attack strikes twice, Stunning for 0.75 seconds and dealing a total of (10/40/70/100/130 + (150% Attack Damage)) physical damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 406,
+      "verdict": "repaired",
+      "reason": "twice를3으로 참조한 확정오류라 잘못된 숫자 참조를 제거했다.두번은 텍스트 보존."
+    },
+    {
+      "index": 407,
+      "verdict": "false_positive",
+      "reason": "attack사건은 공격 실행 규칙의 일반 표현이고후속 준비조건이 있다.원문기절은 해당공격대상에 적용되며 별도 적중사건 enum이 없다."
+    },
+    {
+      "index": 408,
+      "verdict": "repaired",
+      "reason": "W는 다음기본공격이므로ability_hit를attack으로 수정하고 일반W후속준비/강화제외 조건을 추가했다."
+    },
+    {
+      "index": 409,
+      "verdict": "false_positive",
+      "reason": "지적path rules.5는stun규칙이며 on-hit는rules.6에 있다.공격 각타격의on-hit로 범위를 구체화했다."
+    },
+    {
+      "index": 410,
+      "verdict": "false_positive",
+      "reason": "몬스터예외는rules.7의공격에대한효과제한이다.비몬스터조건을보호막파괴효과에도분리해 반영했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

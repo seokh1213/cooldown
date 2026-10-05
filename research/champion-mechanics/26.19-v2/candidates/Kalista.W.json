@@ -1,0 +1,334 @@
+{
+  "summary": "기본 지속 효과로 칼리스타와 계약자가 같은 대상을 모두 공격하면 칼리스타가 대상의 최대 체력에 비례한 마법 피해를 줍니다. 효과는 대상별 재사용 대기시간이 있고 비챔피언 대상에게는 피해 상한이 적용됩니다. 사용 시 혼을 보내 영역을 세 바퀴 순찰하게 하며, 발견된 챔피언을 4초 동안 드러냅니다. 스킬은 2회 충전되고 충전량은 일정 시간마다 회복됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "칼리스타와 계약자 양쪽의 기본 공격에 맞은 동일 대상"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 W 지속 효과 대기시간이 준비됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "양쪽 기본 공격을 받은 동일 적에게 대상 최대 체력의10/12/14/16/18% 마법 피해를 줍니다. 대상별10초 대기시간이 있습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "rank_values"
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Kalista and her Oathsworn both Attack the same target, she deals 10/12/14/16/18% max Health magic damage. This effect has a 10 second Cooldown per target"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: When Kalista and her Oathsworn both Attack the same target, she deals 10/12/14/16/18% max Health magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This effect has a 10 second Cooldown per target and a cap of 100/125/150/175/200 to non-champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "칼리스타와 계약자 양쪽의 기본 공격에 맞은 동일 대상"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 W 지속 효과 대기시간이 준비됨"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "비챔피언 대상에게 주는 추가 피해에는 피해 상한이 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This effect has a 10 second Cooldown per target and a cap of 100/125/150/175/200 to non-champions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "When Kalista and her Oathsworn both Attack the same target, she deals 10/12/14/16/18% max Health magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "칼리스타가 혼을 보내 영역을 세 바퀴 순찰하게 합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kalista sends a ghost to patrol an area for three laps."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "순찰 중인 이 혼에게 발견됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "enemy",
+          "text": "혼에게 발견된 챔피언은 드러납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Champions spotted are revealed for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "혼의 충전을 최대2회 보유하며90/80/70/60/50초마다1회 충전이 회복됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This ability has 2 charges (90/80/70/60/50 second refresh)."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "충전 횟수는 2회이며 90/80/70/60/50초마다 1회 충전됩니다."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "순찰하는 혼이 자기 앞의 지역을 드러냅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Activate to send a soul to scout out the path, revealing the area in front of it."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

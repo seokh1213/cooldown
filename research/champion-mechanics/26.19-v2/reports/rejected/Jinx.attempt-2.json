@@ -1,0 +1,1052 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "징크스가 최근 피해를 입힌 챔피언, 에픽 몬스터 또는 구조물이 처치되거나 파괴되면 이동 속도와 공격 속도를 얻습니다. 챔피언 처치 관여는 공격 속도 중첩을 쌓습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "takedown",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가했다가 점차 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Whenever a champion, epic monster, or structure that Jinx has dealt damage to within the last 3 seconds is killed or destroyed, she gains 175% decaying Move Speed and 25% Attack Speed for 6 seconds. Champion takedowns stack the Attack Speed up to 5 times."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가했다가 점차 감소하고 공격 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "unknown"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Whenever a champion, epic monster, or structure that Jinx has dealt damage to within the last 3 seconds is killed or destroyed, she gains 175% decaying Move Speed and 25% Attack Speed for 6 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "structure"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가했다가 점차 감소하고 공격 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "unknown"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Whenever a champion, epic monster, or structure that Jinx has dealt damage to within the last 3 seconds is killed or destroyed, she gains 175% decaying Move Speed and 25% Attack Speed for 6 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "원문은 대상에게 최근 피해를 입힌 조건을 명시하지만, trigger/conditions 형식에 피해 관여 여부를 직접 나타내는 값이 없어 효과 문장에 보존했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "that Jinx has dealt damage to within the last 3 seconds"
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "공격 속도 중첩은 챔피언 처치 관여에만 명시되어 있습니다. 비챔피언 발동의 중첩 처리 여부는 원문에 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Champion takedowns stack the Attack Speed up to 5 times."
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "summary": "징크스는 로켓 런처와 미니건을 전환해 기본 공격 효과를 바꿉니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "weapon",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "로켓 런처"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "대상에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            },
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "주변 적에게도 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base",
+                "per_target"
+              ]
+            },
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "기본 공격 사거리가 증가하고, 추가 공격 속도 비례 효율이 낮아지며 마나를 소모합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "While using the rocket launcher, Jinx's Attacks deal (110% Attack Damage) physical damage to the target and nearby enemies, gain 100/125/150/175/200 range, cost Mana, and scale 10% less with bonus Attack Speed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "weapon",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "미니건"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "기본 공격으로 공격 속도 중첩을 얻습니다. 중첩은 하나씩 사라지며, 로켓 런처로 전환한 뒤 첫 기본 공격에만 이 중첩이 적용됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "While using the minigun, Jinx's Attacks grant Attack Speed for 2.5 seconds, stacking up to 3 times ( + 30/55/80/105/130% max). Minigun stacks fall off one at a time and only benefit Jinx's first Attack after switching to the rocket launcher."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_number",
+          "detail": "로켓 런처의 마나 소모량이 명시되지 않아 수치를 기록하지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "cost Mana"
+            }
+          ]
+        },
+        {
+          "reason": "unsupported_formula",
+          "detail": "추가 공격 속도에 대한 10% 감소가 적용되는 계산식은 원문에서 더 구체적으로 설명되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "scale 10% less with bonus Attack Speed"
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "징크스가 충격파를 발사해 처음 적중한 적에게 피해를 입히고 둔화시키며 위치를 드러냅니다. 공격 속도가 높을수록 시전 시간이 감소합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "공격 속도가 증가할수록 시전 시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zap!'s cast time decreases as Jinx gains Attack Speed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "처음 적중한 적에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 적중한 적을 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "visibility",
+              "subject": "target",
+              "text": "처음 적중한 적의 위치를 드러냅니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Jinx fires a shock blast that deals (10/60/110/160/210 + (140% Attack Damage)) physical damage to the first enemy hit, Slows them by 40/50/60/70/80%, and reveals them for 2 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "징크스가 일정 시간 유지되는 지뢰를 던집니다. 적 챔피언이 지뢰에 닿으면 속박되고, 지뢰가 폭발해 주변 적에게 마법 피해를 입히며 적을 쓰러뜨립니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "유지 시간이 끝나면 지뢰가 사라집니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Jinx tosses out 3 chompers that last for 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "지뢰에 닿은 적 챔피언을 속박하고 쓰러뜨립니다.",
+              "damageType": null,
+              "crowdControl": "root",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "지뢰가 적을 쓰러뜨립니다.",
+              "damageType": null,
+              "crowdControl": "knockdown",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "They explode on contact with enemy champions, Rooting them for 1.5 seconds and dealing (90/140/190/240/290 + (100% Ability Power)) magic damage to nearby enemies. This Ability Knocks Down enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "적 챔피언이 지뢰에 닿아 폭발하면 주변 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "per_target"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "They explode on contact with enemy champions, Rooting them for 1.5 seconds and dealing (90/140/190/240/290 + (100% Ability Power)) magic damage to nearby enemies."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "쓰러뜨리기 효과의 대상 범위가 원문에서 구체적으로 특정되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability Knocks Down enemies."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "징크스가 로켓을 발사해 적 챔피언과 충돌하면 폭발하여 피해를 입힙니다. 이동 시간이 첫 1초 동안 피해가 증가하며, 주변 적은 감소한 피해를 받습니다. 몬스터 대상 잃은 체력 비례 피해에는 상한이 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "적 챔피언과 충돌하면 물리 피해를 입히며, 비행 시간이 첫 1초 동안 증가한 피해량으로 적용됩니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Jinx fires a rocket that explodes on the first enemy champion hit, dealing (20/35/50 + (12% bonus Attack Damage)) to (200/350/500 + (120% bonus Attack Damage)) + 25/30/35% missing Health physical damage, gaining damage over the first second of travel time."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "secondary_targets"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "secondary_targets",
+              "text": "주변 적에게 감소한 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "per_target"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Nearby enemies take 80% Damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "몬스터 대상 잃은 체력 비례 피해는 상한이 적용됩니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Missing Health damage cannot exceed 1200 against Monsters."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "원문은 기본 피해의 이동 시간 비례 증가와 잃은 체력 비례 피해를 나열하지만, 두 피해 성분이 피해 구간과 어떻게 결합되는지 계산식을 확정할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing (20/35/50 + (12% bonus Attack Damage)) to (200/350/500 + (120% bonus Attack Damage)) + 25/30/35% missing Health physical damage, gaining damage over the first second of travel time."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "주변 적에게 적용되는 감소 피해가 기본 피해의 모든 구성 요소를 포함하는지 원문에서 명확하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Nearby enemies take 80% Damage."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "몬스터 대상 상한 문구가 챔피언 충돌 조건과 함께 어떻게 적용되는지 원문만으로 확정하기 어렵습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Missing Health damage cannot exceed 1200 against Monsters."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Jinx.R",
+      "errors": [
+        {
+          "code": "first_hit",
+          "path": "rules.1",
+          "detail": "First-hit restriction is not stated by this rule's evidence"
+        }
+      ]
+    }
+  ]
+}

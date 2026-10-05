@@ -1,0 +1,563 @@
+{
+  "id": "Kayn.Q",
+  "sourceHash": "47e21b4e2031abacdb200fd84e7c7191b09c48ca44cbd1b76064da1657c6cf50",
+  "beforeCandidateHash": "bf8980b429a7a0782c7a5ae61233d3b4fef5428a7cf91fd82a6276adb323b3da",
+  "candidateHash": "b0dc6f642e0eed3152782dc69fa583bcff98d77b5b406a0077d6cdbc25a26a41",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "돌진과 후속 휘두르기의 두 피해, 추가 공격력 기본식, 다르킨 대체식, 미니언/정글 몬스터 40 추가 피해를 대조했다. 상한의 입력 범위는 출처 한계로 남겼다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다르킨 제외 기본 돌진 경로 피해는 랭크별 75~195+케인 추가 AD85% 물리 피해.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "165",
+              "value": 165,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "195",
+              "value": 195,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "85%",
+              "value": 85,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변 적 후속 피해는 앞 피해를 다시 주며 같은 수치를 사용한다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "165",
+              "value": 165,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "195",
+              "value": 195,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "85%",
+              "value": 85,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다르킨 대체 피해는 총 AD65%와 대상 최대 체력 비율 6%+추가 AD100당3.5%; ratio_input/output을 분모와 출력 비율에 맞게 수정.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "65%",
+              "value": 65,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "6%",
+              "value": 6,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "3.5%",
+              "value": 3.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n15"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언 대상 추가 물리40; max 열거는 단독 추가피해 상한으로 실행하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "미니언 또는 정글 몬스터"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n16"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n16",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n17",
+            "en:body:n18",
+            "en:body:n19",
+            "en:body:n20",
+            "en:body:n21"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n17",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n19",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            },
+            {
+              "id": "en:body:n20",
+              "raw": "350",
+              "value": 350,
+              "percent": false
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "400",
+              "value": 400,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정글 몬스터 대상 추가 물리40; 미니언과 OR를 별도 규칙으로 표현한다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "미니언 또는 정글 몬스터"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n16"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n16",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n17",
+            "en:body:n18",
+            "en:body:n19",
+            "en:body:n20",
+            "en:body:n21"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n17",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n19",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            },
+            {
+              "id": "en:body:n20",
+              "raw": "350",
+              "value": 350,
+              "percent": false
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "400",
+              "value": 400,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자 돌진을 명시하며 돌진 거리/시간은 공급되지 않는다.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.effects.0.parameters",
+      "issue": "3.5%와 100의 입력/출력 역할이 반대로 기록됐다.",
+      "correction": "3.5%는 ratio_output,100은 ratio_input으로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "(3.5% per 100 bonus Attack Damage)"
+    },
+    {
+      "path": "rules.3/rules.4/summary/gaps.1",
+      "issue": "형식 조건 없는 추가 피해를 다르킨으로 한정하고 max를 고정40 추가피해의 상한으로 단정했다.",
+      "correction": "다르킨 한정을 제거하고 적용 범위 미확정인 max는 other와 gap으로 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Deals an additional 40 physical damage to minions and jungle monsters (max: 200/250/300/350/400)."
+    },
+    {
+      "path": "rules.5",
+      "issue": "요약의 핵심 돌진이 규칙에 빠졌다.",
+      "correction": "시전자 돌진 효과를 추가했다.",
+      "sourceId": "en:body",
+      "quote": "Kayn dashes then spins his scythe"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 184,
+      "verdict": "false_positive",
+      "reason": "현재 기본식은 form neq Darkin Slayer,대체식은 eq로 이미 구분되어 지적이 현재 후보와 일치하지 않는다."
+    },
+    {
+      "index": 185,
+      "verdict": "repaired",
+      "reason": "추가 피해 문장에 별도 형식 조건이 없어 두 대상 규칙의 다르킨 조건을 제거했다."
+    },
+    {
+      "index": 186,
+      "verdict": "false_positive",
+      "reason": "다섯 개 slash 값은 해당 스킬 랭크별 값의 통상적 표기이고 레벨 범위가 아니다. 상한의 피해 범위는 따로 미확정 처리했다."
+    },
+    {
+      "index": 187,
+      "verdict": "false_positive",
+      "reason": "Attack Damage와 bonus Attack Damage를 같은 본문에서 구분한다. 전자는 totalAttackDamage로 보존하는 것이 맞다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "다르킨 학살자의 대체 피해 문구가 돌진 경로 피해와 주변 적에게 다시 주는 피해 중 어디까지 적용되는지 명시하지 않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "40 추가 피해 문장에는 형식 조건이 없다. max 200/250/300/350/400이 추가 피해만의 상한인지 전체 피해의 상한인지, 대상별/시전 전체 상한인지 명확하지 않다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

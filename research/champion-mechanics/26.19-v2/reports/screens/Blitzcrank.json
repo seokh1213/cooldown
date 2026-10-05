@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Blitzcrank.E",
+      "sourceHash": "ef7f1e8ac9239f7fa71822770a07642f593ecdd054e1d186bf6edc747aa8570c",
+      "candidateHash": "440825931022b0e2f15e6e244a0217e80ae9c28ed1d3ec75f754c8a66db190d7"
+    },
+    {
+      "id": "Blitzcrank.P",
+      "sourceHash": "0e0c06cf22c4e14f05f09395ef564b09667da468cc723eaad1e2f3ce2b78db82",
+      "candidateHash": "f8862ba8ac110fcf91a4cd35c6ed4554de3e7489991ea77b5b2bb2c28d64eac5"
+    },
+    {
+      "id": "Blitzcrank.Q",
+      "sourceHash": "8a738fb304c828438b32dcb46bb3076244ba12e1f35d5ea8b4b0e29fb36265e0",
+      "candidateHash": "bea62af48a38c5963786c8b82aeec4e93abd29542d3b573093f6ea01f1a25256"
+    },
+    {
+      "id": "Blitzcrank.W",
+      "sourceHash": "a75ac4be97ef71c31d3a11d8e2fd9f37e355092d22534ca47c3c3a6a1cfd7348",
+      "candidateHash": "134df28bfefba92db7f3bd0bc6dee7a568128d2cc6f73ac5be0b415a8050b3d8"
+    },
+    {
+      "id": "Blitzcrank.R",
+      "sourceHash": "b43d8606629142e62445b68e85e55218f567503468f17b9862e2e51fc656d3a2",
+      "candidateHash": "bd2125f41f92cf55fc07e0bf6d76bee0cab928897b7db2c0aeec0df116fdd662"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Blitzcrank.R",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 1 second, they are shocked for (50/100/150 + (30/40/50% Ability Power) + (2% Mana)) magic damage.",
+      "issue": "감전 피해가 표식 만료(expiry) 때 발생한다고 되어 있지만, 원문은 공격 후 1초가 지난 뒤 발생한다고만 합니다. 표식 만료 이벤트를 피해 발동 조건으로 특정할 근거가 없습니다.",
+      "correction": "표식이 있는 대상에게 1초가 지난 뒤 감전 피해가 발생하도록 표현하고, expiry 이벤트로 단정하지 마세요."
+    },
+    {
+      "id": "Blitzcrank.R",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Their shields are also destroyed. Does not break shields on monsters.",
+      "issue": "몬스터가 아닌 대상에게만 보호막 파괴 효과를 적용하도록 제한했지만, 원문은 몬스터의 보호막을 파괴하지 않는다고만 합니다. 이 조건은 다른 비몬스터 대상의 적용 범위를 뒷받침하지 않습니다.",
+      "correction": "몬스터 보호막은 파괴하지 않는다는 예외만 기록하고, 비몬스터 대상 조건은 추가하지 마세요."
+    }
+  ],
+  "notes": []
+}

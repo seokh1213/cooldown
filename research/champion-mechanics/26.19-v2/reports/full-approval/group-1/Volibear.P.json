@@ -1,0 +1,62 @@
+{
+  "id": "Volibear.P",
+  "sourceHash": "3aaca4220b4ac0d35365baa96b4a3d29e58965adec24bb0f94114da88959473f",
+  "beforeCandidateHash": "916f9dc085a29773139382a15a465d377d0cc3598b0dba3fbea789144a154d97",
+  "candidateHash": "7a997bdfb89b087c00967f29b2077238f148b330769d895aa3ed1bc9ca05e10b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "피해를 가할 때6초 공속5%+AP100당4%/최대5중첩,5중첩시 평타의주대상과가까운4적11~60+AP45%+추가AD20%마법을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 caster.other eq 스킬 또는 기본 공격으로 실제 피해를 가함. caster stat_modifier: 피해를 가할 때마다6초 동안 공격 속도가(5%+주문력100당4%)증가하며 최대5중첩된다. [amount n0=5% scalar; stat_coefficient n1=4% formula_components caster.abilityPower; ratio_input n2=100 formula_components caster.abilityPower; duration_seconds n3=6 scalar; storage_cap n4=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.resource eq n5=5; caster.other eq resource는 이 지속 효과의 공격 속도 중첩 수. target damage magic: 기본 공격 주 대상에게 추가 마법 피해를 입힌다. [amount n6=11/n7=60 level_range; stat_coefficient n8=45% scalar caster.abilityPower; stat_coefficient n9=20% scalar caster.bonusAttackDamage] / secondary_targets damage magic: 기본 공격의 주 대상 외 가장 가까운 적4명에게 같은 추가 마법 피해를 입힌다. [amount n6=11/n7=60 level_range; stat_coefficient n8=45% scalar caster.abilityPower; stat_coefficient n9=20% scalar caster.bonusAttackDamage; count n10=4 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions/rules.1",
+      "issue": "피해없이적중공속,중첩을hitcount로,범위를min/max로 및4적범위불명",
+      "correction": "실제피해조건,current5stack,amount범위 및primary/secondary분리",
+      "sourceId": "en:body",
+      "quote": "At 5 stacks, Volibear's claws ignite with lightning, causing his Attacks to deal an additional ((11 ~ 60) + (45% Ability Power) + (20% bonus Attack Damage)) magic damage to the target and 4 closest enemies."
+    },
+    {
+      "path": "rules.0.effects.0.parameters.1,2;gaps",
+      "issue": "주문력100기준값을4%와함께stat_coefficient에기록",
+      "correction": "4%계수와100주문력비율입력을분리하고퍼센트증가율수식을명시했다.",
+      "sourceId": "en:body",
+      "quote": "Volibear gains (5% + (4% per 100 Ability Power)) Attack Speed for 6 seconds whenever he deals damage with an Ability or Attack, stacking up to 5 times."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 639,
+      "verdict": "repaired",
+      "reason": "5는 적중 횟수가 아닌 현재공속중첩이므로 resource eq5로 변경했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "공격 속도 증가율은5%+AP100당4%이다. 수식 구성요소의100을AP계수로곱하거나단순절대공속합으로실행하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

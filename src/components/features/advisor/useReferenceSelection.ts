@@ -8,23 +8,17 @@ export function useReferenceSelection(turns: AdvisorTurn[], wide: boolean) {
   const [refTurnId, setRefTurnId] = useState<number | undefined>(undefined);
   const lastAssistantId = [...turns].reverse().find((turn) => turn.role === "assistant")?.id;
 
-  // 자료 패널에 올릴 답. 카드로 그릴 만한 종류(스킬·챔피언·비교)만. 규칙은 짧아 대화 안에 둔다.
-  /**
-   * 카드를 자료 패널로 보낼 답인가.
-   *
-   * **자료 패널이 있을 때만** 참이다. 좁은 화면에는 패널이 없어서, 참으로 두면
-   * 대화에 칩 하나만 남고 화면이 텅 빈다. 실제로 모바일에서 "말파이트 설명해줘" 에
-   * 칩 한 줄만 오고 나머지가 빈 공간이었다. 패널이 없으면 카드를 대화 안에 그린다.
-   */
-  const isReference = (turn: AdvisorTurn): boolean =>
-    wide &&
+  // 카드 화면의 자료는 모바일에도 유지한다. 일반 조회 카드는 좁은 화면에서 대화 안에 그린다.
+  const isCardTurn = (turn: AdvisorTurn): boolean =>
     turn.role === "assistant" &&
     !!turn.answer &&
     (turn.answer.kind === "spell" ||
       turn.answer.kind === "champion" ||
       turn.answer.kind === "compare" ||
       turn.answer.kind === "item");
-  const referenceTurns = turns.filter(isReference);
+  const isReference = (turn: AdvisorTurn): boolean => isCardTurn(turn) &&
+    (wide || turn.answer?.kind === "champion" && turn.answer.notes?.topic === "combo" && Boolean(turn.content));
+  const referenceTurns = turns.filter(isCardTurn);
   const latestReference = referenceTurns[referenceTurns.length - 1];
   const refTurn = referenceTurns.find((turn) => turn.id === refTurnId) ?? latestReference;
   // 새 답이 오면 고정을 풀어 최신 답을 따라간다.

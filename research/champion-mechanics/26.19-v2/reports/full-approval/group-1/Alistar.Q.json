@@ -1,0 +1,36 @@
+{
+  "id": "Alistar.Q",
+  "sourceHash": "b7c5d472bb08675e7b8e9f3adb8d1a1a72198509713a140b66740c8a458f0b5b",
+  "beforeCandidateHash": "25db38043b90df76388f8993f2ce0b8d02d2640e73aee8fce46a2285219467a7",
+  "candidateHash": "86cabecf40d1daab40fd8089f22e8173c3f809146fb97238631ca8478e4d6543",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "주변 적1초띄우기와마법 피해60/100/140/180/220+AP80%를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. nearby_enemies crowd_control knockup: 적을 공중으로 띄웁니다. [duration_seconds n0=1 scalar] / nearby_enemies damage magic: 주변 적에게 마법 피해를 입힙니다. [amount n1=60/n2=100/n3=140/n4=180/n5=220 rank_values; stat_coefficient n6=80% scalar caster.abilityPower]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.subject",
+      "issue": "공중 띄우기를 단일enemy로 표시해 주변 범위 피해와 대상 범위 불일치",
+      "correction": "띄우기와 피해 모두 주변 적에게 적용되도록 맞췄다.",
+      "sourceId": "en:summary",
+      "quote": "Alistar smashes the ground, dealing damage to nearby enemies and tossing them into the air."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

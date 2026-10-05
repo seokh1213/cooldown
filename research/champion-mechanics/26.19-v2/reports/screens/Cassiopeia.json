@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Cassiopeia.P",
+      "sourceHash": "3a19ff1e5f460b5245a01bc1c67215e8b29de8cb334cb23e161916de882a4311",
+      "candidateHash": "1b6f3f23989cac0a11d5385c96a2128fbecc4a6bf7540549df91ba2956311845"
+    },
+    {
+      "id": "Cassiopeia.R",
+      "sourceHash": "e19ff4e1ad40976cbfa73e282c27c1ec6100ae1ed34dae98d9a69063a72a49f2",
+      "candidateHash": "b49ab6bedce300440b46d555bee6b544e9fa64149480e0699d01525c06a1bd9a"
+    },
+    {
+      "id": "Cassiopeia.E",
+      "sourceHash": "93aac469eb3beedd4e35b757031e1e200e11c671934a159a11029ade43dc0a1d",
+      "candidateHash": "80f2b5684f1e3fd5da00584a442d01fd3c1ea34097318766163f7b52ecb55245"
+    },
+    {
+      "id": "Cassiopeia.Q",
+      "sourceHash": "9d51e16d8c779eba00479db0e1dd6a67c8d1cb087707f1c7ea0ff405acd9f918",
+      "candidateHash": "cd82c3459b48aad859b072bdf4541d255bc0f2f4c517e33fdd6fbfd15d2dbd7e"
+    },
+    {
+      "id": "Cassiopeia.W",
+      "sourceHash": "317b3dd34c08b3cab524cf8c8373ff4b666be41b7990916aa751177e9e423546",
+      "candidateHash": "b90165df04cd34143f48627942951e0a23d88f1c5dfa6f24286b36a5ab81fb9e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Cassiopeia.E",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "against lane minions and small monsters.",
+      "issue": "조건이 대상 유형을 minion으로만 제한해 작은 몬스터를 제외합니다. 설명 문구는 두 대상 유형 모두에 회복량 감소가 적용된다고 합니다.",
+      "correction": "작은 몬스터도 조건에 포함하거나, 대상 유형을 구조화할 수 없으면 이 조건을 제거하고 범위의 모호함을 gap으로 남기세요."
+    },
+    {
+      "id": "Cassiopeia.E",
+      "path": "rules.1.effects.1.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Cassiopeia restores (10/11.5/13/14.5/16% Ability Power) Health, reduced to (2.5/2.875/3.25/3.625/4% Ability Power) Health against lane minions and small monsters.",
+      "issue": "회복량의 rank 값이 주문력에 곱해지는 백분율 계수인데 stat을 healthRegen으로 지정했습니다. 이는 회복 대상 자원을 잘못 표기합니다.",
+      "correction": "회복량 계수의 stat은 abilityPower로 두고, 회복 효과 자체는 체력 회복으로 표현하세요."
+    },
+    {
+      "id": "Cassiopeia.E",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "reduced to (2.5/2.875/3.25/3.625/4% Ability Power) Health against lane minions and small monsters.",
+      "issue": "감소 회복량의 계수도 stat을 healthRegen으로 지정했습니다. 원문은 주문력 비례 체력 회복량을 설명합니다.",
+      "correction": "계수 stat을 abilityPower로 지정하고 healthRegen을 제거하세요."
+    }
+  ],
+  "notes": []
+}

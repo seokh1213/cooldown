@@ -1,0 +1,111 @@
+{
+  "id": "Nami.W",
+  "sourceHash": "7a46570c47417032bf99a6a5d62fa84719b24b124aa0cf73f286d9c21306b9c6",
+  "beforeCandidateHash": "b813bf136590249fd592b208f43546d89c5a47a37cdc58ab9f1b594747386665",
+  "candidateHash": "838a140a59a16110ee273343180b7d05a23b95f37f1e2307530bb19d042d23fd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "아군·적 챔피언을 번갈아 최대 3명, 각자 한 번 맞히는 물줄기, 아군 회복·적 마법 피해 및 근처 반대편 챔피언으로의 튕김을 확인했다. 적에게 튕길 때 가시성이 필요하고 매 튕김마다 -20% + 나미 주문력의 0.15%로 두 값이 조정된다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. unknown: 물줄기가 아군과 적 챔피언 사이를 튕기며 각 챔피언은 한 번만 적중하고, 최대 대상 수에 도달하면 튕김이 끝납니다.; max_amount=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 ally.target_type eq champion 적용. ally: 아군 챔피언의 기본 회복량은 55/80/105/130/155 + 나미 주문력의 40%이며, 근처 적 챔피언으로 튕깁니다. 튕길 때마다 rules.4의 조정을 받습니다.; amount=55/80/105/130/155  rank_values, stat_coefficient=40% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 enemy.target_type eq champion 적용. enemy: 적 챔피언의 기본 마법 피해는 60/95/130/165/200 + 나미 주문력의 50%이며, 근처 아군 챔피언으로 튕깁니다. 튕길 때마다 rules.4의 조정을 받습니다. (magic); amount=60/95/130/165/200  rank_values, stat_coefficient=50% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 enemy.target_type eq champion, enemy.visibility eq visible, enemy.other eq 다음 튕김의 적 대상 적용. enemy: 다음으로 튕길 적 챔피언은 보여야 합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 물줄기가 한 번 튕길 때마다 적용. unknown: 매 튕김마다 피해량과 회복량을 (-20% + 나미 주문력의 0.15%)의 비율로 조정합니다. 이 구성은 피해나 회복의 별도 추가 횟수가 아닙니다.; amount=-20%  formula_components, stat_coefficient=0.15% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "최대 세 대상이라는 상한을 실제 발동 횟수로 표시한다.",
+      "correction": "최대 대상 수로 분류했다.",
+      "sourceId": "en:body",
+      "quote": "it hits up to 3 targets."
+    },
+    {
+      "path": "rules.1-2.trigger,conditions,effects",
+      "issue": "맞은 아군·적이 적중 행위자로 표현되며 기본 수치에 매 튕김 조정 적용 관계가 약하다.",
+      "correction": "나미의 스킬 적중과 각 챔피언 조건, 튕김별 조정 대상인 기본 회복·피해를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "The damage and healing value is modified by (-20% + (0.15% Ability Power)) each bounce."
+    },
+    {
+      "path": "rules.3",
+      "issue": "보이는 적에게만 튕길 수 있는 선행 조건이 적중 후 효과로 표현됐다.",
+      "correction": "다음 적 챔피언을 선택하는 튕김 조건으로 표현했다.",
+      "sourceId": "en:body",
+      "quote": "Can only bounce to visible enemies."
+    },
+    {
+      "path": "rules.4.trigger,conditions,effects",
+      "issue": "대상 적중을 임의 행위자로 두며 조정 비율과 각 튕김 기준이 모호하다.",
+      "correction": "나미 물줄기의 각 튕김에서 피해·회복을 조정하는 명시적 비율로 보존했다.",
+      "sourceId": "en:body",
+      "quote": "The damage and healing value is modified by (-20% + (0.15% Ability Power)) each bounce."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

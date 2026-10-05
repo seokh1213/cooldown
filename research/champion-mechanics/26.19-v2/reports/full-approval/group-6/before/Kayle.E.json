@@ -1,0 +1,249 @@
+{
+  "summary": "기본 지속 효과로 공격이 추가 마법 피해를 입힌다. 사용하면 케일의 다음 공격이 원거리 공격으로 강화되어 대상의 잃은 체력에 비례한 추가 마법 피해를 입힌다. 11레벨부터 이 공격은 대상 적중 시 폭발해 주변 적에게 피해를 주며, 정글 몬스터를 상대로 추가 피해에 상한이 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "공격이 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Attacks deal an additional (15/20/25/30/35 + (20% Ability Power) + (10% bonus Attack Damage)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "시전 후 다음 공격이 원거리 공격으로 강화되어 대상의 잃은 체력에 비례한 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kayle's next attack becomes ranged and deals an additional (8/8.5/9/9.5/10% + (1.5% per 100 Ability Power)) missing Health magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n14"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "강화 공격이 대상에게 적중하면 폭발하여 주변 적에게 피해를 입힌다. 피해량은 툴팁에 기재되지 않았다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This attack upgrades when Kayle reaches Level 11, causing it to explode when it hits the target, dealing damage to nearby enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "unknown",
+          "text": "정글 몬스터를 상대로 추가 피해 상한이 적용된다. 상한의 적용 대상 효과는 툴팁에서 특정되지 않는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Max 400 bonus damage vs. jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "정글 몬스터 상대 추가 피해 상한이 E 기본 지속 효과와 사용 효과 중 어느 추가 피해에 적용되는지 툴팁만으로 특정되지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Max 400 bonus damage vs. jungle monsters."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "강화 공격의 잃은 체력 비례 피해는 원문이 missing Health로 설명하지만, 스키마에 대상의 잃은 체력 값을 직접 나타낼 통계가 없다. 대상의 현재 체력이나 최대 체력으로 대체하지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kayle's next attack becomes ranged and deals an additional (8/8.5/9/9.5/10% + (1.5% per 100 Ability Power)) missing Health magic damage."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "Level 11 발동 조건을 caster.other로 보존했다. 허용된 조건 필드에는 레벨을 직접 기록할 항목이 없어 의미를 명확히 표현할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This attack upgrades when Kayle reaches Level 11, causing it to explode when it hits the target, dealing damage to nearby enemies."
+        }
+      ]
+    }
+  ]
+}

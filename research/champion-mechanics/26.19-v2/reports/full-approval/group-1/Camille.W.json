@@ -1,0 +1,105 @@
+{
+  "id": "Camille.W",
+  "sourceHash": "0e008f970dc2829dc3188674b3fefd7e3e126da83f04f11b92b8a8d9b149b159",
+  "beforeCandidateHash": "1a1678498fa55e633519c13441384f03be88afb4ab53673e83da69f5c829f3db",
+  "candidateHash": "39e054f0ab3ea10ed2e083912053c87634115866b9ec171951cf756cde89d030",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 4,
+  "summaryCheck": "지연후원뿔60~160+bonusAD60%물리,outerhalf80%slow2초감쇠/maxHP7~9%+bonusAD100당2.5%추가,outerchamp실제추가피해100%heal,non-epicjungle50%감소/HP파트300cap 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 지연 후 전방 원뿔 베기에 적중. target damage physical: 베기에 맞은 적에게 물리 피해를 입힌다. [amount n0=60/n1=85/n2=110/n3=135/n4=160 rank_values; stat_coefficient n5=60% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 바깥쪽 절반에 맞음. target crowd_control slow: 이동 속도가 감소하고 시간이 지나면서 둔화 효과가 약해진다. [amount n6=80% scalar; duration_seconds n7=2 scalar] flags=decays / target damage physical: 대상의 최대 체력에 비례한 추가 물리 피해를 입힌다. [stat_coefficient n8=7%/n9=7.5%/n10=8%/n11=8.5%/n12=9% formula_components target.maxHealth; stat_coefficient n13=2.5% formula_components caster.bonusAttackDamage; ratio_input n14=100 formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; target.other eq 원뿔 바깥쪽 절반에서 실제 추가 피해를 받음. caster heal: 챔피언에게 입힌 추가 피해량의 100%만큼 체력을 회복한다. [ratio_output n15=100% formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq monster; target.other eq 정글 몬스터, 에픽 몬스터 제외. target other: 비에픽 정글 몬스터에게 주는 이 스킬 피해량은50% 감소한다. [other n16=50% scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq monster; target.other eq 정글 몬스터. target other: 정글 몬스터에게 주는 최대 체력 비례 피해는 상한이 적용된다. [max_amount n17=300 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/gaps",
+      "issue": "HP복합식평탄화·heal트리거부족/flat100%·cap전체피해·ko비에픽범위충돌",
+      "correction": "복합구성요소,outerchamp실제추가피해조건/회복비율,부분상한other 및sourcegap",
+      "sourceId": "en:body",
+      "quote": "Camille restores 100% of the bonus damage dealt to champions as Health."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 37,
+      "verdict": "documented_gap",
+      "reason": "dealtbonusdamage는현재스키마스탯목록에없어100%를참조하되실제피해기준을명시하고독립회복양으로실행하지않는한계를추가했다."
+    },
+    {
+      "index": 38,
+      "verdict": "false_positive",
+      "reason": "monster와정글몬스터에픽제외텍스트는동일수신자의typed상위유형+정확하위범위다. 범위누락이없다."
+    },
+    {
+      "index": 39,
+      "verdict": "repaired",
+      "reason": "원래text는maxHP파트를명시했지만damage.max_amount는전체피해cap으로해석될수있어other수정규칙으로명확히했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "바깥쪽 절반 적중은 위치 조건이며, 허용된 조건 필드에 이를 직접 표현할 값이 없어 텍스트 조건으로 보존했다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "상한은 최대 체력 비례 피해에 적용된다고 원문에 명시되지만, 그 피해 계산의 다른 구성요소와 상한의 정확한 결합 방식은 문구만으로 확정할 수 없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "외곽추가피해율은대상최대HP×(랭크7~9%+bonusAD100당2.5%)다.회복은챔피언에게실제로입힌이추가피해100%로서스키마에dealtDamage가없다.둘을독립선형피해/flat회복으로실행하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 3,
+      "reason": "source_conflict",
+      "detail": "ko본문은비에픽정글몬스터가아닌대상도50%감소로읽히나en은non-epicjunglemonsters만감소다.en의정확한대상범위를우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

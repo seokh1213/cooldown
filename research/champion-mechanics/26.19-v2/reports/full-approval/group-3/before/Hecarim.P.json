@@ -1,0 +1,56 @@
+{
+  "summary": "헤카림의 추가 이동 속도 일부가 공격력으로 전환됩니다. 전환 비율은 레벨에 따라 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_conversion",
+          "subject": "caster",
+          "text": "추가 이동 속도에 비례해 공격력을 얻습니다. 비율은 레벨에 따라 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": "moveSpeed",
+          "statTo": "totalAttackDamage",
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "level_range"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "level_range"
+            }
+          ],
+          "flags": [
+            "replace_input"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim gains ((12% ~ 24%) bonus Movement Speed) Attack Damage, increasing based on level."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

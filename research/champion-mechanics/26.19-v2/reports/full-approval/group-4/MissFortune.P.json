@@ -1,0 +1,67 @@
+{
+  "id": "MissFortune.P",
+  "sourceHash": "5149f4029f5b0be273c81705e8a6d913526b579d874e09f2b3a678c4248d8643",
+  "beforeCandidateHash": "4920091e0ed7121afc6039957be96658d4b3d01d599959dc94eb852ac4999bfe",
+  "candidateHash": "3aa27046763b764fae782fdc052d4b06ba6e2522af38dd0a8010474600f096a2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "새대상평타의50~100%미스포츈총공격력추가물리피해와사랑의한방실제발동의활보2초쿨다운감소를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.other eq 새로운 대상 적용. target: 새로운 대상에게 기본 공격하면 추가 물리 피해를 입힙니다. (physical); stat_coefficient=50%/100% caster의 totalAttackDamage level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 사랑의 한 방이 실제 발동함 적용. caster: 활보의 재사용 대기시간이 감소합니다.; cooldown_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.parameters",
+      "issue": "공격력비율을동일수치ratio_output/계수로중복",
+      "correction": "총공격력계수하나로보존",
+      "sourceId": "en:body",
+      "quote": "Miss Fortune's Attacks deal an additional ((50% ~ 100%) Attack Damage) physical damage when she attacks a new target."
+    },
+    {
+      "path": "rules.1",
+      "issue": "사랑의한방발동을target속성/일반attack사건에연결",
+      "correction": "caster의실제사랑의한방발동으로정정",
+      "sourceId": "en:body",
+      "quote": "Triggering Love Tap reduces the cooldown of Strut by 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 297,
+      "verdict": "repaired",
+      "reason": "실제발동사건과caster활성조건및시간단위로정정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "id": "Irelia.Q",
+  "sourceHash": "6d1a4ce13c4a635c408348a2662362a4d0acc11173d9da848adf36aebb826bba",
+  "beforeCandidateHash": "c6b1aceada2df45ab0f373e3b0c3dede5080e848f89f5c12c159ef89f374ace1",
+  "candidateHash": "c098e2ca9702439ab3bf73a1aaef97fff38f4d21f151920be3370e390a72afcf",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 0,
+  "summaryCheck": "모든 적 대상 돌진/회복, 기본 물리 피해와 미니언 대체 피해, 이 스킬로 대상 사망 또는 기존 불안정 표식의 쿨다운 초기화, 적중 시 효과를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type neq minion 적용. target: 대상에게 물리 피해를 입힙니다. (physical); amount=5/25/45/65/85  rank_values, stat_coefficient=80% caster의 totalAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 자신의 체력을 회복합니다.; amount=9/10/11/12/13% caster의 totalAttackDamage rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq minion 적용. target: 미니언에게 별도 피해를 입힙니다. (physical); amount=5/25/45/65/85  rank_values, amount=50/237  level_range, stat_coefficient=80% caster의 totalAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 이 스킬로 대상이 사망함 적용. caster: 대상이 죽으면 재사용 대기시간이 초기화됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.mark eq 돌진 전에 불안정 표식이 있던 적 적용. caster: 대상이 불안정 상태이면 재사용 대기시간이 초기화됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 적중 시 효과를 적용합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 적에게 돌진합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,6",
+      "issue": "미니언 제외 조건으로 돌진 및 회복 제한",
+      "correction": "비미니언 피해만 제한하고 돌진/회복은 모든 적에 적용",
+      "sourceId": "en:body",
+      "quote": "Irelia dashes to an enemy, dealing (5/25/45/65/85 + (80% Attack Damage)) physical damage and restoring (9/10/11/12/13% Attack Damage) Health to herself."
+    },
+    {
+      "path": "rules.3,4",
+      "issue": "down을 사망으로 간주하며 기존 표식 시점 불명확",
+      "correction": "이 스킬 사망 사건 및 돌진 전 불안정 표식 조건",
+      "sourceId": "en:body",
+      "quote": "If the enemy dies or was Unsteady, the Cooldown is refreshed."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 117,
+      "verdict": "repaired",
+      "reason": "미니언도 자기 회복/돌진이 적용된다. 피해 대체는 유지하면서 공통 효과를 분리했다."
+    },
+    {
+      "index": 118,
+      "verdict": "false_positive",
+      "reason": "바로 앞 문장에서 이 스킬의 피해를 physical로 정의하고 미니언 문장은 동일 피해의 수치를 바꾼다. 본문 문맥의 물리 피해 유지가 타당하다."
+    },
+    {
+      "index": 119,
+      "verdict": "repaired",
+      "reason": "down을 이 스킬로 인한 사망이라는 정확한 text 조건 및 kill 사건으로 바꿨다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

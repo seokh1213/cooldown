@@ -1,0 +1,133 @@
+{
+  "id": "Sona.P",
+  "sourceHash": "2377124b62c30f4821971c3ffd693d61796d6f8978a4590f82c7d80a47ffdcc6",
+  "beforeCandidateHash": "6c4de2ee11ab4b0c680774318de5fdf0114659c1140b0ab567e2b69c5ed80d4e",
+  "candidateHash": "0ee74fc7c6634719091001cbe7247ea7cef89d4303448ce6f98908539e4e363a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "기본 스킬 성공 사용에 따른 영구0.5 기본 스킬 가속/60 상한, 상한 이후 성공 사용마다 궁극기1.5초 감소, 기본 스킬3회 뒤 다음 공격 및 마지막 곡별 피해 대체·피해 감소·둔화를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other present 기본 스킬을 잘 사용함, caster.other lt 60 적용. caster: 아첼레란도 중첩마다 영구적으로 기본 스킬 가속을 얻습니다.; amount=0.5  scalar, storage_cap=60  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other present 기본 스킬 가속이 최대치에 도달함, caster.other eq 기본 스킬을 잘 사용하여 추가 중첩을 얻을 상황 적용. caster: 아첼레란도 중첩을 더 얻는 대신 현재 궁극기의 남은 재사용 대기시간을 줄입니다.; cooldown_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 기본 스킬 3회 사용 후 준비된 파워 코드를 소비하는 다음 기본 공격 적용. target: 다음 공격이 추가 마법 피해를 줍니다. (magic); min_amount=20  level_range, max_amount=240  level_range, stat_coefficient=20% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 기본 스킬 3회 사용 후 준비된 파워 코드를 소비하는 다음 기본 공격, caster.activation present 마지막으로 활성화한 곡은 Hymn of Valor 적용. target: 용맹의 찬가가 마지막으로 활성화된 경우 공격은 기본 파워 코드 피해 대신 이 마법 피해를 줍니다. (magic); min_amount=30  level_range, max_amount=360  level_range, stat_coefficient=30% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 기본 스킬 3회 사용 후 준비된 파워 코드를 소비하는 다음 기본 공격, caster.activation present 마지막으로 활성화한 곡은 Aria of Perseverance 적용. target: 대상이 주는 피해를 감소시킵니다.; ratio_output=25%  formula_components, ratio_output=4% caster의 abilityPower formula_components, ratio_input=100  formula_components, duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 기본 스킬 3회 사용 후 준비된 파워 코드를 소비하는 다음 기본 공격, caster.activation present 마지막으로 활성화한 곡은 Song of Celerity 적용. target: 대상을 둔화시킵니다. (slow); ratio_output=50%  formula_components, ratio_output=4% caster의 abilityPower formula_components, ratio_input=100  formula_components, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1",
+      "issue": "상한 이전/이후 성공 사용 범위가 불명확하고 상한 도달만으로 궁극기 감소 가능",
+      "correction": "상한 이전 획득 및 상한 이후 추가 성공 사용 조건 보완",
+      "sourceId": "en:body",
+      "quote": "When she reaches 60 Basic Ability Haste, instead of gaining further stacks her current Ultimate Ability's cooldown is reduced by 1.5 seconds."
+    },
+    {
+      "path": "rules.2-5",
+      "issue": "준비 이후 반복 공격에 파워 코드 적용될 수 있음",
+      "correction": "준비를 소비하는 다음 공격으로 조건 명시",
+      "sourceId": "en:body",
+      "quote": "Power Chord: After using 3 basic Abilities, Sona's next Attack deals an additional ((20 ~ 240) + (20% Ability Power)) magic damage and may have an additional effect based on the song Sona last activated."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 492,
+      "verdict": "repaired",
+      "reason": "파워 코드를 소비하는 다음 공격이라는 연결을 조건에 명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "아첼레란도 중첩을 얻는 '기본 스킬을 잘 사용'의 정확한 성공 조건은 tooltip에 정의되어 있지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "파워 코드에 필요한 기본 스킬 사용 횟수의 누적·초기화 방식은 원문에 설명되어 있지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

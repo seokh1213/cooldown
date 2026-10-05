@@ -1,0 +1,95 @@
+{
+  "id": "Milio.W",
+  "sourceHash": "3c3e37e52a6a7a4f66dd5fcee5b46aeaa055f0a347fd00b992c8890164cac123",
+  "beforeCandidateHash": "2442f06b60d38c70e31af3ef9249de818326d5ed11b3d2037e289a9c2de2d831",
+  "candidateHash": "c41556539c63832d0b74e813553eb058115d55bc0a86d0f1e1fcf4677a8ab2b7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "6초온기시전점최인접아군따름/근처아군챔피언사거리10~20%/전체기간총회복70~150+15%AP/매3초패시브/재사용추종변경 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 밀리오가 온기를생성합니다. 처음에는시전지점에서가장가까운아군챔피언을따라가며6초유지됩니다.; 수치 duration_seconds en:body:n0=6 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 ally; 조건 ally.distance lte 온기 근처 / ally.target_type eq champion / caster.time eq 이 온기의6초 수명동안; ally: 온기안의아군챔피언은온기수명6초동안공격사거리가10/12.5/15/17.5/20% 증가합니다. 공격사거리참조enum은 스키마에없습니다.; 수치 amount en:body:n1=10(백분율),en:body:n2=12.5(백분율),en:body:n3=15(백분율),en:body:n4=17.5(백분율),en:body:n5=20%(백분율) 상수 rank_values; flags 없음 | ally: 온기주변아군챔피언은6초지속시간전체에걸쳐 총70/90/110/130/150+15%밀리오AP를 회복합니다. 이총회복식을 매초그대로반복하지않습니다.; 수치 amount en:body:n6=70,en:body:n7=90,en:body:n8=110,en:body:n9=130,en:body:n10=150 상수 rank_values / stat_coefficient en:body:n11=15%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n0=6 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 summon; 조건 ally.distance lte 온기 근처 / ally.target_type eq champion / summon.time eq 이 온기가6초수명동안 매3초; ally: 이온기는근처아군챔피언에매3초마다타오르는힘을적용합니다.3은주기이며효과지속시간이아닙니다.; 수치 other en:body:n12=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 재사용하면이온기가따르는아군을변경합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "초기따르는아군선택기준누락·총회복6초vs초당·3초효과적용주기와온기행위자 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Milio creates a hearth that follows ally champions for 6 seconds. Ally champions nearby gain 10/12.5/15/17.5/20% Attack Range and restore (70/90/110/130/150 + (15% Ability Power)) Health over the duration. The hearth also applies Fired Up! every 3 seconds. Recast: Change the hearth's follow ally."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 294,
+      "verdict": "false_positive",
+      "reason": "원래 summon text도 아군챔피언을따르는온기를생성한다고명시했고subjectunknown은따르는대상을표현하는필드가아니다. 대상정보누락이아니다. 이번에생성소유자caster와최인접선택을더명확히했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "공격 사거리 증가량은 원문에 있지만 입력 스키마의 통계 목록에 공격 사거리가 없어 stat_modifier의 stat을 지정할 수 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

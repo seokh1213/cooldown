@@ -1,0 +1,125 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Rumble.R",
+      "sourceHash": "8ed63c6c1e1b5c0cb281d06945ebb1f8c82374a3261bdabfd742474c9ed6f070",
+      "candidateHash": "c82bc1619b7e2c91b7676729b6466c84122a8a3e53cab669044d58cbab152db1"
+    },
+    {
+      "id": "Rumble.E",
+      "sourceHash": "54cb3a63a40f61c98d24403408e38ef633c8c8bba86ae7deda765305f4dbfd64",
+      "candidateHash": "aea6260b4a3d6091ca4d466cfc7a3cbf21b5ee0b985e4e03c28d21a49a06ebdf"
+    },
+    {
+      "id": "Rumble.P",
+      "sourceHash": "cb5d2728e0377dd86944b7aa1ef29ef04530cf4358897b38879c68375c5aecef",
+      "candidateHash": "ea688bf3ad0e28a07ff55ee2ad89c034e39d8968355b78886635b0f9510af805"
+    },
+    {
+      "id": "Rumble.Q",
+      "sourceHash": "c62bba92b20894425c9352976325cb468fc882a8962027aa366e582d7cb56a9d",
+      "candidateHash": "243d113a594b794cd921efafff8e73813f9dc08cb29cb15acdde56aac1b38137"
+    },
+    {
+      "id": "Rumble.W",
+      "sourceHash": "41cdcc686d786e12bf47875c5bc0ff4c213d2a1fe9939086800b67de79c29082",
+      "candidateHash": "5265da22cf50731b11f2a19c1b96041a261e3c32c768a2eaec4ac4833b9756b3"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Rumble.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hitting an enemy who's already Slowed by this Ability increases the Slow to 30/40/50/60/70% and reduces the enemy's Magic Resist by 20/24/28/32/36%",
+      "issue": "조건이 ‘같은 대상 표식 존재’로 구조화되어 있지만, 원문은 대상이 현재 이 스킬로 둔화된 상태인지 요구합니다. 이전 둔화 효과가 끝난 뒤에도 표식이 남는다는 근거가 없습니다.",
+      "correction": "mark/same_target 조건 대신 대상이 현재 이 스킬로 둔화된 상태라는 조건으로 표현하세요."
+    },
+    {
+      "id": "Rumble.E",
+      "path": "rules.1.effects.1.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "reduces the enemy's Magic Resist by 20/24/28/32/36%",
+      "issue": "재적중 시 마법 저항력 감소량이 제시됐지만 지속 시간이 없습니다. 기본 감소 효과의 4초를 이 효과에도 붙이지 말고, 별도 지속 시간 미상으로 남겨야 합니다.",
+      "correction": "이 효과에 duration_seconds를 추가하지 말고, 재적중 감소 효과의 지속 시간은 미상으로 유지하세요."
+    },
+    {
+      "id": "Rumble.E",
+      "path": "rules.2.effects.1.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "the Slow and reduced Magic Resist are increased by 50%.",
+      "issue": "위험 상태 효과의 50% 증가를 ratio_output으로 저장해, 둔화량과 마법 저항력 감소량 자체가 각각 50% 커진다는 계산 역할이 드러나지 않습니다.",
+      "correction": "두 효과에 각각 50% 증가 배율로 표현하세요. 이미 둔화된 대상의 수치와 결합 순서는 계속 미상으로 둘 수 있습니다."
+    },
+    {
+      "id": "Rumble.E",
+      "path": "rules.2.effects.2.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "the Slow and reduced Magic Resist are increased by 50%.",
+      "issue": "위험 상태 효과의 50% 증가를 ratio_output으로 저장해, 마법 저항력 감소량의 증가 배율이라는 역할이 드러나지 않습니다.",
+      "correction": "마법 저항력 감소량에 50% 증가 배율로 표현하세요."
+    },
+    {
+      "id": "Rumble.P",
+      "path": "rules.3.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "causes his Attacks to deal an additional ((5 ~ 40) + (25% Ability Power)) plus 4% max Health magic damage.",
+      "issue": "4% max Health 항목의 소유자가 target으로 고정됐습니다. 원문은 max Health의 주체를 특정하지 않으므로 대상 최대 체력으로 확정할 수 없습니다.",
+      "correction": "statSubject를 미상으로 두고, 최대 체력 기준의 주체가 불명확하다는 설명을 유지하세요."
+    },
+    {
+      "id": "Rumble.Q",
+      "path": "rules.0.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "plus 6/6.5/7/7.5/8% max Health magic damage over 3 seconds",
+      "issue": "최대 체력 비례 피해를 ratio_output으로 기록해 피해 구성 요소라는 역할이 나타나지 않습니다.",
+      "correction": "대상 최대 체력 기준임을 확인할 수 있는 부분은 유지하고, 이 비례 항을 지속 피해의 피해량으로 표현하세요."
+    },
+    {
+      "id": "Rumble.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "reduced to 70% against minions.",
+      "issue": "미니언 대상 피해 감소 조건에 Danger Zone이 아닌 형식 조건까지 넣었습니다. 원문은 감소를 미니언 대상으로만 한정하고 위험 상태 예외를 말하지 않으므로 이 제한은 근거가 없습니다.",
+      "correction": "Danger Zone 형식 조건을 제거하고 미니언 대상 조건만 두세요. 위험 상태와 감소 효과의 결합이 불명확하다는 gap은 유지할 수 있습니다."
+    },
+    {
+      "id": "Rumble.Q",
+      "path": "rules.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Percent damage is limited to (65 ~ 300) damage on Monsters.",
+      "issue": "몬스터 대상 상한이 규칙에서는 조건부 피해 효과로 기록됐지만, 해당 피해 항목이 최대 체력 비례 피해로 한정된다는 연결이 이 규칙에서 빠져 있습니다.",
+      "correction": "상한이 최대 체력 비례 피해에 적용됨을 효과 텍스트에 명시하고, 범위 기준은 미상으로 유지하세요."
+    },
+    {
+      "id": "Rumble.W",
+      "path": "rules.0.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(4% Health)",
+      "issue": "4% Health 항목에 ratio_output 역할을 부여했지만, 원문은 이를 보호막 수치에 더하는 체력 비례 계산 항으로 제시합니다.",
+      "correction": "체력 비례 보호막 계산 항으로 표현하세요. 체력 통계의 주체와 기준은 원문에 없으므로 미상으로 유지하세요."
+    },
+    {
+      "id": "Rumble.W",
+      "path": "rules.1.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(6% Health)",
+      "issue": "6% Health 항목에 ratio_output 역할을 부여했지만, 원문은 이를 위험 상태 보호막 수치에 더하는 체력 비례 계산 항으로 제시합니다.",
+      "correction": "체력 비례 보호막 계산 항으로 표현하세요. 체력 통계의 주체와 기준은 원문에 없으므로 미상으로 유지하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,161 @@
+{
+  "id": "Viego.P",
+  "sourceHash": "792d4078edb336b48713da120beb69ab94fe93e5df1273a81a9a06c5ff6fff1d",
+  "beforeCandidateHash": "9781ed0d37e87e340789fbde3fdb0f22ed7bc2d3ff010ed8373edc04c83b7074",
+  "candidateHash": "bece2dff544fa4bfac733321ffa9ab8e22491d7fdf4c3cd83199fa0cb36a11d8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "피격 후 3초 내 적 챔피언 사망, 망령 공격 후 회복·10초 지배, 비용 없는 자체 궁극기, 지배 중 적에게 접근할 때 10% 이동 속도를 en 본문과 대조. ko 본문의 망령 생성 시점 충돌을 기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "사망자는 적 챔피언이며 비에고에게 맞은 뒤 3초 이내 사망해야 한다. 3은 공격 후 경과 초이며 영혼 공격 시간으로 쓰지 않는다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "망령 공격으로 비에고가 회복한다. 적 최대 체력에 적용되는 괄호식 2·추가 AD 2.5%·AP 2%·추가 AS 500%·추가 HP 0.4%를 구성요소로 보존하고 불명확한 계수 소유자를 unknown으로 둔다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "망령 공격에 한정하여 10초간 비궁극기·공격·아이템 접근을 비에고에게 부여한다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "지배 중 대상의 궁극기를 자신의 비용 없는 궁극기로 대체한다. 원문 free cast를 보존한다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "지배 중 적 챔피언 방향 이동 시 자신 이동 속도 10% 증가. 회복식의 2를 거리로 해석하지 않는다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions",
+      "issue": "비에고 선행 적중 누락",
+      "correction": "비에고 적중 뒤 3초 조건 명시",
+      "sourceId": "en:body",
+      "quote": "The souls of enemy champions that die within 3 seconds of being hit by Viego become wraiths."
+    },
+    {
+      "path": "rules.1.conditions/rules.2.conditions",
+      "issue": "any 대상 공격으로 과적용",
+      "correction": "망령 대상 제한",
+      "sourceId": "en:body",
+      "quote": "Viego can Attack wraiths to Possess them"
+    },
+    {
+      "path": "rules.1.effects.0.parameters",
+      "issue": "불명확한 스탯 주인을 caster로 확정",
+      "correction": "gap과 일치하게 unknown 소유자",
+      "sourceId": "en:body",
+      "quote": "(2 + (2.5% bonus Attack Damage) + (2% Ability Power) + (500% bonus Attack Speed) + (0.4% bonus Health))of enemy's max Health"
+    },
+    {
+      "path": "rules.4.conditions",
+      "issue": "원문 없는 거리 2 및 지배 조건 누락",
+      "correction": "지배 중 적 챔피언 방향 이동 조건",
+      "sourceId": "en:body",
+      "quote": "During this time he replaces their Ultimate with a free cast of his own and gains 10% Move Speed towards enemy champions."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "ko/en 망령 생성 조건 충돌 미기록",
+      "correction": "영문 우선 source_conflict 기록",
+      "sourceId": "ko:body",
+      "quote": "비에고가 처치한 적 챔피언의 영혼을 3초 안에 공격하면 망령이 됩니다."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 614,
+      "verdict": "repaired",
+      "reason": "원문은 비에고 적중 후 사망을 요구하므로 선행 적중을 추가했다."
+    },
+    {
+      "index": 615,
+      "verdict": "repaired",
+      "reason": "wraiths로 대상을 제한한다. 지배 규칙도 함께 수정했다."
+    },
+    {
+      "index": 616,
+      "verdict": "repaired",
+      "reason": "2는 회복식 상수다. 거리 조건 대신 지배 중 적 방향 이동을 명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "note": "망령 공격 시 회복량은 적의 최대 체력에 기반한다고 되어 있지만, 계수의 스탯 주체가 원문에서 특정되지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "note": "영문 본문은 비에고에게 맞은 뒤 3초 내 사망을 망령 생성 조건으로 명시하나 한국어 본문은 처치한 적 영혼을 3초 안에 공격하는 것으로 다르게 설명한다. 영문 본문을 우선한다."
+    }
+  ],
+  "validation": {
+    "id": "Viego.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

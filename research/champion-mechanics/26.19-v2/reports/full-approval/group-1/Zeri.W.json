@@ -1,0 +1,89 @@
+{
+  "id": "Zeri.W",
+  "sourceHash": "5946e85df014c6822e5d367ae7ff9d8e02c685dac3c966290b3a8e641b4ab5bd",
+  "beforeCandidateHash": "391302fcb4b3c9a0adb8d0395ddab0da9cfcf18d97bdda0b34940c1c2188975c",
+  "candidateHash": "cfea9e5ad30231be418654e60afb8626cfe1a916f681b6b05132122237d2ad41",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "최초 적중 파동 물리/둔화, 지형 후 범위 내 모든 적의 동일 효과 및 챔피언/몬스터 치명타 복합식, AS시전시간 감소를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_order eq first. target damage physical: 물리 피해를 입힙니다. [amount n0=30/n1=70/n2=110/n3=150/n4=190 rank_values; stat_coefficient n5=100% scalar caster.totalAttackDamage; stat_coefficient n6=50% scalar caster.abilityPower] / target crowd_control slow: 둔화시킵니다. [amount n7=30%/n8=35%/n9=40%/n10=45%/n11=50% rank_values; duration_seconds n12=2 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq the pulse hits terrain; target.other eq 레이저 범위 내 적. target damage physical: 파동이 지형에 맞으면 레이저가 범위 내 모든 적에게 일반 물리 피해를 적용한다. [amount n13=30/n14=70/n15=110/n16=150/n17=190 rank_values; stat_coefficient n18=100% scalar caster.totalAttackDamage; stat_coefficient n19=50% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster cooldown_change: 시전 시간은 공격 속도에 따라 감소합니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 없음. unknown other: 강화 피해량은 치명타 피해량에 따라 50% 효율로 증가합니다. 이 문장만으로는 강화 피해가 가리키는 피해 범위를 확정할 수 없습니다. [ratio_output n22=50% scalar caster.critDamage]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq the pulse hits terrain; target.other eq 레이저 범위 내 챔피언 또는 몬스터. target damage physical: 레이저 범위 내 챔피언과 몬스터는 기본피해×(0.5+50% caster 치명타피해량)의 치명타 물리 피해를 받는다. [amount n13=30/n14=70/n15=110/n16=150/n17=190 formula_components; stat_coefficient n18=100% formula_components caster.totalAttackDamage; stat_coefficient n19=50% formula_components caster.abilityPower; damage_multiplier n20=0.5/n21=50% formula_components caster.critDamage] flags=replaces_base"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq the pulse hits terrain; target.other eq 레이저 범위 내 적. target crowd_control slow: 레이저 범위 내 모든 적을 같은 비율로 같은 시간 둔화한다. [amount n7=30%/n8=35%/n9=40%/n10=45%/n11=50% rank_values; duration_seconds n12=2 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.0/1/new",
+      "issue": "레이저 둔화 누락, 치명타 대상 조건 없이 범위피해식 적용, 행위자",
+      "correction": "범위 내 모든 적 피해/둔화와 챔피언·몬스터 치명타 대체 분리, 복합식 유지",
+      "sourceId": "en:body",
+      "quote": "it expands into a laser that applies the effects in an area and Critically Strikes champions and monsters"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 718,
+      "verdict": "repaired",
+      "reason": "ko 본문은 범위 내 모든 적에게 효과를 적용한다고 명시한다. 요약과 별도 레이저 둔화 및 피해대상 범위를 추가했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "‘Empowered damage’가 가리키는 피해 종류나 적용 대상 범위가 툴팁에서 구체적으로 지정되지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "레이저 치명타 피해는 (랭크피해+AD100%+AP50%)×(0.5+critDamage50%) 복합식이다. 구성요소를 단순 합으로 실행하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

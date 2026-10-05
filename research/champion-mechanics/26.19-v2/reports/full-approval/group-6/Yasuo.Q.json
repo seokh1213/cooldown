@@ -1,0 +1,112 @@
+{
+  "id": "Yasuo.Q",
+  "sourceHash": "aa3c7c1f45f3119c367b6642cc04b113c093c24da77aa56223b8296bf7bb4c47",
+  "beforeCandidateHash": "4ab107de5160968cf408bf1d2927738f672a02c0a8ea54a4015e1187d637e00f",
+  "candidateHash": "9394bd5d621ea53dedd6037c2d65ab4513e340fe8199c224bf436c30865de72a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "일직선 피해, 6초 중첩·2중첩 회오리와 1초 공중 띄우기, 돌진 원형 및 기본 공격 처리 특성을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "2중첩 이전 기본 Q의 20/45/70/95/120 + 공격력 105% 물리 피해를 확인했다. 원문에 없는 별도 form 요구를 제거했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적중하면 중첩을 얻고 6초 유지한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "폭풍 2중첩의 다음 사용은 원거리 회오리로 동일 피해를 준다. form=empowered를 별도 선행 조건으로 요구하지 않는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 2중첩 회오리의 1초 knockup을 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "돌진 중 사용은 찌르기를 원형 타격으로 바꾸는 형상 변경이며 별도 추가 damage 이벤트가 아니다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "치명타 물리 피해 식 20/45/70/95/120 + 공격력 0%를 원문대로 보존했다. on-hit와 lifesteal 둘 다 첫 적에게만 적용하며 CC 중단·공격 속도에 따른 쿨다운 및 시전 시간 단축을 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.1",
+      "issue": "원문은 폭풍 중첩 조건만 요구하며 별도 form 조건은 없다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yasuo thrusts, dealing (20/45/70/95/120 + (105% Attack Damage)) physical damage. If he hits, he gains a stack for 6 seconds. While he has 2 stacks, his next use of this Ability fires a whirlwind from range, dealing the same damage and Knocking Up for 1 second. If used while dashing, this Ability strikes in a circle rather than a stab. This Ability acts like an Attack: it can critically strike for (20/45/70/95/120 + (0% Attack Damage)) physical damage, it applies On-hit effects and lifesteal to the first enemy struck, is interruptible by crowd control, and its cooldown and cast time are reduced with Attack Speed."
+    },
+    {
+      "path": "rules.4.effects.0.kind",
+      "issue": "원형 타격은 같은 Q의 형상 변경이므로 독립 피해로 중복 계산하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yasuo thrusts, dealing (20/45/70/95/120 + (105% Attack Damage)) physical damage. If he hits, he gains a stack for 6 seconds. While he has 2 stacks, his next use of this Ability fires a whirlwind from range, dealing the same damage and Knocking Up for 1 second. If used while dashing, this Ability strikes in a circle rather than a stab. This Ability acts like an Attack: it can critically strike for (20/45/70/95/120 + (0% Attack Damage)) physical damage, it applies On-hit effects and lifesteal to the first enemy struck, is interruptible by crowd control, and its cooldown and cast time are reduced with Attack Speed."
+    },
+    {
+      "path": "rules.5.effects.0.text",
+      "issue": "on-hit의 첫 대상 제한이 문장에서 빠져 전체 적중으로 확대될 수 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yasuo thrusts, dealing (20/45/70/95/120 + (105% Attack Damage)) physical damage. If he hits, he gains a stack for 6 seconds. While he has 2 stacks, his next use of this Ability fires a whirlwind from range, dealing the same damage and Knocking Up for 1 second. If used while dashing, this Ability strikes in a circle rather than a stab. This Ability acts like an Attack: it can critically strike for (20/45/70/95/120 + (0% Attack Damage)) physical damage, it applies On-hit effects and lifesteal to the first enemy struck, is interruptible by crowd control, and its cooldown and cast time are reduced with Attack Speed."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Yasuo.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

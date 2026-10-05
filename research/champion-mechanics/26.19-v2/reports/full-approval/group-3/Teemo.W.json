@@ -1,0 +1,61 @@
+{
+  "id": "Teemo.W",
+  "sourceHash": "32da4a2db4f880d27e563d3784b6e07a5897683a71a478b19405bcdefc287ef8",
+  "beforeCandidateHash": "83a2be07573d4700aa0644ddfd071388c625a89df50810a73f60f11255b590d0",
+  "candidateHash": "2966654c4f3690160137cbc2ed1044887c8791d7764db5e7b4825fdaeaba5543",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "최근5초챔피언/포탑무피해시MS12/16/20/24/28%,시전시3초MS24/32/40/48/56%와피격해도유지됨을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other eq 최근5초동안챔피언또는포탑에게피해를받지않은경우 → caster: 최근5초챔피언/포탑무피해이면이동속도가12/16/20/24/28%증가합니다. / amount=12/16/20/24/28% [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 3초동안이동속도가24/32/40/48/56%증가하며이사용효과는피격되어도사라지지않습니다. / amount=24/32/40/48/56% [rank_values]; duration_seconds=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.0-1/gaps",
+      "issue": "time5초의측정기준과모든랭크MS퍼센트단위가불명확했고요약이두증가를추가누적처럼설명했다.",
+      "correction": "최근5초해당무피해앵커와전체%단위를명시하고사용효과를별도원문범위로표현했다.",
+      "sourceId": "en:body",
+      "quote": "while he hasn't been damaged by a champion or turret in the last 5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "12/16/20/24/28%,24/32/40/48/56%는전체랭크%지만frozen숫자표는각마지막값만percent=true이다.전체단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

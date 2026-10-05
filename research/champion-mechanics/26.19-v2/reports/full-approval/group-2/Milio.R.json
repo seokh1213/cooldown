@@ -1,0 +1,47 @@
+{
+  "id": "Milio.R",
+  "sourceHash": "dc4415048b94e2750842d5281d63ca18e22f8c1e22ed7d91318d9eca58140baa",
+  "beforeCandidateHash": "9fbc10e58ef9c29faeed62156fdbee55e99d59e54dd8ec94fc02efbc93c2599f",
+  "candidateHash": "790115e7968b0c4864370a79bf06b44937feed4494153c09d317f066a6baaa50",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "근처아군챔피언150/250/350+50%AP회복,방해/이동불가정화(공중뜸제외),65%강인함3초 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 ally.distance lte 근처 / ally.target_type eq champion; ally: 아군 챔피언의 방해 및 이동 불가 효과를 정화한다. 공중에 뜸 상태는 정화하지 않는다.; 수치 없음; flags 없음 | ally: 체력을 회복시킨다.; 수치 amount en:body:n0=150,en:body:n1=250,en:body:n2=350 상수 rank_values / stat_coefficient en:body:n3=50%(백분율) caster.abilityPower formula_components; flags 없음 | ally: 근처아군챔피언에게강인함65%를3초 부여합니다.; 수치 amount en:body:n4=65%(백분율) 상수 scalar / duration_seconds en:body:n5=3 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "스키마에없는Tenacity의statmodifier를정확한강인함text other효과로 보존",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Milio unleashes a wave of soothing flames on nearby ally champions, cleansing Disabling and Immobilizing effects, restoring (150/250/350 + (50% Ability Power)) Health, and granting 65% Tenacity for 3 seconds. Does not cleanse Airborne."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

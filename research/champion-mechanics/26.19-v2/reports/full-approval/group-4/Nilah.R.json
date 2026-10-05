@@ -1,0 +1,124 @@
+{
+  "id": "Nilah.R",
+  "sourceHash": "503c7605399c3b6fa5e54811e9a8c9d865b07ac944a0ec48bf684234e8a3a070",
+  "beforeCandidateHash": "ae5746726ff2bcfd9138eed45dcf13e256502fdd42d69d3f5526e6f6eb2063cc",
+  "candidateHash": "f0c55f93ea9f2789c4362c025a886a64d0f4ef27b44cedca7e5ae4f42281116f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "1초 회전 피해 뒤 마지막 피해·끌어당김, 챔피언 피해 기반 자기/주변 아군 회복, 각 수혜자 초과 회복6초 보호막, 비챔피언10% 회복 감소를 대조했다. 회복 괄호 수식의 불명확성은 유지했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. nearby_enemies: 1초 동안 회전하며 주변 적에게 물리 피해를 줍니다. (physical); amount=60/100/140  rank_values, stat_coefficient=40% caster의 bonusAttackDamage formula_components, duration_seconds=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.time eq 1 적용. nearby_enemies: 마지막 폭발로 주변 적에게 물리 피해를 줍니다. (physical); amount=125/225/325  rank_values, stat_coefficient=100% caster의 bonusAttackDamage formula_components / nearby_enemies: 마지막 폭발이 주변 적을 닐라 쪽으로 끌어당깁니다. (pull);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 target.target_type eq champion, caster.other eq 이 스킬로 해당 적 챔피언에게 실제 피해를 입힘 적용. caster: 적 챔피언에게 입힌 피해를 바탕으로 닐라가 회복합니다. 회복 비율은 기본20%와 닐라 치명타 확률10% 항, 무형의 검의 치명타 확률20% 항이 병기되어 있으며 합성식의 세부 범위는 미확정이다.; ratio_output=20%  formula_components, stat_coefficient=10% caster의 critChance formula_components, stat_coefficient=20% caster의 critChance formula_components / ally: 적 챔피언에게 입힌 피해를 바탕으로 닐라의 주변 아군이 회복합니다. 회복 비율은 기본20%와 닐라 치명타 확률10% 항, 무형의 검의 치명타 확률20% 항이 병기되어 있으며 합성식의 세부 범위는 미확정이다.; ratio_output=20%  formula_components, stat_coefficient=10% caster의 critChance formula_components, stat_coefficient=20% caster의 critChance formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other present R 회복량이 최대 체력을 초과함 적용. caster: 초과 회복량이 보호막으로 전환됩니다.; duration_seconds=6  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 target.target_type neq champion, caster.other eq 이 스킬로 비챔피언 적에게 실제 피해를 입힘 적용. caster: 비챔피언 대상에게는 회복 효과가 감소합니다.; amount=10%  scalar / ally: 비챔피언 대상에게는 회복 효과가 감소합니다.; amount=10%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 ally.other eq 이 스킬로 받은 회복량이 해당 아군의 최대 체력을 초과함 적용. ally: 초과 회복량이 보호막으로 전환됩니다.; duration_seconds=6  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "마지막 피해를 초기 시전과 동시 기록",
+      "correction": "1초 회전 뒤 후속 효과로 명시",
+      "sourceId": "en:body",
+      "quote": "dealing (60/100/140 + (40% bonus Attack Damage)) physical damage over 1 second, then finishes with a burst of (125/225/325 + (100% bonus Attack Damage)) physical damage that also Pulls nearby enemies toward her."
+    },
+    {
+      "path": "rules.2,4",
+      "issue": "실제 피해 사건과 치명타 입력/비챔피언 아군 회복 누락",
+      "correction": "피해 기반 회복 사건과 시전자 치명타 입력 및 기존 아군 범위 보존",
+      "sourceId": "en:body",
+      "quote": "Apotheosis heals Nilah and her nearby allies"
+    },
+    {
+      "path": "rules.3,5",
+      "issue": "아군 보호막을 닐라 자신의 초과 회복으로 제한",
+      "correction": "수혜자별 초과 회복 조건 분리",
+      "sourceId": "en:body",
+      "quote": "converting any overhealing into a Shield for 6 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "회복량 식에 기본 비율, 치명타 확률 계수, Formless Blade 관련 추가 치명타 확률 항이 병기되어 있으나 괄호 구조와 스탯 적용 범위가 불명확해 각 수치만 보존했습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "비챔피언 대상 회복 감소 문구의 10%가 전체 회복량의 최종 비율인지 기본 회복량 대체인지 명확하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

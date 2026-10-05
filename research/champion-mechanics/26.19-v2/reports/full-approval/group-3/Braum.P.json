@@ -1,0 +1,109 @@
+{
+  "id": "Braum.P",
+  "sourceHash": "87fd882715be2fb0e2894937a25bd9f6784bcc98e0708551bee73a2ad083eed8",
+  "beforeCandidateHash": "f302e90c53f4f25c60eace84f30846b7a3a70ca4a33eaf3ea2db5f913f57abe4",
+  "candidateHash": "c43da3a08d1b68d5b808fa922a8737c4db1f4ec61e2bf99a2d0df768b13821e3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "브라움 기본 공격의 4초 표식, 이미 표식이 있는 적에 대한 아군 공격 중첩, 4중첩 기절1.25~1.75초/마법 피해26~196, 이후8~4초 새 중첩 금지와 브라움 공격 추가피해10~78을 양 언어 본문과 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target other eq 4중첩 발동 뒤 새 중첩을 받지 않는 8~4초 상태가 아닐 때 → target: 브라움의 공격이 대상에게 뇌진탕 펀치를 적용한다. / duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: ally의 attack / 조건 target mark present Concussive Blows; target other eq 4중첩 발동 뒤 새 중첩을 받지 않는 8~4초 상태가 아닐 때 → target: 뇌진탕 펀치가 적용된 적을 아군이 공격하면 중첩을 추가한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: target의 other / 조건 target other eq 뇌진탕 펀치 중첩 4회 → target: 대상을 기절시킨다. [stun] / duration_seconds=1.25/1.75 [level_range] | target: 대상에게 마법 피해를 입힌다. [magic] / amount=26/196 [level_range] | target: 4중첩 발동 뒤 8~4초 동안 대상에게 새 뇌진탕 펀치 중첩이 적용되지 않습니다. / duration_seconds=8/4 [level_range]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target other eq 뇌진탕 펀치가 새 중첩을 받지 않는 다음 (8 ~ 4)초 동안 → target: 브라움의 공격이 대상에게 추가 마법 피해를 입힌다. [magic] / amount=10/78 [level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions",
+      "issue": "4중첩 발동 후에도 브라움 공격이 무조건 새 중첩을 적용했다.",
+      "correction": "본문의8~4초 중첩 금지 상태를 제외하는 조건과 근거를 추가했다.",
+      "sourceId": "en:body",
+      "quote": "For the next (8 ~ 4) seconds they don't receive stacks"
+    },
+    {
+      "path": "rules.1.conditions",
+      "issue": "아군 공격 중첩에도 발동 후 중첩 금지 구간이 적용되지 않았다.",
+      "correction": "발동 후8~4초 상태를 제외했다.",
+      "sourceId": "en:body",
+      "quote": "For the next (8 ~ 4) seconds they don't receive stacks"
+    },
+    {
+      "path": "rules.2.effects",
+      "issue": "4중첩 발동이 이후 새 중첩 금지 상태를 실제 효과로 생성하지 않았다.",
+      "correction": "8~4초 중첩 금지 효과와 레벨 범위 지속시간을 복구했다.",
+      "sourceId": "en:body",
+      "quote": "For the next (8 ~ 4) seconds they don't receive stacks"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "프레임에는 중첩 수를 구조화하는 조건 필드가 없어 4중첩 조건을 텍스트로 보존했다. 중첩을 받지 않는 다음 (8 ~ 4)초의 상태도 직접 구조화할 필드가 없어 추가 피해 조건을 텍스트로 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

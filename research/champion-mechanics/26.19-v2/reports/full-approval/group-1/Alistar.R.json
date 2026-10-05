@@ -1,0 +1,49 @@
+{
+  "id": "Alistar.R",
+  "sourceHash": "4f754e33bf6894e097221df875d6f0c4538edd00a84b7053f8f33eaf0621cfd3",
+  "beforeCandidateHash": "141a8fa05cd480646bfb8486063efec1e5292032225a044b54a65734b28703bc",
+  "candidateHash": "f2b98dea00a44d482833b214dfeadbf9752b1863c5fe4a48b6b0e44655e1effc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "즉시 자기 모든방해효과해제 및7초 받는피해55/65/75%감소를 확인했다. 요약의물리/마법피해 분류와 본문의일반피해표현 차이를 한계로 보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 자신에게 걸린 모든 방해 효과를 즉시 제거합니다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 7초 동안 받는 피해의 감소율이55/65/75%이다. 남은 피해 배율이55/65/75%라는 뜻이 아니다. [amount n0=55%/n1=65%/n2=75% rank_values; duration_seconds n3=7 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0;gaps",
+      "issue": "받는 피해 감소를 statTo없는스탯 증가로 기록하고 요약/본문의피해유형범위차이 미기록",
+      "correction": "받는 피해감소other효과로 분류하고 감소율은55/65/75%로명시했다. 고정피해등유형별범위는추측하지 않는다.",
+      "sourceId": "en:body",
+      "quote": "Alistar immediately cleanses all Disabling effects and takes 55/65/75% reduced damage for 7 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "요약은 받는 물리/마법 피해 감소로 특정하지만 본문은 피해 전반을 서술한다. 본문의 감소율을 보존하며 고정피해 등 개별 유형의 포함 여부를 추측해서 실행하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

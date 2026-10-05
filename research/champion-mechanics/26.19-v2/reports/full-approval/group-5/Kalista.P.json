@@ -1,0 +1,130 @@
+{
+  "id": "Kalista.P",
+  "sourceHash": "30749fd814a6c7a1d2d5033ebc6cd4da9065709b5a2b39cb71c8640ee8782b9e",
+  "beforeCandidateHash": "0fe1ffcbe24eb754903e1f85843172ddf2a636321fbc0b64582ef8280fe0fdd3",
+  "candidateHash": "3bad1939af7fe928b0b992da741424f30ea609be801caff037fe47b6a7b6cd8f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "공격/Q준비중이동명령→발사때도약,장화단계거리,공격취소불가/시야이탈빗나감/AD90%를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "기본공격 또는Q의 준비동작중이동명령·발사시도약. 일반attack만으로Q를누락하지않았다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격 또는 Q 준비 동작 중 이동 명령 입력"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격 또는 꿰뚫는 창이 발사됨"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격대상이시야에서사라지면그시전자의공격이빗나간다. caster는공격의주체로정확하다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "unseen"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기총AD90%만공격피해,일반피해90%가아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "damage_multiplier",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "90%",
+              "value": 90,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "취소사건이일어난다음불가가아니라공격자체의취소불가특성.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,3,gaps",
+      "issue": "Q도약을attack에제한·취소불가를attack_cancelled사건·허용조건불가gap.",
+      "correction": "발사other조건·passive특성·거짓gap제거.",
+      "sourceId": "en:body",
+      "quote": "They:Cannot be cancelled;Miss if her target leaves vision;Deal only 90% of her total attack damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 161,
+      "verdict": "false_positive",
+      "reason": "effectcaster는공격이빗나가는행위자의속성이다. target이빗나간다고바꾸는것이잘못이며원문칼리스타의공격을기술한다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

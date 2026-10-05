@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Karthus.P",
+      "sourceHash": "0394780cbdf78d3a874a64c9d3823f9f755b6d6826ac6d711c75951a095b8276",
+      "candidateHash": "cf112c99840d68fb205f75254c7c6e576b04b55f30c6eb322307dd9e97255a46"
+    },
+    {
+      "id": "Karthus.Q",
+      "sourceHash": "ba4c970685cfdcd272bdfa3d9bc3c37cdd1e6fdfa7617c36d357a1ce597010cf",
+      "candidateHash": "4f8e370901a706cb42501afe7748772f627a07ca58bdd0f59a3d3a1cad212d85"
+    },
+    {
+      "id": "Karthus.E",
+      "sourceHash": "ecbea0c0207572c7eaa212cb61339675bf20399c91c7714c7604399538e44961",
+      "candidateHash": "1899dd1e62adcde755d9babef79314fcc4967b8c2af0f1e5c0477931e04a874c"
+    },
+    {
+      "id": "Karthus.R",
+      "sourceHash": "3c1774666eb83948b27f477fe19a8af4e41f19c0989ee4879e9bfee814f15371",
+      "candidateHash": "0d9d71368feabb8ab01aa8dd97454c2e986de69062e4de6ed4cbfe819234d270"
+    },
+    {
+      "id": "Karthus.W",
+      "sourceHash": "59e496a01fccf7876ed0c3bb3df5f52a01fb2c925f59260acd30ead4f63b3dd3",
+      "candidateHash": "1131c242be9eda053158608665d687d615af3686275e652b9e1b26d5bf68c6af"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Karthus.E",
+      "path": "rules.0.conditions.0.value.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When Karthus kills a unit, he restores 10/20/30/40/50 Mana.",
+      "issue": "대상 유형을 `any`로 제한해 처치 대상을 모든 유형으로 단정하지만, 원문은 처치한 유닛이라고만 합니다.",
+      "correction": "대상 유형 조건을 제거하거나 원문이 말하는 `unit` 범위만 유지하세요."
+    },
+    {
+      "id": "Karthus.E",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Toggle: Karthus creates a necrotic aura, dealing (30/50/70/90/110 + (20% Ability Power)) magic damage per second to nearby enemies.",
+      "issue": "토글 오라를 켜는 시전 이벤트로만 기록해, 켜진 동안 초당 반복되는 피해 효과를 나타내지 못합니다.",
+      "correction": "오라가 활성화된 동안 주변 적에게 초당 피해를 주는 효과로 기록하세요."
+    },
+    {
+      "id": "Karthus.W",
+      "path": "rules.2.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies that pass through lose 25% Magic Resist for 5 seconds and are Slowed by 40/50/60/70/80% decaying over the duration.",
+      "issue": "둔화 효과에 5초 지속시간을 붙였지만, 해당 구절의 5초는 마법 저항력 감소 지속시간에 명시적으로 연결됩니다. 둔화는 지속시간 동안 약해진다고만 되어 있습니다.",
+      "correction": "둔화의 지속시간 파라미터에서 5초를 제거하고, 명시된 둔화 지속시간이 없음을 유지하세요."
+    }
+  ],
+  "notes": []
+}

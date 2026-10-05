@@ -1,0 +1,116 @@
+{
+  "id": "Fizz.E",
+  "sourceHash": "7772655aa2d3fb74133608d23ad9ffa96d85f4f5ec8081fd37222e6f6ddef1bc",
+  "beforeCandidateHash": "74cd3b7464c46c664d41d3a92d35442478d9248202b48ce0eb7cbd78d2a23376",
+  "candidateHash": "ab6e9f3c84fcb3cc072c9dd399849f396d17092f596dc008d0b0576a35904c7b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "삼지창 도약·0.75초 지정 불가와 정상 종료 피해·둔화, 지정 불가 중 재사용의 추가 돌진·좁은 피해·둔화 없음 분기를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "삼지창으로 도약하며 0.75초 Untargetable이다. 보이지 않음이나 은신과 구분했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "재사용하지 않고 정상 종료하면 주변에 80/130/180/230/280 + 주문력 95% 마법 피해, 40/45/50/55/60% 둔화 2초다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Untargetable 중 재사용만 추가 돌진으로 조기 종료하며 작은 범위 피해를 주고 둔화하지 않는다. 둔화 미적용을 실제 slow CC로 실행하지 않는다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.kind",
+      "issue": "Untargetable은 visibility 변화가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz hops onto his trident, becoming Untargetable for 0.75 seconds, after which he deals (80/130/180/230/280 + (95% Ability Power)) magic damage to nearby enemies and Slows them by 40/45/50/55/60% for 2 seconds. Fizz can Recast this Ability while Untargetable to dash again, which ends the effect early, deals damage in a smaller area, and doesn't Slow."
+    },
+    {
+      "path": "rules.0.effects.1",
+      "issue": "초기 삼지창 도약 이동 효과가 빠져 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz hops onto his trident, becoming Untargetable for 0.75 seconds, after which he deals (80/130/180/230/280 + (95% Ability Power)) magic damage to nearby enemies and Slows them by 40/45/50/55/60% for 2 seconds. Fizz can Recast this Ability while Untargetable to dash again, which ends the effect early, deals damage in a smaller area, and doesn't Slow."
+    },
+    {
+      "path": "rules.1.conditions.0",
+      "issue": "재사용 조기 종료에도 정상 피해·둔화가 중복 실행되지 않도록 분기를 나눴다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz hops onto his trident, becoming Untargetable for 0.75 seconds, after which he deals (80/130/180/230/280 + (95% Ability Power)) magic damage to nearby enemies and Slows them by 40/45/50/55/60% for 2 seconds. Fizz can Recast this Ability while Untargetable to dash again, which ends the effect early, deals damage in a smaller area, and doesn't Slow."
+    },
+    {
+      "path": "rules.2.conditions.0.field",
+      "issue": "재사용 조건은 unseen이 아니라 Untargetable이다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz hops onto his trident, becoming Untargetable for 0.75 seconds, after which he deals (80/130/180/230/280 + (95% Ability Power)) magic damage to nearby enemies and Slows them by 40/45/50/55/60% for 2 seconds. Fizz can Recast this Ability while Untargetable to dash again, which ends the effect early, deals damage in a smaller area, and doesn't Slow."
+    },
+    {
+      "path": "rules.2.effects.2.kind",
+      "issue": "doesn't Slow는 둔화 미적용 정보이며 slow CC 사건이 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz hops onto his trident, becoming Untargetable for 0.75 seconds, after which he deals (80/130/180/230/280 + (95% Ability Power)) magic damage to nearby enemies and Slows them by 40/45/50/55/60% for 2 seconds. Fizz can Recast this Ability while Untargetable to dash again, which ends the effect early, deals damage in a smaller area, and doesn't Slow."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_variant",
+      "note": "재사용 피해의 수치 및 계수가 별도로 제시되지 않았습니다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "note": "40/45/50/55/60% 둔화 배열 앞 항목은 frozen percent=false지만 실제로 모든 항목이 퍼센트다. lexical 숫자표만으로 단위를 실행하지 말 것."
+    }
+  ],
+  "validation": {
+    "id": "Fizz.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

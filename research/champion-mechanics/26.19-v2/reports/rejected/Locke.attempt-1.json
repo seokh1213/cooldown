@@ -1,0 +1,1187 @@
+{
+  "drafts": {
+    "Q": {
+      "summary": "로크가 영혼의 대못을 던져 적중한 적에게 마법 피해와 표식을 적용합니다. 대못에 맞은 적은 적중한 대못 수에 따라 둔화됩니다. 표식이 있는 적을 기본 공격하면 대못을 소모해 중첩당 추가 마법 피해를 입히며, 대못 개수에 따라 피해량이 증가합니다. 효과가 끝날 때 남은 대못마다 스킬의 재사용 대기시간과 마나 소모량 일부를 돌려받습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "영혼의 대못을 던져 적중한 적에게 마법 피해를 입히고 표식을 남깁니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Locke readies a set of Soul Nails to throw, dealing (40/48/56/64/72 + (20% Ability Power)) magic damage and marking enemies hit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "대못에 맞은 적을 둔화시키며, 둔화 효과는 적중한 대못 수에 따라 중첩됩니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Nails apply a 25/25/60% Slow for 1/1/2 seconds, stacking with the amount of nails hit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "표식이 있는 적을 공격하면 영혼의 대못을 소모하고 중첩당 마법 피해를 입힙니다. 대못이 둘 또는 셋이면 피해량이 추가로 증가합니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n23"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n24",
+                    "en:body:n25"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "unknown"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Attacking the enemy consumes the Soul Nails, dealing (18/26/34/42/50 + (25/27.5/30/32.5/35% Ability Power)) magic damage per stack, increased by 20% and 40% for two and three nails respectively."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "남은 대못"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "효과가 끝날 때 남은 대못마다 스킬 재사용 대기시간 일부를 돌려받습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "resource_refund",
+                  "numberRefs": [
+                    "en:body:n26",
+                    "en:body:n27"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "효과가 끝날 때 남은 대못마다 스킬 마나 소모량 일부를 돌려받습니다. 환급되는 마나의 고정량은 제시되지 않았습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each remaining nail refunds (20% ~ 35%) of Ability's Cooldown and Mana cost when this effect ends."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "대못 준비·투척의 발동 시점, 생성되는 대못 수, 적중한 대못 수를 판별하는 구체적 조건은 명시되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Locke readies a set of Soul Nails to throw, dealing (40/48/56/64/72 + (20% Ability Power)) magic damage and marking enemies hit."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "중첩당 피해 효과의 표식·대못 소모 범위와 대못 개수별 피해 증가의 정확한 적용 방식은 설명되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Attacking the enemy consumes the Soul Nails, dealing (18/26/34/42/50 + (25/27.5/30/32.5/35% Ability Power)) magic damage per stack, increased by 20% and 40% for two and three nails respectively."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "남은 대못에 따른 환급 비율의 진행 기준은 명시되지 않았습니다. 마나 환급량도 마나 소모량에 대한 비율로만 제시되어 고정량은 확인할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Each remaining nail refunds (20% ~ 35%) of Ability's Cooldown and Mana cost when this effect ends."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "로크가 지정한 위치에 유물을 던져 범위 내 적에게 마법 피해와 둔화를 적용하고 적중한 적에게 표식을 남깁니다. 표식이 있는 적 챔피언의 체력이 단계별 처형 기준치 아래로 내려가면 봉인됩니다. 표식 지속시간이 끝난 뒤 챔피언을 하나 이상 봉인했다면 유물이 땅에 떨어집니다. 로크가 유물을 주우면 봉인한 챔피언마다 처형 기준치가 영구적으로 증가하고 전체 재사용 대기시간 일부를 돌려받습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "지정한 위치에 유물을 던져 범위 내 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Locke throws a binding artifact to a location, dealing (150/225/300 + (60% Ability Power)) magic damage and Slowing enemies in the area by 99%, decaying over 2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "범위 내 적을 둔화시킵니다. 둔화 효과는 시간이 지나며 감소합니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Locke throws a binding artifact to a location, dealing (150/225/300 + (60% Ability Power)) magic damage and Slowing enemies in the area by 99%, decaying over 2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "유물에 적중한 적에게 표식을 남깁니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The artifact marks enemies hit for 5 seconds, sealing away marked enemy champions brought below 10.5/11.5/12.5%, and resetting the duration of the mark on other affected champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            },
+            {
+              "subject": "target",
+              "field": "health_threshold",
+              "operator": "lt",
+              "value": {
+                "kind": "text",
+                "value": "단계별 10.5/11.5/12.5% 기준치"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "execute",
+              "subject": "target",
+              "text": "표식이 있는 적 챔피언의 체력이 단계별 처형 기준치 아래로 내려가면 봉인합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The artifact marks enemies hit for 5 seconds, sealing away marked enemy champions brought below 10.5/11.5/12.5%, and resetting the duration of the mark on other affected champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "secondary_targets",
+              "text": "다른 영향을 받은 챔피언의 표식 지속시간을 초기화합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The artifact marks enemies hit for 5 seconds, sealing away marked enemy champions brought below 10.5/11.5/12.5%, and resetting the duration of the mark on other affected champions."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "entity_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n10"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "unknown",
+              "text": "표식 지속시간이 끝난 뒤 챔피언을 하나 이상 봉인했다면 유물이 땅에 떨어집니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After the duration ends, if at least one champion was sealed, the artifact lands on the ground."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "유물을 획득"
+              }
+            },
+            {
+              "subject": "nearby_enemies",
+              "field": "entity_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n10"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "유물을 획득하면 봉인한 챔피언마다 처형 기준치가 영구적으로 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "유물을 획득하면 봉인한 챔피언마다 전체 재사용 대기시간 일부를 돌려받습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "resource_refund",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Locke can pick up the artifact to permanently increase its execution threshold by 0.5%, and refund 20% of his total Cooldown, for each champion sealed."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "After the duration ends, if at least one champion was sealed, the artifact lands on the ground."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "unknown"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "봉인 시점"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "unknown",
+              "text": "유물은 봉인 시점의 현재 재사용 대기시간 동안 땅에 남습니다. 해당 쿨다운의 수치는 입력에 제공되지 않았습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The artifact will linger on the ground for this Ability's current Cooldown at the time of sealing."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "유물이 땅에 남아 있는 시간은 봉인 시점의 현재 재사용 대기시간으로 표현되며, 입력의 number 목록에 재사용 대기시간 수치가 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The artifact will linger on the ground for this Ability's current Cooldown at the time of sealing."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "유물 획득 시 처형 기준치 증가와 재사용 대기시간 환급은 봉인된 챔피언마다 적용된다고 명시되어 있으나, 환급이 봉인된 챔피언 수만큼 반복되는지 전체 환급량의 해석은 원문만으로 확정하기 어렵습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Locke can pick up the artifact to permanently increase its execution threshold by 0.5%, and refund 20% of his total Cooldown, for each champion sealed."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "체력 처형 기준치가 표적의 어떤 체력 기준에 적용되는지는 원문이 지정하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "sealing away marked enemy champions brought below 10.5/11.5/12.5%"
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "로크가 공격 속도와 이동 속도를 얻고, 일정 시간 동안 매초 현재 체력에 비례한 고정 피해를 받습니다. 효과 종료 시 마지막으로 받은 피해량만큼 회복하고, 잃은 체력과 경과 시간에 따른 추가 체력도 회복합니다. 추가 회복에는 남은 체력에 따른 최대치가 적용됩니다. 재사용해 일찍 종료할 수 있고, 방해를 받는 동안에도 사용할 수 있으며 지속시간 동안 유체화 상태가 됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가하며, 증가량은 경과 시간에 따라 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Locke ignites his own soul, gaining (40% ~ 70%) Attack Speed and (40% + (2% per 100 Ability Power)) Move Speed that decays over 2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n6"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "caster",
+              "text": "지속시간 동안 매초 현재 체력에 비례한 고정 피해를 받습니다. 비례 대상은 최대 체력이 아닌 현재 체력이며, 세부 계산식은 제시되지 않았습니다.",
+              "damageType": "true",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "other",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "For 6 seconds, he suffers 2% current Health true damage per second."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Locke ignites his own soul, gaining (40% ~ 70%) Attack Speed and (40% + (2% per 100 Ability Power)) Move Speed that decays over 2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "마지막으로 받은 피해량만큼 체력을 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replace_input"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "잃은 체력과 경과 시간에 따라 추가 체력을 회복하며, 남은 체력에 따른 최대치가 적용됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "재사용하면 효과를 일찍 종료합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Can be Recast to end early."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "방해를 받는 동안에도 이 스킬을 사용할 수 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability can be used while Disabled."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "지속시간 동안 유체화 상태가 되어 다른 유닛을 통과할 수 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "For 6 seconds, he suffers 2% current Health true damage per second but Heals back the last (40/60/80/100/120 + (100% Ability Power)) damage taken, and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining. Can be Recast to end early. This Ability can be used while Disabled. Locke is Ghosted for the duration. Ghosted units can pass through other units."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "현재 체력 비례 피해는 명시되어 있으나, 현재 체력의 시점별 계산 규칙은 제시되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "For 6 seconds, he suffers 2% current Health true damage per second"
+            }
+          ]
+        },
+        {
+          "reason": "unsupported_formula",
+          "detail": "추가 회복이 잃은 체력과 경과 시간에 기반하며 남은 체력에 따라 최대치가 적용되지만, 정확한 계산식·순서는 본문만으로 확정할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and an additional ((40 ~ 200) + (20% Ability Power)) Health based on missing Health and time passed, up to a maximum of ((150 ~ 450) + (60% Ability Power)) Health remaining."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "현재 체력 피해의 기준은 원문에서 current Health로 명시되어 있지만 스키마의 stat 항목에는 현재 체력이 없어 stat을 지정하지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "For 6 seconds, he suffers 2% current Health true damage per second"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Locke.W",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.1.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "evidence",
+          "path": "rules.2.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        }
+      ]
+    }
+  ]
+}

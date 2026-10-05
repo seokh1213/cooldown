@@ -1,0 +1,129 @@
+{
+  "summary": "레나타가 화학 물질의 파도를 방출해 적중한 적을 광란 상태로 만든다. 광란 상태의 적은 가장 가까운 유닛을 공격하며 아군을 우선하고 공격 속도가 증가한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "enemy"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "적중한 적을 광란 상태로 만든다.",
+          "damageType": null,
+          "crowdControl": "berserk",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Renata sends out a wave of chemicals, Berserking enemies for 1.25/1.75/2.25 seconds, causing them to Attack the nearest unit, prioritizing their allies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "enemy",
+          "text": "광란 상태의 적은 가장 가까운 유닛을 공격하고 아군을 우선한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Berserking enemies for 1.25/1.75/2.25 seconds, causing them to Attack the nearest unit, prioritizing their allies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "enemy",
+          "text": "광란 상태에서 공격 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While Berserk, enemies gain 100% Attack Speed."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

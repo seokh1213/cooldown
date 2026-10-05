@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Diana.Q",
+      "sourceHash": "f253e2e0e1d3c946e3a82a559a7dcdb4fae1f6d771aa6a37a4678fa56edda3ed",
+      "candidateHash": "2e2e9d006dc55825f717cdf63136bfd9f13e116d166520f0d555c99bcae56b30"
+    },
+    {
+      "id": "Diana.E",
+      "sourceHash": "50879baf04874c3da88bc7db21e1f87883911d1588e6c641f39f6879d4ba9e0e",
+      "candidateHash": "7a0fcfb68ea34e54f116f62446ff22df82aee9c15484a990c200e8c3750a350b"
+    },
+    {
+      "id": "Diana.R",
+      "sourceHash": "bb673dd7faf44a6fda1b2d509ebd41e80d25e90065b3513c01d085f5813318a5",
+      "candidateHash": "454bf4594d27459400572ffba0085e617f9f3ffc2af2cee2bab7d672c043f509"
+    },
+    {
+      "id": "Diana.P",
+      "sourceHash": "1c91a31cfa13b178d8c1b9c7d39f1702ac4bb64d287af35f8d74bca7c087a45d",
+      "candidateHash": "a55bdf3fe3046e1c56729a5a240bedea339401422ba65c090fcbb6600700d9f1"
+    },
+    {
+      "id": "Diana.W",
+      "sourceHash": "d709c56a9360985af1c173209d62329c56dbef8f41d607105a5a98b213a538eb",
+      "candidateHash": "6110db676f6cb19f5caa8fbc0fa69a97e6f515bd5e9c3e33a6c69613e4ce4bde"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Diana.P",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Diana gains (15% ~ 35%) Attack Speed, increased to (45% ~ 105%) for 5 seconds after using an Ability.",
+      "issue": "효과 설명은 스킬 사용 후 공격 속도가 더 커진다고만 되어 있어, 45%~105%가 15%~35%에 추가되는 양인지 최종 공격 속도인지 구분되지 않습니다.",
+      "correction": "원문 표현을 보존해 ‘스킬 사용 후 공격 속도가 45%~105%로 증가합니다’처럼 기준값과의 관계를 단정하지 마세요."
+    },
+    {
+      "id": "Diana.W",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Diana creates three orbiting spheres for 5 seconds that explode on contact, each dealing (20/32/44/56/68 + (18% Ability Power)) magic damage, up to a max of (60/96/132/168/204 + (54% Ability Power)) damage.",
+      "issue": "‘세 구체가 입히는 피해는 최대 피해량을 넘지 않습니다’라고 설명해 최대값을 모든 대상에 대한 상한으로 표현했습니다. 원문은 구체가 하나당 주는 피해와 최대 피해량을 따로 제시하므로 이 상한이 대상별인지 전체 시전 기준인지 명시하지 않습니다.",
+      "correction": "최대 피해량의 적용 범위를 단정하지 말고, 구체당 피해와 별도로 원문에 최대 피해량이 제시된다는 점만 보존하세요."
+    },
+    {
+      "id": "Diana.W",
+      "path": "rules.3.effects.0.parameters.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When the last sphere detonates, she gains an additional (45/60/75/90/105 + (30% Ability Power) + (11% bonus Health)) Shield and refreshes the duration.",
+      "issue": "추가 보호막 효과에 원문에서 가리키는 지속시간을 5초로 직접 연결했지만, ‘the duration’의 기준은 문장 안에서 특정되지 않습니다.",
+      "correction": "지속시간 초기화는 설명에 남기되, 수치가 직접 연결되지 않는 한 5초를 이 효과의 duration_seconds 매개변수로 두지 마세요."
+    }
+  ],
+  "notes": []
+}

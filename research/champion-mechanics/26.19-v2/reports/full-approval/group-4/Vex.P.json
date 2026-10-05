@@ -1,0 +1,109 @@
+{
+  "id": "Vex.P",
+  "sourceHash": "bd5b8584658ce25ce9ef1b02124ed7df02ecb5d922022972f312a3aed503a6d9",
+  "beforeCandidateHash": "4ab024dda7ee23cd82e7ac2433cea54e630352efcfa5110b6216e305b3e63bf5",
+  "candidateHash": "a8a04bea289920f8eac375ca8d9c6b3deea27eaf5caf6d10b5a35742339a50db",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "파멸25~16초주기와다음기본스킬의knockdown/공포0.75~1.5초,주변적돌진/순간이동의6초우울,표식다음평타추가마법피해/소모/강화쿨25%감소를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 레벨범위로제시된최소16~최대25초주기마다파멸상태가된다.; min_amount=16  level_range, max_amount=25  level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.activation eq 파멸을 소비하는 다음 기본 스킬에 적이 적중함 적용. enemy: 벡스의 다음 기본 스킬이 적을 쓰러뜨리고 공포에 빠뜨립니다. (knockdown);  / enemy: 다음기본스킬에맞은적을해당최소~최대시간(초)동안공포에빠뜨린다. (fear); min_amount=0.75  scalar, max_amount=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "target의 other 사건에서 target.other eq 주변 적이 돌진 또는 순간 이동함 적용. target: 대상에게 6초 동안 우울 표식을 남깁니다.; duration_seconds=6  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 attack 사건에서 target.mark eq 공격 전 우울(Gloom) 표식이 있는 적에 대한 다음 기본 공격 적용. target: 벡스가 우울 표식이 있는 적을 다음 공격으로 공격하면 추가 마법 피해를 줍니다. (magic); min_amount=40  level_range, max_amount=150  level_range, stat_coefficient=25% caster의 abilityPower formula_components / target: 우울표식을소모한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.mark eq 공격 전 우울(Gloom) 표식이 있는 적에 대한 다음 기본 공격 적용. caster: 우울표식대상에대한다음기본공격이파멸강화상태의재사용대기시간을해당비율만큼줄인다.; amount=25%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1",
+      "issue": "주기최소/최대역전과knockdown에공포지속시간연결",
+      "correction": "16~25초범위및기본스킬/공포시간구별",
+      "sourceId": "en:body",
+      "quote": "Every (25 ~ 16) seconds Vex becomes afflicted with Doom, causing her next basic Ability to Knock Down and Fear enemies for (0.75 ~ 1.5) seconds."
+    },
+    {
+      "path": "rules.2-4,summary",
+      "issue": "우울표식식별/소모누락및두쿨다운처럼서술",
+      "correction": "우울다음평타조건·표식소모·강화상태쿨다운범위보존",
+      "sourceId": "en:body",
+      "quote": "Vex's next Attack against a Gloomed enemy deals an additional ((40 ~ 150) + (25% Ability Power)) magic damage and reduces this Ability's Cooldown by 25%."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 605,
+      "verdict": "false_positive",
+      "reason": "영문Attack은기본공격이며한국어본문도다음기본공격이라고명시한다.스킬공격까지넓힐근거가없다."
+    },
+    {
+      "index": 606,
+      "verdict": "false_positive",
+      "reason": "원문은표식대상공격이추가피해를입히는상황을서술한다.피해를입히는공격의적중표현이별도과도한조건은아니다.구조상새적중전제를추가하지않았다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

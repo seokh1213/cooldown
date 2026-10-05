@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Ivern.E",
+      "sourceHash": "7e34fd896463b997259310a044487309061d13278850de7b5cdec2d32cf629a8",
+      "candidateHash": "3dd608101f38044960b7a6adaf82e06852d830d6265f57c4707a9d0740942d40"
+    },
+    {
+      "id": "Ivern.P",
+      "sourceHash": "f8f7aa84d041647f6fd8aa2626cb291695c21e499351f364021929c3794b32cd",
+      "candidateHash": "67e2da52ac8dda1222ef1933a626973a49aed5408fd79cf9853b47fee4d27cdb"
+    },
+    {
+      "id": "Ivern.Q",
+      "sourceHash": "e8161b1c3ab9b20b31a5d07bcaabff92aee36c52c215d37c7dee20c948cead04",
+      "candidateHash": "c16779cfd9817c04f6f4bffee7fae6c55658a107edd64ed8c24eb6ab4c5c0d33"
+    },
+    {
+      "id": "Ivern.R",
+      "sourceHash": "86ecdf6fe4eafb96346d65ef5c9dbd09259a4254ea9a1f46a5c2efd66c5f295a",
+      "candidateHash": "d15177b5f79f9a9b867fc006486b5ec25bc20a5156940725c48503b8b5c2f2d6"
+    },
+    {
+      "id": "Ivern.W",
+      "sourceHash": "85f0e1020ee2989363d8bf44b38cd142d9161964fb0a27afa9c5c1e0b8c9bece",
+      "candidateHash": "9b90eaeb43a766d2cd518a37e770f49b513fe0499734ca39b629f5e88a7458fc"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Ivern.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Triggerseed detonates and no enemy champions are hit while the shield still persists, the ally will be shielded for (75/115/155/195/235 + (50% Ability Power)) for 2 seconds.",
+      "issue": "`target_type neq champion`은 비챔피언 적중을 요구하므로, 챔피언도 함께 적중한 경우까지 조건을 충족할 수 있습니다. 원문 조건인 ‘적 챔피언이 하나도 적중하지 않음’과 다릅니다.",
+      "correction": "조건을 ‘적 챔피언 적중 없음’으로 표현하세요. 현재 조건 필드로 이를 직접 나타낼 수 없다면, 이 조건을 typed predicate로 두지 말고 원문 조건을 설명 텍스트와 gap에 보존하세요."
+    },
+    {
+      "id": "Ivern.W",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nearby allies will gain this effect for 1.5 seconds and deal (10/15/20/25/30 + (10% Ability Power)) magic damage.",
+      "issue": "1.5초는 아군이 추가 공격 효과를 얻는 지속 시간인데, 피해 효과의 `duration_seconds`로 기록되어 피해 지속 시간처럼 해석될 수 있습니다.",
+      "correction": "1.5초를 아군에게 부여되는 효과의 지속 시간으로 기록하고, 피해량은 별도 수치로 보존하세요. 스키마로 효과 지속 시간을 나타낼 수 없다면 텍스트와 gap에 남기세요."
+    }
+  ],
+  "notes": []
+}

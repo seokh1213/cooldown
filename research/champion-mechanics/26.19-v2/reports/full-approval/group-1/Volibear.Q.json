@@ -1,0 +1,76 @@
+{
+  "id": "Volibear.Q",
+  "sourceHash": "1425a9a3a6a39ea9921c0c36d4e6779c850ee7ce2bf0163eaa305b1c19d23398",
+  "beforeCandidateHash": "b0011df554dc6d287eaead1beba56bc7b0aad992ad6922e36261cbb6e4f95bc5",
+  "candidateHash": "d8296d174c9c76b0666b68246f8e1b6ac28122ba4b88e949fbedecb9056d21fb",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "방향무관4초12~26%이속과적챔피언향해24~52%대체, 활성다음평타피해/1초기절/사거리25,기절전적이caster이동불가면조기종료/쿨초기화 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 이동 속도가 증가한다. 적 챔피언을 향해 이동할 때는 증가량이 두 배가 된다. [amount n0=12%/n1=15.5%/n2=19%/n3=22.5%/n4=26% rank_values; duration_seconds n10=4 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion; caster.other eq 적 챔피언을 향해 이동. caster stat_modifier: 적 챔피언을 향해 이동할 때 이동 속도 증가량이 두 배가 된다. [amount n5=24%/n6=31%/n7=38%/n8=45%/n9=52% rank_values; duration_seconds n10=4 scalar] flags=replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.followup_attack; 조건 caster.activation eq empowered. target damage physical: 활성화 중 다음 기본 공격이 대상에게 물리 피해를 입힌다. [amount n11=10/n12=20/n13=30/n14=40/n15=50 rank_values; stat_coefficient n16=100% formula_components caster.totalAttackDamage; stat_coefficient n17=160% formula_components caster.bonusAttackDamage] / target crowd_control stun: 대상을 기절시킨다. [duration_seconds n18=1 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 이 스킬로 대상을 기절시키기 전에 적에게 이동 불가 효과를 받음. caster other: 대상을 기절시키기 전에 적의 이동 불가 효과를 받으면 분노하며 스킬이 일찍 끝난다. [] / caster cooldown_change: 이 스킬의 재사용 대기시간이 초기화된다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.followup_attack; 조건 caster.activation eq empowered. caster attack_modifier: 이번 공격의 사거리가 증가한다. [distance_units n19=25 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.1/3/gaps",
+      "issue": "일반이속방향제한·챔피언조건에방향누락·피해받기와이동불가혼동/주인",
+      "correction": "일반이속무방향,향해이동조건/대체, caster이동불가other사건",
+      "sourceId": "en:body",
+      "quote": "Volibear becomes enraged if an enemy Immobilizes him before he Stuns a target, ending the Ability early but refreshing its Cooldown."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "요약은 적을향해이동할때이속증가라고서술하나본문은일반이속무방향과챔피언방향두배를구분한다.본문일반값을우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "이동 불가 효과를 가하는 적과 기절 대상의 동일 여부는 명시되지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

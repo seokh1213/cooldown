@@ -1,0 +1,99 @@
+{
+  "id": "Talon.Q",
+  "sourceHash": "23a81462405d2ff7d4d9801ffe67258000762c0150eb3347e55d943ee8844331",
+  "beforeCandidateHash": "07f4755ccf27f371f9d02562d5570b0f93f12bf249d20380b97537f2220653d5",
+  "candidateHash": "02775f3ee463d50dda0047d727e19f3ef896e5795bed8fc24385af305cd900d7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "근접이면 치명타, 밖이면 도약·기본 피해라는 분기와 Q 처치의 치유·쿨다운 환급을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "근접 밖에서는 도약하고 65/85/105/125/145 + 추가 공격력 100% 물리 피해다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "근접에서는 같은 기본 피해 식 전체에 (1.5 + 추가 치명타 피해량 100%)를 곱한다. 전체 critDamage를 bonus crit damage로 대체하지 않았고 식의 곱셈 관계를 명시했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Q 처치일 때만 9~55 체력 회복과 Q 쿨다운 50% 환급이다. 50%는 자원 환급이 아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary",
+      "issue": "기존 요약은 근접에서도 도약한다고 읽힐 수 있어 원문 분기를 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon leaps to a target and deals (65/85/105/125/145 + (100% bonus Attack Damage)) physical damage. If used in melee range, this Ability instead critically strikes for (65/85/105/125/145 + (100% bonus Attack Damage)) × (1.5 + 100% bonus Critical Strike Damage) physical damage. If this Ability kills the target, Talon restores (9 ~ 55) Health and refunds 50% of its Cooldown. Melee damage is affected by Critical Strike Damage increase."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.3.stat",
+      "issue": "100% bonus Critical Strike Damage를 전체 critDamage로 계산하면 원문과 다르다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon leaps to a target and deals (65/85/105/125/145 + (100% bonus Attack Damage)) physical damage. If used in melee range, this Ability instead critically strikes for (65/85/105/125/145 + (100% bonus Attack Damage)) × (1.5 + 100% bonus Critical Strike Damage) physical damage. If this Ability kills the target, Talon restores (9 ~ 55) Health and refunds 50% of its Cooldown. Melee damage is affected by Critical Strike Damage increase."
+    },
+    {
+      "path": "rules.2.effects.0.parameters",
+      "issue": "9~55 치유의 두 끝점을 하나의 범위로 보존했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon leaps to a target and deals (65/85/105/125/145 + (100% bonus Attack Damage)) physical damage. If used in melee range, this Ability instead critically strikes for (65/85/105/125/145 + (100% bonus Attack Damage)) × (1.5 + 100% bonus Critical Strike Damage) physical damage. If this Ability kills the target, Talon restores (9 ~ 55) Health and refunds 50% of its Cooldown. Melee damage is affected by Critical Strike Damage increase."
+    },
+    {
+      "path": "rules.2.effects.1.parameters.0.role",
+      "issue": "쿨다운 50% 환급을 마나 등 자원 환급과 구분했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon leaps to a target and deals (65/85/105/125/145 + (100% bonus Attack Damage)) physical damage. If used in melee range, this Ability instead critically strikes for (65/85/105/125/145 + (100% bonus Attack Damage)) × (1.5 + 100% bonus Critical Strike Damage) physical damage. If this Ability kills the target, Talon restores (9 ~ 55) Health and refunds 50% of its Cooldown. Melee damage is affected by Critical Strike Damage increase."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "허용 stat에 bonusCriticalStrikeDamage가 없어 전체 critDamage로 대체하지 않았다. 원문의 (기본 피해 + 추가 AD 계수) × (1.5 + 추가 치명타 피해량 100%) 괄호 곱을 효과 문장에 보존한다."
+    }
+  ],
+  "validation": {
+    "id": "Talon.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

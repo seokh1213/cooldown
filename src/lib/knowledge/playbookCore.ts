@@ -5,6 +5,7 @@
  * 브라우저 상성 코치가 같은 규칙으로 지식 카드를 고르게 하려면 이 코드가 fs 를 몰라야 한다.
  */
 import type { ChampionCard } from "./facts";
+import type { ComboPattern } from "./comboGuide";
 import { hasFinalConsonant, josa } from "./text";
 
 export interface PlaybookCondition {
@@ -56,6 +57,8 @@ export interface PlaybookHook {
 }
 
 export interface PlaybookEntry {
+  /** 출처와 사용 조건을 갖춘 상황별 콤보. 본문은 빌드에서 같은 형식으로 만든다. */
+  combo?: ComboPattern;
   id?: string;
   /** rune | summoner | start-item | first-item | core-item | situational-item | escape-window | combo | phase | laning | teamfight | skill */
   category: string;

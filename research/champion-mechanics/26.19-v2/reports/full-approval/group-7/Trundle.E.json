@@ -1,0 +1,213 @@
+{
+  "id": "Trundle.E",
+  "sourceHash": "832e80d134a1b04d0d020c7e3bce83e1e28ae02ecf76bc0e36feb251ae5475ef",
+  "beforeCandidateHash": "758856bf6e36d297050d3173287a23b34e3ee8bd743048743f18935f76a483e9",
+  "candidateHash": "46307c650f8e14611bb036dac5d21ee4ce085dbfe8d61d343480730b60480408",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "6초동안통과불가지형인기둥,생성직접위적의짧은넉백,기둥주변적의34~50%둔화를구분.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "기둥의지속6초와impassable terrain 성질을본문/요약에서확인."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "생성시기둥바로위의적만잠깐knockback.주변적전체넉백으로확대하지않음."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "기둥존재중주변범위에있는적의둔화34/38/42/46/50%;시전순간만맞은적에한정하지않음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "기둥의통과불가지형성질누락",
+      "correction": "효과문장에impassable terrain 의미복원",
+      "sourceId": "en:summary",
+      "quote": "becoming impassable terrain"
+    },
+    {
+      "path": "rules.2.trigger/conditions",
+      "issue": "주변둔화를cast한순간의효과로만기록",
+      "correction": "기둥존재중범위상황의지속둔화로보존",
+      "sourceId": "en:body",
+      "quote": "briefly Knocking Back enemies directly over it and Slowing nearby enemies by 34/38/42/46/50%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "트런들이 일정 시간 동안 얼음 기둥을 생성합니다. 기둥 위에 있는 적은 밀려나고 주변 적은 둔화됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "6초 동안 지나갈 수 없는 지형인 얼음 기둥을 생성합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Trundle creates an icy pillar for 6 seconds, briefly Knocking Back enemies directly over it and Slowing nearby enemies by 34/38/42/46/50%."
+            },
+            {
+              "sourceId": "en:summary",
+              "quote": "Trundle creates an ice pillar at target location, becoming impassable terrain and slowing all nearby enemy units."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "distance",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "기둥 바로 위"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "잠시 뒤로 밀어냅니다.",
+              "damageType": null,
+              "crowdControl": "knockback",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Trundle creates an icy pillar for 6 seconds, briefly Knocking Back enemies directly over it and Slowing nearby enemies by 34/38/42/46/50%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "distance",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "기둥 주변"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "얼음 기둥이 존재하는 동안"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Trundle creates an icy pillar for 6 seconds, briefly Knocking Back enemies directly over it and Slowing nearby enemies by 34/38/42/46/50%."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

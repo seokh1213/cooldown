@@ -59,19 +59,13 @@ const TIERS_TEXT: Record<"ko" | "en" | "zh", string> = {
   zh: "英雄价格分为 225 · 675 · 1,575 · 2,400 · 3,150 蓝色精粹（260 · 585 · 790 · 880 · 975 点券）几档。新英雄为 3,150（975 点券），之后会降价。带上英雄名字提问即可查询具体价格。",
 };
 
-const SOURCE_TEXT: Record<"ko" | "en" | "zh", string> = {
-  ko: `공식 롤 위키 기준(${meta.checked} 확인)`,
-  en: `From the official League of Legends Wiki (checked ${meta.checked})`,
-  zh: `来源：英雄联盟官方 Wiki（${meta.checked} 核对）`,
-};
-
 /** 챔피언 한 명의 가격. 가격 낱말이 있고 가격 자료가 있을 때만. */
 export function championPriceAnswer(question: string, champion: { id: string; name: string }, lang: Language): string | undefined {
   if (!asksPrice(question)) return undefined;
   const price = (prices.prices as Record<string, { be: number; rp: number }>)[champion.id];
   if (!price) return undefined;
   const l = short(lang);
-  return `${PRICE_TEXT[l](champion.name, price.be, price.rp)}\n\n${SOURCE_TEXT[l]}`;
+  return PRICE_TEXT[l](champion.name, price.be, price.rp);
 }
 
 /** 챔피언 가격 단계를 묻는가("챔피언 가격 얼마야"). 문서가 아니라 고정된 글로 답한다. */
@@ -83,8 +77,8 @@ export function asksPriceTiers(question: string): boolean {
 export function gameMetaAnswer(question: string, lang: Language): string | undefined {
   const l = short(lang);
   const fact = findGameMeta(question);
-  if (fact) return `${fact.text[l]}\n\n${SOURCE_TEXT[l]}`;
-  if (asksPriceTiers(question)) return `${TIERS_TEXT[l]}\n\n${SOURCE_TEXT[l]}`;
+  if (fact) return fact.text[l];
+  if (asksPriceTiers(question)) return TIERS_TEXT[l];
   return undefined;
 }
 
@@ -99,6 +93,5 @@ export function gameMetaById(id: string, lang: Language): string | undefined {
   const fact = FACTS.find((entry) => `meta:${entry.id}` === id);
   if (!fact) return undefined;
   const l = short(lang);
-  return `${fact.text[l]}\n\n${SOURCE_TEXT[l]}`;
+  return fact.text[l];
 }
-

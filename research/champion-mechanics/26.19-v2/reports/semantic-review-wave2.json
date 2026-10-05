@@ -1,0 +1,208 @@
+{
+  "reviewedIds": [
+    "Chogath.P",
+    "Chogath.Q",
+    "Chogath.W",
+    "Chogath.E",
+    "Chogath.R",
+    "DrMundo.P",
+    "DrMundo.Q",
+    "DrMundo.W",
+    "DrMundo.E",
+    "DrMundo.R",
+    "Brand.P",
+    "Brand.Q",
+    "Brand.W",
+    "Brand.E",
+    "Brand.R"
+  ],
+  "ruleIndexConvention": "zero_based",
+  "findings": [
+    {
+      "id": "Chogath.E",
+      "ruleIndex": 0,
+      "severity": "high",
+      "issue": "Both attack rules use hit_count <= 3 without identifying the E activation or empowered attack sequence. This turns the next three attacks after activation into an ordinary attack/hit-count predicate.",
+      "shortSourceQuote": "Cho'Gath's next 3 Attacks launch spikes",
+      "correction": "Gate rules[0] and rules[1] on the empowered E attack sequence (activation=empowered). Preserve the next-three-attacks allowance with a count parameter or a retained attack-sequence condition; do not treat it as arbitrary successful hits or global attack count."
+    },
+    {
+      "id": "Chogath.E",
+      "ruleIndex": 1,
+      "severity": "high",
+      "issue": "Monster percent-health replacement is gated by caster.resource > en:body:n18, whose source value is the unrelated 0.5% Feast damage increase per stack. The source supplies no such resource threshold.",
+      "shortSourceQuote": "Percent Health damage against monsters is replaced with 80/110/140/170/200.",
+      "correction": "Remove the resource > 0.5% condition. Keep the monster condition and empowered attack scope. Restrict replacement to the percent-health component, preserving flat base damage and the caster AP component."
+    },
+    {
+      "id": "Chogath.R",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "issue": "The three damage rules are supported, but the explicit on-kill stack and 80/120/160 max-health gain have no corresponding rule or numeric preservation. The summary mentions growth while the gap does not explain why this certain health gain was omitted.",
+      "shortSourceQuote": "If this kills the target, Cho'Gath gains a stack, which causes him to grow in size and gain 80/120/160 max Health.",
+      "correction": "Add a rule for this cast killing its own target, with a stack gain, size growth, and caster max-health gain using en:body:n8/n9/n10. Retain the minion/non-epic cap and any range behavior that cannot be typed as text/gaps without inventing formulas."
+    },
+    {
+      "id": "DrMundo.P",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "issue": "The rule has only a first-hit predicate on ability_hit; it does not limit the triggering incoming effect to an immobilizing effect. The effect text is correct, but the structured trigger also admits an ordinary first ability hit.",
+      "shortSourceQuote": "Dr. Mundo resists the first Immobilizing effect that hits him",
+      "correction": "Add a retained condition specifying that the incoming effect is immobilizing, and identify first within that effect class. Keep the current-health loss as text because currentHealth is unavailable in STATS."
+    },
+    {
+      "id": "DrMundo.P",
+      "ruleIndex": 1,
+      "severity": "high",
+      "issue": "Canister pickup requires caster.activation=visible, a condition absent from every supplied source. This incorrectly suppresses pickup benefits depending on visibility/activation state.",
+      "shortSourceQuote": "Moving over it reduces this Ability's Cooldown by 15 seconds and restores 4% max Health.",
+      "correction": "Remove activation=visible. Retain entering/moving over the canister and the supported cooldown reduction and max-health-based heal."
+    },
+    {
+      "id": "DrMundo.P",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "issue": "The champion-type condition is attached to target, which the other condition and destruction effect identify as the canister. The source requires the moving enemy to be a champion, not the destroyed object.",
+      "shortSourceQuote": "Enemy champions moving over the cannister destroy it.",
+      "correction": "Move target_type=champion to subject enemy, matching trigger.subject=enemy. Keep the canister as the target of the destruction effect."
+    },
+    {
+      "id": "DrMundo.Q",
+      "ruleIndex": 0,
+      "severity": "high",
+      "issue": "The damage parameter references target maxHealth even though both source and effect text require target current Health. The frozen STATS enum lacking currentHealth does not authorize substituting maxHealth.",
+      "shortSourceQuote": "dealing 20/22.5/25/27.5/30% current Health magic damage to the first enemy hit",
+      "correction": "Remove stat=maxHealth from this coefficient. Retain target current-health scaling in text with stat/statSubject null or an explicit unknown representation, and add an unsupported_formula gap. Preserve the supplied percentages, first-hit condition, minimum damage, and monster cap."
+    },
+    {
+      "id": "DrMundo.W",
+      "ruleIndex": 2,
+      "severity": "high",
+      "issue": "The storage rule is gated only by time > 0.75, leaving no active-W condition or end bound. The first-phase rule also lacks an active-W condition or a declared timer origin. Outside the W duration these predicates can still store incoming damage.",
+      "shortSourceQuote": "he stores (80% ~ 95%) of damage taken for the first 0.75 seconds and 25% for the remaining duration as gray health",
+      "correction": "In rules[1] and rules[2], require the W charge to be active and define the timer as elapsed time since that activation. Bound the second phase to the remaining charge duration, ending on recast/expiry. Retain text conditions if the frozen schema cannot represent that state exactly."
+    },
+    {
+      "id": "DrMundo.W",
+      "ruleIndex": 3,
+      "severity": "medium",
+      "issue": "Burst damage and both healing branches trigger only on recast. The English summary explicitly supplies duration expiry as another burst trigger; no rule or gap retains it.",
+      "shortSourceQuote": "At the end of the duration or on Recast, Dr. Mundo deals a burst of damage to nearby enemies.",
+      "correction": "Add the expiry trigger for the same burst/heal behavior, using the summary only to supplement the trigger and the English body for damage/heal values. Alternatively retain the expiry behavior in an explicit unresolved representation rather than dropping it."
+    },
+    {
+      "id": "DrMundo.E",
+      "ruleIndex": 0,
+      "severity": "high",
+      "issue": "The passive is encoded as a maxHealth-to-totalAttackDamage stat conversion with replace_input and identical percent refs for input/output ratios. The source grants bonus AD based on max health; it neither replaces nor consumes the health stat.",
+      "shortSourceQuote": "Passive - Dr. Mundo gains bonus Attack Damage, increasing based on his max Health.",
+      "correction": "Represent this as an additive stat_modifier toward bonusAttackDamage, scaled by caster maxHealth. Remove replace_input and the duplicate output ratio. Preserve the unclear 70%-missing-health passive clause in its existing gap."
+    },
+    {
+      "id": "DrMundo.E",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "issue": "A scalar damage_multiplier of 40% represents a fixed multiplier. The source says the additional attack damage is increased by up to 40% depending on missing health, so neither a constant 0.4 multiplier nor a constant 40% increase is supported.",
+      "shortSourceQuote": "increased by up to 40% based on his missing Health.",
+      "correction": "Preserve 40% as the upper bound of the additional increase in text/other or unknown-shaped parameters, with the missing-health dependence and an unsupported_formula gap. Do not invent 140% or intermediate values outside the supplied number references."
+    },
+    {
+      "id": "DrMundo.E",
+      "ruleIndex": 3,
+      "severity": "medium",
+      "issue": "The path-victim condition is attached to target, but that same target is the enemy killed and swatted away in the preceding rule. The actual damage recipients are secondary_targets. This conflates the corpse with the enemies it passes through.",
+      "shortSourceQuote": "If the enemy is killed, Mundo swats them away, dealing (5/15/25/35/45 + (5% bonus Health)) physical damage to enemies they pass through.",
+      "correction": "Retain the primary target being killed by the empowered next attack and swatted away as primary-target context. Attach the path-contact condition to secondary_targets and keep the 5% bonus-health coefficient owned by caster."
+    },
+    {
+      "id": "DrMundo.R",
+      "ruleIndex": 0,
+      "severity": "high",
+      "issue": "The max-health gain parameter scales from caster maxHealth. The source grants max health based on caster missing Health, a different quantity. The gap about whether this is also healing does not justify changing its input stat.",
+      "shortSourceQuote": "gaining 15/20/25% of his missing Health as max Health",
+      "correction": "Keep statTo=maxHealth as the gained stat but remove the parameter stat=maxHealth input. Retain missing-health scaling in text with an unknown/null input and an unsupported_formula gap; do not substitute bonusHealth, currentHealth, or maxHealth."
+    },
+    {
+      "id": "Brand.P",
+      "ruleIndex": 2,
+      "severity": "high",
+      "issue": "Detonation is gated by target.hit_count >= 3 although the source requires three Blaze stacks. Its own gap states that stack count and hit count are distinct, yet the rule still makes that substitution.",
+      "shortSourceQuote": "When a champion or large jungle monster reaches 3 stacks",
+      "correction": "Replace the hit_count guard with a Blaze resource/mark stack threshold using en:body:n5, supplemented by retained text and a gap if necessary. Keep the champion branch and the documented large-monster limitation."
+    },
+    {
+      "id": "Brand.P",
+      "ruleIndex": 2,
+      "severity": "high",
+      "issue": "Explosion max-health parameters use statSubject=target even though the scope_ambiguous gap explicitly says the source cannot establish the health owner. This is an unsupported resolution of the ambiguity.",
+      "shortSourceQuote": "max Health magic damage to surrounding enemies.",
+      "correction": "Set statSubject=unknown for the explosion max-health parameters and retain the ambiguity gap. Do not select either the original victim or surrounding recipients from background knowledge."
+    },
+    {
+      "id": "Brand.P",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "issue": "The two seconds before detonation are attached to the damage effect as duration_seconds, while the effect text does not retain the delay. The source describes a delayed burst, not two seconds of explosion damage.",
+      "shortSourceQuote": "the Blaze will detonate after 2 seconds",
+      "correction": "Represent two seconds as a delay/time condition or retained delayed-detonation gameplay effect, and state the delay in text. Remove it as a damage duration; preserve the four-second burn duration separately in rules[0]."
+    },
+    {
+      "id": "Brand.Q",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "issue": "The damage rule explicitly requires the first enemy hit, but the separately conditional stun rule requires only Ablaze and drops that same first-hit scope.",
+      "shortSourceQuote": "magic damage to the first enemy hit. If the target is Ablaze, they will be Stunned for 1.75 seconds.",
+      "correction": "Add target.hit_order=first to the stun rule alongside the Ablaze predicate, so the stun refers to the same first enemy as the damage rule."
+    },
+    {
+      "id": "Brand.E",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "issue": "Doubled propagation range is typed as movement of nearby_enemies. The source changes the blast spread radius and says nothing about moving those enemies.",
+      "shortSourceQuote": "If the target is Ablaze, the spread range is doubled.",
+      "correction": "Use an other gameplay effect on caster/unknown for the ability range change, or another supported range-modifier representation. Retain the doubled spread and primary-target Ablaze condition in text; do not invent a numerical ref for the spelled-out doubling."
+    },
+    {
+      "id": "Brand.R",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "issue": "The damage effect has scalar count=5 without preserving the can/up-to qualifier in summary or effect text. The source supplies a maximum bounce allowance that can include Brand, not five guaranteed damaging enemy hits.",
+      "shortSourceQuote": "can bounce to Brand or another enemy up to 5 times",
+      "correction": "Retain the maximum-five-bounce allowance and possible self bounces in gameplay text/conditions. Keep damage per enemy hit; do not interpret count=5 as five guaranteed enemy damage applications."
+    },
+    {
+      "id": "Brand.R",
+      "ruleIndex": 1,
+      "severity": "high",
+      "issue": "The 30/45/60% rank sequence is reduced to a min_amount=30% parameter and max_amount=60% parameter. The middle-rank 45% value is dropped, and per-rank strengths are turned into generic bounds.",
+      "shortSourceQuote": "If the target is Ablaze, they are briefly Slowed by 30/45/60%.",
+      "correction": "Use one amount parameter with shape=rank_values and en:body:n5/n6/n7 in order. Preserve the unspecified brief duration as text, without borrowing a duration number."
+    },
+    {
+      "id": "Brand.R",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "issue": "Bounce targeting priority is encoded as ui_information although it is a stated gameplay selection behavior.",
+      "shortSourceQuote": "Bounces prioritize stacking Blaze to max on champions.",
+      "correction": "Retain this as an other gameplay effect describing bounce target priority. Keep the English source priority wording rather than inferring an exact low-stack selection algorithm from the Korean summary."
+    }
+  ],
+  "correctlySupportedIds": [
+    "Chogath.P",
+    "Chogath.Q",
+    "Chogath.W",
+    "Brand.W"
+  ],
+  "correctlySupportedNotes": {
+    "Chogath.P": "Enemy-kill health/mana recovery values are correctly retained as level ranges; no interpolation is invented.",
+    "Chogath.Q": "Knock-up duration, ordinary magic damage/AP coefficient, and slow percentage/duration agree with the source.",
+    "Chogath.W": "Silence durations, rank damage values, and caster AP scaling agree with the source.",
+    "Brand.W": "Ordinary and Ablaze replacement damage are separately scoped, and both AP coefficients/rank sequences are correct."
+  },
+  "reviewScope": "Read-only source semantics review against supplied input sources and the frozen guide/contract. Candidate/code/schema files were not edited. Retained uncertainty or an explicit gap is not by itself an error; reported ambiguity findings identify a contrary concrete assertion.",
+  "notes": [
+    "The documented gap for DrMundo.E passive behavior at 70% missing health and 140% target-type multiplier scope was retained without assuming hidden mechanics.",
+    "The documented Brand.P large-monster branch limitation was not flagged merely because its target subtype cannot be expressed by the enum.",
+    "Chogath.R damage formulas themselves correctly distinguish champions from minions/monsters and use caster bonusHealth, not baseHealth."
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "Shaco.P",
+  "sourceHash": "f898e50cc9ae7e3ac3bcbdef01056753913b31ee990adfba0b7f7eb8242a1221",
+  "beforeCandidateHash": "c2038b98f5fc3e3bf19dec089caefc7ce44343f43352740dfa898e0bf2fa1f05",
+  "candidateHash": "beb7229b1f0256d6764465bf1690bfb98c96c7d33287ccf0b531b1fa860c8112",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "후방 공격 조건에서 기본 공격 물리 추가피해/치명타 가능 및 E 마법 추가피해, 체력30% 미만 대체 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "대상이 등지는 경우 caster 평타 적중.20~35+caster 추가AD20% 물리 추가피해이며 치명타 가능하다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "후방 E 적중 및 대상 체력30% 이상은15~50+caster AP10% 추가 마법 피해다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "후방 E 적중 대상 체력30% 미만은23~75+caster AP15%로 증가한다. 이전 추가피해와 동시에 더하지 않는다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.*.trigger.subject",
+      "issue": "공격/스킬 적중 행위자를 피해 대상으로 기록",
+      "correction": "샤코 caster로 수정",
+      "sourceId": "en:body",
+      "quote": "Shaco's Attacks deal an additional"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

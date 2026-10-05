@@ -1,0 +1,131 @@
+{
+  "id": "Malzahar.P",
+  "sourceHash": "5659b784ba6547cd6d941385b1850c94e005d9491e0a352903d69b97af34b41c",
+  "beforeCandidateHash": "c29286d4b1848c3bde55be818bc36c1b07b64f434685b36b74279611edf0d2ae",
+  "candidateHash": "2b87369724331401aa1d1afa2e7fe97f3ac02146fac86f7927d6dc5ddaa43b2a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "최근피해/CC없을때90%피해감소·방해/이동불가면역,활성중피해또는차단뒤두효과0.25초잔존,30~12초쿨을 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.other eq 최근 피해나 군중 제어를 받지 않음; caster: 받는 피해량을 감소시킵니다.; 수치 amount en:body:n0=90%(백분율) 상수 scalar; flags 없음 | caster: 방해 및 이동 불가 효과에 면역됩니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: damage_taken 사건의 행위자 caster; 조건 caster.activation eq 공허 태세의 피해감소/면역 효과가 활성인 상태; caster: 피해 감소 효과가 잠시 더 지속됩니다.; 수치 duration_seconds en:body:n1=0.25 상수 scalar; flags 없음 | caster: 방해 및 이동 불가 효과 면역이 잠시 더 지속됩니다.; 수치 duration_seconds en:body:n1=0.25 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.other eq 방해 또는 이동 불가 효과를 막음 / caster.activation eq 공허 태세의 피해감소/면역 효과가 활성인 상태; caster: 피해 감소 효과가 잠시 더 지속됩니다.; 수치 duration_seconds en:body:n1=0.25 상수 scalar; flags 없음 | caster: 방해 및 이동 불가 효과 면역이 잠시 더 지속됩니다.; 수치 duration_seconds en:body:n1=0.25 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 효과에 재사용 대기시간이 적용됩니다.; 수치 cooldown_seconds en:body:n3=30,en:body:n4=12 상수 level_range; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "한국어본문활성조건반전의source_conflict 및 기존효과활성 전제 누락 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects. This effect has a (30 ~ 12) second Cooldown."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 277,
+      "verdict": "false_positive",
+      "reason": "rule0은요약활성조건,rule1/2는피해/차단뒤잔존별도보존하므로0.25초경우누락아님."
+    },
+    {
+      "index": 278,
+      "verdict": "false_positive",
+      "reason": "0.25초는피해/차단뒤잔존시간;rule1/2두효과에이미연결되어있어전체기본효과0.25초로제한불가."
+    },
+    {
+      "index": 279,
+      "verdict": "false_positive",
+      "reason": "기존rule2가방해/이동불가차단사건과0.25초잔존을별도로보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문은효과가존재하다피해/차단후0.25초잔존하지만한국어본문은피해/CC후0.25초획득처럼반전됨. 영문본문/양언어요약우선;최근성과재활성화세부시점미명시.",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "재사용 대기시간이 피해를 받은 경우와 효과를 막은 경우 중 언제 시작되는지 본문에서 특정하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

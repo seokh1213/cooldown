@@ -1,0 +1,69 @@
+{
+  "id": "Gwen.P",
+  "sourceHash": "a7cb6eca87cc95525f454102c619f8d95f344701bfeea80d4b5cd455e8b2d908",
+  "beforeCandidateHash": "2bf27a998dbfd41de9c0ef5c6b5b93c9f7499b08687207e97e6b3bcf691b00da",
+  "candidateHash": "1b10cc2e6b8e34057a85c789762ab4f8e1ee6b23f4fd95e542e28be2c0bf9c7b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "기본공격 대상최대HP(1%+자신AP100당0.6%)추가마법,이효과가챔피언에준피해67%자기회복과최대12~40+AP7%를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "본문의MaxHealth는대상최대HP로명시돼있어구조화유효. AP100당0.6%를복합비율로보존하고소유자는자신이다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이효과의챔피언피해만67%자기회복,최대12~40+AP7%.67%는회복출력비율이고피해입력값이아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0.parameters.0.role",
+      "issue": "피해대비회복비율을ratio_input으로분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Gwen's Attacks deal an additional (1% + (0.6% per 100 Ability Power)) Max Health magic damage on hit. Gwen recovers Health equal to 67% of the damage this Ability deals to champions, up to a maximum of ((12 ~ 40) + (7% Ability Power))."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "복합곱수식과레벨범위한계미기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Gwen's Attacks deal an additional (1% + (0.6% per 100 Ability Power)) Max Health magic damage on hit. Gwen recovers Health equal to 67% of the damage this Ability deals to champions, up to a maximum of ((12 ~ 40) + (7% Ability Power))."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 97,
+      "verdict": "false_positive",
+      "reason": "본문에MaxHealth가명시되며스키마에도maxHealth가있다.다른HP통계가없다는이유로정당한targetmaxHealth참조를제거할수없다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "피해는대상최대HP에(1%+AP100당0.6%)를곱한다. 구성요소를AP와최대HP의선형합으로실행하지않는다.회복상한12~40의중간레벨값도미제공이다."
+    }
+  ],
+  "validation": {
+    "id": "Gwen.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

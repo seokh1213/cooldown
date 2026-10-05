@@ -1,0 +1,56 @@
+{
+  "id": "Galio.E",
+  "sourceHash": "f6be201acba9403a8926eba0a58da5bf49301206e7cc66b4b9dde9dfc58355c0",
+  "beforeCandidateHash": "d7929306c36d2f7cd1af4ef933e1f8417ee0c155807477162af8119fcbe13739",
+  "candidateHash": "c857e730768872b39f23c5f94182efa369833a368c0a1cf0189322ae21cf8ebf",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "brief뒤물러난후전방dash,첫champknockup0.75/magic100~240+AP100%,경로의다른적80~192+AP80%,지형충돌stop를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; target.other eq 돌진 중 처음 마주친 적 챔피언. target crowd_control knockup: 처음 적중한 적 챔피언을 공중으로 띄웁니다. [duration_seconds n0=0.75 scalar] / target damage magic: 처음 적중한 적 챔피언에게 마법 피해를 입힙니다. [amount n1=100/n2=135/n3=170/n4=205/n5=240 rank_values; stat_coefficient n6=100% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 최초 적중 챔피언 외 돌진 경로의 다른 적. target damage magic: 돌진 경로에서 처음 적중한 챔피언 외의 다른 적에게 마법 피해를 입힙니다. [amount n7=80/n8=108/n9=136/n10=164/n11=192 rank_values; stat_coefficient n12=80% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 돌진 중 지형 충돌. caster movement: 돌진이 지형에 부딪히면 멈춥니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 잠시 뒤로 물러났다가 전방으로 돌진한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/new",
+      "issue": "dash/backstep자체규칙누락·첫champ순서/other적조건없음·지형조건",
+      "correction": "움직임summary규칙/qualifyingfirsttext,경로다른적 및terrain충돌조건",
+      "sourceId": "en:summary",
+      "quote": "Galio will briefly step back and charge, knocking up the first enemy champion he encounters."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

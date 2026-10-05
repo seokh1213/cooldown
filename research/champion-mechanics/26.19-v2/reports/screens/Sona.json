@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Sona.E",
+      "sourceHash": "206b599bbaf8aa97bbbb0883ba2fd0b41aa6940a3401c368b2e18a8e9a1846f8",
+      "candidateHash": "c7905f29165a34e0ba03e6ff59295c25a12a9f0829fab01b22fafec57f731e25"
+    },
+    {
+      "id": "Sona.Q",
+      "sourceHash": "6b716a38c2877780fa69ab8a7de61b81567d82ad450d8cd730ab7708b33f5d6c",
+      "candidateHash": "5877eb8aeb30cf9930a409ca2bd9311f268eb865d3237ea91e01c46d93c558d0"
+    },
+    {
+      "id": "Sona.R",
+      "sourceHash": "a2b89f5aa8abe2f40f19b0c2d6c98b713e4def1f2661c1f7d0e5cf796be728ea",
+      "candidateHash": "baf4725f5128c8115401174dbb928b0000b81f455b1fb4ea8eaf0efe0d81866e"
+    },
+    {
+      "id": "Sona.P",
+      "sourceHash": "2377124b62c30f4821971c3ffd693d61796d6f8978a4590f82c7d80a47ffdcc6",
+      "candidateHash": "6c4de2ee11ab4b0c680774318de5fdf0114659c1140b0ab567e2b69c5ed80d4e"
+    },
+    {
+      "id": "Sona.W",
+      "sourceHash": "9daae6b49ce51c51a52def3e6f4859b7c24644bcc29f9b506e7aeb4f610ac831",
+      "candidateHash": "f688b5f22d4e02a86b3e5c5ee2f084974be37b9840bb73ff25fd43d610bfacc8"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Sona.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After using 3 basic Abilities, Sona's next Attack deals an additional ((20 ~ 240) + (20% Ability Power)) magic damage and may have an additional effect based on the song Sona last activated.",
+      "issue": "조건이 ‘기본 스킬을 3회 사용한 뒤 파워 코드가 준비됨’으로 되어 있어 3회 사용 후 공격에 추가 피해가 발생한다는 사실을 준비 조건으로만 표현합니다. 이 조건은 해당 공격이 파워 코드 공격이라는 점을 명시하지 않습니다.",
+      "correction": "조건 텍스트에 ‘3회 사용 후 다음 공격’이 파워 코드 공격임을 명시하거나, 준비 조건과 다음 공격의 연결을 규칙 텍스트에 보존하세요."
+    },
+    {
+      "id": "Sona.W",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Sona gains an aura for 3 seconds, granting allied champions (25/45/65/85/105 + (25% Ability Power)) Shield for 1.5 seconds.",
+      "issue": "효과 텍스트는 오라를 얻는 주체와 보호막을 받는 대상을 구분하지 않아, ‘오라가 부여된 아군 챔피언’에게 보호막을 준다는 표현이 원문의 효과 범위를 흐립니다.",
+      "correction": "‘소나가 3초 동안 오라를 얻고, 아군 챔피언에게 1.5초 동안 보호막을 부여합니다’처럼 오라의 주체와 보호막 대상을 구분하세요."
+    }
+  ],
+  "notes": []
+}

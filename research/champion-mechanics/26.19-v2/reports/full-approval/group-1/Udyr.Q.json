@@ -1,0 +1,139 @@
+{
+  "id": "Udyr.Q",
+  "sourceHash": "7d7e687eb121dc3df42faeef2044ffb2c7c6925473e369cecaf1e22dd97448e9",
+  "beforeCandidateHash": "6b4476a13727f7b1eb5ac470ed06994c7f0f4223ca76015941f2cf036a0057c3",
+  "candidateHash": "86b7c39553d87a245162020244f4e35324e30a8e82ea1a7b3705aef625919748",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 9,
+  "checkedGapCount": 2,
+  "summaryCheck": "4초 공속/온힛, 다음 두 공격 최대체력 물리 피해와 사거리, 각성의 대체 강화·번개, 몬스터 상한과 미니언 최저를 모두 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 발톱 태세 동안 공격 속도가 증가한다. [amount n0=20%/n1=32%/n2=44%/n3=56%/n4=68%/n5=80% rank_values; duration_seconds n19=4 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.form eq 발톱 태세; caster.other eq 발톱 태세 시전 후 4초 이내 기본 공격 적중. target damage physical: 기본 공격 적중 시 물리 피해를 입힌다. 피해량에는 고정 피해, 추가 공격력, 추가 체력이 반영된다. [amount n6=6/n7=12/n8=18/n9=24/n10=30/n11=36 rank_values; stat_coefficient n12=20% scalar caster.bonusAttackDamage; stat_coefficient n13=1%/n14=1.2%/n15=1.4%/n16=1.6%/n17=1.8%/n18=2% rank_values caster.bonusHealth]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.form eq 발톱 태세; caster.other eq 이 태세의 다음 두 차례 기본 공격. target damage physical: 이 태세에서 정해진 횟수까지의 다음 공격은 대상 최대 체력에 비례한 추가 물리 피해를 입힌다. [amount n21=3%/n22=4%/n23=5%/n24=6%/n25=7%/n26=8% formula_components target.maxHealth; stat_coefficient n27=3.5% formula_components caster.bonusAttackDamage; ratio_input n28=100 formula_components] / caster attack_modifier: 해당 공격의 사거리가 증가한다. [distance_units n29=50 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 없음. caster stat_modifier: 각성은 기존 랭크별 추가 공격 속도에 범위의 추가 공속을 더한 값으로 강화한다. [amount n30=20%/n31=32%/n32=44%/n33=56%/n34=68%/n35=80% rank_values; other n36=20%/n37=70% level_range] flags=replaces_base"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.activation eq empowered; caster.other eq 각성 발톱 태세의 다음 두 차례 기본 공격. target damage physical: 각성 시 발톱 태세의 최대 체력 비례 피해가 증가한다. 추가 공격력과 추가 체력 계수가 적용된다. [amount n38=3%/n39=4%/n40=5%/n41=6%/n42=7%/n43=8% formula_components target.maxHealth; other n44=2%/n45=4% formula_components; stat_coefficient n46=5% formula_components caster.bonusAttackDamage; ratio_input n47=100 formula_components; stat_coefficient n48=0.1% formula_components caster.bonusHealth; ratio_input n49=100 formula_components] flags=replaces_base"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.form eq empowered; caster.other eq 각성 후 다음 두 차례 기본 공격; target.other eq isolated. target ui_information: 각성 후 다음 두 공격이 각각 번개 여섯 회를 일으킨다. 이 수치는 고립 대상이 받는 여섯 회의 총 마법 피해 비율이며 개별 번개 피해에 다시 추가하지 않는다. 주변 대상이 있으면 번개가 튄다. [count n51=6 scalar; amount n52=9%/n53=18% formula_components target.maxHealth; stat_coefficient n54=3.6% formula_components caster.abilityPower; ratio_input n55=100 formula_components]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 target.target_type eq monster; caster.form eq 발톱 태세. target other: 몬스터 대상 발톱 태세 최대 체력 비례 피해에는 상한이 적용된다. [max_amount n56=15 formula_components; stat_coefficient n57=50% formula_components caster.abilityPower; stat_coefficient n58=100% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.form eq empowered; caster.other eq 각성 기본 공격으로 발생한 번개 한 회가 적중. target damage magic: 번개 한 회는 대상 최대체력에 비례한 마법 피해를 입힌다. [amount n59=1.5%/n60=3% formula_components target.maxHealth; stat_coefficient n61=0.6% formula_components caster.abilityPower; ratio_input n62=100 formula_components]"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 target.target_type eq minion; caster.form eq empowered; caster.other eq 각성 기본 공격으로 발생한 번개 한 회가 적중. target other: 미니언 대상 번개 한 회의 최소 피해량이다. [min_amount n63=40/n64=160 level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "태세 주인과 온힛 발동 오류",
+      "correction": "caster 태세와 적중 조건",
+      "sourceId": "en:body",
+      "quote": "physical damage On-Hit for 4 seconds."
+    },
+    {
+      "path": "rules.2/4/5/6/7",
+      "issue": "공격 횟수·각성 즉시 피해·복합식 선형화·범위 역할·몬스터 상한·미니언 외 번개 누락",
+      "correction": "공격 조건, 각성 대체, 복합식 구성요소, 대상 최대체력 주인, 상한 역할 및 번개/미니언 최저 분리",
+      "sourceId": "en:body",
+      "quote": "Each lightning strike deals ((1.5% ~ 3.0%) + (0.6% per 100 Ability Power)) max Health magic damage Minimum damage to minions: (40 ~ 160))."
+    },
+    {
+      "path": "rules.2.effects.1;rules.5-8;gaps.1",
+      "issue": "사거리 증가가 이동 효과, 번개 총 피해와 개별 피해 중복 실행 및 상하한이 독립 피해로 실행 가능",
+      "correction": "사거리는 공격 수정으로, 여섯 번개 총값은 정보로, 피해 상하한은 조정으로 기록했다. 실제 피해는 개별 번개 적중 때 발생한다.",
+      "sourceId": "en:body",
+      "quote": "Each lightning strike deals ((1.5% ~ 3.0%) + (0.6% per 100 Ability Power)) max Health magic damage Minimum damage to minions: (40 ~ 160))."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 569,
+      "verdict": "repaired",
+      "reason": "태세는 Udyr의 상태다. caster.form 및 공격 적중 조건으로 수정했다."
+    },
+    {
+      "index": 570,
+      "verdict": "repaired",
+      "reason": "next two Attacks를 공격 시도 횟수로 텍스트에 보존했다."
+    },
+    {
+      "index": 571,
+      "verdict": "false_positive",
+      "reason": "각성은 앞 문장에서 다음 두 공격에 적용되는 최대체력 피해를 강화한다. 두 공격 제한은 맞지만 recast 즉시 피해 발동은 오류여서 공격 발동으로 고쳤다."
+    },
+    {
+      "index": 572,
+      "verdict": "false_positive",
+      "reason": "Claw Stance Max Health damage라는 문구가 발톱 태세 피해 범위를 직접 제한하므로 태세 조건은 타당하다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "번개 피해는 고립된 대상에게 총 피해가 적용된다고 적혀 있고, 주변 대상이 있으면 번개가 튄다고 적혀 있으나 대상별 피해 배분 조건은 명시되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "최대체력 비례 피해율의 추가AD/추가체력/AP 100당 가산과 몬스터 상한 합성식은 구성요소로 보존한다. 단순 선형 피해로 실행하지 않으며 범위 중간값을 추정하지 않는다. 번개 총 피해값은 개별 번개 여섯 회의 합을 설명하는 정보이며 개별 피해와 중복 합산하지 않는다. 몬스터 상한/미니언 하한은 피해 조정으로 별도 피해를 가하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

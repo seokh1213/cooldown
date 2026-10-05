@@ -1,0 +1,67 @@
+{
+  "id": "Sett.Q",
+  "sourceHash": "2f8eb7224b9d047e38374be5384bf4629bd0318796c5602cd79e99b2bbe8c392",
+  "beforeCandidateHash": "5673767e5f89fdd6b6e8961185cba3caf4a2b156a1b9143057124906691b5734",
+  "candidateHash": "b46a23fd8db45dabcc625601f5f2c202f4a4451fa3aa3c301412ae01b113c90d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "Q시전후1.5초챔프향해MS30%,다음두공격leftthenright각추가10~50+(1%+총AD100당rank1~3%)targetmaxHP물리,몬스터주먹당400cap를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 적 챔피언을 향해 이동. caster stat_modifier: 적 챔피언을 향해 이동하면 이동 속도가 증가한다. [amount n0=30% scalar; duration_seconds n1=1.5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 이 Q 사용 후 다음 두 번의 기본 공격. target damage physical: 이 Q의 다음 두 공격은 각각 왼쪽과 오른쪽 주먹으로 추가 물리 피해를 입힌다. 최대체력 비례 피해율은1%에 공격력100당 랭크별1~3%를 더한다. [amount n3=10/n4=20/n5=30/n6=40/n7=50 formula_components; stat_coefficient n8=1% formula_components target.maxHealth; stat_coefficient n9=1%/n10=1.5%/n11=2%/n12=2.5%/n13=3% formula_components caster.totalAttackDamage; ratio_input n14=100 formula_components caster.totalAttackDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 이 Q 사용 후 다음 두 번의 기본 공격; target.target_type eq monster. target other: 몬스터에게 이 Q의 주먹 피해는 한 번당 최대400으로 제한된다. [max_amount n15=400 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.0/1/new",
+      "issue": "각공격두주먹으로오해·무시전MS·AD스탯주인·400범위",
+      "correction": "다음두공격각left/right,Q사용시간,복합식casterAD/targetHP,monster분기",
+      "sourceId": "en:body",
+      "quote": "The Attacks are always a left and right punch. Deals a max of 400 damage to monsters per punch."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 448,
+      "verdict": "false_positive",
+      "reason": "summary는1.5초를이미포함하고증가량30%는rulesparameters에있다. summary가모든수치를반복해야하는요건은없다."
+    },
+    {
+      "index": 449,
+      "verdict": "repaired",
+      "reason": "400을일반피해에붙이면모든targetcap으로오해되어몬스터only별도cap로분리했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "최대 체력 피해율은 기본 1%에 공격력 100당 증가율 1/1.5/2/2.5/3%를 더하는 식이다. 공격력 100당 증가분의 결합 계산은 수치 역할만으로 완전히 표현되지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

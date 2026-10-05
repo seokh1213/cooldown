@@ -1,0 +1,66 @@
+{
+  "id": "Orianna.E",
+  "sourceHash": "77ed6dad6ff7d5a8a54f791efa54bd450d62aed0d9c65c1ee7b3f3b77542cfb6",
+  "beforeCandidateHash": "cc4a88f2dfb6bea829bb6dbf64c5d9ca822bac2b99d8591d805557e1928ae1fb",
+  "candidateHash": "548f09e82212f99c06614605158bc3e83c27c6685be575efe2a071aae7f9691e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "구체붙은아군챔피언 방어/MR각6~30,아군챔피언부착/55~195+45%AP보호막2.5초, 이동경로적60~180+30%AP마법 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 ally; 조건 ally.target_type eq 아군 챔피언 / ally.activation eq 현재 구체가 붙어 있음; ally: 구체가 붙어 있는 아군 챔피언의 방어력을 높인다.; 수치 amount en:body:n0=6,en:body:n1=12,en:body:n2=18,en:body:n3=24,en:body:n4=30 상수 rank_values; flags 없음 | ally: 구체가 붙어 있는 아군 챔피언의 마법 저항력을 높인다.; 수치 amount en:body:n5=6,en:body:n6=12,en:body:n7=18,en:body:n8=24,en:body:n9=30 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 ally.target_type eq 선택한 아군 챔피언; ally: 구체가 아군 챔피언에게 보호막을 부여한다.; 수치 amount en:body:n10=55,en:body:n11=90,en:body:n12=125,en:body:n13=160,en:body:n14=195 상수 rank_values / stat_coefficient en:body:n15=45%(백분율) caster.abilityPower scalar / duration_seconds en:body:n16=2.5 상수 scalar; flags 없음 | summon: 구체가 선택한 아군 챔피언에게 이동해 붙어 따라다닙니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 enemy.distance eq 이 구체가 아군으로 이동하는 경로에 적중한 적; enemy: 구체가 이동 중 마주치는 적에게 마법 피해를 입힌다. [magic]; 수치 amount en:body:n17=60,en:body:n18=90,en:body:n19=120,en:body:n20=150,en:body:n21=180 상수 rank_values / stat_coefficient en:body:n22=30%(백분율) caster.abilityPower scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "고정방어/MR를피참조스탯계수로표현한오류·구체부착효과누락·대상범위 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: The Ball adds 6/12/18/24/30 Armor and 6/12/18/24/30 Magic Resist to the allied champion it is attached to. Active: Orianna commands her Ball to attach to an allied champion, granting them (55/90/125/160/195 + (45% Ability Power)) Shield for 2.5 seconds. Enemies the Ball passes through take (60/90/120/150/180 + (30% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

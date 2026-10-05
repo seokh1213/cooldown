@@ -1,0 +1,69 @@
+{
+  "id": "Morgana.E",
+  "sourceHash": "9a80768410f07205c68e3f8964e244f400ffd63b1fb2370edf245064efc5ac0c",
+  "beforeCandidateHash": "a7e16de4301eab005dd394e25f42fbc847dfe8c8d75cf225c5517a799a7d6ce5",
+  "candidateHash": "868483e1d317fd4200fe91cdfef78a42a90a7b4785b7ee6f25f2f38e7396c526",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "아군챔피언100~320+70%AP마법전용보호막5초,해당보호막깨지기전방해/이동불가면역을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; ally: 아군 챔피언에게 마법 피해를 흡수하는 보호막을 부여합니다.; 수치 amount en:body:n0=100,en:body:n1=155,en:body:n2=210,en:body:n3=265,en:body:n4=320 상수 rank_values / stat_coefficient en:body:n5=70%(백분율) caster.abilityPower scalar / duration_seconds en:body:n6=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 ally.target_type eq 아군챔피언 / ally.shield_ready eq 이 마법보호막이 아직깨지지않고유지됨; ally: 보호막이 유지되는 동안 대상에게 방해 및 이동 불가 효과가 적용되지 않습니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "CC면역을공격disrupt로분류하고임의준비보호막을전제한오류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Morgana grants an ally champion (100/155/210/265/320 + (70% Ability Power)) Magic Shield for 5 seconds. The shield prevents Disabling and Immobilizing effects until it breaks."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 방해 및 이동 불가 효과라고만 하며, 구체적인 군중 제어 종류를 열거하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "Naafiri.W",
+  "sourceHash": "72f14f16db885da29ac6a3c56157a7793c774d5833426101d013e0684bfbc1f2",
+  "beforeCandidateHash": "2ee8ebe569e4e67c357695130545425079f2aebf062868f3857ff598c588ee96",
+  "candidateHash": "77352fc2dda2ac967a7cb2b7f9878ca598ca8e42e984ba42cb20b149ae1789df",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "1초대상지정불가,추가무리2,5초casterAD20%/이속20~30%,무리대상지정불가및소환자에게복귀를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 나피리가 대상으로 지정할 수 없는 상태가 된다. [duration_seconds n0=1 scalar] / summon summon: 나피리가 추가 무리를 소환한다. [count n1=2 scalar] / caster stat_modifier: 나피리 자신의 공격력20%만큼5초간공격력이증가한다. [stat_coefficient n2=20% scalar caster.totalAttackDamage; duration_seconds n8=5 scalar] / caster stat_modifier: 나피리의 이동 속도가 증가한다. [amount n3=20%/n4=22.5%/n5=25%/n6=27.5%/n7=30% rank_values caster.moveSpeed; duration_seconds n8=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. summon other: 무리가 대상으로 지정할 수 없는 상태가 된다. [] / summon movement: 무리가 나피리에게 돌아간다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/gaps",
+      "issue": "대상지정불가를시야로·AD기준불명gap·이속대상스탯누락",
+      "correction": "other대상지정불가, totalAD20%caster/statTo 및moveSpeed,불필요gap제거",
+      "sourceId": "en:body",
+      "quote": "gaining (20% Attack Damage) Attack Damage and 20/22.5/25/27.5/30% Move Speed for 5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 322,
+      "verdict": "repaired",
+      "reason": "원문은무적이아닌대상지정불가다. 시야분류로오해되지않게other로정리했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

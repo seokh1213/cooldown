@@ -1,0 +1,218 @@
+{
+  "id": "Vi.R",
+  "sourceHash": "b9f87710e1938f861a04b10ab78d82c635877a2763e6bcf26d7978a2d6bbd8b3",
+  "beforeCandidateHash": "a7ff4b0df099ed94d366c5210f4788681f6d647e65e16ebd767f08c8160ad1e0",
+  "candidateHash": "c9ca575b75c9f88643c4705b9ec02e847c6912e5a6f617995c80d2e8b412ec71",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "적 챔피언 선택·위치 드러냄·멈출 수 없는 돌진, 도달1.3초knockup과 물리피해, 경로충돌 다른 적의밀쳐냄/0.75초기절/수치미공급 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "선택 대상은 enemychampion이다. visibility reveal 대상과 caster의 unstoppable대상돌진이 구별된다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "추격 대상으로 선택한 적 챔피언"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "선택한 챔피언에게 도달하면 knockup1.3초 및150/250/350+casterbonusAD90%물리 피해. isolated는 원문에 없고 도달 조건으로 교체했다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "선택한 적 챔피언에게 바이의 돌진이 도달함"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "1.3",
+              "value": 1.3,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "350",
+              "value": 350,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "90%",
+              "value": 90,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "돌진 경로에서 충돌한 다른 적 전체에 옆으로knockback과stun0.75초. champion만 제한하지 않는다. 충돌 피해 발생 자체는 보존하고 수치/피해유형 미공급을 명시해 다른 적에게 주 대상식을 추측복사하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "secondary_targets",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "바이가 추격 돌진 중 충돌한 선택 대상 이외의 다른 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 2,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "0.75",
+              "value": 0.75,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions;rules.2;gaps",
+      "issue": "고립 조건·다른 적champion한정·타입 미공급 충돌 피해의physical단정",
+      "correction": "도달과 실제 경로충돌 조건으로 정정하고 타 충돌피해의 타입/수치 미공급을 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Any other enemies Vi collides with are dealt damage, knocked aside, and Stunned for 0.75 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 610,
+      "verdict": "repaired",
+      "reason": "Uponreachingthem은 대상 도달이며 isolated고립 조건은 원문에 없다. 실제 도달 조건으로 교체했다."
+    },
+    {
+      "index": 611,
+      "verdict": "repaired",
+      "reason": "Anyotherenemies는 챔피언 외 다른 적도 포함한다. champion조건을 제거하고 실제 경로충돌 다른 적 조건으로 교체했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "선택한 챔피언의 물리 피해는 명시되지만 다른 충돌 적의 피해 수치와 유형은 명시되지 않습니다. 다른 적도 피해를 입는 주장은 other로 보존하며 주 대상 피해식이나 physical을 복사하지 않습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

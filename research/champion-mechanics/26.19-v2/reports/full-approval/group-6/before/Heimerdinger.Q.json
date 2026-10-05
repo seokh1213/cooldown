@@ -1,0 +1,300 @@
+{
+  "summary": "근처 적을 공격하는 포탑을 설치합니다. 포탑은 충전 후 강화 공격을 하며, 멀어지면 작동을 멈춥니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "근처 적을 공격하는 포탑을 설치합니다. 동시에 활성화할 수 있는 포탑 수에는 제한이 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Heimerdinger constructs a Turret that attacks nearby enemies. Heimerdinger can have 3 turrets active at once."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "summon"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "summon",
+          "text": "포탑은 천천히 충전되며, 최대 충전 시 더 강력한 공격을 발사합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Turrets slowly build up charge. At max charge, they fire a stronger attack."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "summon",
+          "text": "하이머딩거가 너무 멀리 떨어지면 포탑은 일정 시간 후 작동을 멈춥니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Heimerdinger gets too far away, his Turrets will deactivate after 8 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "이 스킬은 충전 횟수를 보유합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability has 3 charges."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "summon"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "summon",
+          "text": "포탑은 최근 하이머딩거가 피해를 입힌 적과 하이머딩거를 공격하는 적을 우선 공격합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Turrets prioritize attacking enemies Heimerdinger has recently damaged and enemies attacking Heimerdinger."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "summon"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "포탑의 일반 사격은 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(7/11/15/19/23 + (35% Ability Power)) magic damage per regular shot"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Turret Stats: ((130 ~ 640) + ((5% ~ 45%) Ability Power)) Health (7/11/15/19/23 + (35% Ability Power)) magic damage per regular shot (40/60/80/100/120 + (55% Ability Power)) magic damage per charged shot"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "완전히 충전된 사격은 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(40/60/80/100/120 + (55% Ability Power)) magic damage per charged shot"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Turret Stats: ((130 ~ 640) + ((5% ~ 45%) Ability Power)) Health (7/11/15/19/23 + (35% Ability Power)) magic damage per regular shot (40/60/80/100/120 + (55% Ability Power)) magic damage per charged shot"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "포탑 체력의 레벨 범위 및 주문력 계수 원문 수식은 제공되었으나, level_range와 복합 계수의 정확한 표현을 확정하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Turret Stats: ((130 ~ 640) + ((5% ~ 45%) Ability Power)) Health"
+        }
+      ]
+    }
+  ]
+}

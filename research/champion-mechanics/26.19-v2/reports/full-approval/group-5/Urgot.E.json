@@ -1,0 +1,321 @@
+{
+  "id": "Urgot.E",
+  "sourceHash": "526941516c709e71f381dd91be2391e3a30a8eb79851483c9b6d786af8b35766",
+  "beforeCandidateHash": "7305af60a6dcf51b6e03630a37046deaf6d31a7466823a2687eb44906e1bb59d",
+  "candidateHash": "29834e47d6e3d2b0e4475e75681518e3acdf24aba82c3bb30a4ed5e046cfa169",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "방향 돌진·보호막·첫 챔피언 기절과 뒤로 던지기·모든 충돌 적 피해·지형 불가를 확인하고 요약의 멈춤/비챔피언 밀어냄도 복원했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "55/75/95/115/135+135%시전자 bonusAD+13.5%bonusHP 보호막4초이며 돌진 길이에 한정되지 않는다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "55",
+              "value": 55,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "95",
+              "value": 95,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "115",
+              "value": 115,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "135%",
+              "value": 135,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "bonusHealth",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "13.5%",
+              "value": 13.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:summary"
+      ],
+      "note": "첫 챔피언만1.5초 기절/뒤로 던지기. 요약의 돌진 중단도 같은 충돌에 연결했다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "1.5",
+              "value": 1.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "모든 충돌 적에게90/120/150/180/210+100%bonusAD 물리 피해.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "우르곳과 충돌"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11",
+            "en:body:n12",
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "180",
+              "value": 180,
+              "percent": false
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "210",
+              "value": 210,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "전방 돌진과 지형 통과 불가 확인.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "ko:summary"
+      ],
+      "note": "한국어 요약의 비챔피언 밀어냄을 충돌 조건으로 복원했다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "돌진과 충돌한 비챔피언 적"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules",
+      "issue": "효과 문구가 보호막을 돌진 중으로 제한하고 요약의 중단·비챔피언 밀어냄이 빠졌다.",
+      "correction": "4초 보호막, 전방돌진, 첫챔피언 중단·비챔피언 밀어냄 복원.",
+      "sourceId": "en:body",
+      "quote": "Urgot charges forward, gaining (55/75/95/115/135 + (135% bonus Attack Damage) + (13.5% bonus Health)) Shield for 4 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 584,
+      "verdict": "repaired",
+      "reason": "duration_seconds4는 이미 정확했으나 텍스트가 돌진 중으로 잘못 제한하므로4초 보호막으로 수정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

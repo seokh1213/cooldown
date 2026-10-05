@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Thresh.E",
+      "sourceHash": "11bee47adac93ca09b03c9ee9341a0df826870b8896cc826cdc009801cff6470",
+      "candidateHash": "683b0400838e35d74cf0e2a61d25cef30d071a14d96cb37092e91ef2614ee11a"
+    },
+    {
+      "id": "Thresh.P",
+      "sourceHash": "7ee7551734dd82902f1a7d00fe3b9888be10ecf44acd6fbad65636791b5ae667",
+      "candidateHash": "d836478c083ba8b669853c225bb1fe2f18518fe226cfb8eb6da51faa96ffff2f"
+    },
+    {
+      "id": "Thresh.Q",
+      "sourceHash": "06e2ed8b662fe55ae9ac1a6d156bc9f8d969d3c71990cf13eedec8337ad90136",
+      "candidateHash": "c741e0c06270d38a7c3d92def828e9c5dfd87a3b952f2ea4580cd612649e6c67"
+    },
+    {
+      "id": "Thresh.W",
+      "sourceHash": "38c355e8262c2f7a7cc2df365d6b6301a2d7718932ef6bb37eda1938e7cb5734",
+      "candidateHash": "9b8b2c7f18f0df881d1808f1ac0034e240f52e3ef96ccdcb881dd99dea55fd05"
+    },
+    {
+      "id": "Thresh.R",
+      "sourceHash": "73192835942164cf531d293688cd2f5e7e78aac6a007d9e2a9a864c409a3f506",
+      "candidateHash": "ab719539ed985d1c161a22f18ffe26c1a3756c970956641cf2c6fb601227475b"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Thresh.R",
+      "path": "rules.0.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Walls break after one collision, and after one is broken, the rest deal no damage and Slow for half duration.",
+      "issue": "조건이 ‘아직 무너지지 않은 장벽과 충돌’이라고 특정하지만, 원문은 최초 충돌 뒤 장벽이 무너진다고 할 뿐 충돌 전에 무너지지 않은 장벽만 효과를 발동한다고 명시하지 않습니다. 설명 텍스트에도 없는 선행 조건을 추가했습니다.",
+      "correction": "조건을 제거하거나, 원문에 명시된 충돌 및 이후 장벽 파괴 상태만 텍스트로 보존하세요."
+    },
+    {
+      "id": "Thresh.R",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "after one is broken, the rest deal no damage and Slow for half duration.",
+      "issue": "조건이 ‘나머지 장벽과 충돌’을 요구하지만, 원문은 남은 장벽의 효과를 설명할 뿐 적 챔피언이 그 장벽과 충돌해야 둔화된다고 명시하지 않습니다.",
+      "correction": "충돌 조건을 제거하고, 하나가 무너진 뒤 나머지 장벽은 피해 없이 절반 지속시간 둔화를 적용한다고 텍스트로 보존하세요."
+    },
+    {
+      "id": "Thresh.R",
+      "path": "rules.1.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Slowing champions by 99% for 2 seconds",
+      "issue": "후속 장벽의 둔화 지속시간이 절반이라고 원문이 명시했는데, 이 효과에는 지속시간 값이 없습니다. 해당 값을 표현할 수 없더라도 효과가 절반 지속시간이라는 점은 텍스트에 있으므로 구조화 결과에서 누락됐습니다.",
+      "correction": "정확한 초 단위 값은 추가하지 말고, 효과 텍스트에 ‘둔화 지속시간은 절반’이라고 명시하세요."
+    }
+  ],
+  "notes": []
+}

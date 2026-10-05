@@ -1,0 +1,104 @@
+{
+  "id": "Fiora.W",
+  "sourceHash": "c7b42b711a5a5aea04d6dc5e7f20a2b4884b73943a628d9174431fb2e51f4257",
+  "beforeCandidateHash": "4dd669a5f5cc123e38845f416a80052d41371384e57ad9e469a5b0d01e7e6e51",
+  "candidateHash": "62492dcd365b332846bb14e4f2898424ad040afa196faa5310fab7866609a48a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "기절의첫챔피언제한을앞찌르기문장까지인용해재검증했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 받는 모든 피해, 비활성화 및 부정적 효과를 막아낸다. / duration_seconds=0.75 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order eq first → target: 찌르기가 처음 적중한 챔피언에게 마법 피해를 입힌다. [magic] / amount=110/150/190/230/270 [rank_values]; stat_coefficient=100% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order eq first; caster other absent 피오라가 이 능력으로 이동 불가 효과를 막아냄 → target: 처음맞은챔피언의이동속도를2초동안50%둔화시킨다. [slow] / amount=50% [formula_components]; duration_seconds=2 [scalar] | target: 같은챔피언의공격속도를2초동안25%감소시킨다. [cripple] / amount=25% [formula_components]; duration_seconds=2 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order eq first; caster other present 피오라가 이 능력으로 이동 불가 효과를 막아냄 → target: 이동 불가 효과를 막아냈다면 둔화 대신 기절시킨다. [stun]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3.conditions",
+      "issue": "기절규칙에실제이동불가효과방어및첫챔피언조건누락",
+      "correction": "이동불가방어present/첫챔피언조건",
+      "sourceId": "en:body",
+      "quote": "If Fiora parries an Immobilizing effect, the stabbed enemy is Stunned rather than Slowed."
+    },
+    {
+      "path": "rules.2.effects.0",
+      "issue": "MS50%/AS25%모두slowCC로혼합",
+      "correction": "slow50%와cripple25%분리",
+      "sourceId": "en:body",
+      "quote": "Slows Move Speed by 50% and Attack Speed by 25% for 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 61,
+      "verdict": "repaired",
+      "reason": "현재기절규칙은방어조건자체가없었다.이동불가효과를막아낸present조건과첫적중챔피언조건을추가했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "입력 프레임의 조건 필드에는 피오라가 이 능력으로 이동 불가 효과를 막아냈는지 나타내는 전용 조건값이 없어 텍스트 조건으로 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "둔화는2초라고명시하지만대체기절의별도지속수치는공급본문에없어추측하지않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

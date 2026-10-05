@@ -1,0 +1,49 @@
+{
+  "id": "Naafiri.E",
+  "sourceHash": "2e8af42addee4960e52dfd4570acf5b2a5b16333a9376916856ff4c0adb05d30",
+  "beforeCandidateHash": "b89ff69cff7333e35a43b6ab8b4d6863c099a2440429bc999409321c0fc7dc76",
+  "candidateHash": "b98499f657d4b07a026fdb7f4fa0b4044d5e4bd4d91f6e6761bfe083544e265c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "전방돌진물리15~55+bonusAD40%,그후폭발60~160+bonusAD80%,무리대상지정불가/복귀/완전회복을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 나피리가전방으로돌진한다. [] / target damage physical: 나피리가 전방으로 돌진하며 적에게 물리 피해를 입힌다. [amount n0=15/n1=25/n2=35/n3=45/n4=55 rank_values; stat_coefficient n5=40% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 전방 돌진 이후 칼날 폭발. target damage physical: 나피리가 칼날 폭발을 일으켜 적에게 물리 피해를 입힌다. [amount n6=60/n7=85/n8=110/n9=135/n10=160 rank_values; stat_coefficient n11=80% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. summon other: 무리가대상으로지정될수없는상태가된다. [] / summon movement: 무리가나피리에게돌아온다. [] / summon heal: 돌아온무리는체력을완전히회복한다. [other n12=100% formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2",
+      "issue": "이동/회복이damage/visibility/movement로혼합됨·폭발순서",
+      "correction": "dashmovement,then폭발조건,대상지정불가other/복귀movement/완전heal효과",
+      "sourceId": "en:body",
+      "quote": "Packmates become Untargetable and are recalled to Naafiri restoring 100% Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

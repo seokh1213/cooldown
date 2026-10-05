@@ -1,0 +1,84 @@
+{
+  "id": "Nocturne.P",
+  "sourceHash": "2fd58699cf6c7a9cd89cdcc3a43a1a2d6e24fab004b6c6f0795a1fa98f3a0675",
+  "beforeCandidateHash": "4e793f5136799aaa531abb1d2a651f4f5e05eec87c1dfc080d3187b5b35583b3",
+  "candidateHash": "dfb14b8b3c6a51cdd59bc94fc908807d5dac1922e016082e94bc96168f5c27ab",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "준비된다음평타주변120%AD물리/적중대상당13~32+30%AP회복·12초쿨,평타1초감소및챔피언/정글대신3초감소 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.spell_ready eq ready; nearby_enemies: 주변 모든 적에게 공격력의 일정 비율에 해당하는 추가 물리 피해를 입힙니다. [physical]; 수치 damage_multiplier en:body:n1=120%(백분율) caster.totalAttackDamage formula_components; flags per_target | caster: 주변 적중 대상 하나당 녹턴을 회복시킵니다.; 수치 min_amount en:body:n2=13 상수 level_range / max_amount en:body:n3=32 상수 level_range / stat_coefficient en:body:n4=30%(백분율) caster.abilityPower formula_components; flags per_target | caster: 이효과의기본재사용대기시간은12초입니다.; 수치 cooldown_seconds en:body:n0=12 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이 기본 지속 효과의 재사용 대기시간을 줄입니다.; 수치 cooldown_seconds en:body:n5=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 적 챔피언을 공격하면 이 기본 지속 효과의 재사용 대기시간 감소량이 증가합니다.; 수치 cooldown_seconds en:body:n6=3 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type eq monster / target.other eq 정글 몬스터; caster: 정글 몬스터를 공격하면 이 기본 지속 효과의 재사용 대기시간 감소량이 증가합니다.; 수치 cooldown_seconds en:body:n6=3 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "쿨12초누락·감소주체/단위·3초대체·정글범위조건 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Every 12 seconds, Nocturne's next Attack strikes all nearby enemies for (120% Attack Damage) physical damage and restores ((13 ~ 32) + (30% Ability Power)) Health per target hit. Nocturne's Attacks reduce this Ability's Cooldown by 1 second, increased to 3 against champions and jungle monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 351,
+      "verdict": "repaired",
+      "reason": "3초쿨감규칙에replaces_base표시해1+3중복방지."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "공격력의 종류가 원문에서 base, bonus, total 중 어느 범위인지 특정되지 않아 totalAttackDamage로의 매핑은 잠정적이다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

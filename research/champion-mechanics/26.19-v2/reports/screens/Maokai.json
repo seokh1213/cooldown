@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Maokai.E",
+      "sourceHash": "91e137de2200c1e7199d4fb14efee1f6d9aa2befb93a1e5dbdcbef51f0baa625",
+      "candidateHash": "a927ba1803b9b7306f500f58ffb3ac9c6a339d7be92926b928e5fae5075370f0"
+    },
+    {
+      "id": "Maokai.P",
+      "sourceHash": "c8b3f5f35ca0af2fe1a09447f46040b5622869e59d9aef914cb18cde5b12dfe8",
+      "candidateHash": "f93e264c26f0e78232a0c76cb582822299527737bb164bf01986555e630ecd64"
+    },
+    {
+      "id": "Maokai.Q",
+      "sourceHash": "9c2674e05dd233371f935c02105d80ed68bceb53ae18d52705bc9325e6764270",
+      "candidateHash": "49200dc5f7d86ce5b9e163f2901202ad218539547f3351757d5f6128590c2fb6"
+    },
+    {
+      "id": "Maokai.R",
+      "sourceHash": "5709996f111d4a190906ffc9b015617fc4505c5dd7fe2eaba5ad84d3b6baeb72",
+      "candidateHash": "48d2e26edd5723d524cc4dcc2638464622643078dadede79ed0e36560fbcd10c"
+    },
+    {
+      "id": "Maokai.W",
+      "sourceHash": "34030d6fa16dd916ed8083d05ecb5ccf3f4eb1141ccf852b2cf69f8b1fbf5e3b",
+      "candidateHash": "2775dcc5dada0e4c9d84e35afde10897523e11c8b7aa974a6a1c6afd979e24c1"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Maokai.E",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "if the sapling hits an enemy champion or epic monster.",
+      "issue": "조건에 `target_type=monster`와 별도로 `other=에픽 몬스터`가 함께 걸려 있어 에픽 몬스터를 맞혀도 두 조건을 동시에 만족해야 하는 것처럼 표현됩니다. 설명 문구는 챔피언 또는 에픽 몬스터 중 하나를 요구합니다.",
+      "correction": "챔피언 또는 에픽 몬스터를 대상으로 하는 OR 조건으로 표현합니다."
+    },
+    {
+      "id": "Maokai.P",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "((4% ~ 12.8%) Health) Health.",
+      "issue": "회복량의 비율이 참조하는 체력 스탯이 구조화되지 않았고 수치도 불확실 범위로 남아 있습니다. `Health` 기준을 보존해야 합니다.",
+      "correction": "회복량의 스탯 기준을 체력으로 연결하거나, 기준이 불명확하면 텍스트와 gap으로 보존합니다."
+    },
+    {
+      "id": "Maokai.P",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Being hit by large or epic monster's Attacks or Abilities reduces the Cooldown by 1.5 second.",
+      "issue": "조건이 `대형 또는 에픽 몬스터`라는 하나의 설명을 요구하지만, 원문은 대형 몬스터 또는 에픽 몬스터 중 하나입니다. 두 유형을 동시에 충족해야 하는 조건처럼 읽힙니다.",
+      "correction": "대형 몬스터 또는 에픽 몬스터를 대상으로 하는 OR 조건으로 표현합니다."
+    },
+    {
+      "id": "Maokai.Q",
+      "path": "rules.0.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "plus 2/2.5/3/3.5/4% max Health magic damage",
+      "issue": "최대 체력 비례 피해의 마지막 단계가 4%인데 수치가 `4`로 저장되고 percent 표시 여부에 의존합니다. 다른 단계와 동일하게 비율 값으로 표현해야 합니다.",
+      "correction": "마지막 값도 4%로 보존해 다섯 단계 모두 최대 체력 비율 피해임을 명확히 합니다."
+    }
+  ],
+  "notes": []
+}

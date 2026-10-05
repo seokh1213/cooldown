@@ -1,0 +1,75 @@
+{
+  "id": "Jinx.R",
+  "sourceHash": "a90b107d8e0130a8e3179dd6127d1ed877486fe24b67efd9bd73fa2d1eb48d30",
+  "beforeCandidateHash": "d5b9705883e34770677731448eedae409ba60740b8895395123d6eb513771501",
+  "candidateHash": "c8a9e79eb33083e968570ebd5be034ea2c4de0464fd7fa213f0f139c00b761f7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 3,
+  "summaryCheck": "최초챔프충돌폭발/비행첫1초기본피해20~50+AD12%→200~500+AD120%,각피해대상missingHP25~35%/주변80%/monster missingHP파트1200cap를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; target.other eq 로켓에 처음 맞은 적 챔피언. target damage physical: 최초 적 챔피언 충돌로 폭발하여, 첫1초의 비행시간에 따른 기본피해 범위와 맞은 대상 자신의 잃은 체력25/30/35%를 합한 물리 피해를 입힌다. [min_amount n0=20/n1=35/n2=50 formula_components; stat_coefficient n3=12% formula_components caster.bonusAttackDamage; max_amount n4=200/n5=350/n6=500 formula_components; stat_coefficient n7=120% formula_components caster.bonusAttackDamage; other n8=25%/n9=30%/n10=35% formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 로켓이 처음 적 챔피언에 충돌해 폭발; secondary_targets.other eq 폭발 주변 적. secondary_targets damage physical: 주변 적은 같은 로켓 피해 구성의80%를 받으며, 잃은 체력 부분은 각각 맞은 적 자신의 잃은 체력을 기준으로 한다. [min_amount n0=20/n1=35/n2=50 formula_components; stat_coefficient n3=12% formula_components caster.bonusAttackDamage; max_amount n4=200/n5=350/n6=500 formula_components; stat_coefficient n7=120% formula_components caster.bonusAttackDamage; other n8=25%/n9=30%/n10=35% formula_components; damage_multiplier n11=80% formula_components] flags=per_target"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq monster. target other: 몬스터를 상대로 한 잃은 체력 비례 피해에는 상한이 적용됩니다. [max_amount n12=1200 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/gaps",
+      "issue": "bonus없는척하는잘못gap·120%AD주인누락·복합식평탄화·주변missingHP주인/충돌조건·상한범위",
+      "correction": "bonusADcaster,공식구성요소,주변각자missingHP80% 및최초충돌,상한을other파트수정",
+      "sourceId": "en:body",
+      "quote": "Missing Health damage cannot exceed 1200 against Monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 147,
+      "verdict": "false_positive",
+      "reason": "현재sourceNumbers는25/30/35모두percent=true다. 숫자표에서누락되었다는지적은현후보에해당없다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "원문은 기본 피해의 최소·최대값, 잃은 체력 비례 피해, 비행 시간에 따른 증가를 제시하지만 이 요소들을 결합하는 정확한 계산식은 설명하지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "missingHealth는각피해대상의잃은체력을뜻하나스키마에는missingHealth가없어원문과구성요소로보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "몬스터 대상 잃은 체력 피해 상한 문구가 적 챔피언 충돌 조건과 어떤 관계인지 원문에서 명확히 설명되지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

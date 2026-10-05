@@ -1,0 +1,261 @@
+{
+  "summary": "주변 아군 챔피언에게 이동 속도와 보호막을 부여하고, 세라핀은 점차 감소하는 이동 속도를 얻습니다. 세라핀이 이미 보호막을 보유한 상태에서 시전하면 지연 후 아군을 회복시키며, 두 번 시전해도 회복은 한 번만 적용됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "주변 아군 챔피언의 이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Seraphine spurs her nearby allied champions in song, granting them (8% + (0.8% per 100 Ability Power)) Move Speed, herself (20% + (2% per 100 Ability Power)) decaying Move Speed and both (60/80/100/120/140 + (20% Ability Power)) Shield for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "세라핀의 이동 속도가 점차 감소하는 방식으로 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Seraphine spurs her nearby allied champions in song, granting them (8% + (0.8% per 100 Ability Power)) Move Speed, herself (20% + (2% per 100 Ability Power)) decaying Move Speed and both (60/80/100/120/140 + (20% Ability Power)) Shield for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "세라핀과 주변 아군 챔피언에게 보호막을 부여합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and both (60/80/100/120/140 + (20% Ability Power)) Shield for 2.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Seraphine spurs her nearby allied champions in song, granting them (8% + (0.8% per 100 Ability Power)) Move Speed, herself (20% + (2% per 100 Ability Power)) decaying Move Speed and both (60/80/100/120/140 + (20% Ability Power)) Shield for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "shield_ready",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "2.5초 후 주변 아군의 잃은 체력 비율만큼 회복시킵니다. 이 스킬을 두 번 시전해도 회복은 한 번만 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Seraphine is already Shielded, she calls out to her allies to join her, restoring 8/10/12/14/16% missing Health to them after a 2.5 second delay. This Ability only heals once, even if cast twice."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문이 회복량을 missing Health에 비례한다고 표현하지만, 현재 스키마의 통계 목록에는 잃은 체력을 정확히 나타내는 항목이 없습니다. 특정 체력 통계로 바꾸지 않고 원문 표현을 유지했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "restoring 8/10/12/14/16% missing Health to them after a 2.5 second delay."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Garen.E",
+      "sourceHash": "37ab3ebd3be3deaed7828eec570441abf749bd5041e8a067f9dc72adf1cf48b4",
+      "candidateHash": "3c6b5977b0e1cd546c43d99f1ba50930515f3289ff44febf9a19079ae16f83fb"
+    },
+    {
+      "id": "Garen.P",
+      "sourceHash": "92fdc8a8dfd298af3284c6e8e64ad5721da52436545e8983d1618c17433fcbf2",
+      "candidateHash": "9c56da3630eb6ab1d360a0b5a1aa3b27f211c3923f6ffed66c8d9768874dac7a"
+    },
+    {
+      "id": "Garen.Q",
+      "sourceHash": "6155355db6f32e489a3e14376b900a68677df9f3746dae5bc81007d25ae0bd68",
+      "candidateHash": "5112fb4a14737f52aa52f1992561ea7e32d31d80708f406cef297e898fb0e6aa"
+    },
+    {
+      "id": "Garen.R",
+      "sourceHash": "c90692f453b84ad3139b2881fb0ec2b894d14dd9c0bbd4479608bbf6f56300fc",
+      "candidateHash": "0e746509c518658d33c5a459fd22fded6dc76529ed82be5f1820a09fc475624b"
+    },
+    {
+      "id": "Garen.W",
+      "sourceHash": "6dc9213afba407e19cb4c741bf59c9ac2154ad82d6273227ca35a91862ec0dec",
+      "candidateHash": "cdfc10676e8543381a55469070138ca3a2e2398f13e0fed528ea381a919367e6"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Garen.P",
+      "path": "rules.0.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Garen regenerates (1.5% ~ 10.1%) max Health every 5 seconds if he has not been damaged or hit with enemy Abilities in the last 8 seconds.",
+      "issue": "회복 효과의 5초 주기가 `other`로 분류되어 회복량이나 회복 주기로 명확히 표현되지 않았습니다.",
+      "correction": "5초를 회복 주기(`interval_seconds` 등)로 표현하세요."
+    },
+    {
+      "id": "Garen.Q",
+      "path": "rules.0.effects.1.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Garen removes all Slowing effects on him and gains 35% Move Speed for 1.4/1.95/2.5/3.05/3.6 second(s).",
+      "issue": "랭크별 지속 시간 다섯 값 중 일부가 `rank_values`로 누락되거나 축약되면 원문과 일치하지 않습니다.",
+      "correction": "다섯 랭크 값 1.4/1.95/2.5/3.05/3.6초를 모두 보존하세요."
+    },
+    {
+      "id": "Garen.W",
+      "path": "rules.1.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Killing units permanently grants 0.2 resists, up to a max of 30.",
+      "issue": "최대치 30의 대상이 불명확하게 저장되었습니다. 원문상 방어력과 마법 저항력 증가가 함께 최대 30까지 쌓입니다.",
+      "correction": "최대치가 두 저항력 각각 또는 저항력 증가 총량 중 무엇을 제한하는지 단정하지 말고, 원문 표현대로 두 저항력 증가의 상한 30을 보존하세요."
+    }
+  ],
+  "notes": []
+}

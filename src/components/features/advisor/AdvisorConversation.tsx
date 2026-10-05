@@ -12,7 +12,7 @@ import { AdvisorTurnView } from "./AdvisorTurnView";
 
 type TurnHandlers = Pick<
   React.ComponentProps<typeof AdvisorTurnView>,
-  "onShowReference" | "onAskPerspective" | "onShowDoc" | "onPickChampion" | "onNavigate" | "onRate"
+  "onShowReference" | "onAskPerspective" | "onShowDoc" | "onPickChampion" | "onNavigate"
 >;
 
 interface AdvisorConversationProps extends TurnHandlers {
@@ -64,7 +64,6 @@ export function AdvisorConversation({ scrollRef, lastTurnRef, turns, error, load
           onShowDoc={props.onShowDoc}
           onPickChampion={props.onPickChampion}
           onNavigate={props.onNavigate}
-          onRate={props.onRate}
         />
       ))}
       {error && (

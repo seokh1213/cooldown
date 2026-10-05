@@ -1,0 +1,49 @@
+{
+  "id": "Viktor.E",
+  "sourceHash": "a906cc7720141af7d35d17fac5f480dc10a10a79cc3c3ff227364595b1797728",
+  "beforeCandidateHash": "7ea11f363e3a9c2fcdde25f69f3749f44445e860dbf5b44815339216d2a69471",
+  "candidateHash": "1e6486dd95c06b8459e7a2fb40236a6644ffa42a814231c1ae7529f0f95dd594",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "광선 적중의70~230+50%AP마법,증강 후행여진20~140+80%AP마법을 각각 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; target: 마법공학 광선이 적중한 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=70,en:body:n1=110,en:body:n2=150,en:body:n3=190,en:body:n4=230 상수 rank_values / stat_coefficient en:body:n5=50%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.activation eq empowered / target.other eq 증강 광선 뒤의 여진에 적중; target: 증강 시 광선을 따라 여진이 일어나 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n6=20,en:body:n7=50,en:body:n8=80,en:body:n9=110,en:body:n10=140 상수 rank_values / stat_coefficient en:body:n11=80%(백분율) caster.abilityPower scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "적중 행위자와 여진 적중의 독립 발동을 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Viktor fires a hextech ray in a chosen direction, dealing (70/110/150/190/230 + (50% Ability Power)) magic damage to any enemies it hits. Upgraded: An aftershock follows Hextech Ray, dealing (20/50/80/110/140 + (80% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

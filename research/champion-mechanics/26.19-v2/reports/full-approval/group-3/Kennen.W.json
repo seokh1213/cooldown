@@ -1,0 +1,117 @@
+{
+  "id": "Kennen.W",
+  "sourceHash": "80e403e3bc48d87cb8b065eacab7c5b40ff147879be9680d9451a25e2bb6079b",
+  "beforeCandidateHash": "f4b53cc0e158b00cb4cb2ac8fb457877e11ce599bf268e669a702e213b2136b9",
+  "candidateHash": "feeaf07dc3714c154d8e29db362f6a2c50f665c7070c680e9d7c5777569f5d9f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "매5공격추가마법/표식·치명타곱셈대체식·구조물충전은쌓되미소모·활성표식주변적또는R내적피해/표식을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 매 다섯 번째 기본 공격; target target_type neq structure; caster other absent 치명타 → target: 기본 공격 적중 시 추가 마법 피해를 입힙니다. [magic] / amount=35/45/55/65/75 [rank_values]; stat_coefficient=35% (caster abilityPower) [formula_components]; stat_coefficient=80/90/100/110/120% (caster bonusAttackDamage) [rank_values] | target: 대상에게 폭풍의 표식을 적용합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 nearby_enemies other eq 폭풍의 표식이 있는 주변 적 또는 날카로운 소용돌이 안의 적 → nearby_enemies: 폭풍의 표식이 있는 주변 적에게 마법 피해를 입힙니다. [magic] / amount=70/95/120/145/170 [rank_values]; stat_coefficient=80% (caster abilityPower) [formula_components] | nearby_enemies: 활성 효과로 대상에게 폭풍의표식을 추가한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target target_type eq structure → caster: 구조물 공격은 기본 지속 효과 중첩을 쌓지만 소모하지 않습니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 매 다섯 번째 기본 공격; target target_type neq structure; caster other present 치명타 → target: 5번째공격치명타피해는(35/45/55/65/75 + 자신의AP35% + 추가AD80/90/100/110/120%) × (1.4 + 추가치명타피해40%) 마법피해로기본추가피해를대체한다.곱셈식을선형합산하지않는다. [magic] / amount=35/45/55/65/75 [rank_values]; stat_coefficient=35% (caster abilityPower) [formula_components]; stat_coefficient=80/90/100/110/120% (caster bonusAttackDamage) [rank_values]; other=1.4/40% [formula_components] | target: 대상에게 폭풍의 표식을 적용합니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions",
+      "issue": "폭풍표식을empowered로오분류·R내자동적중누락",
+      "correction": "표식보유또는R내대상조건",
+      "sourceId": "en:body",
+      "quote": "The active automatically hits enemies inside of Slicing Maelstrom."
+    },
+    {
+      "path": "rules.2.effects.0.kind",
+      "issue": "자기충전중첩을표식mark로분류",
+      "correction": "resource_change",
+      "sourceId": "en:body",
+      "quote": "Attacking structures will stack the passive, but not expend it."
+    },
+    {
+      "path": "rules.3",
+      "issue": "치명타피해실제규칙없음",
+      "correction": "본문곱셈대체식과조건복구",
+      "sourceId": "en:body",
+      "quote": "× (1.4 + 40% bonus Critical Strike Damage) instead."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 201,
+      "verdict": "repaired",
+      "reason": "empowered를폭풍표식보유또는R안의적조건으로수정했다."
+    },
+    {
+      "index": 202,
+      "verdict": "repaired",
+      "reason": "케넨에게표식적용이아닌기본공격충전중첩자원으로효과를분류했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "활성 효과의 표식 보유 조건은 표현했으나, 허용된 mark 값에 표식 보유 전용 값이 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "치명타곱셈식은본문그대로규칙에보존한다.스키마는추가치명타피해통계가없고다중곱셈계수의선형실행을보장할수없어formula_components와텍스트를우선한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

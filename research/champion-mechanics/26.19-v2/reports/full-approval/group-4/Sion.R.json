@@ -1,0 +1,117 @@
+{
+  "id": "Sion.R",
+  "sourceHash": "9985b79b31303953c62d36fb99be1e4155dfacdbf5cd843ee0ed54f720599573",
+  "beforeCandidateHash": "24a637f088d57641379b8e221a47de4cd439535f0bd181f9d7bc9aae6995e590",
+  "candidateHash": "92d7c12bb3aa98e85e30590873cbb64cb43d37b585d8ff1a2f6b5e62e0438d01",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "8초 저지 불가 돌진·커서 조종·점진 가속,챔피언/벽 충돌 또는 재사용 종료,종료 거리별 피해·가까운 적 기절·더 큰 영역 둔화를 대조했다. 요약의띄우기와 본문의기절 충돌은 유지했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 저지 불가 상태로 한 방향으로 돌진하며 마우스 커서 쪽으로 방향을 바꾼다. 돌진 중 이동 속도가 점차 증가한다.; duration_seconds=8  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 별도 조건 없이 적용. caster: 적 챔피언이나 벽과 충돌하거나 스킬을 재시전하면 돌진을 멈춘다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 돌진이 끝남 적용. enemy: 돌진이 끝날 때 이동 거리에 따라 물리 피해를 입힌다. (physical); min_amount=150/300/450  formula_components, stat_coefficient=60% caster의 bonusAttackDamage formula_components, max_amount=400/800/1200  formula_components, stat_coefficient=120% caster의 bonusAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 target.distance lte 가까운 범위, caster.activation eq 돌진이 끝남 적용. enemy: 사이온 가까이 있는 적을 이동 거리에 따라 기절시킨다. 지속시간은 해당 최소~최대 시간(초) 범위다. (stun); min_amount=0.75  scalar, max_amount=1.75  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 target.distance eq 돌진 종료 시 더 큰 효과 영역 안에 있는 적, caster.activation eq 돌진이 끝남 적용. enemy: 더 넓은 범위에 있는 적을 둔화시킨다. (slow); amount=40/45/50%  rank_values, duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "요약의점진 가속 누락",
+      "correction": "점진 이동 속도 증가 및 요약 근거 추가",
+      "sourceId": "en:summary",
+      "quote": "Sion charges in a direction, ramping up speed over time."
+    },
+    {
+      "path": "rules.2-4",
+      "issue": "시간 만료로만 종료 효과 제한하고 둔화를 가까운 영역 바깥으로 단정",
+      "correction": "모든 돌진 종료 사건 및 더 큰 영역 내 적으로 수정",
+      "sourceId": "en:body",
+      "quote": "Enemies in a larger area are Slowed by 40/45/50% for 3 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 479,
+      "verdict": "repaired",
+      "reason": "공급 요약의 점진 가속을 효과와 근거에 추가했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "요약은 적과 충돌할 때 피해와 공중 띄우기가 발생한다고 하지만, 본문은 돌진 종료 시 피해를 주고 가까운 적을 기절시키며 더 넓은 범위의 적을 둔화시킨다고 설명한다. 본문에 없는 공중 띄우기는 규칙에 추가하지 않았다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "이동 거리에 따른 피해와 기절 지속시간의 정확한 보간식은 공급 원문에 없다. 하한/상한 피해식 계수를 하나의 선형식으로 합산하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -4,8 +4,9 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
+import { AdvisorMarkdown } from "./AdvisorMarkdown";
 
-/** 카드 틀. 머리(아이콘·이름·종류 칩) / 몸 / 꼬리(출처·링크). */
+/** 카드 틀. 머리(아이콘·이름·종류 칩) / 몸 / 꼬리(패치·화면 링크). */
 export function Frame(props: {
   icon: React.ReactNode;
   title: React.ReactNode;
@@ -103,7 +104,7 @@ function NoteItems({ items }: { items: string[] }) {
       {items.map((note) => (
         <li key={note} className="flex gap-1.5">
           <span className="select-none text-muted-foreground">·</span>
-          <span>{note}</span>
+          <div className="min-w-0"><AdvisorMarkdown text={note.replace(/^-\s+/, "")} /></div>
         </li>
       ))}
     </>

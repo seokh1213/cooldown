@@ -1,0 +1,63 @@
+{
+  "id": "Alistar.E",
+  "sourceHash": "6a1ffe0e5668a0e0937d46128ceba862ca4d29cc914b4171f6ad70ff71085512",
+  "beforeCandidateHash": "2e8a326b89557a4a6a28be0e0396c29e1d2063caee9d7df7829c912b65255030",
+  "candidateHash": "c1a1132e420ba033abf820c2cd0f187e2004b07dbe548137dc37ebc5710ec97a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "유체화/유닛 충돌 무시,5초 총 마법 피해80~200+AP70%,챔피언을 손상시킨pulse마다중첩 및5중첩 이후다음 챔피언 기본 공격의1초기절/20~275추가 마법 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 짓밟기를 시작하면 유체화 상태가 되어 다른 유닛의 충돌을 무시한다. [] / nearby_enemies damage magic: 주변 적에게5초에 걸쳐80/110/140/170/200+주문력70%의 총 마법 피해를 입힌다. [amount n0=80/n1=110/n2=140/n3=170/n4=200 rank_values; stat_coefficient n5=70% scalar caster.abilityPower; duration_seconds n6=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 enemy.target_type eq champion; caster.other eq 이 짓밟기의 충격파가 해당 챔피언에게 피해를 입힘. caster other: 챔피언에게 피해를 주는 충격파마다 중첩을 얻습니다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.resource gte n7=5; target.target_type eq champion; caster.other eq resource는 짓밟기 중첩 수이며5중첩 충전 후 다음 챔피언 대상 기본 공격 한 번. target crowd_control stun: 다음 공격으로 챔피언을 기절시킵니다. [duration_seconds n8=1 scalar] / target damage magic: 대상에게 추가 마법 피해를 입힙니다. [amount n9=20/n10=275 level_range]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.form eq Ghosted. caster other: 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0;rules.1.trigger,conditions;rules.2.conditions",
+      "issue": "유체화를 실제 이동으로 기록, 중첩 행위자 enemy와 임의 스킬 적중, resource종류와 다음 공격1회 제한 모호",
+      "correction": "유체화를 충돌 무시 상태로 기록하고 짓밟기pulse의챔피언피해 및 이 스킬5중첩의 다음챔피언기본공격을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Each pulse that damages a champion grants a stack."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "resource는 짓밟기 중첩 수로 명시했다.5중첩의 다음챔피언공격을 보존했으나 충격파 간격, 중첩 재충전/초기화와 유체화 지속시간은 공급 원문이 명시하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

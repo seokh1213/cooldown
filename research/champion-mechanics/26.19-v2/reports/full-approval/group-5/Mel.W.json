@@ -1,0 +1,381 @@
+{
+  "id": "Mel.W",
+  "sourceHash": "3068c7dc5b9a0e95108cba99550ea152e1c24ac17e52c1407ec38c0b594080b8",
+  "beforeCandidateHash": "e808fab742f4dab4d66baa0f4f16b346bb2670f979322af8d90d52949e462bde",
+  "candidateHash": "dfbb14b7d33a667daaa4bb695f3872071b823ec955d9431031fe687d617e5987",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "본문의0.75초보호막·감쇠40%MS·적챔피언투사체반사/특수파괴와반사피해조건을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "보호막80/110/140/170/200는고정기본량이며AP계수가아님. 추가70%AP,0.75초확인.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "140",
+              "value": 140,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "170",
+              "value": 170,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "70%",
+              "value": 70,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "0.75",
+              "value": 0.75,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기40%MS0.75초decays. 위치이동이아닌스탯변경.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": "moveSpeed",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "0.75",
+              "value": 0.75,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "활성방어막으로오는적챔피언일반투사체반사. 원래피해×반사율/AP100당5% 및원래물리의30%감소·원시전자스탯/아이템제외 확인.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적 챔피언이 발사한 투사체"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 방어막이 활성화되어 적 챔피언의 일반 투사체를 받음"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "범위 내 각 적을 따로 대상으로 하는 투사체가 아님"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11",
+            "en:body:n12",
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n9",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "45",
+              "value": 45,
+              "percent": true
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "50",
+              "value": 50,
+              "percent": true
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "55",
+              "value": 55,
+              "percent": true
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "unknown",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "5%",
+              "value": 5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n15"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n16"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n16",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "범위각적대상투사체는반사대신파괴. 별도조건으로범위겹침방지.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 방어막이 활성화됨"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "범위 내 각 적을 대상으로 하는 적 챔피언 투사체"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules",
+      "issue": "고정shield에APstat첨부,damage_taken반사와특수투사체파괴누락,30%감소를잔존배율로오독가능.",
+      "correction": "고정stat제거·받는투사체사건·반사복합식/변환감소명시·파괴조건분리.",
+      "sourceId": "en:body",
+      "quote": "Projectiles targeting each enemy in an area are destroyed instead of reflected."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "원래 투사체 피해는 최초 시전자의 능력치로 계산한다고 명시하지만 반사율 AP100당5%의 AP주체는 별도로 명시하지 않는다. 중첩곱식과 물리전환시30% 감소를 단순선형합이나30%잔존 배율로 실행하지 않는다. lexical 숫자표의 공통%도 효과문구를 따른다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "요약은 피해를 막는다고 쓰지만 본문은 수치 보호막을 명시한다. 피해면역으로 확대하지 않고 본문의 보호막으로 기록했다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

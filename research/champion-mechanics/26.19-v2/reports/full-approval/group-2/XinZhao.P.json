@@ -1,0 +1,63 @@
+{
+  "id": "XinZhao.P",
+  "sourceHash": "947a64f324a9738607e895124353388dbbad2adec6224aec18ac27b57cdf68e9",
+  "beforeCandidateHash": "225d65a1e4e803c351ceaa017ab5b66b8d208d110b93b60b608fa97b1c6059ac",
+  "candidateHash": "f9b41836d50577b0babcc99e3b047640fe0e689807f29d0f999c015a24406777",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "기본평타OR풍전참뢰타격3번째마다AD/AP레벨범위추가물리와Health/AP레벨범위회복을 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 caster.hit_count eq 기본 공격 또는 풍전참뢰의 타격이 세 번째일 때마다; target: 세 번째 기본 공격 또는 풍전참뢰 공격마다 추가 물리 피해를 입힙니다. [physical]; 수치 stat_coefficient en:body:n0=15%(백분율),en:body:n1=60%(백분율) caster.totalAttackDamage level_range / stat_coefficient en:body:n2=5%(백분율),en:body:n3=20%(백분율) caster.abilityPower level_range; flags 없음 | caster: (2~5% Health)+(40~70%AP)만큼회복합니다. Health의최대/현재/추가범위는미명시입니다.; 수치 stat_coefficient en:body:n4=2%(백분율),en:body:n5=5%(백분율) 상수 formula_components / stat_coefficient en:body:n6=40%(백분율),en:body:n7=70%(백분율) caster.abilityPower level_range; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "반복주기조건정리및Health를maxHealth로단정한계수 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Every third Attack or strike with Wind Becomes Lightning deals an additional (((15% ~ 60%) Attack Damage) + ((5% ~ 20%) Ability Power)) physical damage and restores (((2% ~ 5%) Health) + ((40% ~ 70%) Ability Power)) Health."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 656,
+      "verdict": "repaired",
+      "reason": "기본공격또는풍전참뢰타격이세번째일때마다로원문반복주기명시."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "회복식의Health는구체체력통계미명시여서maxHealth로단정하지않고수식구성요소보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

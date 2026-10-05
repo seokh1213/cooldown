@@ -1,0 +1,58 @@
+{
+  "id": "Qiyana.E",
+  "sourceHash": "67b08f6cc0bdfbedcebcf414b44d570df2574cb2b7c74d9be23059e7fb0e28c4",
+  "beforeCandidateHash": "f6af00f3d30c7b5048650bf17a67343b00a5d99bfe37af477971f48f008f386a",
+  "candidateHash": "f6af00f3d30c7b5048650bf17a67343b00a5d99bfe37af477971f48f008f386a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "통과돌진과50~210+자기추가AD50%물리피해·E챔피언지정중Q시전자동동일챔피언조준을확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 키아나가 적을 통과해 돌진합니다. | target: 대상에게 물리 피해를 줍니다. [physical] / amount=50/90/130/170/210 [rank_values]; stat_coefficient=50% (caster bonusAttackDamage) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion; caster activation eq E가 챔피언을 대상으로 지정된 동안 Q를 시전 → caster: 키아나가 E의 대상을 자동으로 조준합니다."
+    }
+  ],
+  "repairs": [],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "E가 챔피언을 대상으로 지정된 동안 Q를 시전하는 상태는 제공된 조건 필드로 정확히 표현할 수 없어 activation 텍스트로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

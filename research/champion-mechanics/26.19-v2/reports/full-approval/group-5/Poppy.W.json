@@ -1,0 +1,307 @@
+{
+  "id": "Poppy.W",
+  "sourceHash": "e196ff0b282f21df75a35d0bcd457669bb99fc2984b9c78b2d9d29c2148d0c7b",
+  "beforeCandidateHash": "bfaa4b717efdb0ca5099b1f89c7ed08e9fdf10fc806ed7461f9efc48825127d1",
+  "candidateHash": "00c4d832e2adfdbb14720863a9595914af566702b677f7e7a7cfbfe9028bd9ab",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "패시브 방어스탯16%,40%미만두배,40%MS와2초역장,막힌적ground/slow/damage를 대조했다. ground를 이동불가로 오해하지 않게 표현했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기armor16%/MR16% 만큼 각각 추가. 다른 스탯으로 전환하는 효과가 아니다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": "armor",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "16%",
+              "value": 16,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": "magicResist",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "16%",
+              "value": 16,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "HP40%미만에서 패시브 보너스 두배, 두 언어 일치.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n2"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "활성화40%MS와2초역장. 같은문장으로 시간확인.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "역장에 돌진이막힌 적만ground와25%slow2초,70/110/150/190/230+70%AP magic. ground는 이동스킬 금지다.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 역장에 돌진이 가로막힘"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "190",
+              "value": 190,
+              "percent": false
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "230",
+              "value": 230,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "70%",
+              "value": 70,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3,gaps,summary",
+      "issue": "ground를 일반 이동불가라고 표현하고 지속초·막힘 조건을 누락했다.",
+      "correction": "2초 이동스킬금지와 막힌적조건, 조건불가gap제거.",
+      "sourceId": "en:body",
+      "quote": "Enemies who are stopped by the field are Grounded and Slowed by 25% for 2 seconds and take (70/110/150/190/230 + (70% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

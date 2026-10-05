@@ -30,7 +30,7 @@ for (const question of [
   assert.equal(reply.answer.championId, "Pyke");
   assert.equal(reply.answer.spell.slot, "P");
   assert.match(reply.text, /추가 최대 체력.*추가 공격력.*전환/);
-  assert.match(reply.text, /체력 14당 공격력 1/);
+  assert.match(reply.text, /체력 14당 (?:추가 )?공격력 1/);
   assert.doesNotMatch(reply.text, /800%|회복|비축|상대.*알려/);
   assert.deepEqual(reply.answer.facts, []);
 });
@@ -46,7 +46,7 @@ test("앞선 평타 주제에서 파이크로 바꾸면 전환 근거와 스킬 
   const pyke = await answerDialogue("파이크는 체력 템 가면 어떻게되지?", context("ko_KR", first.reply.memory), deps);
   assert.equal(pyke.reply.memory.spell?.champion, "Pyke");
   const next = await answerDialogue("그럼 체력템 사면?", context("ko_KR", pyke.reply.memory), deps);
-  assert.match(next.reply.text, /체력 14당 공격력 1/);
+  assert.match(next.reply.text, /체력 14당 (?:추가 )?공격력 1/);
   assert.doesNotMatch(next.reply.text, /아크샨|두 번째 공격/);
 });
 
@@ -58,8 +58,8 @@ test("기본 체력은 공격력으로 전환된다고 답하지 않고 원래 �
 
 test("블라디미르도 체력 구매와 주문력의 관계를 자기 패시브로 답한다", async () => {
   const { reply } = await answerDialogue("블라디미르 체력템 사면?", context(), deps);
-  assert.match(reply.text, /추가 체력 30당 1의 주문력/);
-  assert.match(reply.text, /서로 중첩되지/);
+  assert.match(reply.text, /추가 체력 30당 (?:1의 주문력|주문력 1)/);
+  assert.match(reply.text, /서로(?: 다시)? 중첩되지/);
   assert.doesNotMatch(reply.text, /전환 비율은 체력 14/);
 });
 

@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Ziggs.E",
+      "sourceHash": "0f16ff4653fc5666eb0794aa4ddae1951b65efdb1f616668ac4bcacc6bbdf0dc",
+      "candidateHash": "94e2f986cb69867ceaf42c5e11f9f099e74e30bc5b33c75d7363bada60fea19b"
+    },
+    {
+      "id": "Ziggs.P",
+      "sourceHash": "4e94887d1c0d70ace242b068a28abc5785edad17b0b8846e0a45f46582412c5a",
+      "candidateHash": "7d2d218e4e07ef9eea8d67eb73d166913c372cba3cad72a4350152ccffcbbf38"
+    },
+    {
+      "id": "Ziggs.Q",
+      "sourceHash": "648636bbd7d324bedf10c14b62c8e142af28b297c0263312425f1e93be20fa6d",
+      "candidateHash": "2304038224d8d9cdba9965f1180ec82d0b9425d87b425fc3c9bf65c316e26673"
+    },
+    {
+      "id": "Ziggs.R",
+      "sourceHash": "8f4c86f8666ed8f161460d11469e003a3c45cbe12add3945870c46a2f9e2c211",
+      "candidateHash": "efd8639ae40cf5f405c444bae165b634223782b051ba62615e6643d8c6458994"
+    },
+    {
+      "id": "Ziggs.W",
+      "sourceHash": "ae638a1538b75f7b9d7739bc90fbb5378fea6e6e6bae06448d559778e535099d",
+      "candidateHash": "9eebf57b70c87e2f9f9c923e6aff60aff25183e3b1e74b14e360bc4db8c18f04"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Ziggs.P",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ziggs' abilities reduce this Cooldown by (4 ~ 6) seconds.",
+      "issue": "재사용 대기시간 감소 효과의 발동 조건을 `ability_hit`으로 제한했지만, 원문은 적중이 아니라 스킬 사용(abilities)을 조건으로 합니다.",
+      "correction": "스킬 사용을 나타내는 발동 이벤트로 바꾸세요."
+    },
+    {
+      "id": "Ziggs.R",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "dealing (300/500/700 + (100% Ability Power)) magic damage in the center of the blast radius, or (195/325/455 + (65% Ability Power)) magic damage at the edge.",
+      "issue": "중심부 조건에 `distance = isolated`를 지정했지만, 원문은 폭발 중심부를 뜻할 뿐 고립 여부를 뜻하지 않습니다. 설명의 ‘center’와 조건값이 모순됩니다.",
+      "correction": "중심부에 해당하는 조건값으로 고치거나, 대응값이 없으면 조건을 구조화하지 말고 불확실성을 gap으로 남기세요."
+    },
+    {
+      "id": "Ziggs.R",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "dealing (300/500/700 + (100% Ability Power)) magic damage in the center of the blast radius, or (195/325/455 + (65% Ability Power)) magic damage at the edge.",
+      "issue": "가장자리 조건을 `distance != isolated`로 지정했지만, 원문에는 고립 여부가 없고 이 조건은 중심부가 아닌 모든 거리를 가장자리로 취급합니다.",
+      "correction": "가장자리에 해당하는 조건값으로 고치거나, 대응값이 없으면 조건을 구조화하지 말고 불확실성을 gap으로 남기세요."
+    },
+    {
+      "id": "Ziggs.W",
+      "path": "rules.0.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ziggs flings an explosive charge that detonates after 4 seconds, or when this ability is Recast. It deals (70/105/140/175/210 + (50% Ability Power)) magic damage to enemies and Knocks them Back.",
+      "issue": "피해 발동을 `recast`로만 제한했지만, 원문은 4초 후 자동 폭발하거나 재사용할 때 폭발한다고 합니다.",
+      "correction": "만료/자동 폭발과 재사용 폭발을 모두 반영하는 발동으로 표현하세요."
+    },
+    {
+      "id": "Ziggs.W",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ziggs flings an explosive charge that detonates after 4 seconds, or when this ability is Recast. It deals (70/105/140/175/210 + (50% Ability Power)) magic damage to enemies and Knocks them Back.",
+      "issue": "밀쳐내기 효과도 `recast`에만 연결했지만, 원문은 자동 폭발과 재사용 폭발 모두에 적용됩니다.",
+      "correction": "두 폭발 경로 모두에 밀쳐내기를 연결하세요."
+    },
+    {
+      "id": "Ziggs.W",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ziggs is also knocked away, but takes no damage.",
+      "issue": "직스의 밀려남과 무피해 효과를 `recast`에만 연결했지만, 원문은 폭발 효과로 서술해 자동 폭발에도 적용될 수 있습니다.",
+      "correction": "폭발 시 효과로 표현해 두 폭발 경로에 적용하세요."
+    }
+  ],
+  "notes": []
+}

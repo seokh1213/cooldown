@@ -1,0 +1,92 @@
+{
+  "id": "Sylas.Q",
+  "sourceHash": "ae15a82e7f730cce928e4de7d6953f52f3bd28bc2cbbbf8f423f89635b13a0fb",
+  "beforeCandidateHash": "b778e593b40341d665f55d76fac1869ab66de2f297f0d8c5da7a794120b3a924",
+  "candidateHash": "a7969818ba3fe7cde4c136ddacbdee89643d3ea0a88e5c77d98630688f47aa20",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "사슬40~120+40%AP와15~35%둔화1.5초, 지연교차폭발60~280+80%AP; 미니언은 폭발피해40%를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 사슬을 후려쳐 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=40,en:body:n1=60,en:body:n2=80,en:body:n3=100,en:body:n4=120 상수 rank_values / stat_coefficient en:body:n5=40%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 사슬을 후려친 적을 둔화시킵니다. [slow]; 수치 amount en:body:n6=15(백분율),en:body:n7=20(백분율),en:body:n8=25(백분율),en:body:n9=30(백분율),en:body:n10=35%(백분율) 상수 rank_values / duration_seconds en:body:n11=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.activation eq 사슬 교차 지점의 지연 폭발에 적중; enemy: 사슬 교차 지점에서 잠시 후 폭발하며 적중한 적에게 추가 마법 피해를 줍니다. [magic]; 수치 amount en:body:n12=60,en:body:n13=115,en:body:n14=170,en:body:n15=225,en:body:n16=280 상수 rank_values / stat_coefficient en:body:n17=80%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "ko:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq minion / target.distance lte 폭발 범위 안 / target.activation eq 사슬 교차 지점의 지연 폭발에 적중; target: 이 지연 폭발의 미니언 대상 피해는 일반 폭발 피해의 40%입니다. [magic]; 수치 damage_multiplier en:body:n18=40%(백분율) 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "지연폭발 조건과 미니언 대체 배율 flag를 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Sylas lashes his chains out, dealing (40/60/80/100/120 + (40% Ability Power)) magic damage and Slowing by 15/20/25/30/35% for 1.5 seconds. The place where the chains intersect explodes, dealing a further (60/115/170/225/280 + (80% Ability Power)) magic damage. The explosion deals 40% damage to minions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 500,
+      "verdict": "false_positive",
+      "reason": "제안 자체가 수정 불필요라 명시하며 원문35%와 ref의 raw35%/percent=true가 일치한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "고정된 조건 값으로 폭발 범위 안의 대상을 나타내는 방법이 없어, 원문 범위 조건을 텍스트로 보존했습니다.",
+      "sourceIds": [
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

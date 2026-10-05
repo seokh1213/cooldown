@@ -1,0 +1,74 @@
+{
+  "summary": "스웨인은 특정 스킬 적중과 적 챔피언 사망으로 영혼 조각을 얻는다. 영혼 조각은 체력을 회복시키고 최대 체력을 영구적으로 늘린다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "영혼 조각 획득: 제국의 눈, 속박명령 적중 또는 적 챔피언 사망."
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "영혼 조각이 스웨인의 최대 체력에 비례해 체력을 회복시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "영혼 조각을 획득할 때마다 스웨인의 최대 체력이 영구적으로 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "maxHealth",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Swain collects Soul Fragments from Vision of Empire, Nevermove, and enemy champion deaths. Soul Fragments restore 6% maximum Health and permanently grant Swain 15 max Health."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

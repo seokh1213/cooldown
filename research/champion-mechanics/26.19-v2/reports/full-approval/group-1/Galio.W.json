@@ -1,0 +1,109 @@
+{
+  "id": "Galio.W",
+  "sourceHash": "5713cc657d48fccd3ef9e23d8cc4171d96da27bac98b00ca75d10eacc7feb39a",
+  "beforeCandidateHash": "c9c75d7701a896ea7e4c44ed55bb12fe9fb2311c45862ca206634ccdfcaee422",
+  "candidateHash": "dba539f8156b96f25103461e945ec1592ef144111ef036b3557bee530c656232",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "12~8초미피해후Health7.5~13.5%magicshield,충전magic/physical감소식(AP/bonusMR/bonusHP100당)와자기15%slow,release챔프taunt0.5~1.5초/nearbydamagecharge범위/2초감소갱신 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 레벨에 따른12~8초 대기시간 동안 피해를 받지 않음. caster shield: 일정 시간 동안 피해를 받지 않으면 체력 비례 마법 보호막을 얻습니다. [other n0=7.5%/n1=9%/n2=10.5%/n3=12%/n4=13.5% formula_components; other n5=12/n6=8 level_range]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 충전 중 받는 마법 피해 감소율은 랭크25~45%에 AP100당4%, 추가MR100당8%, 추가체력100당1%를 더한 값이다. [amount n7=25%/n8=30%/n9=35%/n10=40%/n11=45% formula_components; stat_coefficient n12=4% formula_components caster.abilityPower; ratio_input n13=100 formula_components caster.abilityPower; stat_coefficient n14=8% formula_components caster.bonusMagicResist; ratio_input n15=100 formula_components caster.bonusMagicResist; stat_coefficient n16=1% formula_components caster.bonusHealth; ratio_input n17=100 formula_components caster.bonusHealth] / caster stat_modifier: 충전 중 받는 물리 피해 감소율은 랭크12.5~22.5%에 AP100당2%, 추가MR100당4%, 추가체력100당0.5%를 더한 값이다. [amount n18=12.5%/n19=15%/n20=17.5%/n21=20%/n22=22.5% formula_components; stat_coefficient n23=2% formula_components caster.abilityPower; ratio_input n24=100 formula_components caster.abilityPower; stat_coefficient n25=4% formula_components caster.bonusMagicResist; ratio_input n26=100 formula_components caster.bonusMagicResist; stat_coefficient n27=0.5% formula_components caster.bonusHealth; ratio_input n28=100 formula_components caster.bonusHealth] / caster crowd_control slow: 충전 중 자신이 둔화됩니다. [amount n29=15% scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 enemy.target_type eq champion. enemy crowd_control taunt: 충전을 해제하면 적 챔피언을 도발합니다. 도발 지속시간과 사거리는 충전 시간에 따라 증가합니다. [duration_seconds n30=0.5/n31=1.5 level_range]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 enemy.other eq 충전 해제 시 효과 범위 안의 적. enemy damage magic: 충전을 해제하면 적에게 충전 시간에 따라 달라지는 마법 피해를 입힙니다. [min_amount n32=20/n33=30/n34=40/n35=50/n36=60 formula_components; stat_coefficient n37=30% formula_components caster.abilityPower; max_amount n38=60/n39=90/n40=120/n41=150/n42=180 formula_components; stat_coefficient n43=90% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 없음. caster stat_modifier: 충전 해제 시 피해 감소 효과를2초 동안 갱신한다. [duration_seconds n44=2 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/gaps",
+      "issue": "12초고정대기·시간을shieldduration·root시간amount·min/max단독합산·피해감소범위설명",
+      "correction": "대기12~8초/시간other,타운트durationrange/type,복합충전피해및2초refresh",
+      "sourceId": "en:body",
+      "quote": "Taunt duration, damage, and range increase with charge time."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 69,
+      "verdict": "repaired",
+      "reason": "12고정은8초레벨끝을제외한다.12~8초대기를텍스트조건으로보존했다."
+    },
+    {
+      "index": 70,
+      "verdict": "false_positive",
+      "reason": "각계수와100분모는formula_components로이미구분되어직접선형계수가아니다. 텍스트에정확한100당의미를보강했다."
+    },
+    {
+      "index": 71,
+      "verdict": "false_positive",
+      "reason": "per100각스탯계수/ratio_input구성요소는원문을표현한다. 실행가능선형식으로확정하지않으며구성요소gap을추가했다."
+    },
+    {
+      "index": 72,
+      "verdict": "repaired",
+      "reason": "도발은적챔피언만이라enemy.target_typechampion조건추가했다."
+    },
+    {
+      "index": 73,
+      "verdict": "false_positive",
+      "reason": "본문은도발대상을champion으로제한하지만damage는별도문구이고summary는nearbyenemiesdamage이다. damage까지championonly로좁힐근거가충분하지않다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "보호막 수치는 체력의 비율로 제시되지만 원문은 체력 통계의 범주를 구체화하지 않으므로 maxHealth 등의 특정 스탯으로 확정하지 않았습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "피해를 받지 않는 대기 시간은 레벨에 따라 달라지는 12~8초 범위지만, 범위 끝값만으로 중간 레벨의 시간을 확정할 수 없습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "피해감소율per100스탯가산및충전피해최저/최대/AP계수끝식은복합구성요소로보존하며단순선형피해로확정하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

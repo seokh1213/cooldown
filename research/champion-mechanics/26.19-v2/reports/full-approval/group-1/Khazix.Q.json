@@ -1,0 +1,69 @@
+{
+  "id": "Khazix.Q",
+  "sourceHash": "f05db799477ddd7efba1059f702da7fa06a8857acbd130094ed005e79acc9a13",
+  "beforeCandidateHash": "55fe28204fe4a3211f705da9b023b688fd24b764623bc5bc6b79945504a9d8bc",
+  "candidateHash": "1f822f97e9d28345dd8adaa473ca814da5e5556db88f4ec0c4832601507e2ff9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "비고립 기본 물리 피해와 고립 대체 물리 피해, 거대 갈고리 진화의 고립 대상 쿨 환급 및 기본 공격/Q 사거리 증가를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.mark absent isolated. target damage physical: 대상에게 물리 피해를 줍니다. [amount n0=80/n1=105/n2=130/n3=155/n4=180 rank_values; stat_coefficient n5=105% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.mark eq isolated. target damage physical: 고립된 대상에게 별도의 물리 피해량을 적용합니다. [amount n6=168/n7=220.5/n8=273/n9=325.5/n10=378 rank_values; stat_coefficient n11=220.5% formula_components caster.bonusAttackDamage] flags=replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 거대 갈고리 진화 선택; target.mark eq isolated. caster cooldown_change: 거대 갈고리 진화 Q를 고립된 대상에게 사용하면 Q 재사용 대기시간의 일부를 돌려받는다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.form eq 거대 갈고리 진화 선택. caster attack_modifier: 기본 공격과 공포 감지의 사거리가 증가한다. 증가량은 제공되지 않았다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2,3;summary;gaps",
+      "issue": "요약의 진화 쿨 환급과 기본 공격/Q 사거리 효과가 gap에만 있거나 누락",
+      "correction": "진화 선택 조건 아래 고립 대상 Q 쿨 환급과 기본 공격/Q 사거리 증가 규칙을 추가하고 수치 부족을 남겼다.",
+      "sourceId": "en:summary",
+      "quote": "If he chooses to Evolve Reaper Claws, this refunds a percent of it's cooldown against Isolated targets."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 205,
+      "verdict": "false_positive",
+      "reason": "고립 대상에게는 별도 피해 instead가 적용되므로 비고립 기본값 규칙과 고립 대체값 규칙은 상호 배타적으로 올바르다. 고립 표식의 부재를 고립이라고 판정하지 않았다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "거대 갈고리 진화 시 고립된 대상에 대한 재사용 대기시간 감소량이 제시되지 않았습니다. 수치 파라미터를 기록하지 않았습니다. 사거리 증가량도 요약에 제공되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

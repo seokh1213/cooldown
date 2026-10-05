@@ -1,0 +1,111 @@
+{
+  "id": "Yasuo.E",
+  "sourceHash": "fbc033d4882a50d67a738f3d855456eb02066e7ca37069165e86a5dbeaab1f9e",
+  "beforeCandidateHash": "ca4364ed25b1d19577800df628444610e4af46735e4559ec2d134e9d71cd3c5a",
+  "candidateHash": "f28db9a9c966d04a2bf94b5e4e881f5bb291277c88049fb6cc30ba1e7835ad02",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "적을 관통하는 돌진 피해, 5초 후속 피해 증가·4중첩 및 대상별 쿨다운과 돌진 Q 형상을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적 대상에게 돌진하여 70/85/100/115/130 + 추가 공격력 20% + 주문력 60% 마법 피해다. 아군·임의 any 대상이 아니라 적이며 해당 대상 쿨다운 종료가 필요하다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전마다 이후 E에 17.5/21.25/25/28.75/32.5 + 추가 공격력 5% + 주문력 15% 추가 피해를 5초, 최대 4중첩 부여한다. 일반 능력치 증가로 분류하지 않았다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "대상별 쿨다운 10/9/8/7/6초를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "공급 요약의 돌진 중 Q 원형 타격을 별도 피해 없이 형상 정보로 보존했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0.field",
+      "issue": "en:summary는 target enemy로 한정하므로 any 대상 조건을 적으로 좁혔다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yasuo dashes through a target, dealing (70/85/100/115/130 + (20% bonus Attack Damage) + (60% Ability Power)) magic damage. Each use of this Ability grants (17.5/21.25/25/28.75/32.5 + (5% bonus Attack Damage) + (15% Ability Power)) bonus damage to subsequent uses for 5 seconds, stacking up to 4 times. This Ability has a 10/9/8/7/6 second per-target Cooldown."
+    },
+    {
+      "path": "rules.0.conditions.1",
+      "issue": "대상별 쿨다운 종료 조건을 실제 돌진 규칙에도 적용했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yasuo dashes through a target, dealing (70/85/100/115/130 + (20% bonus Attack Damage) + (60% Ability Power)) magic damage. Each use of this Ability grants (17.5/21.25/25/28.75/32.5 + (5% bonus Attack Damage) + (15% Ability Power)) bonus damage to subsequent uses for 5 seconds, stacking up to 4 times. This Ability has a 10/9/8/7/6 second per-target Cooldown."
+    },
+    {
+      "path": "rules.1.effects.0.kind",
+      "issue": "후속 E 추가 피해 버프는 statTo 없는 일반 능력치 상승이 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yasuo dashes through a target, dealing (70/85/100/115/130 + (20% bonus Attack Damage) + (60% Ability Power)) magic damage. Each use of this Ability grants (17.5/21.25/25/28.75/32.5 + (5% bonus Attack Damage) + (15% Ability Power)) bonus damage to subsequent uses for 5 seconds, stacking up to 4 times. This Ability has a 10/9/8/7/6 second per-target Cooldown."
+    },
+    {
+      "path": "rules.3",
+      "issue": "요약에 있는 돌진 중 Q 형상이 규칙에서 빠져 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Dashes through target enemy, dealing magic damage. Each cast increases subsequent dash's damage, up to a max amount. Cannot be re-cast on the same enemy for a few seconds. If Steel Tempest is cast while dashing, it will strike as a circle."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 663,
+      "verdict": "repaired",
+      "reason": "any를 제거하고 공급 요약의 적 대상 텍스트 조건으로 한정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "id": "Yasuo.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

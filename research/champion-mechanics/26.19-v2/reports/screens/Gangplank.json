@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Gangplank.E",
+      "sourceHash": "aea3bf5ee09df086ca09ecf7194a7c3cda25600d6a11853f3763d9da91e6348b",
+      "candidateHash": "a33cdbe97f38b19db82965a4fcd26f87db0a9966e7100aace2ce580b61c069ca"
+    },
+    {
+      "id": "Gangplank.P",
+      "sourceHash": "e91e0003570ea8694759c23472b9355b7cca8fe387c8b74b90f0c7113212773f",
+      "candidateHash": "6c4b9f0e494da3ba45b0fbae774f0794415d9db478ea7606175108e84c930c02"
+    },
+    {
+      "id": "Gangplank.Q",
+      "sourceHash": "36e308be9fcd02938b818407aab6dd4c45a916dda8b4945b245561038c2dd6a4",
+      "candidateHash": "04117f4f5d60ea6edb4bccadd024e07235e09dd92ce2042f09dc495da557c6c2"
+    },
+    {
+      "id": "Gangplank.R",
+      "sourceHash": "783f2393ce24eef3862554aa2513365c1689c47ac65a9dd73516a8d7c3077a22",
+      "candidateHash": "5027b0ad4c3e9e02dfb1d5ab146307e8432e04e738c8242e4c3d27d877bd816c"
+    },
+    {
+      "id": "Gangplank.W",
+      "sourceHash": "381e1100e5dff33c8f50c7d00460d2795dfd7091756fff6f486d431b9aa47aee",
+      "candidateHash": "f2a501d3c50abec2c0c2942275564d7f064af9858cc1cc0861aa97757c1b71b8"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Gangplank.E",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Keg explosions detonate other kegs with overlapping blast zones, but don't deal damage to the same target more than once.",
+      "issue": "조건이 폭발 범위가 겹치는 다른 화약통이 아니라 `nearby_enemies`의 표식 존재 여부를 요구합니다. 설명문과 조건의 대상 및 판정이 서로 다릅니다.",
+      "correction": "표식 조건을 제거하고, 겹치는 폭발 범위의 다른 화약통이 있을 때 연쇄 폭발하는 효과로 표현하세요."
+    },
+    {
+      "id": "Gangplank.E",
+      "path": "rules.6",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Keg explosions triggered by Parrrley will grant the bonus gold for targets killed.",
+      "issue": "혀어어어업상으로 화약통을 터뜨리는 적중만으로 보상을 주는 규칙입니다. 원문은 그 폭발로 처치한 대상에 대한 추가 골드라고 한정합니다.",
+      "correction": "처치 이벤트와 처치된 대상 조건에 연결해 보상을 기록하세요."
+    },
+    {
+      "id": "Gangplank.P",
+      "path": "rules.0.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Gangplank's melee Attacks ignite the target, dealing an additional ((50 ~ 250) + (100% bonus Attack Damage)) true damage over 2.5 seconds and granting Gangplank (15% ~ 30%) Move Speed for 2 seconds.",
+      "issue": "조건이 대상 유형만 제한하고 근접 공격 여부는 제한하지 않아 원거리 공격도 발동하는 규칙처럼 표현됩니다.",
+      "correction": "근접 공격 조건을 규칙에 반영하세요."
+    },
+    {
+      "id": "Gangplank.P",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Destroying a Powder Keg refreshes this Cooldown and grants Gangplank the same Move Speed.",
+      "issue": "조건이 대상을 일반 구조물로 제한하지만, 원문에서 재사용 대기시간 초기화와 이동 속도 효과를 주는 대상은 화약통입니다.",
+      "correction": "구조물 조건을 화약통 파괴 조건으로 바꾸세요."
+    },
+    {
+      "id": "Gangplank.Q",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The shot applies On-Hit effects (other than Trial by Fire) and can critically strike",
+      "issue": "적중 시 효과와 치명타 가능 효과를 `activation = empowered` 조건으로 제한하지만, 원문은 이 사격 자체의 효과로 서술합니다.",
+      "correction": "근거 없는 empowered 조건을 제거하고 사격의 적중 효과로 기록하세요."
+    },
+    {
+      "id": "Gangplank.Q",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The shot applies On-Hit effects (other than Trial by Fire) and can critically strike for (10/40/70/100/130 + (100% Attack Damage)) × (100% Critical Strike Damage) physical damage.",
+      "issue": "치명타 피해 규칙도 근거 없는 `activation = empowered` 조건에 묶여 있어 일반 사격의 치명타 효과로 읽히지 않습니다.",
+      "correction": "empowered 조건을 제거하고, 치명타가 발생했을 때 해당 피해가 적용된다고 기록하세요."
+    },
+    {
+      "id": "Gangplank.W",
+      "path": "rules.0.effects.1.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "restoring (45/70/95/120/145 + (90% Ability Power)) plus 13% missing Health.",
+      "issue": "13% 입력 능력치를 `maxHealth`로 지정했습니다. 원문은 최대 체력이 아니라 잃은 체력의 비율이라고 명시합니다.",
+      "correction": "이 입력을 `missingHealth`로 강제 매핑하지 말고 텍스트/미확정 상태로 남기고, 잃은 체력 기준임을 gap으로 보존하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,1007 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "헤카림의 추가 이동 속도 일부가 공격력으로 전환됩니다. 전환 비율은 레벨에 따라 증가합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_conversion",
+              "subject": "caster",
+              "text": "추가 이동 속도에 비례해 공격력을 얻습니다. 비율은 레벨에 따라 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": "moveSpeed",
+              "statTo": "totalAttackDamage",
+              "parameters": [
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                },
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": [
+                "replace_input"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim gains ((12% ~ 24%) bonus Movement Speed) Attack Damage, increasing based on level."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "헤카림이 주변 적을 베어 물리 피해를 입힙니다. 이 스킬이 적중하면 중첩을 얻어 피해량이 증가하고 재사용 대기시간이 감소합니다. 미니언에게는 별도의 기본 피해량을 적용합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "주변 적에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim cleaves nearby enemies for (60/90/120/150/180 + (90% bonus Attack Damage)) physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "이 스킬이 적중하면 중첩을 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "중첩을 얻을 때마다 이 스킬의 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "attack_modifier",
+              "subject": "caster",
+              "text": "중첩에 따라 이 스킬의 피해량이 증가합니다. 중첩은 일정 시간 동안 유지되며 최대 중첩 수가 정해져 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If this Ability hits, he gains a stack that decreases its Cooldown by 0.75 seconds and increases its damage by (3 + (3% bonus Attack Damage))for 8 seconds. Stacks up to 3 times."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "미니언에게는 기본 피해량을 적용합니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Deals a base of (36/54/72/90/108 + (54% bonus Attack Damage)) damage to minions."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "W": {
+      "summary": "헤카림이 일정 시간 동안 주변 적에게 마법 피해를 입히고 방어력과 마법 저항력을 얻습니다. 주변 적이 헤카림 또는 아군에게 받은 피해량에 따라 헤카림이 회복하며, 미니언이나 정글 몬스터에게서 회복하는 양에는 상한이 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "주변 적에게 일정 시간에 걸쳐 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim deals (80/120/160/200/240 + (80% Ability Power)) magic damage over 4 seconds to nearby enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "방어력과 마법 저항력을 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": "armor",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": "magicResist",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim gains 5/10/15/20/25 Armor and Magic Resist"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim gains 5/10/15/20/25 Armor and Magic Resist and heals for 25% of damage nearby enemies take from Hecarim and 12.5% of damage taken from his allies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "주변 적이 헤카림에게 피해를 받음"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "주변 적이 헤카림에게 받은 피해량의 일정 비율만큼 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "heals for 25% of damage nearby enemies take from Hecarim"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim gains 5/10/15/20/25 Armor and Magic Resist and heals for 25% of damage nearby enemies take from Hecarim and 12.5% of damage taken from his allies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "주변 적이 헤카림의 아군에게 피해를 받음"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "주변 적이 헤카림의 아군에게 받은 피해량의 일정 비율만큼 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "12.5% of damage taken from his allies."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim gains 5/10/15/20/25 Armor and Magic Resist and heals for 25% of damage nearby enemies take from Hecarim and 12.5% of damage taken from his allies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "미니언이나 정글 몬스터에게서 회복하는 양에는 상한이 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim cannot heal more than 120/150/180/210/240 Health from minions or jungle monsters."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "미니언 및 정글 몬스터 대상 회복 상한이 각각의 대상별인지, 해당 시전 중 총 회복량인지 원문만으로는 명확하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim cannot heal more than 120/150/180/210/240 Health from minions or jungle monsters."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "헤카림이 유체화 상태가 되고 이동 속도가 증가하며, 다음 기본 공격은 대상을 밀쳐내고 이동 거리에 따라 물리 피해와 밀쳐내는 거리가 증가합니다. 유체화 상태인 유닛은 다른 유닛과 충돌하지 않으며, 궁극기 사용 중에는 이 스킬의 남은 지속 시간이 멈춥니다. 피해를 입힐 때 주문 효과가 발동합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "visibility",
+              "subject": "caster",
+              "text": "유체화 상태가 됩니다. 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim becomes Ghosted and gains 25% Move Speed increasing to 65% over 4 seconds. Ghosted units ignore collision with other units."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim becomes Ghosted and gains 25% Move Speed increasing to 65% over 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가하며, 증가량은 일정 시간에 걸쳐 더 커집니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim becomes Ghosted and gains 25% Move Speed increasing to 65% over 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "followup_status",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "fired"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "다음 기본 공격이 대상을 뒤로 밀쳐냅니다.",
+              "damageType": null,
+              "crowdControl": "knockback",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "다음 기본 공격이 이동 거리에 따라 달라지는 물리 피해를 추가로 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "His next Attack Knocks Back and deals between (30/45/60/75/90 + (50% bonus Attack Damage)) and (60/90/120/150/180 + (100% bonus Attack Damage)) physical damage. Knock Back distance and damage scales with distance travelled during this Ability."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "궁극기를 사용하는 동안 이 스킬의 남은 지속 시간이 멈춥니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The remaining duration of this Ability is paused during Onslaught of Shadows."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "이 스킬은 피해를 입힐 때 주문 효과를 발동합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability triggers spell effects upon dealing damage."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "밀쳐내기와 피해 효과가 다음 기본 공격에 적용되지만, 해당 공격의 성공 또는 취소 처리 조건은 명시되어 있지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "His next Attack Knocks Back and deals between (30/45/60/75/90 + (50% bonus Attack Damage)) and (60/90/120/150/180 + (100% bonus Attack Damage)) physical damage."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "헤카림이 유령 기수들을 소환해 전방으로 돌진하며 마법 피해를 입힙니다. 돌격이 끝날 때 충격파가 주변 적에게 공포를 적용하며, 공포 지속 시간은 돌격 거리에 따라 달라집니다. 헤카림은 지정 위치까지 이동하고 기수들은 항상 최대 거리를 이동합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "유령 기수들을 소환합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "전방으로 돌격하여 지정한 위치까지 이동합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "movement",
+              "subject": "summon",
+              "text": "유령 기수들은 항상 최대 거리를 이동합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim summons spectral riders and charges forward, dealing (150/250/350 + (100% Ability Power)) magic damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim will move to the targeted location, but the riders always move the full distance."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "돌격 중 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim summons spectral riders and charges forward, dealing (150/250/350 + (100% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "distance",
+              "operator": "gt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n4"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "돌격 끝에 발생하는 충격파가 주변 적을 공포에 질리게 합니다. 공포 지속 시간은 돌격 거리에 따라 증가합니다.",
+              "damageType": null,
+              "crowdControl": "fear",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim unleashes a shockwave at the end of the charge that Fears for between 0.75 to 1.5 seconds, increased by charge distance."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "공포 지속 시간은 돌격 거리에 따라 증가한다고 되어 있으나, 거리와 지속 시간 사이의 구체적인 수식이나 거리 조건은 제시되지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Hecarim unleashes a shockwave at the end of the charge that Fears for between 0.75 to 1.5 seconds, increased by charge distance."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Hecarim.E",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.0.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        }
+      ]
+    }
+  ]
+}

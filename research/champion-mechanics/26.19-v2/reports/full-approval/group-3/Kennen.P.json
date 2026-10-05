@@ -1,0 +1,67 @@
+{
+  "id": "Kennen.P",
+  "sourceHash": "27781cb342f886460b80644ebb685ffc835356bc82bdf061de3ca971bec0892c",
+  "beforeCandidateHash": "e2a8a6374df2e022aa4e1cb7f956eae8d3a1bc2634c5dc131177b738e2c6713e",
+  "candidateHash": "36652c1a01a5e1fda36c60218ae97c25c6a34715e5c2a97da9e8b687518bde72",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "스킬적중6초표식·세번째중첩도달대상1.25초기절/자신기력25를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → target: 케넨의 스킬이 적중하면 표식 중첩을 적용하며, 중첩은 일정 시간 유지됩니다. / duration_seconds=6 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: target의 other / 조건 target mark eq 3; target activation eq 이 표식의 세 번째 중첩에 도달 → target: 적을 기절시킵니다. [stun] / duration_seconds=1.25 [scalar] | caster: 케넨이 기력을 얻습니다. / amount=25 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.subject",
+      "issue": "스킬행위자가피격적",
+      "correction": "caster",
+      "sourceId": "en:body",
+      "quote": "Kennen's abilities apply a stack for 6 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 197,
+      "verdict": "false_positive",
+      "reason": "schema에는별도stack_gain이없어other트리거로3중첩도달을보존한다.세번째표식도달조건을명확히추가했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "스키마 조건 필드에 표식 중첩 수를 표현하는 전용 필드가 없어 mark 조건으로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

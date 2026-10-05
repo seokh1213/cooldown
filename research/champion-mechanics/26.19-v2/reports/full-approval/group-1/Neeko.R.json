@@ -1,0 +1,56 @@
+{
+  "id": "Neeko.R",
+  "sourceHash": "99c55334d12e43729e896161e5667993372be7fc7a6bbdfd1ad48f25331a220c",
+  "beforeCandidateHash": "e56917e8df6d236a6a25e4a5a938dbfa0ae8c8801dfccb3c7b3dea89d04a7b52",
+  "candidateHash": "7a2d9f99d6bec4ed85e901f260e30e0a649f39f42e42b1c1d99b60c6a86339bc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "지연뒤도약knockup0.6초/그후착지마법150/350/550+AP120%/stun0.75초,변장준비숨김/시전0.5초후해제를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 시전 후 지연이 지나 공중으로 도약. caster movement: 잠시 준비한 후 공중으로 도약한다. [] / nearby_enemies crowd_control knockup: 도약하며 주변 적을 공중에 띄운다. [duration_seconds n0=0.6 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 도약한 뒤 땅으로 떨어질 때. nearby_enemies damage magic: 착지하며 주변 적에게 마법 피해를 입힌다. [amount n1=150/n2=350/n3=550 rank_values; stat_coefficient n4=120% formula_components caster.abilityPower] / nearby_enemies crowd_control stun: 착지하며 주변 적을 기절시킨다. [duration_seconds n5=0.75 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster transform: 이 스킬 시전 후0.5초가 지나면 변장이 해제된다. [other n6=0.5 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 변신 상태. caster visibility: 변신 상태에서는 준비 동작을 비밀리에 진행할 수 있다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3",
+      "issue": "주변적이시전행위자·도약누락·0.5초지연이효과지속·준비숨김subject",
+      "correction": "caster및단계조건/도약,변장해제지연other역할/caster숨김",
+      "sourceId": "en:body",
+      "quote": "0.5 seconds after casting this ability Neeko breaks her disguise."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "id": "Malphite.P",
+  "sourceHash": "72efbfb29099c18a1b349ea2d396c67e36b4825f4b1bfd72443cbe42ab9a3993",
+  "beforeCandidateHash": "b4e5bf3cd20f00245abbd012d24721afab867d3d1c8cd36b2d3b109146d37e9d",
+  "candidateHash": "bf59520d3f755af04f49bc49a68717e80e0465d5b2097f6dc81eb9d8d5d88a07",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "피해를 받지 않은시간8~6초가 보호막 획득 전제이지 보호막 지속시간이 아님을 확인했다. 보호막은 본문Health10%, en/ko요약본인최대HP10%로 명시되어 그 요약 근거를 함께 연결했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other eq 피해를 입지 않은 시간이 레벨에 따른8~6초에 도달했을 때 → caster: 8~6초 동안 피해를 입지 않으면 본인최대체력10%의 보호막을 얻습니다.8~6초는 획득 대기시간이며 보호막 지속시간이 아닙니다. / stat_coefficient=10% (caster maxHealth) [formula_components]; other=8/6 [level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "피해 없이 레벨별8~6초 전제가 고정8초조건으로 표현되고8~6초가보호막지속시간으로 잘못 사용됐다.",
+      "correction": "레벨별무피해대기시간 조건/other역할로 옮기고 최대HP10%는 요약근거에 연결했다.",
+      "sourceId": "en:body",
+      "quote": "after not taking damage for (8 ~ 6) seconds"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "본문의 Health만으로는 최대/현재체력 구분이 없지만 en/ko요약은 본인최대체력10%라고 명시한다. 보호막계수는 해당 요약근거에 의존하며 본문만으로 별도의 최대체력 정의를 추정하지 않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

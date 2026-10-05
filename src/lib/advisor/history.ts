@@ -43,7 +43,7 @@ export type StoredAnswer =
        * 저장된 것을 고쳐 쓰지 않는 이유는, 옛 기록이 그때 무엇을 보여 줬는지가
        * 남아야 하기 때문이다. 없으면 예전 순서("플레이할 때" 먼저)가 된다.
        */
-      notes?: { playing: string[]; against: string[]; perspective?: NotePerspective; detail?: "full" };
+      notes?: { playing: string[]; against: string[]; perspective?: NotePerspective; detail?: "full"; topic?: "combo"; sources?: string[]; unavailable?: string[] };
     }
   | { kind: "rule"; ruleName: string; highlighted: string[]; rest: string[] }
   | { kind: "suggestion"; original: string; candidateIds: string[]; reason?: "typo" | "ambiguous" }

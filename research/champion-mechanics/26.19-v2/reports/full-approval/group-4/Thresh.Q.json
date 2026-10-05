@@ -1,0 +1,75 @@
+{
+  "id": "Thresh.Q",
+  "sourceHash": "06e2ed8b662fe55ae9ac1a6d156bc9f8d969d3c71990cf13eedec8337ad90136",
+  "beforeCandidateHash": "c741e0c06270d38a7c3d92def828e9c5dfd87a3b952f2ea4580cd612649e6c67",
+  "candidateHash": "d579c27f3ee745a668155fda4464a8db943cfe638bd75417acdaa9087e5cd179",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "낫 첫 적중 대상의 1.5초 기절·당기기·절대 시야와 100/150/200/250/300 + 쓰레쉬 주문력 90% 마법 피해, 적중의 2초 대기시간 감소와 잡힌 적을 향한 쓰레쉬 재사용 이동을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 처음 맞힌 대상을 기절시킵니다. (stun); duration_seconds=1.5  scalar / target: 처음 맞힌 대상을 쓰레쉬 쪽으로 당깁니다. (pull); duration_seconds=1.5  scalar / target: 처음 맞힌 대상에게 마법 피해를 입힙니다. (magic); amount=100/150/200/250/300  rank_values, stat_coefficient=90% caster의 abilityPower scalar / caster: 첫 적중하여 잡힌 대상에 대한 절대 시야를 1.5초 지속시간 동안 얻습니다.; duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 target.other eq 이 낫이 처음 적중하여 잡고 있는 바로 그 적 적용. caster: 쓰레쉬가 적에게 이동합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 이 낫이 실제 적중한 대상 적용. caster: 이 스킬이 적중하면 재사용 대기시간이 감소합니다.; cooldown_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger,effects.0,effects.3",
+      "issue": "시전만으로 첫 대상 효과가 적용되고 기절 지속시간 및 절대 시야의 대상이 불명확하다.",
+      "correction": "첫 실제 적중 사건에 1.5초 기절·대상 절대 시야를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "Stunning the first unit hit and Pulling them towards Thresh for 1.5 seconds."
+    },
+    {
+      "path": "rules.1.conditions",
+      "issue": "재사용 이동을 실제 잡힌 적으로 제한하지 않는다.",
+      "correction": "이 낫이 잡고 있는 같은 적으로 이동 대상을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Thresh can Recast this Ability to pull himself to the enemy."
+    },
+    {
+      "path": "rules.2.conditions,parameters",
+      "issue": "대기시간 감소의 실제 낫 적중 범위와 초 단위 역할이 약하다.",
+      "correction": "낫 실제 적중과 2초 대기시간 감소를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "If this Ability hits, its Cooldown is reduced by 2 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,254 @@
+{
+  "summary": "충격파가 적을 밀쳐내고 지형에 닿으면 폭발합니다. 폭발은 지형 외곽을 따라 적을 기절시키고 물리 피해를 줍니다. 충격파가 지나간 강이나 수풀도 지연 폭발해 같은 피해와 기절을 줍니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "enemy",
+          "text": "충격파가 적을 뒤로 밀쳐냅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Qiyana launches a shockwave that Knocks Back enemies and detonates when it hits terrain."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충격파가 지형에 적중해 폭발"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "폭발이 지형 외곽 전체를 따라 적을 기절시킵니다. 기절 시간은 충격파가 이동한 거리에 따라 감소합니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "폭발은 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "폭발은 대상의 최대 체력에 비례한 추가 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": "maxHealth",
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The explosion follows the entire edge of the terrain, Stunning for between 0.5 and 1 seconds and dealing (100/200/300 + (125% bonus Attack Damage)) plus 10% max Health physical damage. Stun duration scales down with distance the shockwave has travelled."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "충격파가 강이나 수풀을 통과한 뒤 지연 폭발"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "충격파가 통과한 강이나 수풀도 지연 폭발해 적을 같은 시간 동안 기절시킵니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "강이나 수풀의 지연 폭발은 같은 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Any river or brush the shockwave passes through also explode after a delay for the same damage and Stun."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The explosion follows the entire edge of the terrain, Stunning for between 0.5 and 1 seconds and dealing (100/200/300 + (125% bonus Attack Damage)) plus 10% max Health physical damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "기절 지속시간이 충격파 이동 거리에 따라 감소하지만, 감소 공식은 제시되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Stun duration scales down with distance the shockwave has travelled."
+        }
+      ]
+    }
+  ]
+}

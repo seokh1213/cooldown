@@ -1,0 +1,81 @@
+{
+  "id": "Shen.P",
+  "sourceHash": "6c764bb6ce94937650f63e52fc42661d42c4c0e7f3ba10a6f91feddebd16cd0b",
+  "beforeCandidateHash": "390c2d1cc7e9a2ca92f5016a5e58f740d0811032097d5a979ffd09316661ebae",
+  "candidateHash": "27cd23a199699d37aaf509d6023412aebd1d60ee084f06cf3a1a212eabcad2c7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "스킬사용후47~120+추가HP13%보호막2.5초,11초쿨타임,다른아군/적챔피언스킬영향시4~8초감소,다른스킬이쓰는기의검을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster other eq 이 보호막 효과의11초 재사용 대기시간이 준비된 상태 → caster: 스킬 사용 후 보호막을 얻습니다. / amount=47/120 [level_range]; stat_coefficient=13% (caster bonusHealth) [formula_components]; duration_seconds=2.5 [scalar] | caster: 이 보호막 효과의 기본 재사용 대기시간은11초입니다. / cooldown_seconds=11 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target other eq 자신이 아닌 아군 또는 적 챔피언에게 스킬로 성공적으로 영향을 준 경우 → caster: 다른 아군 또는 적 챔피언에게 쉔의 스킬이 성공적으로 영향을 주면 이 보호막 효과의 재사용 대기시간이4~8초 감소합니다. / cooldown_seconds=4.0/8.0 [level_range]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 다른 스킬이 사용하는 기의 검을 지닙니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.1",
+      "issue": "쿨타임 감소조건이any대상이어서 다른챔피언 제한을누락했다.",
+      "correction": "자신외아군/적챔피언영향으로한정했다.",
+      "sourceId": "ko:body",
+      "quote": "아군 또는 적 챔피언에게 스킬이 적중할 때마다"
+    },
+    {
+      "path": "rules.0",
+      "issue": "보호막의11초기본쿨타임이빠졌고47~120레벨범위기본값이양끝별level_range로분할됐다.",
+      "correction": "11초쿨타임/준비조건을복구하고47~120레벨범위기본보호막으로묶었다.",
+      "sourceId": "en:body",
+      "quote": "This effect has a 11 second Cooldown"
+    },
+    {
+      "path": "rules.2",
+      "issue": "다른스킬이사용하는기의검효과가누락됐다.",
+      "correction": "기의검보유패시브를보존했다.",
+      "sourceId": "en:body",
+      "quote": "Shen has a Spirit Blade that his other Abilities use."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

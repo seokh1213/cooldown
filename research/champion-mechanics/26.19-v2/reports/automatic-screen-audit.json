@@ -1,0 +1,380 @@
+{
+  "scope": "Purpose-selected audit of ten substantive automatic-screen findings from Graves, Kayn, Morgana, Malzahar and Nami, outside the previously final-reviewed 90-slot group.",
+  "boundary": "This evaluates individual automatic allegations against frozen source extraction, not live game mechanics or complete candidate approval. It is a purposive sample and cannot estimate population accuracy, precision or the number of remaining errors.",
+  "selection": "Initially requested high findings; all five reports had zero high findings. Root explicitly broadened to medium. Select at most two per champion, prioritizing actor, trigger, scope and number meaning, excluding style. Selected exactly two per champion, ten findings across eight candidate slots; no further findings were audited.",
+  "hashAlgorithm": "sources.digest: SHA-256 of JSON.stringify(parsed object), for candidate and screen-report hashes. sourceHash comes from each frozen input job.",
+  "pathConvention": "Actual candidate paths are JSON Pointers; screenFindingIndex is zero based. Original dotted screen pointers are normalized separately. All related paths point to the same candidate.",
+  "classifications": {
+    "confirmed": "The inspected allegation is a definite source-extraction error in value, event, ownership or scope.",
+    "false_positive": "The inspected allegation is absent, misunderstands subject/effect ownership, or is already preserved in another rule.",
+    "source_ambiguous": "Supplied source is insufficient to settle the inspected allegation."
+  },
+  "sampleCounts": {
+    "selected": 10,
+    "confirmed": 7,
+    "false_positive": 3,
+    "source_ambiguous": 0,
+    "incorrectScreenPaths": 1
+  },
+  "severityNote": "All selected automated severity labels are medium. Verdict assesses substantive source correctness independently; no error-rate extrapolation or full slot acceptance is claimed.",
+  "reviewedIds": [
+    "Graves.P",
+    "Graves.Q",
+    "Kayn.P",
+    "Kayn.R",
+    "Morgana.P",
+    "Morgana.W",
+    "Malzahar.W",
+    "Nami.E"
+  ],
+  "screenReportChecks": [
+    {
+      "champion": "Graves",
+      "screenReportPath": "reports/screens/Graves.json",
+      "screenReportHash": "7e5c8cfec69b0e0228f003de17090634b1271612dffcfd32160fee767d159f66",
+      "availableSeverityCounts": {
+        "medium": 8
+      },
+      "currentMatchingSlots": 5,
+      "staleSlots": [],
+      "selectedFindings": 2
+    },
+    {
+      "champion": "Kayn",
+      "screenReportPath": "reports/screens/Kayn.json",
+      "screenReportHash": "387ed0288dff1cfa121f19959a36627a490cfcb3c11f3bb384e5be5cf97f4c4e",
+      "availableSeverityCounts": {
+        "medium": 18
+      },
+      "currentMatchingSlots": 5,
+      "staleSlots": [],
+      "selectedFindings": 2
+    },
+    {
+      "champion": "Morgana",
+      "screenReportPath": "reports/screens/Morgana.json",
+      "screenReportHash": "2402552a3a525e9de8a9a69602b9acb17147b8b04053df3e6045fd206efe9e3f",
+      "availableSeverityCounts": {
+        "medium": 11
+      },
+      "currentMatchingSlots": 5,
+      "staleSlots": [],
+      "selectedFindings": 2
+    },
+    {
+      "champion": "Malzahar",
+      "screenReportPath": "reports/screens/Malzahar.json",
+      "screenReportHash": "f490f266a3b7eee5202148ac79f2930643bc32b50eefc22bcf012080b0531f3a",
+      "availableSeverityCounts": {
+        "medium": 7
+      },
+      "currentMatchingSlots": 5,
+      "staleSlots": [],
+      "selectedFindings": 2
+    },
+    {
+      "champion": "Nami",
+      "screenReportPath": "reports/screens/Nami.json",
+      "screenReportHash": "1a81ec4390e22c26f724e7344e0a4e25f726cbd78bc4154624383cd298ec8ace",
+      "availableSeverityCounts": {
+        "medium": 5
+      },
+      "currentMatchingSlots": 5,
+      "staleSlots": [],
+      "selectedFindings": 2
+    }
+  ],
+  "entries": [
+    {
+      "auditId": "screen-audit-1",
+      "champion": "Graves",
+      "id": "Graves.P",
+      "screenFindingIndex": 4,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Graves.json",
+      "screenReportHash": "7e5c8cfec69b0e0228f003de17090634b1271612dffcfd32160fee767d159f66",
+      "screenCandidatePath": "/rules/4/effects/0/parameters/0",
+      "screenIssue": "감소량 25%를 `damage_multiplier`로 기록해 피해가 25%만큼 적용되는 값처럼 읽힙니다. 원문은 피해가 25% 감소한다고 합니다.",
+      "screenSourceQuote": "Structures take 25% reduced damage.",
+      "candidatePath": "candidates/Graves.P.json",
+      "candidateHash": "be998fac4af31b679a4c37c3d936f69f8fb6ac4342ed107206c6818f686b342d",
+      "sourceHash": "feefb7483056a9489a0b43cf3085066571548b6b0837fa77c085b756cc183389",
+      "screenCandidateHash": "be998fac4af31b679a4c37c3d936f69f8fb6ac4342ed107206c6818f686b342d",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "confirmed",
+      "errorType": "reduction_as_remaining_multiplier",
+      "actualCandidatePath": "/rules/4/effects/0/parameters/0",
+      "relatedPaths": [
+        "/rules/4/effects/0/text"
+      ],
+      "sourceQuote": "Structures take 25% reduced damage.",
+      "basis": "The scalar damage_multiplier is the source 25% reduction, so the typed record applies 0.25 rather than retaining the source's remaining portion (0.75). The effect text only says reduced damage and no alternate rule repairs this number meaning.",
+      "correction": "Keep 25% as a named reduction in text/other or formula components; do not use it as the remaining damage multiplier or invent a new number ref."
+    },
+    {
+      "auditId": "screen-audit-2",
+      "champion": "Graves",
+      "id": "Graves.Q",
+      "screenFindingIndex": 6,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Graves.json",
+      "screenReportHash": "7e5c8cfec69b0e0228f003de17090634b1271612dffcfd32160fee767d159f66",
+      "screenCandidatePath": "/rules/1/conditions",
+      "screenIssue": "폭발 조건에 `time = 1`과 `activation = 지형 충돌`을 함께 넣어 두 조건이 모두 충족되어야 하는 것처럼 구조화했습니다. 원문은 둘 중 하나가 발생하면 폭발한다고 명시하고 gap도 OR 관계를 설명합니다.",
+      "screenSourceQuote": "After 1 second or after colliding with terrain, it detonates",
+      "candidatePath": "candidates/Graves.Q.json",
+      "candidateHash": "3ec35759180c0a6c4040176dd87a5d97795e2102cad9e9278b1b5c4c7e1a6430",
+      "sourceHash": "08e5d88dc2f6298af922c6d481b6a96017a860bbdf4a5d83b675b70920f359f2",
+      "screenCandidateHash": "3ec35759180c0a6c4040176dd87a5d97795e2102cad9e9278b1b5c4c7e1a6430",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "confirmed",
+      "errorType": "or_scope_encoded_as_and",
+      "actualCandidatePath": "/rules/1/conditions",
+      "relatedPaths": [
+        "/gaps/0",
+        "/summary"
+      ],
+      "sourceQuote": "After 1 second or after colliding with terrain, it detonates",
+      "basis": "The only explosion rule requires time=1 AND terrain-collision activation. Both tooltips give alternatives, and even the candidate gap describes OR. No separate time-only or collision-only explosion rule preserves the missing alternatives.",
+      "correction": "Represent alternative explosion routes separately or with an explicit text disjunction; remove the contradictory conjunction."
+    },
+    {
+      "auditId": "screen-audit-3",
+      "champion": "Kayn",
+      "id": "Kayn.P",
+      "screenFindingIndex": 0,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Kayn.json",
+      "screenReportHash": "387ed0288dff1cfa121f19959a36627a490cfcb3c11f3bb384e5be5cf97f4c4e",
+      "screenCandidatePath": "/rules/0/trigger/event",
+      "screenIssue": "피해를 입히는 주체가 케인이라고 원문은 한정하지 않는데, 규칙은 `damage_taken`으로 케인이 피해를 받는 사건을 조건으로 합니다. 이는 충전 획득 사건을 잘못 나타냅니다.",
+      "screenSourceQuote": "Damaging ranged champions charges the Shadow Assassin, and damaging melee champions charges the Darkin Slayer.",
+      "candidatePath": "candidates/Kayn.P.json",
+      "candidateHash": "3fb8be958101b640d38d32f2a2ba2b411355dcf1cb6daf0262b0ef5f23c9d251",
+      "sourceHash": "0cb64b258e6a7f605ce5fab719b9841414f0d9714e626e1cc336663b1fe77335",
+      "screenCandidateHash": "3fb8be958101b640d38d32f2a2ba2b411355dcf1cb6daf0262b0ef5f23c9d251",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "false_positive",
+      "errorType": null,
+      "actualCandidatePath": "/rules/0/trigger",
+      "relatedPaths": [
+        "/rules/0/conditions",
+        "/rules/0/effects/0/subject"
+      ],
+      "sourceQuote": "Damaging ranged champions charges the Shadow Assassin",
+      "basis": "The report says damage_taken makes Kayn take damage, but trigger.subject is target, not caster; the ranged enemy is the damage recipient and caster receives charge. Thus the alleged actor reversal is absent. The source's omitted detailed damage-origin qualification is separate from this inspected claim and is not silently promoted into a confirmed defect.",
+      "correction": "Reject this actor-reversal finding; inspect both event and subject before proposing a trigger change."
+    },
+    {
+      "auditId": "screen-audit-4",
+      "champion": "Kayn",
+      "id": "Kayn.R",
+      "screenFindingIndex": 16,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Kayn.json",
+      "screenReportHash": "387ed0288dff1cfa121f19959a36627a490cfcb3c11f3bb384e5be5cf97f4c4e",
+      "screenCandidatePath": "/rules/8/trigger/event",
+      "screenIssue": "다르킨 회복은 케인이 빠져나올 때 발생하지만, 2.5초 경과에만 연결해 재사용 후 빠져나오는 경우를 놓칩니다.",
+      "screenSourceQuote": "Darkin Slayer: Instead deals (15% + (0.1% bonus Attack Damage)) max Health physical damage and restores (11.25% + (7.5% per 100 bonus Attack Damage)) Health (75% damage amount).",
+      "candidatePath": "candidates/Kayn.R.json",
+      "candidateHash": "3776791e74c17c864d39a3d1029e784041061ce89d973df2a93ff9353762117a",
+      "sourceHash": "20936130fc07cd4d22443473e852e640ccd89f1da5c077e2fa7436798b07c61c",
+      "screenCandidateHash": "3776791e74c17c864d39a3d1029e784041061ce89d973df2a93ff9353762117a",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "false_positive",
+      "errorType": null,
+      "actualCandidatePath": "/rules/8/trigger",
+      "relatedPaths": [
+        "/rules/8/effects/0",
+        "/rules/9/trigger",
+        "/rules/9/conditions",
+        "/rules/9/effects/0"
+      ],
+      "sourceQuote": "After 2.5 seconds or after Recasting, Kayn bursts out",
+      "basis": "Rule 8 is the timed Darkin heal branch. Rule 9 explicitly has recast, Darkin Slayer condition, and the same caster heal formula/effect. The alleged omitted recast heal is already preserved elsewhere in this candidate.",
+      "correction": "Reject the missing-recast finding after reviewing both timed and recast branches."
+    },
+    {
+      "auditId": "screen-audit-5",
+      "champion": "Morgana",
+      "id": "Morgana.P",
+      "screenFindingIndex": 0,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Morgana.json",
+      "screenReportHash": "2402552a3a525e9de8a9a69602b9acb17147b8b04053df3e6045fd206efe9e3f",
+      "screenCandidatePath": "/rules/0/trigger/subject",
+      "screenIssue": "발동 주체를 `target`으로 지정했지만, 원문에서 회복하는 주체는 모르가나입니다.",
+      "screenSourceQuote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters.",
+      "candidatePath": "candidates/Morgana.P.json",
+      "candidateHash": "1cc99e767b233d8dcd588427d842c284f05ecfc03ca33d5d4ec6bcfa57630947",
+      "sourceHash": "b417a9da265294a7cb96f3d4d1f45bc3248273f7e9fa0501ac3c0907eda89109",
+      "screenCandidateHash": "1cc99e767b233d8dcd588427d842c284f05ecfc03ca33d5d4ec6bcfa57630947",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "false_positive",
+      "errorType": null,
+      "actualCandidatePath": "/rules/0/trigger/subject",
+      "relatedPaths": [
+        "/rules/0/trigger/event",
+        "/rules/0/effects/0/subject",
+        "/rules/0/effects/0/text"
+      ],
+      "sourceQuote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters.",
+      "basis": "The event is ability_hit on target, the damaged champion. The heal effect is independently and correctly on caster, and its text says Morgana heals from her ability damage. The automated finding conflates the hit recipient with the heal recipient.",
+      "correction": "Reject this ownership finding; keep the effect recipient distinct from the trigger event recipient."
+    },
+    {
+      "auditId": "screen-audit-6",
+      "champion": "Morgana",
+      "id": "Morgana.W",
+      "screenFindingIndex": 9,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Morgana.json",
+      "screenReportHash": "2402552a3a525e9de8a9a69602b9acb17147b8b04053df3e6045fd206efe9e3f",
+      "screenCandidatePath": "/rules/1/trigger",
+      "screenIssue": "재사용 대기시간 감소 이벤트를 `damage_taken`으로 지정했지만, 원문 사건은 영혼 흡수로 모르가나가 회복될 때입니다.",
+      "screenSourceQuote": "This Ability's Cooldown is reduced by 5% every time Morgana is healed by Soul Siphon.",
+      "candidatePath": "candidates/Morgana.W.json",
+      "candidateHash": "a128462e0d6a3d26979007178801fd8726692caa3c9c7ee8f138b12190fa792f",
+      "sourceHash": "5bdaf02e656234f52179921cad1cc4b87847100a3f15f0cce9d7d41032eae32a",
+      "screenCandidateHash": "a128462e0d6a3d26979007178801fd8726692caa3c9c7ee8f138b12190fa792f",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "confirmed",
+      "errorType": "heal_event_encoded_as_incoming_damage",
+      "actualCandidatePath": "/rules/1/trigger/event",
+      "relatedPaths": [
+        "/rules/1/conditions/0",
+        "/rules/1/effects/0"
+      ],
+      "sourceQuote": "This Ability's Cooldown is reduced by 5% every time Morgana is healed by Soul Siphon.",
+      "basis": "The source reduces cooldown on Soul Siphon healing, but the sole cooldown rule requires damage_taken by caster plus a healed-by-Soul-Siphon predicate. The predicate does not replace the wrong event; incoming damage is an extra unsupported requirement.",
+      "correction": "Use an explicit Soul Siphon heal event, or other plus a named healing predicate if the contract lacks a healing trigger; keep the 5% cooldown reduction."
+    },
+    {
+      "auditId": "screen-audit-7",
+      "champion": "Malzahar",
+      "id": "Malzahar.W",
+      "screenFindingIndex": 2,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Malzahar.json",
+      "screenReportHash": "f490f266a3b7eee5202148ac79f2930643bc32b50eefc22bcf012080b0531f3a",
+      "screenCandidatePath": "/rules/1/effects/0/parameters/0",
+      "screenIssue": "‘count’에 2를 넣었지만 인용 출처의 숫자 2는 패시브 중첩 최대치이며, 소환 수는 기본 한 마리와 중첩당 한 마리 추가입니다. 이 값은 소환 수가 아닙니다.",
+      "screenSourceQuote": "Active: Malzahar summons a Voidling plus an additional Voidling per stack.",
+      "candidatePath": "candidates/Malzahar.W.json",
+      "candidateHash": "98acdd983752e0e21667146d7927b8a545b7fd38db90a27dbce9d5622d16065f",
+      "sourceHash": "0f76c6b8fc8890b7d3f0f3acfbd4324cb84bb1f58c72d44e001c6b54859f60c8",
+      "screenCandidateHash": "98acdd983752e0e21667146d7927b8a545b7fd38db90a27dbce9d5622d16065f",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "confirmed",
+      "errorType": "stack_cap_used_as_summon_count",
+      "actualCandidatePath": "/rules/1/effects/0/parameters/0",
+      "relatedPaths": [
+        "/rules/1/effects/0/text",
+        "/rules/0/effects/0/parameters/1"
+      ],
+      "sourceQuote": "Active: Malzahar summons a Voidling plus an additional Voidling per stack.",
+      "additionalQuotes": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Malzahar's other Abilities give him a stack when cast (max 2)."
+        }
+      ],
+      "basis": "The summon effect's count ref is en:body:n0=2, which comes from max stack cap. The source and effect text instead give one base Voidling plus one per stack, hence a variable summon count. Correct text does not repair a constant count=2.",
+      "correction": "Remove the cap ref from summoned count; preserve base one plus per-held-stack one in text/formula annotations and keep 2 only as the stack cap."
+    },
+    {
+      "auditId": "screen-audit-8",
+      "champion": "Malzahar",
+      "id": "Malzahar.W",
+      "screenFindingIndex": 3,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Malzahar.json",
+      "screenReportHash": "f490f266a3b7eee5202148ac79f2930643bc32b50eefc22bcf012080b0531f3a",
+      "screenCandidatePath": "/rules/5/conditions/0",
+      "screenIssue": "조건을 모든 monster 대상으로 설정했지만 본문은 epic monsters로 한정합니다.",
+      "screenSourceQuote": "Voidlings deal 50% damage to epic monsters.",
+      "candidatePath": "candidates/Malzahar.W.json",
+      "candidateHash": "98acdd983752e0e21667146d7927b8a545b7fd38db90a27dbce9d5622d16065f",
+      "sourceHash": "0f76c6b8fc8890b7d3f0f3acfbd4324cb84bb1f58c72d44e001c6b54859f60c8",
+      "screenCandidateHash": "98acdd983752e0e21667146d7927b8a545b7fd38db90a27dbce9d5622d16065f",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "confirmed",
+      "errorType": "epic_only_modifier_applied_to_all_monsters",
+      "actualCandidatePath": "/rules/5/conditions/0",
+      "relatedPaths": [
+        "/rules/5/effects/0/text",
+        "/rules/5/effects/0/parameters/0"
+      ],
+      "sourceQuote": "Voidlings deal 50% damage to epic monsters.",
+      "basis": "The only typed condition is target_type=monster, so the replacement 50% multiplier applies to ordinary monsters too. Epic is present in effect text, but no epic-only predicate or separate rule restricts the typed scope. The source explicitly limits this modifier to epic monsters.",
+      "correction": "Add a named epic-monster condition alongside monster type; keep the 50% multiplier restricted to that category."
+    },
+    {
+      "auditId": "screen-audit-9",
+      "champion": "Nami",
+      "id": "Nami.E",
+      "screenFindingIndex": 0,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Nami.json",
+      "screenReportHash": "1a81ec4390e22c26f724e7344e0a4e25f726cbd78bc4154624383cd298ec8ace",
+      "screenCandidatePath": "/rules/2/conditions/0",
+      "screenIssue": "강화 표식의 소유자를 시전자(`caster`)로 검사하지만, 원문상 표식을 받는 쪽은 아군 챔피언입니다. 이 조건은 표식 소유자를 잘못 지정합니다.",
+      "screenSourceQuote": "Nami empowers an allied champion's next 3 Attacks and Abilities for 6 seconds, causing them to Slow their targets by (15/20/25/30/35% + (5% per 100 Ability Power)) for 1s and deal an additional (20/35/50/65/80 + (20% Ability Power)) magic damage.",
+      "candidatePath": "candidates/Nami.E.json",
+      "candidateHash": "515bdadd993a8aa7eb4b04ea23dfbdad34385467ecadd28135bd726c4ec2d7ad",
+      "sourceHash": "e1e5ee83d9980502d088b299bd92a80c25f129b606b2f751669485570bdfbdf9",
+      "screenCandidateHash": "515bdadd993a8aa7eb4b04ea23dfbdad34385467ecadd28135bd726c4ec2d7ad",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "confirmed",
+      "errorType": "empowerment_owner_is_caster_instead_of_ally",
+      "actualCandidatePath": "/rules/2/conditions/0",
+      "relatedPaths": [
+        "/rules/0/effects/0/subject",
+        "/rules/2/trigger/subject",
+        "/rules/1/conditions/0",
+        "/rules/3/conditions/0"
+      ],
+      "sourceQuote": "Nami empowers an allied champion's next 3 Attacks and Abilities for 6 seconds",
+      "basis": "The cast creates the mark on ally and the attack/ability trigger is ally, but proc conditions test caster.mark=empowered. This checks Nami's mark instead of the empowered ally's mark, contradicting the source and mark creation. The same ownership error also appears in the slow and area branches.",
+      "correction": "Require the empowered mark on the receiving ally for these proc rules; preserve caster AP ownership separately."
+    },
+    {
+      "auditId": "screen-audit-10",
+      "champion": "Nami",
+      "id": "Nami.E",
+      "screenFindingIndex": 1,
+      "screenSeverity": "medium",
+      "screenReportPath": "reports/screens/Nami.json",
+      "screenReportHash": "1a81ec4390e22c26f724e7344e0a4e25f726cbd78bc4154624383cd298ec8ace",
+      "screenCandidatePath": "/rules/2/effects/0/parameters/1",
+      "screenIssue": "둔화량의 주문력 계수인 `5% per 100 Ability Power`에서 100은 비율의 분모인데, 별도의 고정 둔화량(`amount`)으로 분류되어 있습니다.",
+      "screenSourceQuote": "Nami empowers an allied champion's next 3 Attacks and Abilities for 6 seconds, causing them to Slow their targets by (15/20/25/30/35% + (5% per 100 Ability Power)) for 1s and deal an additional (20/35/50/65/80 + (20% Ability Power)) magic damage.",
+      "candidatePath": "candidates/Nami.E.json",
+      "candidateHash": "515bdadd993a8aa7eb4b04ea23dfbdad34385467ecadd28135bd726c4ec2d7ad",
+      "sourceHash": "e1e5ee83d9980502d088b299bd92a80c25f129b606b2f751669485570bdfbdf9",
+      "screenCandidateHash": "515bdadd993a8aa7eb4b04ea23dfbdad34385467ecadd28135bd726c4ec2d7ad",
+      "screenSnapshotMatches": true,
+      "sourceId": "en:body",
+      "verdict": "confirmed",
+      "errorType": "stat_ratio_denominator_encoded_as_flat_amount",
+      "actualCandidatePath": "/rules/1/effects/0/parameters/2",
+      "relatedPaths": [
+        "/rules/1/effects/0/parameters/1",
+        "/rules/2/effects/0/parameters/1"
+      ],
+      "sourceQuote": "(5% per 100 Ability Power)",
+      "basis": "The slow effect's en:body:n8=100 is role amount, not the denominator of its 5%-per-100-AP coefficient. The substantive error exists, but the automated pointer rules.2.effects.0.parameters.1 actually targets the damage effect's 20% AP coefficient. This finding has a valid issue and an incorrect localization.",
+      "correction": "Relocate the finding to rule 1's slow parameter 2 and encode 100 as the coefficient's ratio input, not an extra flat slow amount.",
+      "screenPathMismatch": true
+    }
+  ]
+}

@@ -1,0 +1,243 @@
+{
+  "summary": "적 챔피언에게 기본 공격 또는 스킬을 적중시키면 결심 중첩을 얻습니다. 중첩당 공격력이 증가하고, 결심이 가득 차면 추가 공격력이 두 배가 됩니다. 결심이 가득 찬 상태에서 사망할 피해를 입으면 경직된 뒤 부활합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "결심 중첩을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zaahen gains a stack of Determination when he hits an enemy champion with an Attack or Ability (max 12)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "결심 중첩"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "결심 중첩당 공격력이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "totalAttackDamage",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He gains (1.5% ~ 2.8%) increased Attack Damage per stack."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "결심이 가득 차면 부여되는 공격력이 두 배가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "totalAttackDamage",
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When filled with Determination, Zaahen doubles the granted Attack Damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Zaahen gains a stack of Determination when he hits an enemy champion with an Attack or Ability (max 12)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "revive",
+          "subject": "caster",
+          "text": "사망할 경우 대신 경직 상태에 들어간 뒤 부활하며, 부활 시 최대 체력의 일정 비율만큼 체력을 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When filled with Determination, Zaahen doubles the granted Attack Damage, and if he would die, he instead enters Stasis for 4 seconds then revives with (30% ~ 75%) of his max Health. Zaahen's revive has a (300 ~ 120) second Cooldown."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Zaahen gains a stack of Determination when he hits an enemy champion with an Attack or Ability (max 12)."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "툴팁은 중첩당 증가하는 공격력의 기본/추가/전체 스탯 범위를 특정하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He gains (1.5% ~ 2.8%) increased Attack Damage per stack."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "부활 재사용 대기시간이 준비되지 않은 경우 사망 시 효과가 어떻게 처리되는지는 명시되어 있지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zaahen's revive has a (300 ~ 120) second Cooldown."
+        }
+      ]
+    }
+  ]
+}

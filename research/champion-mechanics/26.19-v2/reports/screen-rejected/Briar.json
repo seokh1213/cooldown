@@ -1,0 +1,32 @@
+{
+  "findings": [
+    {
+      "id": "Briar.Q.monster_target",
+      "path": "Briar.Q.rules[3].conditions[1]",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Briar will stop prioritizing champions if she casts this Ability on a minion or monster during Blood Frenzy.",
+      "issue": "조건이 `minion`만 지정해 몬스터 대상 시 효과가 빠집니다. 원문은 미니언 또는 몬스터를 모두 포함합니다.",
+      "correction": "대상 유형 조건에 몬스터도 포함하세요."
+    },
+    {
+      "id": "Briar.W.heal_health_basis",
+      "path": "Briar.W.rules[3].effects[1].parameters[0]",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt.",
+      "issue": "회복량의 `5% Health`를 `maxHealth` 계수로 지정했지만, 인용된 원문은 체력 기준을 최대 체력이라고 한정하지 않습니다.",
+      "correction": "`maxHealth` 지정을 제거하고 체력 기준을 원문 텍스트/불확실성으로 남기세요."
+    },
+    {
+      "id": "Briar.W.summary_recast_effects",
+      "path": "Briar.W.summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Briar can Recast this Ability to empower her next Attack. It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt.",
+      "issue": "요약은 재사용 후 다음 공격이 강화된다고만 해, 잃은 체력 비례 추가 피해와 브라이어의 회복이라는 핵심 효과를 누락합니다.",
+      "correction": "요약에 강화 공격의 잃은 체력 비례 피해와 피해량 기반 회복을 명시하세요."
+    }
+  ],
+  "notes": []
+}

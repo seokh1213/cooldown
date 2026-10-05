@@ -1,0 +1,182 @@
+{
+  "id": "TahmKench.R",
+  "sourceHash": "813c9c18afb0e30eb098a5d043df50d1bb0aab6e4b1da9069210ef8339006056",
+  "beforeCandidateHash": "7596dabd67f3270ea09b83ea4b46a00065c55757c04944775c08bc13300d1625",
+  "candidateHash": "ab1bcf66a667cf46137afbfbd1e044cce2d5c746af4ec6c124a9d9063dbc5ee8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 9,
+  "checkedGapCount": 2,
+  "summaryCheck": "적3중첩/최대3초삼키기·대상최대HP복합마법피해·자기40%둔화고정·아군최대3초삼키기/조기탈출/보호막·고정중W/3초60%MS·모든아군UI·내뱉은후초당200보호막감소를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion; target mark eq 절대 미각 3중첩; target other eq 삼키는 대상이 적 챔피언 → target: 적 챔피언을 삼킨다. 재시전하면 대상을 내뱉을 수 있다. / duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 target target_type eq champion; target other eq 삼키는 대상이 적 챔피언 → target: 삼킨 적에게100/250/400 + 대상최대체력 × (15% + 자신의 주문력100당7%)의 마법피해를 준다. AP항은 대상체력비율 안의 계수다. [magic] / amount=100/250/400 [rank_values]; stat_coefficient=15% (target maxHealth) [formula_components]; stat_coefficient=7% (caster abilityPower) [formula_components]; other=100 [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 target target_type eq champion; target other eq 삼키는 대상이 적 챔피언 → caster: 적 챔피언을 삼키는 동안 둔화되고 고정된다. [slow] / amount=40% [scalar] | caster: 적 챔피언을 삼키는 동안 고정된다. [ground]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 target target_type eq champion; target activation eq 삼킨 아군을 내뱉음 → ally: 삼킨 아군은 내뱉어진 뒤 점차 감소하는 보호막을 얻는다. / amount=650/800/950 [rank_values]; stat_coefficient=100% (caster abilityPower) [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: ally의 other / 조건 ally activation eq 삼켜진 아군; ally time lt 3 → ally: 삼켜진 아군은 더 일찍 나올 수 있다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 target target_type eq champion; target activation eq 삼킨 아군 → caster: 아군을 삼키는 동안 고정된다. [ground] | caster: 아군을 삼키는 동안 심연 잠수를 시전할 수 있다. | caster: 아군을 삼킨 동안 이동 속도가 증가한다. / amount=60% (caster moveSpeed) [scalar]; duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: ally의 passive → ally: 아군은 체력 바 옆에서 이 스킬의 다음 사용 가능 상태를 확인할 수 있다. | enemy: 적은 이 스킬의 다음 사용 가능 상태를 확인할 수 없다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: ally의 passive / 조건 ally activation eq 내뱉어진 후 보호막 감소 → ally: 내뱉어진 아군의 보호막은 초당200씩 감소한다. / other=200 [scalar]"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 ally target_type eq champion → ally: 아군 챔피언을 최대3초 동안 삼킨다. 재시전하면 내뱉는다. / duration_seconds=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2.conditions",
+      "issue": "적대신empowered상태를필수로요구",
+      "correction": "적챔피언삼키기범위조건으로수정",
+      "sourceId": "en:body",
+      "quote": "Enemy Champions: Require 3 stacks of An Acquired Taste."
+    },
+    {
+      "path": "rules.6.conditions",
+      "issue": "UI를삼킨아군에게만허용",
+      "correction": "모든아군에사용가능UI",
+      "sourceId": "en:body",
+      "quote": "Allies can see when this spell is available next to your health bar (enemies cannot)."
+    },
+    {
+      "path": "rules.7",
+      "issue": "삼킨후3초초과시에만보호막감소·조기내뱉기누락",
+      "correction": "내뱉어진후초당200감소",
+      "sourceId": "en:body",
+      "quote": "Shield decays by 200 per second."
+    },
+    {
+      "path": "rules.8",
+      "issue": "아군을삼키는핵심규칙부재",
+      "correction": "아군최대3초삼키기추가",
+      "sourceId": "en:body",
+      "quote": "Ally Champions: Are devoured for up to 3 seconds"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "적피해는100/250/400 + 대상최대체력×(15%+자신AP100당7%)라고명시된다.스키마의AP계수를독립선형피해로실행할수없어복합구성요소와텍스트로보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "영문은보호막이초당200감소한다고명시하나한국어는200초에걸쳐사라진다고다르다.영문구체적본문의초당200을우선한다.부여시점도영문은삼킨아군부여,한국어는내뱉은후라고차이가있어내뱉은후보호막효과로보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.8",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

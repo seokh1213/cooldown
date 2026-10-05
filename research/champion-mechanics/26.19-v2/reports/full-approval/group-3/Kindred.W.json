@@ -1,0 +1,169 @@
+{
+  "id": "Kindred.W",
+  "sourceHash": "46c289e1522383a2f0723f46272b47651e46fb3861dd943ceaaf1b22a9da4095",
+  "beforeCandidateHash": "7edb2108f39d1c6ab1a706264efe97c6738866fd6ba6d60fc262d480dc129276",
+  "candidateHash": "d95467ccbd65909def5c4c6d2d01e0d694211b5a0018f932799414326de61623",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 4,
+  "summaryCheck": "이동/공격중첩·100중첩다음공격최대47~81자기잃은HP기반회복·영역지정/늑대마지막양공격대상·늑대피해25~45+추가AD20%+AP20%+대상현재HP2.5%·AS연동·정글+50%/2초50%둔화를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 이동과 공격으로 쌓은 중첩이 기준에 도달; caster resource gte 100 → caster: 다음 공격 시 체력을 회복합니다. 회복량은 잃은 체력에 따라 달라지며 해당 범위의 최대 회복량까지입니다. / max_amount=47/81 [level_range]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: summon의 attack / 조건 target other eq 양이 마지막으로 공격한 적 → target: 늑대가 양이 마지막으로 공격한 적을 물어 기본 피해와 현재 체력 비례 추가 마법 피해를 입힙니다. [magic] / amount=25/30/35/40/45 [rank_values]; stat_coefficient=20% (caster bonusAttackDamage) [scalar]; stat_coefficient=20% (caster abilityPower) [scalar]; stat_coefficient=2.5% [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: summon의 attack / 조건 target target_type eq monster; target other eq 정글 몬스터 → target: 정글몬스터에대한늑대피해는50%증가한다. [magic] / other=50% [scalar] | target: 정글 몬스터를 둔화시킵니다. [slow] / amount=50% [scalar]; duration_seconds=2 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster activation eq 이동 또는 기본 공격 → caster: 이동하거나 공격하면 회복 중첩을 얻는다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → summon: 늑대는 킨드레드의공격속도가높을수록더빠르게공격한다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 킨드레드가지대를지정하고늑대에게양이마지막공격한적을물도록명령한다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "최대회복량범위47~81을최소47보장처럼기록",
+      "correction": "max_amount범위로통합",
+      "sourceId": "en:body",
+      "quote": "restores up to (47 ~ 81) Health"
+    },
+    {
+      "path": "rules.1",
+      "issue": "늑대공격을시전피해/무관same_target조건",
+      "correction": "summon attack·양의마지막공격적조건",
+      "sourceId": "en:body",
+      "quote": "ordering Wolf to bite at the last enemy Lamb Attacked"
+    },
+    {
+      "path": "rules.2.effects.0",
+      "issue": "50%증가를50%피해배수로기록",
+      "correction": "other50%증가텍스트",
+      "sourceId": "en:body",
+      "quote": "Wolf deals 50% increased damage"
+    },
+    {
+      "path": "rules.3-5",
+      "issue": "중첩획득·늑대AS연동·지대지정핵심효과누락",
+      "correction": "본문효과복구",
+      "sourceId": "en:body",
+      "quote": "Wolf strikes faster based on Kindred's Attack Speed."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 215,
+      "verdict": "repaired",
+      "reason": "요약에정글피해50%증가와2초50%둔화및다른핵심효과를명시했다."
+    },
+    {
+      "index": 216,
+      "verdict": "repaired",
+      "reason": "47~81을레벨별최대회복량범위max_amount로통합했다."
+    },
+    {
+      "index": 217,
+      "verdict": "repaired",
+      "reason": "same_target을양의마지막공격적이라는텍스트조건으로교체했다."
+    },
+    {
+      "index": 218,
+      "verdict": "repaired",
+      "reason": "총피해50%배수와구별해50%증가를other역할과텍스트로보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "스키마에 이동과 공격으로 쌓이는 중첩을 나타내는 전용 필드가 없어 기타 텍스트와 resource 조건으로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "회복량은 잃은 체력에 따라 달라지고 제시된 값은 가능한 최대 회복량 범위이지만, 구체적인 식은 알 수 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "현재 체력 비례 피해의 stat 목록에 current Health 항목이 없어 계수를 stat에 연결할 수 없습니다. 피해 대상의 현재 체력 기준이라는 내용을 텍스트로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 3,
+      "reason": "unsupported_formula",
+      "detail": "늑대의 공격 속도가 킨드레드의 공격 속도에 따라 달라지지만 구체적인 관계식은 제시되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "4 unresolved source gaps"
+      }
+    ]
+  }
+}

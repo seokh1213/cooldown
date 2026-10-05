@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Jhin.Q",
+      "sourceHash": "45d5fcf3a814e3b3b6d38aad198f9dd00e49780013e4e7e2157bdef0dc180539",
+      "candidateHash": "e92a8012a37c26fc7f353c69d9b48b2736665cacc51c668bfabdebc34bd88de1"
+    },
+    {
+      "id": "Jhin.E",
+      "sourceHash": "411a684defcea13404ffc970a2ce3212556ce53085160b22e8eb63a8a178aee8",
+      "candidateHash": "c1dba490a6e801c48b80a380497ec8f9e09f8926bab04ab3bf3571b5a9358bcb"
+    },
+    {
+      "id": "Jhin.P",
+      "sourceHash": "6900ea50294bb9367ffa9e67b6d32a66967839baca5cf7a7a6c2821e1791e59a",
+      "candidateHash": "bec753448d2d332c31bbe57e01532bd32b62772476587e397b46a9081fafdf83"
+    },
+    {
+      "id": "Jhin.R",
+      "sourceHash": "47da4d453d366f7a828625d4187faa3e601f2789d167fd7aa330931de9745c59",
+      "candidateHash": "4789863886532a6a0520d3594d3bccfdebdae67e8ad7764b44bc996d3f9df109"
+    },
+    {
+      "id": "Jhin.W",
+      "sourceHash": "bd0e6fc247ce6c1634926402620adc17bd81bb034fceb0b8010a2a62f562e8e6",
+      "candidateHash": "4743ae2be89c0239dc14b7540c34878d666189f609c2d84d9195f7bea455f81e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Jhin.E",
+      "path": "rules.3.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 2 seconds, the trap detonates, dealing (20/80/140/200/260 + (120% Attack Damage) + (100% Ability Power)) magic damage.",
+      "issue": "폭발 피해 대상을 `nearby_enemies`로 고정했지만 원문은 피해 대상 범위를 명시하지 않습니다.",
+      "correction": "대상 범위를 미확정으로 두고, 원문에서 확인되는 폭발 피해와 피해 유형만 기록하세요."
+    },
+    {
+      "id": "Jhin.E",
+      "path": "rules.5.effects.0.parameters.0.numbers",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Lotus Trap hits deal 65% damage to minions, and enemies recently hit by another Lotus Trap.",
+      "issue": "최근 다른 함정에 맞은 적도 65% 피해를 받는 것으로 수치를 적용했습니다. 원문은 65%가 미니언에게 적용된다고만 명시하고, 해당 적의 피해 비율은 제시하지 않습니다.",
+      "correction": "이 효과의 65% 수치는 미니언 조건에만 연결하고, 최근 다른 함정에 맞은 적은 수치가 미확정인 별도 효과로 두세요."
+    },
+    {
+      "id": "Jhin.E",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "and enemies recently hit by another Lotus Trap.",
+      "issue": "조건을 `mark present`로 표현해 적중 시점의 최근성 및 다른 연꽃 함정에 맞았다는 조건이 빠졌습니다.",
+      "correction": "조건에 최근 적중과 다른 연꽃 함정이라는 출처를 보존하고, 표식 존재로 단정하지 마세요."
+    },
+    {
+      "id": "Jhin.P",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Jhin's critical strikes deal 25% less damage but grant him (14% + (44% bonus Attack Speed)) Move Speed for 2 seconds.",
+      "issue": "요약에서 치명타로 얻는 이동 속도의 지속 시간 2초가 빠져 독자가 지속 효과의 범위를 알 수 없습니다.",
+      "correction": "치명타가 진에게 2초 동안 이동 속도를 부여한다고 요약하세요."
+    },
+    {
+      "id": "Jhin.R",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Jhin sets up and channels, enabling him to fire 4 super shots, each dealing between (64/128/192 + (25% Attack Damage)) and (256/512/768 + (100% Attack Damage)) physical damage to the first champion hit based on their percentage missing health and Slowing them by 80% for 0.5 seconds.",
+      "issue": "요약에서 각 탄환의 피해 수치와 계수, 80% 둔화 및 0.5초 지속 시간이 빠졌습니다. 이는 명시된 효과를 요약에서 누락한 것입니다.",
+      "correction": "각 탄환의 피해 범위와 공격력 계수, 적중한 챔피언에 대한 80% 둔화 및 0.5초 지속 시간을 요약에 포함하세요."
+    },
+    {
+      "id": "Jhin.W",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Jhin fires a long range shot dealing (70/105/140/175/210 + (50% Attack Damage)) physical damage to the first champion hit and other enemies along the way.",
+      "issue": "요약이 처음 적중한 챔피언과 경로상의 다른 모든 적에게 피해를 준다는 대상을 보존하지 않아 피해 범위가 불명확합니다.",
+      "correction": "처음 적중한 챔피언과 경로상 다른 적 모두에게 물리 피해를 준다고 명시하세요."
+    }
+  ],
+  "notes": []
+}

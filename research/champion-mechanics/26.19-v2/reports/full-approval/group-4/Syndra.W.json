@@ -1,0 +1,131 @@
+{
+  "id": "Syndra.W",
+  "sourceHash": "a83c4e755f2fc69e3ca12b9e042ce781e17a812d987f6ef359d87ea08c09ea8b",
+  "beforeCandidateHash": "35bf7e7b65f27e82831e9f01da5dff55619c1938a24213923d50de91c53649bb",
+  "candidateHash": "caab43413312184b7b5ed0fea54e8f0e590b203951b03b0c19096df708df8439",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "어둠구체/적미니언/비에픽몬스터를잡아끌고5초내재사용,던진물체적중의마법피해와25%1.5초둔화,60조각추가고정피해비율,미지정시최근접구체및이동중시전을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq any, target.other eq 어둠 구체, 적 미니언 또는 비에픽 몬스터 적용. target: 대상을 붙잡아 끌고 다닐 수 있으며, 재사용해 던집니다.; duration_seconds=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 target.other eq 던진 물체에 적중한 적 적용. target: 던진 물체가 마법 피해를 입힙니다. (magic); amount=70/100/130/160/190  rank_values, stat_coefficient=65% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 target.other eq 던진 물체에 적중한 적 적용. target: 대상을 둔화시킵니다. (slow); amount=25%  scalar, duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 caster.resource eq 분노의 조각60개 이상을 보유함, target.other eq 던진 물체에 적중한 적 적용. target: 추가 고정 피해를 입힙니다. 툴팁은 이 피해의 기준 수식을 설명하지 않습니다. (true); ratio_output=12%  formula_components, stat_coefficient=2% caster의 abilityPower formula_components, ratio_input=100  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq 대상을 지정하지 않고 이 스킬을 시전함 적용. caster: 가장가까운어둠구체를잡는다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq 이 스킬을 시전함 적용. caster: 이동중에도스킬을시전할수있다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-3",
+      "issue": "잡은유닛과던진물체에맞은적범위및조각기준불명확",
+      "correction": "적중대상과60조각보유조건명시",
+      "sourceId": "en:body",
+      "quote": "Recast: Syndra hurls the object, dealing (70/100/130/160/190 + (65% Ability Power)) magic damage and Slowing by 25% for 1.5 seconds."
+    },
+    {
+      "path": "rules.4,5",
+      "issue": "자동최근접구체및이동시전효과누락",
+      "correction": "원문조건규칙보완",
+      "sourceId": "en:body",
+      "quote": "If no target is selected, grabs nearest Dark Sphere. This Ability can be cast while moving."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "추가 고정 피해의 백분율이 어떤 기준 피해량에 적용되는지 원문에 명시되지 않아 완전한 피해량 수식을 확정할 수 없습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "id": "Nilah.P",
+  "sourceHash": "abd554f9c833df7096f077dfc1b4527494cee060d2203adf6d5f507c4a53771f",
+  "beforeCandidateHash": "77715da251c8e1f0424b2830966391f293f9771bc1125b7f61a8ecff2faae48a",
+  "candidateHash": "1fc2b67f78e383b83b50688afb6955c5d3da31395509ef336fc3ccb43c9dfb52",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 0,
+  "summaryCheck": "미니언 최후 일격 시 자기/가장 가까운 아군의 공유 손실 경험치50%, 아군 챔피언 스킬의 받은 치유7.5%·보호막15% 증가, 닐라에게 부여한 아군/자기에게 부여한 아군의 대응 증가분 공유를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.target_type eq minion 적용. caster: 경험치 분배로 잃을 경험치의 일부를 얻습니다.; amount=50%  scalar / ally: 가장 가까운 아군도 경험치 분배로 잃을 경험치의 일부를 얻습니다.; amount=50%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 아군 챔피언의 스킬로 닐라가 회복을 받음 적용. caster: 아군 챔피언의 스킬로 받은 회복 효과가 증가합니다.; amount=7.5%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 아군 챔피언의 스킬로 닐라가 보호막을 받음 적용. caster: 아군 챔피언의 스킬로 받은 보호막 효과가 증가합니다.; amount=15%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 other 사건에서 ally.other eq 아군 챔피언이 닐라를 회복시킴 적용. ally: 닐라를 회복시킨 아군이 증가한 회복량 부분만큼 자신도 회복한다.; amount=7.5%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 other 사건에서 ally.other eq 아군 챔피언이 닐라에게 보호막을 부여함 적용. ally: 닐라에게 보호막을 부여한 아군이 증가한 보호막량 부분만큼 자신도 보호막을 얻는다.; amount=15%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 other 사건에서 ally.other eq 아군 챔피언이 자신을 회복시킴 적용. caster: 아군이 자신을 회복시킨 경우 닐라도 추가 회복 효과를 얻습니다.; amount=7.5%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 other 사건에서 ally.other eq 아군 챔피언이 자신에게 보호막을 부여함 적용. caster: 아군이 자신에게 보호막을 부여한 경우 닐라도 추가 보호막 효과를 얻습니다.; amount=15%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-6",
+      "issue": "회복 또는 보호막 조건이 두 효과를 함께 발동시키는 구조",
+      "correction": "회복과 보호막 조건별 대응 효과를 분리",
+      "sourceId": "en:body",
+      "quote": "If an ally heals or shields her, they will also gain the increased amount of the shield or heal themselves."
+    },
+    {
+      "path": "summary,rules.3,4",
+      "issue": "공유 증가분이 전체 회복/보호막 증가와 혼동될 수 있음",
+      "correction": "증가한 부분만 공유함을 명시",
+      "sourceId": "en:body",
+      "quote": "If an ally heals or shields her, they will also gain the increased amount of the shield or heal themselves."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

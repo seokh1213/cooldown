@@ -1,0 +1,70 @@
+{
+  "id": "Varus.Q",
+  "sourceHash": "dcd0875a76a638a231c9247e46d933ad004cdd8f34900b8152d5c62ed0b3a26d",
+  "beforeCandidateHash": "b81a609dfc1edcf5d51753ac124b0f6686bb911e0cab6029b34a088c5a70ee36",
+  "candidateHash": "ce8cb8c45015dff8a8004753e2911044187ec4a4e76faccbb7e1f738929fb7a2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "충전20%자기둔화·4초미발사취소50%마나환급·발사물리피해/관통당15%감소최소33%·충전최대50%증가와최대80~360+추가AD120%·충전사거리증가를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 화살을 충전하는 동안 자신이 둔화됩니다. [slow] / amount=20% [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 expiry / 조건 caster time gte 4; caster followup_status neq fired → caster: 발사하지 않으면 스킬을 취소하고 소모한 마나의 일부를 돌려받습니다. / resource_refund=50% [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster activation eq fired → target: 발사한화살이물리피해를주며관통당적마다15%감소하되원래피해의33%미만으로줄지않는다. [physical] / amount=53.334/100.001/146.667/193.334/240.001 [rank_values]; stat_coefficient=80% (caster bonusAttackDamage) [formula_components]; other=15% [formula_components]; min_amount=33% [scalar] | target: 충전시간에따라화살피해와역병폭발효과가최대50%증가한다.화살피해최대값은80/150/220/290/360 + 자신추가AD120%이며별도피해를추가하지않는다. / other=50% [scalar]; max_amount=80/150/220/290/360 [rank_values]; stat_coefficient=120% (caster bonusAttackDamage) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster activation eq 화살 충전 → caster: 화살 충전 시간이 길어질수록 사거리가 증가한다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions.1",
+      "issue": "취소됐어야취소하는순환조건",
+      "correction": "미발사neq fired조건",
+      "sourceId": "en:body",
+      "quote": "if not fired, Varus will cancel the Ability"
+    },
+    {
+      "path": "rules.2.effects",
+      "issue": "15%감소/+50%증가를피해배수로오표현및최대값추가피해위험",
+      "correction": "감소/증가관계와계산된최대피해를명시하는수정효과",
+      "sourceId": "en:body",
+      "quote": "Damage and Blight detonation effects are increased by up to 50% based on charge time"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

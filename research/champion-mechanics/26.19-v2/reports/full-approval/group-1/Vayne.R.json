@@ -1,0 +1,71 @@
+{
+  "id": "Vayne.R",
+  "sourceHash": "31d33ee008ed659703fdbacdc57a8fb2031901529e03a6c6e4401d6652c262d8",
+  "beforeCandidateHash": "61d85249be96d3e0f050017472d0eca111a0818736900f9a86964ed87da719f9",
+  "candidateHash": "7a62606abd75a8812e391c121e473c0e222f5e911162ff772c62d2f3b549c471",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "8/10/12초AD35/50/65강화, 피해를 입힌 적 챔피언이그 피해 이후3초 내죽으면4초 연장/기존 최대상한, 활성 중 어둠사냥꾼90대체 이속과Q쿨30/40/50%감소/구르기1초은신을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 공격력을 얻는다. [amount n0=35/n1=50/n2=65 rank_values; duration_seconds n3=8/n4=10/n5=12 rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, target.death; 조건 target.target_type eq champion; target.other eq 베인이 피해를 준 적 챔피언이며 time은 그 피해를 입은 후 경과한 초; target.time lte n7=3; caster.other eq 결전의 시간 효과가 활성인 동안. caster other: 궁극기의 지속시간이 연장되며, 기존 최대 지속시간을 초과해 늘어날 수 없다. [duration_seconds n6=4 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 결전의 시간 효과가 활성인 동안; caster.other eq 어둠 사냥꾼의 이동 속도 효과가 발동 중. caster stat_modifier: 궁극기 활성 중 어둠 사냥꾼의 이동 속도 증가량은90으로 대체된다. [amount n8=90 scalar] flags=replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 결전의 시간 효과가 활성인 동안. caster cooldown_change: 구르기의 재사용 대기시간이 감소한다. [amount n9=30%/n10=40%/n11=50% rank_values]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 결전의 시간 효과가 활성인 동안; caster.other eq 구르기를 시전함. caster visibility: 구르기를 사용하면 투명 상태가 되며, 포탑이나 절대 시야로만 드러난다. [duration_seconds n12=1 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-4;gaps",
+      "issue": "시간/피해 조건이 generic fired/present any, 패시브 이속90이 무조건 합산, 구르기 아닌 임의 시전에 은신, 한글이 밝히는3초기준을 미확정 주장",
+      "correction": "궁극기 활성 및 적 챔피언이 베인에게 피해 받은 뒤3초내 사망 조건, 어둠사냥꾼 발동 시90대체, 구르기 시전 조건을 명시했다. 최대 상한의 집계 방식만 한계로 남겼다.",
+      "sourceId": "ko:body",
+      "quote": "적 챔피언이 베인에게 피해를 입고 3초 안에 죽으면 지속시간이 4초 늘어납니다."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "한글은3초를 베인에게 피해 받은 이후로 명시하므로 그 조건은 확정했다. 기존 최대 지속시간 상한은 보존하지만 상한이 총 누적시간인지 남은 활성시간인지 공급 문장이 구별하지 않아 연장 누적 계산은 확정하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

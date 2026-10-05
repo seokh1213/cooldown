@@ -1,0 +1,49 @@
+{
+  "id": "Karma.E",
+  "sourceHash": "f1a6f430b989dd589f14dc22d4d1f9b325eb1e4d1448029e53b576dfcc8fbb8b",
+  "beforeCandidateHash": "c1cdc5ed8007ebdc28213ccbb60c1ecc0d6a1861ec5b73c031dd0382eb88c8d9",
+  "candidateHash": "b96e283236529edc638df73d58e64d76652cad1f67b9d15bf9f9479a10f11f11",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "아군챔프shield80~280+AP60%2.5초/이속40%2초와summaryMantra주shield강화/주변아군챔피언Inspire를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 ally.target_type eq champion. ally shield: 아군 챔피언에게 피해를 흡수하는 보호막을 부여합니다. [amount n0=80/n1=130/n2=180/n3=230/n4=280 rank_values; stat_coefficient n5=60% formula_components caster.abilityPower; duration_seconds n6=2.5 scalar] / ally stat_modifier: 아군 챔피언의 이동 속도를 높입니다. [amount n7=40% scalar; duration_seconds n8=2 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq empowered. ally other: 만트라 강화 시 주 대상의 보호막이 강화되고 대상 주변 아군 챔피언들에게도 고무 효과를 적용한다. 이 슬롯 본문은 강화 수치를 제공하지 않는다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.condition/new/gaps",
+      "issue": "recipientchamp를target로묘사·Mantra summary내용누락",
+      "correction": "allychampcondition,강화규칙텍스트및상세부족gap",
+      "sourceId": "en:summary",
+      "quote": "Mantra Bonus: Energy radiates out from her target, strengthening the initial shield and applying Inspire to nearby allied champions."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "Mantra강화의추가shield양/주변고무수치는이슬롯공급본문에없으며summary설명을보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

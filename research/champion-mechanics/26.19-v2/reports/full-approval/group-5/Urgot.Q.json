@@ -1,0 +1,177 @@
+{
+  "id": "Urgot.Q",
+  "sourceHash": "8506bba5288b9d79653ad2bf7e7e6bf63feebcad6bf39d0b627991e210ba8113",
+  "beforeCandidateHash": "94c1ae272f16ab032fc93dbf0f00a5b2e9d2d94acf0aadeb7eb639105dbed400",
+  "candidateHash": "8932a182a9c2b2bbe3bdc24f17d7f2e946308508817ffdd264b9e7e9c1cc22a1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "지정 위치 폭발의 물리 피해와 명중한 적 둔화를 두 언어에서 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "25/70/115/160/205 + 시전자 총 AD70%의 물리 피해, 다섯 랭크 값 전체 및 계수 확인.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "115",
+              "value": 115,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "160",
+              "value": 160,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "205",
+              "value": 205,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "70%",
+              "value": 70,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "45/50/55/60/65는 전부 퍼센트 둔화이고 1.25초는 지속시간이다. lexical 숫자표의 앞 네 percent=false를 절대값으로 읽지 않는다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "45",
+              "value": 45,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "50",
+              "value": 50,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "55",
+              "value": 55,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "60",
+              "value": 60,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "65%",
+              "value": 65,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "1.25",
+              "value": 1.25,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0.text",
+      "issue": "슬래시 둔화 값의 공통 % 단위가 효과 문구에 빠졌다.",
+      "correction": "실제 퍼센트 단위와 지속시간 명시.",
+      "sourceId": "en:body",
+      "quote": "Urgot fires an explosive charge, dealing (25/70/115/160/205 + (70% Attack Damage)) physical damage and Slowing by 45/50/55/60/65% for 1.25 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "id": "Janna.P",
+  "sourceHash": "3e4a890ba986151e561758a1e911bef96e9054cd5ec55d91af08e29a96e4bf01",
+  "beforeCandidateHash": "e5546206becfa8ba80e48721a9236f5ff0ea06bf105929dd650f4365c031acae",
+  "candidateHash": "f69fac58a598f7f9793a241a648633fb8aac90e2a2f1443679196b62aee09aef",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "잔나 쪽으로 이동하는 아군 챔피언의 이동 속도와 on-hit·서풍의 추가 이동 속도 비례 마법 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군 챔피언이 잔나를 향해 움직일 때만 이동 속도 6% 증가를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "추가 이동 속도 30%의 추가 마법 피해는 on-hit 및 서풍에만 적용한다. 전체 moveSpeed 계수로 실행하지 않고 문장과 스키마 한계를 보존했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions.0",
+      "issue": "attack_or_ability_hit 모든 스킬로 피해가 확대될 수 있어 원문 두 발동 경로로 제한했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Ally champions gain 6% Move Speed moving towards Janna. Janna deals (30% bonus Movement Speed) bonus magic damage On-Hit and with Zephyr."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.0.stat",
+      "issue": "원문은 bonus Movement Speed이며 전체 moveSpeed를 참조하면 기본 이동 속도까지 피해에 더해진다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Ally champions gain 6% Move Speed moving towards Janna. Janna deals (30% bonus Movement Speed) bonus magic damage On-Hit and with Zephyr."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 129,
+      "verdict": "repaired",
+      "reason": "전체 moveSpeed 참조를 제거하고 30% 추가 이동 속도라는 원문과 스키마 한계를 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "허용 stat에는 bonusMovementSpeed가 없어 전체 moveSpeed로 대체하지 않았다. 계수 30%는 잔나의 추가 이동 속도에만 적용한다."
+    }
+  ],
+  "validation": {
+    "id": "Janna.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

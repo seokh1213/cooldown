@@ -1,0 +1,347 @@
+{
+  "id": "Ambessa.W",
+  "sourceHash": "0dc1e4c8538204275d218c5be7f652c376feb9f1371055777c7030280c553f58",
+  "beforeCandidateHash": "7965b0462a76b84d48d5c3194dc5a610ad0ccbe56b45dcce35837a9ffa66b6d4",
+  "candidateHash": "f4627eb57f1c09923d1a4ffcaa831e78f461420310ef793067df8071a363e2cc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "보호막 1.5초와 준비 0.5초, 주변 기본 피해 및 준비 중 특정 피해를 막았을 때 대체 피해를 확인했다. 요약의 non-minion과 본문의 챔피언/대형 몬스터/구조물 범위 차이를 기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기 보호막 기본 50~320+자기 추가 AD150%, 지속 1.5초.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "320",
+              "value": 320,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "150%",
+              "value": 150,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "1.5",
+              "value": 1.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기 준비 0.5초가 먼저이고 강타가 뒤에 발생.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "0.5",
+              "value": 0.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "준비 조건 미충족 기본 물리 50~150+추가 AD50%; 강화와 상호배타.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "준비 중 적 챔피언, 대형 몬스터 또는 구조물의 피해로부터 막아섬"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "125",
+              "value": 125,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "준비 중 적 챔피언/대형 몬스터/구조물 피해를 막으면 총 피해 75~225+추가 AD75%로 대체.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "준비하는 동안 적 챔피언, 대형 몬스터 또는 구조물의 피해로부터 막아섬"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n11",
+            "en:body:n12",
+            "en:body:n13",
+            "en:body:n14",
+            "en:body:n15"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "112.5",
+              "value": 112.5,
+              "percent": false
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n14",
+              "raw": "187.5",
+              "value": 187.5,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "225",
+              "value": 225,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n16"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n16",
+              "raw": "75%",
+              "value": 75,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.conditions/gaps",
+      "issue": "기본과 증가 피해가 동시에 열리고 요약/본문 대상 범위 차이 및 보호막 범위 기준이 누락됐다.",
+      "correction": "기본 조건을 증가 조건의 부정으로 제한하고 두 출처 한계를 기록했다.",
+      "sourceId": "en:body",
+      "quote": "which increases to (75/112.5/150/187.5/225 + (75% bonus Attack Damage)) physical damage"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 13,
+      "verdict": "false_positive",
+      "reason": "요약의 피해량 증가와 최종 규칙의 replaces_base는 증가한 총 피해로 대체됨을 이미 표현한다. 중복 기본 조건은 별도로 수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "summary는 모든 non-minion damage라고 넓게 서술하지만 body는 적 챔피언, 대형 몬스터, 구조물로 한정한다. 구체적인 본문을 따른다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "보호막 기본 50~320 범위의 증가 기준은 원문에 없다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

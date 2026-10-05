@@ -1,0 +1,282 @@
+{
+  "summary": "카타리나가 아군, 적 또는 단검에게 순간이동합니다. 적을 대상으로 하면 피해를 입히고, 단검을 주우면 재사용 대기시간이 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "대상 아군, 적 또는 단검에게 순간이동하며 대상 근처의 어느 지점으로든 이동할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Katarina blinks in the wink of an eye to the target ally, enemy, or Dagger. If it is an enemy, Katarina strikes for (20/30/40/50/60 + (25% Ability Power) + (40% Attack Damage)) magic damage - otherwise she strikes the nearest enemy in range. Picking up a Dagger will reduce this Ability's Cooldown by (0.78 ~ 0.96) × 12/11/10/9/8 seconds ((78% ~ 96%)). Katarina can blink to any location near the target. The strike Applies On-Hit Effects."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상이 적이면 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If it is an enemy, Katarina strikes for (20/30/40/50/60 + (25% Ability Power) + (40% Attack Damage)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If it is an enemy, Katarina strikes for (20/30/40/50/60 + (25% Ability Power) + (40% Attack Damage)) magic damage - otherwise she strikes the nearest enemy in range."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "대상이 적이 아니면 사거리 안에서 이동 지점과 가장 가까운 적을 공격합니다. 이 경우 피해량은 툴팁에 별도로 제시되지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "otherwise she strikes the nearest enemy in range."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "단검 획득"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "이 스킬의 재사용 대기시간을 감소시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Picking up a Dagger will reduce this Ability's Cooldown by (0.78 ~ 0.96) × 12/11/10/9/8 seconds ((78% ~ 96%))."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "공격은 적중 시 효과를 적용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The strike Applies On-Hit Effects."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "단검 획득 시 재사용 대기시간 감소량은 곱셈식으로 제시되어 있으나, 그 계산을 확정된 수치로 풀어 쓰지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Picking up a Dagger will reduce this Ability's Cooldown by (0.78 ~ 0.96) × 12/11/10/9/8 seconds ((78% ~ 96%))."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "대상이 적일 때와 적이 아닐 때 문구는 있지만 적의 대상 유형별 분류를 구체적으로 명시하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If it is an enemy, Katarina strikes for (20/30/40/50/60 + (25% Ability Power) + (40% Attack Damage)) magic damage - otherwise she strikes the nearest enemy in range."
+        }
+      ]
+    }
+  ]
+}

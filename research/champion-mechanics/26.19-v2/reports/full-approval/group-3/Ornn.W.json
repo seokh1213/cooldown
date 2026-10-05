@@ -1,0 +1,137 @@
+{
+  "id": "Ornn.W",
+  "sourceHash": "10b5aaf4e3444c0d839fcedbff1a8e6e56e8172d59a8ee246d166cd4aeec8c00",
+  "beforeCandidateHash": "c941e35a99cd4981dd68743795fda6f8ace508266586f9b077cfd47ad4343947",
+  "candidateHash": "a0736c62a4f2fb152feb1705de1e3b96a24fc18d24105d9e0387db5fbd178379",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "0.75초저지불가이동/대상maxHP12~16%화염·마지막화염3초불안정·불안정대상CC30%연장/maxHP9~17%추가마법피해·공격밀침·챔피언/미니언최소/정글최대피해를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 불꽃을 뿜으며 저지 불가 상태로 전진합니다. / duration_seconds=0.75 [scalar] | enemy: 불꽃이 적에게 최대 체력 비례 마법 피해를 입힙니다. [magic] / amount=12/13/14/15/16% (target maxHealth) [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq 마지막 불꽃 적중 → target: 마지막 불꽃에 맞은 적을 불안정 상태로 만듭니다. / duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: target의 other / 조건 target mark present 불안정; target activation eq 이동 불가 효과가 적용됨 → target: 불안정 대상에게 적용되는 이동 불가 효과의 지속시간이 증가합니다. / amount=30% [scalar] | target: 불안정 대상에게 적용되는 이동 불가 효과는 추가 최대 체력 비례 마법 피해를 입힙니다. [magic] / amount=9.0%/17.0% (target maxHealth) [level_range]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target mark present 불안정 → target: 오른의 기본 공격이 불안정 대상을 뒤로 밀어냅니다. [knockback] | target: 오른의 기본 공격은 불안정 대상에게 추가 피해를 입힙니다. [magic]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq 챔피언 또는 미니언 → target: 챔피언과 미니언에게 입히는 마법 피해에는 최소 피해량이 적용됩니다. [magic] / min_amount=80/130/180/230/280 [rank_values]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq monster; target other eq 정글 몬스터 → target: 정글 몬스터에게 입히는 마법 피해에는 최대 피해량이 적용됩니다. [magic] / max_amount=260/320/380/440/500 [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2",
+      "issue": "모든불꽃이불안정및모든스킬적중이CC증폭발동",
+      "correction": "마지막불꽃·실제이동불가효과조건",
+      "sourceId": "en:body",
+      "quote": "Enemies hit by the final bout of flame become Brittle for 3 seconds."
+    },
+    {
+      "path": "rules.4-5.conditions",
+      "issue": "최소미니언누락·최대정글범위누락·불안정공격만상하한으로단정",
+      "correction": "챔피언/미니언및정글조건·W적중범위",
+      "sourceId": "en:body",
+      "quote": "Deals a minimum of 80/130/180/230/280 magic damage to champions and minions, and a max of 260/320/380/440/500 magic damage to jungle monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 375,
+      "verdict": "false_positive",
+      "reason": "Attacks는이게임툴팁의기본공격용어이며스킬을포함하도록확장하는근거가없다."
+    },
+    {
+      "index": 376,
+      "verdict": "false_positive",
+      "reason": "the additional damage는바로앞불안정의maxHP9~17%마법피해를지시한다.인용범위를그앞문장까지추가했다."
+    },
+    {
+      "index": 377,
+      "verdict": "repaired",
+      "reason": "최소피해대상조건에챔피언또는미니언을명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "최소 피해는 챔피언과 미니언에게, 최대 피해는 정글 몬스터에게 적용된다고 명시되어 있지만, 툴팁은 해당 수치가 추가 피해에 어떻게 적용되는지 구체적으로 설명하지 않습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

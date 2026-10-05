@@ -1,0 +1,157 @@
+{
+  "id": "Ashe.E",
+  "sourceHash": "ba117a30e9a04260216cbd4a91347d8fe00d94ec02dbb5897de5be640f8e2c42",
+  "beforeCandidateHash": "cefd0d0eb8c0af845b500f0ca5561a610d428dbdcd813deee13bf283638c87ee",
+  "candidateHash": "cb6216b29a78190bb30cdca18f61a68c67911d7af30df124ed4212304f0ce337",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "맵어디든정찰매5초시야·비행주변시야·최대2충전90/80/70/60/50초회복을대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "맵어디든시야5초+비행경로주변시야,특정ally수혜자로좁히지않음.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "보유cap2이며실제발동2연속강제아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "storage_cap",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "모든충전이0이돼야하는resource_depleted조건아님. cap보다적은상태의충전회복시간5랭크.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "정찰매의 충전이 최대2회보다 적음"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5",
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules",
+      "issue": "지도어디든누락·회복은0충전소진에서만·ally시야.",
+      "correction": "전역위치및caster시야·미충전상태resource회복.",
+      "sourceId": "en:body",
+      "quote": "Ashe sends forth a hawk to grant vision for 5 seconds anywhere on the map. It also reveals the area around it as it flies."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

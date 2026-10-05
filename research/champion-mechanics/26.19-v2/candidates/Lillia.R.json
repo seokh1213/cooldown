@@ -1,0 +1,226 @@
+{
+  "summary": "릴리아는 꿈가루가 묻은 적 챔피언을 졸음 상태로 만들고, 졸음이 끝난 뒤 잠들게 한다. 잠든 적이 피해를 받아 깨어나면 추가 마법 피해를 입는다. 수면은 최대2.5초이며 적의 단발성 피해로 일찍 깨어나고, 졸음 중에는 둔화된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "꿈가루가 묻어 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "꿈가루가 묻은 모든 적 챔피언을1.5초 졸음 상태로 만든다.",
+          "damageType": null,
+          "crowdControl": "drowsy",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia causes all enemy champions with Dream Dust to become Drowsy for 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기의1.5초 졸음이 종료됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "이 궁극기의 졸음이 끝나면 최대2.5초 잠들어 움직이거나 행동할 수 없다. 그 전에 적의 비주기적 피해를 받으면 깨어난다.",
+          "damageType": null,
+          "crowdControl": "sleep",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Afterward, they fall Asleep for 2.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Asleep units can't move or act until damaged by an enemy with non-periodic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기의 졸음 상태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "졸음 상태인 유닛은 지속시간에 걸쳐 둔화된다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Drowsy units are slowed over the duration, and fall Asleep afterwards."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lillia causes all enemy champions with Dream Dust to become Drowsy for 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 잠든 대상이 적의 비주기적 피해를 받아 깨어남"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "피해를 받아 깨어날 때 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When awakened by damage, they take an additional (100/150/200 + (40% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Asleep units can't move or act until damaged by an enemy with non-periodic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

@@ -1,0 +1,134 @@
+{
+  "id": "Sejuani.P",
+  "sourceHash": "32a4b0b33e6dcd6177fbcf9c6194d7d6585a8b78c6c02a35ba926903f7e64be3",
+  "beforeCandidateHash": "2a71909b966a9a9e9924b9b135f959202f1dc6113ce85dd065ff1b68659acf6f",
+  "candidateHash": "2fb07ed1c109fe94dcc60cf8efb6fea9490f6bd9988259860cce79acbf8bac85",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "챔피언·대형 정글 몬스터 무피해 조건, 방어 상승·둔화 면역과 피해 후 잠깐 유지 및 자신이 기절시킨 적의 첫 공격 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "12~6초 동안 해당 출처의 피해를 받지 않으면 방어력 10 + 추가 방어력 75%, 마법 저항력 10 + 추가 마법 저항력 75%를 얻으며 둔화에 면역이다. 면역을 자신에게 둔화를 거는 CC로 분류하지 않았다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언 피해가 무피해 조건을 중단하는 출처별 분기를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "대형 정글 몬스터 피해도 같은 무피해 조건을 중단한다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "세주아니 자신이 기절시킨 대상에게 처음 기본 공격할 때 최대 체력 10% 추가 마법 피해를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "요약에 명시된 피해 이후 서리 갑옷의 짧은 유지를 효과로 보존하고 수치 없는 지속 시간만 gap에 남겼다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.kind",
+      "issue": "둔화 면역은 세주아니에게 slow를 적용하는 crowd_control 효과가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Sejuani becomes immune to Slows and gains (10 + (75% bonus Armor)) Armor and (10 + (75% bonus Magic Resist)) Magic Resist after not taking damage from champions or large jungle monsters for (12 ~ 6) seconds. Sejuani's first Attack against enemies she has Stunned deals an additional 10% max Health magic damage."
+    },
+    {
+      "path": "rules.4",
+      "issue": "공급 요약의 실제 유지 효과가 gap에만 있고 규칙에서 빠져 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Sejuani becomes immune to Slows and gains (10 + (75% bonus Armor)) Armor and (10 + (75% bonus Magic Resist)) Magic Resist after not taking damage from champions or large jungle monsters for (12 ~ 6) seconds. Sejuani's first Attack against enemies she has Stunned deals an additional 10% max Health magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "note": "무피해 조건의 12~6초 범위는 보존했으며, 그 적용 방식은 원문에 설명되지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "note": "피해를 받은 뒤 서리 갑옷이 잠시 유지된다는 요약 설명의 지속 시간은 본문에 없다."
+    }
+  ],
+  "validation": {
+    "id": "Sejuani.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

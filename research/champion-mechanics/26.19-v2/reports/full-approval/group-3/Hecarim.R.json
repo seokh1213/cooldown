@@ -1,0 +1,77 @@
+{
+  "id": "Hecarim.R",
+  "sourceHash": "d3f75b7aa52a308f4a4185fb00300edc6709119001c5e8e81d274f30e6d8c7cd",
+  "beforeCandidateHash": "b781f8eadf12fa6f8d0c02a5160409f9aa05ea2b23fb21ddb3c68157743a8e16",
+  "candidateHash": "11012b1c197e1a1961c2222c88fbc24994299a389979c2926eab62095cca1dd2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "전방돌격/유령기수소환,150/250/350+AP100%마법피해,돌격종료충격파의주변적공포0.75~1.5초거리비례,본인지정위치/기수최대거리이동을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → summon: 유령 기수들을 소환합니다. | caster: 전방으로 돌격하여 지정한 위치까지 이동합니다. | summon: 유령 기수들은 항상 최대 거리를 이동합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 ability_hit → enemy: 유령 기수와 전방 돌격이 일직선상의 적에게150/250/350+주문력100% 마법 피해를 입힙니다. [magic] / amount=150/250/350 [rank_values]; stat_coefficient=100% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 이 스킬의 돌격이 끝날 때 → nearby_enemies: 이 스킬의 돌격이 끝나면 충격파가 주변 적에게 돌격거리에 따라 최소0.75초~최대1.5초 공포를 적용합니다. [fear] / duration_seconds=0.75 [formula_components]; duration_seconds=1.5 [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "피해의 선형 경로 범위가 요약과 연결되지 않고 시전즉시피해로 표현되었다.",
+      "correction": "스킬적중과 일직선 범위를 보존했다.",
+      "sourceId": "en:summary",
+      "quote": "dealing magic damage in a line"
+    },
+    {
+      "path": "rules.2",
+      "issue": "돌격 종료 조건이 없고 공포시간이 min/max_amount였다.",
+      "correction": "돌격종료 사건과0.75~1.5초 지속시간범위를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Hecarim unleashes a shockwave at the end of the charge that Fears for between 0.75 to 1.5 seconds, increased by charge distance."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "공포 지속 시간은 돌격 거리에 따라 달라지지만, 거리와 지속 시간 사이의 구체적인 수식은 제시되지 않습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

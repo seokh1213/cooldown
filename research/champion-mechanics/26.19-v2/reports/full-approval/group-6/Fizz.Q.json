@@ -1,0 +1,81 @@
+{
+  "id": "Fizz.Q",
+  "sourceHash": "db91d08bcade0f97b6728a94f3433e5615187e8b0eb0fcee40ace4e6cba1139f",
+  "beforeCandidateHash": "6c9200a7928f2daa2667373856035cc6db3831c77456f062c0c3e199b413bff7",
+  "candidateHash": "2dccedf59495e9989c01c3fadc573d34ac50c10e764de02605c9c4ed598af7ca",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "적을 관통하는 돌진과 물리·마법 두 피해 및 on-hit 적용을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자는 피즈이며 적 대상에게 돌진한다. 공격력 100% 물리 피해와 10/25/40/55/70 + 주문력 55% 마법 피해를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이 스킬의 적 적중에는 on-hit 효과가 적용된다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.subject",
+      "issue": "cast 주체는 피해 대상이 아니라 피즈다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz dashes through an enemy, dealing (100% Attack Damage) physical damage plus (10/25/40/55/70 + (55% Ability Power)) magic damage. This Ability applies On-Hit effects."
+    },
+    {
+      "path": "rules.0.conditions.0.field",
+      "issue": "through an enemy라는 대상 범위를 any에서 적으로 좁혔다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz dashes through an enemy, dealing (100% Attack Damage) physical damage plus (10/25/40/55/70 + (55% Ability Power)) magic damage. This Ability applies On-Hit effects."
+    },
+    {
+      "path": "rules.0.effects.0.parameters.0.role",
+      "issue": "공격력 100%는 비율 변환 입력이 아니라 물리 피해 계수다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz dashes through an enemy, dealing (100% Attack Damage) physical damage plus (10/25/40/55/70 + (55% Ability Power)) magic damage. This Ability applies On-Hit effects."
+    },
+    {
+      "path": "rules.0.effects.2",
+      "issue": "핵심 돌진 효과가 규칙에서 빠져 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz dashes through an enemy, dealing (100% Attack Damage) physical damage plus (10/25/40/55/70 + (55% Ability Power)) magic damage. This Ability applies On-Hit effects."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Fizz.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

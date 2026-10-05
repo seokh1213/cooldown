@@ -1,0 +1,124 @@
+{
+  "id": "Fiora.R",
+  "sourceHash": "1d68e368e9343b67a1524b7d13cbeb28779e0b4ef9233e5af4cc2552154d2aa2",
+  "beforeCandidateHash": "4364590ba08364aa5ad8b6a9e4c65aba5ce252bc6d1eb05c6dad489e6d44b912",
+  "candidateHash": "99765f361fa00163dc279c859714c00bc57458515b5b69b164d2eca11d615584",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "P이속30/40/50%·적챔피언4급소/근처이속·4급소총maxHP복합고정피해정보·8초내4급소또는1급소후대상사망·5초초당80~130+추가AD70%주변회복을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 급소 공격으로 얻는 이동 속도 상승량을 높인다. / amount=30/40/50% [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion → target: 챔피언의 급소 네 곳을 드러낸다. / count=four [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → target: 네급소의최대총고정피해는대상최대체력 × (12% + 자신의추가AD0.16%)다.시전시즉시추가피해가아니라급소총피해정보다. / max_amount=12% (target maxHealth) [formula_components]; stat_coefficient=0.16% (caster bonusAttackDamage) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target distance lte 대상 근처 → caster: 대상 근처에서 급소 공격의 이동 속도 상승 효과를 얻는다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: target의 death / 조건 caster other eq 이 대상의 R 급소를 사망 전에 하나 이상 가격 → ally: 조건성립시피오라와주변아군챔피언이5초동안초당80/105/130 + 자신의추가AD70%를회복한다. / amount=80/105/130 [rank_values]; stat_coefficient=70% (caster bonusAttackDamage) [formula_components]; duration_seconds=5 [scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 caster other eq 이 대상의 R 급소 네 곳을 모두 가격; caster time lte 8 → ally: 조건성립시피오라와주변아군챔피언이5초동안초당80/105/130 + 자신의추가AD70%를회복한다. / amount=80/105/130 [rank_values]; stat_coefficient=70% (caster bonusAttackDamage) [formula_components]; duration_seconds=5 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.effects.0",
+      "issue": "4급소총최대피해를시전즉시피해로기록",
+      "correction": "총고정피해정보로보존",
+      "sourceId": "en:body",
+      "quote": "reveals all four Vitals on a champion for a max"
+    },
+    {
+      "path": "rules.4-5",
+      "issue": "급소완료및대상사망의트리거/조건/텍스트서로뒤바뀜",
+      "correction": "사망경로사전1급소·적중경로8초4급소로수정",
+      "sourceId": "en:body",
+      "quote": "If Fiora strikes all four Vitals within 8 seconds or if the target dies after she has hit at least one"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 58,
+      "verdict": "repaired",
+      "reason": "별도네급소8초적중경로를rule5로수정했고사망전1급소경로는rule4death로분리했다."
+    },
+    {
+      "index": 59,
+      "verdict": "repaired",
+      "reason": "사전가격의행위자는피오라이므로caster의이대상R급소가격텍스트조건으로변경했다."
+    },
+    {
+      "index": 60,
+      "verdict": "repaired",
+      "reason": "네급소완료경로는attack_or_ability_hit,사망경로는대상death로바로잡았다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "각R급소추적과사망전가격횟수를전용형식으로표현할수없어텍스트로보존했다.본문은주변아군회복을기재하고요약은피오라자신도명시해회복효과텍스트에는요약범위를함께보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

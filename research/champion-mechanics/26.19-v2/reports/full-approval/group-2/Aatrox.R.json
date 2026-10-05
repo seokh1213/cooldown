@@ -1,0 +1,97 @@
+{
+  "id": "Aatrox.R",
+  "sourceHash": "a625e022674df0a1d6f3c0cd1f985a8e1dad2dd6ec4443d86f4c80274dff05b8",
+  "beforeCandidateHash": "8c8da0eac78eb29ff72b3264888e8b23c85ed55739ca295d845d4023df981faa",
+  "candidateHash": "87f2ed70ec548f47786afb8c176da2ac6ac898f40b3666c2d4cc9b0763b6ec7c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "주변미니언3초공포,이속60/80/100%10초감소,AD20/30/40%,자가회복50/75/100%,지속 중챔피언처치관여5초연장·이속초기화·10초상한을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 nearby_enemies.target_type eq minion; nearby_enemies: 주변 미니언에게 공포를 건다. [fear]; 수치 duration_seconds en:body:n0=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이동 속도가 증가한 뒤 시간이 지나며 감소한다.; 수치 amount en:body:n1=60(백분율),en:body:n2=80(백분율),en:body:n3=100%(백분율) 상수 rank_values / duration_seconds en:body:n4=10 상수 scalar; flags decays | caster: 효과 지속시간 동안 공격력이 증가한다.; 수치 amount en:body:n5=20(백분율),en:body:n6=30(백분율),en:body:n7=40%(백분율) 상수 rank_values; flags 없음 | caster: 효과 지속시간 동안 자신에 대한 체력 회복 효과가 증가한다.; 수치 amount en:body:n8=50(백분율),en:body:n9=75(백분율),en:body:n10=100%(백분율) 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: takedown 사건의 행위자 caster; 조건 target.target_type eq champion / caster.form eq 이 궁극기 효과 지속 중; caster: 챔피언 처치 관여 시 효과 지속시간이 늘어나고 이동 속도 효과가 초기화된다. 효과 지속시간은 지정된 상한을 넘을 수 없다.; 수치 duration_seconds en:body:n11=5 상수 scalar / max_amount en:body:n12=10 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "처치관여 연장을 효과 지속 중으로 제한",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Aatrox reveals his true demonic form, Fearing nearby minions for 3 seconds and gaining 60/80/100% Move Speed decaying over 10 seconds. He also gains 20/30/40% Attack Damage and increases self-healing by 50/75/100% for the duration. Champion takedowns extend the duration of this effect by 5 seconds and refresh the Move Speed effect. Duration cannot be increased past 10 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 3,
+      "verdict": "false_positive",
+      "reason": "참조된 랭크값의 percent=true이므로 amount에도 백분율 단위 보존됨."
+    },
+    {
+      "index": 4,
+      "verdict": "false_positive",
+      "reason": "AD랭크값 percent=true이며 statTo=totalAttackDamage로 백분율 증가가 구분됨."
+    },
+    {
+      "index": 5,
+      "verdict": "false_positive",
+      "reason": "takedown은 모든 적격 대상을 가리킬 수 있어 champion 대상 조건은 원문의 정확한 제한."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "체력 회복 효과 증가는 원문에 비율로 명시되어 있으나 스키마에 이를 표현하는 전용 통계가 없어 텍스트와 수치 매개변수로 보존했다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

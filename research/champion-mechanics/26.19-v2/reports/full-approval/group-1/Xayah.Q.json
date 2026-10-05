@@ -1,0 +1,60 @@
+{
+  "id": "Xayah.Q",
+  "sourceHash": "92859c48ec12500fd157143aa60ad37d8f397b8a998e0aa292c8f0108b034828",
+  "beforeCandidateHash": "52156330f6695f3f8d1c5d237cb4d3a49f5ea8e0fca222b6a782aae7c2d2df29",
+  "candidateHash": "d8cc5c810c67b589746a415e6cc732f8091b6859dd8aaa2e958caa64c53c156d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "두 단검 발사/두 깃털 잔류와 단검마다 최초 대상 물리 피해, 그 뒤 대상의 감소한 대체 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_order eq first; caster.other eq 각 단검의 첫 대상 적중. target damage physical: 단검 하나가 물리 피해를 입힙니다. [amount n1=45/n2=60/n3=75/n4=90/n5=105 rank_values; stat_coefficient n6=50% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_order neq first; caster.other eq 각 단검의 첫 대상 이후 적중. target damage physical: 첫 대상 이후에 맞는 대상은 단검 하나마다 감소한 물리 피해를 받습니다. [amount n8=22.5/n9=30/n10=37.5/n11=45/n12=52.5 rank_values; stat_coefficient n13=25% scalar caster.bonusAttackDamage] flags=replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 단검 두 개를 발사한다. 각 피해 규칙의 수치는 단검 하나당 피해이다. [count n0=2 scalar] / unknown other: 단검들이 깃털 두 개를 남긴다. [count n7=2 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "행위자 target, 최초 대상 조건 없고 뒤 대상 피해와 중복, 단검/깃털 숫자를 피해 적중 횟수로 해석",
+      "correction": "caster와 각 단검의 첫 대상/후속 대상 조건을 분리하고 발사2/깃털2를 독립 효과로 기록했다.",
+      "sourceId": "en:body",
+      "quote": "Xayah throws two daggers, dealing (45/60/75/90/105 + (50% bonus Attack Damage)) physical damage each and leaving two Feathers."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 647,
+      "verdict": "repaired",
+      "reason": "단검 두 개는 발사 수이므로 각 단검의 피해 효과에서 제거해 발사 규칙으로 옮겼다."
+    },
+    {
+      "index": 648,
+      "verdict": "repaired",
+      "reason": "n7=2는 원문의 두 Feathers 숫자이다. 감소 피해 count에서 제거하고 깃털 수로 보존했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

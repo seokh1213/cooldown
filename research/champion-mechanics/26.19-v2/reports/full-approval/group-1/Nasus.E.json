@@ -1,0 +1,62 @@
+{
+  "id": "Nasus.E",
+  "sourceHash": "a8fd9579d61b6e2f19c635f7f263fe5eab8e1227b5d60e47bfd652865c121eb8",
+  "beforeCandidateHash": "f150267f87bc239941de1cb9c6335855b774f98f5b089137a0b557bf5e8d3d69",
+  "candidateHash": "1200d84e4239d7333a2f594d04976b91ce30d4a9b57920c32c1c4c570f9982bc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "불길 최초 지역 마법 피해와 지역 내 적30~50%방어력 감소,5초에 걸친 별도 총 마법 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 영혼의 불길이 생긴 지역 안의 적. target damage magic: 영혼의 불길로 마법 피해를 입힙니다. [amount n0=50/n1=80/n2=110/n3=140/n4=170 rank_values; stat_coefficient n5=60% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 nearby_enemies.other eq 이 스킬의 불길 지역 안에 있는 적. nearby_enemies stat_modifier: 범위 내 적의 방어력이 감소합니다. [amount n6=30%/n7=35%/n8=40%/n9=45%/n10=50% rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 nearby_enemies.other eq 이 스킬의 불길 지역 안에 있는 적. nearby_enemies damage magic: 불길 지역 내 적은5초에 걸쳐50/80/110/140/170+주문력60%의 총 마법 피해를 입는다. [amount n11=50/n12=80/n13=110/n14=140/n15=170 rank_values; stat_coefficient n16=60% formula_components caster.abilityPower; duration_seconds n17=5 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "거리값 존재만 요구해 영역 조건 무의미, 영역 상태 효과를 ability_hit에 한정",
+      "correction": "최초 피해는 시전 지역 적에게, 방어력 감소/지속 피해는 해당 불길 영역 안의 적 상태로 기록했다.",
+      "sourceId": "en:body",
+      "quote": "Enemies in the area lose 30/35/40/45/50% Armor and take (50/80/110/140/170 + (60% Ability Power)) magic damage over 5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 326,
+      "verdict": "repaired",
+      "reason": "명중 사건 대신 불길 영역이 유지되고 수혜 적이 그 영역 안에 있는 상태로 고쳤다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "툴팁은 범위 내 적에게 방어력 감소와 지속 피해가 적용된다고 하지만, 범위 진입 시 적용 여부나 지속 시간 중 범위를 벗어났을 때의 판정을 설명하지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

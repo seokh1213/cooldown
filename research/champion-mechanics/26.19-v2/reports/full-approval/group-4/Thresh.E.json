@@ -1,0 +1,92 @@
+{
+  "id": "Thresh.E",
+  "sourceHash": "11bee47adac93ca09b03c9ee9341a0df826870b8896cc826cdc009801cff6470",
+  "beforeCandidateHash": "683b0400838e35d74cf0e2a61d25cef30d071a14d96cb37092e91ef2614ee11a",
+  "candidateHash": "d4cebcdf9783d28cd8d33f1fec0aa2b31bd04e08cba3de41eda238a56a5279fa",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "기본 공격의 대기 시간·영혼 수 의존 추가 마법 피해와 1.7부터 1.7 + 쓰레쉬 전체 공격력 90/120/150/180/210% 경계를 확인했다. 사슬 적중의 당기기 또는 밀기, 20/25/30/35/40% 1초 둔화 및 65/110/155/200/245 + 주문력 60% 마법 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 별도 조건 없이 적용. target: 기본 공격은 마지막 공격 이후 기다린 시간과 수집한 영혼 수에 따라 추가 마법 피해를 입힙니다. 원문의 최소 1.7부터 최대 (1.7 + 쓰레쉬 전체 공격력의 90/120/150/180/210%)는 경계식이며 증가 곡선·영혼 계수는 gap에 보존합니다. (magic); min_amount=1.7  formula_components, max_amount=1.7  formula_components, stat_coefficient=90/120/150/180/210% caster의 totalAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 휘두른 사슬에 적중한 적 적용. target: 적중한 적을 둔화시킵니다. (slow); amount=20/25/30/35/40%  rank_values, duration_seconds=1  scalar / target: 적중한 적에게 마법 피해를 입힙니다. (magic); amount=65/110/155/200/245  rank_values, stat_coefficient=60% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 휘두른 사슬에 적중한 적, caster.other eq 적을 당기는 사슬 방향 적용. target: 사슬을 휘두른 방향이 당기는 방향인 경우 적중한 적을 그 방향으로 당깁니다. (pull);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 휘두른 사슬에 적중한 적, caster.other eq 적을 밀어내는 사슬 방향 적용. target: 사슬을 휘두른 방향이 밀어내는 방향인 경우 적중한 적을 그 방향으로 밀어냅니다. (knockback);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0",
+      "issue": "대기 시간에 따른 경계식과 영혼 계수를 실행 가능한 단순식으로 오해할 여지가 있다.",
+      "correction": "최소·최대 경계식 구성을 명시하고 대기 시간 보간 한계도 기록했다.",
+      "sourceId": "en:body",
+      "quote": "They deal between 1.7 and (1.7 + (90/120/150/180/210% Attack Damage)) magic damage."
+    },
+    {
+      "path": "rules.1-3",
+      "issue": "당기기와 밀기가 동시에 적용되고 피해·둔화가 실제 적중 대신 시전에 연결된다.",
+      "correction": "적중 공통 피해·둔화와 사슬 방향별 당기기 또는 밀기를 나누었다.",
+      "sourceId": "en:body",
+      "quote": "Thresh whips his chains, Pulling or Pushing enemies in the direction of the swing."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "패시브 피해의 대기 시간 의존·영혼 수 의존·최소 및 최대 경계는 알려져 있지만 대기 시간별 보간식과 영혼 계수는 공급 원문에 없다. 최댓값의 1.7과 공격력 계수는 같은 경계식 구성요소이며 최소식과 합산하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

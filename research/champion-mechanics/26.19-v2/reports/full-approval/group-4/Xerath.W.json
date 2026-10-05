@@ -1,0 +1,77 @@
+{
+  "id": "Xerath.W",
+  "sourceHash": "f77874fc9abf5485cea451586ce4b143a10f6d7ddeeebc71d10cc6682bb7a726",
+  "beforeCandidateHash": "0182aa928e1d2f423db61b11d10178fd7345f087f8298b9a6c00719ac10786c8",
+  "candidateHash": "4914196abd380150a910d77def33aeddcdc62f86298592629ea05724572ccf88",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "범위 비전 에너지의 기본 피해·25% 2.5초 둔화와 중심 적의 대체 피해·60/65/70/75/80% 둔화가 2.5초에 걸쳐 25%까지 감소하는 관계를 확인했다. 중심 판정은 위치 조건이며 고립 여부가 아니다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 비전 에너지 범위에 적중하고 중심에는 있지 않은 적 적용. target: 범위 안의 적에게 마법 피해를 줍니다. (magic); amount=50/85/120/155/190  rank_values, stat_coefficient=65% caster의 abilityPower scalar / target: 범위 안의 적을 둔화시킵니다. (slow); amount=25%  scalar, duration_seconds=2.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 비전 에너지 범위 중심에 적중한 적 적용. target: 중심에 있는 적에게 마법 피해를 줍니다. (magic); amount=83.35/141.695/200.04/258.385/316.73  rank_values, stat_coefficient=108.355% caster의 abilityPower scalar / target: 중심에 적중한 적을 60/65/70/75/80% 둔화시키며, 2.5초에 걸쳐 둔화량이 25%까지 감소합니다. (slow); amount=60/65/70/75/80%  rank_values, duration_seconds=2.5  scalar, min_amount=25%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.trigger,conditions,effects",
+      "issue": "중심·비중심을 고립 여부로 구분하고 특정 조건 대상 대신 nearby_enemies 전체에 효과를 준다.",
+      "correction": "실제 적중한 대상의 중심 위치 여부로 서로 배타적인 피해·둔화를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "Enemies in the center take (83.35/141.695/200.04/258.385/316.73 + (108.355% Ability Power)) magic damage instead and are Slowed by 60/65/70/75/80%, decaying over 2.5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 654,
+      "verdict": "repaired",
+      "reason": "isolated는 중심 밖 위치를 의미하지 않는다. 범위 적중 중 비중심 적 조건으로 수정했다."
+    },
+    {
+      "index": 655,
+      "verdict": "repaired",
+      "reason": "중심은 고립 여부가 아니라 범위 안 위치다. 중심 적중의 텍스트 조건으로 수정하고 중심 기하 기준 미제공 gap을 유지했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "툴팁은 중심 적을 구분하지만 중심 판정의 거리나 기하 조건은 제시하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

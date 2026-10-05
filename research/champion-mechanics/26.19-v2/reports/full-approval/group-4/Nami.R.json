@@ -1,0 +1,102 @@
+{
+  "id": "Nami.R",
+  "sourceHash": "e1d8e1b93c1ba192be23c4c4ac81e3aa59edbcef2222303eab167a5fab582d76",
+  "beforeCandidateHash": "369d13d6e7be03aa0769a9e6055ca7c8ec242ee95d944468b166c286c6d4b516",
+  "candidateHash": "48f48846017147c1c5439788fcdad678aeafc4c06359da6412d9463e12cfc5b4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "해일 적중 적의 0.5초 띄우기, 70% 둔화, 150/250/350 + 나미 주문력 60% 마법 피해와 적중 아군의 밀려오는 파도 두 배 효과를 확인했다. 거리 비례 둔화는 최소 2초·최대 4초이며 거리별 대응식은 제공되지 않는다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 해일에 적중한 적 적용. target: 해일에 적중한 적을 공중으로 띄웁니다. (knockup); duration_seconds=0.5  scalar / target: 해일에 적중한 적을 70% 둔화시키며 지속시간은 해일 이동 거리에 따라 증가합니다. 최소 2초, 최대 4초입니다. (slow); amount=70%  scalar, duration_seconds=2/4  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 enemy.other eq 해일에 적중한 적 적용. enemy: 해일에 맞은 적에게 마법 피해를 입힙니다. (magic); amount=150/250/350  rank_values, stat_coefficient=60% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 ally.other eq 해일에 적중한 아군 적용. ally: 해일에 맞은 아군은 밀려오는 파도 효과를 두 배로 받습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2.trigger,conditions",
+      "issue": "스킬에 맞는 적·아군을 적중 행위자로 둔다.",
+      "correction": "나미의 스킬 적중과 각각 적·아군 대상 조건을 연결했다.",
+      "sourceId": "en:body",
+      "quote": "Allies hit by the wave gain double the effect of Surging Tides."
+    },
+    {
+      "path": "rules.0.effects.1.parameters",
+      "issue": "4·2초가 둔화량의 최대·최소 파라미터로 분류됐다.",
+      "correction": "시간 경계에 해당하는 duration_seconds 구성으로 수정하고 이동 거리식 한계를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "The Slow has a minimum duration of 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 323,
+      "verdict": "repaired",
+      "reason": "4는 70% 둔화량 상한이 아닌 최대 지속시간 4초이므로 duration_seconds로 옮겼다."
+    },
+    {
+      "index": 324,
+      "verdict": "repaired",
+      "reason": "2는 둔화량 하한이 아닌 최소 지속시간 2초이므로 duration_seconds로 옮겼다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_variant",
+      "detail": "밀려오는 파도 효과를 두 배로 받는다고만 설명되어 있어, 이 슬롯 원문만으로는 해당 효과의 구체적인 수치나 배가 방식을 정할 수 없습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "둔화 지속시간의 최소 2초·최대 4초와 이동 거리 의존은 알려져 있으나, 거리별 시간 대응식은 공급 원문에 없다. 두 duration_seconds 참조는 최소·최대 경계를 보존하며 레벨 범위나 둔화량이 아니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

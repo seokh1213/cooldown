@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "KogMaw.E",
+      "sourceHash": "ff1c8184da6d48854b17ab673f432741351e4f798be36323e2d0f866847f4447",
+      "candidateHash": "63a10d0e1b4c7766fc9f4ed93f0c471408c3b035a2be934fcf6113aed5e73957"
+    },
+    {
+      "id": "KogMaw.P",
+      "sourceHash": "5a98645d29b33f4d2b093b2dc3bbcb311f56fd9b78a2079211144dc972be40ba",
+      "candidateHash": "55ac7214a9f095721221e2aa1972ce5c353bd2438a15d0212155331e4368aee4"
+    },
+    {
+      "id": "KogMaw.Q",
+      "sourceHash": "c71e91968a73c79fbb17e52a9898a7b4e9125cced06b22ab349f9018dc0073be",
+      "candidateHash": "67c37a35863d2274c112943fb5d3e89a40592b455854d941c440f38f40356e42"
+    },
+    {
+      "id": "KogMaw.R",
+      "sourceHash": "de83bff438f2aeb37c407142285457afaaa05c586d2abd4aff9c33d5232c2bd8",
+      "candidateHash": "3d862ad662e189058e9e238fd982095a4486a0cd012b87da6514719689f0aebc"
+    },
+    {
+      "id": "KogMaw.W",
+      "sourceHash": "7ef01cf915b2b86ccfc187d89f7f880560e9475d12d0a25b65ff3698c0add956",
+      "candidateHash": "2c0a0bbff5b5726409ad92bfe6417c4ad42f0bf6b5ce481b9f78bd91ce65c97f"
+    }
+  ],
+  "findings": [
+    {
+      "id": "KogMaw.Q",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Kog'Maw vomits a corrosive projectile that deals (80/125/170/215/260 + (90% Ability Power)) magic damage to the first enemy hit and shreds 16/20/24/28/32% Armor and Magic Resist for 4 seconds.",
+      "issue": "방어력·마법 저항력 감소 효과를 시전 시 발동으로 특정했지만, 원문은 투사체 발사와 감소 효과만 설명하고 적용 시점을 밝히지 않습니다.",
+      "correction": "감소 효과의 발동 시점을 미확정으로 두세요."
+    },
+    {
+      "id": "KogMaw.R",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies below 40% Health instead take (200/280/360 + (70/80/90% Ability Power) + (150% bonus Attack Damage)) magic damage.",
+      "issue": "기본 피해 조건을 체력 40% 이상으로 설정해 40% 경계값에 기본 피해가 적용된다고 단정했습니다. 영어 원문은 별도 피해가 40% 미만일 때라고만 하고, 한국어 원문은 40% 이하라고 해 경계값이 출처마다 다릅니다.",
+      "correction": "40% 경계값을 확정하지 말고 출처 간 차이를 gap으로 유지하세요."
+    },
+    {
+      "id": "KogMaw.R",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "revealing enemies hit for 2 seconds.",
+      "issue": "적중한 적을 드러내는 효과를 시전 시 발동으로 특정했지만, 원문은 대상이 적중한 적이라고만 하고 효과 발동 시점을 밝히지 않습니다.",
+      "correction": "발동 시점을 미확정으로 두고, 대상 범위는 적중한 적으로 유지하세요."
+    }
+  ],
+  "notes": []
+}

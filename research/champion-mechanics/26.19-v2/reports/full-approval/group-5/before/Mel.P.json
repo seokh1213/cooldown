@@ -1,0 +1,216 @@
+{
+  "summary": "멜의 기본 공격과 스킬이 피해를 입히면 압도를 적용·갱신하고 마법 피해를 비축한다. 압도를 적용할 때 비축 피해가 대상의 보호막과 체력 합계보다 크면 대상을 처형한다. 스킬을 시전하면 다음 기본 공격에 추가 투사체가 부여된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "멜의 기본 공격 또는 스킬이 피해를 입히면 압도 중첩을 적용하고 갱신하며, 마법 피해를 비축한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Mel's Attacks and Abilities apply and refresh stacks of Overwhelm for 5 seconds each time they deal damage, storing (50/60/70/80 + (10% Ability Power)) plus (2/3/4/5 + (0.75% Ability Power)) damage per stack of magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "text",
+            "value": "비축 피해가 대상의 보호막과 체력 합계보다 큼"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "압도를 적용할 때 조건을 만족하면 대상을 처형한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When applied, if the stored amount exceeds the enemy's combined shields and Health, they are executed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스킬 시전"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "다음 기본 공격이 추가 투사체를 발사하며, 각 투사체는 마법 피해를 입힌다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When an Ability is cast, Mel's next Attack fires 3 extra projectiles, each dealing ((8 ~ 30) + (4% Ability Power)) magic damage. This effect can stack up to 9 extra projectiles."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "압도 피해 계산에서 기본 수치 및 중첩당 수치의 소유자는 툴팁에 명시되지 않아 stat을 null로 두었다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "storing (50/60/70/80 + (10% Ability Power)) plus (2/3/4/5 + (0.75% Ability Power)) damage per stack of magic damage."
+        }
+      ]
+    }
+  ]
+}

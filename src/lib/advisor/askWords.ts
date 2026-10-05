@@ -12,6 +12,7 @@ import type { RuleSubject } from "@/lib/knowledge/rules";
 import type { AskKind } from "./routeAsk";
 import { isSmallTalk } from "./intent";
 import { asksSpellNumbers } from "./spellFocus";
+import { asksCombo } from "./comboIntent";
 
 /** 둘 이상을 견주는 질문인가. "누가 더 높아", "어느 쪽이", "비교", "중에", "두 챔피언", "둘 다". */
 const COMPARISON =
@@ -70,6 +71,7 @@ export function asksSkillsOverview(question: string): boolean {
  * 슬롯이 둘 이상 나오거나 "각각·전체·모든 스킬·네 가지" 를 말하면 전체로 본다.
  */
 export function asksWholeKit(question: string): boolean {
+  if (asksCombo(question)) return false;
   if (/네\s*가지|4\s*가지|각각|전체|모든\s*스킬|스킬\s*다|QWER|all (abilities|skills|spells)|each (ability|skill)|every (ability|skill)|全部技能|每个技能|所有技能|各个技能/i.test(question)) return true;
   const slots = new Set<string>();
   if (/패시브|passive|被动/i.test(question)) slots.add("P");
@@ -163,6 +165,7 @@ function championKind(question: string, champions: number): AskKind | undefined 
   if (champions === 1 && asksGuide(question)) return "guide";
   if (champions === 1 && asksMatchup(question)) return "matchup";
   if (champions === 0 && (asksGuide(question) || asksMatchup(question))) return "guide";
+  if (asksCombo(question)) return "guide";
   if (asksSkillsOverview(question)) return "skills";
   if (asksSpellNumbers(question)) return "spellStat";
   return undefined;

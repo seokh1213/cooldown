@@ -1,0 +1,87 @@
+{
+  "id": "MonkeyKing.P",
+  "sourceHash": "04a3b0414a745be0ce123fd8e134cc7f6faa4c73e3addf5b8de12249a304c9a2",
+  "beforeCandidateHash": "02336d79dc09e7bbb5b8bad6d6d23f67722ff21d85f8939a3bdcb9d245a4f918",
+  "candidateHash": "81df4b622d1b1770694fb5cc59e190adc2d64fd16a208182ecf4ac2cf0199aa9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "기본6~10방어력/5초마다자신maxHealth0.35%재생,오공OR분신챔피언/정글적중각보너스100%증가5초최대5중첩 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 오공은 방어력을 얻습니다.; 수치 min_amount en:body:n0=6 상수 level_range / max_amount en:body:n1=10 상수 level_range; flags 없음 | caster: 오공은 일정 주기마다 최대 체력에 비례해 회복합니다.; 수치 ratio_output en:body:n2=0.35%(백분율) caster.maxHealth scalar / other en:body:n3=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 unknown; 조건 target.target_type eq champion / unknown.other eq 오공 또는 오공의 분신이 공격/스킬로 적중; caster: 오공의 방어력 보너스가 일정 시간 동안 증가합니다.; 수치 amount en:body:n4=100%(백분율) 상수 scalar / duration_seconds en:body:n5=5 상수 scalar / storage_cap en:body:n6=5 상수 scalar; flags 없음 | caster: 오공의 최대 체력 재생 보너스가 일정 시간 동안 증가합니다.; 수치 amount en:body:n4=100%(백분율) 상수 scalar / duration_seconds en:body:n5=5 상수 scalar / storage_cap en:body:n6=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 unknown; 조건 target.target_type eq monster / unknown.other eq 오공 또는 오공의 분신이 공격/스킬로 적중 / target.other eq 정글 몬스터; caster: 오공의 방어력 보너스가 일정 시간 동안 증가합니다.; 수치 amount en:body:n4=100%(백분율) 상수 scalar / duration_seconds en:body:n5=5 상수 scalar / storage_cap en:body:n6=5 상수 scalar; flags 없음 | caster: 오공의 최대 체력 재생 보너스가 일정 시간 동안 증가합니다.; 수치 amount en:body:n4=100%(백분율) 상수 scalar / duration_seconds en:body:n5=5 상수 scalar / storage_cap en:body:n6=5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "두행위자조건명시·정글제한·5초주기를지속시간으로분류/상한을획득count로분류한오류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Wukong gains (6 ~ 10) Armor and regenerates 0.35% max Health per 5 seconds. These bonuses are increased by 100% for 5 seconds every time he or his Clone hit an enemy champion or jungle monster with an Attack or Ability, stacking up to 5 times."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 304,
+      "verdict": "false_positive",
+      "reason": "rule1챔피언과rule2정글몬스터는OR대상분리로같은효과를각각보존;누락아님."
+    },
+    {
+      "index": 305,
+      "verdict": "false_positive",
+      "reason": "반대대상은이웃규칙에동일효과로보존되며AND결합아님."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "발동 문구상 오공이나 분신이 적중시키면 되지만, trigger.subject에는 두 행위자를 함께 지정할 수 없어 unknown으로 보존했습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

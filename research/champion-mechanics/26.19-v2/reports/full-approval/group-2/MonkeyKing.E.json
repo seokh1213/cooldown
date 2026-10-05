@@ -1,0 +1,56 @@
+{
+  "id": "MonkeyKing.E",
+  "sourceHash": "75bd2d95c906283ec39ad5863312ac7d7fbf1c499478806ec1513436b918a4eb",
+  "beforeCandidateHash": "a4e504af54d5f5027bdad12b845e05cd3fa6ff6295c322acde554dbe4e56fcb2",
+  "candidateHash": "ec9f8cedb57fd642b419c05c15b946e18762729ec9c535fb4ab37101767038c1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "주대상돌진과분신최대2추가근처적돌진·적중각AP마법,오공과분신각각공속5초를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 오공이 적에게 돌진합니다.; 수치 없음; flags 없음 | summon: 분신들이원대상근처최대2명의추가적에게돌진합니다.; 수치 count en:body:n0=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; target: 적중한 적마다 마법 피해를 받습니다. [magic]; 수치 amount en:body:n1=80,en:body:n2=120,en:body:n3=160,en:body:n4=200,en:body:n5=240 상수 rank_values / stat_coefficient en:body:n6=100%(백분율) caster.abilityPower scalar; flags per_target"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 오공이40~60%공격속도를5초동안얻습니다.; 수치 amount en:body:n7=40(백분율),en:body:n8=45(백분율),en:body:n9=50(백분율),en:body:n10=55(백분율),en:body:n11=60%(백분율) 상수 rank_values / duration_seconds en:body:n12=5 상수 scalar; flags 없음 | summon: 오공의분신도40~60%공격속도를5초동안얻습니다.; 수치 amount en:body:n7=40(백분율),en:body:n8=45(백분율),en:body:n9=50(백분율),en:body:n10=55(백분율),en:body:n11=60%(백분율) 상수 rank_values / duration_seconds en:body:n12=5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "추가적을돌진행위자로오표기·분신공속subject누락 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Wukong dashes to an enemy, sending out Clones that mimic the dash to up to 2 additional enemies nearby. Each enemy struck takes (80/120/160/200/240 + (100% Ability Power)) magic damage. He and his Clone gain 40/45/50/55/60% Attack Speed for 5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 303,
+      "verdict": "repaired",
+      "reason": "caster와summon효과두개로양쪽공격속도보존."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

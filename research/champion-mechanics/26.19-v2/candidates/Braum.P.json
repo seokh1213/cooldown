@@ -1,0 +1,266 @@
+{
+  "summary": "브라움의 공격은 대상에게 뇌진탕 펀치를 적용한다. 뇌진탕 펀치가 적용된 적을 아군이 공격하면 중첩이 쌓인다. 4중첩이 되면 대상은 기절하고 마법 피해를 입는다. 이후 중첩을 받지 않는 동안 브라움의 공격은 추가 마법 피해를 준다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "4중첩 발동 뒤 새 중첩을 받지 않는 8~4초 상태가 아닐 때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "브라움의 공격이 대상에게 뇌진탕 펀치를 적용한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Braum's Attacks apply Concussive Blows for 4 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next (8 ~ 4) seconds they don't receive stacks, but take an additional (10 ~ 78) magic damage from Braum's Attacks."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Concussive Blows"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "4중첩 발동 뒤 새 중첩을 받지 않는 8~4초 상태가 아닐 때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "뇌진탕 펀치가 적용된 적을 아군이 공격하면 중첩을 추가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies with Concussive Blows gain additional stacks from any ally's Attacks."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next (8 ~ 4) seconds they don't receive stacks, but take an additional (10 ~ 78) magic damage from Braum's Attacks."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "뇌진탕 펀치 중첩 4회"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 기절시킨다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "4중첩 발동 뒤 8~4초 동안 대상에게 새 뇌진탕 펀치 중첩이 적용되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At 4 stacks, the target is Stunned for (1.25 ~ 1.75) seconds and takes (26 ~ 196) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next (8 ~ 4) seconds they don't receive stacks, but take an additional (10 ~ 78) magic damage from Braum's Attacks."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "뇌진탕 펀치가 새 중첩을 받지 않는 다음 (8 ~ 4)초 동안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "브라움의 공격이 대상에게 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "For the next (8 ~ 4) seconds they don't receive stacks, but take an additional (10 ~ 78) magic damage from Braum's Attacks."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "프레임에는 중첩 수를 구조화하는 조건 필드가 없어 4중첩 조건을 텍스트로 보존했다. 중첩을 받지 않는 다음 (8 ~ 4)초의 상태도 직접 구조화할 필드가 없어 추가 피해 조건을 텍스트로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At 4 stacks, the target is Stunned for (1.25 ~ 1.75) seconds and takes (26 ~ 196) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next (8 ~ 4) seconds they don't receive stacks, but take an additional (10 ~ 78) magic damage from Braum's Attacks."
+        }
+      ]
+    }
+  ]
+}

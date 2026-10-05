@@ -1,0 +1,235 @@
+{
+  "id": "RekSai.W",
+  "sourceHash": "878ee9c130f35dc16645ca32402df912950afa9b66a18fb5ecd324d4a275b9a9",
+  "beforeCandidateHash": "93837ff05057c6cea7a7d96535d0298e34c20e3c3c41b501ade966076793d761",
+  "candidateHash": "719cc41eb20dc89a7bb8a39b1a1d1877cf56de0990e993e03b7df94650b052fb",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "매복변신·새스킬/공격금지·MS5/10/15/20/25·시야65%감소·움직이는미시야적위치,돌출공중띄우기와피해를대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "돌출W로매복/새스킬/공격금지,MS5/10/15/20/25와시야65%감소.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Unburrowed"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": "moveSpeed",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "15",
+              "value": 15,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "65%",
+              "value": 65,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "매복+주변+움직임+미시야적위치를본인/아군에게공유.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Burrowed"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "unseen"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "moving"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "nearby"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "매복에서돌출cast하여주변knockup.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Burrowed"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "돌출피해는요약만공급하여타입/수치가없다. frozen검증은damage에명시타입을요구하므로other에피해를보존하고gap을유지했다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Burrowed"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,2,3,gaps",
+      "issue": "시야감소 stat_modifier와 미공급 돌출피해 physical 추측",
+      "correction": "시야감소를 visibility로 분류하고 돌출 시전의 피해 주장을 other/타입null로 보존했다. 피해 타입·수치 및 적별 적용 scope 한계를 gap에 남겼다.",
+      "sourceId": "en:summary",
+      "quote": "While Burrowed, Rek'Sai may cast Unburrow to knock up and damage nearby enemies."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "돌출 시 근처 적에게 주는 피해의 수치와 유형은 입력 원문에 없다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

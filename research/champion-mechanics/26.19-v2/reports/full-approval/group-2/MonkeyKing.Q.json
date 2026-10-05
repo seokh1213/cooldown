@@ -1,0 +1,91 @@
+{
+  "id": "MonkeyKing.Q",
+  "sourceHash": "9e9201349c71c772aae0f4ecc37ba9218b1b470138160d85801e523cdc4e62d6",
+  "beforeCandidateHash": "456ac223ba4bf9ebdc1e323d790d90d358524ea80061d394c581158c02511259",
+  "candidateHash": "9844330984e3f4ab859fa8344e000b92e9807605c488f4df230f069dfe6c8cab",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "오공/분신Q다음공격사거리랭크·추가bonusAD물리·방어력퍼센트감소3초,둘중공격/스킬적중Q쿨0.5초감소·스킬피해효과발동 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 unknown; 조건 unknown.activation eq 오공 또는 분신의 이 Q 사용 후 다음 기본 공격; unknown: 오공 또는 분신의 다음 공격 사거리가 증가합니다.; 수치 distance_units en:body:n0=135,en:body:n1=145,en:body:n2=155,en:body:n3=165,en:body:n4=175 상수 rank_values; flags 없음 | target: 오공 또는 분신의 다음 공격이 추가 물리 피해를 줍니다. [physical]; 수치 amount en:body:n5=20,en:body:n6=45,en:body:n7=70,en:body:n8=95,en:body:n9=120 상수 rank_values / stat_coefficient en:body:n10=50%(백분율) unknown.bonusAttackDamage scalar; flags 없음 | target: 대상의 방어력이 감소합니다.; 수치 amount en:body:n11=10(백분율),en:body:n12=15(백분율),en:body:n13=20(백분율),en:body:n14=25(백분율),en:body:n15=30%(백분율) 상수 rank_values / duration_seconds en:body:n16=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 unknown; 조건 unknown.other eq 오공 또는 오공의 분신이 공격/스킬로 적에게 적중; caster: 이 스킬의 재사용 대기시간이 감소합니다.; 수치 cooldown_seconds en:body:n17=0.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 unknown; 조건 unknown.activation eq 이 Q로 피해를 입힘; target: 이 스킬은 피해를 입히면 스킬 효과를 발동합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "Q후속전제누락·사거리단위/쿨초역할·두행위자조건·스킬효과누락 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Wukong and his Clone's next Attack gains 135/145/155/165/175 range, deals an additional (20/45/70/95/120 + (50% bonus Attack Damage)) physical damage, and removes 10/15/20/25/30% Armor for 3 seconds. This Ability's cooldown is reduced by 0.5 seconds every time Wukong or his Clone hit an enemy with an Attack or Ability. This Ability triggers spell effects upon dealing damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "다음 공격과 재사용 대기시간 감소 문구는 오공 또는 분신을 행위자로 가리킵니다. trigger.subject에는 두 주체를 함께 지정할 수 없어 unknown으로 보존했습니다. 추가 공격력 계수의 소유자도 명시되지 않아 unknown으로 기록했습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": "Seraphine.R",
+  "sourceHash": "26c62cd64e5e76a7cca10c20e0b30c8c5e7f3a9ca6cfd5dd830b10c83be0f3c8",
+  "beforeCandidateHash": "460b6e260162ef89bbcac4277d6b6d301a0d541e89006006d9d2aa47bca9f80f",
+  "candidateHash": "f57ca895c8c1e5bb658aa2199153f8a37d476788d0133c28a8f1b3129e0316ac",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "적적중마법/랭크매혹,모든챔피언아군포함적중사거리연장,아군최대음표획득을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 적중한 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n3=150,en:body:n4=200,en:body:n5=250 상수 rank_values / stat_coefficient en:body:n6=40%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 적중한 적을 매혹합니다. [charm]; 수치 duration_seconds en:body:n0=1.25,en:body:n1=1.5,en:body:n2=1.75 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 적중한 챔피언(아군 포함)이 공연의 일부가 되어 이 스킬의 사거리가 늘어납니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 아군 챔피언; ally: 적중한 아군 챔피언은 음표를 최대로 얻습니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "챔피언으로제한한피해/매혹조건과사거리연장을대상movement로분류한오류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Seraphine takes the stage, projecting a captivating force that Charms for 1.25/1.5/1.75 seconds and deals (150/200/250 + (40% Ability Power)) magic damage. Any champions struck (including allies) become part of the performance, extending the range of this Ability. Allied champions gain maximum Notes."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 442,
+      "verdict": "repaired",
+      "reason": "피해와매혹의챔피언제한제거."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

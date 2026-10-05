@@ -1,0 +1,77 @@
+{
+  "findings": [
+    {
+      "id": "Urgot.E",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Urgot charges forward, gaining (55/75/95/115/135 + (135% bonus Attack Damage) + (13.5% bonus Health)) Shield for 4 seconds.",
+      "issue": "‘돌진 중’은 보호막이 돌진하는 동안에만 유지되는 것처럼 읽힙니다. 원문은 보호막을 얻는 시점과 4초 지속시간을 말합니다.",
+      "correction": "‘돌진하며 보호막을 얻습니다’로 고치고, 4초 지속은 별도로 기록하세요."
+    },
+    {
+      "id": "Urgot.P",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Urgot has a cannon on each of his 6 legs.",
+      "issue": "6은 다리 대포의 개수인데 피해 효과의 count로 연결되어 발사 횟수처럼 오해될 수 있습니다.",
+      "correction": "count 매개변수를 제거하거나 대포 개수로 의미를 명시하세요."
+    },
+    {
+      "id": "Urgot.P",
+      "path": "rules.0.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "((40% ~ 100%) Attack Damage)",
+      "issue": "40%~100%는 공격력 계수 범위인데 max_amount에도 중복 표기되어 피해량 상한처럼 읽힐 수 있습니다.",
+      "correction": "계수 범위만 기록하고 중복된 min_amount/max_amount는 제거하세요."
+    },
+    {
+      "id": "Urgot.P",
+      "path": "rules.0.effects.0.parameters.4",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(2% ~ 6%) max Health physical damage.",
+      "issue": "2%~6%는 대상 최대 체력에 적용되는 계수 범위인데 max_amount에도 중복 표기되어 최대 피해량처럼 읽힐 수 있습니다.",
+      "correction": "대상 최대 체력 계수 범위만 기록하고 중복된 min_amount/max_amount는 제거하세요."
+    },
+    {
+      "id": "Urgot.W",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "He Attacks them 3 times a second dealing (12 + (20/23.5/27/30.5/34% Attack Damage)) physical damage per shot.",
+      "issue": "3은 초당 공격 횟수인데 피해 효과의 count에 배치되어 사격당 피해 횟수처럼 오해될 수 있습니다.",
+      "correction": "3을 초당 공격 횟수 또는 발사 속도로 기록하고 사격당 피해량과 분리하세요."
+    },
+    {
+      "id": "Urgot.W",
+      "path": "rules.2.effects.0.parameters.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(20/23.5/27/30.5/34% Attack Damage)",
+      "issue": "랭크별 공격력 계수의 끝값 34%가 max_amount에도 중복 표기되어 고정 피해 상한처럼 읽힐 수 있습니다.",
+      "correction": "랭크별 공격력 계수만 기록하고 중복된 min_amount/max_amount는 제거하세요."
+    },
+    {
+      "id": "Urgot.W",
+      "path": "rules.6.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Urgot has 40% Slow resistance, but loses 125 Move Speed.",
+      "issue": "설명에서 우르곳이 둔화 상태라고 했지만 원문은 둔화 저항과 이동 속도 감소만 명시합니다.",
+      "correction": "‘사격 중 둔화 저항을 얻고 이동 속도가 감소합니다’로 고치세요."
+    },
+    {
+      "id": "Urgot.W",
+      "path": "rules.6.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Urgot has 40% Slow resistance",
+      "issue": "효과가 crowd_control 및 slow로 분류되어 우르곳에게 둔화 효과를 적용하는 것으로 읽힙니다. 원문은 둔화 저항을 명시합니다.",
+      "correction": "둔화 저항을 나타내는 stat_modifier 또는 이에 맞는 효과 유형으로 기록하세요."
+    }
+  ],
+  "notes": []
+}

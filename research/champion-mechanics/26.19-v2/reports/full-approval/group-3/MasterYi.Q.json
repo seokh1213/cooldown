@@ -1,0 +1,208 @@
+{
+  "id": "MasterYi.Q",
+  "sourceHash": "5ea97f13c130f6536bfe4cbcb3baf152ae2cae644400e6bf3c8809ea5cabadd6",
+  "beforeCandidateHash": "883c29485b33dd574ae42d17b5ea7539d810b730ae746e76f290dbd1a4c3b0d7",
+  "candidateHash": "b10eb3f83c2c0b497e9f302a5d3bbd826b63f70e2d85a0c201786e6550479946",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 12,
+  "checkedGapCount": 3,
+  "summaryCheck": "기본onhit75%/후속그25%관계를인용범위와함께다시검증했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 대상으로 지정할 수 없는 상태가 된다. | caster: 지정한 대상 주변의 적들을 빠르게 공격하고, 공격이 끝나면 처음 지정한 대상 주변에 다시 나타난다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster other eq 시전의 4회 타격 후 피해 처리 (횟수 주체 미명시) → enemy: 적중 횟수 조건 이후 이 스킬이 적중한 모든 적에게 물리 피해를 입힌다. [physical] / amount=20/40/60/80/100 [rank_values]; ratio_input=70% (caster totalAttackDamage) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other present 다른 대상이 없음; target hit_order eq 같은 대상에 대한 후속 타격 → target: 다른 대상이 없으면 같은 적을 반복 타격한다. 후속 피해는 기본의25%이며, 괄호의5/10/15/20/25 + AD17.5%는이미감소한값이다. [physical] / other=25% [scalar]; amount=5/10/15/20/25 [rank_values]; ratio_input=17.5% (caster totalAttackDamage) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 passive / 조건 target target_type eq any → target: 툴팁은 단일 대상 최대 피해량을 별도로 제시한다. / amount=35/70/105/140/175 [rank_values]; ratio_input=122.5% (caster totalAttackDamage) [formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq monster; target other eq 정글 몬스터 → target: 정글 몬스터는 타격당 추가 물리 피해를 입는다. [physical] / amount=60/85/110/135/160 [rank_values]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq 후속 타격이 아닌 해당 대상의 최초 타격 → target: 적중 시 효과를 감소한 피해량으로 적용한다. / damage_multiplier=75% [scalar]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq 동일 대상 후속 타격 → target: 후속 타격의 적중 시 효과는 기본75%효율의25%로 감소한다. / damage_multiplier=25% [scalar]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster other present 치명타 발동 → target: 치명타 추가피해는(20/40/60/80/100 + 자신의AD70%) × (-1 + 자신의치명타피해100%)이다. 곱셈식이며 계수들을 선형 합산하지 않는다. [physical] / amount=20/40/60/80/100 [rank_values]; ratio_input=70% (caster totalAttackDamage) [formula_components]; other=-1 [scalar]; ratio_input=100% (caster critDamage) [formula_components]"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq 동일 대상 후속 타격; caster other present 치명타 발동 → target: 치명타 후속 적중의 추가 피해가 감소한다. [physical] / damage_multiplier=25% [scalar]"
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 passive / 조건 caster other present 치명타 발동; target target_type eq any → target: 치명타 포함 단일대상 최대피해는(35/70/105/140/175 + 자신의AD122.5%) × 자신의치명타피해100%다. / amount=35/70/105/140/175 [rank_values]; ratio_input=122.5% (caster totalAttackDamage) [formula_components]; ratio_input=100% (caster critDamage) [formula_components]"
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack → caster: 기본 공격이 이 스킬의 재사용 대기시간을 감소시킨다. / cooldown_seconds=1 [scalar]"
+    },
+    {
+      "index": 11,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → caster: 이 스킬은 자신의 재사용 대기시간을 줄이지 않으며 2연속 공격의 적중 시 효과를 중첩시키지 않는다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions",
+      "issue": "4회후처리를시전자gt4적중으로단정",
+      "correction": "텍스트조건으로4타격후처리및미명시주체보존",
+      "sourceId": "en:body",
+      "quote": "physical damage to all enemies hit after 4 hits."
+    },
+    {
+      "path": "rules.2.effects.0.parameters.0",
+      "issue": "이미25%계산된5~25+AD17.5%에25%배수재적용가능",
+      "correction": "25%관계를other와텍스트로보존",
+      "sourceId": "en:body",
+      "quote": "dealing 25% damage for subsequent hits ((5/10/15/20/25 + (17.5% Attack Damage)))"
+    },
+    {
+      "path": "rules.6-8.conditions",
+      "issue": "후속적중을gt4조건으로오판",
+      "correction": "동일대상후속타격조건",
+      "sourceId": "en:body",
+      "quote": "Subsequent hits are reduced to 25% of this."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 284,
+      "verdict": "repaired",
+      "reason": "gt4와시전자전체횟수단정을제거하고4타격후처리문구및원문한계를보존했다."
+    },
+    {
+      "index": 285,
+      "verdict": "repaired",
+      "reason": "후속onhit가기본75%의25%라고명시하고후속조건을gt4에서변경했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "‘after 4 hits’가 시전 전체 적중 횟수인지 대상별 적중 횟수인지 명시되지 않아, 적중 횟수 주체를 확정할 수 없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "반복 공격 조건인 ‘다른 대상이 없음’을 지원되는 구조화 조건으로 직접 표현할 수 없어 텍스트 조건으로 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "툴팁의 최대 단일 대상 피해량은 별도 UI 정보로 보존했으며, 기본 피해와 후속 피해의 결합 계산을 재구성하지 않았다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.11",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

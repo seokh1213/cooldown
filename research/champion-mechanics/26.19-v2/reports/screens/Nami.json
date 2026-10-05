@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Nami.P",
+      "sourceHash": "e5ab7ce12391426f9f09f6b01ea939c0ff96f75877e08b214e93b235d373e3d2",
+      "candidateHash": "36a7a997ab670fddc9a902928d8d6e12c5e1707626372f49f8caec33f887a1b3"
+    },
+    {
+      "id": "Nami.Q",
+      "sourceHash": "b460c3b2a4f8d6919c07b64b6d3893e317bc17912792dc12da99c6bbbca27d70",
+      "candidateHash": "56a3a9d42811e3e122d2e02c89e983999b65f72071c7669bcb6d9a5be88ea62f"
+    },
+    {
+      "id": "Nami.R",
+      "sourceHash": "e1d8e1b93c1ba192be23c4c4ac81e3aa59edbcef2222303eab167a5fab582d76",
+      "candidateHash": "369d13d6e7be03aa0769a9e6055ca7c8ec242ee95d944468b166c286c6d4b516"
+    },
+    {
+      "id": "Nami.W",
+      "sourceHash": "7a46570c47417032bf99a6a5d62fa84719b24b124aa0cf73f286d9c21306b9c6",
+      "candidateHash": "b813bf136590249fd592b208f43546d89c5a47a37cdc58ab9f1b594747386665"
+    },
+    {
+      "id": "Nami.E",
+      "sourceHash": "e1e5ee83d9980502d088b299bd92a80c25f129b606b2f751669485570bdfbdf9",
+      "candidateHash": "f7f1ea737f5905380259ba558b528dc721a08ce6f7f8e6f02c9ed27a1f05819f"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Nami.R",
+      "path": "rules.0.effects.1.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nami summons a tidal wave, Knocking Up for 0.5 seconds, Slowing by 70%, and dealing (150/250/350 + (60% Ability Power)) magic damage. The duration of the Slow increases based on distance the wave traveled, up to 4 seconds. Allies hit by the wave gain double the effect of Surging Tides. The Slow has a minimum duration of 2 seconds.",
+      "issue": "4초는 둔화 지속시간의 최댓값인데, `max_amount`로 분류되어 둔화량 상한으로 오해됩니다.",
+      "correction": "4초를 둔화 지속시간의 최댓값으로 분류하세요."
+    },
+    {
+      "id": "Nami.R",
+      "path": "rules.0.effects.1.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nami summons a tidal wave, Knocking Up for 0.5 seconds, Slowing by 70%, and dealing (150/250/350 + (60% Ability Power)) magic damage. The duration of the Slow increases based on distance the wave traveled, up to 4 seconds. Allies hit by the wave gain double the effect of Surging Tides. The Slow has a minimum duration of 2 seconds.",
+      "issue": "2초는 둔화 지속시간의 최솟값인데, `min_amount`로 분류되어 둔화량 하한으로 오해됩니다.",
+      "correction": "2초를 둔화 지속시간의 최솟값으로 분류하세요."
+    },
+    {
+      "id": "Nami.E",
+      "path": "rules.3.effects.0.damageType",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals (33% ~ 66%) damage to non-champions when empowering area of effect Abilities.",
+      "issue": "원문은 비챔피언에게 적용되는 피해 비율만 말하며 피해 유형을 지정하지 않지만, 규칙은 이를 마법 피해로 단정합니다.",
+      "correction": "피해 유형을 미지정으로 두거나, 이 비율이 규칙 2의 추가 마법 피해에만 적용된다는 근거가 있을 때만 마법 피해로 지정하세요."
+    },
+    {
+      "id": "Nami.E",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nami empowers an allied champion's next 3 Attacks and Abilities for 6 seconds",
+      "issue": "요약의 “다음 공격과 스킬”은 다음 한 번씩처럼 읽힐 수 있어, 6초 동안 다음 3회의 공격과 스킬을 강화한다는 횟수·시간 범위가 불분명합니다.",
+      "correction": "“나미가 아군 챔피언의 다음 3회 공격과 스킬을 6초 동안 강화합니다”로 횟수와 지속시간을 명시하세요."
+    }
+  ],
+  "notes": []
+}

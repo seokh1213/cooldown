@@ -1,0 +1,108 @@
+{
+  "id": "JarvanIV.Q",
+  "sourceHash": "d7b45ba16963375386e0729b95193734587d99165f888cf5ef83d9c54414f991",
+  "beforeCandidateHash": "f88652086ecb07de733c888bb8847feeb8a634e098032704ec07195a02b65d72",
+  "candidateHash": "f54881ffd01e3ddccf16c2ca3ee49fb015035b93d0720051c27b5644a3eb152d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "창경로90/130/170/210/250+추가AD145%물리피해/적방어력10/14/18/22/26%감소3초,창이깃발에실제로닿으면본인깃발이동/경로0.75초띄우기,이동불가중에도가능을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이창의경로에서맞은적 → enemy: 창을 뻗어 적에게 물리 피해를 입힙니다. [physical] / amount=90/130/170/210/250 [rank_values]; stat_coefficient=145% (caster bonusAttackDamage) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이창의경로에서맞은적 → enemy: 이창에맞은적의방어력이3초동안10/14/18/22/26%감소합니다. / amount=10/14/18/22/26% (enemy armor) [rank_values]; duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster other eq 이창이자신의데마시아의깃발에실제로연결되었을때 → caster: 창이 데마시아의 깃발에 닿으면 자르반이 깃발 쪽으로 이동합니다. | enemy: 깃발로 이동하는 경로에 있는 적을 공중에 띄웁니다. [knockup] / duration_seconds=0.75 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster other eq immobilized; caster other eq 이창이자신의데마시아의깃발에실제로연결되었을때 → caster: 동일한창-깃발연결이동은자르반이이동불가상태여도가능합니다. 별도의추가이동이아닙니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1",
+      "issue": "창적중범위와방어력%랭크단위가불완전했다.",
+      "correction": "창경로적중및전체퍼센트감소를보존했다.",
+      "sourceId": "en:body",
+      "quote": "removing 10/14/18/22/26% Armor for 3 seconds."
+    },
+    {
+      "path": "rules.2-3",
+      "issue": "깃발연결이target mark보유조건으로대체되고이동불가중허용이추가이동으로중복됐다.",
+      "correction": "실제창-깃발연결조건과이동불가허용속성으로보존했다.",
+      "sourceId": "en:body",
+      "quote": "If the lance connects with Demacian Standard"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 134,
+      "verdict": "documented_gap",
+      "reason": "현frozen표는첫4값percent=false이며지적의true설명은불일치한다. 원문전체가%감소라는단위의실제한계는텍스트와gap에보존하며inputs는수정하지않는다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "10/14/18/22/26%는모든랭크방어력감소비율인데frozen숫자표는마지막만percent=true이다.전체%단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

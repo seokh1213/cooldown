@@ -1,0 +1,68 @@
+{
+  "id": "Elise.P",
+  "sourceHash": "3e54c084df7a77f4c3cad7e7c18c95b92c635e7e5e9d9f0890a6518dee862293",
+  "beforeCandidateHash": "ea0a09f00a84ba9548e99338460f186f98bd89e11fb1ec15c00b35e24aecf539",
+  "candidateHash": "6d0ffc0f8a62cb98035e190d0a15687c999e448c4a7a19f7f6ca99a49f87962d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "게임시작궁극기1포인트로인간/거미변신가능,인간스킬적중휴면거미최대2/3/4/5,거미평타추가마법피해·자기회복의4랭크/AP계수를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.form eq Human Form 적용. caster: 휴면 새끼 거미를 얻습니다.; storage_cap=2/3/4/5  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.form eq Spider Form 적용. target: 기본 공격이 추가 마법 피해를 입힙니다. (magic); amount=14/24/34/44  rank_values, stat_coefficient=15% caster의 abilityPower formula_components / caster: 기본 공격 시 체력을 회복합니다.; amount=6/8/10/12  rank_values, stat_coefficient=8% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 게임시작시궁극기에한포인트를보유해인간/거미형태변신이가능하다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.subject",
+      "issue": "스킬행위자를enemy로기록",
+      "correction": "caster로정정",
+      "sourceId": "en:body",
+      "quote": "Human Form: Elise's Ability hits grant her a dormant Spiderling, up to 2/3/4/5."
+    },
+    {
+      "path": "rules.2",
+      "issue": "시작궁극기포인트/변신효과누락",
+      "correction": "게임시작정보규칙보완",
+      "sourceId": "en:body",
+      "quote": "Elise begins the game with a point in her Ultimate, allowing her to shapeshift between Human Form and Spider Form."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

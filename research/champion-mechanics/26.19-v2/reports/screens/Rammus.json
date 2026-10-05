@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Rammus.P",
+      "sourceHash": "7495838883190987f1c9c7a7b8755863ea78a0faab0e12900f0a71f8ba32c354",
+      "candidateHash": "45a914def3eae742978368e99e66b7c5bbae1f837446df81740a843136359bc6"
+    },
+    {
+      "id": "Rammus.W",
+      "sourceHash": "31c0523f54c68e4821478d1a97824b8b0493b5416ec60df989e4da934b505acf",
+      "candidateHash": "e0d295a76d940b08a5c8b8fb4cc23c03c733613954d1b744260f99abd901cfd1"
+    },
+    {
+      "id": "Rammus.E",
+      "sourceHash": "7d60a54cfc258c957c5be885ed89a807de174e2ca0c71283c8e1e9d971f52cb9",
+      "candidateHash": "05edc96aabe370b81cfcb96722a024c75e3454ab59f896a8d8da8c66abc664d3"
+    },
+    {
+      "id": "Rammus.Q",
+      "sourceHash": "52d65e08991889c0af9149cb290946c71e6d7ee4a5b3fa9c855c40594b0b9da2",
+      "candidateHash": "a9955367b9f1be29f6dc5d262e32d0d85c4f6fb75e0fceb8e7132a4879050d2c"
+    },
+    {
+      "id": "Rammus.R",
+      "sourceHash": "75b023ff20e4a8ea15f063589d349d7e54de54a8859c9839bea3fff91393b552",
+      "candidateHash": "7d37ba408be7080296d4b7b9c5e71e55c51d994b5e98ef53b1eea948d8abd7c7"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Rammus.R",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If used during Powerball, enemies in the center take an additional (80/120/160/200/240 + (100% Ability Power)) magic damage and are Knocked Up for 0.75 seconds.",
+      "issue": "‘enemies in the center’를 거리 조건 `distance == 중앙`로 표현해, 원문에 없는 등식형 판정을 부여했습니다.",
+      "correction": "중앙에 있는 적이라는 범위를 텍스트로 보존하고, 거리 연산자는 지정하지 마세요."
+    },
+    {
+      "id": "Rammus.R",
+      "path": "rules.3.effects.0.damageType",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This Ability deals 200% damage to turrets.",
+      "issue": "포탑 대상 피해에 `magic` 유형을 지정했지만, 원문은 피해 배율만 밝히며 피해 유형은 이 문장에서 특정하지 않습니다.",
+      "correction": "피해 유형은 미상으로 두고 200% 피해 배율만 기록하세요."
+    }
+  ],
+  "notes": []
+}

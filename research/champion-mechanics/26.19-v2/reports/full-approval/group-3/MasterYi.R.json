@@ -1,0 +1,96 @@
+{
+  "id": "MasterYi.R",
+  "sourceHash": "995a0d30eebe2a9ce832fff9db186de0f272aa9582464e412dd835fde60890b8",
+  "beforeCandidateHash": "12de5b3ae8dbb065f1b4e19e49ddd69588f5af509afee84fae72f15f6d4844ce",
+  "candidateHash": "bb1487ba3d1ff8c2f7f7f2ddcdaefe0a47fb8039bb34e9efda2f8c0d144cb034",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "챔피언처치관여기본스킬잔여쿨70%감소·7초MS40/50/60%/AS25/45/65%·둔화면역·활성중처치7초연장·Q/W중시간정지를확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target target_type eq champion → caster: 기본 스킬의 남은 재사용 대기시간을 줄인다. / ratio_output=70% [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 이동 속도와 공격 속도가 증가한다. / ratio_output=40/50/60% (caster moveSpeed) [rank_values]; ratio_output=25/45/65% (caster attackSpeed) [rank_values]; duration_seconds=7 [scalar] | caster: 둔화 효과에 면역이 된다. 이 면역은 활성 효과의 지속시간 동안 적용된다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target target_type eq champion; caster activation present 최후의 전사 활성 중 → caster: 이 스킬의 지속시간을 연장한다. / duration_seconds=7 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster form eq Alpha Strike or Meditate active → caster: 최후의 전사 지속시간이 일시 정지된다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.1",
+      "issue": "둔화면역을적용되는slowCC로분류",
+      "correction": "둔화면역other효과",
+      "sourceId": "en:body",
+      "quote": "immunity to Slows for 7 seconds."
+    },
+    {
+      "path": "rules.2",
+      "issue": "활성중에만지속연장하는조건없음·쿨감으로분류",
+      "correction": "활성조건및지속연장other",
+      "sourceId": "en:summary",
+      "quote": "While active, Champion kills or assists extend Highlander's duration."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 286,
+      "verdict": "false_positive",
+      "reason": "40/50/60%는동일슬래시랭크열의%단위이며첫둘도같은퍼센트다.단위불명확gap을추가할근거가없다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

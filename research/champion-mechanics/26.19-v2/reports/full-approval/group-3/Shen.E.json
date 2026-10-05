@@ -1,0 +1,69 @@
+{
+  "id": "Shen.E",
+  "sourceHash": "e79c6f00993792379d566ff240b9304ff039c3fc0e4551ea4e8945f1c9abfe3f",
+  "beforeCandidateHash": "c2bd209cfcfa779885c4941eff1fd1d925645bbcd07a7b889700aab251504369",
+  "candidateHash": "abc7c382e2a17761f44eb8880be783711a27050da53c36b83d2cd51c7cd787dd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "Q또는E실제피해로기력30~50회복,시전시방향돌진,경로적챔피언/정글몬스터1.5초도발과60/85/110/135/160+추가HP11%물리피해를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster other present 황혼 강습 또는 이 스킬로 피해를 입힘 → caster: 황혼 강습 또는 이 스킬로 피해를 입히면 기력을 회복합니다. / amount=30/50 [level_range]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 쉔이 돌진합니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 돌진 경로에서 맞은 적 챔피언 또는 정글 몬스터 → target: 적 챔피언과 정글 몬스터를 도발합니다. [taunt] / duration_seconds=1.5 [scalar] | target: 적 챔피언과 정글 몬스터에게 물리 피해를 입힙니다. [physical] / amount=60/85/110/135/160 [rank_values]; stat_coefficient=11% (caster bonusHealth) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "기력30~50레벨범위가단일값별level_range로분리됐다.",
+      "correction": "기력회복레벨범위를한amount로보존했다.",
+      "sourceId": "en:body",
+      "quote": "recovers (30 ~ 50) Energy."
+    },
+    {
+      "path": "rules.1-2",
+      "issue": "조건없는시전만으로모든대상의피해/도발이발생했다.",
+      "correction": "돌진과경로의적챔피언또는몬스터적중을분리했다.",
+      "sourceId": "en:body",
+      "quote": "Shen dashes, Taunting champions and jungle monsters for 1.5 seconds"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

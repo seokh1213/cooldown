@@ -1,0 +1,58 @@
+{
+  "id": "Lucian.Q",
+  "sourceHash": "a24f8867acc0eacb972ffd0fb6198650036a7a9f04f3e6e78dc1f029bf494cb4",
+  "beforeCandidateHash": "38d198ef04b06a27260adb85ab5b5abf66eba6879bbd54a6453c8d23b490c9b3",
+  "candidateHash": "5c49c291db9e928ad073bd078e5475056d129b44cef8d4e19c9924228bbebc9b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "관통 빛 줄기 물리 피해와 레벨에 따른 시전 시간 감소를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "관통 빛의 90/130/170/210/250 + 추가 공격력 100% 물리 피해를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "루시안 레벨 증가에 따라 시전 시간은 감소하며 원문에 정확한 감소 식은 없다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.1.role",
+      "issue": "추가 공격력 100%는 stat 계수다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Lucian shoots a bolt of piercing light, dealing (90/130/170/210/250 + (100% bonus Attack Damage)) physical damage. This Ability's cast time decreases with Lucian's level."
+    },
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "공급 요약의 관통 특성을 효과에 보충했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Lucian shoots a bolt of piercing light through a target."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Lucian.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

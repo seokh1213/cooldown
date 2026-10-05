@@ -1,0 +1,131 @@
+{
+  "id": "Karma.R",
+  "sourceHash": "6e52e5d251c171ad9e29b7c0900c1c2be6c6b9265fe147e84ca411f8c6f73f32",
+  "beforeCandidateHash": "5ef286b244f6209047dd3f6e62134540876cbd913f81038904ac23af182415a9",
+  "candidateHash": "776a1f407779dbda8bc339b31e939606c7b98b31d7729ab95cbf66fa48de77f4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 11,
+  "checkedGapCount": 3,
+  "summaryCheck": "시전후8초내다음스킬강화/level1무포인트,Q추가40~220+AP30%및불꽃40~310+AP50%/slow,W시작끝missingHP17%+AP100당1%/root추가0.5~1.25,E추가shield및주변shield45~165+AP45%/이속15%를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 시전 후8초 안에 사용하는 다음 스킬을 강화한다. [duration_seconds n0=8 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq Inner Flame empowered by Mantra. target damage magic: 내면의 열정이 마법 피해를 추가로 입힙니다. [amount n1=40/n2=100/n3=160/n4=220 rank_values; stat_coefficient n5=30% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq Inner Flame empowered by Mantra. target other: 불꽃 원형 범위를 남깁니다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq Inner Flame empowered by Mantra. enemy damage magic: 불꽃이 적에게 마법 피해를 추가로 입힙니다. [amount n6=40/n7=130/n8=220/n9=310 rank_values; stat_coefficient n10=50% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq Inner Flame empowered by Mantra. enemy crowd_control slow: 불꽃이 적을 둔화시킵니다. []"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.activation eq Focused Resolve empowered by Mantra; caster.other eq 만트라 강화 결속의 시작 또는 끝 시점. caster heal: 만트라 결속 시작과 끝에 카르마는 잃은 체력의(17%+주문력100당1%)를 회복한다. 단순 고정 회복량이 아니다. [other n11=17% formula_components; stat_coefficient n12=1% formula_components caster.abilityPower; ratio_input n13=100 formula_components caster.abilityPower]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq Focused Resolve empowered by Mantra. target other: 만트라 결속은 기존 속박 지속시간에 랭크별0.5/0.75/1/1.25초를 더한다. [duration_seconds n14=0.5/n15=0.75/n16=1/n17=1.25 rank_values]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq Inspire empowered by Mantra. ally shield: 대상에게 보호막을 추가로 부여합니다. [amount n18=45/n19=85/n20=125/n21=165 rank_values; stat_coefficient n22=45% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq Inspire empowered by Mantra; ally.other eq 고무의 주 대상 주변 아군. ally shield: 대상 주변 아군에게 보호막을 부여합니다. [amount n23=45/n24=85/n25=125/n26=165 rank_values; stat_coefficient n27=45% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.activation eq Inspire empowered by Mantra; ally.other eq 고무의 주 대상 주변 아군. ally stat_modifier: 대상 주변 아군의 이동 속도를 높입니다. [amount n28=15% scalar]"
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 없음. caster ui_information: 만트라는 1레벨부터 스킬 포인트 없이 사용할 수 있습니다. [amount n0=1 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/5/6/7/8/9",
+      "issue": "Mantra시전전8초조건·missingHP를flat양·root추가시간을전체시간·주변아군조건누락",
+      "correction": "시전버프8초,복합회복구성요소/끝point,root시간other수정및아군범위",
+      "sourceId": "en:body",
+      "quote": "Focused Resolve: Karma will restore (17% + (1% per 100 Ability Power)) missing Health at the beginning and end of the tether, and Root for 0.5/0.75/1/1.25s longer."
+    },
+    {
+      "path": "rules.5.effects.0.parameters.1,2",
+      "issue": "100주문력기준을1%와함께AP계수로연결",
+      "correction": "계수1%와100주문력비율입력을분리했다.회복은잃은체력의비율이라는복합식으로유지한다.",
+      "sourceId": "en:body",
+      "quote": "Karma will restore (17% + (1% per 100 Ability Power)) missing Health at the beginning and end of the tether"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "내면의 열정 강화 후 남는 불꽃의 둔화 효과는 제공된 영어 툴팁에서 수치나 지속시간이 지정되지 않았습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "불꽃 피해의 적중 시점과 대상 범위는 툴팁에서 더 구체적으로 설명되지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "회복량의 주문력 계수는 주문력 100당 비율로 표현되어 있어 계수 구조를 그대로 보존했습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

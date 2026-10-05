@@ -1,0 +1,89 @@
+{
+  "id": "Heimerdinger.E",
+  "sourceHash": "53f9386c64e394eb2d01c24d17d8ec63fc49b5704c719d091f4c1e35f80b125a",
+  "beforeCandidateHash": "19ef0b549445be02d3282c3b0ff3be95dc22365deedd078d40b5f156eaa47caa",
+  "candidateHash": "8dd7592a053184b03a3821fe0690cf7c0be672525337bdeaf85fe5a6b0cc91ac",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "범위마법60/100/140/180/220+AP60%,35%2초둔화,중앙1.5초기절,챔피언명중근처포탑완전충전을대조.요약은주변만둔화로서본문의전체둔화보다좁다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "수류탄범위적60/100/140/180/220+AP60%마법."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "범위적35%2초둔화. EN본문은중앙도alsoStunned로표현."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "중앙적만1.5초기절. isolated는고립조건으로중앙과다르다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언명중이면근처하이머포탑완전충전. 주변적이효과대상이아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.conditions.0.value",
+      "issue": "중앙을isolated로오분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Heimerdinger hurls a grenade that deals (60/100/140/180/220 + (60% Ability Power)) magic damage in an area and Slows by 35% for 2 seconds. Enemies in the center are also Stunned for 1.5 seconds. Hitting a champion fully charges nearby Turrets."
+    },
+    {
+      "path": "rules.3.effects.0.subject",
+      "issue": "포탑충전대상을nearby_enemies로오분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Heimerdinger hurls a grenade that deals (60/100/140/180/220 + (60% Ability Power)) magic damage in an area and Slows by 35% for 2 seconds. Enemies in the center are also Stunned for 1.5 seconds. Hitting a champion fully charges nearby Turrets."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "요약과본문의중앙둔화범위차이기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Heimerdinger hurls a grenade that deals (60/100/140/180/220 + (60% Ability Power)) magic damage in an area and Slows by 35% for 2 seconds. Enemies in the center are also Stunned for 1.5 seconds. Hitting a champion fully charges nearby Turrets."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "note": "두 요약은 직격 기절/주변 둔화로 구분하지만 본문은 전체 지역 둔화와 중앙 추가 기절을 명시한다. 본문 적용범위를 우선한다."
+    }
+  ],
+  "validation": {
+    "id": "Heimerdinger.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "id": "Rell.Q",
+  "sourceHash": "0c329138d79d6af084b6bf2840059a3c5853be5ae2f9572fd6ee740e0e4c2016",
+  "beforeCandidateHash": "964314e8f519464c726b71e53b4300f9c1d01b056f44379367bc55eba9e7ed07",
+  "candidateHash": "0dfb17c9a90ea9536083d5086896b0fa2f3ceaa0e7fe118a285e990bfced1a5c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "전방직선적stun0.65/magic60~220+AP60%,모든shield파괴하되monster제외를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 전방 일직선으로 찌른 창에 적중. target crowd_control stun: 대상을 기절시킨다. [duration_seconds n0=0.65 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type neq monster; target.other eq 전방 일직선으로 찌른 창에 적중. target other: 대상의 모든 보호막을 파괴한다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 전방 일직선으로 찌른 창에 적중. target damage magic: 창에 맞은 대상에게 마법 피해를 입힌다. [amount n1=60/n2=100/n3=140/n4=180/n5=220 rank_values; stat_coefficient n6=60% formula_components caster.abilityPower]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2",
+      "issue": "직선적중범위/발동사건불명",
+      "correction": "ability_hit caster및전방직선창적중조건/summary근거",
+      "sourceId": "en:summary",
+      "quote": "Rell deals magic damage to units in a line, breaking their shields and stunning them."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

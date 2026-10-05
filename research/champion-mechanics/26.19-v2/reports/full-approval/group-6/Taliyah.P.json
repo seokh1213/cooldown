@@ -1,0 +1,54 @@
+{
+  "id": "Taliyah.P",
+  "sourceHash": "352cd348efc6b366cf641699d68280f5e4d8c8cdcb5b9d0213a834f48600d6b7",
+  "beforeCandidateHash": "6e72f72ffcc308b0c3cf63f76b53a95943843669c2ffcb5fb4fe700f001b152f",
+  "candidateHash": "ae0466425c9cb2e2a9679cd9204589e3afecfa20e8b25df895d1593d850c89cb",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "비전투+지난3초내벽근처이력이있을때자신MS10~40%증가를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비전투상태와마지막벽근처이후경과3초이하조건. lte는시간창에맞으며최근벽이력은단순현재거리등식과다르다.MS10~40%범위중간성장미추정."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.2",
+      "issue": "최근벽이력조건을현재거리eq로오기",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Taliyah gains (10% ~ 40%) Move Speed while out of combat if she has been near a wall within the last 3 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 511,
+      "verdict": "false_positive",
+      "reason": "경과시간3초이하라는lte연산자는withinlast3seconds에맞다.벽이후경과시간임을나머지조건에명확히했다."
+    },
+    {
+      "index": 512,
+      "verdict": "repaired",
+      "reason": "거리eq를벽근처마지막이후경과시간other조건으로수정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "id": "Taliyah.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

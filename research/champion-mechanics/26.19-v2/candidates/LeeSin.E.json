@@ -1,0 +1,239 @@
+{
+  "summary": "폭풍은 충격파로 적에게 마법 피해를 주고 일정 시간 동안 드러낸다. 적에게 적중하면 정해진 시간 동안 재사용할 수 있다. 재사용 시 충격파에 맞은 주변 적을 둔화시키며 둔화 효과는 시간이 지나며 사라진다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭풍 충격파에 실제 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "충격파가 적중한 적에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lee Sin smashes the ground, sending out a shockwave that deals (35/60/85/110/135 + (90% Attack Damage)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lee Sin smashes the ground, sending out a shockwave that deals (35/60/85/110/135 + (90% Attack Damage)) magic damage and reveals them for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭풍 충격파에 실제 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "target",
+          "text": "충격파가 적중한 대상을 일정 시간 동안 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lee Sin smashes the ground, sending out a shockwave that deals (35/60/85/110/135 + (90% Attack Damage)) magic damage and reveals them for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭풍 충격파에 실제 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "폭풍이 적에게 적중하면 정해진 시간 동안 재사용할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this hits an enemy, Lee Sin can Recast for the next 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭풍이 적에게 적중한 뒤 3초 재사용 시간 안"
+          }
+        },
+        {
+          "subject": "nearby_enemies",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭풍 충격파에 맞았고 재사용 시 주변에 있는 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "충격파에 맞은 주변 적을 둔화시키며, 둔화 효과는 시간이 지나며 사라진다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Lee Sin Slows nearby enemies struck by the shockwave by 35/45/55/65/75% decaying over 4 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If this hits an enemy, Lee Sin can Recast for the next 3 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

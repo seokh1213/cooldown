@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Lissandra.E",
+      "sourceHash": "e8a1f13c86539c43c1261c7c211b3385c4ec1ca45908d64c57a7304ef447861c",
+      "candidateHash": "23baee7b5803fcabcf3c20f301e514da720c31c27aaf6506290d877fc7a6b3c8"
+    },
+    {
+      "id": "Lissandra.P",
+      "sourceHash": "0ee5a12a42d6e60c50b3d57df9434b64b5fb53964da143879713587ed16e2c88",
+      "candidateHash": "afd7ded5ae9967f839293c1d4e2c2617cc207b748d703f1b59bda0f008435c75"
+    },
+    {
+      "id": "Lissandra.Q",
+      "sourceHash": "7417d86c99b884c8bb21e6571735e3c7c534467e583d5f58f6b034c77b1347b7",
+      "candidateHash": "6ff42eb0eeaa924d8773d4b8949f3e19eb140e95b0d7783f6bdd07df1df76683"
+    },
+    {
+      "id": "Lissandra.W",
+      "sourceHash": "6417baf40b84872a0453f5f5bf19667fdeb1e4d5064db1998fef691858ca254b",
+      "candidateHash": "d119e7e1164d4ed8cdc179f93733a80454911a22c1df6dee39202435b5475437"
+    },
+    {
+      "id": "Lissandra.R",
+      "sourceHash": "46020d93a1b38761b00253c959acbf77dd794d42ab2341916836e1c28e1a9efb",
+      "candidateHash": "4f96f4786edb05a9159652deebaed06c6834fe77bf823a2998f5b3e9b529f667"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Lissandra.R",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When self cast, Lissandra enters Stasis for 2.5 seconds and restores (100/150/200 + (55% Ability Power)) Health, increased by 1% for each 1% missing Health.",
+      "issue": "자기 자신에게 시전하는 조건의 값이 실제 시전 대상이 아니라 ‘자기 자신에게 시전’이라는 문구로 기록되어 있어, 조건 필드 `other`의 값으로는 시전 대상을 판별할 수 없습니다.",
+      "correction": "조건을 시전 대상이 시전자 자신인 경우로 표현하거나, 이 자기 시전 분기를 식별하는 명시적 조건이 없다면 해당 조건은 텍스트로 보존하세요."
+    },
+    {
+      "id": "Lissandra.R",
+      "path": "rules.4.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The ice persists for 3 seconds, Slowing enemies by 45/60/75%.",
+      "issue": "3초 지속시간은 둔화 효과의 지속시간이라고 명시되지 않았습니다. 원문에서는 얼음의 지속시간을 말한 뒤 적 둔화를 서술하므로, 이를 둔화 지속시간으로 단정하면 효과 기간을 잘못 귀속할 수 있습니다.",
+      "correction": "3초를 둔화 지속시간으로 기록하지 말고 얼음 지속시간으로 보존하세요. 둔화 지속시간은 원문에 명시되지 않았습니다."
+    }
+  ],
+  "notes": []
+}

@@ -6,6 +6,7 @@ import type { AnswerPlan, ControlContext } from "./planTypes";
 import type { FactResolution } from "./dialogueFacts";
 import { statQueryFromAnswer, isStatLevel, validStatFields, type ChampionStatQuery } from "./statQuery";
 import { CROWD_CONTROL } from "@/lib/knowledge/crowdControl";
+import { validMechanicMemory, type MechanicMemory } from "./mechanics/types";
 export { scenarioConditions } from "./scenarioConditions";
 
 export interface SpellReference { champion: string; slot: string; focus?: SpellFocus; relation?: "penetration" }
@@ -39,6 +40,10 @@ export interface DialogueMemory {
   item?: string;
   rule?: { id?: string; title: string; text: string };
   numeric?: { haste?: number; rank?: number };
+  /** 승인 규칙의 주제·사용자가 제시한 수치/조건. 출처가 바뀌면 이어 쓰지 않는다. */
+  mechanic?: MechanicMemory;
+  /** 콤보 질문에서만 유지하는 사용 불가 스킬. 다른 주제로 답하면 지운다. */
+  combo?: { champion: string; unavailable: string[] };
   conditions: ScenarioCondition[];
   pending?: { slot: string; focus?: SpellFocus; candidates: string[] };
   lastReply?: { question: string; text: string; focus?: string };
@@ -61,6 +66,8 @@ function validMemory(memory: DialogueMemory, data: AdvisorData): boolean {
   if (memory.matchups && (!Array.isArray(memory.matchups) || memory.matchups.some(pair => !data.cardById.has(pair.mine) || !data.cardById.has(pair.enemy) || !Array.isArray(pair.conditions)))) return false;
   if (memory.matchupGroup && (!Array.isArray(memory.matchupGroup) || memory.matchupGroup.some(pair => !data.cardById.has(pair.mine) || !data.cardById.has(pair.enemy)))) return false;
   if (memory.champion && !data.cardById.has(memory.champion)) return false;
+  if (memory.combo && (!data.cardById.has(memory.combo.champion) || !Array.isArray(memory.combo.unavailable)
+    || memory.combo.unavailable.some(slot => !["Q", "W", "E", "R", "점멸"].includes(slot)))) return false;
   if (memory.spell && !data.cardById.get(memory.spell.champion)?.spells.some(s => s.slot === memory.spell!.slot)) return false;
   if (memory.control && (!Array.isArray(memory.control.champions)
     || !memory.control.champions.length && !memory.control.types?.length
@@ -78,7 +85,10 @@ export function dialogueMemoryOf(turns: readonly DialogueHistoryTurn[], data: Ad
   for (const turn of turns) {
     if (turn.role === "user") { question = turn.content ?? ""; continue; }
     if (turn.role !== "assistant") continue;
-    if (turn.memory && validMemory(turn.memory, data)) memory = structuredClone(turn.memory);
+    if (turn.memory && validMemory(turn.memory, data)) {
+      memory = structuredClone(turn.memory);
+      if (memory.mechanic && !validMechanicMemory(memory.mechanic, data.abilityRules)) memory.mechanic = undefined;
+    }
     else if (turn.answer) memory = rememberAnswer(memory, turn.answer);
     if (memory.active === "compare" && !memory.stat && turn.answer) {
       const stat = statQueryFromAnswer(turn.answer);
@@ -91,6 +101,9 @@ export function dialogueMemoryOf(turns: readonly DialogueHistoryTurn[], data: Ad
 
 export function rememberAnswer(previous: DialogueMemory, answer: AdvisorAnswer): DialogueMemory {
   const memory = structuredClone(previous);
+  memory.mechanic = undefined;
+  memory.combo = answer.kind === "champion" && answer.notes?.topic === "combo"
+    ? { champion: answer.card.id, unavailable: answer.notes.unavailable ?? [] } : undefined;
   const stat = statQueryFromAnswer(answer);
   if (stat) {
     memory.stat = structuredClone(stat);

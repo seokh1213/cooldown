@@ -1,0 +1,293 @@
+{
+  "id": "Vi.E",
+  "sourceHash": "f329adb45feb336c3ccb59a79a68ee30833e873c0ed8c0189eb533b7a572aa7d",
+  "beforeCandidateHash": "611ba37781e649ccdb4b55a920135f80101b76b8cc043a620e1c4f06ad6a0e91",
+  "candidateHash": "abc697dfa4c049a267f591d0b56e4c380e6e4697f2a0da6ddbb14cdb97b8204a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "다음 기본 공격의 전체 물리 피해식10/30/50/70/90+총AD110%+AP100%, 주 대상과 뒤 적들 동일 식,2충전과12~8초재충전을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아무 empowered상태가 아니라 이 스킬 사용 후 다음 기본 공격이다. 주 대상과 뒤 적들에 전체 물리 피해10/30/50/70/90+totalAD110%+AP100%를 적용한다. AD는 bonus 한정이 없으므로 total이며 기본 공격100%AD를 별도로 추가하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬을 사용한 후의 다음 기본 공격"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "110%",
+              "value": 110,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "110%",
+              "value": 110,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "보유 상한2와 랭크별 재충전CD12/11/10/9/8초를 구별했다. 사용 횟수2회를 즉시 무료추가공격 두 번으로 해석하지 않는다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "storage_cap",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11",
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "12",
+              "value": 12,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "11",
+              "value": 11,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "9",
+              "value": 9,
+              "percent": false
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "8",
+              "value": 8,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions;rules.0.effects;rules.1.effects.0.text",
+      "issue": "강화 상태 조건이 모든 empowered상태로 확장되고 전체 다음 공격 피해를 일반 공격에 추가할 가능성",
+      "correction": "이 스킬 사용 후 다음 공격으로 한정하고 주 대상 전체 피해 및 충전상한/재충전 의미를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Vi's next Attack deals (10/30/50/70/90 + (110% Attack Damage) + (100% Ability Power)) physical damage to the target and enemies behind them. This Ability has 2 charges (12/11/10/9/8 second refresh)."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,399 @@
+{
+  "id": "Evelynn.E",
+  "sourceHash": "b79f085aa50c404fedc93065862a26d2e4ce3ea17c5838d6687188c4942509f5",
+  "beforeCandidateHash": "0b646c77a264e803bf7f9a6ba6c562f8db8c1e1838d8d46c1b33356b1e2403e6",
+  "candidateHash": "2600cdc3c5bfff35b82af02e610cc377e85224d61dbbb3789b5f6f232a6fc5b9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "일반/강화5랭크 피해와중첩HP공식,공통MS30~50%2초,장막진입쿨초기화/강화,강화돌진/통과적피해,지정대상on-hit범위를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "일반5랭크60~180+targetHP×(3%+자기AP100당1.5%);중간랭크복원.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "180",
+              "value": 180,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "3%",
+              "value": 3,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "1.5%",
+              "value": 1.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공통MS30/35/40/45/50%2초;강화제외근거없음.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11",
+            "en:body:n12"
+          ],
+          "stat": "moveSpeed",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "35",
+              "value": 35,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "45",
+              "value": 45,
+              "percent": true
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "악의장막진입사건에서이 E쿨초기화 및강화준비.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Demon Shade"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화돌진지정적과통과적 각각80~240+각targetHP×(4%+자기AP100당2.5%).",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17",
+            "en:body:n18"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "160",
+              "value": 160,
+              "percent": false
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "240",
+              "value": 240,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n19"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n19",
+              "raw": "4%",
+              "value": 4,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n20"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n20",
+              "raw": "2.5%",
+              "value": 2.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n21"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n21",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "일반/강화모두지정적에게on-hit;경로적전체로넓히지않음.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules/gaps",
+      "issue": "중간랭크누락,중첩식미확정단정,공통MS/on-hit를강화형식으로잘못제한했다.",
+      "correction": "전체랭크/확정중첩식과분모입력,공통MS/on-hit범위복원;연산구조한계만gap으로명확화.",
+      "sourceId": "en:body",
+      "quote": "This Ability applies On-Hit Effects to the targeted enemy."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "원문 중첩식(대상maxHP×(기본%+자기AP100당추가%))은확정되지만현재매개변수구조는연산트리가아니다. formula_components를선형AP피해항으로실행하지말아야한다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

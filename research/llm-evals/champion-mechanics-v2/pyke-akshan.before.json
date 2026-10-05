@@ -1,0 +1,1093 @@
+{
+  "summary": {
+    "stories": 18,
+    "turns": 32,
+    "reviewedSlots": 865,
+    "judge": "none",
+    "questionHash": "2c09f0897619d2481c7568045be9184e81eb9c03fa6d1a9e11e23c83dfd523a8",
+    "baselinePass": 11,
+    "variantPass": 22,
+    "improved": 11,
+    "regressed": 0,
+    "replaced": 22,
+    "scope": "Additional questions frozen before observing full-approval answers; no runtime or rubric tuning; actual app entrypoint with stored/restored dialogue; Pyke/Akshan original questions and new probes; no production integration."
+  },
+  "rows": [
+    {
+      "id": "pyke-original",
+      "area": "original",
+      "turn": 1,
+      "question": "파이크는 체력 템 가면 어떻게되지?",
+      "expected": {
+        "q": "파이크는 체력 템 가면 어떻게되지?",
+        "require": [
+          "추가.*체력|체력.*템",
+          "공격력",
+          "14"
+        ],
+        "forbid": [
+          "근거를 찾지 못",
+          "어느 쪽"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 19.9
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 17.39
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-original",
+      "area": "original",
+      "turn": 2,
+      "question": "파이크 체력템을가도되나? 패시브나 이런곳에 뭐 있엇던것같은데",
+      "expected": {
+        "q": "파이크 체력템을가도되나? 패시브나 이런곳에 뭐 있엇던것같은데",
+        "require": [
+          "체력",
+          "공격력",
+          "14"
+        ],
+        "forbid": [
+          "근거를 찾지 못"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.94
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 3.65
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-original",
+      "area": "original",
+      "turn": 1,
+      "question": "아크샨은 평타 한대 치면 어떻게되지?",
+      "expected": {
+        "q": "아크샨은 평타 한대 치면 어떻게되지?",
+        "require": [
+          "추가 공격|두 번째 공격",
+          "취소",
+          "이동 속도"
+        ],
+        "forbid": [
+          "어느 쪽",
+          "악당",
+          "되살아"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 16.45
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 12.53
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-original",
+      "area": "original",
+      "turn": 2,
+      "question": "아크샨은 평타 한대 치면 어떻게되지? (내가 할 때)",
+      "expected": {
+        "q": "아크샨은 평타 한대 치면 어떻게되지? (내가 할 때)",
+        "require": [
+          "추가 공격|두 번째 공격",
+          "취소",
+          "이동 속도"
+        ],
+        "forbid": [
+          "악당",
+          "되살아"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 3.02
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 4.04
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-arithmetic",
+      "area": "calculation",
+      "turn": 1,
+      "question": "파이크 체력 140짜리 템이면 공격력 얼마야?",
+      "expected": {
+        "q": "파이크 체력 140짜리 템이면 공격력 얼마야?",
+        "require": [
+          "공격력 10(?:입니다|\\b)"
+        ],
+        "forbid": [
+          "800%"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 10(?:입니다|\\b)"
+        ],
+        "ms": 1
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 140이면 추가 공격력 10입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 1.78
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-arithmetic",
+      "area": "calculation",
+      "turn": 2,
+      "question": "그럼 280짜리는?",
+      "expected": {
+        "q": "그럼 280짜리는?",
+        "require": [
+          "공격력 20(?:입니다|\\b)"
+        ],
+        "forbid": [
+          "공격력 10(?:입니다|\\b)"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 20(?:입니다|\\b)"
+        ],
+        "ms": 30.16
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 280이면 추가 공격력 20입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 22.93
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-arithmetic",
+      "area": "calculation",
+      "turn": 3,
+      "question": "기본 체력도 전환되는거야?",
+      "expected": {
+        "q": "기본 체력도 전환되는거야?",
+        "require": [
+          "기본.*포함되지|기본.*전환.*아니|기본.*전환.*않"
+        ],
+        "forbid": [
+          "공격력 20"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:기본.*포함되지|기본.*전환.*아니|기본.*전환.*않"
+        ],
+        "ms": 6.38
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n기본·성장 체력은 이 추가 체력 전환에 포함되지 않습니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 7.08
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-short-followup",
+      "area": "memory",
+      "turn": 1,
+      "question": "파이크 체력 140이면 공격력 얼마야?",
+      "expected": {
+        "q": "파이크 체력 140이면 공격력 얼마야?",
+        "require": [
+          "공격력 10(?:입니다|\\b)"
+        ]
+      },
+      "baseline": {
+        "text": "체력 (1레벨)는 파이크 670입니다.\n\n공격력 (1레벨)는 파이크 62입니다.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 10(?:입니다|\\b)"
+        ],
+        "ms": 7.99
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 140이면 추가 공격력 10입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 8.03
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-short-followup",
+      "area": "memory",
+      "turn": 2,
+      "question": "280은?",
+      "expected": {
+        "q": "280은?",
+        "require": [
+          "공격력 20(?:입니다|\\b)"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 20(?:입니다|\\b)"
+        ],
+        "ms": 14.39
+      },
+      "variant": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 20(?:입니다|\\b)"
+        ],
+        "source": "baseline",
+        "ms": 15.67
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-zero",
+      "area": "calculation",
+      "turn": 1,
+      "question": "파이크 추가 체력 0이면 추가 공격력은 얼마야?",
+      "expected": {
+        "q": "파이크 추가 체력 0이면 추가 공격력은 얼마야?",
+        "require": [
+          "추가 공격력 0(?:입니다|\\b)"
+        ],
+        "forbid": [
+          "추가 공격력 1입니다"
+        ]
+      },
+      "baseline": {
+        "text": "파이크의 상점 가격은 블루 정수 1,575 또는 790 RP입니다.\n\n공식 롤 위키 기준(2026-09-26 확인)",
+        "pass": false,
+        "failures": [
+          "missing:추가 공격력 0(?:입니다|\\b)"
+        ],
+        "ms": 31.11
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:추가 공격력 0(?:입니다|\\b)",
+          "forbidden:추가 공격력 1입니다"
+        ],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 20.41
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-correct-number",
+      "area": "correction",
+      "turn": 1,
+      "question": "파이크 체력 140 말고 280이면 공격력은?",
+      "expected": {
+        "q": "파이크 체력 140 말고 280이면 공격력은?",
+        "require": [
+          "추가 공격력 20(?:입니다|\\b)"
+        ],
+        "forbid": [
+          "추가 공격력 10(?:입니다|\\b)"
+        ]
+      },
+      "baseline": {
+        "text": "체력 (1레벨)는 파이크 670입니다.\n\n공격력 (1레벨)는 파이크 62입니다.",
+        "pass": false,
+        "failures": [
+          "missing:추가 공격력 20(?:입니다|\\b)"
+        ],
+        "ms": 6.8
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 140이면 추가 공격력 10입니다.",
+        "pass": false,
+        "failures": [
+          "missing:추가 공격력 20(?:입니다|\\b)",
+          "forbidden:추가 공격력 10(?:입니다|\\b)"
+        ],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 7.92
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-fraction",
+      "area": "calculation",
+      "turn": 1,
+      "question": "파이크 체력 150 템이면 공격력은?",
+      "expected": {
+        "q": "파이크 체력 150 템이면 공격력은?",
+        "require": [
+          "10\\.714"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:10\\.714"
+        ],
+        "ms": 0.88
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 150이면 추가 공격력 10.714입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 1.55
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-fraction",
+      "area": "calculation",
+      "turn": 2,
+      "question": "그럼 체력 14.5면?",
+      "expected": {
+        "q": "그럼 체력 14.5면?",
+        "require": [
+          "1\\.036"
+        ]
+      },
+      "baseline": {
+        "text": "파이크 체력 (1레벨)는 670입니다.",
+        "pass": false,
+        "failures": [
+          "missing:1\\.036"
+        ],
+        "ms": 7.39
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 14.5이면 추가 공격력 1.036입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 7.67
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-growth",
+      "area": "scope",
+      "turn": 1,
+      "question": "파이크 성장 체력도 공격력으로 바뀌어?",
+      "expected": {
+        "q": "파이크 성장 체력도 공격력으로 바뀌어?",
+        "require": [
+          "성장.*포함되지|성장.*전환.*않|성장.*아니"
+        ]
+      },
+      "baseline": {
+        "text": "체력 (1레벨)는 파이크 670입니다.\n\n공격력 (1레벨)는 파이크 62입니다.",
+        "pass": false,
+        "failures": [
+          "missing:성장.*포함되지|성장.*전환.*않|성장.*아니"
+        ],
+        "ms": 6.87
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n기본·성장 체력은 이 추가 체력 전환에 포함되지 않습니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 7.4
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-replaces",
+      "area": "scope",
+      "turn": 1,
+      "question": "파이크 체력템 사면 체력도 늘고 공격력도 늘어?",
+      "expected": {
+        "q": "파이크 체력템 사면 체력도 늘고 공격력도 늘어?",
+        "require": [
+          "대체|체력.*늘.*않|체력.*증가.*않"
+        ],
+        "forbid": [
+          "체력과 공격력이 모두 증가"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:대체|체력.*늘.*않|체력.*증가.*않"
+        ],
+        "ms": 0.89
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 1.69
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-both-shots",
+      "area": "condition",
+      "turn": 1,
+      "question": "아크샨 두 번째 공격 취소하면 뭐가 좋아?",
+      "expected": {
+        "q": "아크샨 두 번째 공격 취소하면 뭐가 좋아?",
+        "require": [
+          "취소",
+          "이동 속도"
+        ]
+      },
+      "baseline": {
+        "text": "**플레이할 때**\nE는 처치 관여 시 쿨이 초기화됩니다. 아군을 처치한 적에게는 악당 표식이 붙고, 그 악당을 잡으면 그에게 죽은 아군이 되살아나고 추가 골드까지 들어옵니다.\n\n**상대할 때**\nW 위장은 지형과 수풀 근처에서만 오래 갑니다. E는 지형에 갈고리를 걸어야 성립합니다.",
+        "pass": false,
+        "failures": [
+          "missing:취소",
+          "missing:이동 속도"
+        ],
+        "ms": 22.06
+      },
+      "variant": {
+        "text": "**플레이할 때**\nE는 처치 관여 시 쿨이 초기화됩니다. 아군을 처치한 적에게는 악당 표식이 붙고, 그 악당을 잡으면 그에게 죽은 아군이 되살아나고 추가 골드까지 들어옵니다.\n\n**상대할 때**\nW 위장은 지형과 수풀 근처에서만 오래 갑니다. E는 지형에 갈고리를 걸어야 성립합니다.",
+        "pass": false,
+        "failures": [
+          "missing:취소",
+          "missing:이동 속도"
+        ],
+        "source": "baseline",
+        "ms": 22.7
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-both-shots",
+      "area": "condition",
+      "turn": 2,
+      "question": "그럼 두 발 다 쏘면 이속도 얻어?",
+      "expected": {
+        "q": "그럼 두 발 다 쏘면 이속도 얻어?",
+        "require": [
+          "취소 조건에 해당하지|이동 속도.*않|이속.*않"
+        ],
+        "forbid": [
+          "체력.*공격력"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨 이동 속도 (1레벨)는 330입니다.",
+        "pass": false,
+        "failures": [
+          "missing:취소 조건에 해당하지|이동 속도.*않|이속.*않"
+        ],
+        "ms": 6.44
+      },
+      "variant": {
+        "text": "아크샨 이동 속도 (1레벨)는 330입니다.",
+        "pass": false,
+        "failures": [
+          "missing:취소 조건에 해당하지|이동 속도.*않|이속.*않"
+        ],
+        "source": "baseline",
+        "ms": 7.15
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-first-cancel",
+      "area": "condition",
+      "turn": 1,
+      "question": "아크샨 첫 평타를 발사 전에 취소해도 이속 올라?",
+      "expected": {
+        "q": "아크샨 첫 평타를 발사 전에 취소해도 이속 올라?",
+        "require": [
+          "첫.*취소.*(?:다르|해당하지|않)|발사 전.*(?:다르|해당하지|않)|추가 공격.*취소.*조건"
+        ],
+        "forbid": [
+          "첫 평타를 취소하면 이동 속도가 증가"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": false,
+        "failures": [
+          "missing:첫.*취소.*(?:다르|해당하지|않)|발사 전.*(?:다르|해당하지|않)|추가 공격.*취소.*조건"
+        ],
+        "ms": 3.81
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": false,
+        "failures": [
+          "missing:첫.*취소.*(?:다르|해당하지|않)|발사 전.*(?:다르|해당하지|않)|추가 공격.*취소.*조건"
+        ],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 4.82
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield",
+      "area": "condition",
+      "turn": 1,
+      "question": "아크샨 미니언 세 대 치면 보호막 생겨?",
+      "expected": {
+        "q": "아크샨 미니언 세 대 치면 보호막 생겨?",
+        "require": [
+          "미니언.*해당하지|미니언.*않"
+        ]
+      },
+      "baseline": {
+        "text": "[미니언 행동] 챔피언이 미니언의 진로에 서 있고, 미니언 공격 사거리 안에 다른 표적이 없으며, 포탑 사거리 밖일 때입니다.\n[미니언 행동] 챔피언이 적 챔피언에게 기본 공격, 대다수의 대상 지정 스킬, 그리고 그와 비슷하게 분류된 일부 스킬로 피해를 입힌 경우입니다. 원인이 여럿이면 미니언은 가장 가까운 챔피언을 우선합니다.\n[미니언 행동] 첫 웨이브를 빼면, 미니언이 이미 적 포탑을 때리고 있는 동안에는 도움 요청 신호를 무시합니다.\n[미니언 능력치] 미니언은 정확히 90초마다(세 웨이브마다) 강화되어 체력과 공격력이 오르고, 상황에 따라 추가 버프를 받기도 합니다.\n[미니언 능력치] 미니언이 적 챔피언에게 주는 피해는 50% 줄어듭니다.\n[미니언 능력치] 미니언의 기본 이동 속도는 325에서 시작해 시간이 지나면서 10~25만큼 올라갑니다.\n[미니언] 적 억제기를 파괴하면 그 라인의 아군 미니언이 약한 버프를 받습니다.\n[미니언 압박] 포탑 우위란 양 팀이 파괴한 안쪽 포탑과 넥서스 포탑 수의 차이를 말합니다.\n[웨이브 골드] V8.23 기준으로 미니언 한 웨이브의 평균 골드 가치는 125에서 시작해 25분에 195까지 올라갑니다.\n[웨이브 운영] 플레이어가 개입하지 않으면 라인의 웨이브는 어느 쪽으로도 크게 밀리지 않습니다.\n[웨이브 운영] 앞 웨이브를 따라잡은 미니언 웨이브는 라인을 적 포탑 쪽으로 밀기 시작합니다.\n[웨이브 운영] 미니언이 크게 뭉치면 포탑을 압도할 수 있습니다.\n[웨이브 운영] 적 미니언 웨이브에 개입해 아군 미니언이 받는 피해보다 주는 피해를 크게 만들면 라인이 밀리기 시작합니다.\n[웨이브 운영] 가장 단순한 방법은 아군 미니언의 개입 없이 적 웨이브를 통째로 잡는 것입니다. 그러면 웨이브가 부딪히는 지점이 바뀝니다.\n[용어] 파밍: 미니언에 막타를 넣어 골드와 경험치를 얻는 것입니다.\n[용어] 라인 탄력: 챔피언이 돕지 않아도 그 라인 미니언이 밀고 나가는 힘입니다.\n[용어] 푸시: 적 미니언을 쳐서 아군 미니언을 살려 두고 라인을 밀어 올리는 것입니다.\n[용어] 프리즈: 적 미니언이 라인을 밀지 못하게 하면서 되밀지도 않고 묶어 두는 것입니다.\n[용어] 슈퍼 웨이브: 챔피언이 돕지 않아도 포탑·넥서스·챔피언을 무너뜨릴 만큼 크거나 강한 미니언 무리입니다.\n[용어] 프리 파밍: 적 챔피언의 견제 없이 파밍하는 것입니다.\n[용어] 프록시 파밍: 적 포탑 뒤에서 파밍하는 것입니다. 아군 미니언의 개입이 없어 막타는 쉽지만 대개 훨씬 위험합니다.\n[용어] 스플릿 푸시: 목표 여럿을 동시에 치는 것으로, 그중 적어도 하나는 라인 포탑인 경우를 말합니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 13.88
+      },
+      "variant": {
+        "text": "[미니언 행동] 챔피언이 미니언의 진로에 서 있고, 미니언 공격 사거리 안에 다른 표적이 없으며, 포탑 사거리 밖일 때입니다.\n[미니언 행동] 챔피언이 적 챔피언에게 기본 공격, 대다수의 대상 지정 스킬, 그리고 그와 비슷하게 분류된 일부 스킬로 피해를 입힌 경우입니다. 원인이 여럿이면 미니언은 가장 가까운 챔피언을 우선합니다.\n[미니언 행동] 첫 웨이브를 빼면, 미니언이 이미 적 포탑을 때리고 있는 동안에는 도움 요청 신호를 무시합니다.\n[미니언 능력치] 미니언은 정확히 90초마다(세 웨이브마다) 강화되어 체력과 공격력이 오르고, 상황에 따라 추가 버프를 받기도 합니다.\n[미니언 능력치] 미니언이 적 챔피언에게 주는 피해는 50% 줄어듭니다.\n[미니언 능력치] 미니언의 기본 이동 속도는 325에서 시작해 시간이 지나면서 10~25만큼 올라갑니다.\n[미니언] 적 억제기를 파괴하면 그 라인의 아군 미니언이 약한 버프를 받습니다.\n[미니언 압박] 포탑 우위란 양 팀이 파괴한 안쪽 포탑과 넥서스 포탑 수의 차이를 말합니다.\n[웨이브 골드] V8.23 기준으로 미니언 한 웨이브의 평균 골드 가치는 125에서 시작해 25분에 195까지 올라갑니다.\n[웨이브 운영] 플레이어가 개입하지 않으면 라인의 웨이브는 어느 쪽으로도 크게 밀리지 않습니다.\n[웨이브 운영] 앞 웨이브를 따라잡은 미니언 웨이브는 라인을 적 포탑 쪽으로 밀기 시작합니다.\n[웨이브 운영] 미니언이 크게 뭉치면 포탑을 압도할 수 있습니다.\n[웨이브 운영] 적 미니언 웨이브에 개입해 아군 미니언이 받는 피해보다 주는 피해를 크게 만들면 라인이 밀리기 시작합니다.\n[웨이브 운영] 가장 단순한 방법은 아군 미니언의 개입 없이 적 웨이브를 통째로 잡는 것입니다. 그러면 웨이브가 부딪히는 지점이 바뀝니다.\n[용어] 파밍: 미니언에 막타를 넣어 골드와 경험치를 얻는 것입니다.\n[용어] 라인 탄력: 챔피언이 돕지 않아도 그 라인 미니언이 밀고 나가는 힘입니다.\n[용어] 푸시: 적 미니언을 쳐서 아군 미니언을 살려 두고 라인을 밀어 올리는 것입니다.\n[용어] 프리즈: 적 미니언이 라인을 밀지 못하게 하면서 되밀지도 않고 묶어 두는 것입니다.\n[용어] 슈퍼 웨이브: 챔피언이 돕지 않아도 포탑·넥서스·챔피언을 무너뜨릴 만큼 크거나 강한 미니언 무리입니다.\n[용어] 프리 파밍: 적 챔피언의 견제 없이 파밍하는 것입니다.\n[용어] 프록시 파밍: 적 포탑 뒤에서 파밍하는 것입니다. 아군 미니언의 개입이 없어 막타는 쉽지만 대개 훨씬 위험합니다.\n[용어] 스플릿 푸시: 목표 여럿을 동시에 치는 것으로, 그중 적어도 하나는 라인 포탑인 경우를 말합니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 13.14
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield",
+      "area": "condition",
+      "turn": 2,
+      "question": "아니 챔피언 세 대면?",
+      "expected": {
+        "q": "아니 챔피언 세 대면?",
+        "require": [
+          "챔피언",
+          "3회|세 번째",
+          "보호막"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:챔피언",
+          "missing:3회|세 번째",
+          "missing:보호막"
+        ],
+        "ms": 17.47
+      },
+      "variant": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:챔피언",
+          "missing:3회|세 번째",
+          "missing:보호막"
+        ],
+        "source": "baseline",
+        "ms": 18.57
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield",
+      "area": "condition",
+      "turn": 3,
+      "question": "보호막 쿨이 아직 남아 있으면?",
+      "expected": {
+        "q": "보호막 쿨이 아직 남아 있으면?",
+        "require": [
+          "남아.*해당하지|남아.*않"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:남아.*해당하지|남아.*않"
+        ],
+        "ms": 11.62
+      },
+      "variant": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:남아.*해당하지|남아.*않"
+        ],
+        "source": "baseline",
+        "ms": 11.85
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield-short",
+      "area": "memory",
+      "turn": 1,
+      "question": "아크샨 챔피언 세 대 치면 보호막 생겨?",
+      "expected": {
+        "q": "아크샨 챔피언 세 대 치면 보호막 생겨?",
+        "require": [
+          "챔피언",
+          "보호막"
+        ]
+      },
+      "baseline": {
+        "text": "네. P 비열한 싸움에 보호막이 있습니다.\n- P 비열한 싸움: 아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다. 아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.\n\n_v26.19_",
+        "pass": true,
+        "failures": [],
+        "ms": 20.55
+      },
+      "variant": {
+        "text": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 20.24
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield-short",
+      "area": "memory",
+      "turn": 2,
+      "question": "쿨 남았으면?",
+      "expected": {
+        "q": "쿨 남았으면?",
+        "require": [
+          "보호막.*남아.*해당하지|보호막.*남아.*않"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:보호막.*남아.*해당하지|보호막.*남아.*않"
+        ],
+        "ms": 6.99
+      },
+      "variant": {
+        "text": "보호막 · 이동 속도 증가 · 주문력 60%",
+        "pass": false,
+        "failures": [
+          "missing:보호막.*남아.*해당하지|보호막.*남아.*않"
+        ],
+        "source": "baseline",
+        "ms": 3.05
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield-ready",
+      "area": "negation",
+      "turn": 1,
+      "question": "아크샨 보호막 쿨이 안 남았으면 세 대에 보호막 생겨?",
+      "expected": {
+        "q": "아크샨 보호막 쿨이 안 남았으면 세 대에 보호막 생겨?",
+        "require": [
+          "챔피언",
+          "보호막 사용 가능|사용 가능.*보호막"
+        ],
+        "forbid": [
+          "조건에 해당하지 않습니다"
+        ]
+      },
+      "baseline": {
+        "text": "네. P 비열한 싸움에 보호막이 있습니다.\n- P 비열한 싸움: 아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다. 아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.\n\n_v26.19_",
+        "pass": false,
+        "failures": [
+          "missing:보호막 사용 가능|사용 가능.*보호막"
+        ],
+        "ms": 11.22
+      },
+      "variant": {
+        "text": "보호막 재사용 대기시간이 남아 있으면 이 보호막의 사용 가능 조건에 해당하지 않습니다.\n3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.",
+        "pass": false,
+        "failures": [
+          "forbidden:조건에 해당하지 않습니다"
+        ],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 12.73
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-one-shield",
+      "area": "condition",
+      "turn": 1,
+      "question": "아크샨 챔피언 한 대만 쳐도 보호막이 생겨?",
+      "expected": {
+        "q": "아크샨 챔피언 한 대만 쳐도 보호막이 생겨?",
+        "require": [
+          "3회|세 번째"
+        ],
+        "forbid": [
+          "한 대.*보호막을 얻"
+        ]
+      },
+      "baseline": {
+        "text": "네. P 비열한 싸움에 보호막이 있습니다.\n- P 비열한 싸움: 아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다. 아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.\n\n_v26.19_",
+        "pass": false,
+        "failures": [
+          "missing:3회|세 번째"
+        ],
+        "ms": 20.53
+      },
+      "variant": {
+        "text": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 21.48
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-damage-type",
+      "area": "source-conflict",
+      "turn": 1,
+      "question": "아크샨 패시브 세 번째 적중 추가 피해는 물리야 마법이야?",
+      "expected": {
+        "q": "아크샨 패시브 세 번째 적중 추가 피해는 물리야 마법이야?",
+        "require": [
+          "마법 피해"
+        ],
+        "forbid": [
+          "추가 물리 피해"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.23
+      },
+      "variant": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 2.5
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "champion-switch",
+      "area": "memory",
+      "turn": 1,
+      "question": "파이크 체력 280짜리 사면 공격력 얼마야?",
+      "expected": {
+        "q": "파이크 체력 280짜리 사면 공격력 얼마야?",
+        "require": [
+          "공격력 20(?:입니다|\\b)"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 20(?:입니다|\\b)"
+        ],
+        "ms": 1.94
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 280이면 추가 공격력 20입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 2.97
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "champion-switch",
+      "area": "memory",
+      "turn": 2,
+      "question": "아크샨 두 번째 평타 취소하면?",
+      "expected": {
+        "q": "아크샨 두 번째 평타 취소하면?",
+        "require": [
+          "취소",
+          "이동 속도"
+        ],
+        "forbid": [
+          "추가 공격력 20",
+          "체력 14"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 3.23
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 3.98
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "champion-switch",
+      "area": "memory",
+      "turn": 3,
+      "question": "그럼 두 발 모두 쏘면?",
+      "expected": {
+        "q": "그럼 두 발 모두 쏘면?",
+        "require": [
+          "취소 조건에 해당하지|이동 속도.*않"
+        ],
+        "forbid": [
+          "체력 14",
+          "추가 공격력 20"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:취소 조건에 해당하지|이동 속도.*않"
+        ],
+        "ms": 15.58
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격까지 발사하면 취소 조건에 해당하지 않습니다.\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 17.78
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "item-switch",
+      "area": "boundary",
+      "turn": 1,
+      "question": "아크샨 평타 한 대 치면?",
+      "expected": {
+        "q": "아크샨 평타 한 대 치면?",
+        "require": [
+          "취소",
+          "이동 속도"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 3.12
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 4.26
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "item-switch",
+      "area": "boundary",
+      "turn": 2,
+      "question": "도란검 가격은?",
+      "expected": {
+        "q": "도란검 가격은?",
+        "sameAsBaseline": true,
+        "forbid": [
+          "추가 공격 취소",
+          "Move Speed"
+        ]
+      },
+      "baseline": {
+        "text": "도란의 검 가격은 450 골드입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 8.91
+      },
+      "variant": {
+        "text": "도란의 검 가격은 450 골드입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 8.37
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "item-switch",
+      "area": "boundary",
+      "turn": 3,
+      "question": "그럼 280짜리는?",
+      "expected": {
+        "q": "그럼 280짜리는?",
+        "sameAsBaseline": true,
+        "forbid": [
+          "추가 공격력 20",
+          "Move Speed"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": true,
+        "failures": [],
+        "ms": 15.79
+      },
+      "variant": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 16.48
+      },
+      "improved": false,
+      "regressed": false
+    }
+  ]
+}

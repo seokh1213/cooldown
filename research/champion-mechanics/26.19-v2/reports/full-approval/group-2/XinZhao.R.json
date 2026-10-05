@@ -1,0 +1,131 @@
+{
+  "id": "XinZhao.R",
+  "sourceHash": "41005f6a3f1eec7717b28676b60da1e02857f18f553de7cb9e902cf90b6f332b",
+  "beforeCandidateHash": "7fb2b6aca206a596594a81ead1d2b937bbb1c961440eb696935c744456569c6a",
+  "candidateHash": "ed6bee8078ca74fbbae6a9bc3e13f1aed80aa41ef3c0ba72fd695a82b4b91dd9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "최근평타/E피해챔피언3초도전,주변기본물리+그적현재체력15%,각비도전적밀침,4초원밖적피해면역,미니언/정글600상한 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 target.target_type eq 가장 최근 기본공격 또는 무쌍돌격으로 피해 입힌 적 챔피언; target: 공격 또는 무쌍돌격으로 가장 최근에 피해를 입힌 적 챔피언을 도전 받은 상태로 표시합니다.; 수치 duration_seconds en:body:n0=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; nearby_enemies: 주변적에게기본물리식+그피해대상의현재체력15%물리피해를줍니다. [physical]; 수치 amount en:body:n1=75,en:body:n2=175,en:body:n3=275 상수 rank_values / stat_coefficient en:body:n4=100%(백분율) caster.bonusAttackDamage scalar / stat_coefficient en:body:n5=110%(백분율) caster.abilityPower scalar / stat_coefficient en:body:n6=15%(백분율) 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.mark eq 각 주변 적이 Challenged 상태가 아님; target: 도전 받지 않은 주변 적을 뒤로 밀쳐냅니다. [knockback]; 수치 없음; flags per_target"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이후 창이 닿는 거리 밖에 있는 적에게서 받는 피해에 면역이 됩니다.; 수치 duration_seconds en:body:n7=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq 미니언 또는 정글 몬스터; target: 정글 몬스터와 미니언에게 입히는 피해량은 상한이 적용됩니다. [physical]; 수치 max_amount en:body:n8=600 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "현재체력을maxHealth로잘못참조·도전표식을empowered로혼동·최근마지막대상과상한정글누락 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: The last champion Xin Zhao damaged with an Attack or Audacious Charge is Challenged for 3 seconds. Active: Xin Zhao unleashes a sweep around him that deals (75/175/275 + (100% bonus Attack Damage) + (110% Ability Power)) plus 15% current Health physical damage and Knocks Back all non-Challenged enemies. Afterwards, Xin Zhao becomes immune to damage from enemies outside the sweep range for 4 seconds. Deals a max of 600 damage to jungle monsters and minions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 657,
+      "verdict": "repaired",
+      "reason": "현재체력전용키없어maxHealth제거/텍스트수식보존."
+    },
+    {
+      "index": 658,
+      "verdict": "repaired",
+      "reason": "각주변비도전적을target+per_target로명시."
+    },
+    {
+      "index": 659,
+      "verdict": "repaired",
+      "reason": "미니언OR정글몬스터상한조건복원."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "currentHealth통계키가없어대상의현재체력15%를maxHealth계수로실행하지않고텍스트/구성요소로보존;소유자는ko본문의적현재체력에명시.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "최대 피해 상한 문장은 정글 몬스터와 미니언을 함께 지칭하지만, 기본 피해와 비례 피해 중 어떤 계산 범위에 상한이 적용되는지 명확하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "요약은원밖챔피언피해면역이나본문은원밖enemies피해로범위확장;본문우선.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

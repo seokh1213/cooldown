@@ -1,0 +1,120 @@
+{
+  "summary": "스웨인은 여러 갈래의 번개를 발사해 마법 피해를 입힌다. 같은 대상이 첫 번개 이후 추가 번개에 맞으면 번개마다 추가 피해를 받으며, 총 피해에는 최대치가 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "번개가 대상에게 적중하면 기본 마법 피해를 입히고, 첫 번개 이후 적중한 번개마다 추가 마법 피해를 입힌다. 총 피해는 명시된 최대치를 넘지 않는다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Swain unleashes 5 eldritch bolts, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage plus (15/22.5/30/37.5/45 + (11.25% Ability Power)) magic damage per bolt past the first (max (120/180/240/300/360 + (90% Ability Power)) magic damage)."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "총 피해 최대치의 수식이 툴팁에 제시되어 있으나, 기본 피해와 번개별 추가 피해가 대상별 적중 횟수에 따라 어떻게 최대치와 결합되는지 별도 계산식으로 분리되어 있지 않다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Swain unleashes 5 eldritch bolts, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage plus (15/22.5/30/37.5/45 + (11.25% Ability Power)) magic damage per bolt past the first (max (120/180/240/300/360 + (90% Ability Power)) magic damage)."
+        }
+      ]
+    }
+  ]
+}

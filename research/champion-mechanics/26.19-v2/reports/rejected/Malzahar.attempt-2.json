@@ -1,0 +1,300 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "최근 피해나 군중 제어를 받지 않은 동안 공허 태세가 피해를 줄이고 방해 및 이동 불가 효과에 면역을 부여합니다. 피해를 받거나 해당 효과를 막은 뒤에도 잠시 지속되며, 재사용 대기시간이 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "최근 피해나 군중 제어를 받지 않음"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "받는 피해량을 감소시킵니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "방해 및 이동 불가 효과에 면역됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "When he hasn't recently taken damage or been crowd controlled, Malzahar gains massive damage reduction and crowd control immunity."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "피해 감소 효과가 잠시 더 지속됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "방해 및 이동 불가 효과 면역이 잠시 더 지속됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "lingering for 0.25 seconds after taking damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "방해 또는 이동 불가 효과를 막음"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "피해 감소 효과가 잠시 더 지속됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "caster",
+              "text": "방해 및 이동 불가 효과 면역이 잠시 더 지속됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "lingering for 0.25 seconds after taking damage or blocking one of those effects"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "효과에 재사용 대기시간이 적용됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This effect has a (30 ~ 12) second Cooldown."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "요약은 최근 피해나 군중 제어를 받지 않은 동안 효과를 얻는다고 설명하지만, 본문은 피해를 받거나 방해·이동 불가 효과를 막은 뒤 잠시 지속된다고 설명합니다. 활성화와 재활성화의 정확한 시점은 확정할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "When he hasn't recently taken damage or been crowd controlled"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "lingering for 0.25 seconds after taking damage or blocking one of those effects"
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "재사용 대기시간이 피해를 받은 경우와 효과를 막은 경우 중 언제 시작되는지 본문에서 특정하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This effect has a (30 ~ 12) second Cooldown."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Malzahar.P",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.0.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "crowd_control",
+          "path": "rules.0",
+          "detail": "CC type belongs only on a CC effect"
+        },
+        {
+          "code": "crowd_control",
+          "path": "rules.1",
+          "detail": "CC type belongs only on a CC effect"
+        },
+        {
+          "code": "crowd_control",
+          "path": "rules.2",
+          "detail": "CC type belongs only on a CC effect"
+        }
+      ]
+    }
+  ]
+}

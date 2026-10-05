@@ -1,0 +1,83 @@
+{
+  "id": "JarvanIV.R",
+  "sourceHash": "8d8e372e3467d4282fe735103db57078c39696058e5c8d3b252f0503a7774f9a",
+  "beforeCandidateHash": "254316659700319f98eae3c61f3b6766d3da89a8ce3117cb4577263ede74b172",
+  "candidateHash": "9690bc30bc876a90999748d18a391d6592911ce0e953bcfe34981d9da2912cf9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "적챔피언도약,착지시대상및주변적200/325/450+추가AD180%물리피해,대상주변3.5초통과불가지형,재시전벽붕괴를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion; target other eq 선택한도약대상이적챔피언 → target: 도약착지시선택한적챔피언에게물리피해를입힙니다. [physical] / amount=200/325/450 [rank_values]; stat_coefficient=180% (caster bonusAttackDamage) [formula_components] | nearby_enemies: 도약착지시선택한적챔피언주변의다른적들에게같은물리피해를입힙니다. [physical] / amount=200/325/450 [rank_values]; stat_coefficient=180% (caster bonusAttackDamage) [formula_components] | caster: 선택한적챔피언에게도약합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion; target other eq 선택한도약대상이적챔피언 → unknown: 선택한적챔피언주변에3.5초동안통과할수없는투기장지형을생성합니다. / duration_seconds=3.5 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast / 조건 caster other eq 이궁극기로만든투기장지형이남아있어재시전할때 → unknown: 지형을 무너뜨립니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "도약이누락되고단일target피해에주변적피해를텍스트만혼합했다.",
+      "correction": "적챔피언도약과착지시선택대상/주변다른적피해를명시적으로보존했다.",
+      "sourceId": "en:body",
+      "quote": "leaps to an enemy Champion, dealing (200/325/450 + (180% bonus Attack Damage)) physical damage to them and surrounding enemies"
+    },
+    {
+      "path": "rules.1-2",
+      "issue": "지형생성/붕괴가근처적movement로분류되고재시전상태가일반activation=true였다.",
+      "correction": "지형other효과와해당궁극기지형의재시전조건으로정정했다.",
+      "sourceId": "en:body",
+      "quote": "creating an arena of impassable terrain around them for 3.5 seconds. Jarvan can Recast to collapse the terrain."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

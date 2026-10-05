@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Zed.E",
+      "sourceHash": "49a1c6c31b93c16be9e79979f6fdb39d74d9d359360bb712657714ae84de6638",
+      "candidateHash": "950579c99515d64b801e6639f748bffb80fadfa7e3338a3ead053a5778371f70"
+    },
+    {
+      "id": "Zed.P",
+      "sourceHash": "86603f1e4391c798be1e67daa3a61948bf94f081fb6b3be57abfbfde1953d5e6",
+      "candidateHash": "45102e544240e0214d2dab35006880f19d1df79648e583beb9fbe90671f2c52c"
+    },
+    {
+      "id": "Zed.Q",
+      "sourceHash": "e5236718694d6314f53c022070b578eb488e6567dc5c89acd48b4a230b6d8db4",
+      "candidateHash": "8d0830fdcc22e3db858470bcf44278b21130d718fb3d3cbf839daad29050605b"
+    },
+    {
+      "id": "Zed.R",
+      "sourceHash": "c530e7b89fd6e423228184cce62a0dfddf85526ca42bfa229a5f6874bb72e3e0",
+      "candidateHash": "d0c22d44fdbeffd0f2f2ebf026bc3ca3456b457fff36d3179255b5bf93977a78"
+    },
+    {
+      "id": "Zed.W",
+      "sourceHash": "4c137c67f351b6ef096c114279e4a2d538a694abe31fa2e8c8817daf3421aef6",
+      "candidateHash": "c15cdc3ad07169cd611c6d75213e0e3af836e1151485e7884a566a0ee1cc6e23"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Zed.E",
+      "path": "rules.3.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Enemies hit by multiple slashes take no additional damage but are Slowed by 30/37.5/45/52.5/60% instead.",
+      "issue": "`1.5`는 둔화 지속 시간인데, 조건에서 이를 `hit_count > 1.5`로 사용해 중복 적중 조건을 잘못 표현했습니다.",
+      "correction": "중복 적중 조건을 복수의 베기가 같은 대상을 맞힌 경우로 표현하고, 지속 시간 수치를 조건에 사용하지 마세요."
+    },
+    {
+      "id": "Zed.E",
+      "path": "rules.0.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zed and his Shadows slash, dealing (70/92.5/115/137.5/160 + (70% bonus Attack Damage)) physical damage to nearby enemies.",
+      "issue": "효과 주체가 `nearby_enemies`라 피해 대상처럼 보이며, 적중 대상이 아닌 제드와 그림자가 피해를 입히는 주체라는 구분이 흐립니다.",
+      "correction": "피해 효과의 주체를 제드와 그림자로 두고, `nearby_enemies`는 피해 대상 범위로 표현하세요."
+    },
+    {
+      "id": "Zed.P",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Whenever Zed Attacks an enemy below 50% Health, he deals an additional (5.0% ~ 10.0%) max Health magic damage. Enemy champions can only be hit once every 10 seconds.",
+      "issue": "요약이 발동 기준을 ‘체력 절반 이하’로 바꿨습니다. 원문은 50% 미만이므로 체력이 정확히 절반인 적은 포함하지 않습니다.",
+      "correction": "‘체력이 50% 미만인 적을 기본 공격하면’으로 고치세요."
+    },
+    {
+      "id": "Zed.P",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemy champions can only be hit once every 10 seconds.",
+      "issue": "효과 문구가 10초간 지속되는 효과처럼 읽힙니다. 원문은 같은 적 챔피언이 이 효과에 10초에 한 번만 맞을 수 있다는 재발동 제한입니다.",
+      "correction": "‘같은 적 챔피언은 이 효과에 10초에 한 번만 맞습니다’로 표현하세요."
+    },
+    {
+      "id": "Zed.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Zed and his Shadows throw their shurikens, each dealing (80/120/160/200/240 + (100% bonus Attack Damage)) physical damage to the first enemy they pass through, and (48/72/96/120/144 + (60% bonus Attack Damage)) physical damage to each additional enemy.",
+      "issue": "피해 규칙에 `target.hit_order = first` 조건을 붙였지만, 원문은 제드와 그림자가 각각 던지는 모든 표창마다 첫 적을 기준으로 합니다. 이 조건은 시전자별 표창의 첫 대상 관계를 표현하지 않습니다.",
+      "correction": "첫 적 조건을 각 표창의 적중 순서에 연결해 표현하세요."
+    },
+    {
+      "id": "Zed.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Zed and his Shadows throw their shurikens, each dealing (80/120/160/200/240 + (100% bonus Attack Damage)) physical damage to the first enemy they pass through, and (48/72/96/120/144 + (60% bonus Attack Damage)) physical damage to each additional enemy.",
+      "issue": "`neq first`는 첫 적 외의 대상을 가리키지만, 원문에서 감소 피해는 ‘각 표창이 지나친 첫 적 이후의 각 추가 적’에 적용됩니다. 표창별 적중 순서가 조건에 특정되지 않았습니다.",
+      "correction": "추가 적 조건을 각 표창의 적중 순서에 연결해 표현하세요."
+    },
+    {
+      "id": "Zed.R",
+      "path": "rules.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zed becomes Untargetable and dashes to an enemy champion, marking them.",
+      "issue": "세 효과가 모두 `cast` 시 발생하는 구조라, 돌진 및 표식 부여가 실제로 적 챔피언에게 도달했는지 여부를 구분하지 않습니다. 원문은 적 챔피언에게 돌진해 표식을 남긴다고만 하므로 추가 적중 조건은 요구할 수 없지만, 요약된 세부 이벤트는 원문보다 구체적으로 단정됩니다.",
+      "correction": "원문이 명시한 시전 후 무적 대상 지정 상태, 적 챔피언 돌진, 표식 부여를 한 흐름으로 표현하고, 별도 적중 조건을 단정하지 마세요."
+    }
+  ],
+  "notes": []
+}

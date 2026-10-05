@@ -1,0 +1,166 @@
+{
+  "summary": "구체 주변 적에게 마법 피해를 입히고, 에너지 장을 남겨 적을 둔화시키며 아군의 이동 속도를 높인다. 아군의 이동 속도 증가 효과는 점차 사라진다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "구체 주변 적에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Orianna commands her Ball to release an electric pulse, dealing (70/110/150/190/230 + (80% Ability Power)) magic damage to surrounding enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "3초 동안 남는 에너지 장이 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The pulse leaves behind an energy field for 3 seconds, Slowing enemies by 20/25/30/35/40%"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The pulse leaves behind an energy field for 3 seconds, Slowing enemies by 20/25/30/35/40% and granting allies 20/25/30/35/40% Move Speed, decaying over 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "에너지 장이 아군의 이동 속도를 높이며, 증가 효과는 2초에 걸쳐 점차 사라진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "granting allies 20/25/30/35/40% Move Speed, decaying over 2 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The pulse leaves behind an energy field for 3 seconds, Slowing enemies by 20/25/30/35/40% and granting allies 20/25/30/35/40% Move Speed, decaying over 2 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

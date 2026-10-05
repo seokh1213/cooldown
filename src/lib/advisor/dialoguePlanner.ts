@@ -13,6 +13,7 @@ import { rememberDialoguePlan, scenarioConditions, type DialogueMemory, type Mat
 import { priorMatchup, rememberMatchupSelection } from "./dialogueMatchupMemory";
 import { knowledgeFactPlan } from "./knowledgeFactPlan";
 import { passiveMechanicPlan } from "./passiveMechanicPlan";
+import { comboAdvicePlan } from "./comboPlan";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
@@ -39,7 +40,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
   let memory = request.memory;
   const parts: DialoguePlan["parts"] = [];
   const trace: DialogueTrace = { judge: ctx.judge, parts: [], rejected: request.rejected };
-  if (request.rejected) return { parts, memory, clarification: requestGuidance(request.rejected, ctx.lang), trace };
+  if (request.rejected) { memory.mechanic = undefined; return { parts, memory, clarification: requestGuidance(request.rejected, ctx.lang), trace }; }
   if (!ctx.data) {
     const input = request.questions[0];
     return { parts: [{ question: typeof input === "string" ? input : input.text, plan: await planAnswer(input, ctx, deps) }], memory };
@@ -55,16 +56,23 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     let contract = describeRequest(resolved, memory, ctx);
     const unsupported = unsupportedCondition(question);
     if (unsupported) {
+      memory.mechanic = undefined;
       trace.parts.push({ question, request: contract, plan: "code", rejected: unsupported });
       parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: requestGuidance(unsupported, ctx.lang) } } });
       continue;
     }
+    const mechanic = ctx.data.abilityRules?.size
+      ? (await import("./mechanics/plan")).approvedMechanicPlan(resolved, ctx, memory) : undefined;
     const passive = passiveMechanicPlan(resolved, ctx, memory);
-    const preferred = knowledgeFactPlan(resolved, ctx, memory) ?? passive
+    const knowledge = knowledgeFactPlan(resolved, ctx, memory);
+    const combo = comboAdvicePlan(resolved, ctx, memory);
+    const preferred = combo ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? knowledge ?? passive
       ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
     if (passive?.type === "card" && passive.answer.kind === "spell" && preferred === passive) {
       contract = { operation: "explain", targets: [passive.answer.championId] };
     }
+    if (mechanic && preferred === mechanic.plan) contract = { operation: "explain", targets: [mechanic.memory.abilityId.split(".")[0]] };
+    if (combo?.type === "card" && combo.answer.kind === "champion") contract = { operation: "advice", targets: [combo.answer.card.id] };
     let stat = preferred ? undefined : dialogueStatPlan(resolved, memory, ctx);
     if (!preferred && !stat && deps.inferStatQuery) {
       const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);
@@ -91,6 +99,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
       && [ctx.copy.noLiteAnswer, ctx.copy.noGameData, ctx.copy.noModel].includes(plan.answer);
     const rejected = planMismatch(contract, plan) ?? (noEvidence ? "unsupported" : undefined);
     trace.parts.push({ question, request: contract, plan: plan.type, rejected });
+    if (rejected) memory.mechanic = undefined;
     if (rejected) plan = { type: "code", answer: { kind: "text", text: requestGuidance(rejected, ctx.lang) } };
     if (!rejected) {
       if (plan.type === "matchup") {
@@ -102,6 +111,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
         }
       }
       memory = rememberDialoguePlan(memory, plan, fact);
+      memory.mechanic = mechanic && plan === mechanic.plan ? mechanic.memory : undefined;
       if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionHint(resolved, memory, ctx));
     }
     const matchup = plan.type === "matchup" && memory.matchup ? { ...memory.matchup, conditions: structuredClone(memory.conditions) } : undefined;

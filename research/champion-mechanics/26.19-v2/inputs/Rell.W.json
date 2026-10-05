@@ -1,0 +1,538 @@
+{
+  "champion": "Rell",
+  "slot": "W",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Mounted: Rell Dismounts, crashing down in her armor, Knocking enemies up and gaining a large Shield. While dismounted, she gains Armor, Magic Resist, Attack Speed, and Attack Range, but is Slowed. Dismounted: Rell forms her Mount, gaining a burst of speed and Knocking Up the next enemy she attacks.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive - Mounted Alacrity: Rell gains 20/25/30/35/40 Move Speed while mounted. Active - Ferromancy: Crash Down: Rell leaps off her mount, Knocking Up enemies and dealing (60/90/120/150/180 + (60% Ability Power)) magic damage. Rell gains (20/40/60/80/100 + (11% Health)) Shield, which lasts until she remounts. Rell then enters her armored form, gaining 15% increased Armor and Magic Resist, 20% Attack Speed and 75 Attack Range. In this armored form, she can use Ferromancy: Mount Up.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "탑승: 렐이 탈것에서 중갑 형태로 뛰어내리며 적들을 공중으로 띄우고 큰 피해를 흡수하는 보호막을 얻습니다. 보행 시 방어력, 마법 저항력, 공격 속도, 공격 사거리가 증가하지만 둔화됩니다. 보행: 렐이 탈것에 올라타며 이동 속도가 상승하고 다음 기본 공격 시 적을 공중으로 띄워 올립니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과 - 탑승 민첩성: 렐이 탑승 상태에서 이동 속도가 20/25/30/35/40 증가합니다. 사용 시 - 철마술: 붕괴: 렐이 탈것에서 뛰어내리며 적들을 공중으로 띄워 올리고 (60/90/120/150/180 + (60% 주문력))의 마법 피해를 입힙니다. 렐이 (20/40/60/80/100 + (11% 체력))의 피해를 흡수하는 보호막을 얻습니다. 보호막은 다시 탑승할 때까지 지속됩니다. 그런 다음 중갑 상태로 변하며 15% 증가한 방어력과 마법 저항력, 20%의 공격 속도, 75의 공격 사거리를 얻습니다. 중갑 상태에서는 철마술: 탑승 스킬을 사용할 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Ferromancy: Crash Down",
+      "ko": "철마술: 붕괴"
+    },
+    "cooldownSeconds": [
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      450,
+      450,
+      450,
+      450,
+      450
+    ],
+    "cost": {
+      "values": [
+        40,
+        40,
+        40,
+        40,
+        40
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Dismount Damage",
+        "values": "60/90/120/150/180"
+      },
+      {
+        "label": "Shield Amount",
+        "values": "20/40/60/80/100"
+      },
+      {
+        "label": "Flip Damage",
+        "values": "10/25/40/55/70"
+      },
+      {
+        "label": "Passive Move Speed",
+        "values": "20/25/30/35/40"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:DismountDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "DismountDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          60,
+          90,
+          120,
+          150,
+          180
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockup",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Rell.json"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Rell",
+          "condition": "내려치기 또는 말 타기 공격"
+        },
+        {
+          "type": "knockback",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Rell",
+          "condition": "말 타기 상태의 기본 공격으로 넘기기"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Rell.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Rell.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 39,
+      "end": 41
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 42,
+      "end": 44
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 51,
+      "end": 53
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 172,
+      "end": 174
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 175,
+      "end": 177
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 178,
+      "end": 181
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 182,
+      "end": 185
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 186,
+      "end": 189
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 193,
+      "end": 196
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 239,
+      "end": 241
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 242,
+      "end": 244
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 245,
+      "end": 247
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 248,
+      "end": 250
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 251,
+      "end": 254
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "11%",
+      "value": 11,
+      "percent": true,
+      "start": 258,
+      "end": 261
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 354,
+      "end": 357
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 392,
+      "end": 395
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 413,
+      "end": 415
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 37,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 40,
+      "end": 42
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 43,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 46,
+      "end": 48
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 49,
+      "end": 51
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 106,
+      "end": 108
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 109,
+      "end": 111
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 112,
+      "end": 115
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 116,
+      "end": 119
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 120,
+      "end": 123
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 127,
+      "end": 130
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 155,
+      "end": 157
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 158,
+      "end": 160
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 161,
+      "end": 163
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 164,
+      "end": 166
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 167,
+      "end": 170
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "11%",
+      "value": 11,
+      "percent": true,
+      "start": 174,
+      "end": 177
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 244,
+      "end": 247
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 265,
+      "end": 268
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 277,
+      "end": 279
+    }
+  ],
+  "sourceHash": "9d146b8cb7995b7a75b7b80c8c0993bf2936ab1309db7d7aed68220c456f2397",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

@@ -1,0 +1,72 @@
+{
+  "id": "Sett.R",
+  "sourceHash": "54564192a08e59ef93aea7cee9b9b1203a784727079ca3f58c825024b3ef456d",
+  "beforeCandidateHash": "67336ef3a1dbef7861198b2948ad4b7ac94644d13b65293b632b66cb0ee41249",
+  "candidateHash": "720c827d5b36492f1ddd877bbfea67aba133b6b5274378db1d0da20cac03ba54",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "grabbedenemychamp제압/앞으로carry/착지주변물리200~400+casterbonusAD120%+grabbedtargetbonusHP40~60%,주변99%1초slow/착지거리falloff를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion. target crowd_control suppression: 세트가 붙잡은 적 챔피언을 앞으로 이동시키는 동안 제압한다. [] / caster movement: 붙잡아 제압한 적 챔피언을 데리고 앞으로 도약해 바닥에 내리꽂는다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 target.target_type eq champion; caster.other eq 붙잡은 적을 운반한 후 착지. nearby_enemies damage physical: 착지 지점 주변의 적에게 물리 피해를 입히며, 착지 지점에서 멀수록 피해가 감소한다. [amount n0=200/n1=300/n2=400 rank_values; stat_coefficient n3=120% formula_components caster.bonusAttackDamage; stat_coefficient n4=40%/n5=50%/n6=60% rank_values target.bonusHealth]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 target.target_type eq champion; caster.other eq 붙잡은 적을 운반한 후 착지. nearby_enemies crowd_control slow: 착지 지점 주변의 적을 둔화시킨다. [amount n7=99% scalar; duration_seconds n8=1 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2",
+      "issue": "carry이동누락·거리falloff를시간decays·HP계수role/착지발동",
+      "correction": "caster/targetmovement,decays삭제/stat_coefficient grabbedtargetHP/착지조건",
+      "sourceId": "en:body",
+      "quote": "Enemies take less damage the further they are from where Sett lands."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 450,
+      "verdict": "false_positive",
+      "reason": "frozen40/50/60모두percent=true이며60원문값저장은계약상60%다."
+    },
+    {
+      "index": 451,
+      "verdict": "false_positive",
+      "reason": "현ruletext에착지지점에서멀수록피해감소가이미명시되어있다."
+    },
+    {
+      "index": 452,
+      "verdict": "false_positive",
+      "reason": "target는붙잡힌champ이고nearby_enemies는별도수신자다. 피해계수의bonusHealth도grabbedtarget소유로정확하다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "착지 지점과의 거리에 따라 피해가 감소하지만 감소량이나 계산식은 제시되지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

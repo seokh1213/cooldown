@@ -1,0 +1,68 @@
+{
+  "id": "TahmKench.P",
+  "sourceHash": "c20ef4b58870abf033bb7692eaac632a606a4c307b5803ffbf819060a2bb5423",
+  "beforeCandidateHash": "b5226891c51775c3294cd10f4a1550ae6c1099c2a44765614e53b283b5f8ca92",
+  "candidateHash": "53d13372cd85259e614470aab2c9664c4df5de856474812e037803bcd8528acb",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "추가마법피해5~60+추가체력4%+AP0%, 적챔피언 공격5초최대3중첩과3중첩Q/R강화를 본문 기준으로 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack → target: 기본 공격이 추가 마법 피해를 입힌다. [magic] / min_amount=5 [level_range]; max_amount=60 [level_range]; stat_coefficient=4% (caster bonusHealth) [scalar]; stat_coefficient=0% (caster abilityPower) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target target_type eq champion → target: 적 챔피언 기본 공격 시 절대 미각 중첩을 부여한다.5초 동안 유지되고 최대3중첩이다. / duration_seconds=5 [scalar]; storage_cap=3 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 target target_type eq champion; target mark present 절대 미각 3중첩 → target: 절대 미각 중첩이 충분한 챔피언을 대상으로 혀 채찍과 집어삼키기가 강화된다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.trigger",
+      "issue": "대상이공격행위자로 기록·스킬까지중첩확장",
+      "correction": "caster attack로 본문범위 수정",
+      "sourceId": "en:body",
+      "quote": "Attacks deal"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en/ko 요약은 총체력비례·챔피언피해라고 하나 본문은 추가체력4% 및 기본공격중첩이라고 명시한다. 구체적 본문을 우선한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

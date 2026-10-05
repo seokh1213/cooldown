@@ -1,0 +1,68 @@
+{
+  "id": "TwistedFate.R",
+  "sourceHash": "85a3f4ce22966ff856211aba368923c643ff7c9333bcdd06e25abdb4b2797b92",
+  "beforeCandidateHash": "4f160cf888c11f04acfad862ff3becce8638355d75646c63bb81cf33fc6270c4",
+  "candidateHash": "102486dfb599f07e9242b00f7ba474df5ec4ecebf1a28e5ca8c1bcef00780532",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "절대 시야·재사용·순간이동 중단을 대조했다. 1.5초 의미는 en/ko 요약 차이가 있다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "6/8/10초 동안 맵 전체 적 챔피언 True Sight와 재사용 허용을 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "재사용 최대 거리 5500과 방해 효과에 의한 중단을 확인했다. 1.5초는 양 언어 요약에서 다른 의미여서 실행 시간을 확정하지 않았다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1",
+      "issue": "재사용 허용 효과를 규칙에 보충했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate focuses on his cards, granting True Sight of all enemy champions on the map for 6/8/10 seconds and allowing him to Recast. Recast: Twisted Fate teleports up to 5500 units away. Disabling effects will interrupt the teleport."
+    },
+    {
+      "path": "gaps.0.detail",
+      "issue": "실제 충돌은 본문의 생략 자체가 아니라 양 요약의 시간 의미 차이다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate focuses on his cards, granting True Sight of all enemy champions on the map for 6/8/10 seconds and allowing him to Recast. Recast: Twisted Fate teleports up to 5500 units away. Disabling effects will interrupt the teleport."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "note": "영문 요약의 1.5초는 순간이동 시간이며 한국어 요약의 1.5초는 관문 사용 가능 시간이다. 본문에는 시간이 없어 양 요약의 충돌을 해결하지 않고 실행 시간을 확정하지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "TwistedFate.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

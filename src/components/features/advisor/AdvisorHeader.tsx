@@ -31,7 +31,7 @@ export function AdvisorHeader(props: AdvisorHeaderProps) {
   const { t, lang } = useTranslation();
   const copy = t.advisor;
   return (
-    <header className="flex items-center justify-between border-b px-4 py-3">
+    <header className="flex shrink-0 items-center justify-between border-b px-4 py-3">
       <div className="flex items-center gap-2">
         {view !== "chat" && (
           <Button variant="ghost" size="icon" className="-ml-2 h-7 w-7 text-muted-foreground" onClick={() => onViewChange("chat")} aria-label={copy.storage.back}>
@@ -87,7 +87,7 @@ export function AdvisorHeader(props: AdvisorHeaderProps) {
             <History className="h-4 w-4" />
           </Button>
           {/* 모델(570MB)은 받아 두면 계속 남는다. 지울 길을 눈에 보이는 곳에 둔다. */}
-          <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => onViewChange("storage")} aria-label={copy.storage.open}>
+          <Button variant="ghost" size="icon" className="hidden text-muted-foreground md:inline-flex" onClick={() => onViewChange("storage")} aria-label={copy.storage.open}>
             <Bot className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={onClose} aria-label={copy.close}>

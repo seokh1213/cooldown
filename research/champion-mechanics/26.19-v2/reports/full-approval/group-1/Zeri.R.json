@@ -1,0 +1,121 @@
+{
+  "id": "Zeri.R",
+  "sourceHash": "aaddb214cfe2b7074acff408e103d28d54815183e619cd3c3193771fccecdd5d",
+  "beforeCandidateHash": "a1397f9d75ebd76bd1c5b9d6ef785deb9e51c62cbcdd86ee644349747a84f629",
+  "candidateHash": "b89629e3404422b8a840f8660ce305025f26a3666258426851d8d01dd279b025",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 9,
+  "checkedGapCount": 0,
+  "summaryCheck": "nova주변마법, 챔피언 적중5초 공속30/이속15, 유효적중별1중첩2.5초와 치명추가2, 중첩이속1.5%, 과충전3연발/40%총AD 연쇄, 온힛불가·미충전예외·지속5초상한을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. nearby_enemies damage magic: 주변 적에게 마법 피해를 입힙니다. [amount n0=150/n1=250/n2=350 rank_values; stat_coefficient n3=110% scalar caster.abilityPower; stat_coefficient n4=60% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; caster.other eq 이 번개 방출의 최초 폭발이 적 챔피언에게 적중. caster stat_modifier: 적 챔피언 적중 시5초 동안 공격 속도30%를 얻는다. [amount n5=30% scalar; duration_seconds n7=5 scalar] / caster stat_modifier: 적 챔피언 적중 시5초 동안 이동 속도15%를 얻는다. [amount n6=15% scalar; duration_seconds n7=5 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.target_type eq champion; caster.other eq 이 스킬의 과충전 효과 지속 중; caster.other eq 충전되지 않은 기본 공격을 제외한 기본 공격 또는 스킬 적중. caster other: 적 챔피언을 맞히면 이 스킬의 지속시간이 늘어나고, 정해진 시간 동안 과충전 중첩이 추가됩니다. [duration_seconds n8=2.5 scalar; count n9=1 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.target_type eq champion; caster.other eq 치명타 적중; caster.other eq 이 스킬의 과충전 효과 지속 중; caster.other eq 충전되지 않은 기본 공격을 제외한 기본 공격 또는 스킬 적중. caster other: 과충전 중 적 챔피언에게 치명타로 적중하면 일반 중첩에 더해2중첩을 추가한다. [count n9=2 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.resource present Overcharge stack. caster stat_modifier: 과충전 중첩마다 이동 속도가 증가합니다. [amount n10=1.5% scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.form eq Overcharged; caster.other eq 과충전 중 집중 사격 사용. caster attack_modifier: 집중 사격이 더 빠른 3연발 사격으로 바뀌며, 주변 적에게 연쇄 번개로 물리 피해를 입힙니다. 연쇄 번개는 치명타가 적용될 수 있지만 적중 시 효과는 적용되지 않습니다. [count n12=3 scalar; stat_coefficient n11=40% scalar caster.totalAttackDamage]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 이 스킬의 공격 속도 증가 효과가 활성인 동안. caster stat_modifier: 이 스킬의 공격 속도 증가 효과는 제리의 최대 공격 속도도 높입니다. []"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.resource eq uncharged. caster other: 충전되지 않은 기본 공격은 이 스킬의 중첩을 쌓거나 지속시간을 갱신하지 않습니다. []"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 없음. caster other: 지속시간 연장은 원래 지속시간을 초과할 수 없습니다. [duration_seconds n12=5 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/2/3/4/5/gaps",
+      "issue": "중첩1/3연발을2에연결·강화=치명 오인·총AD를추가AD로특정·미충전예외 조건누락",
+      "correction": "각 올바른 숫자/주인/치명조건 및 유효적중범위, 불필요ADgap삭제",
+      "sourceId": "en:body",
+      "quote": "During this time, Burst Fire becomes a faster triple shot that chains (40% Attack Damage) physical damage to nearby enemies."
+    },
+    {
+      "path": "rules.1,5,6.conditions",
+      "issue": "임의스킬적중에과충전획득및상시최대AS증가,집중사격변환의사용범위누락",
+      "correction": "최초궁극기폭발적중과AS효과활성,과충전집중사격으로범위를명시했다.",
+      "sourceId": "en:body",
+      "quote": "If she hits an enemy champion, Zeri gains 30% Attack Speed and 15% Move Speed for 5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 714,
+      "verdict": "repaired",
+      "reason": "일반 적중 중첩은 a stack/ko1이며 치명추가2와 다르다. ko숫자1로 교체했다."
+    },
+    {
+      "index": 715,
+      "verdict": "repaired",
+      "reason": "champion은 직전 중첩 사건 문맥으로 지지되지만 empowered는 치명타와 다르다. 치명타 적중 텍스트로 변경했다."
+    },
+    {
+      "index": 716,
+      "verdict": "repaired",
+      "reason": "3연발은ko본문의3을 참조하고 치명추가2 인용을 제거했다."
+    },
+    {
+      "index": 717,
+      "verdict": "repaired",
+      "reason": "일반 Attack Damage는 totalAD이며 같은 본문에서 bonusAD를 별도 표기한다. total로 변경했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

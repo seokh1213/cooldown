@@ -1,0 +1,189 @@
+{
+  "summary": "세트는 적 챔피언을 붙잡아 제압한 채 앞으로 이동한 뒤 바닥에 내리꽂습니다. 착지 지점 주변의 적은 물리 피해를 입고 둔화되며, 세트가 착지한 곳에서 멀수록 피해가 줄어듭니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "세트가 붙잡은 적 챔피언을 앞으로 이동시키는 동안 제압한다.",
+          "damageType": null,
+          "crowdControl": "suppression",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sett grabs an enemy champion and Suppresses them as he carries them forward"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "착지 지점 주변의 적에게 물리 피해를 입히며, 착지 지점에서 멀수록 피해가 감소한다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "target",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sett grabs an enemy champion and Suppresses them as he carries them forward, then slams them into the ground, dealing (200/300/400 + (120% bonus Attack Damage)) plus 40/50/60% of the grabbed enemy's bonus Health physical damage to surrounding enemies"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies take less damage the further they are from where Sett lands."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sett grabs an enemy champion and Suppresses them as he carries them forward, then slams them into the ground, dealing (200/300/400 + (120% bonus Attack Damage)) plus 40/50/60% of the grabbed enemy's bonus Health physical damage to surrounding enemies and Slowing them by 99% for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "착지 지점 주변의 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sett grabs an enemy champion and Suppresses them as he carries them forward, then slams them into the ground, dealing (200/300/400 + (120% bonus Attack Damage)) plus 40/50/60% of the grabbed enemy's bonus Health physical damage to surrounding enemies and Slowing them by 99% for 1 second."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "착지 지점과의 거리에 따라 피해가 감소하지만 감소량이나 계산식은 제시되지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies take less damage the further they are from where Sett lands."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "id": "Shen.Q",
+  "sourceHash": "29b27e9a92c9e6579aaf4fe32048a27ac360a418caf2b434821c41af0cf749a8",
+  "beforeCandidateHash": "39aa7d89ddd6f5e8e09d8a67cb376656a9b7bb340603b907c63fdb1ec7d8297b",
+  "candidateHash": "aa4ed2ababd64cb00465065ea17b6354a3347ce4e4306b1a2562c66f0ac61fac",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "최종재검수에서다음3공격의10~40레벨기본피해/대상maxHP복합식,챔피언검충돌시그3공격AS50%(구조물공격포함),정글+100%와상한,구조물10~40특례를대조했다. AS획득은실제후속공격피해조건과분리했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 기의 검 회수 경로에 부딪힌 적이 이후2초 동안 쉔으로부터 멀어지는 방향으로 이동할 때 → target: 기의 검 회수 경로에 맞은 적은 이후2초 동안 쉔으로부터 멀어질 때25/30/35/40/45% 둔화됩니다. [slow] / amount=25/30/35/40/45% [rank_values]; duration_seconds=2 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 followup_attack / 조건 caster followup_status present 기의 검을 불러낸 뒤 다음 3회 공격 중; caster other eq 회수한 기의 검이 적 챔피언에게 부딪히지 않은 경우; target target_type neq structure → target: 기의 검 회수 후 다음3회 기본 공격은10~40 + 대상최대체력×(2/2.5/3/3.5/4% + 1.5%×자신의주문력/100)의 추가 마법 피해를 입힙니다. [magic] / amount=10/40 [level_range]; stat_coefficient=2/2.5/3/3.5/4% (target maxHealth) [formula_components]; stat_coefficient=1.5%/100 (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 followup_attack / 조건 caster followup_status present 기의 검을 불러낸 뒤 다음 3회 공격 중; caster other eq 회수한 기의 검이 적 챔피언에게 부딪힌 경우; target target_type neq structure → target: 기의 검이 적 챔피언에 부딪혔으면 같은다음3회 기본공격의 추가피해가10~40 + 대상최대체력×(5/5.5/6/6.5/7% + 2%×자신의주문력/100)의 마법 피해로 대체됩니다. [magic] / amount=10/40 [level_range]; stat_coefficient=5/5.5/6/6.5/7% (target maxHealth) [formula_components]; stat_coefficient=2%/100 (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 followup_attack / 조건 target target_type eq monster; caster other eq 기의 검을 불러낸 뒤 다음3회 기본 공격 중; target other eq 정글몬스터 → target: 다음3회 강화공격의 정글 몬스터 대상피해는100% 증가(기본의200%)하며 최대100/125/150/175/200 제한이 적용됩니다. / other=100% [scalar]; max_amount=100/125/150/175/200 [rank_values]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 followup_attack / 조건 target target_type eq structure; caster other eq 기의 검을 불러낸 뒤 다음3회 기본 공격 중 → target: 구조물에 공격하면 피해를 입힙니다. 원문에는 피해 유형이 명시되어 있지 않습니다. / amount=10/40 [level_range]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → summon: 기의 검을 쉔에게 회수합니다. | caster: 회수 뒤 다음3회 기본 공격이 강화됩니다. / count=3 [scalar]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 회수하는기의검에적챔피언이부딪힌경우 → caster: 회수하는기의검이적챔피언에게부딪히면다음3회기본공격동안공격속도가50%증가합니다.구조물상대공격도이상태를사용합니다. / amount=50% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "검충돌/멀어지는이동 조건이텍스트에만있었다.",
+      "correction": "맞은적이멀어질때만둔화하는2초조건을명시했다.",
+      "sourceId": "en:body",
+      "quote": "Enemies hit by the pull are Slowed by 25/30/35/40/45% while moving away from Shen for the next 2 seconds."
+    },
+    {
+      "path": "rules.1-2",
+      "issue": "기본/강화피해중복및AP계수분모100/대상maxHP입력이누락되고근거없는mark강화조건이있었다.",
+      "correction": "검챔피언충돌기반상호배타조건과전체복합피해식을보존했다.",
+      "sourceId": "en:body",
+      "quote": "(2/2.5/3/3.5/4% + (1.5% per 100 Ability Power)) max Health magic damage"
+    },
+    {
+      "path": "rules.3-4",
+      "issue": "몬스터/구조물특례에다음3공격제한이없고100%증가를100%배율및기본대체로작성했다.",
+      "correction": "다음3공격한정과+100%=총200% 배율,상한/구조물피해특례를보존했다.",
+      "sourceId": "en:body",
+      "quote": "Each Attack deals 100% increased damage to jungle monsters (max 100/125/150/175/200 damage)."
+    },
+    {
+      "path": "rules.5",
+      "issue": "검회수와다음3공격후속부여효과가누락됐으며3회가피해매개변수에있었다.",
+      "correction": "시전시검회수/3공격후속효과를복구했다.",
+      "sourceId": "en:body",
+      "quote": "Shen recalls his Spirit Blade."
+    },
+    {
+      "path": "rules.2/6",
+      "issue": "최종재검수에서AS부여가후속공격적중까지지연되고구조물제외피해조건과결합해구조물공격AS를제외함을확인했다.",
+      "correction": "검의챔피언충돌사건에서다음3공격AS50%부여를별도보존했다.",
+      "sourceId": "en:body",
+      "quote": "he gains 50% Attack Speed for those Attacks."
+    },
+    {
+      "path": "rules.1-4",
+      "issue": "10~40레벨기본값이단일끝값별level_range이며정글한정이텍스트에만있었다.",
+      "correction": "레벨기본10~40을한amount로묶고정글한정을조건에명시했다.",
+      "sourceId": "en:body",
+      "quote": "Attacks against structures deal (10 ~ 40) damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 460,
+      "verdict": "repaired",
+      "reason": "3회는시전시후속공격부여count로옮기고피해값에서제거했다."
+    },
+    {
+      "index": 461,
+      "verdict": "false_positive",
+      "reason": "원본강화피해에이미en:body:n7=10/n8=40 min/max기본값이있다. 누락지적은오탐이며최종텍스트에도10~40을명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "기의검의적챔피언충돌은 이후다음3회 공격을 강화하는 시전자상태이며 실제공격대상을 그충돌챔피언으로 제한하지않는다. 지속시간이나 더세부적인 상태필드는 본문에미명시다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "퍼센트랭크2/2.5/3/3.5/4%,5/5.5/6/6.5/7%,25/30/35/40/45%는frozen숫자표에마지막값만percent=true이다. 전체%단위와maxHP×(랭크%+AP/100비율)복합식을텍스트/formula_components에보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "summary": "쓰레쉬가 랜턴을 던집니다. 쓰레쉬와 랜턴에 처음 접촉한 아군 챔피언 하나가 보호막을 얻으며, 아군은 랜턴을 클릭해 쓰레쉬에게 이동할 수 있습니다. 랜턴으로 영혼을 획득할 수도 있습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "쓰레쉬가 보호막을 얻습니다. 보호막은 획득한 영혼 수에 따라 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "랜턴에 처음 접촉한 아군 챔피언 하나가 보호막을 얻습니다. 보호막은 획득한 영혼 수에 따라 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The lantern also grants 52/72/92/112/132 Shield for 4 seconds to Thresh and the first ally champion to come in contact with it. The Shield scales with number of Souls collected."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "ally"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "아군이 랜턴을 클릭하면 쓰레쉬에게 이동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Thresh throws his lantern, allowing an ally to click on it to dash to Thresh."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "쓰레쉬는 랜턴으로 영혼을 획득할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Thresh can use his lantern to pick up Souls."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "보호막이 획득한 영혼 수에 따라 증가한다고 명시되어 있지만 증가량 계산식은 제공되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Shield scales with number of Souls collected."
+        }
+      ]
+    }
+  ]
+}

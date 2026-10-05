@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Fiddlesticks.E",
+      "sourceHash": "7532455d48b8a35f7e5b79ce2dd229eaa654102321c309d53e8de6441c500b48",
+      "candidateHash": "ede26e0731b0c0dfd1eabe476c1adb5e684be57c276c8b2a706a8346bd1cf78a"
+    },
+    {
+      "id": "Fiddlesticks.P",
+      "sourceHash": "6d0c25741d30dba94f7b09cd5cad7223e8a747cdd3c0b41bbe983da32030dcd1",
+      "candidateHash": "f8b727c383ebde0f172d28adbde61f96b12d46de642b237000c529d56e3ce5e0"
+    },
+    {
+      "id": "Fiddlesticks.R",
+      "sourceHash": "d58ec5d62aa235a091809f879777e5b385713c1a626f824b09eed67032233eba",
+      "candidateHash": "0a9453844401649a3f733123d3f63faf62165efe0fdf64ef18cbf87f37fd53d3"
+    },
+    {
+      "id": "Fiddlesticks.Q",
+      "sourceHash": "eca2de175f03ded05d3e0b19cbedc0be07e24db3b9156f3f117f2b5e56af436c",
+      "candidateHash": "3da5dff23930855c6ec9aa9eed638186d43c114f775fa07daa5eaeb8a25e8f53"
+    },
+    {
+      "id": "Fiddlesticks.W",
+      "sourceHash": "96d7278ddfe7aef87f87b85818155632c79921b1c48c9322b1ef510950bc1e12",
+      "candidateHash": "d52cdbd70ed0b36e0a208a92a32c5330a5a065b299d7576898bec62915c66f05"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Fiddlesticks.Q",
+      "path": "rules.0.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "While unseen and out of combat or impersonating an Effigy, damaging an enemy with an ability",
+      "issue": "조건이 ‘전투에서 벗어남 또는 허수아비인 척함’으로 되어 있어 허수아비인 척할 때 시야에 보이지 않아도 된다는 원문의 연결 관계를 보존하지 못합니다.",
+      "correction": "두 조건을 원문 그대로 텍스트로 유지하거나, `시야에 보이지 않음`과 `전투에서 벗어남 또는 허수아비인 척함`의 결합 관계가 모호하지 않게 표현하세요."
+    },
+    {
+      "id": "Fiddlesticks.Q",
+      "path": "rules.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals a minimum of 40/60/80/100/120 magic damage, or 80/120/160/200/240 magic damage if the target has been recently Feared by Fiddlesticks.",
+      "issue": "기본 최소 피해 규칙에 최근 공포 대상 조건이 없어, 최근 공포 시 대체되는 최소 피해와 조건 없는 기본 최소 피해가 동시에 적용되는 것처럼 읽힙니다.",
+      "correction": "기본 최소 피해 규칙을 최근 공포를 당하지 않은 대상에 한정하거나, 두 최소 피해 값을 하나의 조건부 대체 규칙으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

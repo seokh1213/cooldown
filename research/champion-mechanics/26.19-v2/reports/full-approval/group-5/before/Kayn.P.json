@@ -1,0 +1,331 @@
+{
+  "summary": "원거리 챔피언에게 피해를 입히면 그림자 암살자가, 근접 챔피언에게 피해를 입히면 다르킨이 충전된다. 최대 충전 시 제단에서 영구 변신할 수 있다. 그림자 암살자는 조건을 만족해 전투에 진입하면 일정 시간 공격과 스킬로 추가 마법 피해를 입힌다. 다르킨은 챔피언에게 입힌 물리 피해에 비례해 회복한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "원거리 챔피언"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "그림자 암살자 충전을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damaging ranged champions charges the Shadow Assassin"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "근접 챔피언"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "다르킨 충전을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "damaging melee champions charges the Darkin Slayer"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "최대 충전"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "제단에 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "영구 변신할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At full charge, Kayn can permanently transform at his fountain."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Shadow Assassin"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n3"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "전투에 진입했고, 진입 전 전투에서 벗어난 지 8초가 지났거나 Umbral Trespass를 사용함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "케인의 공격과 스킬이 입힌 피해에 비례해 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shadow Assassin: After entering combat Kayn's Attacks and Abilities deal an additional (20% ~ 40%) damage dealt magic damage for 3 seconds. This only occurs if Kayn has been out of combat for 8 seconds or used Umbral Trespass."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "입힌 피해가 물리 피해"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "회복량은 챔피언에게 입힌 물리 피해에 비례한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Darkin Slayer: Kayn heals for (25% + (0.5% per 100 bonus Health)) of physical damage dealt to champions."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "충전 획득 문구는 피해를 입히는 행위만 명시하므로 피해 원천을 구분하지 않았다. 최대 충전 자원과 충전 획득량은 구체적으로 나오지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damaging ranged champions charges the Shadow Assassin, and damaging melee champions charges the Darkin Slayer. At full charge, Kayn can permanently transform at his fountain."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "그림자 암살자 추가 피해 문구의 'damage dealt'가 가리키는 피해 입력과 수식 범위가 분명하지 않아 확정 피해 계산으로 표현할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "deal an additional (20% ~ 40%) damage dealt magic damage for 3 seconds."
+        }
+      ]
+    }
+  ]
+}

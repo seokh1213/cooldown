@@ -1,0 +1,78 @@
+{
+  "id": "Gwen.E",
+  "sourceHash": "ee015948570a7be95ff8f0a88b3f9c085ee3b1766a8a6153ce7d9a13d7141ab8",
+  "beforeCandidateHash": "7156200197a30d719df1720a2f008d0f7d862c0d935e1690ee00f03d0e2f383d",
+  "candidateHash": "0e72974481da682b394ac2762456d6539ffa919c6561a1e716698d64ed1cc2f1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "돌진·4초평타강화,자신AS30/42.5/55/67.5/80%,onhit15+AP20%,사거리75,첫적강화평타CD25/35/45/55/65%환급을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전돌진과4초기본공격강화."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화상태AS랭크별30~80%증가·사거리75및onhit15+AP20%마법. AS출력과기존AS입력을분리."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화후적에게처음명중한평타만이스킬CD25/35/45/55/65%환급.첫적대상순서가아닌첫명중공격."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0.statTo",
+      "issue": "AS증가출력누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Gwen dashes and empowers her Attacks for 4 seconds. Empowered Attacks gain 30/42.5/55/67.5/80% Attack Speed, (15 + (20% Ability Power)) magic damage On-Hit, 75 range, and the first one to hit an enemy refunds 25/35/45/55/65% of this Ability's Cooldown."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.0.stat",
+      "issue": "AS증가량을AS기반입력계수로오기",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Gwen dashes and empowers her Attacks for 4 seconds. Empowered Attacks gain 30/42.5/55/67.5/80% Attack Speed, (15 + (20% Ability Power)) magic damage On-Hit, 75 range, and the first one to hit an enemy refunds 25/35/45/55/65% of this Ability's Cooldown."
+    },
+    {
+      "path": "rules.2.conditions.1",
+      "issue": "첫환급을대상firstorder로혼동",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Gwen dashes and empowers her Attacks for 4 seconds. Empowered Attacks gain 30/42.5/55/67.5/80% Attack Speed, (15 + (20% Ability Power)) magic damage On-Hit, 75 range, and the first one to hit an enemy refunds 25/35/45/55/65% of this Ability's Cooldown."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "enemy조건을other텍스트조건으로표현가능",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Gwen dashes and empowers her Attacks for 4 seconds. Empowered Attacks gain 30/42.5/55/67.5/80% Attack Speed, (15 + (20% Ability Power)) magic damage On-Hit, 75 range, and the first one to hit an enemy refunds 25/35/45/55/65% of this Ability's Cooldown."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Gwen.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

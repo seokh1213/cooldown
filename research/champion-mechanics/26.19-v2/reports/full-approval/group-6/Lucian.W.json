@@ -1,0 +1,89 @@
+{
+  "id": "Lucian.W",
+  "sourceHash": "000f6c3a45ef90d2b55e04d942cf032a1826386efc7d544b88d67b9aab40eccf",
+  "beforeCandidateHash": "63b0027ff0b36a4355265549b8f88f40ce7a1764765a2f43c168de2e8107b8f3",
+  "candidateHash": "108b9e205e5bc043ad67e015a1cdd9ba57856581255dff64b70820b38a13f739",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "별 모양 폭발의 피해·잠깐 드러내기·6초 표식과 루시안 또는 아군 피해의 이동 속도, 아군 발동 경계를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "사거리 끝 또는 첫 적 적중의 별 모양 폭발은 75/110/145/180/215 + 주문력 90% 마법 피해다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "폭발 적중 적을 잠깐 드러내고 W 표식은 6초 유지한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "루시안이 W 표식 적에게 피해를 주면 이동 속도 60/65/70/75/80을 1초 얻는다. 피해 발생을 조건에 명시했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군 피해도 동일 이동 속도를 주며 추가로 경계를 얻는다. 아군 경로의 이동 속도 효과 누락을 보충했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "공급 요약의 별 모양 폭발을 효과에 보존했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Lucian shoots a missile that explodes in a star shape, marking and briefly revealing enemies. Lucian gains Move Speed for attacking marked enemies."
+    },
+    {
+      "path": "rules.2.trigger.event",
+      "issue": "원문은 피해 발생이며 단순 공격·능력 적중만으로 발동 범위를 단정하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Lucian fires a shot that explodes at the end of its range or on the first enemy hit, dealing (75/110/145/180/215 + (90% Ability Power)) magic damage, briefly revealing enemies and marking them for 6 seconds. When Lucian or an ally damages a marked enemy, Lucian gains 60/65/70/75/80 Move Speed for 1 second. Allies triggering this effect will also grant Lucian Vigilance."
+    },
+    {
+      "path": "rules.3.effects.1",
+      "issue": "아군이 표식에 피해를 줘도 이동 속도가 오르지만 해당 규칙에 경계만 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Lucian fires a shot that explodes at the end of its range or on the first enemy hit, dealing (75/110/145/180/215 + (90% Ability Power)) magic damage, briefly revealing enemies and marking them for 6 seconds. When Lucian or an ally damages a marked enemy, Lucian gains 60/65/70/75/80 Move Speed for 1 second. Allies triggering this effect will also grant Lucian Vigilance."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Lucian.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

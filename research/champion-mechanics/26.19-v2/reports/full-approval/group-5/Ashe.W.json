@@ -1,0 +1,219 @@
+{
+  "id": "Ashe.W",
+  "sourceHash": "79c233a695a3a08d027a93ec5e6b3d6209b23db1b9b5cb12ec7c38e45b64865a",
+  "beforeCandidateHash": "e99c99b62683817d0f288690dbd64fdca24da595f91bf9ca2b39e2c967ccd26f",
+  "candidateHash": "3b4d0671d87b55d1f3429120e209eb8ba95515b88cea6cd0a04ede36ab57c51e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "7/8/9/10/11원뿔화살·대상별첫화살만physical·champFrostcrit를대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원뿔화살랭크7/8/9/10/11,발사체수.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "7",
+              "value": 7,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "8",
+              "value": 8,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "9",
+              "value": 9,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "11",
+              "value": 11,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "각대상최초화살만60/95/130/165/200+100%bonusADphysical. 적들중첫적만피해아님.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 일제 사격에서 이 대상에 처음 적중한 화살"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "95",
+              "value": 95,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "165",
+              "value": 165,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언적중은FrostShot의crit판정으로강한slow를적용가능.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "요약서리화살적용보존.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3",
+      "issue": "원뿔모양/일반Frost적용누락·대상별첫화살조건모호.",
+      "correction": "요약효과복원·대상별첫화살텍스트조건.",
+      "sourceId": "en:body",
+      "quote": "Enemies can be hit by multiple arrows, but only take damage from the first."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

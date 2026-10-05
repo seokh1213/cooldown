@@ -1,0 +1,115 @@
+{
+  "id": "Samira.P",
+  "sourceHash": "ccea699b557e3bb7a0beb8a1a3dea161561c7baeecd3696a1a6bf531eeadf88b",
+  "beforeCandidateHash": "63309c330593ea132a99193f89a5493eea265c2b938e95b69d46f7d667409bac",
+  "candidateHash": "efb180e71e988d814498ad45d702646f3b1b4935c00b6a78c8cf47f872ece03c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "적챔피언에게직전과다른공격/스킬피해의스타일E~S6단계와등급당이동속도,근접추가마법피해및잃은체력증가,이동불가적평타의자기공격사거리돌진·이미뜬적최소0.5초유지를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack_or_ability_hit 사건에서 target.target_type eq champion, caster.other eq 직전 피해를 입힌 공격 또는 스킬과 다른 공격 또는 스킬로 피해를 입힘 적용. caster: 스타일 콤보를 한 단계 쌓는다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 스타일은 E부터 S까지 총 단계로 표시된다.; count=6  scalar / caster: 스타일 등급마다 이동 속도가 증가한다.; min_amount=2.8%  level_range, max_amount=3.5%  level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack_or_ability_hit 사건에서 target.distance lte 근접 사거리 적용. target: 근접 사거리에서 공격 또는 스킬로 적중하면 추가 마법 피해를 준다. 피해는 대상의 잃은 체력에 따라 증가한다. (magic); min_amount=2  formula_components, max_amount=19  formula_components, stat_coefficient=3.5%/10.5% caster의 totalAttackDamage formula_components, max_amount=4  formula_components, max_amount=38  formula_components, stat_coefficient=7%/21% caster의 totalAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.other present immobilized 적용. caster: 이동불가효과를받는적에게사미라자신의기본공격사거리안에들어오도록돌진한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.other present immobilized, target.other present Knocked Up 적용. target: 이미공중에뜬적이최소해당시간(초)동안계속공중에뜨도록유지한다. (knockup); min_amount=0.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "직전행동차이를다른대상조건으로왜곡하고관계없는one두개를count참조",
+      "correction": "직전피해행동과다른공격/스킬조건,불필요one참조제거",
+      "sourceId": "en:body",
+      "quote": "Samira builds a combo by dealing damage with Attacks or Abilities against enemy champions unique from the previous one."
+    },
+    {
+      "path": "rules.0,2-4",
+      "issue": "행위자가enemy,돌진기준이대상공격사거리,최소띄우기를고정기간으로표시",
+      "correction": "caster행위자·사미라공격사거리·최소0.5초유지로정정",
+      "sourceId": "en:body",
+      "quote": "Samira's Attacks against enemies affected by Immobilizing effects will dash her to her Attack Range. If the enemy is Knocked Up, she also keeps them Knocked Up for at least 0.5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 428,
+      "verdict": "repaired",
+      "reason": "같은대상여부가아닌직전피해행동과의차이로조건을정정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력에 따른 피해 증가식과 중간 피해량은 원문에 명시되지 않았다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,397 @@
+{
+  "summary": "화염으로 몸을 감싸 보호막과 이동 속도를 얻습니다. 효과 종료, 보호막 파괴 또는 재사용 시 폭발해 주변에 마법 피해를 줍니다. 용 형상에서 폭발이 적 챔피언에게 적중하면 잃은 체력에 비례해 회복합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "화염으로 몸을 감싸 보호막을 얻습니다. 주변 적 챔피언마다 보호막 흡수량이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shyvana wraps herself in flames for 2.5 seconds, gaining (60/80/100/120/140 + (12% bonus Health)) Shield, increased by (18/24/30/36/42 + (3.6% bonus Health)) per nearby enemy champion"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Shyvana wraps herself in flames for 2.5 seconds, gaining (60/80/100/120/140 + (12% bonus Health)) Shield, increased by (18/24/30/36/42 + (3.6% bonus Health)) per nearby enemy champion and 25% Move Speed, increased to 43.75% when moving towards enemy champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가하며 적 챔피언에게 접근할 때 증가량이 더 커집니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and 25% Move Speed, increased to 43.75% when moving towards enemy champions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Shyvana wraps herself in flames for 2.5 seconds, gaining (60/80/100/120/140 + (12% bonus Health)) Shield, increased by (18/24/30/36/42 + (3.6% bonus Health)) per nearby enemy champion and 25% Move Speed, increased to 43.75% when moving towards enemy champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "주변을 폭발시켜 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When the effect ends, the Shield is broken, or upon Recast the area around her detonates, dealing (80/100/120/140/160 + (65% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "shield_ready",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "down"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "보호막이 파괴되면 주변을 폭발시켜 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When the effect ends, the Shield is broken, or upon Recast the area around her detonates, dealing (80/100/120/140/160 + (65% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "재사용하면 주변을 폭발시켜 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When the effect ends, the Shield is broken, or upon Recast the area around her detonates, dealing (80/100/120/140/160 + (65% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dragon Form"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "폭발이 적 챔피언에게 적중하면 잃은 체력에 비례해 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n23",
+                "en:body:n24"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Dragon Form: If the detonation hits an enemy champion Shyvana heals for (60 ~ 100) + (4% ~ 8%) Missing Health."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "회복 수치와 잃은 체력 비율이 레벨 범위로 제시되어 있습니다. 중간 레벨 값이나 두 범위의 연결 규칙은 주어지지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Dragon Form: If the detonation hits an enemy champion Shyvana heals for (60 ~ 100) + (4% ~ 8%) Missing Health."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "폭발 피해 규칙은 세 가지 발동 원인을 별도 규칙으로 표현했습니다. 툴팁에는 주변 피해 대상 범위가 구체적으로 설명되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When the effect ends, the Shield is broken, or upon Recast the area around her detonates, dealing (80/100/120/140/160 + (65% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ]
+}

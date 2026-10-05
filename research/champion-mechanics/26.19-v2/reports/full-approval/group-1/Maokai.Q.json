@@ -1,0 +1,62 @@
+{
+  "id": "Maokai.Q",
+  "sourceHash": "9c2674e05dd233371f935c02105d80ed68bceb53ae18d52705bc9325e6764270",
+  "beforeCandidateHash": "49200dc5f7d86ce5b9e163f2901202ad218539547f3351757d5f6128590c2fb6",
+  "candidateHash": "43529f44adcf833d49861674dd676a4be38310d8fed5899ecbd7a2303e39d0ad",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "마법75~255+AP50%+maxHP2~4%/짧은slow,가까운적knockback/정글몬스터추가150~190를 대조했다. 숫자표percent처리정상이다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. enemy damage magic: 적에게 기본값과 마오카이 주문력, 최대체력에 비례한 마법 피해를 입힌다. 최대체력 소유자는 툴팁에 직접 명시되지 않았다. [amount n0=75/n1=120/n2=165/n3=210/n4=255 rank_values; stat_coefficient n5=50% scalar caster.abilityPower; stat_coefficient n6=2%/n7=2.5%/n8=3%/n9=3.5%/n10=4% rank_values unknown.maxHealth] / enemy crowd_control slow: 적을 잠시 둔화시킵니다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 nearby_enemies.other eq 마오카이 가까이에 있는 적. nearby_enemies crowd_control knockback: 충격파가 가까운 적을 뒤로 밀쳐냅니다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq monster; target.other eq 정글 몬스터. target damage magic: 정글 몬스터에게 추가 마법 피해를 입힙니다. [amount n11=150/n12=160/n13=170/n14=180/n15=190 rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/gaps",
+      "issue": "체력계수를amount로·nearbydistanceany불필요",
+      "correction": "stat_coefficient/체력주인unknown한계,근처텍스트조건",
+      "sourceId": "en:body",
+      "quote": "plus 2/2.5/3/3.5/4% max Health magic damage"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 283,
+      "verdict": "false_positive",
+      "reason": "frozen n10의value4/percent=true는4%를뜻하며다른rank도percent=true다. 계약은원문백분율값을저장하고정규화한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "maxHealth는최대체력종류이나소유자는본문직접명시없어unknown으로보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

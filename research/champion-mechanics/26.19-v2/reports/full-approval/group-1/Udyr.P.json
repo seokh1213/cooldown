@@ -1,0 +1,89 @@
+{
+  "id": "Udyr.P",
+  "sourceHash": "f353b4faf590a9f875f84fc2a8e1e025a2a2e21a903fd8dbef1cb0287113fcf1",
+  "beforeCandidateHash": "a8802826239c138d96e3c45c0e9adea4285ca27d0c9f68bd6a39e63092e624ea",
+  "candidateHash": "4d3048cfab91b1b5196c9dd965de349110b67a3b3cb3fd6f29627748118c884d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "네 기본 태세, 재사용 대기 중 각성 재사용, 사용 후 4초 내 다음 두 공격의 공속과 적중 환급을 en/ko 본문과 대조했다. ko 요약의 쿨다운 초기화는 본문에 없어 충돌로 기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster ui_information: 네 가지 기본 스킬로 태세를 바꾼다. [count n0=4 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.spell_ready eq down. caster other: 재사용 대기 중인 스킬을 재사용하면 해당 스킬의 보너스를 궁극기 효과와 함께 다시 얻는다. [cooldown_seconds n1=50/n2=20 level_range]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 스킬 사용 후 다음 두 차례 기본 공격; caster.time lte n4=4. caster attack_modifier: 스킬 사용 후 정해진 시간 안에 다음 공격들이 공격 속도 증가 효과를 얻는다. [count n3=2 scalar; duration_seconds n4=4 scalar; amount n5=30% scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 스킬 사용 후 다음 두 차례 기본 공격; caster.time lte n4=4; caster.other eq 해당 강화 기본 공격 적중. caster cooldown_change: 해당 공격이 적중하면 각성의 재사용 대기시간 일부를 돌려받는다. [amount n6=5% scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.conditions.0",
+      "issue": "다음 공격 횟수를 적중 횟수로 표현",
+      "correction": "스킬 사용 후 다음 두 차례 기본 공격이라는 텍스트 조건으로 변경",
+      "sourceId": "en:body",
+      "quote": "After using an Ability, Udyr's next two Attacks within 4 seconds gain 30% Attack Speed and refund 5% of Awaken's Cooldown."
+    },
+    {
+      "path": "gaps",
+      "issue": "ko 요약과 본문 쿨다운 초기화 주장 충돌 누락",
+      "correction": "source_conflict 추가",
+      "sourceId": "ko:summary",
+      "quote": "재사용 대기 중인 스킬을 재사용하면 재사용 대기 시간을 초기화하고 궁극의 효과를 부여합니다."
+    },
+    {
+      "path": "rules.2/3",
+      "issue": "적중 시 환급과 공격 시 공속의 서로 다른 발동 조건",
+      "correction": "환급을 해당 강화공격 적중 조건의 별도 규칙으로 분리",
+      "sourceId": "ko:body",
+      "quote": "적중 시 각성의 재사용 대기시간을 5% 돌려받습니다."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 567,
+      "verdict": "repaired",
+      "reason": "next two Attacks는 공격 횟수이며 hit_count로 명중 횟수를 검사할 근거는 없어 other 텍스트 조건으로 바꿨다."
+    },
+    {
+      "index": 568,
+      "verdict": "false_positive",
+      "reason": "next two Attacks ... refund 5% 및 ko 본문의 적중 시 5% 환급은 각 해당 공격의 적중 환급을 뒷받침한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "ko 요약은 재사용 대기시간 초기화를 말하지만 en/ko 본문은 기본 보너스 재획득과 궁극기 효과만 명시한다. 본문을 우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

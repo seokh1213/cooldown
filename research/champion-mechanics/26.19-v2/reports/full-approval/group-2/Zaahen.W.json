@@ -1,0 +1,49 @@
+{
+  "id": "Zaahen.W",
+  "sourceHash": "6dd37f0e6af70f89b3b85822aad571aa561b756ab9a6b036b2e364610b232b66",
+  "beforeCandidateHash": "8eef4fba311156d34469481058142d7cc57950105423dc92930e70488070f918",
+  "candidateHash": "71fd51deef3de1db3d8cc9f5e388a6cab69f02c6ffe4185275f9d3939c32f4e0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "찌르기첫물리40~120+50%bonusAD와동일피격적끌어당김후물리30~110+30%bonusAD의순서를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 방향으로 찌르며 적중한 적에게 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n0=40,en:body:n1=60,en:body:n2=80,en:body:n3=100,en:body:n4=120 상수 rank_values / stat_coefficient en:body:n5=50%(백분율) caster.bonusAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 이 스킬의 첫 찌르기에 적중한 적; enemy: 적중한 적을 자헨 쪽으로 끌어당깁니다. [pull]; 수치 없음; flags 없음 | enemy: 끌어당긴 적에게 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n6=30,en:body:n7=50,en:body:n8=70,en:body:n9=90,en:body:n10=110 상수 rank_values / stat_coefficient en:body:n11=30%(백분율) caster.bonusAttackDamage scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "후속끌어당김적중사건행위자·같은앞선대상조건 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Zaahen stabs in a direction, dealing (40/60/80/100/120 + (50% bonus Attack Damage)) physical damage to enemies hit, then Pulls them toward him, dealing (30/50/70/90/110 + (30% bonus Attack Damage)) physical damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "Malzahar.Q",
+  "sourceHash": "ce0ce2db3977deba6c3b6bcb6eb55c1117da1cebfde824e493eb429a5156da0c",
+  "beforeCandidateHash": "44009b1aa4852df5d45a7e9651e3f705525f79685900a46ea863505a5e8f3af4",
+  "candidateHash": "c7d5ccd32a8b5604ab0f14f841a62ee9a670fa2e41bdcbe489cdee6179231b83",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "두문안쪽투사체의70~210+55%AP마법과1~2초침묵,요약의짧은지연및침묵대상차이를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 투사체가 적중한 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n1=70,en:body:n2=105,en:body:n3=140,en:body:n4=175,en:body:n5=210 상수 rank_values / stat_coefficient en:body:n6=55%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 투사체가 적중한 적을 침묵시킵니다. [silence]; 수치 duration_seconds en:body:n7=1,en:body:n8=1.25,en:body:n9=1.5,en:body:n10=1.75,en:body:n11=2 상수 rank_values; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "요약침묵챔피언한정과본문범위충돌기록",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Malzahar opens two portals to the Void that fire projectiles inward, dealing (70/105/140/175/210 + (55% Ability Power)) magic damage and Silencing for 1/1.25/1.5/1.75/2 second(s)."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 275,
+      "verdict": "false_positive",
+      "reason": "피해를주는투사체의대상적중은정상대응이며원문없는대상종류나조건을추가하지않음."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문요약은침묵대상을챔피언으로한정하나양언어본문은대상종류제한없음;본문범위우선.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

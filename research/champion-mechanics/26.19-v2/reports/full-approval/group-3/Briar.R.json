@@ -1,0 +1,99 @@
+{
+  "id": "Briar.R",
+  "sourceHash": "ed51d9970cff44abe388ec98fc8eeeb505ed2f7741c717689191f0a33688854c",
+  "beforeCandidateHash": "dfa945c328c7d2c715c3e50a7525c2e2772ab08e7d99b6470dfb62dcd87718ae",
+  "candidateHash": "c123892d90e37920a588725541a4f68810e7d83b82bba1c341c4c0137314564a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "최초챔피언혈석적중·먹잇감이동·착지주변피해/먹잇감제외공포·죽을때까지강화광분·AD비례방어력/MR·흡혈/MS·정신집중중단·먹잇감절대시야를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order eq first → caster: 혈석이 처음 적중한 챔피언의 위치로 날아갑니다. | target: 처음 적중한 챔피언을 먹잇감으로 표시합니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster activation eq 먹잇감에게 착지 → nearby_enemies: 착지 시 주변 모든 적에게 마법 피해를 입힙니다. [magic] / amount=150/250/350 [rank_values]; stat_coefficient=130% (caster abilityPower) [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 target mark neq prey; caster activation eq 먹잇감에게 착지 → enemy: 먹잇감이 아닌 적을 공포에 빠뜨립니다. [fear] / duration_seconds=1.5 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster activation eq 먹잇감에게 착지 → caster: 강화된 핏빛 광분에 진입해 죽을 때까지 먹잇감을 추격합니다. | caster: 공격력에 비례한 방어력 및 마법 저항력, 생명력 흡수, 이동 속도를 얻습니다. / stat_coefficient=20% (caster totalAttackDamage) [scalar]; amount=10/15/20% [rank_values]; amount=10/20/30% [rank_values]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → target: 적중 시 정신 집중 중인 스킬을 방해합니다. [disrupt]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 target mark present 먹잇감 → caster: 먹잇감에 대한 절대 시야를 얻습니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-4.trigger",
+      "issue": "스킬행위자와 착지 발동시점 오류",
+      "correction": "시전자·적중 및 착지조건으로 수정",
+      "sourceId": "en:body",
+      "quote": "On landing, she deals (150/250/350 + (130% Ability Power)) magic damage to everything nearby"
+    },
+    {
+      "path": "rules.4.effects",
+      "issue": "정신집중중단과 먹잇감절대시야를 같은 적중사건으로 처리",
+      "correction": "disrupt와 먹잇감수동시야로 분리",
+      "sourceId": "en:body",
+      "quote": "When the hemolith hits it interrupts channeled Abilities. Briar has True Sight of her prey."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

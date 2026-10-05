@@ -1,0 +1,724 @@
+{
+  "scope": "Aurora/Hwei/Aphelios semantic repairs",
+  "reviewReport": "semantic-review-wave4.json",
+  "reviewedIds": [
+    "Aurora.P",
+    "Aurora.Q",
+    "Aurora.W",
+    "Aurora.E",
+    "Aurora.R",
+    "Hwei.P",
+    "Hwei.Q",
+    "Hwei.W",
+    "Hwei.E",
+    "Hwei.R",
+    "Aphelios.P",
+    "Aphelios.Q",
+    "Aphelios.W",
+    "Aphelios.E",
+    "Aphelios.R"
+  ],
+  "findingCount": 30,
+  "resolvedCount": 30,
+  "declinedCount": 0,
+  "findings": [
+    {
+      "findingId": "Aurora.P:max-health-and-per-hundred",
+      "id": "Aurora.P",
+      "severity": "medium",
+      "paths": [
+        "rules[0].effects[0].parameters[0]",
+        "rules[0].effects[0].parameters[1]"
+      ],
+      "claim": "The damage is maximum-health proportional, but the base percent has no maxHealth stat/owner. The AP coefficient combines 2.7% and the denominator 100 as undifferentiated coefficient inputs; no text or gap preserves how those inputs form the ratio.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (1% + (2.7% per 100 Ability Power)) max Health magic damage"
+        }
+      ],
+      "correction": "Preserve the target maximum-health input and the AP-per-100 relationship. Use explicit ratio roles/formula-component text, or unknown ownership plus a truthful gap if ownership cannot be established from the supplied source. Do not turn 100 into an AP coefficient or guess interpolation.",
+      "status": "resolved",
+      "resolution": "제령 피해에 대상 최대 체력 stat owner를 명시하고, 주문력 비례는 2.7% per 100 AP를 구성하는 두 number ref와 관계 설명으로 보존했습니다. 추정 보간은 하지 않고 수식 gap을 남겼습니다.",
+      "candidateHash": "8ee0edda48e5ce675c9df67dc60fd77fdd91e9323a3636cc8e10c0ac86c2db0b",
+      "canonicalHash": "8ee0edda48e5ce675c9df67dc60fd77fdd91e9323a3636cc8e10c0ac86c2db0b"
+    },
+    {
+      "findingId": "Aurora.Q:replacement-multipliers",
+      "id": "Aurora.Q",
+      "severity": "medium",
+      "paths": [
+        "rules[2].effects[0].flags",
+        "rules[4].effects[0].flags",
+        "rules[5].effects[0].flags"
+      ],
+      "claim": "The reduced recast damage is encoded as additional damage rules beside the ordinary recast damage, without identifying the reduced amount as replacing it.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage beyond the first hit is reduced to 20%."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Recast deals 40% damage to minions and monsters."
+        }
+      ],
+      "correction": "Mark the reduced-damage rules as replaces_base (or use explicit damage modification effects) and retain their own conditions. Preserve both reductions without inventing an unprovided stacking formula.",
+      "status": "resolved",
+      "resolution": "20% 첫 적중 이후 피해와 미니언/몬스터 대상 40% 재사용 피해를 각각 replaces_base로 표시해 별도 추가 타격으로 합산되지 않게 했습니다.",
+      "candidateHash": "654c8c9c41c4db3e32d6a9354f0f148132f3b19be5014bae9c37d0b0b886033a",
+      "canonicalHash": "654c8c9c41c4db3e32d6a9354f0f148132f3b19be5014bae9c37d0b0b886033a"
+    },
+    {
+      "findingId": "Aurora.Q:first-hit-scope-invented",
+      "id": "Aurora.Q",
+      "severity": "medium",
+      "paths": [
+        "rules[2].conditions[0]",
+        "rules[2].effects[0].subject",
+        "gaps"
+      ],
+      "claim": "The source only says damage beyond the first hit is reduced. The candidate assigns that reduction specifically to secondary_targets by projectile target order, without establishing whether the source means later distinct victims or multiple return hits on one victim.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage beyond the first hit is reduced to 20%."
+        }
+      ],
+      "correction": "Preserve the first-hit limitation in explicit text and add scope_ambiguous/unresolved_condition unless the supplied source establishes the counting scope. Do not assert that every downstream distinct enemy is a secondary target subject to this reduction.",
+      "status": "resolved",
+      "resolution": "secondary_targets 및 hit_order 대상 순서를 제거하고 “damage beyond the first hit”를 text condition으로 보존했습니다. 서로 다른 대상인지 동일 대상의 후속 적중인지는 scope_ambiguous gap으로 기록했습니다.",
+      "candidateHash": "654c8c9c41c4db3e32d6a9354f0f148132f3b19be5014bae9c37d0b0b886033a",
+      "canonicalHash": "654c8c9c41c4db3e32d6a9354f0f148132f3b19be5014bae9c37d0b0b886033a"
+    },
+    {
+      "findingId": "Aurora.R:boundary-trigger-and-fired",
+      "id": "Aurora.R",
+      "severity": "high",
+      "paths": [
+        "rules[4].trigger",
+        "rules[4].conditions[0]",
+        "gaps[1]"
+      ],
+      "claim": "Boundary slow uses only enter_area and requires activation=fired. The source includes attempts to enter or leave, and has no fired prerequisite. The gap incorrectly says the source lacks entry/exit conditions even though both are stated.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies attempting to enter or leave the area are Slowed by 50% for 1.5/1.75/2 seconds."
+        }
+      ],
+      "correction": "Remove fired and preserve the entry-or-exit attempt condition. Use other with explicit boundary-attempt text for the exit branch if no leave_area event exists. The lack of a dedicated event is a schema limitation, not missing source evidence.",
+      "status": "resolved",
+      "resolution": "enter_area와 activation=fired 조건을 제거했습니다. 영역 진입 또는 이탈 시도는 other event 및 정확한 텍스트 조건으로 보존하고, gap을 스키마에 leave_area 이벤트가 없다는 한계로 수정했습니다.",
+      "candidateHash": "aa9282810a57862e3141b0a9d497aaededeaadeea956485f133c18bb616c3c0b",
+      "canonicalHash": "aa9282810a57862e3141b0a9d497aaededeaadeea956485f133c18bb616c3c0b"
+    },
+    {
+      "findingId": "Hwei.P:explosion-delay-omitted",
+      "id": "Hwei.P",
+      "severity": "medium",
+      "paths": [
+        "summary",
+        "rules[1].effects[0].text"
+      ],
+      "claim": "The explosion is represented on the second damaging ability hit without preserving the short detonation delay supplied in the summary.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "The signature detonates after a short delay, dealing magic damage to all enemies in range."
+        }
+      ],
+      "correction": "Preserve that the second damaging ability creates a signature beneath the target and it detonates after a short, numerically unspecified delay. Do not invent a delay duration.",
+      "status": "resolved",
+      "resolution": "두 번째 피해 스킬 조건을 hit_count가 아닌 other 텍스트 조건으로 바꾸고, 표식 대상 아래의 서명 생성 및 summary의 짧은 지연 후 폭발을 effect text/evidence에 보존했습니다. 지연 수치는 만들지 않았습니다.",
+      "candidateHash": "c60401a47c06521fad77391f1554e9d2879d0dcf84658e651271ba903217eff7",
+      "canonicalHash": "c60401a47c06521fad77391f1554e9d2879d0dcf84658e651271ba903217eff7"
+    },
+    {
+      "findingId": "Hwei.Q:qw-duplicate-and-unconditional-cap",
+      "id": "Hwei.Q",
+      "severity": "high",
+      "paths": [
+        "rules[1]",
+        "rules[2]"
+      ],
+      "claim": "QW has two unconditional normal-damage rules. rules[1] also mixes the conditional increased maximum and its stronger AP coefficients into an unconditional damage effect, alongside the separate replacement rules.",
+      "evidence": [
+        {
+          "sourceId": "variant:QW:en",
+          "quote": "dealing (60/85/110/135/160 + (30% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "variant:QW:en",
+          "quote": "Hitting an Isolated or Immobilized target increases the damage up to (120/201.875/302.5/421.875/560 + (60/71.25/82.5/93.75/105% Ability Power)) magic damage, based on the target's missing health."
+        }
+      ],
+      "correction": "Keep one ordinary QW damage rule and one conditional replacement representation. Remove the leftover unconditional mixed rule. Use rank_values for the five increased AP coefficients, and retain the unresolved missing-health formula gap.",
+      "status": "resolved",
+      "resolution": "중복 무조건 QW 피해와 무조건부 최대 피해가 섞인 규칙을 제거했습니다. 기본 QW 피해는 한 규칙에, 증가 피해는 조건부 replacement 규칙에만 두고, variant:QW number refs와 변동 AP rank values를 연결했습니다.",
+      "candidateHash": "28f1cce8eed9b8ac1e33ef2a46bba4c67f067e07d1aee0f925f849a58bdf49ff",
+      "canonicalHash": "28f1cce8eed9b8ac1e33ef2a46bba4c67f067e07d1aee0f925f849a58bdf49ff"
+    },
+    {
+      "findingId": "Hwei.Q:qw-or-overlap",
+      "id": "Hwei.Q",
+      "severity": "medium",
+      "paths": [
+        "rules[3]",
+        "rules[5]"
+      ],
+      "claim": "Isolated and immobilized are represented as independent identical replacement damage rules. A target satisfying both conditions matches both rules, while the source states one increase for the OR condition.",
+      "evidence": [
+        {
+          "sourceId": "variant:QW:en",
+          "quote": "Hitting an Isolated or Immobilized target increases the damage up to"
+        }
+      ],
+      "correction": "Use a single text condition for isolated OR immobilized, or make two branches mutually exclusive. Preserve a single increased damage result, not two damage applications.",
+      "status": "resolved",
+      "resolution": "isolated와 immobilized의 겹치는 두 replacement 규칙을 하나의 “isolated or immobilized” 텍스트 조건 규칙으로 합쳐 중복 적용을 제거했습니다.",
+      "candidateHash": "28f1cce8eed9b8ac1e33ef2a46bba4c67f067e07d1aee0f925f849a58bdf49ff",
+      "canonicalHash": "28f1cce8eed9b8ac1e33ef2a46bba4c67f067e07d1aee0f925f849a58bdf49ff"
+    },
+    {
+      "findingId": "Hwei.Q:qe-upfront-and-ticks-mixed",
+      "id": "Hwei.Q",
+      "severity": "medium",
+      "paths": [
+        "rules[4].effects[0]"
+      ],
+      "claim": "The initial QE hit and lava damage per second are merged into one damage effect with two base amounts, two AP coefficients and one duration. The text distinguishes them, but the parameter groups do not identify which coefficient belongs to the instant hit versus the recurring damage.",
+      "evidence": [
+        {
+          "sourceId": "variant:QE:en",
+          "quote": "dealing (20/35/50/65/80 + (30% Ability Power)) magic damage in an area"
+        },
+        {
+          "sourceId": "variant:QE:en",
+          "quote": "deal (20/35/50/65/80 + (24% Ability Power)) magic damage per second for 2.5 seconds."
+        }
+      ],
+      "correction": "Split the initial damage and the lava per-second damage into separate effects/rules, attaching 2.5 seconds only to the recurring lava effect/area lifetime. Retain the in-pool slow condition without guessing lingering slow duration.",
+      "status": "resolved",
+      "resolution": "QE 첫 적중 피해와 용암 웅덩이 지속 피해/둔화를 분리했습니다. 지속 피해 및 웅덩이 기간에만 2.5초를 연결하고 변형 전용 숫자는 variant:QE refs로 인용했습니다.",
+      "candidateHash": "28f1cce8eed9b8ac1e33ef2a46bba4c67f067e07d1aee0f925f849a58bdf49ff",
+      "canonicalHash": "28f1cce8eed9b8ac1e33ef2a46bba4c67f067e07d1aee0f925f849a58bdf49ff"
+    },
+    {
+      "findingId": "Hwei.W:allies-as-casters",
+      "id": "Hwei.W",
+      "severity": "high",
+      "paths": [
+        "rules[0].trigger.subject",
+        "rules[1].trigger.subject"
+      ],
+      "claim": "WQ and WW are triggered by an ally casting. The source says Hwei launches the water current and forms the pool; allies receive the effects.",
+      "evidence": [
+        {
+          "sourceId": "variant:WQ:en",
+          "quote": "Hwei launches a current of swift waters in a line"
+        },
+        {
+          "sourceId": "variant:WW:en",
+          "quote": "Hwei forms a protective pool"
+        }
+      ],
+      "correction": "Use caster as the cast actor. Keep ally/caster recipient conditions/effects distinct from who casts the spell.",
+      "status": "resolved",
+      "resolution": "WQ/WW 시전 trigger subject를 ally에서 caster로 변경했습니다. buff/shield recipients는 각 effect의 ally/caster subject로 보존했습니다.",
+      "candidateHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c",
+      "canonicalHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c"
+    },
+    {
+      "findingId": "Hwei.W:wq-per-hundred-missing",
+      "id": "Hwei.W",
+      "severity": "high",
+      "paths": [
+        "rules[0].effects[0].parameters[1]",
+        "rules[0].effects[0].text",
+        "gaps"
+      ],
+      "claim": "WQ stores 3% as a scalar AP coefficient and omits the source denominator 100 entirely. This changes the AP scaling relationship.",
+      "evidence": [
+        {
+          "sourceId": "variant:WQ:en",
+          "quote": "(30/32.5/35/37.5/40% + (3% per 100 Ability Power)) Move Speed"
+        }
+      ],
+      "correction": "Preserve the per-100 AP relationship using ratio roles/formula components or exact relation text with a truthful unsupported_formula gap. Do not leave a plain 3%-per-AP coefficient.",
+      "status": "resolved",
+      "resolution": "3% AP scalar를 제거하고 variant:WQ 3%와 100의 refs를 formula_components로 보존했습니다. 본문에 per-100 AP 관계를 써 두고 정확한 비율 수식은 gap으로 기록했습니다.",
+      "candidateHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c",
+      "canonicalHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c"
+    },
+    {
+      "findingId": "Hwei.W:ww-recipient-and-reduction",
+      "id": "Hwei.W",
+      "severity": "medium",
+      "paths": [
+        "rules[1].effects[0].subject",
+        "rules[1].effects[0].parameters[2]",
+        "rules[1].effects[0].text"
+      ],
+      "claim": "WW only represents ally recipients and attaches the 15% shield reduction as a positive amount parameter on the same shield effect. The common body explicitly describes utility for Hwei himself and allied champions; the reduced allied shield should not imply that every recipient gets the same reduced amount.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "provide utility for himself and allied champions."
+        },
+        {
+          "sourceId": "variant:WW:en",
+          "quote": "Shields over time to allied champions inside reduced by 15% for allies."
+        }
+      ],
+      "correction": "Preserve the caster/other-allied-champion distinction conservatively. Record the 15% as a reduction of the ally shield, not another positive shield amount. If the malformed ally/self wording leaves scope uncertain, mark that exact uncertainty in a gap rather than discarding the self recipient. Do not invent an unreferenced replacement percentage.",
+      "status": "resolved",
+      "resolution": "WW 시전자를 caster로 바로잡고 Hwei 본인과 웅덩이 안 아군 보호막을 별도 effect로 표현했습니다. 15%는 추가 보호막 양이 아닌 ally shield reduction으로 text 및 other parameter에 보존하고 wording 범위 gap을 추가했습니다.",
+      "candidateHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c",
+      "canonicalHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c"
+    },
+    {
+      "findingId": "Hwei.W:we-mana-on-later-use",
+      "id": "Hwei.W",
+      "severity": "high",
+      "paths": [
+        "rules[2].trigger",
+        "rules[2].effects[1]"
+      ],
+      "claim": "WE mana restoration is bundled under the initial cast with no empowered-use condition. The source restores mana for each of the next three empowered abilities/attacks, not as an immediate cast refund.",
+      "evidence": [
+        {
+          "sourceId": "variant:WE:en",
+          "quote": "empower his next three Abilities or Attacks to deal an additional (20/30/40/50/60 + (15% Ability Power)) magic damage and restore 45/50/55/60/65 Mana each."
+        }
+      ],
+      "correction": "Keep creation of three lights/empowerment on cast. Put damage and mana restoration on the subsequent empowered ability/attack use events with remaining-light conditions. Do not infer a hit-versus-cast consumption rule beyond the supplied wording.",
+      "status": "resolved",
+      "resolution": "WE 시전 규칙은 세 빛의 생성/강화만 나타내도록 분리했습니다. 다음 세 번의 강화 스킬/공격 사용에 추가 피해와 마나 회복이 일어나도록 별도 rule을 만들고, 사용/적중 소모 시점은 gap으로 보존했습니다.",
+      "candidateHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c",
+      "canonicalHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c"
+    },
+    {
+      "findingId": "Hwei.E:entry-order-as-hit-order",
+      "id": "Hwei.E",
+      "severity": "medium",
+      "paths": [
+        "rules[2].conditions[1]"
+      ],
+      "claim": "The first enemy champion entering the eye area is tested with hit_order=first. Acquisition by entry is a different event from the later homing missile hitting its first enemy; the next rule already models that later hit order.",
+      "evidence": [
+        {
+          "sourceId": "variant:EW:en",
+          "quote": "locking onto the first enemy champion that enters and launching a homing missile that Roots the first enemy hit"
+        }
+      ],
+      "correction": "Preserve first champion entry as an explicit other/activation text condition on enter_area. Keep hit_order=first only for the projectile collision rule; do not add a champion restriction to the projectile victim.",
+      "status": "resolved",
+      "resolution": "EW eye entry의 hit_order 조건을 first-entry 텍스트 조건으로 바꿨습니다. 미사일 충돌의 hit_order 조건은 그대로 유지했습니다.",
+      "candidateHash": "59944cb8a57c202e96bd23d12d7cfe499c6340cbda352e332bd0777c11b66848",
+      "canonicalHash": "59944cb8a57c202e96bd23d12d7cfe499c6340cbda352e332bd0777c11b66848"
+    },
+    {
+      "findingId": "Hwei.R:ongoing-effects-on-expiry",
+      "id": "Hwei.R",
+      "severity": "high",
+      "paths": [
+        "rules[1].trigger",
+        "rules[1].effects[0].parameters[1]"
+      ],
+      "claim": "The accumulating slow and per-second damage occur on expiry instead of while the painting expands. The 0.25-second stacking interval is also encoded as slow duration.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The vision expands over time applying a Slow to enemies for 10% stacking every 0.25 seconds, and dealing (10/20/30 + (5% Ability Power)) magic damage per second."
+        }
+      ],
+      "correction": "Represent the effects as ongoing while the vision is active, with explicit recurring-event text/conditions. Keep 0.25 seconds as a stack interval (role other or a documented interval component), not a debuff duration. Reserve expiry for the final explosion.",
+      "status": "resolved",
+      "resolution": "10% slow stack과 per-second 피해를 활성/확장 중 발생하는 ongoing rule로 옮겼습니다. 0.25초를 slow duration이 아닌 other interval parameter로 보존하고 expiry는 완료 폭발에만 썼습니다.",
+      "candidateHash": "d67f76e097fbc7a91b639c37ebe8e80df6ab4cc756092408317c29605ec34bcb",
+      "canonicalHash": "d67f76e097fbc7a91b639c37ebe8e80df6ab4cc756092408317c29605ec34bcb"
+    },
+    {
+      "findingId": "Hwei.R:total-cap-as-extra-hit",
+      "id": "Hwei.R",
+      "severity": "high",
+      "paths": [
+        "rules[3].trigger",
+        "rules[3].effects[0]"
+      ],
+      "claim": "The aggregate maximum damage is a separate damage effect on expiry beside the real explosion. It describes the total of recurring damage plus explosion, not a third damage application.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Maximum damage possible is (230/385/540 + (95% Ability Power)) magic damage."
+        }
+      ],
+      "correction": "Keep this as total-damage information or an aggregate bound that is not a separate triggered damage event. Preserve the actual per-second damage and completion explosion independently.",
+      "status": "resolved",
+      "resolution": "별도 expiry 피해 rule이던 최대 총 피해를 제거했습니다. 최대 총 피해 수치는 gap evidence로 보존해 세 번째 damage application으로 계산되지 않게 했습니다.",
+      "candidateHash": "d67f76e097fbc7a91b639c37ebe8e80df6ab4cc756092408317c29605ec34bcb",
+      "canonicalHash": "d67f76e097fbc7a91b639c37ebe8e80df6ab4cc756092408317c29605ec34bcb"
+    },
+    {
+      "findingId": "Hwei.R:death-completion-omitted",
+      "id": "Hwei.R",
+      "severity": "medium",
+      "paths": [
+        "summary",
+        "rules[2].trigger",
+        "rules"
+      ],
+      "claim": "The candidate only explodes on ordinary expiry and omits explosion when the attached champion dies.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "The vision explodes after reaching its maximum size or when the champion dies."
+        }
+      ],
+      "correction": "Add the marked/attached champion death completion branch with the same final explosion. Do not assume the full maximum periodic damage has already occurred if the champion dies early.",
+      "status": "resolved",
+      "resolution": "완료/만료 폭발 rule과 부착된 적 챔피언 사망 폭발 rule을 분리해 같은 실제 폭발 피해를 두 종료 원인에 연결했습니다. 조기 사망 시 미실현 주기 피해는 최대치로 더하지 않았습니다.",
+      "candidateHash": "d67f76e097fbc7a91b639c37ebe8e80df6ab4cc756092408317c29605ec34bcb",
+      "canonicalHash": "d67f76e097fbc7a91b639c37ebe8e80df6ab4cc756092408317c29605ec34bcb"
+    },
+    {
+      "findingId": "Hwei.R:first-champion-selection",
+      "id": "Hwei.R",
+      "severity": "medium",
+      "paths": [
+        "rules[0].conditions",
+        "rules[0].effects[0].text",
+        "summary"
+      ],
+      "claim": "The attachment rule identifies a champion but omits that the first enemy champion struck is the painting center.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "The first enemy champion struck becomes the center of an expanding painting"
+        }
+      ],
+      "correction": "Preserve first enemy-champion hit order for attachment and identify that champion as the center. Do not apply attachment to every champion the projectile could encounter.",
+      "status": "resolved",
+      "resolution": "부착 rule에 first hit enemy champion 조건을 추가하고, 해당 챔피언이 그림의 중심이라는 요약 근거를 effect text와 evidence에 넣었습니다.",
+      "candidateHash": "d67f76e097fbc7a91b639c37ebe8e80df6ab4cc756092408317c29605ec34bcb",
+      "canonicalHash": "d67f76e097fbc7a91b639c37ebe8e80df6ab4cc756092408317c29605ec34bcb"
+    },
+    {
+      "findingId": "Aphelios.P:ammo-use-not-hit",
+      "id": "Aphelios.P",
+      "severity": "high",
+      "paths": [
+        "rules[0].trigger.event"
+      ],
+      "claim": "Ammo is spent only on attack_or_ability_hit in the candidate. The source spends ammo on attacks and abilities, without requiring a successful hit.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks and Abilities consume a weapon's ammo."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "기본 공격과 스킬 사용 시 탄약을 소모하며"
+        }
+      ],
+      "correction": "Use attack and ability-use/cast rules or explicit use-event text rather than a successful-hit gate. Do not add unprovided miss refunds or off-hand consumption details.",
+      "status": "resolved",
+      "resolution": "성공 적중을 요구하는 attack_or_ability_hit trigger를 기본 공격 사용과 스킬 cast trigger로 분리했습니다. 주/보조 무기별 소모 여부는 임의로 정하지 않고 gap 처리했습니다.",
+      "candidateHash": "5a6b6b3ab7bed2d81b385b20d8c106821a768ee0c36904a16335bda7dd9be889",
+      "canonicalHash": "5a6b6b3ab7bed2d81b385b20d8c106821a768ee0c36904a16335bda7dd9be889"
+    },
+    {
+      "findingId": "Aphelios.P:unlock-levels-omitted",
+      "id": "Aphelios.P",
+      "severity": "medium",
+      "paths": [
+        "summary",
+        "rules",
+        "gaps"
+      ],
+      "claim": "Weapon Q unlocking at level 2 and the ultimate unlocking at level 6 are absent from the candidate.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Aphelios unlocks his weapon's Ability [Q] at level 2 and his Ultimate at level 6."
+        }
+      ],
+      "correction": "Preserve these unlock thresholds using source-number references with state/UI information or text conditions. Do not copy conventional champion ability unlock assumptions.",
+      "status": "resolved",
+      "resolution": "Q 및 궁극기 해금과 스킬 랭크 대신 영구 stat을 얻는 사실을 base UI-information rule로 보존하고, level number refs를 연결했습니다.",
+      "candidateHash": "5a6b6b3ab7bed2d81b385b20d8c106821a768ee0c36904a16335bda7dd9be889",
+      "canonicalHash": "5a6b6b3ab7bed2d81b385b20d8c106821a768ee0c36904a16335bda7dd9be889"
+    },
+    {
+      "findingId": "Aphelios.P:permanent-stat-rankups-omitted",
+      "id": "Aphelios.P",
+      "severity": "medium",
+      "paths": [
+        "summary",
+        "rules",
+        "gaps"
+      ],
+      "claim": "The permanent-stat rank-up system replacing ability powering-up is missing.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Instead of powering up his Abilities, Aphelios' rank-ups grant him permanent stats."
+        }
+      ],
+      "correction": "Preserve the permanent-stat upgrade mechanic and its replacement of ability rank upgrades. Do not invent which stat amounts are granted; the supplied body does not list them.",
+      "status": "resolved",
+      "resolution": "스킬 rank-up을 대체하는 영구 능력치 rank-up 사실을 base UI-information effect로 보존했습니다. 공급되지 않은 stat 양은 만들지 않았습니다.",
+      "candidateHash": "5a6b6b3ab7bed2d81b385b20d8c106821a768ee0c36904a16335bda7dd9be889",
+      "canonicalHash": "5a6b6b3ab7bed2d81b385b20d8c106821a768ee0c36904a16335bda7dd9be889"
+    },
+    {
+      "findingId": "Aphelios.P:arsenal-mechanics-omitted",
+      "id": "Aphelios.P",
+      "severity": "medium",
+      "paths": [
+        "summary",
+        "rules",
+        "gaps"
+      ],
+      "claim": "The candidate only records ammo and replacement. It omits the five-weapon arsenal and unique attack/Q identity, including the supplied weapon-specific attack traits.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Aphelios wields 5 Lunari Weapons"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Each weapon has a unique Attack and Ability [Q]."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Calibrum (Rifle): Long range Attacks. Severum (Scythe Pistol): Life Steal and Move Speed. Infernum (Flamethrower): Area of effect damage. Crescendum (Chakram): High damage at close range. Gravitum (Cannon): Slowing + Immobilizing effects."
+        }
+      ],
+      "correction": "Preserve the five named weapons and their supplied qualitative identities as base rules/text. The P input has only base variant: do not invent new variant IDs, detailed hidden effects, numeric stats, or an unprovided weapon-queue algorithm. Deduplicate the repeated copied roster.",
+      "status": "resolved",
+      "resolution": "다섯 무기, 주/보조 무기, 각 무기의 고유 공격/Q, 제공된 다섯 무기의 질적 특징을 중복 roster를 제거해 base UI-information effect에 추가했습니다.",
+      "candidateHash": "5a6b6b3ab7bed2d81b385b20d8c106821a768ee0c36904a16335bda7dd9be889",
+      "canonicalHash": "5a6b6b3ab7bed2d81b385b20d8c106821a768ee0c36904a16335bda7dd9be889"
+    },
+    {
+      "findingId": "Aphelios.Q:calibrum-followup-omitted",
+      "id": "Aphelios.Q",
+      "severity": "medium",
+      "paths": [
+        "rules[0].effects",
+        "summary"
+      ],
+      "claim": "Calibrum marks the victim but the candidate does not preserve the long-range follow-up attack granted by that mark.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Calibrum (Rifle): Long range shot that marks its target for a long-range follow-up attack."
+        },
+        {
+          "sourceId": "ko:summary",
+          "quote": "표식을 소모해 추가로 원거리 공격을 가할 수 있습니다."
+        }
+      ],
+      "correction": "Preserve the mark-granted long-range follow-up permission and mark consumption in text or attack_followup rules. Do not guess its exact range, damage, or off-hand interactions.",
+      "status": "resolved",
+      "resolution": "Calibrum 첫 적중 표식 effect와 함께 표식 소모 시 가능한 장거리 follow-up 공격 permission을 추가했습니다. range나 별도 피해 수치는 만들지 않았습니다.",
+      "candidateHash": "b9adb075e6c1e51c518d31c51e9dca9850093cab40ddea81ddc816c142e6c0bc",
+      "canonicalHash": "b9adb075e6c1e51c518d31c51e9dca9850093cab40ddea81ddc816c142e6c0bc"
+    },
+    {
+      "findingId": "Aphelios.Q:crescendum-two-clocks",
+      "id": "Aphelios.Q",
+      "severity": "high",
+      "paths": [
+        "rules[3].trigger",
+        "rules[3].effects[0].parameters",
+        "rules[3].effects[1]"
+      ],
+      "claim": "The 20-second sentry lifetime and 4-second firing window are both assigned as summon durations. The active damage shares the cast trigger rather than the enemy-approach activation; the text retains approach but never associates 4 seconds with firing.",
+      "evidence": [
+        {
+          "sourceId": "variant:Crescendum:en",
+          "quote": "Aphelios deploys a lunar sentry equipped with Aphelios' off-hand weapon that lasts 20 seconds."
+        },
+        {
+          "sourceId": "variant:Crescendum:en",
+          "quote": "Sentries activate when an enemy approaches and fire at them"
+        },
+        {
+          "sourceId": "variant:Crescendum:en",
+          "quote": "physical damage per shot over 4 seconds."
+        }
+      ],
+      "correction": "Keep the 20-second lifetime on summoning. Split activation on enemy approach and per-shot damage over the 4-second active firing period. Do not assert two conflicting summon lifetimes or immediate damage on placement.",
+      "status": "resolved",
+      "resolution": "Crescendum 효과를 분리했습니다. 시전 시 보조 무기를 장착한 달빛 파수꾼을 20초 동안 배치하고, 적 접근 시 활성화되어 4초간 사격 피해를 줍니다. 설치 지속시간과 활성화 후 사격 지속시간을 각각 보존했습니다.",
+      "candidateHash": "b9adb075e6c1e51c518d31c51e9dca9850093cab40ddea81ddc816c142e6c0bc",
+      "canonicalHash": "b9adb075e6c1e51c518d31c51e9dca9850093cab40ddea81ddc816c142e6c0bc"
+    },
+    {
+      "findingId": "Aphelios.Q:infernum-cone-omitted",
+      "id": "Aphelios.Q",
+      "severity": "medium",
+      "paths": [
+        "rules[2].effects[0].text",
+        "summary"
+      ],
+      "claim": "Infernum is described only as a generic flame wave; the supplied cone targeting shape is omitted.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Infernum (Flamethrower): Blast enemies in a cone and attack them with your off-hand weapon."
+        }
+      ],
+      "correction": "Preserve the cone shape in the initial hit text, retaining the subsequent off-hand attack against each enemy hit. Do not invent a cone angle or range.",
+      "status": "resolved",
+      "resolution": "Infernum 첫 화염 파도 text에 cone targeting을 추가하고 이후 각 hit enemy에 대한 off-hand attack effect를 유지했습니다. 각도/사거리는 만들지 않았습니다.",
+      "candidateHash": "b9adb075e6c1e51c518d31c51e9dca9850093cab40ddea81ddc816c142e6c0bc",
+      "canonicalHash": "b9adb075e6c1e51c518d31c51e9dca9850093cab40ddea81ddc816c142e6c0bc"
+    },
+    {
+      "findingId": "Aphelios.R:flat-amounts-labelled-as-stats",
+      "id": "Aphelios.R",
+      "severity": "high",
+      "paths": [
+        "rules[0].effects[0].parameters[0]",
+        "rules[3].effects[0].parameters[0]"
+      ],
+      "claim": "The generic flat base values 125/175/225 are labelled totalAttackDamage, and Infernum flat bonus values 50/100/150 are labelled bonusAttackDamage. The source separates each flat base from its actual stat coefficient.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (125/175/225 + (20% bonus Attack Damage) + (100% Ability Power)) physical damage"
+        },
+        {
+          "sourceId": "variant:Infernum:en",
+          "quote": "an additional (50/100/150 + (25% bonus Attack Damage)) physical damage"
+        }
+      ],
+      "correction": "Set stat and statSubject to null for those flat amount parameters. Keep the separate bonusAttackDamage/AP stat_coefficient parameters and their caster ownership.",
+      "status": "resolved",
+      "resolution": "일반 물리 피해 125/175/225 및 Infernum flat bonus 50/100/150의 amount stat/statSubject를 null로 바꿨습니다. bonus AD/AP coefficient의 caster ownership은 별도로 유지했습니다.",
+      "candidateHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513",
+      "canonicalHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513"
+    },
+    {
+      "findingId": "Aphelios.R:infernum-blast-and-splash-mixed",
+      "id": "Aphelios.R",
+      "severity": "high",
+      "paths": [
+        "rules[3].effects[0]"
+      ],
+      "claim": "The added moonlight blast damage and 90%-of-follow-up-attack splash are merged into one damage effect. The 90% multiplier is consequently not tied to each subsequent attack's own damage and can be read as modifying the added blast.",
+      "evidence": [
+        {
+          "sourceId": "variant:Infernum:en",
+          "quote": "The moonlight blast deals an additional (50/100/150 + (25% bonus Attack Damage)) physical damage, and the subsequent Attacks explode, each dealing 90% of their damage to surrounding targets."
+        }
+      ],
+      "correction": "Split the additional initial blast damage from the per-follow-up-attack splash. Tie the 90% input to each subsequent attack's damage and the surrounding targets of that attack, preserving the blast as an added flat-plus-bonus-AD component.",
+      "status": "resolved",
+      "resolution": "Infernum 추가 달빛 폭발 피해와 이후 main-hand follow-up attack의 주변 splash를 분리했습니다. 90% multiplier는 각 후속 공격 피해를 기준으로 secondary_targets에 적용합니다.",
+      "candidateHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513",
+      "canonicalHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513"
+    },
+    {
+      "findingId": "Aphelios.R:generic-attack-tail-weapon-scope",
+      "id": "Aphelios.R",
+      "severity": "medium",
+      "paths": [
+        "rules[5].effects[0].text",
+        "rules[5].effects[0].parameters[2]",
+        "gaps"
+      ],
+      "claim": "On-hit application and the normal-damage critical-strike restriction are assigned only to Gravitum. In the combined body, the standalone The Attacks sentence refers back to the main-hand follow-up attack sequence; the derived final Gravitum variant absorbs this tail without proving a weapon-only scope.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Then, Aphelios attacks all champions hit with his main-hand weapon."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The Attacks apply on-hits. Critical strikes deal 100% of normal damage instead."
+        }
+      ],
+      "correction": "Preserve this tail as modifiers of the shared follow-up attacks rather than silently making it Gravitum-exclusive. If placement in the derived variant prevents confident scope resolution, record scope_ambiguous and retain the exact common-source text. Keep Gravitum slow/root-specific effects separate; do not infer external crit multipliers.",
+      "status": "resolved",
+      "resolution": "on-hit 및 100% normal crit modifier를 Gravitum variant effect에서 공통 base follow-up attack modifier로 옮겼습니다. scope ambiguity는 common body evidence로 gap 기록했습니다.",
+      "candidateHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513",
+      "canonicalHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513"
+    },
+    {
+      "findingId": "Hwei.W:ww-self-shield-value-conflict",
+      "id": "Hwei.W",
+      "severity": "medium",
+      "paths": [
+        "rules[1].effects[0].parameters",
+        "gaps"
+      ],
+      "claim": "WW records the caster self-shield as 100/140/180/220/260 + 60% AP while the gap says the self value is unknown; the English WW wording specifies ally shields and a 15% reduction for allies, while the shared tooltip only says utility for Hwei and allies.",
+      "evidence": [
+        {
+          "sourceId": "variant:WW:en",
+          "quote": "Pool of Reflection Hwei forms a protective pool that grants (100/140/180/220/260 + (60% Ability Power)) Shields over time to allied champions inside reduced by 15% for allies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hwei paints visions of serenity that provide utility for himself and allied champions."
+        }
+      ],
+      "correction": "Preserve the caster shield effect but remove unsupported caster shield amount and AP coefficient. Keep exact numeric references on the ally shield and record the self/ally ambiguity in the gap.",
+      "status": "resolved",
+      "resolution": "흐웨이 본인의 WW 보호막 효과는 남기고 caster effect에서 100/140/180/220/260 및 60% AP 수치를 제거했습니다. 아군 보호막의 확인 가능한 수치와 15% 감소는 유지하고, 본인 수치 및 감소 적용 여부는 기존 gap에 근거와 함께 명시했습니다.",
+      "canonicalHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c",
+      "candidateHash": "58605e73d9c1de0e91342a77d920ae7e19ab465acd0866ad887152e2085a697c"
+    },
+    {
+      "findingId": "Aphelios.R:champion-hit-gate-and-followups",
+      "id": "Aphelios.R",
+      "severity": "high",
+      "paths": [
+        "rules[0].conditions",
+        "rules[1]",
+        "rules[3].conditions"
+      ],
+      "claim": "The base moonlight explosion and Infernum bonus explosion are missing the tooltip’s champion-hit condition. The base follow-up attack is mixed into the explosion rule, obscuring that it attacks all champions hit after the blast.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Aphelios fires a concentrated blast of moonlight that explodes when it hits a champion, dealing (125/175/225 + (20% bonus Attack Damage) + (100% Ability Power)) physical damage to surrounding enemies. Then, Aphelios attacks all champions hit with his main-hand weapon."
+        },
+        {
+          "sourceId": "variant:Infernum:en",
+          "quote": "Infernum Bonus: The moonlight blast deals an additional (50/100/150 + (25% bonus Attack Damage)) physical damage, and the subsequent Attacks explode, each dealing 90% of their damage to surrounding targets."
+        }
+      ],
+      "correction": "Gate the base and Infernum R explosion damage on a champion hit. Split the main-hand follow-up attack into its own rule; preserve the Infernum subsequent-attack splash as its separate follow-up mechanic.",
+      "status": "resolved",
+      "resolution": "기본 달빛 폭발과 Infernum 추가 폭발에 target_type=champion 조건을 추가했습니다. 기본 R 폭발 피해와 적중 챔피언에 대한 주 무기 후속 공격을 분리했고, Infernum 후속 공격의 주변 피해는 별도 follow-up_attack 규칙으로 유지했습니다.",
+      "canonicalHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513",
+      "candidateHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513"
+    },
+    {
+      "findingId": "Aphelios.R:gravitum-root-duration-is-q-effect",
+      "id": "Aphelios.R",
+      "severity": "high",
+      "paths": [
+        "rules[6].effects[1]"
+      ],
+      "claim": "The 1.35-second Binding Eclipse root-duration increase is encoded as a crowd_control root effect, making the R bonus look like it roots immediately.",
+      "evidence": [
+        {
+          "sourceId": "variant:Gravitum:en",
+          "quote": "Gravitum Bonus: Slow strength increased to 99%. Binding Eclipse's Root effect is increased to 1.35 seconds against these targets."
+        }
+      ],
+      "correction": "Keep the Gravitum R slow as its own CC effect. Represent the 1.35-second duration as an `other` Q root-duration modifier under a condition that Binding Eclipse roots a Gravitum-bonus target; do not add an immediate R root.",
+      "status": "resolved",
+      "resolution": "Gravitum R의 99% slow만 crowd_control effect로 남겼습니다. 1.35초는 별도 Q 적중 조건에 연결한 `other` 속박 지속시간 변경 정보로 분리해 R 자체 속박으로 표시되지 않게 했습니다.",
+      "canonicalHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513",
+      "candidateHash": "82539f170c8ecadc1bcec946350008af0f84221b5a77525e161c7618447c9513"
+    }
+  ]
+}

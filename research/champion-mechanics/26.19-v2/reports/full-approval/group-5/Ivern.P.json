@@ -1,0 +1,322 @@
+{
+  "id": "Ivern.P",
+  "sourceHash": "f8f7aa84d041647f6fd8aa2626cb291695c21e499351f364021929c3794b32cd",
+  "beforeCandidateHash": "67e2da52ac8dda1222ef1933a626973a49aed5408fd79cf9853b47fee4d27cdb",
+  "candidateHash": "72382f778963c0c74f8d41dc94d224fbdfeef4a946ebd5e37ba9af509110993e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "비에픽 몬스터 상호 공격 불가, 우클릭 수풀의 체력/마나 비용 중첩식과40~1초 성장,완전성장수확 및강타즉시해방/보상을 검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "비에픽 대상 제한과 상호 공격불가를summary에서보존;본문누락은충돌아님.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "에픽 몬스터가 아님"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비에픽 정글우클릭에서자기체력/마나복합비용.15~0/20~0의순서는원문그대로구성요소;min/max역전제거.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "비에픽 정글 몬스터를 오른쪽 클릭함"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "15",
+              "value": 15,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "0",
+              "value": 0,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "1%",
+              "value": 1,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "0",
+              "value": 0,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "1%",
+              "value": 1,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "성장시간40~1초 완료 후 아이번의수확선택으로캠프해방/골드·XP;고정40초자동해방아님.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "40~1초에 걸쳐 완전히 성장한 수풀을 수확함"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "수풀에강타사용시즉시성장/해방/골드·XP.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "수풀"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "해당 수풀에 강타를 사용함"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules/gaps",
+      "issue": "비에픽/우클릭/강타조건누락,비용범위min/max역전,성장40초고정과자동수확,summary의보완정보를충돌로기록했다.",
+      "correction": "구체사건/대상,복합비용구성요소,가변성장후수확,summary 상호공격불가보존했다.",
+      "sourceId": "en:body",
+      "quote": "Groves: Grow over (40 ~ 1) second(s) Once fully grown, Ivern can harvest them, freeing the camp and earning gold and experience"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "수풀 비용은 Health 및 Mana에 비례한다고만 되어 있어 입력 통계를 최대치, 현재치 또는 잃은 양 중 무엇으로 계산하는지 특정할 수 없다. stat과 statSubject를 null로 보존했다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "비용15~0/20~0과성장40~1초 범위의 변화 기준은 본문에 없다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

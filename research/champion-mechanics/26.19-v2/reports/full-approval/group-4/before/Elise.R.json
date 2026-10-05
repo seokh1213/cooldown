@@ -1,0 +1,102 @@
+{
+  "summary": "인간 형태에서 거미 형태로 변신하면 근접 공격 형태가 되고 거미 형태 스킬을 사용할 수 있으며, 휴면 새끼 거미를 모두 소환합니다. 거미 형태에서는 인간 형태로 돌아가고 남은 새끼 거미들이 휴면 상태가 됩니다.",
+  "rules": [
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Human Form"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "거미 형태로 변신해 근접 형태가 되고 거미 형태 스킬을 사용할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "휴면 상태인 새끼 거미를 모두 소환합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Human Form: Elise transforms into a menacing spider, becoming melee, gaining access to Spider Form Abilities and summons all dormant Spiderlings."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Spider Form"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "인간 형태로 돌아갑니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "summon",
+          "text": "남아 있는 새끼 거미들이 휴면 상태가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Spider Form: Elise returns to Human Form and all remaining Spiderlings become dormant."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

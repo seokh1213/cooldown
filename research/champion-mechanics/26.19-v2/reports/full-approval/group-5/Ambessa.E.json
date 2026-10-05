@@ -1,0 +1,192 @@
+{
+  "id": "Ambessa.E",
+  "sourceHash": "4eb69e21ea897eab0efb5ba8cdb5ad4d0ef01dea5190a970c7f552d74d8544ec",
+  "beforeCandidateHash": "5a9439a417c9686312a4e9ddd93e45ab0faf5add94c752c5c5251b6d0d832859",
+  "candidateHash": "dc45379b6c27aad4d9452d859476f37c733f622f78033b104518b51b8f9c6b7d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "주변 기본 물리 피해와 99% 감쇠 둔화, 이 스킬에서 개시된 패시브 돌진이 끝날 때 추가 일격을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변 적 물리 40~120+자기 추가 AD50%.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변 적 slow99%는 1초에 걸쳐 감소; decays 확인.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "99%",
+              "value": 99,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "추가 일격 조건은 E에서 P돌진 개시이고 시점은 그 돌진 끝이다. empowered 조건 및 물리/주변 대상 단정을 제거했다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬로 개시한 용사냥개의 발걸음 돌진이 끝남"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2",
+      "issue": "패시브 돌진 조건을 empowered로 바꾸고 미제공 추가 일격 유형/대상을 단정했다. 돌진 끝 시점도 누락됐다.",
+      "correction": "E에서 시작한 패시브 돌진 종료 조건과 summary 시점을 보존하고 미제공 분류는 other/unknown/null로 남겼다.",
+      "sourceId": "en:summary",
+      "quote": "Initiating Drakehound's Step from this ability causes her to strike a second time at the end of its dash."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "추가 일격의 대상, 피해량 및 피해 유형은 tooltip에 구체적으로 명시되지 않았다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

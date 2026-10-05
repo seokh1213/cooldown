@@ -1,0 +1,109 @@
+{
+  "id": "Naafiri.R",
+  "sourceHash": "3dccdbf9fdaffcbc4ac27e4af84851c6735647d447a025af71674185e17f0b3b",
+  "beforeCandidateHash": "3161387d17b7b2eb56ea33f07d2c419fa91701b10b771742bc2a3b5977e5399e",
+  "candidateHash": "c86427bdff16a7fc84e1a51097dbecaf6078250497e1c5e8b2fdf926a84503e1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "적챔프돌진125/200/275+추가AD100%/짧은slow,무리동행지정불가/마리당12.5~27.5+AD10%,7초내takedown주변드러내기/1회recast,두번째shield100~200+AD150%3초,W짧게연장 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion. caster movement: 나피리가적챔피언에게돌진한다. [] / target damage physical: 나피리가 적 챔피언에게 돌진해 물리 피해를 입힌다. [amount n0=125/n1=200/n2=275 rank_values; stat_coefficient n3=100% scalar caster.bonusAttackDamage] / target crowd_control slow: 나피리가 대상을 잠시 둔화시킨다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. summon other: 무리가 대상으로 지정할 수 없는 상태가 된다. [] / summon movement: 무리가 나피리와 함께 돌진한다. [] / target damage physical: 무리 한 마리당 물리 피해를 입힌다. [amount n4=12.5/n5=20/n6=27.5 rank_values; stat_coefficient n7=10% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.takedown; 조건 caster.time lte n8=7; caster.other eq time은 최초 궁극기 사용 이후 경과한 초. nearby_enemies visibility: 주위 적을 드러낸다. [] / caster ui_information: 이 스킬을 한 번 재사용할 수 있다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.other eq 첫사용후7초안처치관여로해금된1회재사용(두번째사용). caster shield: 두 번째 사용 시 나피리에게 보호막을 부여한다. [amount n9=100/n10=150/n11=200 rank_values; stat_coefficient n12=150% scalar caster.bonusAttackDamage; duration_seconds n13=3 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 무리의 부름 지속 시간이 짧게 연장된다. []"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 target.target_type eq champion; caster.other eq 첫사용후7초안처치관여로해금된1회재사용(두번째사용). caster movement: 나피리가적챔피언에게돌진한다. [] / target damage physical: 나피리가 적 챔피언에게 돌진해 물리 피해를 입힌다. [amount n0=125/n1=200/n2=275 rank_values; stat_coefficient n3=100% scalar caster.bonusAttackDamage] / target crowd_control slow: 나피리가 대상을 잠시 둔화시킨다. []"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.other eq 첫사용후7초안처치관여로해금된1회재사용(두번째사용). summon other: 무리가 대상으로 지정할 수 없는 상태가 된다. [] / summon movement: 무리가 나피리와 함께 돌진한다. [] / target damage physical: 무리 한 마리당 물리 피해를 입힌다. [amount n4=12.5/n5=20/n6=27.5 rank_values; stat_coefficient n7=10% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.other eq 첫사용후7초안처치관여로해금된1회재사용(두번째사용). caster other: 무리의 부름 지속 시간이 짧게 연장된다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3",
+      "issue": "dash효과누락·untargetable분류·per_target/count7·recast준비조건맥락",
+      "correction": "castermovement/무리other,perpackmate텍스트,1회정보와7초자격조건",
+      "sourceId": "en:body",
+      "quote": "If Naafiri scores a Takedown within 7 seconds she reveals nearby enemies and can recast this Ability once."
+    },
+    {
+      "path": "rules.2,5-7",
+      "issue": "처치관여7초기준점미명시와재사용효과에보호막만있어반복돌진/무리피해누락",
+      "correction": "첫사용후7초조건을명시하고해금된두번째사용에도기본궁극기효과를반복한다는recast규칙을보존했다.",
+      "sourceId": "en:body",
+      "quote": "If Naafiri scores a Takedown within 7 seconds she reveals nearby enemies and can recast this Ability once."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 320,
+      "verdict": "repaired",
+      "reason": "마리당피해는수신자별per_target이아니라소환물한마리당피해다.flag삭제하고명시했다."
+    },
+    {
+      "index": 321,
+      "verdict": "repaired",
+      "reason": "7초를재사용횟수로연결한오류다. 수치count를제거하고원문의한번을설명에보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "무리의 부름이 연장되는 시간은 원문에 수치가 없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

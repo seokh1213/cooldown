@@ -1,0 +1,91 @@
+{
+  "id": "Nilah.W",
+  "sourceHash": "86b0ff349448b8cdb1852ef943d0a9365c5846662075bcf23b808ebb04c1d027",
+  "beforeCandidateHash": "e45c34c553b75354d7d69ac6af67d14a75dd87f80ce34ea6c6f9750765d77f9e",
+  "candidateHash": "fe8dd67a2ce8ec93deb832f6a8f78c9f99eb712d295aad8e9b08700aae7480dd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "자기2.25초 유체화·15/17.5/20/22.5/25% 이동 속도·평타 회피·받는 마법 피해25% 감소, 활성 중 접촉한 아군 챔피언1.5초 동일 효과, 유체화 유닛 통과를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 닐라가 유체화 상태가 됩니다.; duration_seconds=2.25  scalar / caster: 이동 속도가 증가합니다.; amount=15/17.5/20/22.5/25%  rank_values, duration_seconds=2.25  scalar / caster: 기본 공격을 회피합니다.; duration_seconds=2.25  scalar / caster: 받는 마법 피해가 감소합니다.; amount=25%  scalar, duration_seconds=2.25  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq W 활성화 중 아군 챔피언과 접촉 적용. ally: 닿은 아군 챔피언이 유체화 상태가 됩니다.; duration_seconds=1.5  scalar / ally: 닿은 아군 챔피언의 이동 속도가 증가합니다.; amount=15/17.5/20/22.5/25%  rank_values, duration_seconds=1.5  scalar / ally: 닿은 아군 챔피언이 기본 공격을 회피합니다.; duration_seconds=1.5  scalar / ally: 닿은 아군 챔피언이 받는 마법 피해가 감소합니다.; amount=25%  scalar, duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.other eq 유체화 상태 적용. caster: 유체화 상태인 유닛은 다른 유닛을 통과할 수 있습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 passive 사건에서 ally.other eq 유체화 상태 적용. ally: 유체화 상태인 유닛은 다른 유닛을 통과할 수 있습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1",
+      "issue": "이동 속도 마지막25% 누락과 마법 감소 수치 오참조",
+      "correction": "5랭크 전체 및 마법 감소25%로 수정",
+      "sourceId": "en:body",
+      "quote": "gaining 15/17.5/20/22.5/25% Move Speed, dodging Attacks, and reducing magic damage taken by 25%."
+    },
+    {
+      "path": "rules.0-3",
+      "issue": "유체화를 시야로, 피해 감소를 가하는 damage로 잘못 분류",
+      "correction": "movement 및 stat_modifier로 정정하고 자기/아군 유체화 통과 조건 보완",
+      "sourceId": "en:body",
+      "quote": "Ghosted units can pass through other units."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 349,
+      "verdict": "repaired",
+      "reason": "빠진 마지막25% 숫자를 자기 이동 속도 랭크에 추가했다."
+    },
+    {
+      "index": 350,
+      "verdict": "repaired",
+      "reason": "같은 혜택의 아군 이동 속도 랭크에도25% 추가했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

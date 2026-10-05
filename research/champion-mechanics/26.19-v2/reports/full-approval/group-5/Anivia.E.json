@@ -1,0 +1,209 @@
+{
+  "id": "Anivia.E",
+  "sourceHash": "ec6d7582766885ae546893d002b493cdf7913abe36a373abc8b10cbf4d8b877d",
+  "beforeCandidateHash": "d9ae7b8500c475663e9d217972abeef01abd5bde1b209a13249cb63ff5c3d922",
+  "candidateHash": "670126d1b6e05e2de3a67b5ad05a0c04633972b647d57114d179b5b4385b1207",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "기본 피해55~155+AP55%와 냉각 대상 대체 피해110~310+AP110%를 확인했다. 요약의 최근 Q/최대 크기 R 적중은 강화 조건 설명이다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "cast 대상 적이 Chilled가 아닐 때 기본 마법 피해55/80/105/130/155+AP55%. 냉각 강화 분기와 서로 배타적이다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "Chilled"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "55",
+              "value": 55,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "155",
+              "value": 155,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "55%",
+              "value": 55,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "Chilled인 적에게 기본값 대신110/160/210/260/310+AP110%. 요약의 Q최근/R완성 적중 강화는 본문의 냉각 분기를 설명하며 두 피해를 합산하지 않는다. 수치 모두 정확히 기본식의 두 배다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Chilled"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "160",
+              "value": 160,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "210",
+              "value": 210,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "260",
+              "value": 260,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "310",
+              "value": 310,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "110%",
+              "value": 110,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0;rules.1.evidence;gaps",
+      "issue": "요약의 강화 원인 설명을 본문과 연결 불가한 부족으로 기록함",
+      "correction": "냉각 대상의 대체 두 배 피해와 Q/R 적중 설명을 보존하고 근거 없는 조건 부족 gap을 제거했다.",
+      "sourceId": "en:summary",
+      "quote": "If the target was recently hit by Flash Frost or damaged by a fully formed Glacial Storm, the damage they take is doubled."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

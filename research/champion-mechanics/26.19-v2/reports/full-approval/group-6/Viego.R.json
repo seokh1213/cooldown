@@ -1,0 +1,189 @@
+{
+  "id": "Viego.R",
+  "sourceHash": "03e1fee926033f8ddeafea65dfdf1581229a819719a69173085c3d5fbcc23bc6",
+  "beforeCandidateHash": "bd3654728981dc9892efb6010cf8a01e9ef69cb7fdc59734209200b33190e71b",
+  "candidateHash": "9c3014c2dba861d11cf24f675fa1b5c6abe95f18c3baf6c780ad4edda4f27ac1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 2,
+  "summaryCheck": "지배 영혼 포기·순간이동, 도착 후 최저 현재 HP비율 적 챔피언에게 잠시99%둔화와 물리 피해, 다른 주변 적의 넉백·120%AD 피해 및 주/부 대상 발동 효과 구분을 대조. EN 요약 execute는 본문에 처형 조건이 없어 확정하지 않는다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "지배 중인 영혼만 시전 시 버린다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "지배 여부와 무관하게 시전 순간이동."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "도착 후 최저 HP비율 챔피언 공격에 짧은99%둔화·총AD120%+괄호식(12/16/20+추가AD5%) 대상 잃은HP 물리 피해. 괄호식 구성요소를 고정 피해로 실행하지 않는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주 대상 이외의 주변 적 모두 총AD120% 물리 피해. 챔피언 제외 조건을 제거했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "동일한 다른 주변 적 모두 넉백. 대상 유형 제한 없음."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주 대상에게 on-hit 적용."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다른 대상에게 spell effects 적용; ko 마법 아이템이라는 좁은 번역보다 EN 우선."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "치명타 스케일70%는 효율이며 일반 피해 배수가 아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.effects.1.parameters.1.shape",
+      "issue": "잃은HP 괄호식 계수를 고정 랭크 피해로 오인 가능",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego discards any souls he is currently Possessing and teleports. On arrival he Attacks the champion with the lowest percent Health, briefly Slowing them by 99% and dealing (120% Attack Damage) + (12/16/20 + (5% bonus Attack Damage))missing Health physical damage. Other nearby enemies are Knocked Back and take (120% Attack Damage) physical damage. This Ability applies on-hit effects to the primary target and spell effects to everything else. Damage scales with Critical Strike Chance and Damage at 70% effectiveness."
+    },
+    {
+      "path": "rules.3.conditions",
+      "issue": "원문 없는 비챔피언 제한 및 주 대상 조건",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego discards any souls he is currently Possessing and teleports. On arrival he Attacks the champion with the lowest percent Health, briefly Slowing them by 99% and dealing (120% Attack Damage) + (12/16/20 + (5% bonus Attack Damage))missing Health physical damage. Other nearby enemies are Knocked Back and take (120% Attack Damage) physical damage. This Ability applies on-hit effects to the primary target and spell effects to everything else. Damage scales with Critical Strike Chance and Damage at 70% effectiveness."
+    },
+    {
+      "path": "rules.4.conditions",
+      "issue": "넉백에 비챔피언 제한",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego discards any souls he is currently Possessing and teleports. On arrival he Attacks the champion with the lowest percent Health, briefly Slowing them by 99% and dealing (120% Attack Damage) + (12/16/20 + (5% bonus Attack Damage))missing Health physical damage. Other nearby enemies are Knocked Back and take (120% Attack Damage) physical damage. This Ability applies on-hit effects to the primary target and spell effects to everything else. Damage scales with Critical Strike Chance and Damage at 70% effectiveness."
+    },
+    {
+      "path": "rules.7.effects.0.parameters.0.role",
+      "issue": "70% 치명타 효율을 피해 배수로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego discards any souls he is currently Possessing and teleports. On arrival he Attacks the champion with the lowest percent Health, briefly Slowing them by 99% and dealing (120% Attack Damage) + (12/16/20 + (5% bonus Attack Damage))missing Health physical damage. Other nearby enemies are Knocked Back and take (120% Attack Damage) physical damage. This Ability applies on-hit effects to the primary target and spell effects to everything else. Damage scales with Critical Strike Chance and Damage at 70% effectiveness."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "대상 HP임이 문맥상 명확한데 소유자 불명확 gap. 실제 수식 단위 한계로 수정",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego discards any souls he is currently Possessing and teleports. On arrival he Attacks the champion with the lowest percent Health, briefly Slowing them by 99% and dealing (120% Attack Damage) + (12/16/20 + (5% bonus Attack Damage))missing Health physical damage. Other nearby enemies are Knocked Back and take (120% Attack Damage) physical damage. This Ability applies on-hit effects to the primary target and spell effects to everything else. Damage scales with Critical Strike Chance and Damage at 70% effectiveness."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "요약·번역의 범위 충돌 미기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego discards any souls he is currently Possessing and teleports. On arrival he Attacks the champion with the lowest percent Health, briefly Slowing them by 99% and dealing (120% Attack Damage) + (12/16/20 + (5% bonus Attack Damage))missing Health physical damage. Other nearby enemies are Knocked Back and take (120% Attack Damage) physical damage. This Ability applies on-hit effects to the primary target and spell effects to everything else. Damage scales with Critical Strike Chance and Damage at 70% effectiveness."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 620,
+      "verdict": "repaired",
+      "reason": "실제 neq champion은 챔피언을 제외하는 오류다. 주변 다른 적 전체로 피해·넉백 조건을 수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "잃은 체력에 곱하는 괄호식의 12/16/20에는 원문에 % 기호가 없으며 정확한 정규화 단위가 제공되지 않는다. 수식 구성요소와 대상 잃은 체력이라는 설명을 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "note": "영문 요약의 executes는 본문에서 별도 처형 조건이나 즉사 판정으로 뒷받침되지 않는다. 본문의 물리 피해를 우선한다. 한국어 주문 효과의 마법 아이템 번역도 EN spell effects보다 좁다."
+    }
+  ],
+  "validation": {
+    "id": "Viego.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.7",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

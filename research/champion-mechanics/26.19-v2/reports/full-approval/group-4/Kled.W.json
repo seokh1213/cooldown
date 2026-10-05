@@ -1,0 +1,133 @@
+{
+  "id": "Kled.W",
+  "sourceHash": "d43340f444bc66f7c8f91a362788e1066c75a07ebfa278fdfae77cc96fdd7f62",
+  "beforeCandidateHash": "b218b566b2fa5d52f7cc8b3488cae8e9bcfc43b90387b76fdaf162bfd13cd65c",
+  "candidateHash": "8f7785f4d66b821c19dd00cedf0f0016379f2ab01421afb62633bacc4fd10a21",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "다음 공격의 공격 속도 발동, 효과 내 네 번째 적중 피해, 몬스터 최대 체력 비례 부분 상한, 재사용 중 공격 감소와 챔피언 대체 감소를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.other eq 이 기본 지속 효과가 발동하는 다음 기본 공격 적용. caster: 정해진 공격 횟수 또는 시간이 지날 때까지 공격 속도가 증가한다.; amount=150%  scalar, count=four  scalar, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 이 스킬의 공격 속도 강화 효과 중, caster.hit_count eq four 적용. target: 네 번째 적중 공격이 추가 최대 체력 비례 물리 피해를 입힌다. (physical); amount=20/30/40/50/60  formula_components, ratio_output=4.5/5/5.5/6/6.5% unknown의 maxHealth formula_components, stat_coefficient=2% caster의 bonusAttackDamage formula_components, ratio_input=100  formula_components, stat_coefficient=0.4% caster의 bonusHealth formula_components, ratio_input=100  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 이 스킬의 공격 속도 강화 효과 중, caster.hit_count eq four, target.target_type eq monster 적용. target: 몬스터에게 적용되는 최대 체력 비례 추가 피해량은 상한을 넘지 않는다. (physical); max_amount=200  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.spell_ready eq down 적용. caster: 기본 공격 시 이 스킬의 재사용 대기시간이 감소한다.; cooldown_seconds=0.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.spell_ready eq down, target.target_type eq champion 적용. caster: 챔피언을 공격하면 일반 공격의 감소량 대신 더 큰 시간만큼 이 스킬의 재사용 대기시간이 감소한다.; cooldown_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "다음 공격 및 강화 효과 내 네 번째 공격 범위 불명확",
+      "correction": "시작 다음 공격과 효과 중 네 번째 적중으로 조건 명시",
+      "sourceId": "en:body",
+      "quote": "Passive: Kled's next Attack grants 150% Attack Speed for four Attacks or 4 seconds."
+    },
+    {
+      "path": "rules.1.effects.0.parameters",
+      "issue": "최대 체력 소유자 추정 및 중첩식 선형화 위험",
+      "correction": "소유자 unknown과 formula_components로 보존",
+      "sourceId": "en:body",
+      "quote": "The fourth hit deals an additional 20/30/40/50/60 plus (4.5/5/5.5/6/6.5% + (2% per 100 bonus Attack Damage) + (0.4% per 100 bonus Health)) max Health physical damage."
+    },
+    {
+      "path": "rules.3,4",
+      "issue": "시간 단위 및 챔피언 대체량 미표현",
+      "correction": "cooldown_seconds와 replaces_base 적용",
+      "sourceId": "en:body",
+      "quote": "Against Champions, this Cooldown reduction is increased to 1.5 second(s)."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 238,
+      "verdict": "false_positive",
+      "reason": "현재 summary에 이미 재사용 중 공격 감소와 챔피언의 더 큰 감소가 모두 있다. 요약은 모든 숫자를 나열할 필요가 없다."
+    },
+    {
+      "index": 239,
+      "verdict": "repaired",
+      "reason": "발동하는 다음 공격으로 조건을 명시하고 효과 중 네 번째 적중과 구별했다."
+    },
+    {
+      "index": 240,
+      "verdict": "documented_gap",
+      "reason": "원문 최대 체력 소유자는 명시되지 않는다. unknown으로 바꾸고 기존 gap을 유지했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "최대 체력 비례 피해 수치가 대상의 최대 체력인지 클레드의 최대 체력인지 원문에서 소유자가 명확하지 않다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "네 번째 피해는 고정 피해 + (랭크 비율 + 추가 공격력 100당 비율 + 추가 체력 100당 비율) × 최대 체력이다. 중첩 수식 구성요소를 단순 선형 피해로 합산하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

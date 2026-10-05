@@ -1,0 +1,619 @@
+{
+  "scope": "Semantic repairs for Akshan, Pyke, and Mordekaiser candidates",
+  "reviewReport": "semantic-review-wave6.json",
+  "hashAlgorithm": "scripts/llm/champion-mechanics/sources.ts digest: SHA-256 of JSON.stringify(parsed candidate)",
+  "reviewedIds": [
+    "Akshan.P",
+    "Akshan.Q",
+    "Akshan.W",
+    "Akshan.E",
+    "Akshan.R",
+    "Pyke.P",
+    "Pyke.Q",
+    "Pyke.W",
+    "Pyke.E",
+    "Pyke.R",
+    "Mordekaiser.P",
+    "Mordekaiser.Q",
+    "Mordekaiser.W",
+    "Mordekaiser.E",
+    "Mordekaiser.R"
+  ],
+  "findingCount": 35,
+  "resolvedCount": 35,
+  "declinedCount": 0,
+  "candidateHashes": {
+    "Akshan.P": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+    "Akshan.Q": "491f0ac233795759a3f373bbd1b763649bf81559b406366b4ec9917d2800abb2",
+    "Akshan.W": "1b883197523882552bc36c998c768758396a7910bf2c56c3e9d65042205cd11a",
+    "Akshan.E": "f9a4bf75a19e5446c3369703c320dd8e26e19bb4a2c8e3418756d09baf28085b",
+    "Akshan.R": "00b922a55e9e7db9d02e2b3315ed15d60a544273d853a9bed9e39f3a1cf29669",
+    "Pyke.P": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+    "Pyke.Q": "e0bb30454fb7f92a930dd3098045aaff95f76b8a0153ec451cc5b3594e61099f",
+    "Pyke.W": "637e1ed2be808cf299f2305aa32a73218985b800e1b91a8ae80e13c32cc86fdb",
+    "Pyke.E": "3328503581386bc696f0826b5aa1fcb7a10da96323ed5b3bf84d0d7ae0eebb06",
+    "Pyke.R": "5f307233f1b4d5d4d750a275b701b8b024448c13eb47d48f7f845187fb6a1be4",
+    "Mordekaiser.P": "7ba6e808f07e242918354b4d8d82b648f50ed4627e7b0a843e80f24667860803",
+    "Mordekaiser.Q": "37d5dca46f90173dc1b9477cee43cb5779a8ebb56f6919f2893db66979650929",
+    "Mordekaiser.W": "00fa65e3b36512eea21db6904e47d21bc0c6d8dca15093a51abe41fbaa44f051",
+    "Mordekaiser.E": "2c4ba5abb6dec3ea3f243e78c6de124b0322793bdfb331d6ac8d082dc239d682",
+    "Mordekaiser.R": "1678db400ba26274c749b8f87d2665d88f3a1385befa781ba4c987b6a4daa17f"
+  },
+  "directQuestionChecks": [
+    {
+      "id": "Akshan.P",
+      "question": "One basic attack followed by cancellation of the additional shot: movement speed?",
+      "status": "Event and stat owner retained; compound formula needs the finding above",
+      "detail": "Rule 2 correctly uses attack_cancelled plus followup_status=cancelled, caster movement, caster bonusAttackSpeed, and decays over the supplied one second. Preserve (level-dependent base) × (one + caster bonus-AS coefficient), not ordinary attack cancellation or a target-owned stat. No intermediate level interpolation is justified."
+    },
+    {
+      "id": "Pyke.P",
+      "question": "Health item or another extra maximum-health gain: attack damage conversion?",
+      "status": "Mechanics retained correctly in snapshot",
+      "detail": "Rule 3 is caster stat_gain, bonus scope, stat_conversion bonusHealth -> bonusAttackDamage, ratio_input 14 and ratio_output one, both caster owned, and replace_input. The health increase is replaced, not added alongside AD; base health is not claimed to convert. The findings on stale/conflicting gap text do not require changing this correct conversion."
+    }
+  ],
+  "findings": [
+    {
+      "findingId": "Akshan.P#2:1",
+      "id": "Akshan.P",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The cancellation event and bonus-AS owner are correct, but the movement effect drops the unit term in the explicit multiplicative formula. Its text says only that movement speed increases, and the params do not distinguish base speed times (one plus bonus-AS coefficient) from an additive bonus-AS term. This limits a direct quantitative answer to the one-attack-then-cancel question.",
+      "resolution": "Retain the full multiplicative relationship in effect text and the unit term en:body:n3 as a formula component, with caster bonusAttackSpeed. Mark the lack of an executable compound-formula representation honestly; keep the level range without inferring intermediate values. Preserve the existing followup cancellation predicate.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He can cancel this shot to instead gain (20 ~ 75) × (1 + 100% bonus Attack Speed) Move Speed decaying over 1 second."
+        }
+      ],
+      "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824"
+    },
+    {
+      "findingId": "Akshan.Q#0:2",
+      "id": "Akshan.Q",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "Range extension on each enemy hit is placed in the unconditional cast rule, so the structured event also extends range for a cast that hits nothing.",
+      "resolution": "Move the range-extension effect to an ability_hit rule. Keep its affected object as the boomerang in text, using unknown/scope gap if projectile subjects cannot be represented. Preserve outgoing and returning damage in text without inventing a flight-distance formula.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "extending the range each time an enemy is hit."
+        }
+      ],
+      "candidateHash": "491f0ac233795759a3f373bbd1b763649bf81559b406366b4ec9917d2800abb2"
+    },
+    {
+      "findingId": "Akshan.W#1:3",
+      "id": "Akshan.W",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The claim rule requires caster visibility=visible rather than caster being alive. It also names no Scoundrel mark (mark is only boolean true), and the three-second time condition has no stated origin in the rule predicate. A living camouflaged Akshan must not lose claim eligibility solely because he is unseen.",
+      "resolution": "Replace the visible predicate with an explicit alive condition. Name the target's Scoundrel mark and define the time condition as the interval since that target was damaged by Akshan. Keep the revive beneficiaries restricted to allies killed by that Scoundrel and preserve the genuine duplicated-source ambiguity about an additional gold partner.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akshan can only claim Scoundrels when he is alive."
+        }
+      ],
+      "candidateHash": "1b883197523882552bc36c998c768758396a7910bf2c56c3e9d65042205cd11a"
+    },
+    {
+      "findingId": "Akshan.W#4:4",
+      "id": "Akshan.W",
+      "ruleIndex": 4,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Alive is separately encoded as health > en:body:n2, but n2 is the 100-gold reward. This invents a 100-health survival threshold and leaves the real claim rule without its required alive condition.",
+      "resolution": "Remove the gold token from the health predicate. Attach a named alive condition directly to the claim effects; no zero-health number ref exists here, so preserve alive as text rather than borrowing a number.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akshan can only claim Scoundrels when he is alive."
+        }
+      ],
+      "candidateHash": "1b883197523882552bc36c998c768758396a7910bf2c56c3e9d65042205cd11a"
+    },
+    {
+      "findingId": "Akshan.W#2:5",
+      "id": "Akshan.W",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The cast rule grants pursuit-only movement speed and missing-mana regeneration unconditionally alongside entering camouflage. These bonuses require camouflage in this way and movement toward Scoundrels, while entering camouflage itself does not require pursuing one.",
+      "resolution": "Keep cast camouflage independent. Put movement speed and regeneration into their own rule gated on this W camouflage state and moving toward Scoundrels. Preserve missing-mana ownership as caster text/gap because the contract lacks missingMana or manaRegen; do not substitute maxMana.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While Camouflaged in this way, Akshan also gains 80/90/100/110/120 Move Speed and 12% missing Mana regen while moving towards Scoundrels."
+        }
+      ],
+      "candidateHash": "1b883197523882552bc36c998c768758396a7910bf2c56c3e9d65042205cd11a"
+    },
+    {
+      "findingId": "Akshan.W#3:6",
+      "id": "Akshan.W",
+      "ruleIndex": 3,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "A generic unseen predicate controls both detection and Scoundrel trails. Unseen is not the named W active/camouflage state, and trail visibility is specified while active, even if a nearby enemy detects Akshan. The reveal effect itself has no explicit enemy-in-detection-radius condition.",
+      "resolution": "Separate camouflage detection from the trail UI effect. Gate detection by this camouflage plus an enemy champion inside its detection radius, and gate trails by W active. Retain unspecified detection distance as text rather than inventing units.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Camouflaged units cannot be seen unless an enemy champion is inside their detection radius. While active, Akshan also sees trails leading to Scoundrels."
+        }
+      ],
+      "candidateHash": "1b883197523882552bc36c998c768758396a7910bf2c56c3e9d65042205cd11a"
+    },
+    {
+      "findingId": "Akshan.E#1:7",
+      "id": "Akshan.E",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "All three stages in rules 0, 1, and 2 are ordinary cast events, and the repeated-shot and final-shot rules have no cast-stage predicates. This makes swing damage and the final shot eligible on the first grapple cast. The first terrain hit_order is not a substitute for first/second/third cast state.",
+      "resolution": "Use cast for the initial terrain attachment, and recast or explicit named stage predicates for starting the swing and jumping off. Preserve caster swing/jump movement independently from shot damage and retain the first-terrain-hit qualification.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Second Cast: Akshan swings around the terrain, repeatedly firing at the nearest enemy"
+        }
+      ],
+      "candidateHash": "f9a4bf75a19e5446c3369703c320dd8e26e19bb4a2c8e3418756d09baf28085b"
+    },
+    {
+      "findingId": "Akshan.E#3:8",
+      "id": "Akshan.E",
+      "ruleIndex": 3,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The targeting-priority rule uses target followup_status=empowered instead of the target's Dirty Fighting mark and champion type. It also runs after a hit rather than describing selection of the next shot target.",
+      "resolution": "Name the Dirty Fighting mark and champion target type, and preserve shooting priority as a targeting rule while swinging. Keep the relation to nearest-enemy selection unresolved if needed; do not invent empowered followup status as the mark.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akshan prioritizes shooting champions marked by Dirty Fighting."
+        }
+      ],
+      "candidateHash": "f9a4bf75a19e5446c3369703c320dd8e26e19bb4a2c8e3418756d09baf28085b"
+    },
+    {
+      "findingId": "Akshan.E#4:9",
+      "id": "Akshan.E",
+      "ruleIndex": 4,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The reduced on-hit effectiveness is gated by generic caster activation=empowered. This does not identify swinging on E, and can incorrectly apply the reduction to other empowered attacks.",
+      "resolution": "Use a named currently-swinging state on the applicable E shots. Preserve the replacement on-hit effectiveness without applying it to unrelated empowered attacks.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On-hits while swinging are 25% effective."
+        }
+      ],
+      "candidateHash": "f9a4bf75a19e5446c3369703c320dd8e26e19bb4a2c8e3418756d09baf28085b"
+    },
+    {
+      "findingId": "Akshan.E#5:10",
+      "id": "Akshan.E",
+      "ruleIndex": 5,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The critical-shot formula is conditioned only on generic empowered activation. There is no critical-strike predicate or distinct swing-shot state, and the trigger's attack subject is target rather than the shooter. The normal and critical formulas can therefore both apply to the same ordinary shot.",
+      "resolution": "Require a critical E shot and the named swing-shot state, with caster as attack actor. Make the critical formula replace the ordinary per-shot formula rather than add a second full damage event. Preserve the nested multipliers in text/formula components and a gap if the contract cannot bind them.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks can critically strike for (8/16/24/32/40 + (25% Attack Damage)) × (1 + 30% bonus Attack Speed) × (0.5 + 50% Critical Strike Damage) physical damage."
+        }
+      ],
+      "candidateHash": "f9a4bf75a19e5446c3369703c320dd8e26e19bb4a2c8e3418756d09baf28085b"
+    },
+    {
+      "findingId": "Akshan.E#7:11",
+      "id": "Akshan.E",
+      "ruleIndex": 7,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The collision rule requires target_type=champion and other=any, even though terrain collision is another termination route. The conjunction excludes terrain and does not actually identify a collision event.",
+      "resolution": "Use explicit collision-with-enemy-champion and collision-with-terrain alternatives, as separate rules or a text disjunction. Gate them on an ongoing swing and remove the meaningless other=any predicate.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Colliding with an enemy Champion or terrain ends the swing early."
+        }
+      ],
+      "candidateHash": "f9a4bf75a19e5446c3369703c320dd8e26e19bb4a2c8e3418756d09baf28085b"
+    },
+    {
+      "findingId": "Akshan.R#0:12",
+      "id": "Akshan.R",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Initial lock-on/storage, bullet damage, execution, lifesteal, and critical scaling are all placed on the first cast. The source releases stored bullets on Recast, and damage is tied to each bullet's first collision rather than starting the charge.",
+      "resolution": "Separate champion lock-on and up-to charging/storage from recast release and bullet-hit effects. Add each bullet's first-hit predicate. Apply the champion restriction to the lock-on only so later bullets can hit an enemy or structure as sourced.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Akshan unleashes the stored bullets, each dealing at least"
+        }
+      ],
+      "candidateHash": "00b922a55e9e7db9d02e2b3315ed15d60a544273d853a9bed9e39f3a1cf29669"
+    },
+    {
+      "findingId": "Akshan.R#0:13",
+      "id": "Akshan.R",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The minion execute is unconditional within the general damage rule. The same rule also applies to champions and structures, so it formally executes those targets too.",
+      "resolution": "Put execution in a separate bullet-hit rule restricted to target_type=minion. Keep general bullet damage and lifesteal independent of that minion-only condition.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullets execute minions and apply Lifesteal."
+        }
+      ],
+      "candidateHash": "00b922a55e9e7db9d02e2b3315ed15d60a544273d853a9bed9e39f3a1cf29669"
+    },
+    {
+      "findingId": "Akshan.R#0:14",
+      "id": "Akshan.R",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The bullet's minimum formula, maximum formula, and critical-scaling annotation are three distinct damage effects with no relationship distinguishing one health-scaled damage result from additive damage. The maximum formula is not an additional unconditional hit, and the critical annotation is not a second independent damage amount.",
+      "resolution": "Represent one per-bullet damage result with minimum/maximum bounds and explicitly paired AD coefficients, scaled by the actual hit target's missing health. Keep critical scaling as a modifier or text/formula gap linked to that result. Do not sum the minimum and maximum formulas or infer the missing-health interpolation.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        }
+      ],
+      "candidateHash": "00b922a55e9e7db9d02e2b3315ed15d60a544273d853a9bed9e39f3a1cf29669"
+    },
+    {
+      "findingId": "Pyke.P#1:15",
+      "id": "Pyke.P",
+      "ruleIndex": 1,
+      "severity": "low",
+      "status": "resolved",
+      "issue": "The gap says the schema has no typed nearby-entity count and that this condition is retained as text. The contract contains entity_count, and rule 1 already correctly uses nearby_enemies.entity_count > the one ref.",
+      "resolution": "Remove or rewrite this stale gap. Retain only genuinely unspecified nearby radius, not a claimed inability to express entity count. Leave the correctly typed count condition intact.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "when there's more than one enemy nearby."
+        }
+      ],
+      "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a"
+    },
+    {
+      "findingId": "Pyke.P#3:16",
+      "id": "Pyke.P",
+      "ruleIndex": 3,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The stated conflict between the Korean summary's bonus maximum health and English tooltip's maximum-health increases is not a contradiction: both describe increases rather than base health. The actual scope discrepancy is the Korean body saying all maximum health, without saying increases.",
+      "resolution": "Rewrite the source_conflict evidence around the Korean body versus English increases wording, if preserving that literal discrepancy. Keep caster bonusHealth to bonusAttackDamage, 14:1, replace_input; this conversion currently supports the health-item question correctly and must not be broadened to base health.",
+      "evidence": [
+        {
+          "sourceId": "ko:body",
+          "quote": "또한 파이크가 최대 체력을 모두 공격력으로 전환합니다."
+        }
+      ],
+      "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a"
+    },
+    {
+      "findingId": "Pyke.Q#1:17",
+      "id": "Pyke.Q",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The held harpoon damage text copies 'preferring champions' from the tap branch. The held branch's source says first enemy hit and supplies no champion-priority exception.",
+      "resolution": "Remove champion preference from the held branch, retaining first enemy hit. Keep champion preference in tap only.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hold: Pyke throws his harpoon, dealing (100/150/200/250/300 + (75% bonus Attack Damage)) physical damage to the first enemy hit and Pulling them towards him."
+        }
+      ],
+      "candidateHash": "e0bb30454fb7f92a930dd3098045aaff95f76b8a0153ec451cc5b3594e61099f"
+    },
+    {
+      "findingId": "Pyke.Q#1:18",
+      "id": "Pyke.Q",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The explicitly sourced Pull is represented only as generic movement with crowdControl=null. The contract has crowd_control/pull, so the pull CC is absent from the structured effects.",
+      "resolution": "Represent this enemy displacement as crowd_control with crowdControl=pull and subject=target. Preserve its direction toward Pyke without inventing distance or duration.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and Pulling them towards him."
+        }
+      ],
+      "candidateHash": "e0bb30454fb7f92a930dd3098045aaff95f76b8a0153ec451cc5b3594e61099f"
+    },
+    {
+      "findingId": "Pyke.R#2:19",
+      "id": "Pyke.R",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Rules 2 and 3 include both damage_multiplier=50% and the already-halved 125~275 +40% bonus AD +75% lethality formula. The source presents equivalent representations; applying the multiplier to these reduced components would halve them a second time.",
+      "resolution": "Choose either half of the full execution threshold or the explicit already-halved formula as the computational representation. Keep the other as an equivalence in text, not another multiplier on the reduced numbers. Retain caster ownership and the non-champion versus above-threshold branches.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "physical damage equal to 50% of that amount (((125 ~ 275) + (40% bonus Attack Damage) + (75% Lethality)))."
+        }
+      ],
+      "candidateHash": "5f307233f1b4d5d4d750a275b701b8b024448c13eb47d48f7f845187fb6a1be4"
+    },
+    {
+      "findingId": "Pyke.R#1:20",
+      "id": "Pyke.R",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The execution text includes teleporting to the target, but the structured effects contain no caster movement event. The only effect is target execute, which does not identify the actor that teleports.",
+      "resolution": "Preserve the sourced teleport as a separate movement effect on caster under the sourced condition, alongside execute on target. Do not infer an extra teleport condition for healthy champions from background knowledge.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "teleporting to and executing targets below"
+        }
+      ],
+      "candidateHash": "5f307233f1b4d5d4d750a275b701b8b024448c13eb47d48f7f845187fb6a1be4"
+    },
+    {
+      "findingId": "Pyke.R#2:21",
+      "id": "Pyke.R",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The candidate chooses >= for surviving-champion damage. English says 'above the threshold', while Korean says 기준 이상. These differ at equality, and no source boundary gap/conflict is recorded.",
+      "resolution": "Retain the strict below execution predicate. Document English above versus Korean at-or-above wording and the equality uncertainty rather than treating the boundary as unqualified cross-source agreement. Follow the preferred English wording or explicitly preserve the Korean completion as an unresolved boundary.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Champions above the threshold and non-champions instead take physical damage"
+        }
+      ],
+      "candidateHash": "5f307233f1b4d5d4d750a275b701b8b024448c13eb47d48f7f845187fb6a1be4"
+    },
+    {
+      "findingId": "Mordekaiser.P#1:22",
+      "id": "Mordekaiser.P",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The cloak activation in rules 1 and 2 uses generic attack_or_ability_hit and an unnamed accumulated hit_count. The source restricts qualifying hits to basic abilities or attacks against champions or jungle monsters; the rule does not preserve that basic-ability qualification or identify the qualifying count in text.",
+      "resolution": "Name the counter as qualifying basic-ability/attack hits on champions or jungle monsters and preserve the basic-ability restriction as an explicit predicate/text. Keep monster versus champion alternatives; do not let arbitrary spell/minion hits silently contribute.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "after hitting 3 basic Abilities or Attacks against champions or jungle monsters."
+        }
+      ],
+      "candidateHash": "7ba6e808f07e242918354b4d8d82b648f50ed4627e7b0a843e80f24667860803"
+    },
+    {
+      "findingId": "Mordekaiser.P#3:23",
+      "id": "Mordekaiser.P",
+      "ruleIndex": 3,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "duration_seconds uses en:body:n4 and n5, which are the endpoints of the health-damage percentage range. The source gives damage per second but no one-to-five-second aura duration, and the existing gap correctly says expiry is unspecified.",
+      "resolution": "Remove these refs from duration_seconds. Keep per-second damage in text and retain unspecified aura expiry as a gap; do not convert the health coefficient range into a duration.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "plus (1 ~ 5)% max Health magic damage per second"
+        }
+      ],
+      "candidateHash": "7ba6e808f07e242918354b4d8d82b648f50ed4627e7b0a843e80f24667860803"
+    },
+    {
+      "findingId": "Mordekaiser.P#3:24",
+      "id": "Mordekaiser.P",
+      "ruleIndex": 3,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The max-health damage component is assigned to caster maxHealth without a source identifying that owner. In addition, en:body:n4/n5 are percent=false in the frozen number inventory despite the surrounding '(1 ~ 5)%' wording, and min/max amount does not distinguish a health coefficient range from whole-damage bounds.",
+      "resolution": "Do not assert caster health ownership; retain unknown owner with scope_ambiguous unless supplied source evidence establishes it. Preserve the level-dependent percentage coefficient as such in text/formula components. Add unresolved_number/unsupported_formula for the frozen percent metadata instead of treating raw one/five as whole-health factors or damage caps.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "plus (1 ~ 5)% max Health magic damage per second"
+        }
+      ],
+      "candidateHash": "7ba6e808f07e242918354b4d8d82b648f50ed4627e7b0a843e80f24667860803"
+    },
+    {
+      "findingId": "Mordekaiser.Q#1:25",
+      "id": "Mordekaiser.Q",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The single-enemy condition uses en:body:n1, the second-rank base damage 115. It thus requires 115 entities instead of one enemy hit.",
+      "resolution": "Replace the borrowed damage ref with a text entity-count condition naming exactly one enemy hit. The number inventory has no ref for 'single', so do not borrow a decimal multiplier or unrelated rank number.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "if it hits only a single enemy."
+        }
+      ],
+      "candidateHash": "37d5dca46f90173dc1b9477cee43cb5779a8ebb56f6919f2893db66979650929"
+    },
+    {
+      "findingId": "Mordekaiser.Q#0:26",
+      "id": "Mordekaiser.Q",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The additive 0~45 level component is encoded as scalar min_amount zero and max_amount 45. It is not a minimum/maximum bound on the full damage, whose ranked base already exceeds 45, and the input's levelValues confirms the progression belongs to level.",
+      "resolution": "Keep this as an additive level_range component, separate from rank_values and caster stat coefficients. Retain the relationship in text and avoid exact interpolation from the endpoints.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(80/115/150/185/220 + (0 ~ 45) + (120% bonus Attack Damage) + (70% Ability Power)) magic damage"
+        }
+      ],
+      "candidateHash": "37d5dca46f90173dc1b9477cee43cb5779a8ebb56f6919f2893db66979650929"
+    },
+    {
+      "findingId": "Mordekaiser.Q#1:27",
+      "id": "Mordekaiser.Q",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The isolation multiplier is a second damage effect without replaces_base, while the ordinary formula also remains eligible. The source increases that same damage to the multiplied value; it does not add a second full hit.",
+      "resolution": "Make the isolated formula/multiplier replace the ordinary damage result, using replaces_base and text linking it to the ordinary formula. Keep the bonus conditional on only one enemy hit after fixing its count predicate.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "increased to (80/115/150/185/220 + (0 ~ 45) + (120% bonus Attack Damage) + (70% Ability Power)) × 1.3/1.35/1.4/1.45/1.5"
+        }
+      ],
+      "candidateHash": "37d5dca46f90173dc1b9477cee43cb5779a8ebb56f6919f2893db66979650929"
+    },
+    {
+      "findingId": "Mordekaiser.W#6:28",
+      "id": "Mordekaiser.W",
+      "ruleIndex": 6,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The non-champion storage reduction is encoded as amount=75% with no replacement or linkage to the normal incoming 7.5% storage. Its predicate names target rather than the incoming damage source, and the text omits how much the storage is reduced. This can be read as a second storage award rather than a 75% reduction.",
+      "resolution": "Name the non-champion incoming damage source, and make this a reduction of the normal stored-damage amount by the referenced percentage. Preserve the remaining-factor relationship in text/formula components and use replacement semantics; do not store 75% as an additional independent amount.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage stored from non-champion sources reduced by 75%."
+        }
+      ],
+      "candidateHash": "00fa65e3b36512eea21db6904e47d21bc0c6d8dca15093a51abe41fbaa44f051"
+    },
+    {
+      "findingId": "Mordekaiser.W#3:29",
+      "id": "Mordekaiser.W",
+      "ruleIndex": 3,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The recast heals from remaining shield but never consumes that shield in the summary or rules. The summary source explicitly describes consumption; retaining the shield would permit an unsupported repeated-heal reading.",
+      "resolution": "Preserve consuming the remaining active shield alongside healing its specified fraction. Keep the shield basis as the caster's remaining shield in text because there is no shield-value statistic; do not substitute current/max health.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "He may consume the shield to heal."
+        }
+      ],
+      "candidateHash": "00fa65e3b36512eea21db6904e47d21bc0c6d8dca15093a51abe41fbaa44f051"
+    },
+    {
+      "findingId": "final6-extra-1",
+      "id": "Akshan.W",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The kill condition described Scoundrel as having damaged Akshan, reversing the source subject; the same 3-second duration was also recorded twice on the reward effect.",
+      "resolution": "Effect text now states Akshan damaged the Scoundrel before Akshan participates in its takedown. The 3-second window is represented by the rule condition and only once, so the reward effect has no duplicated duration.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Takedowns on a Scoundrel within 3 seconds of being damaged by Akshan grant him 100 Gold, resurrects the slain allies, and removes all other Scoundrels."
+        }
+      ],
+      "candidateHash": "1b883197523882552bc36c998c768758396a7910bf2c56c3e9d65042205cd11a"
+    },
+    {
+      "findingId": "final6-extra-2",
+      "id": "Akshan.R",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Minimum 15% and maximum 45% Attack Damage coefficients were both typed in the ordinary damage effect, allowing the maximum coefficient to be read as additive with the minimum.",
+      "resolution": "The ordinary damage effect retains the minimum 15% Attack Damage coefficient. Maximum base values and the 45% coefficient are in a separate other-kind cap annotation, explicitly not additional damage; missing-health interpolation remains a gap.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        }
+      ],
+      "candidateHash": "00b922a55e9e7db9d02e2b3315ed15d60a544273d853a9bed9e39f3a1cf29669"
+    },
+    {
+      "findingId": "final6-extra-3",
+      "id": "Akshan.R",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The 30% critical effectiveness was typed as a general damage_multiplier, which treats it as a complete multiplier rather than an effectiveness affecting critical-stat scaling.",
+      "resolution": "Removed the global damage_multiplier and retained the source relationship in a separate other annotation and unsupported_formula gap without choosing an executable critical formula.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ],
+      "candidateHash": "00b922a55e9e7db9d02e2b3315ed15d60a544273d853a9bed9e39f3a1cf29669"
+    },
+    {
+      "findingId": "final6-extra-4",
+      "id": "Pyke.R",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "Summary said threshold-or-higher while the typed predicate and source-conflict treatment use strictly above the threshold.",
+      "resolution": "Summary now says strictly above the execution threshold, matching the greater-than rule while retaining the source conflict for the Korean equality boundary.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Champions above the threshold and non-champions instead take physical damage"
+        }
+      ],
+      "candidateHash": "5f307233f1b4d5d4d750a275b701b8b024448c13eb47d48f7f845187fb6a1be4"
+    },
+    {
+      "findingId": "final6-extra-5",
+      "id": "Mordekaiser.P",
+      "ruleIndex": 3,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Frozen number refs for the source (1 ~ 5)% have percent=false, so typing them as a maxHealth stat coefficient gives contradictory units.",
+      "resolution": "The percent relation stays in source-backed effect text. The numeric refs are now unknown other data rather than an executable stat_coefficient; a gap records the frozen percent metadata mismatch.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This cloak deals (5 + (30% Ability Power)) plus (1 ~ 5)% max Health magic damage per second"
+        }
+      ],
+      "candidateHash": "7ba6e808f07e242918354b4d8d82b648f50ed4627e7b0a843e80f24667860803"
+    },
+    {
+      "findingId": "final6-extra-6",
+      "id": "Mordekaiser.W",
+      "ruleIndex": 6,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The 75% reduction was typed as damage_multiplier, which would leave the wrong stored fraction and implies an unprovided 25% value.",
+      "resolution": "Retained the 75% reduction only as source-backed text/unknown other data, with a gap explaining the remainder is not given as a number. Existing passive damage and shield branches were preserved.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage stored from non-champion sources reduced by 75%."
+        }
+      ],
+      "candidateHash": "00fa65e3b36512eea21db6904e47d21bc0c6d8dca15093a51abe41fbaa44f051"
+    }
+  ],
+  "finalReviewAddendum": "Final source-review corrections from root assignment; IDs are local addendum IDs pending the final review report."
+}

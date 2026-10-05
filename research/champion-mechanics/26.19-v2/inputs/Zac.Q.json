@@ -1,0 +1,579 @@
+{
+  "champion": "Zac",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Zac stretches an arm, grabbing an enemy. Attacking a different enemy will cause him to throw both targets towards each other.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Zac stretches his arm out, attaching it to the first enemy hit to deal (60/90/120/150/180 + (30% Ability Power) + (3% bonus Health)) magic damage and briefly Slow them. Zac's next Attack gains increased range and applies the same damage and Slow. If Zac hits a different enemy with this Attack, he Knocks Up both towards each other. If they collide, they and surrounding enemies take (60/90/120/150/180 + (30% Ability Power) + (3% bonus Health)) magic damage and are briefly Slowed. Slows by 40%. Maximum magic damage: (120/180/240/300/360 + (60% Ability Power) + (6% bonus Health)).",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "자크가 팔을 쭉 뻗어 적을 붙잡습니다. 다른 적을 공격하면 둘을 서로에게 던져 충돌하게 합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "자크가 팔을 뻗어 처음 맞힌 적을 붙잡고 (60/90/120/150/180 + (30% 주문력) + (3% 추가 체력))의 마법 피해를 입히며 잠깐 동안 둔화시킵니다. 자크의 다음 기본 공격은 사거리가 증가하며 동일한 피해를 입히고 둔화시킵니다. 자크가 다른 적에게 기본 공격을 가하면 둘을 공중으로 띄워 올려 서로에게 던집니다. 충돌 시 해당 적과 주변 적은 (60/90/120/150/180 + (30% 주문력) + (3% 추가 체력))의 마법 피해를 입으며 잠깐 동안 둔화합니다. 40% 둔화합니다. 최대 마법 피해: (120/180/240/300/360 + (60% 주문력) + (6% 추가 체력))",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Stretching Strikes",
+      "ko": "탄성 주먹"
+    },
+    "cooldownSeconds": [
+      14,
+      12.5,
+      11,
+      9.5,
+      8
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      800,
+      800,
+      800,
+      800,
+      800
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "60/90/120/150/180"
+      },
+      {
+        "label": "Cooldown",
+        "values": "14/12.5/11/9.5/8"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          60,
+          90,
+          120,
+          150,
+          180
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896
+            ]
+          },
+          {
+            "stat": "bonusHealth",
+            "coefficientsByRank": [
+              0.029999999329447746,
+              0.029999999329447746,
+              0.029999999329447746,
+              0.029999999329447746,
+              0.029999999329447746
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Zac"
+        },
+        {
+          "type": "pull",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Zac",
+          "condition": "서로 다른 두 대상 연결"
+        },
+        {
+          "type": "knockup",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Zac",
+          "condition": "서로 다른 두 대상 연결"
+        },
+        {
+          "type": "root",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Zac",
+          "condition": "서로 다른 두 대상 연결"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Zac",
+          "condition": "두 대상 충돌"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Zac.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Zac.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 72,
+      "end": 74
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 75,
+      "end": 77
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 78,
+      "end": 81
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 82,
+      "end": 85
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 86,
+      "end": 89
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 93,
+      "end": 96
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "3%",
+      "value": 3,
+      "percent": true,
+      "start": 115,
+      "end": 117
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 385,
+      "end": 387
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 388,
+      "end": 390
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 391,
+      "end": 394
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 395,
+      "end": 398
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 399,
+      "end": 402
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 406,
+      "end": 409
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "3%",
+      "value": 3,
+      "percent": true,
+      "start": 428,
+      "end": 430
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 492,
+      "end": 495
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 520,
+      "end": 523
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 524,
+      "end": 527
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "240",
+      "value": 240,
+      "percent": false,
+      "start": 528,
+      "end": 531
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 532,
+      "end": 535
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "360",
+      "value": 360,
+      "percent": false,
+      "start": 536,
+      "end": 539
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 543,
+      "end": 546
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 565,
+      "end": 567
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 24,
+      "end": 26
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 27,
+      "end": 29
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 30,
+      "end": 33
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 34,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 38,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 45,
+      "end": 48
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "3%",
+      "value": 3,
+      "percent": true,
+      "start": 57,
+      "end": 59
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 203,
+      "end": 205
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 206,
+      "end": 208
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 209,
+      "end": 212
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 213,
+      "end": 216
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 217,
+      "end": 220
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 224,
+      "end": 227
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "3%",
+      "value": 3,
+      "percent": true,
+      "start": 236,
+      "end": 238
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 272,
+      "end": 275
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 294,
+      "end": 297
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 298,
+      "end": 301
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "240",
+      "value": 240,
+      "percent": false,
+      "start": 302,
+      "end": 305
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 306,
+      "end": 309
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "360",
+      "value": 360,
+      "percent": false,
+      "start": 310,
+      "end": 313
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 317,
+      "end": 320
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 329,
+      "end": 331
+    }
+  ],
+  "sourceHash": "b112609e300f326b769629d0be9f979a49702eec7e86e21098b47529101e35cc",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

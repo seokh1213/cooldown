@@ -1,0 +1,128 @@
+{
+  "id": "Sion.W",
+  "sourceHash": "027d8ca313bc85261cb4c4e6e952e7c12d9b7c906509ac4dca651b6a71609f32",
+  "beforeCandidateHash": "272670fdcb39a9419814667497ae2913b57a663c25b7f743fc38feab358d5439",
+  "candidateHash": "27105097ea20fe338891400b97eea5dad0a1aad579906827ead92c1c0fecfd08",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "일반 유닛4/챔피언 관여 및 대형 미니언·몬스터15 최대 체력 획득,6초 보호막·3초 후 유지 중 재사용,주변 마법 피해 및 미니언/몬스터 추가 피해400 상한을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 챔피언 및 대형 미니언/대형 몬스터가 아닌 일반 유닛 적용. caster: 유닛 처치 시 최대 체력을 얻는다.; amount=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 takedown 사건에서 target.target_type eq champion 적용. caster: 챔피언 처치 관여 시 최대 체력을 얻는다.; amount=15  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.target_type eq large minion or large monster 적용. caster: 대형 미니언 또는 대형 몬스터 처치 시 최대 체력을 얻는다.; amount=15  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 해당 지속시간 동안 보호막을 얻는다. 체력 계수는 사이온 자신의 Health 기준이지만 현재/최대 체력 기준은 미확정이다.; amount=60/75/90/105/120  rank_values, stat_coefficient=40% caster의 abilityPower scalar, stat_coefficient=8/10/12/14/16%  rank_values, duration_seconds=6  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "caster의 recast 사건에서 caster.time gte 3, caster.shield_ready eq true 적용. nearby_enemies: 보호막이 유지된 상태에서 재시전하면 주변 적에게 마법 피해를 입힌다. (magic); min_amount=40/65/90/115/140  rank_values, stat_coefficient=40% caster의 abilityPower scalar, stat_coefficient=14% target의 maxHealth scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "caster의 recast 사건에서 caster.time gte 3, caster.shield_ready eq true, target.target_type eq minion 적용. target: 해당 대상의 추가 피해 부분에만 상한이 적용된다. 어떤 성분이 추가 피해인지는 공급 원문에서 미확정이다. (magic); max_amount=400  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "caster의 recast 사건에서 caster.time gte 3, caster.shield_ready eq true, target.target_type eq monster 적용. target: 해당 대상의 추가 피해 부분에만 상한이 적용된다. 어떤 성분이 추가 피해인지는 공급 원문에서 미확정이다. (magic); max_amount=400  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "일반4와 특정15 획득 중복",
+      "correction": "일반 유닛 범위 제외 및15 대체 관계 명시",
+      "sourceId": "en:body",
+      "quote": "Passive: Sion gains 4 max Health when he kills a unit, or 15 for champion takedowns, large minions and large monsters."
+    },
+    {
+      "path": "rules.4-6",
+      "issue": "추가 피해400 상한이 모든 대상에 적용",
+      "correction": "미니언/몬스터에만 상한 규칙 분리",
+      "sourceId": "en:body",
+      "quote": "Max 400 bonus damage to minions and monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 480,
+      "verdict": "repaired",
+      "reason": "or 15이므로 일반4 범위를 특수 대상에서 제외했다."
+    },
+    {
+      "index": 481,
+      "verdict": "repaired",
+      "reason": "기본 폭발 피해에서400 상한을 제거하고 미니언/몬스터 전용 규칙으로 옮겼다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "보호막 계수의 원문은 Health라고만 하므로 현재 체력인지 최대 체력인지 확정할 수 없다. 해당 계수를 특정 통계에 연결하지 않고 원문 수치만 보존했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "폭발 피해의 최대 추가 피해 상한이 적용되는 구체적인 피해 성분은 문구만으로 분리되지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

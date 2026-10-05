@@ -1,0 +1,105 @@
+{
+  "id": "TahmKench.Q",
+  "sourceHash": "0ab672408223f16443d3bb25c64b92af56e27cbf5b5ca4b3132ae16e287a5155",
+  "beforeCandidateHash": "d00b8c9eacf797ef641e7191c556b00a31f6fa540880647d2d2c916025b33aa8",
+  "candidateHash": "8c135f69254d95313d87d1778d6fe85627d8e589e906e7284b4c22e9d27ceed0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "첫적마법피해/50%2초둔화·챔피언적중자기잃은체력회복/중첩/추가피해·이미3중첩이면1.5초기절소모·공중Q중Devour활성화후적중원격삼키기·크기사거리를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first → target: 처음 적중한 적에게 마법 피해를 입힌다. [magic] / amount=75/120/165/210/255 [rank_values]; stat_coefficient=100% (caster abilityPower) [scalar] | target: 처음 적중한 적을 둔화시킨다. [slow] / amount=50% [scalar]; duration_seconds=2 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion → caster: 자신의 잃은 체력5/5.5/6/6.5/7% +10/15/20/25/30을 회복한다. / amount=10/15/20/25/30 [rank_values]; stat_coefficient=5/5.5/6/6.5/7% [rank_values] | target: 적중한 챔피언에게 절대 미각 중첩을 적용한다. | target: 적중한 챔피언에게 절대 미각의 추가 마법 피해를 입힌다. [magic] / min_amount=5 [level_range]; max_amount=60 [level_range]; stat_coefficient=4% (caster bonusHealth) [scalar]; stat_coefficient=0% (caster abilityPower) [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target mark eq 적중 전에 절대 미각 3중첩 → target: 대상을 기절시키고 절대 미각 중첩을 소모한다. [stun] / duration_seconds=1.5 [scalar] | target: 대상의 절대 미각 중첩을 소모한다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 caster activation eq 혀가 공중에 있는 동안 집어삼키기 활성화; target target_type eq champion; target mark eq 절대 미각 3중첩 → target: 혀가 공중에 있는 동안 집어삼키기를 시전했다면, 조건을 충족한 적 챔피언 적중 시 원거리에서 해당 챔피언을 삼킨다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 탐 켄치의 크기가 커질수록 혀 채찍의 사거리가 늘어난다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0.parameters.1",
+      "issue": "missingHealth를maxHealth로오연결",
+      "correction": "연결제거하고자기잃은체력으로명시",
+      "sourceId": "en:body",
+      "quote": "5/5.5/6/6.5/7% of his missing Health"
+    },
+    {
+      "path": "rules.3",
+      "issue": "Q재사용강화로원격삼키기를발동",
+      "correction": "혀공중중Devour활성화및챔피언적중조건",
+      "sourceId": "en:body",
+      "quote": "Activate Devour while your tongue is in midair to devour enemy champions who already have 3 stacks of An Acquired Taste from a distance when you hit them."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "잃은 체력은 스키마 stat 목록에 없으므로 최대체력계수로 실행하지 않는다. 자기 잃은 체력이라는 소유자와비율은효과텍스트에보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "혀 채찍의 크기에 따른 사거리 증가량과 적용 조건은 수치화되어 있지 않다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

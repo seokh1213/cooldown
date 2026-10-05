@@ -1,0 +1,55 @@
+{
+  "id": "Vayne.Q",
+  "sourceHash": "ce142f9cca6b24746af51092e20e2875dd63fb6d30befe6705ea8d76bf93ba90",
+  "beforeCandidateHash": "4a4ca73b6a66fe221a455e4b0a2aa6cfc6eb6ac952db45b179afcd7a36fbe658",
+  "candidateHash": "d6c8ebdbcaabb132facf9a3e2eb20fcd293df3ff4257c03d4c4de86989cd2812",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "짧은 구르기 이후 다음 기본 공격의총AD75~115%+AP50% 추가 물리 피해, 그 피해의 주문 효과 발동을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 짧은 거리를 구른다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 이 구르기 이후 다음 기본 공격. target damage physical: 다음 기본 공격에 추가 물리 피해를 입힌다. [stat_coefficient n0=75%/n1=85%/n2=95%/n3=105%/n4=115% rank_values caster.totalAttackDamage; stat_coefficient n5=50% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 구르기 이후 다음 기본 공격의 추가 피해가 발생함. caster other: 이 스킬의 추가 피해가 발생할 때 주문 효과를 발동한다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,2.conditions;rules.2.trigger,text",
+      "issue": "다음 공격 조건을 대상 활성화로 기록하고 주문 효과를 임의 스킬 적중에 적용",
+      "correction": "구르기 이후 다음 기본 공격과 그 추가 피해 발생 시 주문 효과 발동으로 한정했다.",
+      "sourceId": "en:body",
+      "quote": "This Ability triggers spell effects upon dealing damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 595,
+      "verdict": "false_positive",
+      "reason": "additional은 기본 평타에 추가되는 피해라는 뜻이며 bonus Attack Damage 계수가 아니다. 계수 원문은 Attack Damage/공격력으로 기본/추가 한정이 없는 일반 AD이므로 totalAttackDamage 분류를 유지한다. 다음 강화 평타 한 번의 추가 피해라 replaces_base 없이 AD75~115%와AP50%를 적용하고 그 피해로 주문 효과가 발동함을 최종 대조했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

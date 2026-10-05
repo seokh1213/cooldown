@@ -1,0 +1,81 @@
+{
+  "id": "MissFortune.E",
+  "sourceHash": "b70aeb707c8aed7d0b763a13821a6365380ed6071387425ecc8ef1d1409f5bf7",
+  "beforeCandidateHash": "21871f40f1ee1ae1f883f4ae3bbc99c92c2e739d09fb5fcfa9d899546f622e71",
+  "candidateHash": "dd37fc11bdcea39262e2896e6650f2a316bd8cc5bd35cac2d44e1e35ba4138c0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "지정영역시야와영역내2초피해,40%+주문력100당6%둔화비율,초당마법피해와별도총합계표시를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 지정 지역의 시야를 밝힙니다.; duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 nearby_enemies.distance eq 지정한 총알 영역 안에 있는 적 적용. nearby_enemies: 영역안의적을기본40%에미스포츈주문력100당6%가더해진비율만큼둔화시킨다. (slow); ratio_output=40%  formula_components, stat_coefficient=6% caster의 abilityPower formula_components, ratio_input=100  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. nearby_enemies: 지역 내 적에게 매초 마법 피해를 입힙니다. (magic); amount=35/50/65/80/95  rank_values, stat_coefficient=60% caster의 abilityPower formula_components, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. nearby_enemies: 2초전체지속시간동안의총마법피해표시다.초당피해에더하는별도타격이아니다.; amount=70/100/130/160/190  rank_values, stat_coefficient=120% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1",
+      "issue": "영역시야를주변적시야로표기하고둔화의AP계수누락",
+      "correction": "caster영역시야및AP100당6%계수/분모구별",
+      "sourceId": "en:body",
+      "quote": "Slowing by (40% + (6% per 100 Ability Power))"
+    },
+    {
+      "path": "rules.3",
+      "issue": "총합계를별도가하는피해로표기",
+      "correction": "총합계UI정보로분리",
+      "sourceId": "en:body",
+      "quote": "(total (70/100/130/160/190 + (120% Ability Power)) magic damage)."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 295,
+      "verdict": "repaired",
+      "reason": "지역시야를얻는caster로주체를정정했다."
+    },
+    {
+      "index": 296,
+      "verdict": "repaired",
+      "reason": "기본40%·시전자주문력계수6%·분모100을분리했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

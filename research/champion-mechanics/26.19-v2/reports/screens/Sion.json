@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Sion.E",
+      "sourceHash": "90f1cb1e9e88de79895f89a040f68773140bfa05dab04963b47fbb8f897073a7",
+      "candidateHash": "bed79a3c03313946714446309020919195b843966f57cb1bb6f244c0bab00821"
+    },
+    {
+      "id": "Sion.P",
+      "sourceHash": "6ef098d9f878a942f4388e1d67f4a0da490b69bb2d7cd2e17235b1cf7b262359",
+      "candidateHash": "db96722a9ecf1f1512a38ce4ab17a240d76904fd953bc5f949e0bf087bb39141"
+    },
+    {
+      "id": "Sion.Q",
+      "sourceHash": "7a9b4d6d1d576a07fc4c8980213a59f7e3949fe6c7e02b2cd0a2cf51983eb7c5",
+      "candidateHash": "afffaa9fa8091635daccece2c53b4752a9ea1df3060ccc732062dc233fde7c1d"
+    },
+    {
+      "id": "Sion.R",
+      "sourceHash": "9985b79b31303953c62d36fb99be1e4155dfacdbf5cd843ee0ed54f720599573",
+      "candidateHash": "24a637f088d57641379b8e221a47de4cd439535f0bd181f9d7bc9aae6995e590"
+    },
+    {
+      "id": "Sion.W",
+      "sourceHash": "027d8ca313bc85261cb4c4e6e952e7c12d9b7c906509ac4dca651b6a71609f32",
+      "candidateHash": "272670fdcb39a9419814667497ae2913b57a663c25b7f743fc38feab358d5439"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Sion.R",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:summary",
+      "quote": "Sion charges in a direction, ramping up speed over time.",
+      "issue": "돌진 중 속도가 점차 상승하는 효과가 규칙 설명에서 빠졌습니다.",
+      "correction": "돌진 중 시간이 지날수록 속도가 상승한다는 내용을 추가하세요."
+    },
+    {
+      "id": "Sion.W",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Sion gains 4 max Health when he kills a unit, or 15 for champion takedowns, large minions and large monsters.",
+      "issue": "`target_type=any` 조건은 챔피언 처치 관여와 대형 유닛 처치에도 4 최대 체력을 적용해 15 획득 규칙과 겹칩니다.",
+      "correction": "4 획득 조건에서 챔피언 처치 관여와 대형 미니언·대형 몬스터 처치를 제외하세요."
+    },
+    {
+      "id": "Sion.W",
+      "path": "rules.4.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Max 400 bonus damage to minions and monsters.",
+      "issue": "400 추가 피해 상한이 미니언과 몬스터에만 적용된다는 대상 조건이 없습니다.",
+      "correction": "미니언과 몬스터 대상일 때만 추가 피해 상한 400을 적용하도록 조건을 명시하세요."
+    }
+  ],
+  "notes": []
+}

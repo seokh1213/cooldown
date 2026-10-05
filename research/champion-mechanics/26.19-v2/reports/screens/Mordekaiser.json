@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Mordekaiser.E",
+      "sourceHash": "3c29b74bb8aadfb9ff059fc36f4e6da8830624e678eb93b584085ccb866fd94d",
+      "candidateHash": "2c4ba5abb6dec3ea3f243e78c6de124b0322793bdfb331d6ac8d082dc239d682"
+    },
+    {
+      "id": "Mordekaiser.P",
+      "sourceHash": "a9a31b80f399adc0f54fe1091583427b2c696326010b736fa6d8215bb3a79e9f",
+      "candidateHash": "e5794f3e40882ed5b72b580ca0accb1a342737ea81fcf5981eb2990cb1e79882"
+    },
+    {
+      "id": "Mordekaiser.Q",
+      "sourceHash": "a54c73848e58e18c0270aed78ecf38e9b505584a1c592464a554933c6cce3373",
+      "candidateHash": "2581b02cd259a29241b94686fbea2a1fafa679f2f0829cc946cb709fe2a70977"
+    },
+    {
+      "id": "Mordekaiser.R",
+      "sourceHash": "410aa44b999d5ce28d752e3ffa7ef44374f91b19225f25556969a3fd7d746d96",
+      "candidateHash": "1678db400ba26274c749b8f87d2665d88f3a1385befa781ba4c987b6a4daa17f"
+    },
+    {
+      "id": "Mordekaiser.W",
+      "sourceHash": "c43ce1c2fa625f8f2512f3b8dff43db139bdb585992eff1d6f68a7b62806918d",
+      "candidateHash": "c30a2fc092971c86adc8d8c15a8d49a72b73dbbdd08cfd872390377b55cf45ea"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Mordekaiser.P",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Mordekaiser cloaks himself in negative energy after hitting 3 basic Abilities or Attacks against champions or jungle monsters.",
+      "issue": "조건이 챔피언 적중만 허용해 정글 몬스터 적중에 의한 발동을 누락합니다.",
+      "correction": "챔피언 또는 정글 몬스터 적중 조건을 모두 반영하세요."
+    },
+    {
+      "id": "Mordekaiser.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Mordekaiser cloaks himself in negative energy after hitting 3 basic Abilities or Attacks against champions or jungle monsters.",
+      "issue": "조건이 모든 몬스터 적중을 허용합니다. 원문은 정글 몬스터로 범위를 한정합니다.",
+      "correction": "몬스터 조건을 정글 몬스터로 한정하세요."
+    },
+    {
+      "id": "Mordekaiser.P",
+      "path": "rules.3.effects.0.parameters.4",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This cloak deals (5 + (30% Ability Power)) plus (1 ~ 5)% max Health magic damage per second",
+      "issue": "최대 체력 비례 피해의 1~5가 레벨 범위 값이 아니라 초 단위 지속시간으로도 기록되어 피해 공식에 혼동을 줍니다.",
+      "correction": "해당 값을 최대 체력 비례 피해의 범위로만 기록하고 지속시간으로 연결하지 마세요."
+    },
+    {
+      "id": "Mordekaiser.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "if it hits only a single enemy.",
+      "issue": "단일 적중 조건을 적 수 115와 비교합니다. 115는 기본 피해 랭크 값이며 단일 대상 수가 아닙니다.",
+      "correction": "조건을 적중 대상 수 1로 표현하세요."
+    },
+    {
+      "id": "Mordekaiser.W",
+      "path": "rules.4.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minimum Shield: (5% Health) Maximum Shield: (30% Health)",
+      "issue": "원문은 Health라고만 하므로 이를 최대 체력 기준으로 단정한 근거가 없습니다.",
+      "correction": "Health 기준을 미확정으로 보존하고 최대 체력으로 지정하지 마세요."
+    }
+  ],
+  "notes": []
+}

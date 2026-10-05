@@ -1,0 +1,121 @@
+{
+  "id": "Katarina.E",
+  "sourceHash": "1653a55be43c994164166bcd2acfbf88c45b3efc3ad7a775f85ed092435ec04a",
+  "beforeCandidateHash": "e211c361aaca2dc1d6dd796f5509f949620930027f7a8d40a9dc0308f270ed50",
+  "candidateHash": "4c479d92ffbf85581a6a96e04859db4939cf2baf51497a0aeca617b9eca6bd92",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "아군/적/단검 근처자유지점순간이동; 적이면그적/아니면사거리내최근적20~60+25%AP+40%AD마법과온힛; 줍기0.78~0.96×12~8초감소 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq 선택한 대상이 아군, 적 또는 단검; caster: 대상 아군, 적 또는 단검에게 순간이동하며 대상 근처의 어느 지점으로든 이동할 수 있습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq 선택한 대상이 적; target: 대상이 적이면 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=20,en:body:n1=30,en:body:n2=40,en:body:n3=50,en:body:n4=60 상수 rank_values / stat_coefficient en:body:n5=25%(백분율) caster.abilityPower scalar / stat_coefficient en:body:n6=40%(백분율) caster.totalAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq 선택한 대상이 적이 아님 / enemy.distance eq 이동지점에서 사거리 안 가장 가까운 적; enemy: 아군/단검을 대상으로 이동했으면 사거리 안 가장 가까운 적에게 같은 순보 공격의 마법 피해를 줍니다. [magic]; 수치 amount en:body:n0=20,en:body:n1=30,en:body:n2=40,en:body:n3=50,en:body:n4=60 상수 rank_values / stat_coefficient en:body:n5=25%(백분율) caster.abilityPower scalar / stat_coefficient en:body:n6=40%(백분율) caster.totalAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 단검 획득; caster: 단검줍기 시 E쿨이(0.78~0.96)×12/11/10/9/8초 감소합니다.78~96%는 같은 비율의 재표기이며 또 곱하지 않습니다.; 수치 other en:body:n7=0.78,en:body:n8=0.96 상수 formula_components / cooldown_seconds en:body:n9=12,en:body:n10=11,en:body:n11=10,en:body:n12=9,en:body:n13=8 상수 formula_components / other en:body:n14=78%(백분율),en:body:n15=96%(백분율) 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.activation eq 이 순보로 적을 공격함; target: 공격은 적중 시 효과를 적용합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "적/비적을챔피언유형으로 혼동한조건·대체단일대상·같은공격식·온힛행위자·쿨감이중비율 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Katarina blinks in the wink of an eye to the target ally, enemy, or Dagger. If it is an enemy, Katarina strikes for (20/30/40/50/60 + (25% Ability Power) + (40% Attack Damage)) magic damage - otherwise she strikes the nearest enemy in range. Picking up a Dagger will reduce this Ability's Cooldown by (0.78 ~ 0.96) × 12/11/10/9/8 seconds ((78% ~ 96%)). Katarina can blink to any location near the target. The strike Applies On-Hit Effects."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 172,
+      "verdict": "repaired",
+      "reason": "챔피언제한을 제거하고 선택대상이 적인 조건으로 수정."
+    },
+    {
+      "index": 173,
+      "verdict": "repaired",
+      "reason": "neq champion 대신 선택대상이 적아님으로 수정하여 적미니언등을 혼동하지 않음."
+    },
+    {
+      "index": 174,
+      "verdict": "repaired",
+      "reason": "순보적중의 행위자를 caster로 바꾸고 챔피언제한 제거."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "단검획득 감소식의 곱셈과78~96% 동의 표기는 분명하지만0.78~0.96 범위의 변화기준이 없어 레벨비례로 추정하지 않는다. 단검감소수치·초와퍼센트재표기를 중복연산하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

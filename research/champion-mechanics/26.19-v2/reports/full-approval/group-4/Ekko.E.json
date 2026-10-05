@@ -1,0 +1,66 @@
+{
+  "id": "Ekko.E",
+  "sourceHash": "d922e94101c77358448758437dca6065ae87b2ca5f1300ebb7310b889699ac49",
+  "beforeCandidateHash": "fde061cf9089af7b9bbd693a72c96e042a4c74e24e3fea5535544ed5eb6520c1",
+  "candidateHash": "1f41247b22574b9e72d279c50e1108fd65c26c61aae9e2474ff8f6f0866dc9e8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "자기돌진과다음평타사거리증가/순간이동준비,실제강화평타의자기순간이동·50/75/100/125/150+40%주문력추가마법피해,돌진중다른스킬시전을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 돌진합니다.;  / caster: 다음 기본 공격의 사거리를 늘립니다.;  / caster: 다음 기본 공격이 대상을 향해 순간이동하게 합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 followup_attack 사건에서 caster.activation eq 이 스킬로 강화되어 준비된 다음 기본 공격 적용. target: 강화된 기본 공격이 추가 마법 피해를 입힙니다. (magic); amount=50/75/100/125/150  rank_values, stat_coefficient=40% caster의 abilityPower scalar / caster: 강화된다음기본공격시대상에게순간이동한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.time present 돌진 중 적용. caster: 돌진 중 다른 스킬을 사용할 수 있습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "강화후속공격행위자를target로지정하고실제순간이동이준비효과에만존재",
+      "correction": "caster의해당다음공격과실제순간이동효과보완",
+      "sourceId": "en:body",
+      "quote": "Ekko dashes and empowers his next Attack to have bonus range, teleport him to his target, and deal an additional (50/75/100/125/150 + (40% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

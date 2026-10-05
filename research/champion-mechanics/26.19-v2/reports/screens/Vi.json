@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Vi.E",
+      "sourceHash": "f329adb45feb336c3ccb59a79a68ee30833e873c0ed8c0189eb533b7a572aa7d",
+      "candidateHash": "611ba37781e649ccdb4b55a920135f80101b76b8cc043a620e1c4f06ad6a0e91"
+    },
+    {
+      "id": "Vi.P",
+      "sourceHash": "ef768d13b799cd69867b728aac4c439494fcef917a580daa73b3d745896393ce",
+      "candidateHash": "e1baf9fb0493873b6b4cae749c8c267fa11fde71c5146e1bbf0d5ffdbadd5d76"
+    },
+    {
+      "id": "Vi.Q",
+      "sourceHash": "0596b0a16f7971d6ac1beb4ddd0cb8d58f3ec412ceaf5f27fe10be4413a3149a",
+      "candidateHash": "e82f61149cb4eeee48a04ea0c72b4145af8fbff39b0d96be54e114001808f477"
+    },
+    {
+      "id": "Vi.R",
+      "sourceHash": "b9f87710e1938f861a04b10ab78d82c635877a2763e6bcf26d7978a2d6bbd8b3",
+      "candidateHash": "a7ff4b0df099ed94d366c5210f4788681f6d647e65e16ebd767f08c8160ad1e0"
+    },
+    {
+      "id": "Vi.W",
+      "sourceHash": "90c84a6c0bfe907eda63e959447ae1f5d56dea8bcb88905225fa10f86e36acd8",
+      "candidateHash": "0d561ee1caa0d2d13bf1ae9ec2295086eae7f47e48ea712a046b1e4af74f947d"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Vi.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Vi gains (10% Health) Shield for 3 seconds after hitting an enemy or structure with an activated Ability.",
+      "issue": "조건이 대상 유형을 any로 두어 아군·중립 대상 등까지 포함하는 것으로 표현합니다. 원문은 적 또는 구조물 적중만 발동 조건으로 명시합니다.",
+      "correction": "대상 조건을 enemy 또는 structure로 제한하고, activated Ability 적중 조건을 유지하세요."
+    },
+    {
+      "id": "Vi.Q",
+      "path": "rules.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Begin Charging: Vi begins charging a powerful punch, Slowing herself by 15%. Release: Vi dashes forward dealing between (40/60/80/100/120 + (60% bonus Attack Damage)) and (100/150/200/250/300 + (150% bonus Attack Damage)) physical damage based on charge time and applying Denting Blows to all enemies hit.",
+      "issue": "규칙은 충전 시작만 기록하고, 해제 시 돌진·충전 시간에 따른 피해·모든 적중 적에 대한 찌그러뜨리기 적용을 누락했습니다. gap에 변형 ID가 없다는 설명은 출처에 없는 변형 구분을 요구하는 셈입니다.",
+      "correction": "해제 효과를 텍스트와 gap으로 보존하고, 적중 대상 전체에 대한 효과와 피해량의 최솟값·최댓값 및 추가 공격력 계수를 기록하세요. 변형 ID를 전제하지 마세요."
+    },
+    {
+      "id": "Vi.R",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Upon reaching them, Vi Knocks them Up for 1.3 seconds and deals (150/250/350 + (90% bonus Attack Damage)) physical damage.",
+      "issue": "대상 도달 시 발동하는 효과에 caster.distance=isolated 조건을 추가했지만 원문에는 고립 조건이 없습니다.",
+      "correction": "고립 조건을 제거하고, 지정한 적 챔피언에게 도달하는 이벤트에 효과를 연결하세요."
+    },
+    {
+      "id": "Vi.R",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Any other enemies Vi collides with are dealt damage, knocked aside, and Stunned for 0.75 seconds.",
+      "issue": "충돌한 다른 적의 조건을 champion으로 한정해, 비챔피언 적에 대한 피해·밀쳐내기·기절을 제외합니다. 원문은 다른 적(any other enemies)이라고만 합니다.",
+      "correction": "챔피언 한정 조건을 제거해 돌진 중 충돌한 다른 적 전체를 대상으로 표현하세요."
+    },
+    {
+      "id": "Vi.W",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every 3rd Attack on the same target deals an additional (4/5/6/7/8% + (3.5% per 100 bonus Attack Damage)) max Health physical damage",
+      "issue": "피해 계수의 첫 단계 값 4에 percent=false로 표시되어 퍼센트 값으로 해석되지 않습니다. 또한 3.5% per 100 bonus Attack Damage를 3.5% 계수와 100이라는 독립 구성요소로 분해해, 보너스 공격력 100당 적용되는 비율이라는 단위 관계가 사라졌습니다.",
+      "correction": "4/5/6/7/8을 모두 퍼센트로 표기하고, 3.5% per 100 bonus Attack Damage 관계를 텍스트 또는 구조화된 단위 정보로 보존하세요."
+    },
+    {
+      "id": "Vi.W",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every 3rd Attack on the same target",
+      "issue": "hit_count=3은 누적 공격 횟수를 표현할 수 있지만, 등호 조건은 매 세 번째 공격마다가 아니라 횟수가 정확히 3인 경우만 가리킬 수 있습니다.",
+      "correction": "세 번째 및 이후 매 3회째 같은 대상 공격에서 발동하는 주기 조건으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

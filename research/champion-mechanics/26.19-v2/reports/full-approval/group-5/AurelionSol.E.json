@@ -1,0 +1,460 @@
+{
+  "id": "AurelionSol.E",
+  "sourceHash": "dfbeb4941dcf7c310abbbdda8d87e1709dd4e875f391dcb4e7d23a64ff18382c",
+  "beforeCandidateHash": "0d6509023124e1e0bcfaaa909d8dd47ade2a4f65b37f912883ce42ecdea2e6b8",
+  "candidateHash": "afcd22eb129cc9e57a0c087af961b23cb00d690648c255b5c9613d6738c7c059",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 9,
+  "checkedGapCount": 2,
+  "summaryCheck": "블랙홀 초당피해/5초끌기/중심체력5.03%미만처형(에픽제외),사망종류별별가루와챔피언초당1,사거리,미니언/정글MS0,별가루범위/처형기준증가를 검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "블랙홀 안 적에게 초당10~30+AP12%마법.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "15",
+              "value": 15,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "12%",
+              "value": 12,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "블랙홀 적을 중심으로5초 끌기,pull 분류.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "현재 체력/대상maxHP<5.03%이고 중심에 있는 비에픽 적 처형.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "블랙홀 중심"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n7"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "에픽 몬스터"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "5.03%",
+              "value": 5.03,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "블랙홀 사망 챔피언/에픽/대형/공성은각2,다른미니언/작은몬스터는1;수치/타입 대응을 텍스트와other구성으로보존.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "블랙홀 안"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n12",
+            "en:body:n13",
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            },
+            {
+              "id": "en:body:n14",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "내부 적챔피언마다 초당별가루1.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "블랙홀 안"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전 사거리750~920; 이동효과 아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "distance_units",
+          "numberRefs": [
+            "en:body:n8",
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "750",
+              "value": 750,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "920",
+              "value": 920,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "에픽몬스터 처형불가를other부정규칙으로보존.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "에픽 몬스터"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "안의 공격로미니언/정글몬스터 대상MS를0으로설정;모든주변적감속으로넓히지않음.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "블랙홀 안의 공격로 미니언 또는 정글 몬스터"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": "moveSpeed",
+          "statSubject": "target",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "0",
+              "value": 0,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "별가루→영역과처형기준증가,미제공 계수는gap.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules/gaps",
+      "issue": "타입별 사망별가루를 불필요 gap으로 누락,에픽처형예외가기본규칙에없고MS0범위가텍스트만있었다.별가루증폭도누락.",
+      "correction": "별가루2/1 매핑,처형비에픽조건,대상별MS0,요약증폭규칙을보존했다.",
+      "sourceId": "en:body",
+      "quote": "Absorbs Stardust from units that die in the black hole:Champions: 2 StardustEpic monsters: 2 StardustLarge monsters: 2 StardustSiege minions: 2 StardustMinions and small monsters: 1 Stardust"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "에픽 몬스터 처형 불가 규칙을 표현할 전용 target_type 허용값이 없어 텍스트 값으로 보존했습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "별가루에 따른 영역/처형 기준 증가 계수는 summary에 없고 본문의5.03%와 별가루 연산도 제시되지 않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.8",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

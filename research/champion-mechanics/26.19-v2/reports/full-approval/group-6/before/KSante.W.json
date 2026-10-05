@@ -1,0 +1,384 @@
+{
+  "summary": "방어 태세에서 저지 불가 상태가 되고 받는 피해가 감소한 뒤 전방으로 돌진해 물리 피해를 입히며 적을 밀쳐내고 기절시킵니다. 총공세 중에는 추가 고정 피해를 입히고 피해 감소 및 돌진 속도가 증가하며 밀쳐내기와 기절은 적용되지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "방어 태세를 취하는 동안 저지 불가 상태가 되고 받는 피해가 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "전방으로 돌진해 적에게 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": "bonusArmor",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": "bonusMagicResist",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "All Out"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적중한 적을 뒤로 밀쳐냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적중한 적을 기절시킵니다. 기절 시간은 충전 시간에 따라 달라집니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "All Out"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "충전 시간에 따라 추가 피해를 고정 피해로 입힙니다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals an additional 10-80% damage as true damage (based on charge time),"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "All Out"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "피해 감소 효과가 증가하고 돌진 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "damage reduction is increased to 75% and dash speed is increased,"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "All Out"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "재사용 대기시간이 초기화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "All Out: Cooldown is refreshed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "몬스터 대상 피해에 최대 피해량 제한이 적용됩니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Maximum of 180/260/340/420/500 damage against monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "몬스터 대상 최대 피해량 제한이 전체 피해에 적용되는지 개별 피해 구성 요소에 적용되는지 원문만으로 확정하기 어렵습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Maximum of 180/260/340/420/500 damage against monsters."
+        }
+      ]
+    }
+  ]
+}

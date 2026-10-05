@@ -1,0 +1,198 @@
+{
+  "id": "Taric.E",
+  "sourceHash": "496a444b069b465eb7dedf67616a638bedc3b82ee7f84bbfc26c8e9afaa6d662",
+  "beforeCandidateHash": "02161f8a074255f3f6aaf047887f7c411b99ba5560239533e83fbc2abbe66385",
+  "candidateHash": "8035fb3f8f4d3783f454ac8c9612c98404e24598a81df8eb29caa7b3ac65bbf8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "시전 1초 뒤 별빛 광선 폭발, 마법 피해의 기본값/AP/추가 방어력 계수 및 1.5초 기절을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "expiry는 투사 광선의 지연 종료이고 적중한 적에게 마법 피해를 준다. 시전 지연1초를 피해 지속시간으로 취급하지 않았고 기본5랭크·AP50%·추가 방어력50%를 확인했다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "타릭의 별빛 광선이 시전 1초 후 폭발함"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "별빛 광선 폭발에 적중한 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "170",
+              "value": 170,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "210",
+              "value": 210,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": "bonusArmor",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "동일한 1초 지연 폭발에 맞은 적에게 stun1.5초가 적용된다. any 대상 조건을 실제 적중 적으로 한정했다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "타릭의 별빛 광선이 시전 1초 후 폭발함"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "별빛 광선 폭발에 적중한 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "1.5",
+              "value": 1.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions;rules.0.effects.0;rules.1.conditions",
+      "issue": "1초 시전 지연이 damage duration 매개변수로 저장됨 및 폭발 적중 조건 누락",
+      "correction": "1초 후 광선 폭발을 조건·효과 텍스트로 명시하고 피해 duration을 삭제했다.",
+      "sourceId": "en:body",
+      "quote": "Taric projects a beam of starlight, bursting after 1 second to deal (90/130/170/210/250 + (50% Ability Power) + (50% bonus Armor)) magic damage and Stun enemies for 1.5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

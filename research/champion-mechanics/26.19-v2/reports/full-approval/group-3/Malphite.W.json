@@ -1,0 +1,157 @@
+{
+  "id": "Malphite.W",
+  "sourceHash": "f1b224e95c36ae8d97dc0f7995b85af7dfe7329352a856a3a95b0fc9f8654104",
+  "beforeCandidateHash": "45fc4b966ecf0a7026e6853c63e211052e27eb7c338b56db801fab20fad6dc31",
+  "candidateHash": "d5ef2a9080ff675e3746d0e9a308e3efb624a1f542e821f3f86ec34db43ecf09",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "방어력기본/방패활성대체증가,다음공격추가물리피해,5초후속공격적중여진,180%정글배율과적용범위한계를전수대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other eq 화강암 방패가 활성화되어 있지 않을 때 → caster: 화강암 방패가 비활성화된 동안 방어력이10/15/20/25/30% 증가합니다. / amount=10/15/20/25/30% (caster armor) [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other eq 화강암 방패가 활성화된 동안 → caster: 화강암 방패가 활성화된 동안 기본 증가율 대신 방어력이30/45/60/75/90% 증가합니다. / amount=30/45/60/75/90% (caster armor) [rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → target: 다음 공격은 추가 물리 피해를 입히고 여진을 생성합니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 이 스킬로 강화된 다음 기본 공격이 적중할 때 → target: 강화된 다음 공격 적중 시 추가 물리 피해를 입힙니다. [physical] / amount=30/40/50/60/70 [rank_values]; stat_coefficient=20% (caster abilityPower) [formula_components]; stat_coefficient=15% (caster armor) [formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 이 스킬로 강화된 다음 기본 공격이 적중할 때 → enemy: 강화된 다음 공격 적중 시 공격 방향으로 여진 피해를 입힙니다. [physical] / amount=15/25/35/45/55 [rank_values]; stat_coefficient=30% (caster abilityPower) [formula_components]; stat_coefficient=15% (caster armor) [formula_components]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 이 스킬의 다음5초 동안 후속 기본 공격이 적중할 때(첫 강화공격 여진은 별도 규칙) → enemy: 첫 강화공격의 여진에 추가하여 중복발동시키지 않으며, 이후5초 동안 후속 기본공격 적중 시 그 방향의 적에게 동일한 여진 피해를 입힙니다. [physical] / amount=15/25/35/45/55 [rank_values]; stat_coefficient=30% (caster abilityPower) [formula_components]; stat_coefficient=15% (caster armor) [formula_components]; duration_seconds=5 [scalar]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 target target_type eq monster; caster other eq 이 스킬로 정글 몬스터에게 피해를 입힐 때 → target: 이 스킬의 정글 몬스터 대상 피해배율은180%입니다. 다음공격 추가피해/여진 중 적용범위는 본문미명시입니다. / damage_multiplier=180% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1",
+      "issue": "방패활성시기본증가와강화증가가누적될수있고shield_ready를활성상태로사용했다.",
+      "correction": "실제방패활성/비활성 상호배타조건과전체%단위를보존했다.",
+      "sourceId": "en:body",
+      "quote": "This effect is increased to 30/45/60/75/90% while Granite Shield is active."
+    },
+    {
+      "path": "rules.3-5",
+      "issue": "강화상태가대상에게부여됐고후속여진의공격적중조건/첫공격중복제외가누락됐다. 여진Armor주인이unknown이었다.",
+      "correction": "시전자다음강화공격/후속적중을명시하고동일문맥본인Armor계수로연결하며첫여진과후속여진을분리했다.",
+      "sourceId": "en:body",
+      "quote": "His Attacks continue to create aftershocks On-Hit for the next 5 seconds."
+    },
+    {
+      "path": "rules.6",
+      "issue": "몬스터180%배율이기본피해대체/replaces_base로선언됐다.",
+      "correction": "원문배율만보존하고피해대체플래그를제거했다.",
+      "sourceId": "en:body",
+      "quote": "Deals 180% damage to jungle monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 272,
+      "verdict": "repaired",
+      "reason": "다음 공격과동일한AP/Armor스킬스탯문맥에서본인Armor계수를확인해caster로연결하고오래된주인gap을삭제했다."
+    },
+    {
+      "index": 273,
+      "verdict": "repaired",
+      "reason": "5초이내 일반공격이아니라후속기본공격적중사건을조건에보존했다."
+    },
+    {
+      "index": 274,
+      "verdict": "repaired",
+      "reason": "180%는damage대체가아닌스킬피해배율로만기록했고실제범위gap은유지했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "정글 몬스터 대상 180% 피해 배율이 다음 공격의 추가 피해, 여진 피해 또는 양쪽 중 어디에 적용되는지 범위가 명확하지 않습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "방어력 증가10/15/20/25/30%와30/45/60/75/90%는 모두 퍼센트인데 frozen 숫자표는 각 마지막값만 percent=true다. 모든랭크단위를 효과텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

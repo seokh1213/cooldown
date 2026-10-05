@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Tristana.P",
+      "sourceHash": "4dc861fe6c08359ae83e0373ab79b876ee8a03ed076a1a3a50c12404f029df05",
+      "candidateHash": "083ec2a1e9168b9ae02a61df8679c9191e9df9f1153adceb5c56d0ae2857bb74"
+    },
+    {
+      "id": "Tristana.Q",
+      "sourceHash": "d048fbfc1e33a09bd2b3a3209add1214549a4dfd00d7632e9df829273b0cb607",
+      "candidateHash": "66dcf1fb266d5f958822f6b535c545b2ae527190192df8c6f95128cb8b53c9bf"
+    },
+    {
+      "id": "Tristana.E",
+      "sourceHash": "b14c24c6df7a05c75516bbee300ecdcec8fe0160f34ab01dae3ff45888b63f8f",
+      "candidateHash": "bf2feb96cc2e2411cecc94073d098bfcce4f5d7c4b011e02245cc37c3eac8c71"
+    },
+    {
+      "id": "Tristana.R",
+      "sourceHash": "54b2b63056196a5a499cd4e71e2fe48f36f2e6dd28eaaaf295590d3b6ca14ac7",
+      "candidateHash": "363a7d4ac60b61b91caa8cdba90346d6ee8fb5f0ec39e21cbbaef555056f7bda"
+    },
+    {
+      "id": "Tristana.W",
+      "sourceHash": "56a0f458db728c9caf8e7df9dc877d6396cf4eedf4ac566edf0d516604737491",
+      "candidateHash": "babea3538c59d4b0e9d36fd35128a8f3c365bd22e5888bbedb518823e1ac3291"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Tristana.E",
+      "path": "rules.3.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The damage is increased by 25% each time Tristana hits an Attack or Ability (max 4 stacks). At 4 stacks, the bomb explodes immediately",
+      "issue": "‘4’는 피해 증가 규칙에서 폭탄 중첩의 최댓값인데, 이 매개변수에서는 시간 경과 폭발에 쓰인 지속시간 값과 같은 numberRef(`n13`)를 가리켜 중첩 수를 나타내지 않습니다.",
+      "correction": "중첩 수로 쓰인 4를 별도 수치 참조로 기록하세요. 지속시간 참조는 4초 문구에만 연결하세요."
+    },
+    {
+      "id": "Tristana.E",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active damage is increased by Critical Strike Chance and Critical Strike Damage at 40% effectiveness.",
+      "issue": "치명타 증가 효과에 대상 유형 조건 `structure`가 붙어 있어, 폭탄을 포탑에 사용할 때만 적용되는 것처럼 기록됐습니다. 원문은 액티브 피해 증가를 설명할 뿐 포탑 조건을 두지 않습니다.",
+      "correction": "이 효과의 조건에서 `target_type = structure`를 제거하세요."
+    },
+    {
+      "id": "Tristana.R",
+      "path": "rules.0.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Tristana fires a massive cannonball, dealing (225/275/325 + (70% bonus Attack Damage) + (100% Ability Power)) magic damage to the target, Knocking Back and Stunning them and surrounding enemies for 0.4/0.55/0.7 seconds.",
+      "issue": "피해는 대상에게 적중할 때 발생하지만, 규칙 트리거를 시전으로 기록해 적중 사건과 구분되지 않습니다.",
+      "correction": "피해 규칙의 트리거를 대상 적중 사건으로 기록하세요."
+    },
+    {
+      "id": "Tristana.R",
+      "path": "rules.1.effects.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Knocking Back and Stunning them and surrounding enemies for 0.4/0.55/0.7 seconds.",
+      "issue": "영문 원문은 기절 지속시간을 대상과 주변 적 모두에게 적용하지만, 주변 적 기절 효과 설명에 지속시간이 드러나지 않습니다.",
+      "correction": "주변 적 기절 효과 설명에도 0.4/0.55/0.7초 지속시간을 명시하세요."
+    },
+    {
+      "id": "Tristana.W",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Champion takedowns and max stack Explosive Charge detonations on champions refresh this Ability's Cooldown.",
+      "issue": "챔피언 처치 관여에 `target_type = champion` 조건을 붙였지만, 처치 관여 규칙에는 특정 대상 유형이 조건으로 제시되지 않습니다.",
+      "correction": "처치 관여 규칙에서 이 대상 유형 조건을 제거하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,139 @@
+{
+  "id": "Renata.R",
+  "sourceHash": "d647deaea18448dfe8e3258ec43282cab60586904e862c77469308fc4a096239",
+  "beforeCandidateHash": "8d243ac4dc95fdff534d99c628ba4bf326e9d309074deff2efe67ea55a4b5b08",
+  "candidateHash": "e10ae1af7c5890a7c3a6986ed2d51616a07eba8126c76c550e9baadfac0901d2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "파도 적중적berserk1.25/1.75/2.25초,그 적의아군을우선하며가장가까운유닛공격,광란중자기AS100%증가를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "파도적중적berserk1.25/1.75/2.25초이며다른CC추가없음.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "1.25",
+              "value": 1.25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "1.75",
+              "value": 1.75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "2.25",
+              "value": 2.25,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "empowered강화가아닌현재berserk일때자신의아군우선/가장가까운유닛공격.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 파도에 의해 광란 상태임"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "현재광란적의AS100%증가;레나타/레나타아군buff가아님.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 파도에 의해 광란 상태임"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions/rules.2.conditions",
+      "issue": "광란상태조건을empowered강화로바꿨다.",
+      "correction": "이파도로인한광란조건과적자신의아군우선을명시했다.",
+      "sourceId": "en:body",
+      "quote": "While Berserk, enemies gain 100% Attack Speed."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

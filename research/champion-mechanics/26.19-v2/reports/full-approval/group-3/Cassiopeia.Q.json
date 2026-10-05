@@ -1,0 +1,80 @@
+{
+  "id": "Cassiopeia.Q",
+  "sourceHash": "9d51e16d8c779eba00479db0e1dd6a67c8d1cb087707f1c7ea0ff405acd9f918",
+  "beforeCandidateHash": "cd82c3459b48aad859b072bdf4541d255bc0f2f4c517e33fdd6fbfd15d2dbd7e",
+  "candidateHash": "b06a4dd364c2e10a73b3c1df4cedaa22942d40decda2aea57ff741b66dee72db",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "짧은지연후대상지역독가스/중독및3초총65/100/135/170/205+AP75%마법피해,적챔피언적중MS30/35/40/45/50%의3초감쇠를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster other eq 이Q시전의짧은지연후대상지역의적에게독가스가적중할때 → enemy: 짧은지연후대상지역의적에게3초에걸쳐총65/100/135/170/205+주문력75%마법피해를입힙니다. [magic] / amount=65/100/135/170/205 [rank_values]; stat_coefficient=75% (caster abilityPower) [formula_components]; duration_seconds=3 [scalar] | enemy: 이독가스에맞은적을중독시킵니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target other eq 이Q에맞은적챔피언 → caster: 이Q로적챔피언을맞히면자신의이동속도가30/35/40/45/50%증가하고3초동안원래대로감소합니다. / amount=30/35/40/45/50% [rank_values]; duration_seconds=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "짧은지연/지역폭발과실제중독상태효과가누락됐다.",
+      "correction": "해당스킬지연후지역적중조건과중독효과를복구하고3초총피해를명시했다.",
+      "sourceId": "en:summary",
+      "quote": "Cassiopeia blasts an area with Poison after a brief delay"
+    },
+    {
+      "path": "rules.1/gaps",
+      "issue": "챔피언적중행위자가target이고전체랭크MS퍼센트단위가불완전했다.",
+      "correction": "시전자Q적중/적챔피언조건및전체%단위를명시했다.",
+      "sourceId": "en:body",
+      "quote": "Hitting a champion grants Cassiopeia 30/35/40/45/50% Move Speed decaying over 3 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "요약은짧은지연후지역폭발을명시하지만지연시간숫자는공급원문에없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "MS30/35/40/45/50%는모든랭크%지만frozen숫자표는마지막만percent=true이다.전체단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

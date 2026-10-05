@@ -1,0 +1,42 @@
+{
+  "id": "Nami.Q",
+  "sourceHash": "b460c3b2a4f8d6919c07b64b6d3893e317bc17912792dc12da99c6bbbca27d70",
+  "beforeCandidateHash": "56a3a9d42811e3e122d2e02c89e983999b65f72071c7669bcb6d9a5be88ea62f",
+  "candidateHash": "48d02a2b335b215a34dbc13b9530cd2e316e2bccc7f45b146169aa0717cb5838",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "지정 위치 물방울에 적중한 모든 적의 1.5초 기절과 90/145/200/255/310 + 나미 주문력의 50% 마법 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 물방울이 지정 위치에 도달할 때 적중한 적 적용. target: 물방울에 적중한 적을 기절시킵니다. (stun); duration_seconds=1.5  scalar / target: 물방울에 적중한 적에게 마법 피해를 입힙니다. (magic); amount=90/145/200/255/310  rank_values, stat_coefficient=50% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger,conditions",
+      "issue": "적을 나미의 스킬 적중 행위자로 둔다.",
+      "correction": "시전자 적중 사건과 물방울에 맞은 적 조건으로 연결했다.",
+      "sourceId": "en:summary",
+      "quote": "Sends a bubble to a target area, dealing damage and stunning all enemies on impact."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

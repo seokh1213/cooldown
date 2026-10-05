@@ -1,0 +1,453 @@
+{
+  "summary": "기본 스킬을 잘 사용하면 아첼레란도 중첩을 얻어 기본 스킬 가속이 영구적으로 증가합니다. 기본 스킬 가속 최대치에 도달하면 더는 중첩을 얻지 않고 현재 궁극기의 재사용 대기시간을 줄입니다. 기본 스킬을 일정 횟수 사용한 뒤 다음 공격은 추가 마법 피해를 주며, 마지막으로 활성화한 곡에 따라 추가 효과를 적용합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 스킬을 잘 사용함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "아첼레란도 중첩마다 영구적으로 기본 스킬 가속을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "abilityHaste",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "abilityHaste",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityHaste",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "She gains +0.5 Basic Ability Haste permanently per stack, up to 60 Basic Ability Haste."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 스킬 가속이 최대치에 도달함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "아첼레란도 중첩을 더 얻는 대신 현재 궁극기의 남은 재사용 대기시간을 줄입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When she reaches 60 Basic Ability Haste, instead of gaining further stacks her current Ultimate Ability's cooldown is reduced by 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 스킬을 3회 사용한 뒤 파워 코드가 준비됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "다음 공격이 추가 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using 3 basic Abilities, Sona's next Attack deals an additional ((20 ~ 240) + (20% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Power Chord: After using 3 basic Abilities, Sona's next Attack deals an additional ((20 ~ 240) + (20% Ability Power)) magic damage and may have an additional effect based on the song Sona last activated."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 스킬을 3회 사용한 뒤 파워 코드가 준비됨"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "마지막으로 활성화한 곡은 Hymn of Valor"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "용맹의 찬가가 마지막으로 활성화된 경우 공격은 기본 파워 코드 피해 대신 이 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hymn of Valor: The Attack deals ((30 ~ 360) + (30% Ability Power)) magic damage instead."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hymn of Valor: The Attack deals ((30 ~ 360) + (30% Ability Power)) magic damage instead.Aria of Perseverance: The target deals (25% + (4% per 100 Ability Power)) less damage for 3 seconds.Song of Celerity: The target is Slowed by (50% + (4% per 100 Ability Power)) for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 스킬을 3회 사용한 뒤 파워 코드가 준비됨"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "마지막으로 활성화한 곡은 Aria of Perseverance"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "target",
+          "text": "대상이 주는 피해를 감소시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Aria of Perseverance: The target deals (25% + (4% per 100 Ability Power)) less damage for 3 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hymn of Valor: The Attack deals ((30 ~ 360) + (30% Ability Power)) magic damage instead.Aria of Perseverance: The target deals (25% + (4% per 100 Ability Power)) less damage for 3 seconds.Song of Celerity: The target is Slowed by (50% + (4% per 100 Ability Power)) for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 스킬을 3회 사용한 뒤 파워 코드가 준비됨"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "마지막으로 활성화한 곡은 Song of Celerity"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Song of Celerity: The target is Slowed by (50% + (4% per 100 Ability Power)) for 2 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hymn of Valor: The Attack deals ((30 ~ 360) + (30% Ability Power)) magic damage instead.Aria of Perseverance: The target deals (25% + (4% per 100 Ability Power)) less damage for 3 seconds.Song of Celerity: The target is Slowed by (50% + (4% per 100 Ability Power)) for 2 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "아첼레란도 중첩을 얻는 '기본 스킬을 잘 사용'의 정확한 성공 조건은 tooltip에 정의되어 있지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sona gains Accelerando stacks from using her Basic Abilities well."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "파워 코드에 필요한 기본 스킬 사용 횟수의 누적·초기화 방식은 원문에 설명되어 있지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using 3 basic Abilities"
+        }
+      ]
+    }
+  ]
+}

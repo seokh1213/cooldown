@@ -1,0 +1,90 @@
+{
+  "id": "Camille.R",
+  "sourceHash": "a463ed684c71d60fb75d747e702dc40488773f75419a4a6254ad0170b74257ec",
+  "beforeCandidateHash": "b690d44763ef7231032717d8c71c7c77608131ee68d7d1a0bcbf8596bd09c1b6",
+  "candidateHash": "21c28c87b64ded60bfb10a11ce64f9803fc68964411e60082768ad39c97ce2cc",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "짧은untargetable/적champ도약/채널interrupt,2.5~4초탈출불가영역/다른근처적knockback,갇힌적평타currentHP4~8%magic, caster영역이탈종료를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion. caster other: 잠시 대상으로 지정할 수 없게 된다. [] / caster movement: 적 챔피언에게 도약한다. [] / nearby_enemies crowd_control knockback: 주변의 다른 적을 밀쳐낸다. [] / target other: 대상은 정해진 지속시간 동안 어떤 방법으로도 탈출할 수 없는 영역에 갇힌다. [duration_seconds n0=2.5/n1=3.25/n2=4 rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion. target crowd_control disrupt: 대상의 정신 집중을 방해한다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 target.other eq 이 R로 생성한 영역에 갇힌 대상 적. target damage magic: 갇힌 적에 대한 공격은 대상의 현재 체력에 비례한 추가 마법 피해를 입힌다. [other n3=4%/n4=6%/n5=8% formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 카밀이 이 스킬의 영역을 벗어남. caster other: 카밀이 영역을 벗어나면 이 스킬이 끝난다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3",
+      "issue": "untargetable/가둠분류·채널발동·genericmark·currentHP계수flat·이탈거리",
+      "correction": "other가둠/dash분리,cast및정확갇힘,계수구성요소,영역이탈other",
+      "sourceId": "en:body",
+      "quote": "This Ability ends if Camille leaves the area."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 33,
+      "verdict": "false_positive",
+      "reason": "2.5/3.25/4초는기존가둠설명effect에있고channelinterrupt는별도규칙/무시간이라혼동결함은아니다. 가둠을other별도효과로더명확히분리했다."
+    },
+    {
+      "index": 34,
+      "verdict": "repaired",
+      "reason": "도약시채널방해는cast효과이며불필요ability_hit사건을cast로바꿨다."
+    },
+    {
+      "index": 35,
+      "verdict": "repaired",
+      "reason": "일반mark가아닌이R영역에갇힌적조건으로명시했다."
+    },
+    {
+      "index": 36,
+      "verdict": "repaired",
+      "reason": "미터거리기준없어caster.other영역이탈조건으로교체했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "피해 기준은 대상의 현재 체력(current Health)이다. 스키마에 현재 체력 통계가 없어 stat을 지정하지 않고 원문 기준을 텍스트로 보존했다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "영역 이탈을 나타내는 전용 이벤트나 조건 필드가 없어 영역 이탈 조건을 텍스트로 보존했다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

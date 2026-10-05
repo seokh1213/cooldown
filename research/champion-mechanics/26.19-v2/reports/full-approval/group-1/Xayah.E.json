@@ -1,0 +1,83 @@
+{
+  "id": "Xayah.E",
+  "sourceHash": "858a507b2b41d51aab7c7edb987e0eb678d84a1267a5466939b289ec16a3b428",
+  "beforeCandidateHash": "62a2984fc50fa5b57b15c51c3384722c30741c4c711585b32d39e2c246611476",
+  "candidateHash": "3ccd66bdae0f091b784964fbb9193986703f4f31a776494e92f1e3baa571c157",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "모든 깃털 회수, 깃털당 물리 피해와3개 이상 적중1.25초 속박, 치명타50%효율·미니언50%·깃털마다5%감소/10%하한을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 이번 깃부르미로 회수한 깃털 적중. target damage physical: 불러들인 깃털 하나마다 물리 피해를 입힙니다. 치명타 확률과 치명타 피해량에 따라 피해가 50% 효율로 증가합니다. [amount n0=50/n1=65/n2=80/n3=95/n4=110 rank_values; stat_coefficient n5=40% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_count gte n6=3; caster.other eq 이번 깃부르미로 회수한 깃털 적중; target.other eq hit_count는 이번 회수 깃털 중 해당 적에게 적중한 깃털 수. target crowd_control root: 속박합니다. [duration_seconds n7=1.25 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq minion; caster.other eq 이번 깃부르미로 회수한 깃털 적중. target other: 미니언은 이 스킬 피해의 50%를 받습니다. [damage_multiplier n9=50% scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 이번 깃부르미로 회수한 깃털 적중. target other: 적은 깃털에 맞을 때마다 피해가 5% 감소하며, 피해는 기본 피해의 10%보다 낮아지지 않습니다. 정확한 감소 계산식은 원문에 명시되지 않았습니다. [other n10=5% formula_components; other n11=10% formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 이번 깃부르미의 깃털 피해. target other: 깃부르미 피해는 자야의 치명타 확률과 치명타 피해량을50%효율로 반영한다. 구체적인 결합 수식은 미제공이다. [other n8=50% formula_components]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. unknown other: 자야가 땅에 떨어진 모든 깃털을 자신에게 불러들인다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-5",
+      "issue": "행위자 target, 미니언 비율이 치명타 수치를 참조, 피해 조정값을 독립 damage/기본 대체로 잘못 실행 가능, 회수 동작 누락",
+      "correction": "caster와 이번 회수 깃털 조건, 미니언 올바른50%참조를 수정했다. 피해 조정식은 other 구성요소로 보존하고 회수 및 치명타 규칙을 추가했다.",
+      "sourceId": "en:body",
+      "quote": "Damage scales with Critical Strike Chance and Critical Strike Damage at 50% effectiveness."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "치명타 확률과 치명타 피해량이 50% 효율로 피해에 반영되는 구체적 계산식이 원문에 없습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "깃털 적중마다 피해가 5% 감소하고 최소 10% 피해를 준다는 규칙의 계산 기준과 적용 순서는 명시되지 않았습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

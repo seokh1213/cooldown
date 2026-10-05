@@ -1,0 +1,56 @@
+{
+  "id": "Yone.P",
+  "sourceHash": "31c9371d963ed75bcf4994f7c2976f5c727ea06ef17d45814bd29a2e9646287b",
+  "beforeCandidateHash": "c8e80854ecc43f1962e6f739ac2dff5e84354cc3d0a02b8e21c4884411c3c2e6",
+  "candidateHash": "e0303b11f07b56df0f5a6ce3c928d5b765f9edada82aab1abcdaebead643f6bb",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "매두번째공격50%마법,critChance100%상대증가/critDamage감소표현,100%초과critChance1%당bonusAD0.5를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 매 두 번째 기본 공격. target damage magic: 매 두 번째 기본 공격은 공격 피해의50%를 마법 피해로 입힌다. [damage_multiplier n1=50% scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 없음. caster stat_modifier: 치명타 확률이 상대적으로100% 증가한다. [other n2=100% formula_components caster.critChance] / caster other: 치명타 피해량이 (100% Critical Strike Damage)로 감소한다고 원문에 적혀 있다. 실제 감소 배율은 이 표현만으로 확정하지 않는다. [other n3=100% formula_components caster.critDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.stat_gain; 조건 caster.other eq 치명타 확률이100%초과. caster stat_conversion: 치명타 확률이 100%를 초과하면 초과분에 따라 추가 공격력을 얻는다. [ratio_input n5=1% scalar caster.critChance; ratio_output n4=0.5 scalar caster.bonusAttackDamage]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/gaps",
+      "issue": "두공격을두적중으로·무관100%참조·overflow조건/전환식주인오류",
+      "correction": "매두번째공격,critDamage본인계수만,critChance>100 조건/1%→0.5bonusAD",
+      "sourceId": "en:body",
+      "quote": "Gain 0.5 Bonus AD for every 1% Critical Strike Chance above 100%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "치명타피해가100% CriticalStrikeDamage까지감소한다는툴팁표현은원래critDamage에100%를곱하는값과같아실제감소계수가명확하지않다.원문표현과숫자만보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "id": "Sivir.W",
+  "sourceHash": "587c5815a6ccb63cf2159e272968f27f70704cd36e093903b463848c798cc574",
+  "beforeCandidateHash": "63aeafb58126c6549f3e2f241281447e7dad3dbb341f23a639ee4a36e37258c1",
+  "candidateHash": "82bb4bb145ef30a8368e53ab6a1dd67f0e870bc02b42927244a6cb73057bf2a9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "4초공속/강화평타,튕김별AD물리·최대8/대상2·새대상우선,원평타치명시튕김도치명,미니언65%/낮은체력처형 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 공격 속도가 증가합니다.; 수치 amount en:body:n1=20(백분율),en:body:n2=25(백분율),en:body:n3=30(백분율),en:body:n4=35(백분율),en:body:n5=40%(백분율) 상수 rank_values / duration_seconds en:body:n0=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq W사용후4초동안의강화기본공격; nearby_enemies: 강화된 기본 공격이 주위의 추가 적에게 튕겨 물리 피해를 입힙니다. 튕김은 최대 횟수까지 이어지고, 각 대상은 최대 횟수만큼 적중당할 수 있습니다. 튕김은 이미 맞은 대상보다 새로운 대상을 우선합니다.; 수치 count en:body:n11=8 상수 scalar / count en:body:n12=two 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq 이W강화공격에서생성된튕김; target: 튕김마다공격력의40/42.5/45/47.5/50%물리피해를줍니다. [physical]; 수치 ratio_input en:body:n6=40(백분율),en:body:n7=42.5(백분율),en:body:n8=45(백분율),en:body:n9=47.5(백분율),en:body:n10=50%(백분율) caster.totalAttackDamage formula_components; flags per_target"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq 튕김을생성한원래W강화평타가치명타; target: 생성한 공격이 치명타이면 튕긴 공격도 치명타가 됩니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 target.target_type eq minion / target.health_threshold lt low / caster.activation eq 이W의튕김피해; target: 체력이 낮은 미니언을 처치합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: followup_attack 사건의 행위자 caster; 조건 caster.activation eq 이W강화공격에서생성된튕김 / target.target_type eq minion; target: 미니언은기본튕김피해의65%를받습니다. [physical]; 수치 damage_multiplier en:body:n13=65%(백분율) 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "챔피언튕김누락·미니언감소를모든비챔피언으로확장·AD계수중복상수·4초/치명조건누락 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "For the next 4 seconds, Sivir gains 20/25/30/35/40% Attack Speed and her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce for up to 8 bounces. These bounces critically strike if the attack generating them does. Bounces will prioritize new targets before returning to targets that have already been struck. Can only hit each target a maximum of two times. Bounces deal 65% damage to minions. This ability executes low Health minions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 487,
+      "verdict": "repaired",
+      "reason": "요약에대상두번/전체8회제한추가."
+    },
+    {
+      "index": 488,
+      "verdict": "repaired",
+      "reason": "일반튕김모든적과미니언65%규칙을분리."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "튕김 피해의 공격력 계수가 전체 공격력인지 추가 공격력인지 명확하지 않습니다. 원문은 Attack Damage라고만 합니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "낮은 체력의 구체적인 기준은 원문에 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

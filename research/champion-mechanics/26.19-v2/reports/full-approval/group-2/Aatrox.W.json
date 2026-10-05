@@ -1,0 +1,110 @@
+{
+  "id": "Aatrox.W",
+  "sourceHash": "cd7a94d5d79a0a861da15fa5e92d140ec5c363455b0433c9ec52298e7b0a63c4",
+  "beforeCandidateHash": "fdd645fbcb59805f081eabbef6934cf9b1072fd6ce902de1a2c41ddf298e5db4",
+  "candidateHash": "350ffd32c48b088d5bd6cd51bbbcc01c4080843b0485baf41c5deb261b3aa2ea",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "사슬 첫적35%까지둔화/1.5초 및 기본물리,챔피언·대형정글의1.5초탈출실패 시 끌어당김/같은 재피해,미니언2배를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first; target: 처음 적중한 적을 둔화시킨다. [slow]; 수치 amount en:body:n0=25(백분율),en:body:n1=27.5(백분율),en:body:n2=30(백분율),en:body:n3=32.5(백분율),en:body:n4=35%(백분율) 상수 rank_values / duration_seconds en:body:n5=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first; target: 사슬이 적중한 적에게 물리 피해를 준다. [physical]; 수치 amount en:body:n6=30,en:body:n7=40,en:body:n8=50,en:body:n9=60,en:body:n10=70 상수 rank_values / stat_coefficient en:body:n11=40%(백분율) caster.totalAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 target.target_type eq champion / target.time eq 최초 적중 후 1.5초의 탈출 시간이 끝났을 때까지 지역을 벗어나지 않음 / target.other present 충돌 지역을 벗어나지 않음; target: 충돌 지역을 제한 시간 안에 벗어나지 못한 챔피언을 중앙으로 끌어온다. [pull]; 수치 없음; flags 없음 | target: 중앙으로 끌려올 때 최초 피해와 같은 양의 물리 피해를 다시 입는다. [physical]; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 target.target_type eq monster / target.time eq 최초 적중 후 1.5초의 탈출 시간이 끝났을 때까지 지역을 벗어나지 않음 / target.other present 대형 정글 몬스터이며 충돌 지역을 벗어나지 않음; target: 충돌 지역을 제한 시간 안에 벗어나지 못한 대형 정글 몬스터를 중앙으로 끌어온다. [pull]; 수치 없음; flags 없음 | target: 중앙으로 끌려올 때 최초 피해와 같은 양의 물리 피해를 다시 입는다. [physical]; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq minion / target.hit_order eq first; target: 미니언에게는 기본 피해의 두 배를 준다. [physical]; 수치 없음; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "첫대상 피해조건 누락과 탈출제한의 LTE 반전, 같은 끌어당김의 중복 movement/CC효과를 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Aatrox fires a chain, Slowing the first enemy hit by 25/27.5/30/32.5/35% for 1.5 seconds and dealing (30/40/50/60/70 + (40% Attack Damage)) physical damage. Champions and large jungle monsters have 1.5 seconds to leave the impact area or be Pulled back to the center and damaged again for the same amount. Deals double damage to minions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 6,
+      "verdict": "repaired",
+      "reason": "기본 피해에도 첫 적중 조건 추가."
+    },
+    {
+      "index": 7,
+      "verdict": "repaired",
+      "reason": "1.5초 이전에 끌어오는 LTE를 제거하고 탈출창 종료 시 실패로 텍스트 보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "미니언 피해 배수는 원문에 단어로 명시되어 있으나 numbers 목록에 대응하는 숫자 ID가 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "재피해가 최초 피해와 같은 양이라고 명시되어 있으나, 반복 피해량의 수치 매개변수를 이 규칙에서 직접 참조할 수 없으므로 수치화하지 않았다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

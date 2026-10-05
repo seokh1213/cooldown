@@ -1,0 +1,41 @@
+{
+  "findings": [
+    {
+      "id": "KogMaw.Q",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Kog'Maw vomits a corrosive projectile that deals (80/125/170/215/260 + (90% Ability Power)) magic damage to the first enemy hit and shreds 16/20/24/28/32% Armor and Magic Resist for 4 seconds.",
+      "issue": "방어력·마법 저항력 감소 효과의 발동을 시전으로 기록했지만, 원문은 투사체가 적중한 뒤 효과가 적용되는지 시전 즉시 적용되는지 명시하지 않습니다. 적중이 전제된 효과로 단정할 수 없습니다.",
+      "correction": "효과 발동 시점을 미확정으로 두고, 적중 시 적용으로 한정하지 마세요."
+    },
+    {
+      "id": "KogMaw.R",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kog'Maw shoots acid at an area, dealing (100/140/180 + (35/40/45% Ability Power) + (75% bonus Attack Damage)) plus 0.833% per 1% missing Health magic damage. Enemies below 40% Health instead take (200/280/360 + (70/80/90% Ability Power) + (150% bonus Attack Damage)) magic damage.",
+      "issue": "기본 피해 조건을 체력 40% 이상으로 설정했습니다. 영어 원문은 별도 피해가 40% 미만일 때 적용된다고만 하므로, 40%일 때 기본 피해라고 확정하는 조건은 영어 출처에서 뒷받침되지 않습니다.",
+      "correction": "40% 경계값의 기본 피해 조건은 확정하지 말고, 출처 간 경계 차이를 gap으로 유지하세요."
+    },
+    {
+      "id": "KogMaw.R",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kog'Maw shoots acid at an area, dealing (100/140/180 + (35/40/45% Ability Power) + (75% bonus Attack Damage)) plus 0.833% per 1% missing Health magic damage and revealing enemies hit for 2 seconds.",
+      "issue": "적중한 적을 드러내는 효과를 시전 시 발동으로 기록했습니다. 원문은 드러나는 대상이 적중한 적이라고 명시하지만 효과 발동 시점은 시전인지 적중인지 특정하지 않습니다.",
+      "correction": "발동 시점을 미확정으로 두고, 대상 범위는 적중한 적으로 유지하세요."
+    },
+    {
+      "id": "KogMaw.R",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Subsequent shots within 8 seconds cost an additional 40 Mana (max: 400 Mana).",
+      "issue": "8초 이내 후속 포탄의 추가 마나 비용을 시간 조건만으로 표현해 이전 포탄 시전과의 관계를 조건에서 식별하지 않습니다. 원문은 후속 시전 비용을 설명하므로, 단순 시간 조건은 어떤 시전이 후속인지 불분명하게 만듭니다.",
+      "correction": "이전 포탄 시전 이후 8초 이내의 후속 시전이라는 관계를 텍스트로 보존하고, 스키마 조건이 이를 표현하지 못하면 gap으로 남기세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,134 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Zaahen.E",
+      "sourceHash": "08343c4b907eceafe9e56dc28f07841224745930829d487ac0adb46bc319db4f",
+      "candidateHash": "09b8177d5fdd12a0aaeccda19f006ddd72f7b5213901df7eb462012a8b45a9c0"
+    },
+    {
+      "id": "Zaahen.P",
+      "sourceHash": "390e0aeb8935ce21d11c6b09af5899141f9dc687abe127a72400ad5cf432a209",
+      "candidateHash": "e360a1609e50a22b512f6063f47c0417fb8eeb5e38ed7dea17d6a232f341f6af"
+    },
+    {
+      "id": "Zaahen.Q",
+      "sourceHash": "e7e2dde916a1d47114582f72d84cb656ec6ca756f705e4fb929754ad7adcae00",
+      "candidateHash": "37708a8be29ba18d30a26c17bca30aaef68239b1befd1d6280c9a44023686503"
+    },
+    {
+      "id": "Zaahen.R",
+      "sourceHash": "46b527477f45bed29721a4600396d6caf8262c410477fc4c4e1e1b3c698ca5df",
+      "candidateHash": "f1eef5c812c5b2678b3929ce303c193bcc1c26186a25931b62f243f9cfeed2bd"
+    },
+    {
+      "id": "Zaahen.W",
+      "sourceHash": "6dd37f0e6af70f89b3b85822aad571aa561b756ab9a6b036b2e364610b232b66",
+      "candidateHash": "8eef4fba311156d34469481058142d7cc57950105423dc92930e70488070f918"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Zaahen.E",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Enemies at the edge of the slice take (60/90/120/150/180 + (75% bonus Attack Damage)) physical damage + 4/4.5/5/5.5/6% of their maximum Health as magic damage instead.",
+      "issue": "가장자리 여부를 `distance != isolated`로 판정해 원문에 없는 조건을 추가했습니다. 이 조건은 가장자리 적 판정을 뒷받침하지 않습니다.",
+      "correction": "가장자리 판정은 조건으로 단정하지 말고 미해결 조건으로 남기세요."
+    },
+    {
+      "id": "Zaahen.E",
+      "path": "rules.2.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Enemies at the edge of the slice take (60/90/120/150/180 + (75% bonus Attack Damage)) physical damage + 4/4.5/5/5.5/6% of their maximum Health as magic damage instead.",
+      "issue": "가장자리 여부를 `distance == isolated`로 판정했습니다. 출처에는 거리나 고립 판정이 없고, 가장자리 적은 기본 피해를 대체해 받는다고 명시되어 있습니다.",
+      "correction": "고립 조건을 제거하고 가장자리 판정은 미해결 조건으로 남기세요."
+    },
+    {
+      "id": "Zaahen.P",
+      "path": "rules.0.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Zaahen gains a stack of Determination when he hits an enemy champion with an Attack or Ability (max 12).",
+      "issue": "12는 중첩 최대치인데 이를 시전자 `hit_count`에 적용했습니다. 공격 또는 스킬 적중 횟수를 세는 조건은 원문에 없습니다.",
+      "correction": "결심 중첩 자원의 현재량이 최대 12 미만일 때로 표현하거나, 해당 자원 조건을 구조화할 수 없다면 텍스트와 갭으로 보존하세요."
+    },
+    {
+      "id": "Zaahen.P",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Zaahen gains a stack of Determination when he hits an enemy champion with an Attack or Ability (max 12).",
+      "issue": "최대 중첩 12를 중첩 획득량으로 기록해, 적중 시 한 번에 12중첩을 얻는 것처럼 표현했습니다.",
+      "correction": "획득량은 1중첩으로 기록하고, 최대 12는 중첩 자원의 상한 조건에만 적용하세요."
+    },
+    {
+      "id": "Zaahen.P",
+      "path": "rules.1.effects.0.statTo",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "He gains (1.5% ~ 2.8%) increased Attack Damage per stack.",
+      "issue": "`totalAttackDamage`로 스탯 소유 범위를 단정했지만, 원문은 증가하는 공격력의 기본/추가/전체 범위를 특정하지 않습니다. 입력의 갭도 이 불확실성을 인정합니다.",
+      "correction": "스탯 소유 범위를 미지정으로 두고 텍스트와 기존 갭을 유지하세요."
+    },
+    {
+      "id": "Zaahen.P",
+      "path": "rules.2.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "When filled with Determination, Zaahen doubles the granted Attack Damage, and if he would die, he instead enters Stasis for 4 seconds then revives with (30% ~ 75%) of his max Health.",
+      "issue": "가득 참 조건을 `hit_count == 12`로 표현했습니다. 12는 결심 최대 중첩 수이며, 적중 횟수와 결심 중첩 상태는 서로 다른 값입니다.",
+      "correction": "조건을 결심이 가득 찬 상태로 표현하거나, 구조화할 수 없다면 텍스트로 보존하세요."
+    },
+    {
+      "id": "Zaahen.P",
+      "path": "rules.3.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "When filled with Determination, Zaahen doubles the granted Attack Damage, and if he would die, he instead enters Stasis for 4 seconds then revives with (30% ~ 75%) of his max Health.",
+      "issue": "부활 조건에 `hit_count == 12`를 사용했습니다. 원문은 결심이 가득 찬 상태에서 사망할 피해를 입을 경우라고 명시하며, 적중 횟수를 조건으로 삼지 않습니다.",
+      "correction": "사망할 피해를 입는 시점의 결심 충전 상태로 조건을 표현하세요."
+    },
+    {
+      "id": "Zaahen.Q",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Healing reduced to 50% against non-champions.",
+      "issue": "비챔피언 대상일 때 회복 효과의 양을 `50%`로 기록했습니다. 원문은 회복량이 50% 감소한다고 하므로 남는 양은 50%이며, 감소율과 잔여량은 의미가 다릅니다.",
+      "correction": "50% 감소 효과로 표현하고, 결과적으로 회복량의 50%가 남는다는 점을 나타내세요."
+    },
+    {
+      "id": "Zaahen.Q",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Recast: Zaahen's next Attack deals (30/60/90/120/150 + (20/25/30/35/40% bonus Attack Damage)) bonus physical damage and Knocks the target Up for 0.75 seconds. Healing reduced to 50% against non-champions.",
+      "issue": "재사용 공격을 강화 상태가 아닌 경우에만 적용하도록 조건을 추가했습니다. 원문은 기본 강화 공격과 재사용 강화 공격을 별도 선택지로 설명하며, 이 조건은 명시하지 않습니다.",
+      "correction": "원문에 없는 activation 조건을 제거하고, 기본 사용과 재사용 효과를 각각 보존하세요."
+    },
+    {
+      "id": "Zaahen.Q",
+      "path": "rules.3.conditions.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals an additional 100% bonus damage to monsters.",
+      "issue": "몬스터 추가 피해를 기본 사용에만 적용하도록 제한했습니다. 원문은 몬스터 대상 추가 피해가 재사용 공격에는 적용되지 않는다고 한정하지 않습니다.",
+      "correction": "몬스터 추가 피해의 적용 범위를 원문이 뒷받침하는 범위로 보존하고, 재사용 공격 제외 조건을 제거하세요."
+    },
+    {
+      "id": "Zaahen.R",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Zaahen rises, gaining 50% Damage Reduction while casting.",
+      "issue": "한국어 요약은 피해 감소가 `내려찍기 전까지` 지속된다고 단정합니다. 원문은 시전 중 피해 감소라고만 하며, 내려찍기 전까지라는 종료 시점을 특정하지 않습니다.",
+      "correction": "지속 범위를 `스킬을 시전하는 동안`으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

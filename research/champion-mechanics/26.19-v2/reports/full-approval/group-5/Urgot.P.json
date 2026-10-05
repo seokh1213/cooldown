@@ -1,0 +1,209 @@
+{
+  "id": "Urgot.P",
+  "sourceHash": "f461221f4a50444a5f80e0344e75c951ff10d6c16d4c6b7b4056db1ab6ffeb23",
+  "beforeCandidateHash": "2400f1186f245b3df2b0716081dd08c764525612ed31e6ff72d0ee2e55e6ad17",
+  "candidateHash": "67139071246ada7796accbde41ef8e50f6afe45d39795af4d91b699236d1bbfb",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "6개 다리 중 대상 방향의 대포가 기본 공격/W로 발사되며 각 다리별 대기시간이라는 본문·요약의 범위를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격/W의 행위자는 시전자다. 대상을 향하는 준비된 대포 한 발의 AD%+최대HP%를 검증했으며 6을 타격 횟수에서 제외했다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격 또는 심판의 원으로 대상 적중"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "대상을 향한 다리 대포가 준비됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "2%",
+              "value": 2,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "6%",
+              "value": 6,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "30.0→2.5초는 다리별 대기시간 범위다. 내림차순을 min/max로 바꾸거나 변화 기준을 레벨로 추측하지 않았다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "해당 다리 대포가 발사됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "cooldown_seconds",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "30.0",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "2.5",
+              "value": 2.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "6은 시전자 다리 및 대포의 보유 개수로, 한 번의 피해 발동 횟수가 아니다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules",
+      "issue": "다리 보유 개수를 피해 횟수로, 계수와 대기시간 끝값을 중복 최소/최대로 기록했다.",
+      "correction": "대포 개수 별도 규칙, 계수/대기시간 범위 unknown, 발사 주체·준비 주체 caster로 수정.",
+      "sourceId": "en:body",
+      "quote": "Urgot has a cannon on each of his 6 legs."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "공격력/최대 체력 계수와 대기시간 범위의 변화 기준이 공급 본문에 없다. 레벨 증가로 확정하지 않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

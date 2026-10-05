@@ -1,0 +1,36 @@
+{
+  "id": "Fiddlesticks.R",
+  "sourceHash": "d58ec5d62aa235a091809f879777e5b385713c1a626f824b09eed67032233eba",
+  "beforeCandidateHash": "0a9453844401649a3f733123d3f63faf62165efe0fdf64ef18cbf87f37fd53d3",
+  "candidateHash": "446ec75c55a821a2710fad1e65d361324b28fa7e2e5eac6af97eb41618c24da4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "1.5초정신집중후순간이동·5초동안지역적총마법750/1250/1750+자기AP250%를확인했으며총피해를초당값으로읽지않도록명시했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 정신 집중 후 대상 지역으로 순간 이동합니다. / duration_seconds=1.5 [scalar] | nearby_enemies: 지역안적에게5초에걸쳐총750/1250/1750 + 자신의AP250% 마법피해를준다. [magic] / amount=750/1250/1750 [rank_values]; stat_coefficient=250% (caster abilityPower) [scalar]; duration_seconds=5 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.kind",
+      "issue": "순간이동을other로분류",
+      "correction": "movement",
+      "sourceId": "en:body",
+      "quote": "then teleports"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

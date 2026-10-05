@@ -1,0 +1,345 @@
+{
+  "summary": "대검을 휘둘러 물리 피해를 준다. 끝부분에 적중하면 적을 공중으로 띄우고 대신 더 큰 피해를 준다. 두 번 재사용할 수 있으며, 재사용할 때마다 범위 모양이 바뀌고 피해량은 직전 타격보다 증가한다. 미니언 피해 비율과 몬스터 대상 효과가 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대검을 내리쳐 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Aatrox slams his greatsword, dealing (10/25/40/55/70 + (60/67.5/75/82.5/90% Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "공격 범위의 끝부분에 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "공격 범위의 끝부분에 적중한 적을 공중으로 띄운다.",
+          "damageType": null,
+          "crowdControl": "knockup",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "공격 범위의 끝부분에 적중하면 기본 피해 대신 더 큰 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If they are hit on the edge, they are briefly Knocked Up and they take (17.5/43.75/70/96.25/122.5 + (105/118.125/131.25/144.375/157.5% Attack Damage)) instead."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "재사용할 때마다 공격 범위 모양이 바뀐다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "재사용 타격은 직전 타격보다 더 큰 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability can be Recast twice, each one changing shape and dealing 25% more damage than the previous one."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "미니언에게는 명시된 비율의 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (55% ~ 70%) damage to minions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "공중으로 띄움"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "몬스터를 공중으로 띄우는 지속시간이 두 배가 된다.",
+          "damageType": null,
+          "crowdControl": "knockup",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "몬스터에게 추가 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Knock Up duration against monsters is doubled and it deals 25 bonus damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "재사용 가능 횟수가 원문에 명시되어 있으나 numbers 목록에 대응하는 숫자 ID가 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability can be Recast twice"
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "재사용할 때마다 직전 타격보다 피해가 25% 증가한다고 명시되어 있지만, 해당 증가가 반복 재사용에서 누적되는 계산 방식은 구조화하지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability can be Recast twice, each one changing shape and dealing 25% more damage than the previous one."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "미니언 피해 비율이 끝부분 적중 시 적용되는 대체 피해에도 적용되는지 원문에서 구분하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If they are hit on the edge, they are briefly Knocked Up and they take (17.5/43.75/70/96.25/122.5 + (105/118.125/131.25/144.375/157.5% Attack Damage)) instead."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (55% ~ 70%) damage to minions."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "몬스터 대상 추가 피해의 정확한 적용 조건은 원문 문장만으로 확정하기 어렵다. 공중 띄우기 지속시간 효과와 함께 명시된 조건부 효과로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Knock Up duration against monsters is doubled and it deals 25 bonus damage."
+        }
+      ]
+    }
+  ]
+}

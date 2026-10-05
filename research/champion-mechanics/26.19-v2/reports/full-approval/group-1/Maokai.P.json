@@ -1,0 +1,94 @@
+{
+  "id": "Maokai.P",
+  "sourceHash": "c8b3f5f35ca0af2fe1a09447f46040b5622869e59d9aef914cb18cde5b12dfe8",
+  "beforeCandidateHash": "f93e264c26f0e78232a0c76cb582822299527737bb164bf01986555e630ecd64",
+  "candidateHash": "e760899454bb7e9db8c7eaaef5ed02c3c68213a93c4d11f5d9f0725b87d9a0b2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "다음평타Health4~12.8%회복,자기스킬사용/적챔프스킬피격4초쿨감,대형or에픽몬스터공격/스킬피격1.5초쿨감 대조했다. summary추가damage는본문수치없다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 이 지속 효과의 다음 강화 기본 공격. caster heal: 다음 강화 기본 공격은 자신의 Health4~12.8%만큼 회복한다. Health의 현재/최대 기준은 본문에 명시되지 않았다. [other n0=4%/n1=12.8% formula_components] / caster attack_modifier: 이 지속 효과의 강화 기본 공격은 추가 피해도 입힌다고 요약에 설명되어 있다. 피해량과 피해 유형은 공급되지 않았다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster cooldown_change: 스킬을 사용하면 기본 지속 효과의 재사용 대기시간이 감소합니다. [cooldown_seconds n2=4 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 enemy.target_type eq champion; caster.other eq 적 챔피언의 스킬에 맞음. caster cooldown_change: 적 챔피언의 스킬에 맞으면 기본 지속 효과의 재사용 대기시간이 감소합니다. [cooldown_seconds n2=4 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 enemy.target_type eq monster; enemy.other eq 대형 또는 에픽 몬스터; caster.other eq 해당 몬스터의 공격 또는 스킬에 맞음. caster cooldown_change: 대형 또는 에픽 몬스터의 공격이나 스킬에 맞으면 기본 지속 효과의 재사용 대기시간이 감소합니다. [cooldown_seconds n3=1.5 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.0/1/2/3/gaps",
+      "issue": "Health범위역할과기준·쿨감초amount·피격주체·무관damageTaken범위",
+      "correction": "회복Health비율구성요소/caster종류gap,cooldownSeconds/받는피격other조건",
+      "sourceId": "en:body",
+      "quote": "Maokai's next Attack restores ((4% ~ 12.8%) Health) Health."
+    },
+    {
+      "path": "rules.0.effects.1;gaps.0",
+      "issue": "요약의추가공격피해핵심효과를gap에만기록",
+      "correction": "숫자/유형미확정추가피해를강화공격효과로보존했다.",
+      "sourceId": "en:summary",
+      "quote": "Maokai's basic attack also heals him and deals additional damage on a moderate cooldown."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 281,
+      "verdict": "documented_gap",
+      "reason": "본문Health는회복비율기준이지만현재/최대종류를확정하지않는다. caster체력이라는설명과비율구성요소/gap으로보존했다."
+    },
+    {
+      "index": 282,
+      "verdict": "false_positive",
+      "reason": "대형 또는 에픽은명시적OR텍스트이다. AND로두조건을작성하지않았으므로동시충족요구가아니다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "요약의 강화 기본 공격 추가 피해를 규칙으로 복구했지만 수치와 피해 유형은 본문에 없다. 추가 피해량을 추정하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "다음 기본 공격의 회복 발동 대기시간 상태는 tooltip에 명시되지 않았습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "회복은자신의Health4~12.8%지만현재/최대체력종류는명시되지않는다.범위의선형중간값이나종류를추정하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

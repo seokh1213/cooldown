@@ -1,0 +1,104 @@
+{
+  "id": "Rengar.E",
+  "sourceHash": "a02c758e53afa169f36e2d6b2867a134a4811d598e25465223f9f4169a00a4a1",
+  "beforeCandidateHash": "34520f69b345d6b2b7727867350431a415a6cf902e1b201bfc540d96e2e09f60",
+  "candidateHash": "686e1cd9b8f4fa0e9a273c5d91dc17c1eb4c26e398ff3f2af8b5e21d9cb0cc5f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫 적중 대상 일반 물리/둔화/드러냄, 강화 대체 피해와1.75초 속박,2초 드러냄, 도약 중 시전시간 없음 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first / caster.activation neq empowered; target: 처음 맞힌 적에게 물리 피해를 준다. [physical]; 수치 amount en:body:n0=55,en:body:n1=100,en:body:n2=145,en:body:n3=190,en:body:n4=235 상수 rank_values / stat_coefficient en:body:n5=80%(백분율) caster.bonusAttackDamage formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first; target: 처음 맞힌 적의 위치를 드러낸다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first / caster.activation neq empowered; target: 처음 맞힌 적을 둔화시킨다. [slow]; 수치 amount en:body:n6=30(백분율),en:body:n7=45(백분율),en:body:n8=60(백분율),en:body:n9=75(백분율),en:body:n10=90%(백분율) 상수 rank_values / duration_seconds en:body:n11=1.75 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.activation eq empowered / target.hit_order eq first; target: 강화된 올가미가 대상에게 물리 피해를 준다. [physical]; 수치 min_amount en:body:n12=50 상수 level_range / max_amount en:body:n13=305 상수 level_range / stat_coefficient en:body:n14=80%(백분율) caster.bonusAttackDamage formula_components; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.activation eq empowered / target.hit_order eq first; target: 대상을 속박한다. [root]; 수치 duration_seconds en:body:n15=1.75 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first; target: 적의 위치를 2초 동안 드러낸다.; 수치 duration_seconds en:body:n16=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.other eq leaping; caster: 도약 중에는 시전 시간이 없다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "일반 피해·둔화가 강화에서도 누적되는 조건 및 강화 첫 대상/드러냄의 근거 범위 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Rengar throws a bola, dealing (55/100/145/190/235 + (80% bonus Attack Damage)) physical damage to the first enemy hit, revealing and Slowing them by 30/45/60/75/90% for 1.75 seconds. Max Ferocity: Deals ((50 ~ 305) + (80% bonus Attack Damage)) physical damage and Roots for 1.75 seconds. Reveals enemies for 2 seconds. Bola Strike has no cast time when leaping."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "2초 적 위치 드러냄 문구는 Max Ferocity 뒤 별도 문장으로 제시되어 일반/강화 적용 범위 추가 특정 없음; 기본 reveal과 독립적 수치가 중복 실행되지 않도록 해석 필요.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

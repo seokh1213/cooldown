@@ -1,0 +1,63 @@
+{
+  "summary": "주문력에 비례해 최대 마나가 증가하고, 추가 마나에 비례해 스킬 피해가 증가한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_conversion",
+          "subject": "caster",
+          "text": "주문력에 비례해 최대 마나가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": "abilityPower",
+          "statTo": "maxMana",
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ryze gains (10% Ability Power)max Mana."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "스킬 피해가 추가 마나에 비례해 증가하지만 피해 계수가 제공되지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "His Abilities do additional damage based on his bonus Mana."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "id": "Veigar.Q",
+  "sourceHash": "5c9addcd49c44d7e1e82732e9572f59ce44be28c172ac4f0f7cf1c5c6e309a62",
+  "beforeCandidateHash": "81606fde91c9c7aa912e6313ec41d9f61a4c2c6265e9f69f6e31b6ae9b73ac73",
+  "candidateHash": "22b53281d42660646e79fb4690961f20c6429d59f06f68d044fb596f19122435",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 4,
+  "summaryCheck": "첫2적80/120/160/200/240+AP50/55/60/65/70%마법피해,이Q킬일반1극악/대형미니언·몬스터3대체를대조했다.한국어대형3추가와영문3instead충돌은영문대체를보존하고기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이암흑에너지에맞은순서가첫번째또는두번째인적(한명만맞아도해당적포함) → target: 이Q의첫번째와두번째적중적각각에게80/120/160/200/240+자신의주문력50/55/60/65/70%마법피해를입힙니다. [magic] / amount=80/120/160/200/240 [rank_values]; stat_coefficient=50/55/60/65/70% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 kill / 조건 target target_type eq any; target other eq 대형미니언도대형몬스터도아닌적; caster other eq 이Q로해당적을처치했을때 → caster: 베이가가 극악 중첩을 얻습니다. / amount=1 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 kill / 조건 target target_type eq minion; target other present large; caster other eq 이Q로해당적을처치했을때 → caster: 이Q로대형미니언을처치하면일반1중첩대신극악3중첩을얻습니다. / amount=3 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 kill / 조건 target target_type eq monster; target other present large; caster other eq 이Q로해당적을처치했을때 → caster: 이Q로대형몬스터를처치하면일반1중첩대신극악3중첩을얻습니다. / amount=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "첫2적중순서를총hit_count<=2로대체하고2count를피해숫자에혼합했다.",
+      "correction": "첫번째또는두번째적중적범위로보존하고공격대상수를피해숫자에서제거했다.",
+      "sourceId": "en:body",
+      "quote": "magic damage to the first two enemies hit."
+    },
+    {
+      "path": "rules.1-3",
+      "issue": "fired조건은Q처치를보장하지않으며대형예외부정조건이불명확했다.",
+      "correction": "이Q로해당적처치및대형아님/대형미니언/대형몬스터분기를명확히했다.",
+      "sourceId": "en:body",
+      "quote": "If Veigar kills an enemy with this Ability"
+    },
+    {
+      "path": "gaps",
+      "issue": "대형3대체/추가언어충돌과랭크AP%단위손실이누락됐다.",
+      "correction": "두실제한계를추가했다.",
+      "sourceId": "en:body",
+      "quote": "Large minions and large monsters grant 3 stacks instead."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 598,
+      "verdict": "repaired",
+      "reason": "<=2가2미만을제외한다는지적의수학설명은틀리지만hit_count가순서를표현하지못하는실제오류는있다.첫번째/두번째적중범위로고쳤다."
+    },
+    {
+      "index": 599,
+      "verdict": "repaired",
+      "reason": "large속성부재가아니라대형미니언도대형몬스터도아닌적이라는명시적예외조건을보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "스키마hit_orderenum에는second가없다. 첫번째또는두번째적중적이라는순서범위를명시적텍스트조건으로보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "스키마에는large대상속성전용필드가없어서대형미니언/대형몬스터예외의OR제외를명시적텍스트조건으로보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "영문대형대상은3stacks instead(일반1대신3)지만한국어는3만큼추가로쌓인다고한다. 영문대체규칙을우선하고충돌을기록했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 3,
+      "reason": "unsupported_formula",
+      "detail": "50/55/60/65/70%AP의모든랭크는%계수지만frozen숫자표는마지막만percent=true이다.전체%단위를텍스트보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "4 unresolved source gaps"
+      }
+    ]
+  }
+}

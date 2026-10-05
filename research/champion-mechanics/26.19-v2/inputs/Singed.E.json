@@ -1,0 +1,482 @@
+{
+  "champion": "Singed",
+  "slot": "E",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Damages target enemy unit and flings them into the air behind Singed. If the target Singed flings lands in his Mega Adhesive, they are also rooted.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Singed flings an enemy over his shoulder, dealing (50/60/70/80/90 + (55% Ability Power)) plus 6/6.5/7/7.5/8% max Health magic damage. If Singed flings a target into his Mega Adhesive, they are Rooted for 1/1.25/1.5/1.75/2 seconds. Max Health damage is capped at 300 against minions and jungle monsters.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "적을 신지드 뒤편으로 높이 던지며 피해를 줍니다. 신지드가 뒤로 던진 대상이 초강력 접착제 위에 착지하면 속박 효과가 적용됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "신지드가 어깨 너머로 적을 던져 (50/60/70/80/90 + (55% 주문력)) + 최대 체력의 6/6.5/7/7.5/8%에 해당하는 마법 피해를 입힙니다. 신지드가 초강력 접착제 안으로 대상을 던져 넘기면 대상이 1/1.25/1.5/1.75/2초 동안 속박됩니다. 미니언과 정글 몬스터가 대상일 때 최대 체력 비례 피해는 최대 300까지 입힐 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Fling",
+      "ko": "던져넘기기"
+    },
+    "cooldownSeconds": [
+      10,
+      9.5,
+      9,
+      8.5,
+      8
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      125,
+      125,
+      125,
+      125,
+      125
+    ],
+    "cost": {
+      "values": [
+        60,
+        70,
+        80,
+        90,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "50/60/70/80/90"
+      },
+      {
+        "label": "Maximum Health Damage",
+        "values": "6%/6.5%/7%/7.5%/8%"
+      },
+      {
+        "label": "Root Duration",
+        "values": "1/1.25/1.5/1.75/2"
+      },
+      {
+        "label": "Cooldown",
+        "values": "10/9.5/9/8.5/8"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "60/70/80/90/100"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:BaseDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "BaseDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          50,
+          60,
+          70,
+          80,
+          90
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.550000011920929,
+              0.550000011920929,
+              0.550000011920929,
+              0.550000011920929,
+              0.550000011920929
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockback",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Singed"
+        },
+        {
+          "type": "root",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Singed",
+          "condition": "끈끈이 영역으로 던졌을 때"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Singed.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Singed.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 51,
+      "end": 53
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 54,
+      "end": 56
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 57,
+      "end": 59
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 60,
+      "end": 62
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 63,
+      "end": 65
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "55%",
+      "value": 55,
+      "percent": true,
+      "start": 69,
+      "end": 72
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 94,
+      "end": 95
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "6.5",
+      "value": 6.5,
+      "percent": true,
+      "start": 96,
+      "end": 99
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": true,
+      "start": 100,
+      "end": 101
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "7.5",
+      "value": 7.5,
+      "percent": true,
+      "start": 102,
+      "end": 105
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "8%",
+      "value": 8,
+      "percent": true,
+      "start": 106,
+      "end": 108
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 204,
+      "end": 205
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 206,
+      "end": 210
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 211,
+      "end": 214
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 215,
+      "end": 219
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 220,
+      "end": 221
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 262,
+      "end": 265
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 19,
+      "end": 21
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 22,
+      "end": 24
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 28,
+      "end": 30
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 31,
+      "end": 33
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "55%",
+      "value": 55,
+      "percent": true,
+      "start": 37,
+      "end": 40
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 56,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "6.5",
+      "value": 6.5,
+      "percent": true,
+      "start": 58,
+      "end": 61
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": true,
+      "start": 62,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "7.5",
+      "value": 7.5,
+      "percent": true,
+      "start": 64,
+      "end": 67
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "8%",
+      "value": 8,
+      "percent": true,
+      "start": 68,
+      "end": 70
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 122,
+      "end": 123
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 124,
+      "end": 128
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 129,
+      "end": 132
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 133,
+      "end": 137
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 138,
+      "end": 139
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 186,
+      "end": 189
+    }
+  ],
+  "sourceHash": "0f72455e0438bc323026935f25a98c16e6a52634e76d478e55da80d103736895",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

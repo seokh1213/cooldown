@@ -1,0 +1,647 @@
+{
+  "summary": {
+    "stories": 16,
+    "turns": 18,
+    "reviewedSlots": 865,
+    "judge": "none",
+    "questionHash": "10185ad6906fdd7ddc1969f4a99b6b49f161078516bc3f74ff38fa68594075a7",
+    "baselinePass": 2,
+    "variantPass": 7,
+    "improved": 5,
+    "regressed": 0,
+    "replaced": 9,
+    "scope": "Additional questions frozen before observing full-approval answers; no runtime or rubric tuning; actual app entrypoint with stored/restored dialogue; no production integration."
+  },
+  "rows": [
+    {
+      "id": "new-amumu-curse",
+      "area": "damage-trigger",
+      "turn": 1,
+      "question": "아무무 P 저주 걸린 적에게 마법 피해가 들어가면 어떻게 돼?",
+      "expected": {
+        "q": "아무무 P 저주 걸린 적에게 마법 피해가 들어가면 어떻게 돼?",
+        "require": [
+          "저주",
+          "마법",
+          "(?:추가|고정)"
+        ]
+      },
+      "baseline": {
+        "text": "**상대할 때**\n아무무는 스스로 거리를 벌리는 스킬이 없습니다. R 슬픈 미라의 저주는 아무무 주변에 터지는 광역 기절입니다. Q 붕대 던지기는 폭이 좁고 처음 맞은 대상에게서 멈춥니다.\n\n**플레이할 때**\n패시브 P 저주의 손길은 평타를 맞은 대상이 마법 피해를 더 받게 만듭니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:추가|고정)"
+        ],
+        "ms": 92.31
+      },
+      "variant": {
+        "text": "**상대할 때**\n아무무는 스스로 거리를 벌리는 스킬이 없습니다. R 슬픈 미라의 저주는 아무무 주변에 터지는 광역 기절입니다. Q 붕대 던지기는 폭이 좁고 처음 맞은 대상에게서 멈춥니다.\n\n**플레이할 때**\n패시브 P 저주의 손길은 평타를 맞은 대상이 마법 피해를 더 받게 만듭니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:추가|고정)"
+        ],
+        "source": "baseline",
+        "ms": 48.11
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-amumu-attack",
+      "area": "damage-trigger",
+      "turn": 1,
+      "question": "아무무 E는 기본 공격에 맞으면 어떻게 돼?",
+      "expected": {
+        "q": "아무무 E는 기본 공격에 맞으면 어떻게 돼?",
+        "require": [
+          "기본 공격",
+          "재사용 대기시간",
+          "감소"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 9/8/7/6/5 · 광역 · 주문력 50%",
+        "pass": false,
+        "failures": [
+          "missing:기본 공격",
+          "missing:재사용 대기시간",
+          "missing:감소"
+        ],
+        "ms": 3.24
+      },
+      "variant": {
+        "text": "아무무가 받는 물리 피해를 감소시킵니다.\n\n기본 공격에 맞음:\n아무무가 기본 공격에 맞으면 이 스킬의 재사용 대기시간이 감소합니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Amumu.E",
+        "sourceHash": "2434d8976e39caa4fc416f79d565e6208dee9dcac680456b7cb2e1a4d6a72603",
+        "candidateHash": "a01f83716785093dea07d0d5bfc9774f825e50675a96740d90525147876d8f06",
+        "ms": 5.67
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "new-ezreal-mark",
+      "area": "target-scope",
+      "turn": 1,
+      "question": "이즈리얼 W 구체는 어떤 대상에 붙어?",
+      "expected": {
+        "q": "이즈리얼 W 구체는 어떤 대상에 붙어?",
+        "require": [
+          "챔피언",
+          "구조물",
+          "에픽"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 8 · 기본 공격 강화 · 추가 공격력 100%",
+        "pass": false,
+        "failures": [
+          "missing:챔피언",
+          "missing:구조물",
+          "missing:에픽"
+        ],
+        "ms": 2.66
+      },
+      "variant": {
+        "text": "이즈리얼 W 정수의 흐름 구체:\n표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다.\n\n이즈리얼 W 정수의 흐름 구체:\n스킬로 구체를 폭발시키면 해당 스킬의 마나 소모량에 60 마나를 더한 양을 돌려받습니다.",
+        "pass": false,
+        "failures": [
+          "missing:챔피언",
+          "missing:구조물",
+          "missing:에픽"
+        ],
+        "source": "reviewed",
+        "abilityId": "Ezreal.W",
+        "sourceHash": "5288f80024fcf91c79a924b80d543c35fe7d236649c376a58247ceabe59c6b93",
+        "candidateHash": "c53c648cb283112a9a959f7df378baa4f7ca3844d4f1d02fd7ecab904141af34",
+        "ms": 3.52
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-ezreal-mark",
+      "area": "target-scope",
+      "turn": 2,
+      "question": "그럼 스킬로 구체를 폭발시키면?",
+      "expected": {
+        "q": "그럼 스킬로 구체를 폭발시키면?",
+        "require": [
+          "스킬",
+          "마나",
+          "60"
+        ]
+      },
+      "baseline": {
+        "text": "**플레이할 때**\nQ 신비한 화살이 이즈리얼의 엔진입니다. Q는 적중 시 효과가 적용되는 스킬이라, 평타에 붙는 효과가 Q에도 그대로 들어갑니다. W 정수의 흐름은 먼저 붙여 놓고 나중에 터뜨리는 스킬입니다.\n\n**상대할 때**\n이즈리얼의 도주 수단은 E 하나뿐이고 쿨이 길습니다.",
+        "pass": false,
+        "failures": [
+          "missing:마나",
+          "missing:60"
+        ],
+        "ms": 12.18
+      },
+      "variant": {
+        "text": "**플레이할 때**\nQ 신비한 화살이 이즈리얼의 엔진입니다. Q는 적중 시 효과가 적용되는 스킬이라, 평타에 붙는 효과가 Q에도 그대로 들어갑니다. W 정수의 흐름은 먼저 붙여 놓고 나중에 터뜨리는 스킬입니다.\n\n**상대할 때**\n이즈리얼의 도주 수단은 E 하나뿐이고 쿨이 길습니다.",
+        "pass": false,
+        "failures": [
+          "missing:마나",
+          "missing:60"
+        ],
+        "source": "baseline",
+        "ms": 16.02
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-ezreal-refund",
+      "area": "trigger-condition",
+      "turn": 1,
+      "question": "이즈리얼 W 마나는 언제 돌려받아?",
+      "expected": {
+        "q": "이즈리얼 W 마나는 언제 돌려받아?",
+        "require": [
+          "스킬",
+          "폭발",
+          "60"
+        ]
+      },
+      "baseline": {
+        "text": "**상대할 때**\nW 구체가 몸에 붙었다면 다음 평타나 스킬이 닿는 순간 추가 피해가 함께 터집니다. 구체가 붙은 상태에서 계속 사거리 안에 머무르면 한 번의 딜 교환이 두 배가 되므로 구체를 맞았으면 짧게라도 사거리 밖으로 빠졌다가 다시 붙습니다.",
+        "pass": false,
+        "failures": [
+          "missing:폭발",
+          "missing:60"
+        ],
+        "ms": 20.83
+      },
+      "variant": {
+        "text": "**상대할 때**\nW 구체가 몸에 붙었다면 다음 평타나 스킬이 닿는 순간 추가 피해가 함께 터집니다. 구체가 붙은 상태에서 계속 사거리 안에 머무르면 한 번의 딜 교환이 두 배가 되므로 구체를 맞았으면 짧게라도 사거리 밖으로 빠졌다가 다시 붙습니다.",
+        "pass": false,
+        "failures": [
+          "missing:폭발",
+          "missing:60"
+        ],
+        "source": "baseline",
+        "ms": 26.9
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-ezreal-minion",
+      "area": "damage-scope",
+      "turn": 1,
+      "question": "이즈리얼 R은 미니언에게도 피해가 같아?",
+      "expected": {
+        "q": "이즈리얼 R은 미니언에게도 피해가 같아?",
+        "require": [
+          "미니언",
+          "(?:감소|줄어|대신)"
+        ]
+      },
+      "baseline": {
+        "text": "이즈리얼이 거대한 에너지파를 발사하여 (350/550/750 + (100% 추가 공격력) + (110% 주문력))의 마법 피해를 입힙니다. 미니언과 에픽 몬스터를 제외한 정글 몬스터에게는 (150/225/300 + (100% 추가 공격력) + (110% 주문력))의 마법 피해를 입힙니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:감소|줄어|대신)"
+        ],
+        "ms": 2.95
+      },
+      "variant": {
+        "text": "이즈리얼이 거대한 에너지파를 발사하여 (350/550/750 + (100% 추가 공격력) + (110% 주문력))의 마법 피해를 입힙니다. 미니언과 에픽 몬스터를 제외한 정글 몬스터에게는 (150/225/300 + (100% 추가 공격력) + (110% 주문력))의 마법 피해를 입힙니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:감소|줄어|대신)"
+        ],
+        "source": "baseline",
+        "ms": 7.66
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-zilean-death",
+      "area": "timing",
+      "turn": 1,
+      "question": "질리언 R은 걸면 바로 부활해?",
+      "expected": {
+        "q": "질리언 R은 걸면 바로 부활해?",
+        "require": [
+          "(?:치명|죽을)",
+          "룬",
+          "(?:경직|부활)"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 120/90/60 · 회복 · 피해 면역 · 부활 · 주문력 200%",
+        "pass": false,
+        "failures": [
+          "missing:(?:치명|죽을)",
+          "missing:룬"
+        ],
+        "ms": 2.69
+      },
+      "variant": {
+        "text": "보호 시간 룬으로 발동한 3초 경직 상태가 끝남:\n경직 상태가 끝난 뒤 대상을 부활시킨다.\n부활한 대상의 체력을 회복시킨다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:치명|죽을)"
+        ],
+        "source": "reviewed",
+        "abilityId": "Zilean.R",
+        "sourceHash": "b79570c939922e0d8092f0a7b7e2ef55232c75e471e86eab55f5e83eca226b2b",
+        "candidateHash": "aa27299489ccab6d68015cf2b82106742c18f12d263cd68ab0977c665f04ef10",
+        "ms": 7.56
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-zilean-revive",
+      "area": "timing",
+      "turn": 1,
+      "question": "질리언 R 부활은 언제 일어나?",
+      "expected": {
+        "q": "질리언 R 부활은 언제 일어나?",
+        "require": [
+          "3초",
+          "경직",
+          "끝",
+          "부활"
+        ]
+      },
+      "baseline": {
+        "text": "부활은 카서스나 코그모처럼 사망 시 효과가 있는 챔피언과 잘 맞았습니다. (사망 시 효과가 진행 중인 챔피언은 그 스킬이 끝날 때까지 살아 있는 것으로 처리되므로, 완전히 사망한 뒤에야 부활을 쓸 수 있었습니다.)\n다른 이동 속도나 기동성 효과를 부활과 함께 쓰면 훨씬 먼 거리를 아주 빠르게 이동할 수 있었습니다. (장화 부여 효과인 수호자는 부활과 특히 잘 맞았습니다. 부활한 플레이어는 거의 항상 기지에 있게 되는데, 그것이 평소에는 만족하기 어려운 수호자의 발동 조건이었기 때문입니다.)",
+        "pass": false,
+        "failures": [
+          "missing:3초",
+          "missing:경직"
+        ],
+        "ms": 10.51
+      },
+      "variant": {
+        "text": "부활은 카서스나 코그모처럼 사망 시 효과가 있는 챔피언과 잘 맞았습니다. (사망 시 효과가 진행 중인 챔피언은 그 스킬이 끝날 때까지 살아 있는 것으로 처리되므로, 완전히 사망한 뒤에야 부활을 쓸 수 있었습니다.)\n다른 이동 속도나 기동성 효과를 부활과 함께 쓰면 훨씬 먼 거리를 아주 빠르게 이동할 수 있었습니다. (장화 부여 효과인 수호자는 부활과 특히 잘 맞았습니다. 부활한 플레이어는 거의 항상 기지에 있게 되는데, 그것이 평소에는 만족하기 어려운 수호자의 발동 조건이었기 때문입니다.)",
+        "pass": false,
+        "failures": [
+          "missing:3초",
+          "missing:경직"
+        ],
+        "source": "baseline",
+        "ms": 10.89
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-trundle-theft",
+      "area": "stat-owner",
+      "turn": 1,
+      "question": "트런들 R은 상대 능력치만 낮추는 거야?",
+      "expected": {
+        "q": "트런들 R은 상대 능력치만 낮추는 거야?",
+        "require": [
+          "방어력",
+          "마법 저항력",
+          "(?:얻|훔)",
+          "절반"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 120/100/80 · 적 마법 저항력 감소 · 적 방어력 감소 · 최대 체력 비례 피해 · 최대 체력 30%",
+        "pass": false,
+        "failures": [
+          "missing:(?:얻|훔)",
+          "missing:절반"
+        ],
+        "ms": 3.88
+      },
+      "variant": {
+        "text": "시전 시 · 대상 종류: 챔피언 · 적 챔피언:\n총 피해는 대상 최대 체력의 (20/25/30% + 시전자 주문력 100당 2%)에 해당하는 마법 피해입니다. 총량의 절반을 즉시 주고 나머지 절반은 5초 흡수 동안 적용합니다.\n대상의 방어력을 총40%감소시킵니다. 총 감소량의 절반은 즉시, 나머지 절반은5초흡수동안 적용됩니다.\n대상에서 훔친 방어력을 얻습니다. 총40%의 절반은 즉시, 나머지 절반은5초흡수동안 얻습니다.\n대상의 마법 저항력을 총40%감소시킵니다. 총 감소량의 절반은 즉시, 나머지 절반은5초흡수동안 적용됩니다.\n대상에서 훔친 마법 저항력을 얻습니다. 총40%의 절반은 즉시, 나머지 절반은5초흡수동안 얻습니다.\n흡수는 5초 동안 진행됩니다. 피해와 저항력 감소 총량의 절반은 즉시, 나머지 절반은 이 시간 동안 적용됩니다.\n대상의 체력을 흡수합니다. 구체적인 회복량의 피해 경감 전후 기준은 공급 원문에 명시되지 않습니다.\n\n대상 종류: 챔피언 · 해당 궁극기 흡수가 끝난 대상:\n흡수가 끝난 뒤 방어력과 마법 저항력 감소 효과가 추가로 유지됩니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Trundle.R",
+        "sourceHash": "f12c7d3b15f3c94aa7d5de61d64247ad0a5d8a801247863bb9a48abed986e339",
+        "candidateHash": "b6dcc1c15c9a4333f8ad2e7fb8991626708e02ed44cb55c118aabc28e7834598",
+        "ms": 3.76
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "new-karthus-single",
+      "area": "entity-count",
+      "turn": 1,
+      "question": "카서스 Q가 적 하나에만 맞으면?",
+      "expected": {
+        "q": "카서스 Q가 적 하나에만 맞으면?",
+        "require": [
+          "하나",
+          "(?:더 큰|대신)",
+          "마법 피해"
+        ]
+      },
+      "baseline": {
+        "text": "재충전 1 · 광역 · 주문력 35%",
+        "pass": false,
+        "failures": [
+          "missing:하나",
+          "missing:(?:더 큰|대신)",
+          "missing:마법 피해"
+        ],
+        "ms": 2.29
+      },
+      "variant": {
+        "text": "1 · 이번 폭발에 맞은 적의 수를 세는 조건:\n폭발이 적 하나에게만 적중하면 해당 적에게 대신 더 큰 마법 피해를 입힙니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Karthus.Q",
+        "sourceHash": "ba4c970685cfdcd272bdfa3d9bc3c37cdd1e6fdfa7617c36d357a1ce597010cf",
+        "candidateHash": "5b5deedadd00902c2f4a0cfa067227d1d08e0bf012714d61b79f1d9f37ed337d",
+        "ms": 4.26
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "new-karthus-aura",
+      "area": "ongoing-effect",
+      "turn": 1,
+      "question": "카서스 E를 켜고 계속 있으면 어떻게 돼?",
+      "expected": {
+        "q": "카서스 E를 켜고 계속 있으면 어떻게 돼?",
+        "require": [
+          "(?:초당|매초|초.*반복)",
+          "마법 피해",
+          "마나"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 0.5 · 광역 · 주문력 20%",
+        "pass": false,
+        "failures": [
+          "missing:(?:초당|매초|초.*반복)",
+          "missing:마법 피해",
+          "missing:마나"
+        ],
+        "ms": 2.4
+      },
+      "variant": {
+        "text": "true:\n오라 사용 중 카서스의 마나가 빠르게 소모됩니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:초당|매초|초.*반복)",
+          "missing:마법 피해"
+        ],
+        "source": "reviewed",
+        "abilityId": "Karthus.E",
+        "sourceHash": "ecbea0c0207572c7eaa212cb61339675bf20399c91c7714c7604399538e44961",
+        "candidateHash": "a8a5659a5f33befd49f5731d83874c9dbf8dca71422673bce20bb82dd2f20734",
+        "ms": 3.84
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-blitz-phase",
+      "area": "self-effect",
+      "turn": 1,
+      "question": "블리츠크랭크 W가 끝나면 어떻게 돼?",
+      "expected": {
+        "q": "블리츠크랭크 W가 끝나면 어떻게 돼?",
+        "require": [
+          "(?:자신|본인)",
+          "둔화",
+          "30%",
+          "1.5초"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 15 · 둔화 · 공격 속도 증가 · 이동 속도 증가",
+        "pass": false,
+        "failures": [
+          "missing:(?:자신|본인)",
+          "missing:30%",
+          "missing:1.5초"
+        ],
+        "ms": 2.3
+      },
+      "variant": {
+        "text": "이 W의 5초 폭주 효과가 끝남:\nW 폭주 효과가 끝나면 자신이 1.5초 동안 30% 둔화됩니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Blitzcrank.W",
+        "sourceHash": "a75ac4be97ef71c31d3a11d8e2fd9f37e355092d22534ca47c3c3a6a1cfd7348",
+        "candidateHash": "8387a6e8fa90c329093d46c1fbeb1dbeff681721544208856a1340c1df247e01",
+        "ms": 2.93
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "new-blitz-passive",
+      "area": "ready-condition",
+      "turn": 1,
+      "question": "블리츠크랭크 R은 언제 평타에 표식이 붙어?",
+      "expected": {
+        "q": "블리츠크랭크 R은 언제 평타에 표식이 붙어?",
+        "require": [
+          "(?:재사용 대기.*아님|준비|사용 가능)",
+          "표식"
+        ]
+      },
+      "baseline": {
+        "text": "표식과 돌진은 스킬 사용 불가 상태에서는 쓸 수 없습니다. (돌진은 속박이나 이동 불가 상태에서 쓸 수 없지만 표식은 쓸 수 있습니다.)\n표식과 돌진은 둘 다 스킬 피해를 주므로 스킬 효과를 발동시킵니다.\n표식은 사미라 W 원형 검무, 야스오 W 바람 장막, 주문 방어막에 막히지 않습니다.\n표식이 거는 약화 효과는 정화로 제거되지 않습니다.\n돌진하는 동안 대상이 움직이면 시전자가 그 위치를 따라갑니다. (추적 거리에 상한이 없어서 대상에게 닿을 때까지 추적을 멈추지 않습니다.)\n돌진의 이동 속도는 2500입니다.\n돌진은 도착 시점에 대상이 대상 지정 불가 상태여도 돌진이 끝나면 항상 피해를 줍니다.\n표식은 맞은 적에게 약화 효과를 걸며, 이 효과는 적대적 약화 효과를 모두 없애는 수단으로 제거됩니다. 대표적인 예가 부활입니다.\n돌진 중의 대상 지정 불가 상태는 날아오는 투사체를 없애지 못하며 포탑에도 영향을 주지 않습니다.\n시전자는 돌진해 도착한 대상을 자동으로 공격합니다.\n표식을 다시 걸면 약화 효과의 지속 시간은 갱신되지만, 돌진을 쓸 수 있는 시간은 각자 3초 그대로입니다.\n돌진이 정상적으로 끝나거나 재사용 시간이 지나면 주문 칸이 표식으로 돌아가고, 그때부터 표식의 재사용 대기 시간이 돕니다. (돌진이 도중에 끊겨도 재사용 가능 시간이 앞당겨 끝나지는 않습니다.)\n표식이 걸린 대상이 대상 지정 불가 상태여도 돌진은 쓸 수 있습니다.\n칼바람 나락의 지역 효과가 소환사 주문 가속을 70 주기 때문에 이 주문의 재사용 대기 시간은 자동으로 48초까지 줄어듭니다. (다른 소환사 주문 가속을 더하면 더 줄일 수 있습니다.)",
+        "pass": true,
+        "failures": [],
+        "ms": 8.43
+      },
+      "variant": {
+        "text": "표식과 돌진은 스킬 사용 불가 상태에서는 쓸 수 없습니다. (돌진은 속박이나 이동 불가 상태에서 쓸 수 없지만 표식은 쓸 수 있습니다.)\n표식과 돌진은 둘 다 스킬 피해를 주므로 스킬 효과를 발동시킵니다.\n표식은 사미라 W 원형 검무, 야스오 W 바람 장막, 주문 방어막에 막히지 않습니다.\n표식이 거는 약화 효과는 정화로 제거되지 않습니다.\n돌진하는 동안 대상이 움직이면 시전자가 그 위치를 따라갑니다. (추적 거리에 상한이 없어서 대상에게 닿을 때까지 추적을 멈추지 않습니다.)\n돌진의 이동 속도는 2500입니다.\n돌진은 도착 시점에 대상이 대상 지정 불가 상태여도 돌진이 끝나면 항상 피해를 줍니다.\n표식은 맞은 적에게 약화 효과를 걸며, 이 효과는 적대적 약화 효과를 모두 없애는 수단으로 제거됩니다. 대표적인 예가 부활입니다.\n돌진 중의 대상 지정 불가 상태는 날아오는 투사체를 없애지 못하며 포탑에도 영향을 주지 않습니다.\n시전자는 돌진해 도착한 대상을 자동으로 공격합니다.\n표식을 다시 걸면 약화 효과의 지속 시간은 갱신되지만, 돌진을 쓸 수 있는 시간은 각자 3초 그대로입니다.\n돌진이 정상적으로 끝나거나 재사용 시간이 지나면 주문 칸이 표식으로 돌아가고, 그때부터 표식의 재사용 대기 시간이 돕니다. (돌진이 도중에 끊겨도 재사용 가능 시간이 앞당겨 끝나지는 않습니다.)\n표식이 걸린 대상이 대상 지정 불가 상태여도 돌진은 쓸 수 있습니다.\n칼바람 나락의 지역 효과가 소환사 주문 가속을 70 주기 때문에 이 주문의 재사용 대기 시간은 자동으로 48초까지 줄어듭니다. (다른 소환사 주문 가속을 더하면 더 줄일 수 있습니다.)",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 9.24
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-blitz-passive",
+      "area": "ready-condition",
+      "turn": 2,
+      "question": "그럼 R 쿨타임 중에는?",
+      "expected": {
+        "q": "그럼 R 쿨타임 중에는?",
+        "require": [
+          "(?:재사용 대기|쿨타임)",
+          "(?:아님|안|않|준비|사용 가능)"
+        ]
+      },
+      "baseline": {
+        "text": "어느 챔피언의 어떤 스킬을 말하나요?",
+        "pass": false,
+        "failures": [
+          "missing:(?:재사용 대기|쿨타임)",
+          "missing:(?:아님|안|않|준비|사용 가능)"
+        ],
+        "ms": 6.94
+      },
+      "variant": {
+        "text": "어느 챔피언의 어떤 스킬을 말하나요?",
+        "pass": false,
+        "failures": [
+          "missing:(?:재사용 대기|쿨타임)",
+          "missing:(?:아님|안|않|준비|사용 가능)"
+        ],
+        "source": "baseline",
+        "ms": 6.57
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-blitz-monster",
+      "area": "shield-exception",
+      "turn": 1,
+      "question": "블리츠크랭크 R로 몬스터 보호막도 파괴해?",
+      "expected": {
+        "q": "블리츠크랭크 R로 몬스터 보호막도 파괴해?",
+        "require": [
+          "몬스터",
+          "(?:제외|파괴하지|안|않)"
+        ]
+      },
+      "baseline": {
+        "text": "또한 적의 보호막도 파괴합니다. 몬스터를 상대로는 보호막을 파괴하지 않습니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.2
+      },
+      "variant": {
+        "text": "시전 시 · 대상 제외: 몬스터:\n주변 적의 보호막을 파괴합니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Blitzcrank.R",
+        "sourceHash": "b43d8606629142e62445b68e85e55218f567503468f17b9862e2e51fc656d3a2",
+        "candidateHash": "edf1e0de5cd5afb70f0c6b93e3b1adb257005f1801b1b80451b9c417bc72eaa4",
+        "ms": 3.42
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-kaisa-plasma",
+      "area": "stack-condition",
+      "turn": 1,
+      "question": "카이사 P 플라즈마가 언제 터져?",
+      "expected": {
+        "q": "카이사 P 플라즈마가 언제 터져?",
+        "require": [
+          "4중첩",
+          "공격",
+          "소모"
+        ]
+      },
+      "baseline": {
+        "text": "**플레이할 때**\n모든 계산의 중심은 패시브 플라즈마입니다. W 공허추적자는 사거리가 매우 길지만 마나를 크게 먹고 빗나가면 라인전이 그대로 손해입니다.\n\n**상대할 때**\n카이사의 R은 플라즈마 표식이 남은 대상에게만 날아갑니다. 패시브 플라즈마는 체력이 깎여 있을수록 아프게 터집니다.",
+        "pass": false,
+        "failures": [
+          "missing:4중첩",
+          "missing:공격",
+          "missing:소모"
+        ],
+        "ms": 16.47
+      },
+      "variant": {
+        "text": "기본 공격으로 대상에게4초 지속 플라즈마 중첩을 적용한다.\n기본 공격 시 마법 피해를 추가로 입힌다. 피해는 기본 피해와 중첩당 추가 피해로 구성된다.\n\n공격 전에 플라즈마가4중첩 쌓인 대상:\n플라즈마를 소모한다.\n대상의 잃은 체력에 기본 비율 + 카이사 주문력100당 비율을 곱한 마법 피해를 입힌다. 잃은 체력 수식은 구성요소로만 보존한다.\n\n대상 종류: 챔피언 · 카이사 주변의 아군 · 해당 아군이 이동불가 효과를 적용한 적 챔피언:\n플라즈마를 1중첩 적용한다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Kaisa.P",
+        "sourceHash": "42e807c28bef13a07aee24209f32a525e16fdb079ad544f2dc86b0256d25bfbb",
+        "candidateHash": "6814a334dc3180dcdd91b06a92a36f31c4d70d14db6266c231d96503ee0958d4",
+        "ms": 17.42
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "new-belveth-permanent",
+      "area": "unit",
+      "turn": 1,
+      "question": "벨베스 P 중첩은 공속을 얼마나 올려?",
+      "expected": {
+        "q": "벨베스 P 중첩은 공속을 얼마나 올려?",
+        "require": [
+          "0.10.*2.00%",
+          "영구"
+        ]
+      },
+      "baseline": {
+        "text": "벨베스의 상점 가격은 블루 정수 1,575 또는 790 RP입니다.\n\n공식 롤 위키 기준(2026-09-26 확인)",
+        "pass": false,
+        "failures": [
+          "missing:0.10.*2.00%",
+          "missing:영구"
+        ],
+        "ms": 31.3
+      },
+      "variant": {
+        "text": "벨베스의 상점 가격은 블루 정수 1,575 또는 790 RP입니다.\n\n공식 롤 위키 기준(2026-09-26 확인)",
+        "pass": false,
+        "failures": [
+          "missing:0.10.*2.00%",
+          "missing:영구"
+        ],
+        "source": "baseline",
+        "ms": 19.6
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "new-udyr-refund",
+      "area": "hit-versus-attack",
+      "turn": 1,
+      "question": "우디르 P 각성 쿨은 공격하면 언제 돌려받아?",
+      "expected": {
+        "q": "우디르 P 각성 쿨은 공격하면 언제 돌려받아?",
+        "require": [
+          "적중",
+          "각성",
+          "재사용 대기시간"
+        ]
+      },
+      "baseline": {
+        "text": "우디르의 스킬별 재사용 대기시간입니다. Q 야생 발톱 6초, W 강철 갑옷 6초, E 불길 쇄도 6초, R 날개 돋친 폭풍 6초.",
+        "pass": false,
+        "failures": [
+          "missing:적중",
+          "missing:각성"
+        ],
+        "ms": 13.62
+      },
+      "variant": {
+        "text": "우디르의 스킬별 재사용 대기시간입니다. Q 야생 발톱 6초, W 강철 갑옷 6초, E 불길 쇄도 6초, R 날개 돋친 폭풍 6초.",
+        "pass": false,
+        "failures": [
+          "missing:적중",
+          "missing:각성"
+        ],
+        "source": "baseline",
+        "ms": 18.14
+      },
+      "improved": false,
+      "regressed": false
+    }
+  ]
+}

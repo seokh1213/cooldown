@@ -1,0 +1,147 @@
+{
+  "id": "Zed.R",
+  "sourceHash": "c530e7b89fd6e423228184cce62a0dfddf85526ca42bfa229a5f6874bb72e3e0",
+  "beforeCandidateHash": "d0c22d44fdbeffd0f2f2ebf026bc3ca3456b457fff36d3179255b5bf93977a78",
+  "candidateHash": "0172bb4d4cb8e9c55a2647b51bc9bd8910ceaffd1267f2a9f9760882b425651a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "대상지정불가/적챔피언돌진표식,3초후100%AD물리+표식중모든피해25/40/55%반복; 그림자7.5초/교환/창끝후1.5초, 이미맞은공격예외 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 제드가 대상으로 지정할 수 없는 상태가 됩니다.; 수치 없음; flags 없음 | caster: 제드가 적 챔피언에게 돌진해 표식을 남깁니다.; 수치 없음; flags 없음 | target: 적 챔피언에게 표식을 남깁니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: expiry 사건의 행위자 target; 조건 target.mark eq 이 죽음의 표식이 부여된 대상 / target.time eq 표식 부여 후3초가 지나 발동; target: 표식이 발동할 때 공격력에 비례한 물리 피해를 입힙니다. [physical]; 수치 stat_coefficient en:body:n1=100%(백분율) caster.totalAttackDamage scalar; flags 없음 | target: 표식 활성 중 제드가 이 대상에게 입힌 모든 피해의25/40/55%를 반복 피해로 가합니다. 반복피해 종류는 공급원문에 특정되지 않습니다.; 수치 damage_multiplier en:body:n2=25(백분율),en:body:n3=40(백분율),en:body:n4=55%(백분율) 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq 적 챔피언; caster: 돌진은 뒤에 그림자를 남기며7.5초 유지됩니다.; 수치 duration_seconds en:body:n5=7.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 summon.activation eq 이 R그림자의 재사용 가능 창; caster: 이 R그림자와 제드의 위치를 바꿉니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.activation eq 이 R의 대상지정불가 상태; caster: 대상지정불가 중에는 이미 적중한 적 공격/스킬을 제외하고 적의 공격/스킬에 영향을 받지 않습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: expiry 사건의 행위자 caster; 조건 caster.time eq 이 R 재사용 가능 창이 끝남; summon: R그림자는 재사용 가능 창이 끝난 후에도 추가1.5초 유지됩니다. 이 원문과 앞의7.5초의 합계/창길이를 임의 계산하지 않습니다.; 수치 duration_seconds en:body:n6=1.5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "누락된그림자·재사용·대상지정불가예외·추가유지 복원, 표식3초 조건과 배율역할 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Zed becomes Untargetable and dashes to an enemy champion, marking them. After 3 seconds, the mark triggers, dealing (100% Attack Damage) physical damage and repeating 25/40/55% of all damage dealt to the target by Zed while the mark was active. The dash leaves a Shadow behind for 7.5 seconds. Zed can Recast this Ability to switch positions with this Shadow. Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been hit by them. The Shadow remains for an extra 1.5 seconds after the recast window ends."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 709,
+      "verdict": "false_positive",
+      "reason": "같은cast규칙의 세 효과는 원문 한 흐름과 일치하며 별도적중/도달 판정을 단정하지 않는다. 제안 스스로도 추가적중조건을 요구할 수 없다고 한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "표식이 반복하는 피해의 피해 종류가 원문에서 특정되지 않아 damageType으로 분류할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "피해분율25/40/55%는 명시되어 있으나 모든피해의 집계 범위/완화전후 등 세부 계산은 공급원문에 없다. 그림자7.5초와재사용창종료후1.5초의 결합시간도 임의 계산하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

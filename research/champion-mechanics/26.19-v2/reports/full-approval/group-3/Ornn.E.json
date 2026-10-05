@@ -1,0 +1,90 @@
+{
+  "id": "Ornn.E",
+  "sourceHash": "0c30a3e0ba123e3403c8d113b2702a75bd74fde03828b741a6c2c5092d55129c",
+  "beforeCandidateHash": "b2fccd604c77da543c0c4ed55d20d3769b047e3e5f56dbef3808d95607b72138",
+  "candidateHash": "41a00c61d1eb5ba073d2684d2ef97ea3bfeaa782fa85cf9db8d3cbda6b0ce1e4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "돌진물리피해80~260+자기추가방어력40%/추가MR40%·지형충돌1.25초공중띄우기·미피격대상에만동일피해·용암기둥/적지형파괴를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 오른이 돌진한다. | enemy: 돌진이 적에게 물리 피해를 입힙니다. [physical] / amount=80/125/170/215/260 [rank_values]; stat_coefficient=40% (caster bonusArmor) [formula_components]; stat_coefficient=40% (caster bonusMagicResist) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 돌진 중 지형에 충돌 → enemy: 충격파가 적을 띄웁니다. [knockup] / duration_seconds=1.25 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other → unknown: 돌진이 용암 기둥과 적이 만든 지형을 파괴합니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 돌진 중 지형에 충돌; secondary_targets other eq 돌진에 맞지 않은 적 → secondary_targets: 충격파가 돌진에 맞지 않은 적에게 돌진과 같은 물리 피해를 적용합니다. [physical] / amount=80/125/170/215/260 [rank_values]; stat_coefficient=40% (caster bonusArmor) [formula_components]; stat_coefficient=40% (caster bonusMagicResist) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.1",
+      "issue": "충격파피해에돌진미적중조건누락·넉업과조건혼합",
+      "correction": "미적중적피해와전원넉업분리",
+      "sourceId": "en:body",
+      "quote": "applies the same damage to those not hit by the charge."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "지형 충돌 충격파의 넉업 대상과 돌진에 맞지 않은 적에게 피해를 적용하는 대상 범위가 더 구체적으로 명시되지 않습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

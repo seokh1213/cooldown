@@ -1,0 +1,321 @@
+{
+  "id": "Trundle.Q",
+  "sourceHash": "4b6257b00b58032c409f83e8540a9555adf1e9e598c8a46aa190fc1f52e3452b",
+  "beforeCandidateHash": "95b0aa7fbdc7674a72db5ca7c8c0a47fdb85c64fcd314713d0ab61708d7a5ee8",
+  "candidateHash": "a671367db85c0667015d8a294270a2c216e22c344127726d3b717d3adf417fa4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "강화다음공격10~90+전체AD115~155%총피해,75%짧은둔화,자기AD20~40/대상AD10~20감소5초,주문효과와25사거리 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화다음평타 총물리피해를 replaces_base로 구분,75%잠깐둔화와피해시주문효과 및이번공격range25."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화평타 적중후5초 자기공격력증가20~40와대상공격력감소10~20은 서로다른값/수혜자."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0",
+      "issue": "다음 공격의 총피해를 추가피해로 해석할 여지",
+      "correction": "총피해문장과replaces_base 명시",
+      "sourceId": "en:body",
+      "quote": "Trundle's next Attack deals (10/30/50/70/90 + (115/125/135/145/155% Attack Damage)) physical damage"
+    },
+    {
+      "path": "rules.0/1.conditions",
+      "issue": "강화조건은있으나피격대상과결과발동조건이구조에서포괄적",
+      "correction": "다음강화공격의적대상적중상황명시",
+      "sourceId": "en:body",
+      "quote": "then Trundle gains 20/25/30/35/40 Attack Damage for 5 seconds and the enemy loses 10/12.5/15/17.5/20 Attack Damage for the same duration."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "트런들의 다음 공격이 물리 피해와 둔화를 주며, 트런들의 공격력을 높이고 대상의 공격력을 낮춥니다. 해당 공격은 피해를 입힐 때 주문 효과를 발동하고 공격 사거리가 증가합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "다음 강화 공격이 적 대상에 적중함"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "Q로 강화된 다음 기본 공격의 총 물리 피해입니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "잠시 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "이 공격은 피해를 입힐 때 주문 효과를 발동합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "attack_modifier",
+              "subject": "caster",
+              "text": "이번 공격의 사거리가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "distance_units",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Trundle's next Attack deals (10/30/50/70/90 + (115/125/135/145/155% Attack Damage)) physical damage and briefly Slows by 75%, then Trundle gains 20/25/30/35/40 Attack Damage for 5 seconds and the enemy loses 10/12.5/15/17.5/20 Attack Damage for the same duration. This Ability triggers spell effects upon dealing damage. Trundle gains 25 attack range for this attack."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "다음 강화 공격이 적 대상에 적중함"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격력이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "totalAttackDamage",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "target",
+              "text": "공격력이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "totalAttackDamage",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "target",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Trundle's next Attack deals (10/30/50/70/90 + (115/125/135/145/155% Attack Damage)) physical damage and briefly Slows by 75%, then Trundle gains 20/25/30/35/40 Attack Damage for 5 seconds and the enemy loses 10/12.5/15/17.5/20 Attack Damage for the same duration. This Ability triggers spell effects upon dealing damage. Trundle gains 25 attack range for this attack."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

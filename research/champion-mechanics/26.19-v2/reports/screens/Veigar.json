@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Veigar.E",
+      "sourceHash": "25cca18eadaa0a8dbc5b604c14015263d540b924bc17927c0548e6e4257aefaa",
+      "candidateHash": "146069bd19f25cd5ad6db44d0b8829c095cfccce1d46de66e6ce40a59c1f405c"
+    },
+    {
+      "id": "Veigar.P",
+      "sourceHash": "e23268485fa52f025012c3146c8cf139d6d9080064781cb4e1003b051976156d",
+      "candidateHash": "665b63e638277248c417643f63547165831017ad56aadb46b4ffe9bd68ddf098"
+    },
+    {
+      "id": "Veigar.R",
+      "sourceHash": "030ff30922ec2013e68021248425bef92b2c1751e1bad96bc23e746818626ac6",
+      "candidateHash": "b9e852fe0562956405d0e65511b2241ccc14945efb81df31d46cdac84b540265"
+    },
+    {
+      "id": "Veigar.W",
+      "sourceHash": "86e7962122ab6829783ed69339922798a4a0094bcba7c3f85c5d2ee2a10d3117",
+      "candidateHash": "0338ad900ea79c98d653b94dc64e070705f3d0386accbdf4b73cce2f59bb3a10"
+    },
+    {
+      "id": "Veigar.Q",
+      "sourceHash": "5c9addcd49c44d7e1e82732e9572f59ce44be28c172ac4f0f7cf1c5c6e309a62",
+      "candidateHash": "81606fde91c9c7aa912e6313ec41d9f61a4c2c6265e9f69f6e31b6ae9b73ac73"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Veigar.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "dealing (80/120/160/200/240 + (50/55/60/65/70% Ability Power)) magic damage to the first two enemies hit.",
+      "issue": "`hit_count <= 2`는 첫 두 적중 대상이라는 의미를 보존하지 않고, 적중 대상이 2명 미만인 경우도 조건에서 제외합니다. 피해 설명은 두 대상 모두에게 피해를 준다고만 하여 순서 제한과 일치하지 않습니다.",
+      "correction": "두 피해 대상을 첫 두 적중 적으로 표현하고, 2명 미만 적중 시에도 적중한 대상에게 피해를 주는 규칙으로 바꾸거나 해당 조건을 제거하세요."
+    },
+    {
+      "id": "Veigar.Q",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Large minions and large monsters grant 3 stacks instead.",
+      "issue": "대형 미니언·대형 몬스터를 일반 처치 규칙에서 제외하는 조건이 `target.other`에 `large minion or large monster`가 absent인지로 되어 있습니다. 이 표현은 대형 여부를 나타내는 속성의 부재 여부와 일치하지 않을 수 있어, 원문의 `instead` 예외를 잘못 판정할 수 있습니다.",
+      "correction": "대상 종류와 대형 여부를 명시적으로 판별하는 조건으로 일반 1중첩 규칙에서 대형 미니언과 대형 몬스터를 제외하세요."
+    }
+  ],
+  "notes": []
+}

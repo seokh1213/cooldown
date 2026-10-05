@@ -1,0 +1,35 @@
+{
+  "id": "Leblanc.P",
+  "sourceHash": "8863d094066f4f3a54c6872a15d2e66670f77af60b9270d2afdad153014e80d8",
+  "beforeCandidateHash": "4ce3576c2b7b5335f0e94fdba5129664bf647d7e7caa18bfdd8c149c67c36f7a",
+  "candidateHash": "c01843e853c0f429b623f25624495725c2396e4dac0abced432c4c9bb0bf27ed",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "체력 40% 미만으로 하락할 때 1초 투명, 최대 8초 무해한 분신, Alt 이동을 확인했다. 하락 원인을 피격으로 한정하지 않았다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.health_threshold lt n0=40%; caster.other eq 체력이 기준 미만으로 내려감. caster visibility: 투명 상태가 된다. [duration_seconds n1=1 scalar] / summon summon: 피해를 입히지 않는 분신을 생성한다. [duration_seconds n2=8 scalar] / summon movement: 르블랑은 Alt 키로 분신을 움직일 수 있다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger,conditions",
+      "issue": "체력 하락 원인을 damage_taken으로 한정",
+      "correction": "체력이 40% 아래로 내려가는 사건으로 표현했다.",
+      "sourceId": "en:body",
+      "quote": "When LeBlanc drops below 40% Health, she becomes Invisible for 1 second and creates a harmless clone for 8 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

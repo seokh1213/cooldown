@@ -1,0 +1,93 @@
+{
+  "id": "Teemo.P",
+  "sourceHash": "08cdd91249c3a45bfa5c9f7599cf6804fd4bf6c30a2933c25f9c2814a48756f6",
+  "beforeCandidateHash": "6504687585029b51cd9d05400dddbed1c2806854e67b2f0deb8bc61ac26282b7",
+  "candidateHash": "32e05675fa1a8def6eeb47507464580b1fc328b17260b366dc8c4fb36f36f064",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "1.5초정지/그동안무피해면투명(요약무행동),수풀내이동중투명진입/유지,수풀밖다시움직이면투명끝,이패시브투명이탈시AS20~80%5초를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other eq 1.5초동안가만히서있고행동하지않은경우; caster other eq 그1.5초동안피해를입지않은경우 → caster: 1.5초정지/무피해뒤투명해지며수풀밖에서다시움직이면끝납니다. 수풀안이동예외는별도규칙입니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other eq 수풀안에있을때 → caster: 수풀안에서는이동중에도이패시브의투명상태에진입하고유지할수있습니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 이패시브의투명상태에서벗어날때 → caster: 티모의 공격 속도가 증가합니다. / amount=20%/80% [level_range]; duration_seconds=5 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "1.5초의측정상태가일반time이고무행동요약과수풀이동예외연결이불완전했다.",
+      "correction": "1.5초정지/그동안무피해를각조건으로보존했다.",
+      "sourceId": "en:body",
+      "quote": "If Teemo stands still for 1.5 seconds without being damaged"
+    },
+    {
+      "path": "rules.1",
+      "issue": "요약이명시한수풀이동중투명진입이누락됐다.",
+      "correction": "수풀내이동중진입및유지를둘다보존했다.",
+      "sourceId": "en:summary",
+      "quote": "can enter and maintain his Invisibility while moving."
+    },
+    {
+      "path": "rules.2",
+      "issue": "투명이탈사건이transform/형태변환으로선언됐다.",
+      "correction": "이패시브투명이탈other사건으로정정했다.",
+      "sourceId": "en:body",
+      "quote": "Upon exiting this Invisibility"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 533,
+      "verdict": "repaired",
+      "reason": "1.5초정지와그동안무피해를분리된명시적시간앵커텍스트조건으로표현했다."
+    },
+    {
+      "index": 534,
+      "verdict": "repaired",
+      "reason": "투명이탈전용enum이없어other사건/명시적투명이탈조건으로보존했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

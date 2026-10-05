@@ -1,0 +1,409 @@
+{
+  "champion": "Jhin",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Jhin channels, transforming Whisper into a shoulder-mounted mega-cannon. It is able to fire 4 super shots at extreme range that pierce through minions and monsters, but stop on the first champion impacted. Whisper cripples enemies hit, which slows them and deals execute damage. The 4th shot is perfectly crafted, epically powerful, and guaranteed to critically strike.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Jhin sets up and channels, enabling him to fire 4 super shots, each dealing between (64/128/192 + (25% Attack Damage)) and (256/512/768 + (100% Attack Damage)) physical damage to the first champion hit based on their percentage missing health and Slowing them by 80% for 0.5 seconds. The fourth shot critically strikes for 200% damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "진이 정신 집중을 해 속삭임을 견착식 저격포로 변신시킵니다. 엄청난 사거리에서 4발의 강력한 탄환을 발사하며, 탄환은 미니언과 몬스터는 관통하지만 챔피언에 맞으면 정지합니다. 적중당한 적은 둔화되며 잃은 체력에 비례한 추가 피해를 입습니다. 특별히 완벽하게 세공된 4번째 탄환은 더욱 강력하여 항상 치명타가 적용됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "진이 자세를 잡고 정신을 집중해 4발의 강력한 탄환을 발사하며, 각 탄환은 처음 적중한 챔피언에게 대상이 잃은 체력에 비례해 (64/128/192 + (25% 공격력)) ~ (256/512/768 + (100% 공격력))의 물리 피해를 입히고 0.5초 동안 80% 둔화시킵니다. 4번째 총탄은 치명타가 발동되며 200%만큼 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Curtain Call",
+      "ko": "커튼 콜"
+    },
+    "cooldownSeconds": [
+      120,
+      105,
+      90
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      25000,
+      25000,
+      25000
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "64/128/192"
+      },
+      {
+        "label": "Cooldown",
+        "values": "120/105/90"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:DamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "DamageCalc",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          64,
+          128,
+          192
+        ],
+        "terms": [
+          {
+            "stat": "totalAttackDamage",
+            "coefficientsByRank": [
+              0.25,
+              0.25,
+              0.25
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Jhin.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Jhin.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Jhin.R",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 92,
+      "end": 93
+    },
+    {
+      "id": "en:summary:n1",
+      "sourceId": "en:summary",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 283,
+      "end": 284
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 48,
+      "end": 49
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "64",
+      "value": 64,
+      "percent": false,
+      "start": 85,
+      "end": 87
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "128",
+      "value": 128,
+      "percent": false,
+      "start": 88,
+      "end": 91
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "192",
+      "value": 192,
+      "percent": false,
+      "start": 92,
+      "end": 95
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 99,
+      "end": 102
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "256",
+      "value": 256,
+      "percent": false,
+      "start": 124,
+      "end": 127
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "512",
+      "value": 512,
+      "percent": false,
+      "start": 128,
+      "end": 131
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "768",
+      "value": 768,
+      "percent": false,
+      "start": 132,
+      "end": 135
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 139,
+      "end": 143
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 263,
+      "end": 266
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 271,
+      "end": 274
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "200%",
+      "value": 200,
+      "percent": true,
+      "start": 323,
+      "end": 327
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 44,
+      "end": 45
+    },
+    {
+      "id": "ko:summary:n1",
+      "sourceId": "ko:summary",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 148,
+      "end": 149
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 18,
+      "end": 19
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "64",
+      "value": 64,
+      "percent": false,
+      "start": 71,
+      "end": 73
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "128",
+      "value": 128,
+      "percent": false,
+      "start": 74,
+      "end": 77
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "192",
+      "value": 192,
+      "percent": false,
+      "start": 78,
+      "end": 81
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 85,
+      "end": 88
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "256",
+      "value": 256,
+      "percent": false,
+      "start": 98,
+      "end": 101
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "512",
+      "value": 512,
+      "percent": false,
+      "start": 102,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "768",
+      "value": 768,
+      "percent": false,
+      "start": 106,
+      "end": 109
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 113,
+      "end": 117
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 136,
+      "end": 139
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 144,
+      "end": 147
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 156,
+      "end": 157
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "200%",
+      "value": 200,
+      "percent": true,
+      "start": 174,
+      "end": 178
+    }
+  ],
+  "sourceHash": "47da4d453d366f7a828625d4187faa3e601f2789d167fd7aa330931de9745c59",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

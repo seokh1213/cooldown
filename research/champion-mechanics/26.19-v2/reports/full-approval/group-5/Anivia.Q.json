@@ -1,0 +1,391 @@
+{
+  "id": "Anivia.Q",
+  "sourceHash": "4ff609dac5c374c85ceb3bf178069b2d54204534897aed8f108731d9b458ca8c",
+  "beforeCandidateHash": "f742f80f172d15a6e875c8ee3ef21583973d248e19a9076e00971eba3a04ac7c",
+  "candidateHash": "f33e1db71377d9621612e9b7397a32645fb0af48419ed786ff83f3976e58181f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "얼음 비행 적중과 폭발 적중을 분리하고 냉각3초, 두 마법 피해식, 폭발1.1~1.5초 기절, 비행 중 재사용 조기 폭발을 양언어 요약까지 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전 즉시 전 적이 아니라 비행 얼음에 맞은 적에게 마법 피해50/70/90/110/130+AP25%, 냉각3초와 둔화20/30/40%가 적용된다. 냉각 표식도 보존했다.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "발사된 얼음의 비행 경로에 맞은 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "폭발 범위 적에게 마법 피해60/95/130/165/200+AP45%와 기절1.1/1.2/1.3/1.4/1.5초. 요약은 폭발 일반 효과를 명시하므로 end-range만 조건으로 제한하지 않고 조기 폭발과 공유한다.",
+      "verifiedConditions": [
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "얼음이 사거리 끝 도달 또는 비행 중 재사용으로 폭발함"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "얼음의 폭발 범위 안에 있는 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17",
+            "en:body:n18",
+            "en:body:n19"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "95",
+              "value": 95,
+              "percent": false
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "165",
+              "value": 165,
+              "percent": false
+            },
+            {
+              "id": "en:body:n19",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n20"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n20",
+              "raw": "45%",
+              "value": 45,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n10",
+            "en:body:n11",
+            "en:body:n12",
+            "en:body:n13",
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "1.1",
+              "value": 1.1,
+              "percent": false
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "1.2",
+              "value": 1.2,
+              "percent": false
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "1.3",
+              "value": 1.3,
+              "percent": false
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "1.4",
+              "value": 1.4,
+              "percent": false
+            },
+            {
+              "id": "en:body:n14",
+              "raw": "1.5",
+              "value": 1.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아직 얼음이 비행 중인 동안 caster가 재사용하여 일찍 폭발시킨다. text 상태를 time<=로 실행하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "발사한 얼음이 아직 비행 중"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0;rules.1;rules.2;gaps",
+      "issue": "비행 피해가 cast, 폭발 효과가 end-range만 조건이고 재사용 상태를 time<=로 기록함",
+      "correction": "비행 적중·폭발 일반 효과·비행 중 재사용 조건을 정정하고 냉각과 단계 불명 gap을 보완했다.",
+      "sourceId": "en:summary",
+      "quote": "When the sphere explodes it does moderate damage in a radius, stunning anyone in the area."
+    },
+    {
+      "path": "summary",
+      "issue": "수정 규칙은 모든 폭발을 적용하지만 요약은 사거리 끝 폭발만 서술함",
+      "correction": "비행 적중과 사거리 끝/조기 재사용 폭발의 범위를 모두 명시했다.",
+      "sourceId": "en:summary",
+      "quote": "When the sphere explodes it does moderate damage in a radius, stunning anyone in the area."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 14,
+      "verdict": "repaired",
+      "reason": "비행 경로 적중이 효과 조건이므로 cast를 ability_hit로 바꾸고 적중 조건을 명시했다."
+    },
+    {
+      "index": 15,
+      "verdict": "repaired",
+      "reason": "양언어 요약에 폭발 일반의 피해/기절이 있고 본문에 재사용 조기 폭발이 있다. 동일 얼음 폭발 효과를 양 사건에 연결하고 단일 문장만 보아 만든 gap을 삭제했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "둔화20/30/40%의 세 단계가 어떤 스킬 랭크/상태에 대응하는지 공급문은 명시하지 않습니다. 모든 값은 공통 퍼센트 단위이며 lexical 표 앞부분 percent=false를 절대값으로 실행하지 않습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

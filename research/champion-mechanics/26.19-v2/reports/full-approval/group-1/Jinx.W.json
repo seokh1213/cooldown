@@ -1,0 +1,43 @@
+{
+  "id": "Jinx.W",
+  "sourceHash": "d518a23c7be46f2dd03d5c57c869e4bd98b649d3127cc479a08740559c74b5fd",
+  "beforeCandidateHash": "ee05ab6e06176340c3bc8c18db3a0e1f885b81e19ee624eb622d8c33410ca0b7",
+  "candidateHash": "6bec26c4278a680d38e669676dcab7b7561af51b3aef3a7afb542fc7294a5c52",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "firstenemyphysical10~210+총AD140%,slow40~80%/reveal2초와AS시전시간단축을 대조했다. ko본문은slow2초를명시한다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 공격 속도가 증가할수록 시전 시간이 감소합니다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_order eq first. target damage physical: 처음 적중한 적에게 물리 피해를 입힙니다. [amount n0=10/n1=60/n2=110/n3=160/n4=210 rank_values; stat_coefficient n5=140% scalar caster.totalAttackDamage] / target crowd_control slow: 처음 적중한 적을 둔화시킵니다. [amount n6=40%/n7=50%/n8=60%/n9=70%/n10=80% rank_values; duration_seconds n11=2 scalar] / target visibility: 처음 적중한 적의 위치를 드러냅니다. [duration_seconds n11=2 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.trigger/slow",
+      "issue": "적중행위자target·slow2초누락",
+      "correction": "caster및ko본문근거로slowduration2초",
+      "sourceId": "ko:body",
+      "quote": "2초 동안 40/50/60/70/80% 둔화시키며 위치를 드러냅니다."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "id": "Zilean.P",
+  "sourceHash": "41bbcea4791fb5975098ed6f3a57c2359c20e45711d479b4a37f5ced1d32e7d8",
+  "beforeCandidateHash": "830d78add53892ecded6ed3757b9fde4992d3477e5a77a57fd4efc1261585321",
+  "candidateHash": "853b57344245bbd2ca8f9ee6ef5770892cb4ff19c2b5191daa42cb871c2b256f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "시간을 경험치로 보존, 자기 보존량이 아군 레벨업에 충분할 때 우클릭 전달, 전달량과 같은 자기 경험치 획득을 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문의stores time as Experience를 본인 자원 보존 규칙에 복원. 축적 속도나 상한을 추측하지 않음."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster 보존 경험치 충분+아군 우클릭 조건에서 아군 전달/자신 같은량 경험치 획득."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions",
+      "issue": "보존량 조건 주체가 ally이고 우클릭 발동 조건이 없음",
+      "correction": "caster 자원 조건과 아군 우클릭 activation 추가",
+      "sourceId": "en:body",
+      "quote": "When he has enough Experience to finish an ally's level up, he can right-click them to impart it."
+    },
+    {
+      "path": "rules.0",
+      "issue": "경험치 보존 자체가 rules에서 누락",
+      "correction": "본문 첫 문장의 자원 보존 규칙 복원",
+      "sourceId": "en:body",
+      "quote": "Zilean stores time as Experience and can grant it to his allies."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 725,
+      "verdict": "repaired",
+      "reason": "other는 허용된 우클릭 전용 enum이 없어 유지하되 아군 우클릭 activation과 자기 보존 경험치 충분 조건을 추가해 사건을 특정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "질리언은 경험치를 보존하고, 아군의 레벨을 올릴 만큼 모이면 우클릭으로 아군에게 전달한다. 전달한 만큼의 경험치를 질리언도 얻는다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "시간을 경험치 형태로 보존해 아군에게 건넬 수 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zilean stores time as Experience and can grant it to his allies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "resource",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "아군의 레벨을 마칠 만큼 보존 경험치가 충분함"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "경험치를 건넬 아군을 우클릭"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "ally",
+              "text": "질리언이 우클릭한 아군에게 보존한 경험치를 전달한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "질리언은 아군에게 전달한 만큼의 경험치를 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When he has enough Experience to finish an ally's level up, he can right-click them to impart it. Zilean receives as much Experience as he gives."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "id": "Nunu.R",
+  "sourceHash": "cc675586abb5b7098ae160f8412a5660f1a6996b9ac1323c2ccfb2b500c7e53e",
+  "beforeCandidateHash": "a81accc99134fad8893ee1a68e287c834a721f3122c8f818237a87b4160212c6",
+  "candidateHash": "1cdaf426092d2db3a02a93436198287503d6f706b59049826601d8b1c7a7a335",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "최대 3초 정신 집중, 범위 내 50%에서 95%로 증가하는 둔화, 집중 중 보호막과 종료 후 3초 감소, 종료 시 집중 시간별 최대 피해, 재사용 종료를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. nearby_enemies: 최대 해당 시간(초) 동안 눈보라를 정신 집중하며 범위 안의 적을 둔화시킨다. 둔화 비율은 정신 집중 중 초기량에서 최대량까지 증가한다. (slow); amount=50%  scalar, max_amount=95%  scalar, other=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 누누와 윌럼프가 눈보라가 지속되는 동안 보호막을 얻습니다. 보호막은 이후 3초에 걸쳐 서서히 사라집니다.; amount=65/75/85  rank_values, stat_coefficient=30/40/50% caster의 bonusHealth formula_components, stat_coefficient=150% caster의 abilityPower formula_components, other=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 눈보라가 끝남 적용. nearby_enemies: 눈보라가 끝나면 눈보라 범위 안의 적에게 정신 집중 시간에 따라 최대 수식까지의 마법 피해를 입힌다. (magic); max_amount=625/925/1275  formula_components, stat_coefficient=300% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 별도 조건 없이 적용. caster: 재사용하면 눈보라를 일찍 끝냅니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.parameters.2",
+      "issue": "정신 집중 최대 시간을 고정 둔화 지속시간으로 표기",
+      "correction": "최대 정신 집중 시간으로 표현",
+      "sourceId": "en:body",
+      "quote": "Nunu and Willump channel a powerful blizzard for up to 3 seconds."
+    },
+    {
+      "path": "rules.1.parameters.3",
+      "issue": "종료 후 감소 시간을 보호막 획득 지속시간으로 표기",
+      "correction": "other 역할과 종료 후 감소 텍스트 보존",
+      "sourceId": "en:body",
+      "quote": "before decaying over 3 seconds afterwards."
+    },
+    {
+      "path": "rules.2",
+      "issue": "종료 원인을 임의로 제한하며 최대 피해 계수 선형화 위험",
+      "correction": "모든 눈보라 종료 조건 및 최대 수식 구성요소 보존",
+      "sourceId": "en:body",
+      "quote": "When the blizzard ends, it detonates, dealing up to (625/925/1275 + (300% Ability Power)) magic damage based on channel time."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 358,
+      "verdict": "repaired",
+      "reason": "3초는 최대 정신 집중 시간으로 보존했다."
+    },
+    {
+      "index": 359,
+      "verdict": "repaired",
+      "reason": "3초는 종료 후 보호막 감소 시간임을 분리했다."
+    },
+    {
+      "index": 360,
+      "verdict": "repaired",
+      "reason": "종료 원인 열거를 제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "눈보라 피해와 집중 시간 사이의 구체적인 계산식은 제시되지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "둔화 증가의 시간별 계산 방식과 보호막을 얻는 정확한 시점은 상세히 명시되지 않았습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

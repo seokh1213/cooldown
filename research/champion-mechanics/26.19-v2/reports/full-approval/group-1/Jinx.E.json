@@ -1,0 +1,70 @@
+{
+  "id": "Jinx.E",
+  "sourceHash": "74c7f8f92793ccd416d3aa236a9402c9287f213b479f10e78a864a5cbdfb21a1",
+  "beforeCandidateHash": "00b97a08e5f162681e81309e83d9d61684fd7229d22160899708d3ac586a693b",
+  "candidateHash": "4174526a9a5bad22d12f82bf496e0bf86e48cd42b38de0b37ea71b5aa4957aec",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "3地뢰5초,챔피언접촉1.5초root/주변magic90~290+AP100%,5초만료폭발summary와knockdown원문을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. summon summon: 지뢰를 던집니다. 지뢰는 지정된 시간 동안 유지됩니다. [count n0=3 scalar; duration_seconds n1=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.enter_area; 조건 target.target_type eq champion. target crowd_control root: 지뢰에 닿은 적 챔피언을 속박합니다. [duration_seconds n2=1.5 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 지뢰가 적 챔피언 접촉 또는5초 만료로 폭발. nearby_enemies damage magic: 지뢰가 폭발하면 주변 적에게 마법 피해를 입힙니다. [amount n3=90/n4=140/n5=190/n6=240/n7=290 rank_values; stat_coefficient n8=100% scalar caster.abilityPower] flags=per_target"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. enemy crowd_control knockdown: 이 스킬은 적을 쓰러뜨립니다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2/3",
+      "issue": "피해사건actor및5초만료폭발범위미보존",
+      "correction": "지뢰폭발caster other OR조건/knockdowncaster와enemy",
+      "sourceId": "en:summary",
+      "quote": "snare grenades that explode after 5 seconds, lighting enemies on fire."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 143,
+      "verdict": "false_positive",
+      "reason": "summary는5초후폭발도명시하므로피해를챔피언접촉에만제한하라는제안은본문/summary전체보다좁다. 접촉또는5초만료폭발을구조적으로보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "넉다운 대상의 범위와 적용 시점은 원문에서 구체적으로 특정되지 않습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "id": "Qiyana.W",
+  "sourceHash": "5719dfb72f870f58fab4c0f2899c3ffd6cc80920b73dab63778f60b7fe3f7de6",
+  "beforeCandidateHash": "9975b16d8c79fbbd47a3b4d75599fc26b59723d68db653fa7413799c097ecb78",
+  "candidateHash": "81c2223acddc448f0776099114a34e71b3f30dd097d8bbccbb9fea837a07053e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "원소보유AS15~35%/공격추가마법8~40+AP45%+추가AD20%·비전투대응지형MS3~11%·지형돌진원소획득/Q초기화를확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster form present 무기에 원소 강화 → caster: 공격 속도가 증가합니다. / amount=15/20/25/30/35% (caster attackSpeed) [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster form present 무기에 원소 강화; caster activation eq 전투에서 벗어나 있음; caster distance present 대응 지형 근처 → caster: 전투에서 벗어나 대응 지형 근처에 있으면 이동 속도가 증가합니다. / amount=3/5/7/9/11% (caster moveSpeed) [rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 키아나가 가까운 수풀, 지형 또는 강을 향해 돌진하고 해당 지형의 원소를 무기에 부여합니다. | caster: 원소의 분노 / 이쉬탈의 칼날 재사용 대기시간을 초기화합니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster form present 무기에 원소 강화 → target: 기본 공격이 추가 마법 피해를 줍니다. [magic] / amount=8/16/24/32/40 [rank_values]; stat_coefficient=45% (caster abilityPower) [scalar]; stat_coefficient=20% (caster bonusAttackDamage) [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1",
+      "issue": "기본공격추가피해가passive발동과혼합",
+      "correction": "원소보유공격트리거로분리",
+      "sourceId": "en:body",
+      "quote": "her Attacks deal an additional"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 384,
+      "verdict": "false_positive",
+      "reason": "현재draft.summary는기본공격추가피해로이미한정한다.오류는공급source.summary와본문의차이이며source_conflictgap으로기록했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "전투에서 벗어난 상태를 허용된 condition enum으로 직접 표현할 수 없어 activation 텍스트로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "en/ko요약은공격과스킬이추가피해라고하지만본문은Attacks/기본공격만명시한다.본문기준기본공격추가마법피해로한정한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

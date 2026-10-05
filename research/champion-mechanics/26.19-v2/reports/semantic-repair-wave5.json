@@ -1,0 +1,626 @@
+{
+  "task": "semantic-repair-wave5",
+  "sourceReview": "semantic-review-wave5.json",
+  "summary": {
+    "findingCount": 27,
+    "resolved": 27,
+    "declined": 0,
+    "candidateCount": 15,
+    "validatedCount": 15,
+    "finalReviewCorrections": 14
+  },
+  "candidateHashes": {
+    "Jayce.P": "88599c4dcdab64702b3d4060c559c6b4f1d91df0d79be6c3565f31ed78c74b7c",
+    "Jayce.Q": "0495bf6b42577a2d49dcee66a67e80b75fc66409df74ffce210a0ba605c5840d",
+    "Jayce.W": "c055f96be3adc6843793cc43dba56e840cd7d49261985de54451c0007fc47720",
+    "Jayce.E": "d662897e2c36ab9b58288c19c66c34d5cc0c5f09643064d546a978107554f441",
+    "Jayce.R": "189f17007711e6b917b3281f74b74fa3af7776197db632c7c5d80252b76f18d0",
+    "Nidalee.P": "7a4e818c002ccd3ab43cbe5a54a1256e1927616cc52ae8d1a1c24e7e5dc2b95d",
+    "Nidalee.Q": "25dbd0215bd35fb61b50895ef9fe705da9254307eecdcfa618622b6208b07ef1",
+    "Nidalee.W": "df6124a32b8d45ff19c681f625e527e0d2d526147d4aaedffe7a1713b5a3f88e",
+    "Nidalee.E": "19c0f42eeaba15ccb2385ff052902adcc8c2b1205e77841cd24478d4faf89999",
+    "Nidalee.R": "7b40fe011c794208f86f3c7ea79e1f74729d6cebecb860e3e05e4796e4af32f3",
+    "Gnar.P": "8179a565adf08b4a7001549f08d51fd287a05be4b228aaedbc57b6d861875eba",
+    "Gnar.Q": "32406cb77ac2dcb9b4840d28a85ccbab177dad5ce1658ffeb693cb65f1c30e25",
+    "Gnar.W": "c89ffcfbcfff1a7c6cd3a113435afe49a645d8f4813a62cc89b49f3f72e777e8",
+    "Gnar.E": "306ffd8af1e7fe09958e1226c755b1da10f1169065f4a81d5a638d858cb62eea",
+    "Gnar.R": "68be25dfa5333d9e8e1848eaa402f25e2bc1a4bd50948e9a7b496a348ac1f430"
+  },
+  "findings": [
+    {
+      "id": "Jayce.Q",
+      "ruleIndex": 2,
+      "path": "rules[2].trigger",
+      "severity": "medium",
+      "issue": "Cannon projectile damage is attached to cast without a hit predicate. The source describes first-enemy impact or path-end detonation, which the current rule does not distinguish.",
+      "sourceId": "form:B:en",
+      "quote": "physical damage to the first enemy hit and all surrounding enemies.",
+      "shortSourceQuote": "physical damage to the first enemy hit and all surrounding enemies.",
+      "correction": "Keep projectile release under cast, and represent damage at impact/detonation with the first enemy and surrounding recipients. Preserve path-end detonation from en:summary as retained text without inventing a timing value.",
+      "status": "resolved",
+      "resolution": "Projectile damage is now on impact, with first-hit scope on the primary target and nearby recipients represented separately. Path-end detonation remains source-supported retained text via en:summary.",
+      "candidateHash": "0495bf6b42577a2d49dcee66a67e80b75fc66409df74ffce210a0ba605c5840d"
+    },
+    {
+      "id": "Jayce.Q",
+      "ruleIndex": 4,
+      "path": "rules[4].effects[0].subject",
+      "severity": "high",
+      "issue": "Gate-enhanced replacement damage has subject nearby_enemies only, while the source applies the increased orb damage to both the first enemy and surrounding enemies. Ordinary first-target damage in rules[2] has no corresponding enhanced first-target replacement.",
+      "sourceId": "form:B:en",
+      "quote": "Firing this orb through Acceleration Gate increases the range, speed and raises the damage to (112/169.4/226.8/284.2/341.6/399 + (182% bonus Attack Damage)).",
+      "shortSourceQuote": "Firing this orb through Acceleration Gate increases the range, speed and raises the damage to (112/169.4/226.8/284.2/341.6/399 + (182% bonus Attack Damage)).",
+      "correction": "Represent enhanced replacement damage for target and surrounding/secondary enemies, with matching recipients to the ordinary branch. Keep caster bonusAttackDamage and replaces_base; preserve gate passage, range, and projectile-speed changes.",
+      "status": "resolved",
+      "resolution": "Added enhanced replacement damage for first target and secondary recipients, both gated by Acceleration Gate passage and preserving bonus AD ownership.",
+      "candidateHash": "0495bf6b42577a2d49dcee66a67e80b75fc66409df74ffce210a0ba605c5840d"
+    },
+    {
+      "id": "Jayce.Q",
+      "ruleIndex": 3,
+      "path": "rules[3].conditions[0].subject",
+      "severity": "medium",
+      "issue": "The cannon monster bonus is limited to target being a monster, although the orb also damages surrounding enemies. A surrounding jungle monster is not represented by this primary-target guard; the hammer bonus has the same recipient mismatch.",
+      "sourceId": "form:B:en",
+      "quote": "Deals 10 bonus damage to jungle monsters.",
+      "shortSourceQuote": "Deals 10 bonus damage to jungle monsters.",
+      "correction": "Scope the bonus per damaged jungle monster, including eligible surrounding recipients. Keep the primary and secondary subjects distinct and use the appropriate form-specific 10 ref; do not add the monster bonus to non-monsters.",
+      "status": "resolved",
+      "resolution": "Separated per-recipient jungle-monster bonus for primary and secondary damaged recipients in both Hammer and Cannon forms.",
+      "candidateHash": "0495bf6b42577a2d49dcee66a67e80b75fc66409df74ffce210a0ba605c5840d"
+    },
+    {
+      "id": "Jayce.W",
+      "ruleIndex": 2,
+      "path": "rules[2].effects[0].parameters",
+      "severity": "high",
+      "issue": "The cannon attack modifier carries the full 70/78/86/94/102/110% rank sequence as bare amounts and also carries 110% as an unconditional scalar AD coefficient. This fixes every rank to the final-rank coefficient or duplicates it. The gap falsely claims only the final numeric ref is available; all six refs exist.",
+      "sourceId": "form:B:en",
+      "quote": "These Attacks deal (70/78/86/94/102/110% Attack Damage) physical damage.",
+      "shortSourceQuote": "These Attacks deal (70/78/86/94/102/110% Attack Damage) physical damage.",
+      "correction": "Use one rank_values stat_coefficient with form:B:en:n1 through n6 and caster totalAttackDamage. Remove the redundant bare percentage amount vector and fixed 110% coefficient; correct the obsolete missing-ref gap. Preserve the next-three-attacks allowance and maximum attack-speed benefit.",
+      "status": "resolved",
+      "resolution": "Replaced the loose rank amount plus duplicated scalar coefficient with rank_values totalAttackDamage coefficient using all six existing number refs; removed the obsolete gap.",
+      "candidateHash": "c055f96be3adc6843793cc43dba56e840cd7d49261985de54451c0007fc47720"
+    },
+    {
+      "id": "Jayce.E",
+      "ruleIndex": 2,
+      "path": "rules[2].effects[1]",
+      "severity": "high",
+      "issue": "Gate creation and the conditional ally speed benefit share the cast trigger without an ally-pass-through condition. The speed effect is therefore unconditional on gate deployment, while the source grants it to allied champions that pass through the gate.",
+      "sourceId": "form:B:en",
+      "quote": "Move Speed decaying over 3 seconds to allied champions that pass through it.",
+      "shortSourceQuote": "Move Speed decaying over 3 seconds to allied champions that pass through it.",
+      "correction": "Split gate deployment (caster cast, 4-second lifetime) from the ally entering/passing through the gate (ally enter_area plus champion and gate-contact predicates). Retain the 35/40/45/50/55/60% speed and 3-second decay for that recipient.",
+      "status": "resolved",
+      "resolution": "Split gate summon on cast from ally champion speed on entering/passing through the gate; retained 4-second gate and decaying 3-second speed effect.",
+      "candidateHash": "d662897e2c36ab9b58288c19c66c34d5cc0c5f09643064d546a978107554f441"
+    },
+    {
+      "id": "Nidalee.P",
+      "ruleIndex": 1,
+      "path": "rules[1].conditions",
+      "severity": "medium",
+      "issue": "The directional brush-speed branch omits the active brush buff/window condition. It also drops the visible-target and 1400-range qualifiers explicitly supplied by the English summary, with no retained uncertainty or source note.",
+      "sourceId": "en:summary",
+      "quote": "Moving through brush increases Nidalee's Move Speed by 10% for 2 seconds, increased to 30% toward visible enemy champions within 1400 range.",
+      "shortSourceQuote": "Moving through brush increases Nidalee's Move Speed by 10% for 2 seconds, increased to 30% toward visible enemy champions within 1400 range.",
+      "correction": "Scope 30% to the active two-second brush benefit, movement toward the enemy champion, visibility=visible, and the supplied distance bound. Cite the summary for its extra qualifiers or record the source scope difference explicitly; do not grant 30% on entering an arbitrary area.",
+      "status": "resolved",
+      "resolution": "Added active 2-second brush-bonus window and visible champion within 1400 range conditions; summary evidence supports the extra qualifiers.",
+      "candidateHash": "7a4e818c002ccd3ab43cbe5a54a1256e1927616cc52ae8d1a1c24e7e5dc2b95d"
+    },
+    {
+      "id": "Nidalee.P",
+      "ruleIndex": 4,
+      "path": "rules[4].conditions",
+      "severity": "high",
+      "issue": "Hunted is represented as mark=empowered. The same rule applies a toward-the-target condition to both the ordinary 10% benefit and the directional 30% benefit, removing the ordinary Hunted movement-speed benefit unless moving toward the target.",
+      "sourceId": "en:body",
+      "quote": "While an enemy is Hunted, they are revealed with True Sight and Nidalee gains 10% Move Speed, increased to 30% Move Speed toward the Hunted enemy.",
+      "shortSourceQuote": "While an enemy is Hunted, they are revealed with True Sight and Nidalee gains 10% Move Speed, increased to 30% Move Speed toward the Hunted enemy.",
+      "correction": "Use the explicit Hunted mark. Split ordinary 10% while a target is Hunted from directional 30% toward that same Hunted target; represent 30% as replacing the ordinary speed benefit rather than an additional 30%.",
+      "status": "resolved",
+      "resolution": "Changed mark from empowered to textual Hunted and split unconditional 10% while Hunted from 30% while moving toward the same Hunted target.",
+      "candidateHash": "7a4e818c002ccd3ab43cbe5a54a1256e1927616cc52ae8d1a1c24e7e5dc2b95d"
+    },
+    {
+      "id": "Nidalee.Q",
+      "ruleIndex": 0,
+      "path": "rules[0].effects[0].parameters",
+      "severity": "medium",
+      "issue": "The distance-scaled damage effect has minimum/maximum base amounts but two unqualified scalar AP coefficients (50% and 162.5%) in the same effect. Their minimum versus maximum roles are lost and the structured parameter list can imply both coefficients apply together.",
+      "sourceId": "form:A:en",
+      "quote": "increased up to (227.5/292.5/357.5/422.5/487.5 + (162.5% Ability Power)) magic damage based on distance flown.",
+      "shortSourceQuote": "increased up to (227.5/292.5/357.5/422.5/487.5 + (162.5% Ability Power)) magic damage based on distance flown.",
+      "correction": "Associate 50% AP with the minimum endpoint and 162.5% AP with the maximum endpoint, using min_amount/max_amount stat-bearing parameters or an explicit retained endpoint representation. Preserve distance dependence without inventing its intermediate formula or adding both endpoint coefficients.",
+      "status": "resolved",
+      "resolution": "Kept minimum and maximum endpoint coefficients explicit as unknown-shaped AP ratio parameters with endpoint text; did not infer intermediate distance formula.",
+      "candidateHash": "25dbd0215bd35fb61b50895ef9fe705da9254307eecdcfa618622b6208b07ef1"
+    },
+    {
+      "id": "Nidalee.Q",
+      "ruleIndex": 2,
+      "path": "rules[2].effects[0].parameters[0]",
+      "severity": "medium",
+      "issue": "30% increased damage is stored as a scalar damage_multiplier=30%, which does not distinguish an increase by 30% from dealing 30% of base damage.",
+      "sourceId": "form:B:en",
+      "quote": "If the enemy was Hunted, deals 30% increased damage.",
+      "shortSourceQuote": "If the enemy was Hunted, deals 30% increased damage.",
+      "correction": "Preserve 30% as the increase amount in text/other or an unknown formula representation, and state that it increases the empowered Q damage. Do not treat it as a 0.3 total-damage multiplier or invent a 130% numeric ref.",
+      "status": "resolved",
+      "resolution": "Removed damage_multiplier=30%; retained the 30% increased damage as an additive increase amount in text/other effect, with uncertainty preserved.",
+      "candidateHash": "25dbd0215bd35fb61b50895ef9fe705da9254307eecdcfa618622b6208b07ef1"
+    },
+    {
+      "id": "Nidalee.W",
+      "ruleIndex": 0,
+      "path": "rules[0].effects[0].parameters[0]",
+      "severity": "high",
+      "issue": "The trap lifetime source is 2 minutes, but its numeric ref is placed under duration_seconds, asserting a two-second lifetime. The effect text omits the original unit.",
+      "sourceId": "form:A:en",
+      "quote": "Nidalee places an invisible trap for 2 minutes.",
+      "shortSourceQuote": "Nidalee places an invisible trap for 2 minutes.",
+      "correction": "Retain the two-minute lifetime explicitly in text and an other/unknown parameter with a unit-conversion gap. Do not use the raw 2 ref as seconds or invent a new 120 ref outside the frozen number catalog.",
+      "status": "resolved",
+      "resolution": "Retained raw catalog ref only as other and stated 2 minutes in effect text; added a unit conversion gap instead of claiming two seconds.",
+      "candidateHash": "df6124a32b8d45ff19c681f625e527e0d2d526147d4aaedffe7a1713b5a3f88e"
+    },
+    {
+      "id": "Nidalee.W",
+      "ruleIndex": 2,
+      "path": "rules[2].effects[0].parameters",
+      "severity": "medium",
+      "issue": "The simultaneous trap capacity range is encoded as min_amount=4 and max_amount=10, which loses that these are bounds on maximum active-trap capacity rather than a required minimum number of active traps.",
+      "sourceId": "form:A:en",
+      "quote": "(4 ~ 10) traps may be active at once.",
+      "shortSourceQuote": "(4 ~ 10) traps may be active at once.",
+      "correction": "Represent the range as storage_cap using the supplied endpoint refs and retain that it limits simultaneous active traps. Do not infer exact intermediate capacities or require at least four active traps.",
+      "status": "resolved",
+      "resolution": "Changed trap bounds to storage_cap refs and clarified that they bound simultaneous active-trap capacity.",
+      "candidateHash": "df6124a32b8d45ff19c681f625e527e0d2d526147d4aaedffe7a1713b5a3f88e"
+    },
+    {
+      "id": "Nidalee.W",
+      "ruleIndex": 4,
+      "path": "rules[4].effects[0].parameters[0].role",
+      "severity": "medium",
+      "issue": "The cooldown-to values 3/2.5/2/1.5 seconds are stored as generic amount values. The same unit is lost in the Hunted pounce branch at rules[5].",
+      "sourceId": "form:B:en",
+      "quote": "Killing a unit in Cougar Form reduces this Ability's Cooldown to 3/2.5/2/1.5 seconds.",
+      "shortSourceQuote": "Killing a unit in Cougar Form reduces this Ability's Cooldown to 3/2.5/2/1.5 seconds.",
+      "correction": "Use cooldown_seconds for both rank sequences in rules[4] and rules[5]. Preserve that cooldown is reduced to those values, not by those values, and keep the Cougar-form kill and Hunted-pounce triggers separate.",
+      "status": "resolved",
+      "resolution": "Changed both cooldown-to sequences from generic amount to cooldown_seconds while preserving distinct Cougar kill and Hunted pounce triggers.",
+      "candidateHash": "df6124a32b8d45ff19c681f625e527e0d2d526147d4aaedffe7a1713b5a3f88e"
+    },
+    {
+      "id": "Nidalee.W",
+      "ruleIndex": 5,
+      "path": "rules[5].conditions[0].value",
+      "severity": "high",
+      "issue": "The long-range pounce and cooldown benefit use mark=empowered instead of the specific Hunted enemy mark required by the source.",
+      "sourceId": "form:B:en",
+      "quote": "Pouncing at a Hunted enemy can be done from a greater distance and reduces this Ability's Cooldown to 3/2.5/2/1.5 seconds.",
+      "shortSourceQuote": "Pouncing at a Hunted enemy can be done from a greater distance and reduces this Ability's Cooldown to 3/2.5/2/1.5 seconds.",
+      "correction": "Use mark present/eq text Hunted on the same enemy being pounced at. Retain the greater-distance allowance and the cooldown-to sequence without inventing a range value.",
+      "status": "resolved",
+      "resolution": "Replaced empowered with Hunted text mark on the pounce target; retained greater distance in text without inventing range.",
+      "candidateHash": "df6124a32b8d45ff19c681f625e527e0d2d526147d4aaedffe7a1713b5a3f88e"
+    },
+    {
+      "id": "Nidalee.E",
+      "ruleIndex": 0,
+      "path": "rules[0].conditions[0]",
+      "severity": "medium",
+      "issue": "Both human heal and attack-speed rules use target_type=any despite the supplied English summary identifying allies as the recipient. The gap ignores that available recipient evidence and leaves benefits open to arbitrary targets.",
+      "sourceId": "en:summary",
+      "quote": "In human form, Nidalee channels the spirit of the cougar to heal her allies and imbue them with Attack Speed for a short duration.",
+      "shortSourceQuote": "In human form, Nidalee channels the spirit of the cougar to heal her allies and imbue them with Attack Speed for a short duration.",
+      "correction": "Retain ally recipient scope for both rules[0] and rules[1], either with effect subject ally or an explicit allied-target condition. Preserve uncertainty about any narrower valid target subtype; do not infer enemy eligibility from them.",
+      "status": "resolved",
+      "resolution": "Changed heal and attack-speed recipients from arbitrary target to ally, using the provided summary scope and retaining an allied-target text predicate.",
+      "candidateHash": "19c0f42eeaba15ccb2385ff052902adcc8c2b1205e77841cd24478d4faf89999"
+    },
+    {
+      "id": "Nidalee.E",
+      "ruleIndex": 0,
+      "path": "rules[0].effects[0].parameters",
+      "severity": "medium",
+      "issue": "The variable missing-health heal has an ordinary amount endpoint and max_amount endpoint but two unqualified AP ratio_output parameters (35% and 70%). It does not associate each coefficient with its endpoint and can imply both apply together.",
+      "sourceId": "form:A:en",
+      "quote": "Health increased up to (100/150/200/250/300 + (70% Ability Power)) based on missing Health",
+      "shortSourceQuote": "Health increased up to (100/150/200/250/300 + (70% Ability Power)) based on missing Health",
+      "correction": "Retain minimum/base and maximum heal endpoints with their matching 35% and 70% caster AP coefficients. Use explicit endpoint roles or an unknown formula representation, rather than two simultaneous flat coefficients; keep the target missing-health dependence in text.",
+      "status": "resolved",
+      "resolution": "Associated low/high AP ratio endpoints by order and retained unknown endpoint shape; added an explicit gap that no intermediate missing-health formula is stated.",
+      "candidateHash": "19c0f42eeaba15ccb2385ff052902adcc8c2b1205e77841cd24478d4faf89999"
+    },
+    {
+      "id": "Nidalee.R",
+      "ruleIndex": 2,
+      "path": "rules[2].trigger",
+      "severity": "high",
+      "issue": "Cooldown refresh triggers on ability_hit with an already-present empowered mark. The source requires applying Hunted while Human, which is a new mark-application event rather than any hit against an already marked target.",
+      "sourceId": "en:body",
+      "quote": "Passive: While in Human Form, applying Hunted refreshes this Ability's Cooldown.",
+      "shortSourceQuote": "Passive: While in Human Form, applying Hunted refreshes this Ability's Cooldown.",
+      "correction": "Require the current event to apply the Hunted mark while caster is Human. Replace empowered with explicit Hunted and use a retained mark-application condition/other event if the enum cannot represent it; do not refresh on unrelated hits against existing Hunted targets.",
+      "status": "resolved",
+      "resolution": "Changed hit event to retained other event requiring new Hunted application while Human; gap documents the schema limitation and excludes already-marked unrelated hits.",
+      "candidateHash": "7b40fe011c794208f86f3c7ea79e1f74729d6cebecb860e3e05e4796e4af32f3"
+    },
+    {
+      "id": "Gnar.P",
+      "ruleIndex": 1,
+      "path": "rules[1].trigger",
+      "severity": "high",
+      "issue": "Rage generation from dealing damage is modeled only as ability_hit with caster as the hit subject. This excludes ordinary attack damage and does not distinguish actually dealing damage from a non-damaging ability hit.",
+      "sourceId": "en:body",
+      "quote": "Gnar generates Rage by dealing and receiving damage.",
+      "shortSourceQuote": "Gnar generates Rage by dealing and receiving damage.",
+      "correction": "Represent the damage-dealt event itself with retained text if necessary, or cover attack/ability hits with an actual-damage condition and the damaged target as the hit subject. Keep incoming damage separate; do not narrow the source to spell hits.",
+      "status": "resolved",
+      "resolution": "Changed outgoing Rage event to actual damage dealt against target in retained text, independent of whether it came from attack or ability; incoming damage remains separate.",
+      "candidateHash": "8179a565adf08b4a7001549f08d51fd287a05be4b228aaedbc57b6d861875eba"
+    },
+    {
+      "id": "Gnar.P",
+      "ruleIndex": 2,
+      "path": "rules[2].conditions[0].value",
+      "severity": "high",
+      "issue": "The transform gate uses caster.resource=empowered rather than maximum Rage. Empowered is an activation enum and does not preserve the named resource threshold.",
+      "sourceId": "en:body",
+      "quote": "At max Rage his next Ability transforms him into Mega Gnar for 15 seconds.",
+      "shortSourceQuote": "At max Rage his next Ability transforms him into Mega Gnar for 15 seconds.",
+      "correction": "Use a textual maximum-Rage resource-state condition, preserving next ability use and the 15-second Mega duration. Do not invent a numeric Rage cap or treat a generic empowered state as max Rage.",
+      "status": "resolved",
+      "resolution": "Changed empowered resource enum to a textual maximum-Rage condition and kept next ability plus 15-second transform.",
+      "candidateHash": "8179a565adf08b4a7001549f08d51fd287a05be4b228aaedbc57b6d861875eba"
+    },
+    {
+      "id": "Gnar.Q",
+      "ruleIndex": 1,
+      "path": "rules[1].effects[0].flags",
+      "severity": "high",
+      "issue": "The 50% subsequent-target damage override uses replace_input, the stat-conversion flag, while the ordinary full-damage branch remains unconditional. The candidate does not encode a valid damage replacement for targets after the first.",
+      "sourceId": "form:A:en",
+      "quote": "Deals 50% damage to enemies beyond the first.",
+      "shortSourceQuote": "Deals 50% damage to enemies beyond the first.",
+      "correction": "Use a damage replacement representation with replaces_base and the 50% multiplier, or split first-target and subsequent-target damage explicitly. Keep the slow applicable to all eligible hits; do not constrain it inadvertently when splitting damage.",
+      "status": "resolved",
+      "resolution": "Changed replace_input to replaces_base for subsequent-target 50% damage; slow remains on the ordinary all-eligible-hit branch.",
+      "candidateHash": "32406cb77ac2dcb9b4840d28a85ccbab177dad5ce1658ffeb693cb65f1c30e25"
+    },
+    {
+      "id": "Gnar.Q",
+      "ruleIndex": 2,
+      "path": "rules[2].trigger.event",
+      "severity": "high",
+      "issue": "The boomerang cooldown benefit is triggered by recast. The source requires catching the returning boomerang and does not authorize an ability recast.",
+      "sourceId": "form:A:en",
+      "quote": "Catching the boomerang reduces its Cooldown by 40%.",
+      "shortSourceQuote": "Catching the boomerang reduces its Cooldown by 40%.",
+      "correction": "Replace recast with a retained boomerang-catch event/condition (other or an appropriate contact event). Preserve the 40% cooldown reduction and Mini form; do not model another cast button press.",
+      "status": "resolved",
+      "resolution": "Replaced recast with retained boomerang-catch event and condition; preserved 40% cooldown reduction.",
+      "candidateHash": "32406cb77ac2dcb9b4840d28a85ccbab177dad5ce1658ffeb693cb65f1c30e25"
+    },
+    {
+      "id": "Gnar.Q",
+      "ruleIndex": 5,
+      "path": "rules[5].trigger.event",
+      "severity": "high",
+      "issue": "The boulder cooldown benefit is also triggered by recast. The source requires physically picking up the boulder.",
+      "sourceId": "form:B:en",
+      "quote": "Picking up the boulder reduces this Ability's Cooldown by 70%.",
+      "shortSourceQuote": "Picking up the boulder reduces this Ability's Cooldown by 70%.",
+      "correction": "Use a boulder-pickup/contact event with an explicit pickup condition, such as enter_area plus pickup text. Preserve the 70% cooldown reduction and Mega form; do not grant it merely on recast.",
+      "status": "resolved",
+      "resolution": "Replaced recast with entering-area boulder-pickup event condition; preserved 70% cooldown reduction.",
+      "candidateHash": "32406cb77ac2dcb9b4840d28a85ccbab177dad5ce1658ffeb693cb65f1c30e25"
+    },
+    {
+      "id": "Gnar.W",
+      "ruleIndex": 0,
+      "path": "rules[0].effects[0].parameters[2].statSubject",
+      "severity": "high",
+      "issue": "The max-health damage coefficient asserts statSubject=target even though its own scope_ambiguous gap says that the source does not explicitly establish the owner.",
+      "sourceId": "form:A:en",
+      "quote": "plus 6/8/10/12/14% max Health magic damage",
+      "shortSourceQuote": "plus 6/8/10/12/14% max Health magic damage",
+      "correction": "Set the max-health coefficient owner to unknown and retain the ambiguity gap. Keep caster ownership only for the explicitly caster AP coefficient; do not resolve the health owner from background mechanics.",
+      "status": "resolved",
+      "resolution": "Changed maxHealth statSubject to unknown and updated scope ambiguity gap; caster AP ownership remains explicit.",
+      "candidateHash": "c89ffcfbcfff1a7c6cd3a113435afe49a645d8f4813a62cc89b49f3f72e777e8"
+    },
+    {
+      "id": "Gnar.W",
+      "ruleIndex": 1,
+      "path": "rules[1].effects[0]",
+      "severity": "medium",
+      "issue": "The exit-Mega speed benefit is treated as having no specified amount, despite the source calling it the Move Speed, referring back to the preceding speed benefit. The exact referenced values and decay are not retained in this rule.",
+      "sourceId": "form:A:en",
+      "quote": "Gnar also gains the Move Speed when he leaves Mega Gnar form.",
+      "shortSourceQuote": "Gnar also gains the Move Speed when he leaves Mega Gnar form.",
+      "correction": "Retain the referenced 20/40/60/80% speed benefit and 3-second decay on leaving Mega, citing the antecedent sentence as well. If the antecedent is left unresolved, document that specific reference ambiguity rather than claiming the supplied source has no amount.",
+      "status": "resolved",
+      "resolution": "Copied the antecedent 20/40/60/80% speed rank values and 3-second decay to the leave-Mega rule, citing both sentences.",
+      "candidateHash": "c89ffcfbcfff1a7c6cd3a113435afe49a645d8f4813a62cc89b49f3f72e777e8"
+    },
+    {
+      "id": "Gnar.E",
+      "ruleIndex": 1,
+      "path": "rules[1].conditions[0].subject",
+      "severity": "medium",
+      "issue": "The bounce predicate checks caster.target_type=any, which is always the caster unit, rather than requiring a unit under the landing point. The cast/leap and conditional bounce are therefore not separated by the source landing condition.",
+      "sourceId": "form:A:en",
+      "quote": "If Gnar lands on a unit he will bounce off it, traveling further.",
+      "shortSourceQuote": "If Gnar lands on a unit he will bounce off it, traveling further.",
+      "correction": "Retain a landing-on-a-unit condition on target/unknown, with a landing/contact event. Keep bounce movement on caster and allow allied or enemy units, while enemy-only damage and slow stay in their own branch.",
+      "status": "resolved",
+      "resolution": "Changed bounce from caster ability-hit/type check to retained landing-on-unit event against target; movement stays on caster.",
+      "candidateHash": "306ffd8af1e7fe09958e1226c755b1da10f1169065f4a81d5a638d858cb62eea"
+    },
+    {
+      "id": "Gnar.E",
+      "ruleIndex": 2,
+      "path": "rules[2].conditions[0]",
+      "severity": "high",
+      "issue": "Mini bounce damage and slow require target_type=champion. The source says an enemy, with no champion-only restriction, so eligible non-champion enemy units are excluded.",
+      "sourceId": "form:A:en",
+      "quote": "Bouncing off an enemy deals (50/85/120/155/190 + (6% Health)) physical damage and briefly Slows by 80%.",
+      "shortSourceQuote": "Bouncing off an enemy deals (50/85/120/155/190 + (6% Health)) physical damage and briefly Slows by 80%.",
+      "correction": "Remove the champion-only gate. Require an enemy unit that Gnar lands on and bounces from, retaining Mini form, the supplied damage, unknown health owner, and unspecified brief slow duration.",
+      "status": "resolved",
+      "resolution": "Removed champion-only restriction and retained enemy bounced-unit predicate; unknown Health owner and unspecified brief duration remain.",
+      "candidateHash": "306ffd8af1e7fe09958e1226c755b1da10f1169065f4a81d5a638d858cb62eea"
+    },
+    {
+      "id": "Gnar.R",
+      "ruleIndex": 0,
+      "path": "rules[0].effects[2]",
+      "severity": "medium",
+      "issue": "The ordinary slow is unconditional for tossed enemies, while the wall branch states the enemies instead take its replacement damage and are stunned. The structured rules do not retain the alternate normal-versus-wall crowd-control behavior.",
+      "sourceId": "en:body",
+      "quote": "Enemies that hit a wall instead take (300/450/600 + (150% Ability Power) + (75% bonus Attack Damage)) physical damage and are Stunned.",
+      "shortSourceQuote": "Enemies that hit a wall instead take (300/450/600 + (150% Ability Power) + (75% bonus Attack Damage)) physical damage and are Stunned.",
+      "correction": "Split the ordinary non-wall slow from the wall stun branch while keeping knockback on all tossed enemies. Preserve replacement damage and leave stun duration unspecified; if the scope of instead is considered ambiguous, record that explicitly rather than asserting an unconditional slow alongside stun.",
+      "status": "resolved",
+      "resolution": "Added the normal slow only to non-wall collision branch; wall branch remains replacement damage and stun, while knockback stays on all tossed enemies.",
+      "candidateHash": "68be25dfa5333d9e8e1848eaa402f25e2bc1a4bd50948e9a7b496a348ac1f430"
+    },
+    {
+      "id": "Gnar.R",
+      "ruleIndex": 1,
+      "path": "rules[1].conditions",
+      "severity": "medium",
+      "issue": "The wall-impact rule omits Mega form and the relation to enemies tossed by this R. The other active R rule is explicitly Mega-only; a generic hits-a-wall predicate does not carry that source scope.",
+      "sourceId": "en:body",
+      "quote": "Mega Gnar: Gnar tosses nearby enemies",
+      "shortSourceQuote": "Mega Gnar: Gnar tosses nearby enemies",
+      "correction": "Retain caster Mega form and that this wall collision is caused by the R toss on the same affected enemy. Keep wall-dependent damage/stun separate from Mini passive and the transformation Rage lockout.",
+      "status": "resolved",
+      "resolution": "Added Mega form and same-R tossed enemy relation to wall impact branch; retained wall collision event text.",
+      "candidateHash": "68be25dfa5333d9e8e1848eaa402f25e2bc1a4bd50948e9a7b496a348ac1f430"
+    }
+  ],
+  "validation": {
+    "command": "node --import tsx scripts/llm/champion-mechanics/check.ts research/champion-mechanics/26.19-v2 Jayce.P Jayce.Q Jayce.W Jayce.E Jayce.R Nidalee.P Nidalee.Q Nidalee.W Nidalee.E Nidalee.R Gnar.P Gnar.Q Gnar.W Gnar.E Gnar.R",
+    "checked": 15,
+    "valid": 15
+  },
+  "finalReviewCorrections": [
+    {
+      "id": "Jayce.Q",
+      "topic": "Cannon projectile path-end",
+      "status": "resolved",
+      "resolution": "Retained the source’s detonation on hit or at the end of the projectile path as an other effect with summary evidence; no timing or extra hit rule was invented.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Cannon Stance: Fires an orb of electricity that detonates upon hitting an enemy (or reaching the end of its path) dealing physical damage to all enemies hit."
+        }
+      ],
+      "candidateHash": "0495bf6b42577a2d49dcee66a67e80b75fc66409df74ffce210a0ba605c5840d"
+    },
+    {
+      "id": "Nidalee.P",
+      "topic": "Brush movement speed replacement",
+      "status": "resolved",
+      "resolution": "The 30% directional brush benefit is evaluated as a passive while the original two-second brush benefit is active, and is flagged replaces_base relative to 10%. The Hunted-target 30% direction benefit also replaces its 10% baseline.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Moving through brush increases Nidalee's Move Speed by 10% for 2 seconds, increased to 30% toward visible enemy champions within 1400 range."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "While an enemy is Hunted, they are revealed with True Sight and Nidalee gains 10% Move Speed, increased to 30% Move Speed toward the Hunted enemy."
+        }
+      ],
+      "candidateHash": "7a4e818c002ccd3ab43cbe5a54a1256e1927616cc52ae8d1a1c24e7e5dc2b95d"
+    },
+    {
+      "id": "Nidalee.Q",
+      "topic": "Javelin AP endpoints and Cougar attack wording",
+      "status": "resolved",
+      "resolution": "The Javelin rule now names 50% AP as the minimum endpoint and 162.5% AP as the maximum endpoint; its gap states the variable is flight distance, not target Health. The Cougar follow-up now says the next Attack deals magic damage without asserting it is additional damage.",
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Human Form: Nidalee throws her javelin, dealing (70/90/110/130/150 + (50% Ability Power)) magic damage, increased up to (227.5/292.5/357.5/422.5/487.5 + (162.5% Ability Power)) magic damage based on distance flown."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "Cougar Form: Nidalee's next Attack deals (5/30/55/80 + (75% Attack Damage) + (40% Ability Power)) plus 1/1.25/1.5/1.75% per 1% missing Health magic damage."
+        }
+      ],
+      "candidateHash": "25dbd0215bd35fb61b50895ef9fe705da9254307eecdcfa618622b6208b07ef1"
+    },
+    {
+      "id": "Nidalee.W",
+      "topic": "Cougar landing damage scope",
+      "status": "resolved",
+      "resolution": "Removed the gap suggesting landing damage might be Hunted-only; the source says surrounding enemies at the landing point generally take damage.",
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Cougar Form: Nidalee pounces, dealing (55/100/145/190 + (50% bonus Attack Damage) + (30% Ability Power)) magic damage to enemies surrounding where she lands."
+        }
+      ],
+      "candidateHash": "df6124a32b8d45ff19c681f625e527e0d2d526147d4aaedffe7a1713b5a3f88e"
+    },
+    {
+      "id": "Nidalee.E",
+      "topic": "Heal AP endpoints and ally scope",
+      "status": "resolved",
+      "resolution": "The heal text now directly pairs 35% AP with the minimum endpoint and 70% AP with the maximum endpoint. The target gap retains only uncertainty about which allied subtypes are eligible, since summary establishes allies.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "In human form, Nidalee channels the spirit of the cougar to heal her allies and imbue them with Attack Speed for a short duration."
+        },
+        {
+          "sourceId": "form:A:en",
+          "quote": "Human Form: Nidalee restores (50/75/100/125/150 + (35% Ability Power)) Health increased up to (100/150/200/250/300 + (70% Ability Power)) based on missing Health and grants them 30/40/50/60/70% Attack Speed for 7 seconds."
+        }
+      ],
+      "candidateHash": "19c0f42eeaba15ccb2385ff052902adcc8c2b1205e77841cd24478d4faf89999"
+    },
+    {
+      "id": "Gnar.Q",
+      "topic": "One-hit-per-boomerang",
+      "status": "resolved",
+      "resolution": "Added retained conditions to outbound and subsequent-hit damage so the same boomerang cannot damage an enemy more than once.",
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Each enemy can only be hit once."
+        }
+      ],
+      "candidateHash": "32406cb77ac2dcb9b4840d28a85ccbab177dad5ce1658ffeb693cb65f1c30e25"
+    },
+    {
+      "id": "Gnar.E",
+      "topic": "Landing-on-unit prerequisite",
+      "status": "resolved",
+      "resolution": "Added the current E landing-unit relationship to the bounce branch, preserving bounce movement on Gnar.",
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "If Gnar lands on a unit he will bounce off it, traveling further."
+        }
+      ],
+      "candidateHash": "306ffd8af1e7fe09958e1226c755b1da10f1169065f4a81d5a638d858cb62eea"
+    },
+    {
+      "id": "Gnar.E",
+      "topic": "Health coefficient basis",
+      "status": "resolved",
+      "resolution": "Removed the unsupported maxHealth stat assertion from Mini and Mega E; preserved each 6% Health value as unknown-shaped other and clarified current/max/base/bonus basis remains unspecified.",
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Bouncing off an enemy deals (50/85/120/155/190 + (6% Health)) physical damage"
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "Mega Gnar: Gnar leaps, dealing (80/115/150/185/220 + (6% Health)) physical damage to nearby enemies on landing."
+        }
+      ],
+      "candidateHash": "306ffd8af1e7fe09958e1226c755b1da10f1169065f4a81d5a638d858cb62eea"
+    },
+    {
+      "id": "Gnar.W",
+      "topic": "Mega stun scope",
+      "status": "resolved",
+      "resolution": "Removed the gap claiming area stun lacked source support and cited the English summary on the existing nearby-enemy stun rule.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Mega Gnar is too enraged to be hyper and instead can rear up on his hind legs and smash down on the area in front of him, stunning enemies in an area."
+        }
+      ],
+      "candidateHash": "c89ffcfbcfff1a7c6cd3a113435afe49a645d8f4813a62cc89b49f3f72e777e8"
+    },
+    {
+      "id": "Gnar.R",
+      "topic": "Normal and wall impact branches",
+      "status": "resolved",
+      "resolution": "Separated the all-target knockback, non-wall per-target normal damage/slow, and wall-impact per-target replacement damage/stun. Wall status no longer suppresses knockback or grants ordinary slow.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Mega Gnar: Gnar tosses nearby enemies, dealing (200/300/400 + (100% Ability Power) + (50% bonus Attack Damage)) physical damage, Knocking Back, and Slowing them by 45% for 1.25/1.5/1.75 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies that hit a wall instead take (300/450/600 + (150% Ability Power) + (75% bonus Attack Damage)) physical damage and are Stunned."
+        }
+      ],
+      "candidateHash": "68be25dfa5333d9e8e1848eaa402f25e2bc1a4bd50948e9a7b496a348ac1f430"
+    },
+    {
+      "id": "Jayce.E",
+      "topic": "Gate speed gap correction",
+      "status": "resolved",
+      "resolution": "Removed the obsolete statSubject ambiguity gap: the ally champion recipient and pass-through condition are explicit, and the speed amount is not a referenced stat coefficient.",
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Mercury Cannon: Jayce deploys an acceleration gate for 4 seconds that grants 35/40/45/50/55/60% Move Speed decaying over 3 seconds to allied champions that pass through it."
+        }
+      ],
+      "candidateHash": "d662897e2c36ab9b58288c19c66c34d5cc0c5f09643064d546a978107554f441"
+    },
+    {
+      "id": "Jayce.Q",
+      "topic": "Per-recipient monster bonus",
+      "status": "resolved",
+      "resolution": "Aligned Hammer splash bonus effect subject with secondary_targets and added a separate Cannon primary-target jungle-monster bonus alongside the secondary-target branch. Form-specific refs are retained.",
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Mercury Hammer: Jayce leaps to an enemy, dealing (60/110/160/210/260/310 + (135% bonus Attack Damage)) physical damage to surrounding enemies and Slowing them by 35/40/45/50/55/60% for 2 seconds. Deals 10 bonus damage to jungle monsters."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "Deals 10 bonus damage to jungle monsters."
+        }
+      ],
+      "candidateHash": "0495bf6b42577a2d49dcee66a67e80b75fc66409df74ffce210a0ba605c5840d"
+    },
+    {
+      "id": "Nidalee.W",
+      "topic": "Trap capacity endpoint range",
+      "status": "resolved",
+      "resolution": "Replaced rank_values for the 4~10 active-trap capacity endpoints with unknown shape and documented that no level sequence or interpolation is supplied.",
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "(4 ~ 10) traps may be active at once."
+        }
+      ],
+      "candidateHash": "df6124a32b8d45ff19c681f625e527e0d2d526147d4aaedffe7a1713b5a3f88e"
+    },
+    {
+      "id": "Gnar.R",
+      "topic": "Knockback across wall collisions",
+      "status": "resolved",
+      "resolution": "Removed non-wall exclusion from shared knockback, keeping wall condition only on per-target replacement damage/stun. The subsequent split also confines regular damage/slow to non-wall targets.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Mega Gnar: Gnar tosses nearby enemies"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies that hit a wall instead take (300/450/600 + (150% Ability Power) + (75% bonus Attack Damage)) physical damage and are Stunned."
+        }
+      ],
+      "candidateHash": "68be25dfa5333d9e8e1848eaa402f25e2bc1a4bd50948e9a7b496a348ac1f430"
+    }
+  ]
+}

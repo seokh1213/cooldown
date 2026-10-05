@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Katarina.E",
+      "sourceHash": "1653a55be43c994164166bcd2acfbf88c45b3efc3ad7a775f85ed092435ec04a",
+      "candidateHash": "e211c361aaca2dc1d6dd796f5509f949620930027f7a8d40a9dc0308f270ed50"
+    },
+    {
+      "id": "Katarina.P",
+      "sourceHash": "3518e33ab8d8516c1775fc6e926fb61b50ecba6b7f0c8b63071c5e4964a46e13",
+      "candidateHash": "da41c7d1f881880362274cad22129d08925c13cf5612680677ba2196c0b5f25e"
+    },
+    {
+      "id": "Katarina.Q",
+      "sourceHash": "505dd66f81692a069a787e112dfefdc23872d8ae76baf671df989f3dbf1a7b89",
+      "candidateHash": "8137681e797b6a1f2b76ca7f6b85a9fbb57f24c8241927ee919165cc32f33fc2"
+    },
+    {
+      "id": "Katarina.R",
+      "sourceHash": "69cd200e68f37f25408d496426ec9608e9f5448e97ad298e118a819bff88025e",
+      "candidateHash": "69e1b52d51a7e37cc4957e6e9329059452770f54b8c2a0ae439582d979acb128"
+    },
+    {
+      "id": "Katarina.W",
+      "sourceHash": "d7ed7f2f91ef89dfd74a929d37b8cb496791486bc3609faaf1a07b01dcf29fb7",
+      "candidateHash": "500dde42abb37a281be991577abd06bf3fa5aca17f266569118430af88d0ab31"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Katarina.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If it is an enemy, Katarina strikes for (20/30/40/50/60 + (25% Ability Power) + (40% Attack Damage)) magic damage",
+      "issue": "적 대상 조건을 챔피언으로 한정했지만, 원문은 대상을 적이라고만 지정합니다.",
+      "correction": "조건을 적 대상 여부로 표현하고 챔피언 유형으로 좁히지 마세요."
+    },
+    {
+      "id": "Katarina.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "otherwise she strikes the nearest enemy in range.",
+      "issue": "적이 아닌 대상을 챔피언이 아닌 대상(`neq champion`)으로 정의해 적 챔피언 대상에서도 주변 적을 공격하는 것으로 읽힐 수 있습니다. 원문은 대상이 적이 아닐 때 주변 적을 공격한다고만 합니다.",
+      "correction": "조건을 대상이 적이 아닌 경우로 표현하고 챔피언 유형과 혼동되지 않게 하세요."
+    },
+    {
+      "id": "Katarina.E",
+      "path": "rules.4.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The strike Applies On-Hit Effects.",
+      "issue": "적중 시 효과 적용의 주체를 `target`으로 지정했지만, 원문은 공격이 효과를 적용한다고 하며 대상이 이를 적용한다고 하지 않습니다.",
+      "correction": "적중 시 효과를 적용하는 주체를 공격 또는 카타리나로 표현하세요."
+    },
+    {
+      "id": "Katarina.P",
+      "path": "rules.0.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Whenever an enemy champion dies that Katarina has damaged in the last 3 seconds, her Ability Cooldowns are reduced by 15 seconds.",
+      "issue": "3초 조건이 `target`의 시간으로 지정되어, 피해를 입힌 뒤 적이 죽기까지의 경과 시간이라는 관계가 드러나지 않습니다.",
+      "correction": "카타리나가 적 챔피언에게 피해를 입힌 뒤 그 챔피언이 3초 안에 죽는 조건으로 명시하세요."
+    },
+    {
+      "id": "Katarina.Q",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Katarina throws a Dagger, dealing (80/115/150/185/220 + (40% Ability Power)) magic damage to the target and 2 nearby enemies.",
+      "issue": "피해 효과를 주 대상에게만 연결해 주변 적 둘도 같은 피해를 받는다는 범위가 빠졌습니다.",
+      "correction": "주 대상과 주변 적 두 명 모두에게 같은 마법 피해를 적용한다고 표현하세요."
+    },
+    {
+      "id": "Katarina.R",
+      "path": "rules.0.effects.2.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "applies 40% Grievous Wounds for 3 seconds.",
+      "issue": "고통스러운 상처 효과의 지속 시간은 3초인데, 규칙에서 `amount`가 40%뿐이고 지속 시간이 `duration_seconds`로 연결되지 않았습니다.",
+      "correction": "3초를 고통스러운 상처 효과의 지속 시간으로 구조화하세요."
+    }
+  ],
+  "notes": []
+}

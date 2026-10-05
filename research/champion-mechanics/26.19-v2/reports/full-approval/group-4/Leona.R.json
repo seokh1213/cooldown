@@ -1,0 +1,85 @@
+{
+  "id": "Leona.R",
+  "sourceHash": "eef1adb72e05b5095d6fac22183c2f45a617193f119e3be17d843252f33a9852",
+  "beforeCandidateHash": "9d027e3c409812b83b37972ccbdf36ddab177e7f12e468f4852255c0c5e49d07",
+  "candidateHash": "c1b5d65614149e8c1f2e796951f388b547c9fd2212680a1b2d814a0ab6f5dcfd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "광선 범위 적중의 150/225/300 + 레오나 주문력 80% 마법 피해와 중심 바깥의 80% 1.75초 둔화, 중심 적의 둔화 대신 기절을 대조했다. 중심 기절은 같은 CC의 대체로 1.75초를 보존하며 중앙 판정 경계는 미제공이다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 enemy.other eq 태양 광선 폭발 범위에 적중한 적 적용. enemy: 광선이 적에게 마법 피해를 입힌다. (magic); amount=150/225/300  rank_values, stat_coefficient=80% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 폭발 범위에 적중하되 중앙에는 있지 않은 적 적용. target: 폭발 중심 바깥의 적을 둔화시킨다. (slow); amount=80%  scalar, duration_seconds=1.75  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 폭발 범위의 중앙에 적중한 적 적용. target: 폭발 중앙의 적은 기본 1.75초 둔화 대신 같은 지속시간 동안 기절합니다. (stun); duration_seconds=1.75  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2.trigger,conditions",
+      "issue": "시전만으로 효과가 적용되고 중심 밖을 any, 중심을 isolated로 잘못 구분한다.",
+      "correction": "실제 광선 적중과 중앙·중앙 밖 위치 조건으로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "Enemies in the center of the flare are Stunned instead of Slowed."
+    },
+    {
+      "path": "rules.2.effects,evidence",
+      "issue": "중앙 기절이 기본 1.75초 CC의 대체라는 연결과 지속시간이 빠졌다.",
+      "correction": "둔화를 대체하는 같은 시간의 기절로 분류하고 공동 문장 근거를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "Slowing by 80% for 1.75 seconds. Enemies in the center of the flare are Stunned instead of Slowed."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "중앙 적은 기절, 중앙 밖은 둔화라는 조건은 텍스트로 표현했다. 중앙 판정의 거리나 크기·기하 경계는 공급 원문에 없어 수치 조건을 추측하지 않았다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

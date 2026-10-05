@@ -1,0 +1,113 @@
+{
+  "id": "MonkeyKing.R",
+  "sourceHash": "30e756881d258b9647a21b7f477d6aaf6d0be53a5dd25daca2eec18d8ae50e58",
+  "beforeCandidateHash": "22c15edf78b24ca637ab5fe2069ea02974140f41caad878fb4f7bc41f02fde89",
+  "candidateHash": "6491a265d41ff8a1422acc47f4360c984cbc83d809231efd9a34a6cc4efa39ee",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "20%이속·주변0.6초띄움/2초275%AD+8/12/16%최대체력물리,8초안두번째시전·그뒤쿨,정글2초총400~1200상한 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 오공의 이동 속도가 증가합니다.; 수치 amount en:body:n0=20%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; nearby_enemies: 여의봉에 맞은 근처 적이 공중에 뜹니다. [knockup]; 수치 duration_seconds en:body:n1=0.6 상수 scalar; flags 없음 | nearby_enemies: 여의봉에 맞은 근처 적에게 공격력 계수와 최대 체력 비율에 따른 물리 피해를 줍니다. [physical]; 수치 stat_coefficient en:body:n2=275%(백분율) caster.totalAttackDamage scalar / ratio_output en:body:n3=8(백분율),en:body:n4=12(백분율),en:body:n5=16%(백분율) unknown.maxHealth rank_values / duration_seconds en:body:n6=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 caster.activation eq 첫시전후8초안,쿨시작전두번째사용; caster: 8초안에두번째시전이가능하고그뒤재사용대기시간이시작됩니다.; 수치 duration_seconds en:body:n7=8 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq monster / target.other eq 정글몬스터; target: 정글몬스터는2초총피해상한400~1200을적용합니다.중간값기준은미명시입니다. [physical]; 수치 max_amount en:body:n8=400,en:body:n9=1200 상수 unknown; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "규칙에없던두번째시전과정글상한복원·적중행위자 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Wukong gains 20% Move Speed and spins his staff, Knocking Up nearby enemies for 0.6 seconds and take (275% Attack Damage) plus 8/12/16% max Health physical damage over 2 seconds. This Ability can be cast a second time within 8 seconds before going on cooldown. Damage to jungle monsters is capped at (400 ~ 1200) damage over 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 306,
+      "verdict": "false_positive",
+      "reason": "8/12/16참조숫자모두percent=true."
+    },
+    {
+      "index": 307,
+      "verdict": "false_positive",
+      "reason": "원문maxHealth명시이며소유자이미unknown/gap보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "피해의 max Health 기준 소유자가 원문에서 명시되지 않아 unknown으로 보존했습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "정글 몬스터 대상 피해 상한의 (400 ~ 1200) 구간이 레벨 범위인지 다른 구간인지 원문만으로 판별할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

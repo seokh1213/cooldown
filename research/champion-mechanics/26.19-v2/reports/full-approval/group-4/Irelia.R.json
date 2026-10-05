@@ -1,0 +1,159 @@
+{
+  "id": "Irelia.R",
+  "sourceHash": "e721b8e56207495f7f18287c77db2daf93ecfbe5599ccdaec5044e7ed96a1b08",
+  "beforeCandidateHash": "5c66ad0b7bf1f85a0fb749d033f26ddd2adbd1155791eeda94e2c0b51e220c41",
+  "candidateHash": "e6ed779407ed45588cd8cdd01e2c76a32bbcd26a017f7289af903b739beea6e7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "칼날 적중의 마법 피해·챔피언/대형 몬스터 불안정, 첫 적중 챔피언 주변2.5초 결계, 결계 통과 피해/90%1.5초 둔화, 폭발 주변 적 적중을 확인하고 요약의 결계 폭발/통과 혼동을 바로잡았다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 칼날 다발이 적중한 대상에게 마법 피해를 입힙니다. (magic); amount=125/200/275  rank_values, stat_coefficient=100% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion 적용. target: 챔피언을 불안정 상태로 만듭니다.; duration_seconds=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq monster, target.other eq 대형 정글 몬스터 적용. target: 대형 정글 몬스터를 불안정 상태로 만듭니다.; duration_seconds=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first, target.target_type eq champion 적용. target: 칼날 다발이 폭발해 대상을 둘러싸는 결계를 형성합니다.; duration_seconds=2.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "target의 enter_area 사건에서 target.other eq 적이 이 스킬의 결계 벽을 통과함 적용. target: 결계가 마법 피해를 입힙니다. (magic); amount=125/200/275  rank_values, stat_coefficient=100% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "target의 enter_area 사건에서 target.other eq 적이 이 스킬의 결계 벽을 통과함 적용. target: 결계가 적을 둔화시킵니다. (slow); amount=90%  scalar, duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 칼날 다발이 폭발함, nearby_enemies.distance eq 폭발 주변의 적 적용. nearby_enemies: 칼날 다발 폭발 시 주변 적도 맞습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary,rules.4,5",
+      "issue": "결계 통과와 칼날 폭발을 혼동하고 결계 피해 범위를 모든 적중으로 확대",
+      "correction": "결계 벽 통과 사건 및 대상 범위를 명시",
+      "sourceId": "en:summary",
+      "quote": "Afterwards the blades form a wall that will damage and slow enemies that walk through it."
+    },
+    {
+      "path": "rules.0-3",
+      "issue": "시전 즉시 피해 및 적중 행위자/대형 몬스터 범위 부정확",
+      "correction": "caster의 적중과 대형 정글 몬스터 조건",
+      "sourceId": "en:body",
+      "quote": "Irelia launches a barrage of blades, dealing (125/200/275 + (100% Ability Power)) magic damage and making champions and large jungle monsters Unsteady for 5 seconds."
+    },
+    {
+      "path": "rules.6",
+      "issue": "폭발 주변 적 적중 조건 불명확",
+      "correction": "폭발 사건과 주변 적으로 명시",
+      "sourceId": "en:body",
+      "quote": "When the barrage explodes, surrounding enemies are also hit."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 120,
+      "verdict": "repaired",
+      "reason": "시전 사건을 실제 스킬 적중으로 정정했다."
+    },
+    {
+      "index": 121,
+      "verdict": "repaired",
+      "reason": "공급 summary가 결계 벽을 통과한 적이라고 명시한다. 해당 조건 및 근거를 추가했다."
+    },
+    {
+      "index": 122,
+      "verdict": "repaired",
+      "reason": "summary 근거의 결계 통과 사건으로 정정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "폭발 시 주변 적도 맞는다는 문장은 해당 적에게 적용되는 피해 수치나 결계의 둔화 여부를 명시하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "요약은 칼날에 맞은 적 일반의 표식을 설명하지만 본문은 챔피언 및 대형 정글 몬스터의 불안정을 구체적으로 한정한다. 본문 제한을 우선했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

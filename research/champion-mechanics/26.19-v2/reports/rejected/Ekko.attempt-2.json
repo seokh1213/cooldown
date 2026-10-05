@@ -1,0 +1,471 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "완료된 수정 사항 없음",
+      "rules": [],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "완료된 수정 사항 없음",
+      "rules": [],
+      "gaps": []
+    },
+    "W": {
+      "summary": "기본 지속 효과로 체력이 낮은 적을 공격하면 잃은 체력에 비례한 마법 피해를 준다. 사용 시 시간의 구체를 발사해 적을 둔화시키며, 에코가 구체 안에 들어가면 구체를 폭발시켜 적을 기절시키고 보호막을 얻는다. 미니언과 몬스터를 대상으로 한 추가 공격 피해에는 최소·최대값이 적용된다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "health_threshold",
+              "operator": "lt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "잃은 체력에 비례한 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "other",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Ekko's Attacks against enemies below 30% Health deal (3% + (3% per 100 Ability Power)) missing Health magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "지연 후 시간의 구체를 발사한다. 구체는 명시된 시간 동안 지속된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Ekko launches a chronosphere lasting 1.5 seconds after a delay"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Ekko launches a chronosphere lasting 1.5 seconds after a delay that Slows enemies inside by 40%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "구체 안에 있음"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "구체 안의 적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Slows enemies inside by 40%."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Ekko launches a chronosphere lasting 1.5 seconds after a delay that Slows enemies inside by 40%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "구체 안에 진입"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "구체를 폭발시켜 적을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Ekko enters the sphere, he detonates it, Stunning for 2.25 seconds"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "If Ekko enters the sphere, he detonates it, Stunning for 2.25 seconds and gaining (100/120/140/160/180 + (150% Ability Power)) Shield."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "구체 안에 진입"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "보호막을 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "gaining (100/120/140/160/180 + (150% Ability Power)) Shield."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "If Ekko enters the sphere, he detonates it, Stunning for 2.25 seconds and gaining (100/120/140/160/180 + (150% Ability Power)) Shield."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "미니언에게 입히는 추가 공격 피해량에는 최소·최대값이 적용된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bonus Attack damage deals a min of 15 and a max of 150 damage against minions and monsters."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "몬스터에게 입히는 추가 공격 피해량에는 최소·최대값이 적용된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Bonus Attack damage deals a min of 15 and a max of 150 damage against minions and monsters."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "지연의 구체적인 시간과 미니언·몬스터 대상 추가 공격 피해가 적용되는 공격/피해의 정확한 대상 범위가 원문에서 특정되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "after a delay"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Bonus Attack damage deals a min of 15 and a max of 150 damage against minions and monsters."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "완료된 수정 사항 없음",
+      "rules": [],
+      "gaps": []
+    },
+    "R": {
+      "summary": "완료된 수정 사항 없음",
+      "rules": [],
+      "gaps": []
+    }
+  },
+  "failures": [
+    {
+      "id": "Ekko.P",
+      "errors": [
+        {
+          "code": "empty",
+          "path": "draft",
+          "detail": "No rules or documented source gaps"
+        }
+      ]
+    },
+    {
+      "id": "Ekko.Q",
+      "errors": [
+        {
+          "code": "empty",
+          "path": "draft",
+          "detail": "No rules or documented source gaps"
+        }
+      ]
+    },
+    {
+      "id": "Ekko.E",
+      "errors": [
+        {
+          "code": "empty",
+          "path": "draft",
+          "detail": "No rules or documented source gaps"
+        }
+      ]
+    },
+    {
+      "id": "Ekko.R",
+      "errors": [
+        {
+          "code": "empty",
+          "path": "draft",
+          "detail": "No rules or documented source gaps"
+        }
+      ]
+    }
+  ]
+}

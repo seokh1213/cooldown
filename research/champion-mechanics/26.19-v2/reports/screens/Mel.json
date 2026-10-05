@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Mel.E",
+      "sourceHash": "35a2e86aaac8406587c51891a1453dbeefc1b5cb0aca597f54251a9c867fde8c",
+      "candidateHash": "0142cae8f8a930306fa6f262c9759538717d922c72a31854b68e829be5721bab"
+    },
+    {
+      "id": "Mel.W",
+      "sourceHash": "3068c7dc5b9a0e95108cba99550ea152e1c24ac17e52c1407ec38c0b594080b8",
+      "candidateHash": "e808fab742f4dab4d66baa0f4f16b346bb2670f979322af8d90d52949e462bde"
+    },
+    {
+      "id": "Mel.P",
+      "sourceHash": "f1635c7cbeb0893eab9ea6ee375781c312e7cc1e2f996aa617d174c138841e00",
+      "candidateHash": "026eae48d41f418f331ed3e1dd31cc39b97de639fbf5d831d9fdb264c7886678"
+    },
+    {
+      "id": "Mel.Q",
+      "sourceHash": "667935ee85fd4405140c6f1cb33a3cbab92a28a9911cce4500dacbcd1b9f5d46",
+      "candidateHash": "b61221734cfe5f58ada52b277f52f2748eb645a04e9118b5aca2e319d86d23fb"
+    },
+    {
+      "id": "Mel.R",
+      "sourceHash": "053a74a94549f856046ddc9359d8bec02040f672b5d92a91745435eff761a734",
+      "candidateHash": "5184ec0570592d2c175e3df9507f98ae1157c4706f7c2162c3a306a5840fdfe2"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Mel.P",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When applied, if the stored amount exceeds the enemy's combined shields and Health, they are executed.",
+      "issue": "조건의 연산자가 `lt`(미만)로 지정되어 설명문에 적힌 ‘비축 피해가 보호막과 체력 합계보다 큼’과 반대입니다.",
+      "correction": "비축 피해가 보호막과 체력 합계보다 큰 조건으로 수정하세요."
+    },
+    {
+      "id": "Mel.Q",
+      "path": "rules.3.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The first explosion hit deals (60/85/110/135/160 + (55% Ability Power)) magic damage and each subsequent explosion deals (5/7/9/11/13 + (5% Ability Power)) magic damage, adding up to (85/127/173/223/277 + (55% Ability Power) + (25/30/35/40/45% Ability Power)) magic damage total.",
+      "issue": "총 피해량을 별도 피해 효과로 두고 조건 없이 적중 때마다 입히는 것으로 표현했습니다. 원문에서 총 피해량은 첫 폭발과 후속 폭발을 합산한 값입니다.",
+      "correction": "총 피해량은 투사체 폭발의 합계로 표현하고, 각 적중마다 별도 적용되는 피해 효과로 두지 마세요."
+    },
+    {
+      "id": "Mel.R",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Can only be cast when an enemy champion is affected by Overwhelm.",
+      "issue": "챔피언 표식 조건을 피해 대상 조건으로 설정해, 피해 효과가 표식이 있는 챔피언에게만 적용되는 것처럼 범위를 좁혔습니다. 원문은 챔피언 표식을 시전 가능 조건으로 요구하지만, 시전 시 압도 영향을 받는 모든 적을 대상으로 합니다.",
+      "correction": "챔피언에게 압도가 적용된 상태는 시전 조건으로 두고, 피해 대상은 압도가 적용된 모든 적으로 유지하세요."
+    }
+  ],
+  "notes": []
+}

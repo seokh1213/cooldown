@@ -1,0 +1,279 @@
+{
+  "id": "Ashe.Q",
+  "sourceHash": "7fb02c4c8e7c9f51301b3057e2aea18aa18de9cd491eab7ad5f15adfd700304f",
+  "beforeCandidateHash": "0240c02dda92dfb3fb7e77c48fd6d416adc9484977ea184e42f1deb189f2bcb2",
+  "candidateHash": "00eb8a69d65f8d996fce4c978e1188add67cb424833d4853521d59cbe79a0791",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "공격1focus4초/4중첩활성·모두소모·AS6초와AD계수대체공격/5작은타격/onhit공격당1을대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격1중첩·4초유지,기본스킬로스택쌓지않음.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "4중첩시전허용은UI표시가아닌실제조건.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "집중이4중첩에 도달함"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "4중첩사용의모든focus소모·AS20/30/40/50/60%6초.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "집중이4중첩에 도달함"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5",
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "50",
+              "value": 50,
+              "percent": true
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "활성공격전체AD110/115/120/125/130%대체·5작은타격구성·onhit공격당1회,동일계수중복ratio제거.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "110",
+              "value": 110,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "115",
+              "value": 115,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "120",
+              "value": 120,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "125",
+              "value": 125,
+              "percent": true
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "130%",
+              "value": 130,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-3,gaps",
+      "issue": "집중전체소모누락·UI분류·AD동일계수중복ratio.",
+      "correction": "4중첩실제허용/소모복원·AD전체공격계수한개.",
+      "sourceId": "en:summary",
+      "quote": "At maximum Focus, Ashe can cast Ranger's Focus to consume all stacks of Focus"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

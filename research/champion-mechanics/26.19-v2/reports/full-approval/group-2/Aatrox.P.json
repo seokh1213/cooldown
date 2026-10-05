@@ -1,0 +1,107 @@
+{
+  "id": "Aatrox.P",
+  "sourceHash": "1a9c8d1df51c7faca3e3776ff504ca1722abf31dce4ad050def1b56e12211c17",
+  "beforeCandidateHash": "904fc3778537b5a799fe7adfdfeb7ac606a257179e73ea9712ceaf2637695610",
+  "candidateHash": "e6e97c2430196ef43d39abcea2e9bd84eeae4dd9751bfe0dd6807e867c875a25",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 0,
+  "summaryCheck": "효과 준비 시 대상최대체력4~10% 추가마법과 피해100%/미니언25%회복,22~10초쿨,챔피언/대형정글 적중2초와Q끝적중대신4초감소 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.spell_ready eq ready; target: 기본 공격은 대상 최대 체력에 비례한 마법 피해를 추가로 입힙니다. [magic]; 수치 stat_coefficient en:body:n0=4%(백분율),en:body:n1=10%(백분율) target.maxHealth level_range; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.spell_ready eq ready / target.target_type neq minion; caster: 추가 피해로 입힌 피해량의 100%만큼 회복합니다.; 수치 ratio_output en:body:n2=100%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.spell_ready eq ready / target.target_type eq minion; caster: 미니언에게 입힌 추가 피해량의 25%만큼 회복합니다.; 수치 ratio_output en:body:n3=25%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 재사용 대기시간이 끝난 뒤 효과를 다시 발동할 수 있습니다.; 수치 cooldown_seconds en:body:n4=22,en:body:n5=10 상수 level_range; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / caster.spell_ready eq down / caster.other absent edge of The Darkin Blade; caster: 챔피언 또는 대형 정글 몬스터에게 기본 공격이나 스킬이 적중하면 재사용 대기시간이 2초 감소합니다.; 수치 cooldown_seconds en:body:n6=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 target.target_type eq monster / target.other present large jungle monster / caster.spell_ready eq down / caster.other absent edge of The Darkin Blade; caster: 챔피언 또는 대형 정글 몬스터에게 기본 공격이나 스킬이 적중하면 재사용 대기시간이 2초 감소합니다.; 수치 cooldown_seconds en:body:n6=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / caster.other present edge of The Darkin Blade / caster.spell_ready eq down; caster: 다르킨의 검 끝이 챔피언 또는 대형 정글 몬스터에게 적중하면 위 감소량 대신 재사용 대기시간이 4초 감소합니다.; 수치 cooldown_seconds en:body:n7=4 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq monster / target.other present large jungle monster / caster.other present edge of The Darkin Blade / caster.spell_ready eq down; caster: 다르킨의 검 끝이 챔피언 또는 대형 정글 몬스터에게 적중하면 위 감소량 대신 재사용 대기시간이 4초 감소합니다.; 수치 cooldown_seconds en:body:n7=4 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "대상최대체력 근거를 요약에서 보완; 쿨감 단위와4초대체·대상조건 근거 보완",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Aatrox's Attacks deal an additional (4% ~ 10%) max Health magic damage and restore 100% of damage dealt as Health, reduced to 25% against minions. This effect has a (22 ~ 10) second cooldown. Attack and Ability hits against champions and large jungle monsters reduce this effect's cooldown by 2 seconds. Hits with the edge of The Darkin Blade reduce it by 4 seconds instead."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

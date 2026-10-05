@@ -1,0 +1,122 @@
+{
+  "id": "Warwick.W",
+  "sourceHash": "b3e00001d8355bd93f526de68622522020377845e1ce00486df504bca22086b5",
+  "beforeCandidateHash": "7bf73aaaadf1b7c9348c5abfb38ce974526730d31e2e724c438211b49798ca95",
+  "candidateHash": "be07adb35ea23c9ecd7f2cc18271a773ee4fdb8575d68f58d64fe5939071d9e3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 3,
+  "summaryCheck": "아군이50%미만으로 낮춘 챔피언 감지·접근이속,50%미만 적에게공격/스킬 공속,25%미만효과200%증가,사용시모든적감지·최근접챔피언8초체력무관·챔피언없으면쿨30%감소 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.target_type eq champion / target.health_threshold lt en:body:n0=50%(백분율) / target.other eq 아군에 의해 체력50%미만이 된 챔피언 / caster.other eq 해당 챔피언을 향해 이동; caster: 해당 챔피언을 향해 이동할 때 이동 속도가 증가한다.; 수치 amount en:body:n1=35(백분율),en:body:n2=42.5(백분율),en:body:n3=50(백분율),en:body:n4=57.5(백분율),en:body:n5=65%(백분율) caster.moveSpeed rank_values; flags 없음 | target: 아군에 의해 체력50%미만이 된 챔피언을 수동적으로 감지합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 target.health_threshold lt en:body:n6=50%(백분율); caster: 해당 적을 대상으로 스킬이나 공격을 사용할 때 공격 속도가 증가한다.; 수치 amount en:body:n7=70(백분율),en:body:n8=80(백분율),en:body:n9=90(백분율),en:body:n10=100(백분율),en:body:n11=110%(백분율) caster.attackSpeed rank_values; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.health_threshold lt en:body:n13=25%(백분율); caster: 해당 적에 대한 위 이동 속도 및 공격 속도 효과가 증가한다.; 수치 amount en:body:n12=200%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; nearby_enemies: 잠시 동안 모든 적을 감지한다.; 수치 없음; flags 없음 | caster: 체력과 관계없이 가장 가까운 챔피언에게 이 스킬의 기본 지속 효과를 적용한다.; 수치 duration_seconds en:body:n14=8 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq 이 스킬로 발견된 챔피언이 없음; caster: 발견된 챔피언이 없으면 이 스킬의 재사용 대기시간이 감소한다.; 수치 amount en:body:n15=30%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.health_threshold lt en:body:n16=50%(백분율) / target.target_type eq champion; caster: 기본 지속 효과로 감지할 수 있는 적은 아군에 의해 체력이 해당 기준 아래로 내려간 적이다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "자신 visible 전제와 감지/접근조건 누락,8초를 적수로참조한 오류 및en/ko경계충돌 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Warwick can sense champions below 50% Health, gaining 35/42.5/50/57.5/65% Move Speed towards them. Spells and attacks against enemies below 50% Health grant 70/80/90/100/110% Attack Speed. These effects are increased by 200% against enemies below 25% Health. Active: Warwick can briefly sense all enemies, and gains this Ability's passive effect against the closest champion for 8 seconds, regardless of Health. If no champions are found, this Ability's cooldown is reduced by 30%. Warwick can only passively sense enemies who were brought below 50% Health by allies."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 646,
+      "verdict": "repaired",
+      "reason": "8개체 조건을 발견챔피언 없음으로 수정."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "영문 tooltip은 체력이 25% 미만인 적에 대한 기존 효과가 200% 증가한다고만 하며, 증가분 적용의 세부 산식은 설명하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "영문 tooltip은 발동 시 챔피언이 발견되지 않은 경우라고 적지만, 함께 감지하는 모든 적 중 챔피언이 없다는 뜻인지 판정 범위는 추가로 설명하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "25%기준은 영문 below(미만)와 한국어 이하가 충돌하며 영문 본문 미만 우선. 공격속도 대상은 영문 enemies와 한국어 해당챔피언 범위가 다르며 영문 우선.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

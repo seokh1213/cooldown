@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Morgana.Q",
+      "sourceHash": "55af183a7a6d8083a8309b48da62086bdce64a45db8067581c614db1b552b295",
+      "candidateHash": "baf5d37cd95b4f92968c7d93eb1f5b5ec3e43439a093af982040f7a038c586dc"
+    },
+    {
+      "id": "Morgana.E",
+      "sourceHash": "9a80768410f07205c68e3f8964e244f400ffd63b1fb2370edf245064efc5ac0c",
+      "candidateHash": "a7e16de4301eab005dd394e25f42fbc847dfe8c8d75cf225c5517a799a7d6ce5"
+    },
+    {
+      "id": "Morgana.P",
+      "sourceHash": "b417a9da265294a7cb96f3d4d1f45bc3248273f7e9fa0501ac3c0907eda89109",
+      "candidateHash": "1cc99e767b233d8dcd588427d842c284f05ecfc03ca33d5d4ec6bcfa57630947"
+    },
+    {
+      "id": "Morgana.R",
+      "sourceHash": "912675496d60dc5e3f20e534295866a0c274be380110e0ba946430f9e963fa5f",
+      "candidateHash": "8a0d6c4c633e855de25156a018a0108e91a441240ca21b8d624ebb021cb67f50"
+    },
+    {
+      "id": "Morgana.W",
+      "sourceHash": "5bdaf02e656234f52179921cad1cc4b87847100a3f15f0cce9d7d41032eae32a",
+      "candidateHash": "2607d9d27037b0876bcac149f2a7e6e50c05cafd38a0e0c1b505c43ec6698148"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Morgana.P",
+      "path": "rules.0.trigger.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters.",
+      "issue": "발동 주체를 `target`으로 지정했지만, 원문에서 회복하는 주체는 모르가나입니다.",
+      "correction": "trigger.subject를 `caster`로 지정하세요."
+    },
+    {
+      "id": "Morgana.P",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters.",
+      "issue": "대형 미니언 조건을 자유 텍스트 `other`로만 표현해, 조건 대상이 미니언이라는 앞선 타입 조건과 일치하는지 구조화된 술어에서 확인할 수 없습니다.",
+      "correction": "대형 미니언 조건을 타입과 의미가 명확한 구조화된 조건으로 표현하세요."
+    },
+    {
+      "id": "Morgana.P",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters.",
+      "issue": "중형 이상 정글 몬스터 조건을 자유 텍스트 `other`로만 표현해, 중형 이상이라는 범위가 구조화된 술어로 보존되지 않습니다.",
+      "correction": "정글 몬스터 및 중형 이상 조건을 의미가 명확한 구조화된 조건으로 표현하세요."
+    },
+    {
+      "id": "Morgana.R",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Morgana chains herself to nearby enemy Champions, dealing (200/275/350 + (80% Ability Power)) magic damage and Slowing them by 20%.",
+      "issue": "조건이 적 챔피언만 지정하고 `nearby` 범위를 누락해, 피해 규칙이 거리와 무관하게 적용되는 것처럼 표현됩니다.",
+      "correction": "원문에 있는 주변 범위를 조건에 보존하세요."
+    },
+    {
+      "id": "Morgana.R",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Morgana chains herself to nearby enemy Champions, dealing (200/275/350 + (80% Ability Power)) magic damage and Slowing them by 20%.",
+      "issue": "피해 효과 텍스트에 20% 둔화가 누락되어 요약과 별도 둔화 효과 규칙에만 남아 있습니다.",
+      "correction": "피해 효과 텍스트에도 20% 둔화를 명시하거나 피해와 둔화를 함께 담는 효과로 표현하세요."
+    },
+    {
+      "id": "Morgana.R",
+      "path": "rules.0.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Morgana chains herself to nearby enemy Champions, dealing (200/275/350 + (80% Ability Power)) magic damage and Slowing them by 20%.",
+      "issue": "시전 이벤트에 대상 챔피언 조건을 붙여, 적 챔피언 대상별 적용을 시전 자체의 조건처럼 표현합니다.",
+      "correction": "시전은 시전자 기준으로 두고, 대상별 적중 효과에 챔피언 및 주변 조건을 연결하세요."
+    },
+    {
+      "id": "Morgana.R",
+      "path": "rules.4.effects.0.parameters.0.numbers.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "While casting this Ability, Morgana gains 20/40/60% Move Speed.",
+      "issue": "첫 이동 속도 수치의 원문 값은 20%인데 `raw`가 `%` 없는 `20`으로 기록되어 원문 표기가 일관되게 보존되지 않습니다.",
+      "correction": "첫 수치의 `raw`를 `20%`로 기록하세요."
+    },
+    {
+      "id": "Morgana.W",
+      "path": "rules.0.effects.0.parameters.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "increased by up to (36/62/88/114/140 + (40% Ability Power)) based on the targets' missing Health.",
+      "issue": "최대 피해 증가분의 계수를 기본 피해와 분리된 `max_amount`로 기록해, 주문력 40%가 최대 증가량에 붙는 값임을 구조가 나타내지 못합니다.",
+      "correction": "최대 증가량과 그 주문력 계수를 하나의 증가분으로 연결해 기록하거나, 연결을 표현할 수 없다면 해당 관계를 미상으로 남기세요."
+    }
+  ],
+  "notes": []
+}

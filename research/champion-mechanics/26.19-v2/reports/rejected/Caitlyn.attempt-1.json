@@ -1,0 +1,1039 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "일정 횟수의 공격을 쌓거나 덫·투망에 걸린 적을 공격하면 헤드샷을 발사한다. 헤드샷은 추가 물리 피해를 입히며, 덫에 걸린 적에게는 추가 피해를 더 입힌다. 덫·투망에 걸린 적을 향한 헤드샷은 사거리가 늘어난다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "공격을 헤드샷 준비 횟수에 반영한다. 수풀 안에서 한 공격은 준비 횟수에 두 번 반영된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Attacks while in brush count as 2 for building towards a Headshot."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "헤드샷 공격은 추가 물리 피해를 입힌다. 피해량은 공격력 계수로 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Every 5 Attacks, Caitlyn fires a Headshot. Headshots deal an additional ((60% ~ 100%) Attack Damage) physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "enum",
+                "value": "immobilized"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "덫 또는 투망의 영향을 받는 적을 향한 헤드샷 사거리가 늘어난다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "They have double range against enemies affected by 90 Caliber Net and Yordle Snap Trap."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Attacks while in brush count as 2 for building towards a Headshot."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "enum",
+                "value": "immobilized"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "요들잡이 덫에 적중한 적을 향한 헤드샷은 추가 물리 피해를 더 입힌다. 추가 피해에는 케이틀린의 추가 공격력이 반영된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Headshots against enemies hit by Yordle Snap Trap deal a further (35/80/125/170/215 + (30% bonus Attack Damage)) physical damage."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "본문의 ‘enemies affected by 90 Caliber Net and Yordle Snap Trap’가 두 효과 중 하나에 걸린 대상을 뜻하는지 문장만으로는 확정하기 어렵다. 사거리 증가 조건을 둘 중 하나로 구조화했다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "They have double range against enemies affected by 90 Caliber Net and Yordle Snap Trap."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "헤드샷을 발사하는 공격 횟수 누적 방식과 덫·투망 대상 공격이 누적 횟수 조건을 대체하는지 또는 별도로 발동하는지는 수치 tooltip만으로 완전히 확정되지 않는다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "Every few basic attacks, or against a target she has trapped or netted, Caitlyn will fire a headshot dealing bonus damage that scales with her critical strike chance."
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "summary": "소총을 조준한 뒤 관통 사격을 발사해 물리 피해를 입힌다. 첫 대상에 적중한 뒤 탄환이 넓어져 후속 대상에게 별도의 피해를 입힌다. 덫으로 위치가 드러난 적은 후속 사격에서도 처음 사격의 피해를 받는다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "관통 사격이 물리 피해를 입힌다. 피해에는 케이틀린의 공격력 계수가 반영된다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Caitlyn revs her rifle to fire a piercing shot dealing (50/90/130/170/210 + (125/145/165/185/205% Attack Damage)) physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "secondary_targets",
+              "field": "hit_count",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "secondary_targets",
+              "text": "탄환이 첫 대상에 적중한 뒤 넓어져 후속 대상에게 물리 피해를 입힌다. 피해에는 케이틀린의 공격력 계수가 반영된다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After the bolt strikes the first target, it opens into a wider shot that deals (30/54/78/102/126 + (75/87/99/111/123% Attack Damage)) physical damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Caitlyn revs her rifle to fire a piercing shot dealing (50/90/130/170/210 + (125/145/165/185/205% Attack Damage)) physical damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "요들잡이 덫으로 위치가 드러남"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "요들잡이 덫으로 위치가 드러난 적은 항상 관통 사격의 전체 피해를 받는다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies revealed by Yordle Snap Trap always take full damage."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "툴팁은 덫으로 드러난 적이 항상 전체 피해를 받는다고 하지만, 해당 적이 첫 대상인지 후속 대상인지에 따른 정확한 피해 공식은 문장만으로 확정되지 않는다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies revealed by Yordle Snap Trap always take full damage."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "덫은 처음 밟은 적 챔피언을 속박하고 절대 시야를 제공한다. 덫은 일정 시간 지속되며 여러 개를 설치하거나 충전해 둘 수 있다. 이 스킬에 속박된 대상은 헤드샷으로 추가 물리 피해를 받는다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "덫을 처음 밟은 적 챔피언을 속박한다.",
+              "damageType": null,
+              "crowdControl": "root",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "visibility",
+              "subject": "caster",
+              "text": "속박된 적에 대한 절대 시야를 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Caitlyn sets a trap that Roots the first champion that steps on it for 1.5 seconds and granting True Sight of them for 3 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "unknown"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "unknown",
+              "text": "설치된 덫은 일정 시간 뒤 지속이 끝난다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Traps last for 30/35/40/45/50 seconds"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Traps last for 30/35/40/45/50 seconds, and 3/3/4/4/5 traps may be active at once."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "summon",
+              "subject": "summon",
+              "text": "덫을 설치한다. 동시에 활성화할 수 있는 덫의 수는 스킬 등급에 따라 달라진다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "3/3/4/4/5 traps may be active at once."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Traps last for 30/35/40/45/50 seconds, and 3/3/4/4/5 traps may be active at once."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "이 스킬은 충전 횟수를 보유한다. 충전 횟수는 스킬 등급에 따라 달라진다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "storage_cap",
+                  "numberRefs": [
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability has 3/3/4/4/5 charges (26/22/18/14/10 second refresh)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "enum",
+                "value": "immobilized"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "이 스킬에 속박된 대상은 헤드샷으로 추가 물리 피해를 받는다. 추가 피해에는 케이틀린의 추가 공격력이 반영된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n22",
+                    "en:body:n23",
+                    "en:body:n24",
+                    "en:body:n25",
+                    "en:body:n26"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n27"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Targets rooted by this Ability take an additional (35/80/125/170/215 + (30% bonus Attack Damage)) physical damage from Headshot."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "투망을 발사해 처음 적중한 적을 둔화시키고 마법 피해를 입힌다. 반동으로 케이틀린은 뒤로 밀려난다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 적중한 적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "처음 적중한 적에게 마법 피해를 입힌다. 피해에는 케이틀린의 주문력이 반영된다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The net Slows the first target hit by 50% for 1 second and deals (80/130/180/230/280 + (80% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "투망의 반동으로 뒤로 밀려난다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Caitlyn fires a net, pushing her backwards."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "정신을 집중해 대상을 조준한 뒤 물리 피해를 입힌다. 다른 적 챔피언이 투사체를 대신 맞을 수 있다. 정신 집중 중 대상에 대한 절대 시야를 얻으며, 피해량은 치명타 확률과 치명타 피해량에 따라 증가한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "조준한 대상에게 물리 피해를 입힌다. 피해에는 케이틀린의 추가 공격력이 반영되며, 치명타 확률과 치명타 피해량에 따라 증가한다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Caitlyn takes a moment to channel and line up the perfect shot, then she fires, dealing (300/475/650 + (100% bonus Attack Damage)) physical damage, but other enemy champions can intercept it. This Ability grants True Sight of the target during the channel. Damage scales with Caitlyn's Critical Strike chance and Critical Strike Damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gt",
+              "value": {
+                "kind": "text",
+                "value": "정신 집중 중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "visibility",
+              "subject": "caster",
+              "text": "정신 집중 중 대상에 대한 절대 시야를 얻는다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability grants True Sight of the target during the channel."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "enemy",
+              "text": "다른 적 챔피언이 투사체를 대신 맞을 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "but other enemy champions can intercept it."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "치명타 확률과 치명타 피해량이 피해량에 반영된다는 사실은 있으나, 정확한 계산식이 제시되지 않아 수치 계수를 구조화하지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Damage scales with Caitlyn's Critical Strike chance and Critical Strike Damage."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "정신 집중 시야 지속과 적 챔피언의 투사체 가로채기 조건은 tooltip에 구체적인 판정 시점이나 대상 범위가 더 제시되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Caitlyn takes a moment to channel and line up the perfect shot, then she fires, dealing (300/475/650 + (100% bonus Attack Damage)) physical damage, but other enemy champions can intercept it."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Caitlyn.P",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.1.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.1",
+          "detail": "Number reference lacks quoted evidence: en:body:n0"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.1",
+          "detail": "Number reference lacks quoted evidence: en:body:n2"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.1",
+          "detail": "Number reference lacks quoted evidence: en:body:n3"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.1",
+          "detail": "Number reference lacks quoted evidence: en:body:n2"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.1",
+          "detail": "Number reference lacks quoted evidence: en:body:n3"
+        }
+      ]
+    },
+    {
+      "id": "Caitlyn.Q",
+      "errors": [
+        {
+          "code": "first_hit",
+          "path": "rules.2",
+          "detail": "First-hit restriction is not stated by this rule's evidence"
+        }
+      ]
+    }
+  ]
+}

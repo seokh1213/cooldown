@@ -1,0 +1,266 @@
+{
+  "id": "Ezreal.W",
+  "sourceHash": "5288f80024fcf91c79a924b80d543c35fe7d236649c376a58247ceabe59c6b93",
+  "beforeCandidateHash": "a6de13791664cb930cf75af6f6170effac41be9033ea9957b8c7ef4a0e70326c",
+  "candidateHash": "c53c648cb283112a9a959f7df378baa4f7ca3844d4f1d02fd7ecab904141af34",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "챔피언/구조물/에픽정글 첫 적중에4초 구체 부착; 이즈리얼 공격/스킬 적중 폭발과 스킬로 폭발할 때만 그 스킬 마나+60 환급을 구분.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전만으로 자동 부착하지 않고 허용한 대상 중 첫 적중에4초 W 구체. 미니언·일반 정글 대상에 확장하지 않음."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "W 구체의 같은 대상을 본인이 공격 또는 스킬 적중시키면80~300+추가AD100%+AP90% 마법 피해."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "본인의 스킬로 W 구체를 폭발한 경우에만 해당스킬 비용+60마나 환급. 기본공격 폭발에는 환급하지 않음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "표식이 cast에 무조건 적용되는 구조",
+      "correction": "first hit 및 챔피언/구조물/에픽몬스터 범위의 적중 조건으로 보존",
+      "sourceId": "en:body",
+      "quote": "Ezreal fires a magical orb that sticks to the first champion, structure, or epic jungle monster hit for 4 seconds."
+    },
+    {
+      "path": "rules.1/2.conditions",
+      "issue": "임의 표식 presence true로 W표식 종류가 누락",
+      "correction": "정수의 흐름 구체 및 같은 적중 대상 조건으로 명시",
+      "sourceId": "en:body",
+      "quote": "If Ezreal hits that target with an Attack or Ability, it detonates"
+    },
+    {
+      "path": "rules.2.effects.0.parameters.0.role",
+      "issue": "마나 환급이 일반 amount로 기록",
+      "correction": "resource_refund 역할로 명시",
+      "sourceId": "en:body",
+      "quote": "Detonating with an Ability refunds the Mana cost of that Ability plus 60 Mana."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "구체는 처음 적중한 챔피언, 구조물 또는 에픽 정글 몬스터에게 일정 시간 붙습니다. 이즈리얼이 해당 대상에게 기본 공격이나 스킬을 적중시키면 폭발해 마법 피해를 주며, 스킬로 폭발시키면 마나를 돌려받습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "챔피언, 구조물 또는 에픽 정글 몬스터"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "구체가 처음 적중한 챔피언, 구조물 또는 에픽 정글 몬스터에게 일정 시간 붙습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a magical orb that sticks to the first champion, structure, or epic jungle monster hit for 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "이즈리얼 W 정수의 흐름 구체"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Ezreal hits that target with an Attack or Ability, it detonates, dealing (80/135/190/245/300 + (100% bonus Attack Damage) + (90% Ability Power)) magic damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a magical orb that sticks to the first champion, structure, or epic jungle monster hit for 4 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "이즈리얼 W 정수의 흐름 구체"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "스킬로 구체를 폭발시키면 해당 스킬의 마나 소모량에 60 마나를 더한 양을 돌려받습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "resource_refund",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Detonating with an Ability refunds the Mana cost of that Ability plus 60 Mana."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Ezreal fires a magical orb that sticks to the first champion, structure, or epic jungle monster hit for 4 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

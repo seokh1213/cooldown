@@ -1,0 +1,121 @@
+{
+  "id": "Warwick.Q",
+  "sourceHash": "226a1c26d848a529ae832c9b94b436a23d94ea82bd0c380e0c5c73f005dc126a",
+  "beforeCandidateHash": "d8757c1f8ae25c5b8dd8cf032e36610ee3eec4a595f9639ec38b86b7f59f16b2",
+  "candidateHash": "9516503f673c3d9f4ad099488266d2d1035a3e95706bfb5306e2f90f742da1b0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 0,
+  "summaryCheck": "짧게 도약·대상최대체력계수와 AD/AP마법,피해비율회복,길게 물기 뒤로도약·대상이동추적·놓은뒤같은피해/회복,온힛/온어택·치명불가·물고있는동안 displacement면역 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq tap; target: 대상을 물어 공격력과 주문력, 대상 최대 체력에 비례한 마법 피해를 입힌다. [magic]; 수치 stat_coefficient en:body:n0=120%(백분율) caster.totalAttackDamage scalar / stat_coefficient en:body:n1=100%(백분율) caster.abilityPower scalar / amount en:body:n2=6(백분율),en:body:n3=7(백분율),en:body:n4=8(백분율),en:body:n5=9(백분율),en:body:n6=10%(백분율) target.maxHealth rank_values; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq tap; caster: 입힌 피해량의 일정 비율만큼 체력을 회복한다.; 수치 ratio_output en:body:n7=25(백분율),en:body:n8=37.5(백분율),en:body:n9=50(백분율),en:body:n10=62.5(백분율),en:body:n11=75%(백분율) 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq hold; caster: 대상을 물고 뒤로 도약하며, 물고 있는 동안 대상의 모든 이동을 따라간다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq hold / caster.activation eq 길게 물기 후 대상을 놓는 순간; target: 물기를 놓은 뒤 짧게 누를 때와 같은 피해를 입힌다. [magic]; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq hold / caster.activation eq 길게 물기 후 대상을 놓는 순간; caster: 물기를 놓은 뒤 짧게 누를 때와 같은 회복을 한다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; target: 적중 및 공격 시 효과를 적용하며 치명타가 발생하지 않는다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.activation eq 대상을 꽉 물고 있는 동안; caster: 대상을 물고 있는 동안 밀쳐내기 효과에 면역이다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "피해 기반 회복비율 역할과 물기 해제/물고있는동안 조건을 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Tap: Warwick lunges forward and bites, dealing ((120% Attack Damage) + (100% Ability Power)) plus 6/7/8/9/10% max Health magic damage and healing for 25/37.5/50/62.5/75% of the damage dealt. Hold: Warwick lunges and clamps his jaws on the target, leaping behind them. While clamped, Warwick follows all movement of the target. After releasing his hold, he does the same damage and healing. This Ability applies On-Hit and On-Attack effects, and does not Critically Strike. While clamped, Warwick is immune to displacement."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 641,
+      "verdict": "false_positive",
+      "reason": "공급 en:summary의 based on their maximum health와 ko:summary의 대상 최대 체력이 소유자를 명시; evidence보완으로 target소유자 유지."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "id": "Kayle.R",
+  "sourceHash": "daac101e8c7581a32597b9f45abdce155875f801b511abddc7b03efef721abc2",
+  "beforeCandidateHash": "60c866a8a1f6413ec7d363a41ead96b266f1e0f66dbf825d734107bfc902f215",
+  "candidateHash": "5f9c0087ca8de902414e55cff0a0e15e06c8f8af35f3f7b4a1985365acf86482",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "아군 챔피언의 2.5초 무적과 그 뒤 주변 적 마법 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군 챔피언 한 명의 2.5초 Invulnerable을 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "무적 이후 대상 주변 200/300/400 + 주문력 70% + 추가 공격력 100% 마법 피해를 cast 즉시 피해와 구분했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.trigger.event",
+      "issue": "and then 피해 단계는 무적 부여 이후이며 cast 즉시 피해로 실행하면 시점이 잘못된다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Kayle makes an allied champion Invulnerable for 2.5 seconds and then purifies the area around them, dealing (200/300/400 + (70% Ability Power) + (100% bonus Attack Damage)) magic damage to nearby enemies."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Kayle.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

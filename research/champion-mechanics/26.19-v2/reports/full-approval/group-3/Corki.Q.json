@@ -1,0 +1,69 @@
+{
+  "id": "Corki.Q",
+  "sourceHash": "ea90078cea259a8a74b88718bbab50211e0974eb6c2b72dd8f6c15a91ebb16f4",
+  "beforeCandidateHash": "2429647f965c26cbc90d724dfe875e334641deb9085147c2d80b31200a91bd96",
+  "candidateHash": "3fe8aeb65dc6aa92131255cf97e4bbe5df6c71033e756c2e54edb60446901d84",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "지정지역폭탄60/105/150/195/240+추가AD125%+AP100%마법피해,지역및맞힌챔피언6초공개를대조했다.요약지역유닛전체와본문챔피언범위차이는본문우선으로기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 지정위치폭탄에맞은지역안의적에게마법피해를입힙니다. [magic] / amount=60/105/150/195/240 [rank_values]; stat_coefficient=125% (caster bonusAttackDamage) [formula_components]; stat_coefficient=100% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → unknown: 폭탄이맞힌지역을6초동안공개합니다. / duration_seconds=6 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion → target: 이폭탄에맞힌챔피언을6초동안공개합니다. / duration_seconds=6 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2/gaps",
+      "issue": "지역과챔피언공개를일반enemy효과에혼합해모든적유닛공개로읽혔다.",
+      "correction": "지역과적중챔피언공개를분리하고요약범위충돌을기록했다.",
+      "sourceId": "en:body",
+      "quote": "The area and champions hit are revealed for 6 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "요약은지역유닛들을공개한다고하지만en/ko본문은지역및맞힌챔피언을공개한다고명시한다.본문의지역/챔피언6초공개로기록했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

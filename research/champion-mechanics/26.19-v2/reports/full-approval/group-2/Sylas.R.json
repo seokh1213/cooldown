@@ -1,0 +1,100 @@
+{
+  "id": "Sylas.R",
+  "sourceHash": "3108f031d7e1f164cb9cb0d10accffabfcad1244f24ff4474f91bd81ca41fdb2",
+  "beforeCandidateHash": "f6c858f7e137376aae89b6da7e9875c346dd69067a98181490d500743176b5f4",
+  "candidateHash": "5873d6bcf1b8d127e639e2399304f5077ffb8e0f2b974385cee45a4b0b74adaf",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "자신 궁레벨/능력치를 쓰는 적챔피언 궁극기 복사본; 재강탈 쿨200%와최소40초, 비혼합 추가AD/총AD 계수 각각0.4/0.6AP 전환 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 적 챔피언의 궁극기 복사본을 강탈해 시전할 수 있습니다. 복사본은 사일러스의 궁극기 레벨과 능력치를 사용합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion; target: 사일러스가 해당 적에게 다시 강탈하기까지, 그 적 궁극기의 쿨타임200%를 사일러스 스킬가속으로 조정한 대기시간이 적용됩니다. 최소40초이며 적 자신의 궁극기 사용을 막는 효과가 아닙니다.; 수치 ratio_output en:body:n0=200%(백분율) 상수 scalar / min_amount en:body:n1=40 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.activation eq 강탈 궁극기의 순수 비혼합 AD계수 적용; caster: 순수(비혼합) bonusAttackDamage 계수1을 주문력 계수0.4로 전환해 강탈 궁극기의 계수에 적용합니다. 사일러스의 실제 능력치 획득량이 아닙니다.; 수치 ratio_input en:body:n3=1 상수 scalar / ratio_output ko:body:n3=0.4 상수 scalar; flags replace_input"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.activation eq 강탈 궁극기의 순수 비혼합 AD계수 적용; caster: 순수(비혼합) totalAttackDamage 계수1을 주문력 계수0.6로 전환해 강탈 궁극기의 계수에 적용합니다. 사일러스의 실제 능력치 획득량이 아닙니다.; 수치 ratio_input en:body:n5=1 상수 scalar / ratio_output ko:body:n4=0.6 상수 scalar; flags replace_input"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "누락된 AD→AP 계수 전환2개를 추가하고 재강탈 쿨의 주체/40초단위를 분명히 함; 기존 비혼합AD계수의 대체 변환임을 replace_input flag로 보존",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Sylas hijacks an enemy champion, allowing him to cast a copy of their ultimate Ability, based on his Ultimate level and using his stats. Hijacking an enemy places a Cooldown on them for 200% (modified by Sylas' Ability Haste) of the enemy's ultimate's Cooldown, with a minimum of 40 seconds, during which time Sylas cannot hijack them again. Sylas converts non-hybrid AD ratios into AP ratios, granting him .4 AP: 1 Bonus AD and .6 AP: 1 Total AD respectively."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "재강탈 대기시간이 대상 궁극기 대기시간과 스킬 가속으로 조정된다는 점은 명시되어 있으나, 정확한 계산식은 tooltip에 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "영문 .4/.6의 lexical 숫자표는 각각4/6으로 끊어진다. 계수는 정확한 한국어0.4/0.6 ref를 사용하며 영문 숫자표만으로 실행하지 말 것.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

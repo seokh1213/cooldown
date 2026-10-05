@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Irelia.E",
+      "sourceHash": "7dce8aa054117ef4a32745d39e8b7b8313d9953a4f72772c604522a71ac3b315",
+      "candidateHash": "9e22f50d6de59a5e8e24f8951f5e5a63432281a222c8e27aa696394b72ce52b3"
+    },
+    {
+      "id": "Irelia.P",
+      "sourceHash": "83c6413c97718a6dedb60a55b1b9084a9bf9f87a764fbd5e4a2dda6aa3ab6218",
+      "candidateHash": "d93c49bd97bbc3deec53553f17862d35725f7bf807474a6f3d97d2dc4bb92f53"
+    },
+    {
+      "id": "Irelia.Q",
+      "sourceHash": "6d1a4ce13c4a635c408348a2662362a4d0acc11173d9da848adf36aebb826bba",
+      "candidateHash": "c6b1aceada2df45ab0f373e3b0c3dede5080e848f89f5c12c159ef89f374ace1"
+    },
+    {
+      "id": "Irelia.R",
+      "sourceHash": "e721b8e56207495f7f18287c77db2daf93ecfbe5599ccdaec5044e7ed96a1b08",
+      "candidateHash": "5c66ad0b7bf1f85a0fb749d033f26ddd2adbd1155791eeda94e2c0b51e220c41"
+    },
+    {
+      "id": "Irelia.W",
+      "sourceHash": "ea86a3c0f5956adab343f02f3971e6fffe98d14f29b7bfb0cc05018cd29f97f3",
+      "candidateHash": "12ed30fdae33f178b43644e06282819070ed8e7023609d78750f431510ddf6e8"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Irelia.P",
+      "path": "rules.2.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "She gains (10.0 ~ 25.0)% Attack Speed per stack, and at max stacks her Attacks deal an additional ((10 ~ 61) + (20% bonus Attack Damage)) magic damage.",
+      "issue": "공격 속도 효과의 조건이 중첩 4 초과로 되어 있어, 툴팁의 최대 4중첩 상태에서는 효과가 적용되지 않는다고 읽힙니다.",
+      "correction": "조건을 중첩 수가 최대치에 도달했을 때로 표현하거나, 중첩별 공격 속도 효과와 최대 중첩 추가 피해를 분리하세요."
+    },
+    {
+      "id": "Irelia.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Irelia dashes to an enemy, dealing (5/25/45/65/85 + (80% Attack Damage)) physical damage and restoring (9/10/11/12/13% Attack Damage) Health to herself. If the enemy dies or was Unsteady, the Cooldown is refreshed. Deals (5/25/45/65/85 + (50 ~ 237) + (80% Attack Damage)) damage to minions.",
+      "issue": "미니언이 아닌 대상이라는 조건이 피해와 회복 모두에 붙어 있지만, 본문은 기본 피해와 회복을 적에게 돌진할 때 적용한다고 하고 미니언 피해만 별도로 설명합니다. 이 조건은 미니언 대상의 기본 피해를 누락시키고 회복 적용 범위를 임의로 제한합니다.",
+      "correction": "기본 피해 및 회복의 대상을 툴팁에 맞게 분리하세요. 미니언 대상 피해는 별도 수치로 표현하되, 본문에 없는 회복 제한을 조건으로 두지 마세요."
+    },
+    {
+      "id": "Irelia.Q",
+      "path": "rules.2.effects.0.damageType",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals (5/25/45/65/85 + (50 ~ 237) + (80% Attack Damage)) damage to minions.",
+      "issue": "미니언 추가 피해의 피해 유형을 물리로 단정했지만, 해당 문장에는 피해 유형이 명시되지 않았습니다.",
+      "correction": "피해 유형은 미상으로 두거나, 유형을 단정하지 않는 텍스트로 보존하세요."
+    },
+    {
+      "id": "Irelia.Q",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If the enemy dies or was Unsteady, the Cooldown is refreshed.",
+      "issue": "대상이 죽었다는 조건이 대상의 상태값 `down`과 동일하다고 단정되어 있습니다. 툴팁은 사망 여부를 말할 뿐 이 상태값의 의미를 정의하지 않습니다.",
+      "correction": "사망 조건을 텍스트/미상으로 보존하고, `down`을 사망과 동일시하지 마세요."
+    },
+    {
+      "id": "Irelia.R",
+      "path": "rules.0.trigger",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Irelia launches a barrage of blades, dealing (125/200/275 + (100% Ability Power)) magic damage",
+      "issue": "칼날 다발의 피해가 시전 시 발생한다고 기록되어 있지만, 툴팁은 발사 후 적중 시 피해를 준다고 서술합니다. 현재 규칙은 대상이나 적중 여부와 무관하게 피해가 발생하는 것으로 읽힙니다.",
+      "correction": "피해 발생 시점을 적중 이벤트로 표현하고, 대상 범위는 툴팁이 뒷받침하는 범위로 보존하세요."
+    },
+    {
+      "id": "Irelia.R",
+      "path": "rules.4",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "The cage deals (125/200/275 + (100% Ability Power)) magic damage and Slows by 90% for 1.5 seconds.",
+      "issue": "결계 피해와 둔화 규칙에 첫 적중 챔피언 또는 결계 대상 조건이 없습니다. 현재는 모든 적중 대상에게 결계 효과가 적용되는 것으로 표현됩니다.",
+      "correction": "결계 효과의 대상을 툴팁이 뒷받침하는 결계 범위로 한정하세요. 주변 적에게 같은 피해나 둔화가 적용된다고 단정하지 말고, 해당 범위가 불명확하면 텍스트와 공백으로 보존하세요."
+    },
+    {
+      "id": "Irelia.R",
+      "path": "rules.5.trigger",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "The cage deals (125/200/275 + (100% Ability Power)) magic damage and Slows by 90% for 1.5 seconds.",
+      "issue": "둔화가 적중 시 발생하는 것으로 기록되어 있지만, 툴팁은 결계가 둔화시키며 피해와 둔화의 발동 이벤트를 별도로 명시하지 않습니다.",
+      "correction": "적중 이벤트로 단정하지 말고 결계 효과라는 텍스트로 보존하거나, 툴팁이 뒷받침하는 발동 시점만 기록하세요."
+    },
+    {
+      "id": "Irelia.W",
+      "path": "rules.4.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Reaches max damage increase after 0.75 seconds.",
+      "issue": "0.75초가 지나면 최대 피해 증가량에 도달한다는 문장을 충전 시간 조건으로 기록했지만, 이 조건은 최대 피해 증가분만 나타내며 기본 피해가 사라지는 것으로 오해될 수 있습니다.",
+      "correction": "기본 피해와 최대 증가분을 결합한 전체 피해를 최대 충전 시점에 표현하거나, 계산을 단정하지 않는 텍스트와 공백으로 보존하세요."
+    }
+  ],
+  "notes": []
+}

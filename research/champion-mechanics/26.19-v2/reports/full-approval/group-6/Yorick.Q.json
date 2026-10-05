@@ -1,0 +1,174 @@
+{
+  "id": "Yorick.Q",
+  "sourceHash": "06911f5e01cb5a8d06659c720bfbd59fbad4714dc75f4264c0ec3f5b47b886b5",
+  "beforeCandidateHash": "7af41cde80c6c30e346700f606db18f482a2f6ef96dc7c8d8170248d83362c2e",
+  "candidateHash": "a4fefc0fd98c43426ecec8adb706a9c736790fff14312ed11c4bad6bb603c40d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "다음 강화 기본 공격의 추가 물리피해와 자기 잃은HP 회복, 비챔피언50%감소, 챔피언·대형몬스터 적중/처치 무덤, 이미사용+무덤3 이상 재사용, 피해 시 spell effects를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화된 다음 공격만30/50/70/90/110+자신 총AD50% 추가 물리 피해."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "회복 기본10~68은 레벨 범위, 추가6/7/8/9/10%는 자신의 잃은HP. maxHealth 참조를 제거했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비챔피언 강화 공격의 전체 회복량50%감소. 피해 배수로 쓰지 않는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 공격 챔피언 적중 시 무덤."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 공격 대형몬스터 적중 시 무덤. 모든 몬스터 제외."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이 강화 공격에 의한 처치면 무덤. 임의 kill로 확장하지 않는다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이미 사용한 상태이고 근처 무덤3개 이상이면 모든 근처 무덤에서 망령 재사용 소환. 적 인원수나 spell down 조건이 아니다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이 스킬이 피해를 줄 때 주문 효과 발동; ko의 일반 효과 표현보다 EN 구체적인 본문을 따른다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0.parameters",
+      "issue": "잃은HP를 maxHealth로 기록 및 레벨범위를 min/max로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick's next Attack deals an additional (30/50/70/90/110 + (50% Attack Damage)) physical damage and restores (10 ~ 68) plus 6/7/8/9/10% of his missing Health, reduced by 50% against non-Champions. If this Attack hits a Champion or large Monster or kills the target, it leaves a grave. When there are 3 or more graves nearby and this Ability has already been used, Yorick can Recast to raise Mist Walkers from all nearby graves. This Ability triggers spell effects upon dealing damage."
+    },
+    {
+      "path": "rules.2.effects.0.parameters.0.role",
+      "issue": "회복 감소를 damage_multiplier로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick's next Attack deals an additional (30/50/70/90/110 + (50% Attack Damage)) physical damage and restores (10 ~ 68) plus 6/7/8/9/10% of his missing Health, reduced by 50% against non-Champions. If this Attack hits a Champion or large Monster or kills the target, it leaves a grave. When there are 3 or more graves nearby and this Ability has already been used, Yorick can Recast to raise Mist Walkers from all nearby graves. This Ability triggers spell effects upon dealing damage."
+    },
+    {
+      "path": "rules.4.conditions.2",
+      "issue": "대형 몬스터 조건 누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick's next Attack deals an additional (30/50/70/90/110 + (50% Attack Damage)) physical damage and restores (10 ~ 68) plus 6/7/8/9/10% of his missing Health, reduced by 50% against non-Champions. If this Attack hits a Champion or large Monster or kills the target, it leaves a grave. When there are 3 or more graves nearby and this Ability has already been used, Yorick can Recast to raise Mist Walkers from all nearby graves. This Ability triggers spell effects upon dealing damage."
+    },
+    {
+      "path": "rules.5.conditions.1",
+      "issue": "스킬 강화 공격으로 처치하는 조건 명료화",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick's next Attack deals an additional (30/50/70/90/110 + (50% Attack Damage)) physical damage and restores (10 ~ 68) plus 6/7/8/9/10% of his missing Health, reduced by 50% against non-Champions. If this Attack hits a Champion or large Monster or kills the target, it leaves a grave. When there are 3 or more graves nearby and this Ability has already been used, Yorick can Recast to raise Mist Walkers from all nearby graves. This Ability triggers spell effects upon dealing damage."
+    },
+    {
+      "path": "rules.6.conditions",
+      "issue": "재사용 가능 조건을 CDdown·근처 적 수로 오기",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick's next Attack deals an additional (30/50/70/90/110 + (50% Attack Damage)) physical damage and restores (10 ~ 68) plus 6/7/8/9/10% of his missing Health, reduced by 50% against non-Champions. If this Attack hits a Champion or large Monster or kills the target, it leaves a grave. When there are 3 or more graves nearby and this Ability has already been used, Yorick can Recast to raise Mist Walkers from all nearby graves. This Ability triggers spell effects upon dealing damage."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "회복 식 표현 한계 기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick's next Attack deals an additional (30/50/70/90/110 + (50% Attack Damage)) physical damage and restores (10 ~ 68) plus 6/7/8/9/10% of his missing Health, reduced by 50% against non-Champions. If this Attack hits a Champion or large Monster or kills the target, it leaves a grave. When there are 3 or more graves nearby and this Ability has already been used, Yorick can Recast to raise Mist Walkers from all nearby graves. This Ability triggers spell effects upon dealing damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 672,
+      "verdict": "repaired",
+      "reason": "his missing Health는 자신의 잃은 체력이며 maxHealth와 다르다. 잘못된 stat를 제거하고 식 한계를 gap으로 기록했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "회복은 자신의 잃은 체력 비율을 더하지만 스키마에 missingHealth 통계가 없다. maxHealth로 치환하지 않고 텍스트로 보존한다.10~68의 중간 레벨값도 제공되지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "Yorick.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.7",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

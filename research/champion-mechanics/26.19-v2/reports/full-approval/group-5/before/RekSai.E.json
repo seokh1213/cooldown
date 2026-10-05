@@ -1,0 +1,222 @@
+{
+  "summary": "돌출 상태에서 대상을 물어뜯어 물리 피해를 준다. 최대 분노일 때는 물리 피해 대신 고정 피해를 준다. 매복 상태에서는 재사용 가능하고 오래 지속되는 땅굴을 만들며, 적은 입구 위에 서서 땅굴을 파괴할 수 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Unburrowed"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상을 물어뜯어 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Unburrowed: Rek'Sai bites a target, dealing (70/95/120/145/170 + (60% bonus Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Unburrowed"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "max Fury"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "최대 분노일 때 물리 피해 대신 고정 피해를 준다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At max Fury, the bite deals (84/114/144/174/204 + (72% bonus Attack Damage)) true damage instead."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Burrowed"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "caster",
+          "text": "재사용 가능하고 오래 지속되는 땅굴을 만든다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "While Burrowed, Rek'Sai creates a re-usable, long lasting tunnel."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "on top of either entrance"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "적이 어느 한쪽 입구 위에 서면 땅굴을 파괴할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Enemies can destroy it by standing on top of either entrance."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "원문은 최대 분노일 때의 대체 피해만 명시하며, 최대 분노 미만에서 일반 물기가 적용되는 조건을 별도로 규정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At max Fury, the bite deals (84/114/144/174/204 + (72% bonus Attack Damage)) true damage instead."
+        }
+      ]
+    }
+  ]
+}

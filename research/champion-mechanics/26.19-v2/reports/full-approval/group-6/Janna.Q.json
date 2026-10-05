@@ -1,0 +1,172 @@
+{
+  "id": "Janna.Q",
+  "sourceHash": "000a105cf1850642a2b0f327dddab1e5acd782560a992e12c5e5a1bf17891353",
+  "beforeCandidateHash": "bfd207486e7e9fcf725622d2cbd7088a348334ecacd8b0facd4617367d622a5d",
+  "candidateHash": "38e00e2ffee8761fd7d9e5f9fcb6e29e2189539d48ccc27b47d6a82f4cdb09be",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 1,
+  "summaryCheck": "3초 성장·자동 발사 또는 재사용 조기 발사, 경로 피해·knockup과 성장당 변화 및 도착 시간을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "회오리는 3초 성장 후 경로로 날아간다. 3초를 회오리 전체 생존 시간으로 단정하지 않았다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "재사용하면 일찍 발사하며 원래 시전 방향을 따른다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최소 피해 55/90/125/160/195 + 주문력 50%와 최대 피해 85/135/185/235/285 + 주문력 80%를 각 끝점으로 보존했다. 두 주문력 계수를 동시에 더하지 않도록 정보 효과로 분류했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "경로의 적을 성장 정도에 따라 0.5~1.25초 띄우며 duration_seconds 범위로 표현했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "성장 1초당 10/15/20/25/30 + 주문력 10%는 최종 피해의 증가량이며 성장 중 매초 적에게 따로 피해를 주는 사건이 아니다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "성장 1초당 knockup 지속 시간이 0.25초 증가하는 정보이며 매초 새 CC가 아니다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "성장 1초당 거리 20% 증가와 발사 후 항상 1.25초에 목적지 도달을 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "성장 후 자동 발사 단계와 3초의 의미를 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a tornado that grows stronger over 3 seconds then blows along its path. It deals (55/90/125/160/195 + (50% Ability Power)) - (85/135/185/235/285 + (80% Ability Power)) magic damage and Knocks Up for 0.5 - 1.25 seconds. The distance, damage, and Knock Up duration increase based on how much the tornado grew. Janna can Recast to send the tornado early. Deals an additional (10/15/20/25/30 + (10% Ability Power)) magic damage, Knocks Up for an additional 0.25 seconds, and travels 20% farther for each second it grew, and always reaches its destination in 1.25 seconds."
+    },
+    {
+      "path": "rules.2.effects.0.kind",
+      "issue": "최소·최대 피해의 두 주문력 계수를 하나의 damage로 동시에 합산할 위험을 제거했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a tornado that grows stronger over 3 seconds then blows along its path. It deals (55/90/125/160/195 + (50% Ability Power)) - (85/135/185/235/285 + (80% Ability Power)) magic damage and Knocks Up for 0.5 - 1.25 seconds. The distance, damage, and Knock Up duration increase based on how much the tornado grew. Janna can Recast to send the tornado early. Deals an additional (10/15/20/25/30 + (10% Ability Power)) magic damage, Knocks Up for an additional 0.25 seconds, and travels 20% farther for each second it grew, and always reaches its destination in 1.25 seconds."
+    },
+    {
+      "path": "rules.3.effects.0.parameters",
+      "issue": "0.5~1.25는 피해량 min/max가 아니라 성장에 따른 CC 시간 범위다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a tornado that grows stronger over 3 seconds then blows along its path. It deals (55/90/125/160/195 + (50% Ability Power)) - (85/135/185/235/285 + (80% Ability Power)) magic damage and Knocks Up for 0.5 - 1.25 seconds. The distance, damage, and Knock Up duration increase based on how much the tornado grew. Janna can Recast to send the tornado early. Deals an additional (10/15/20/25/30 + (10% Ability Power)) magic damage, Knocks Up for an additional 0.25 seconds, and travels 20% farther for each second it grew, and always reaches its destination in 1.25 seconds."
+    },
+    {
+      "path": "rules.4.effects.0.kind",
+      "issue": "성장 매초의 증가량은 발사 시 최종 피해에 반영하며 매초 damage 사건이 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a tornado that grows stronger over 3 seconds then blows along its path. It deals (55/90/125/160/195 + (50% Ability Power)) - (85/135/185/235/285 + (80% Ability Power)) magic damage and Knocks Up for 0.5 - 1.25 seconds. The distance, damage, and Knock Up duration increase based on how much the tornado grew. Janna can Recast to send the tornado early. Deals an additional (10/15/20/25/30 + (10% Ability Power)) magic damage, Knocks Up for an additional 0.25 seconds, and travels 20% farther for each second it grew, and always reaches its destination in 1.25 seconds."
+    },
+    {
+      "path": "rules.5.effects.0.kind",
+      "issue": "성장 중 매초 추가 knockup 사건이 아니라 발사 후 knockup 시간 증가다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a tornado that grows stronger over 3 seconds then blows along its path. It deals (55/90/125/160/195 + (50% Ability Power)) - (85/135/185/235/285 + (80% Ability Power)) magic damage and Knocks Up for 0.5 - 1.25 seconds. The distance, damage, and Knock Up duration increase based on how much the tornado grew. Janna can Recast to send the tornado early. Deals an additional (10/15/20/25/30 + (10% Ability Power)) magic damage, Knocks Up for an additional 0.25 seconds, and travels 20% farther for each second it grew, and always reaches its destination in 1.25 seconds."
+    },
+    {
+      "path": "gaps.0.detail",
+      "issue": "기존 gap은 원문에 있는 1초당 증가 식까지 계산 미정으로 주장하여 실제 한계로 좁혔다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a tornado that grows stronger over 3 seconds then blows along its path. It deals (55/90/125/160/195 + (50% Ability Power)) - (85/135/185/235/285 + (80% Ability Power)) magic damage and Knocks Up for 0.5 - 1.25 seconds. The distance, damage, and Knock Up duration increase based on how much the tornado grew. Janna can Recast to send the tornado early. Deals an additional (10/15/20/25/30 + (10% Ability Power)) magic damage, Knocks Up for an additional 0.25 seconds, and travels 20% farther for each second it grew, and always reaches its destination in 1.25 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "원문은 성장 1초당 피해·CC 시간·거리 증가량과 최소·최대 피해를 명시한다. 최소와 최대 AP 계수를 합산하지 않는다. 부분 초 성장의 반영 및 거리 증가 기준에 대한 추가 계산 설명은 없다."
+    }
+  ],
+  "validation": {
+    "id": "Janna.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

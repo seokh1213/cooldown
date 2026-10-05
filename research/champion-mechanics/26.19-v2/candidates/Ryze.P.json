@@ -1,0 +1,99 @@
+{
+  "summary": "주문력에 비례해 최대 마나가 증가하고, 추가 마나에 비례해 스킬 피해가 증가한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "주문력에 비례해 최대 마나가 백분율로 증가합니다. 본문은(10%AP) max Mana라고 표기합니다. 10%를 입력/출력비율 두 번 적용하거나 단순 고정마나로 바꾸지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "maxMana",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ryze gains (10% Ability Power)max Mana."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "he gains a percentage increase to his maximum Mana based on his Ability Power."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "스킬은 라이즈의 추가 마나에 비례한 추가 피해를 입힙니다. 이 패시브 본문에는 계수나 피해 종류가 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "His Abilities do additional damage based on his bonus Mana."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "스킬 피해가 추가 마나에 비례해 증가하지만 피해 계수가 제공되지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "His Abilities do additional damage based on his bonus Mana."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "summary는 최대마나의 백분율 증가를 말하지만 body의(10%AP)maxMana를 실제 백분율로 바꾸는 정확한 식은 명시하지 않는다. 원문 표현만 보존하며 입력/출력10% 이중 비율 계산을 하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ryze gains (10% Ability Power)max Mana."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "he gains a percentage increase to his maximum Mana based on his Ability Power."
+        }
+      ]
+    }
+  ]
+}

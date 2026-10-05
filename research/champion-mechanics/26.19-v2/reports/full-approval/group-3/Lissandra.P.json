@@ -1,0 +1,57 @@
+{
+  "id": "Lissandra.P",
+  "sourceHash": "0ee5a12a42d6e60c50b3d57df9434b64b5fb53964da143879713587ed16e2c88",
+  "beforeCandidateHash": "afd7ded5ae9967f839293c1d4e2c2617cc207b748d703f1b59bda0f008435c75",
+  "candidateHash": "389126fd65c8c6db7eec7a3632c42506b5c4c3bb95cd9580442095fc5b977306",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "주변적챔피언사망이면얼음노예소환/살아있는적추적,노예근처25%둔화,소환4초후폭발총120~520+AP50%마법피해를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: enemy의 death / 조건 enemy target_type eq champion; enemy distance lte 리산드라 주변 → summon: 사망한 적 챔피언이 살아있는 적을 쫓는 얼음 노예가 된다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: summon의 passive → nearby_enemies: 얼음 노예 주변의 적을 둔화시킨다. [slow] / amount=25% [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: summon의 expiry / 조건 summon time gte 4 → nearby_enemies: 이 얼음 노예가 생긴4초 후 폭발해 노예 주변 대상에게120~520+리산드라주문력50%의 마법 피해를 줍니다. [magic] / amount=120/520 [level_range]; stat_coefficient=50% (caster abilityPower) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.effects.0",
+      "issue": "120~520레벨기본범위가한값씩level_range로분할되고4초의시작기준/폭발범위근거가불완전했다.",
+      "correction": "레벨범위amount와노예생성4초후/주변폭발근거를보존했다.",
+      "sourceId": "en:body",
+      "quote": "After 4 seconds, frozen zombies shatter, dealing ((120 ~ 520) + (50% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

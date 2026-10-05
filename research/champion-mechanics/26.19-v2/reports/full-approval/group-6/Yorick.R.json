@@ -1,0 +1,222 @@
+{
+  "id": "Yorick.R",
+  "sourceHash": "a155e29c417d5bd03fb1e5b6f061f557f6fb649b6c9d22046be2ed1589851067",
+  "beforeCandidateHash": "b599d473f20db6d2051557c89d210bdf50f6fe9918137a270120f702fd6e0341",
+  "candidateHash": "b4811d43c5ea2b62c4ea7594c3db4d8549aed658e5adaaa76550ae18d011cc1f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 10,
+  "checkedGapCount": 2,
+  "summaryCheck": "마녀HP·마법공격 및2/3/4망령 소환, 주변사망 자동각성·챔피언표식, 마녀표적에 요릭 피해 시 대상최대HP2/2.5/3%,10초 후 가까운공격로해방, 마녀 저항력과 lane피해30%를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마녀HP 기본1050~3200+추가HP60%; 범위 기본값과 계수분리, 소유자 unknown."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마녀 소환 시 마법공격력50/75/100+추가AD30%를 부여한다. 소환체가 피해를 받는 사건이 아니며 계수 주인 미명시."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 시전에 망령2/3/4마리 소환."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마녀 근처 적 사망에서 자동 망령 소환."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마녀 기본공격이 적 챔피언에 표식."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "요릭이 마녀의 표적에 피해를 주면 대상최대HP2/2.5/3% 추가마법. 별도 표식 필수조건 제거, 중복 고정 amount 제거."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "소환10초 후 재사용해 마녀를 가까운 공격로로 해방.10초는 해방 이동시간이 아니다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마녀 방어력30~90 범위, 성장 조건 미제공."
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마녀 마저30~90 범위, 성장 조건 미제공."
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마녀는 공격로미니언에서 오는 피해30%만 받는다. 소환된 모든유닛·모든미니언으로 확대하지 않는다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "레벨HP 범위를 min/max, 계수 소유자를 summon로 확정",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons the Maiden of the Mist with ((1050 ~ 3200) + (60% bonus Health)) Health and (50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage plus 2/3/4 Mist Walkers. The Maiden automatically raises Mist Walkers from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage. After 10 seconds, Yorick can Recast this Ability to free the Maiden, sending her down the nearest lane. Maiden of the Mist (30 ~ 90) Armor (30 ~ 90) Magic Resist Takes 30% damage from lane minions"
+    },
+    {
+      "path": "rules.1.effects.0.kind",
+      "issue": "마녀의 공격력 부여를 마녀에게 주는 피해로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons the Maiden of the Mist with ((1050 ~ 3200) + (60% bonus Health)) Health and (50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage plus 2/3/4 Mist Walkers. The Maiden automatically raises Mist Walkers from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage. After 10 seconds, Yorick can Recast this Ability to free the Maiden, sending her down the nearest lane. Maiden of the Mist (30 ~ 90) Armor (30 ~ 90) Magic Resist Takes 30% damage from lane minions"
+    },
+    {
+      "path": "rules.1.effects.0.parameters.1.statSubject",
+      "issue": "gap에 소유자 불명확하면서 caster로 확정",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons the Maiden of the Mist with ((1050 ~ 3200) + (60% bonus Health)) Health and (50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage plus 2/3/4 Mist Walkers. The Maiden automatically raises Mist Walkers from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage. After 10 seconds, Yorick can Recast this Ability to free the Maiden, sending her down the nearest lane. Maiden of the Mist (30 ~ 90) Armor (30 ~ 90) Magic Resist Takes 30% damage from lane minions"
+    },
+    {
+      "path": "rules.5.conditions.0",
+      "issue": "마녀 표적 피해에 별도 표식 필수조건 추가",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons the Maiden of the Mist with ((1050 ~ 3200) + (60% bonus Health)) Health and (50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage plus 2/3/4 Mist Walkers. The Maiden automatically raises Mist Walkers from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage. After 10 seconds, Yorick can Recast this Ability to free the Maiden, sending her down the nearest lane. Maiden of the Mist (30 ~ 90) Armor (30 ~ 90) Magic Resist Takes 30% damage from lane minions"
+    },
+    {
+      "path": "rules.5.effects.0.parameters.0",
+      "issue": "최대HP 백분율을 고정피해 amount에도 중복",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons the Maiden of the Mist with ((1050 ~ 3200) + (60% bonus Health)) Health and (50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage plus 2/3/4 Mist Walkers. The Maiden automatically raises Mist Walkers from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage. After 10 seconds, Yorick can Recast this Ability to free the Maiden, sending her down the nearest lane. Maiden of the Mist (30 ~ 90) Armor (30 ~ 90) Magic Resist Takes 30% damage from lane minions"
+    },
+    {
+      "path": "rules.6.effects.0.parameters",
+      "issue": "재사용 대기10초를 이동 지속시간으로 분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons the Maiden of the Mist with ((1050 ~ 3200) + (60% bonus Health)) Health and (50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage plus 2/3/4 Mist Walkers. The Maiden automatically raises Mist Walkers from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage. After 10 seconds, Yorick can Recast this Ability to free the Maiden, sending her down the nearest lane. Maiden of the Mist (30 ~ 90) Armor (30 ~ 90) Magic Resist Takes 30% damage from lane minions"
+    },
+    {
+      "path": "rules.9.conditions",
+      "issue": "피해공격자·공격로·마녀 한정 조건 누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons the Maiden of the Mist with ((1050 ~ 3200) + (60% bonus Health)) Health and (50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage plus 2/3/4 Mist Walkers. The Maiden automatically raises Mist Walkers from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage. After 10 seconds, Yorick can Recast this Ability to free the Maiden, sending her down the nearest lane. Maiden of the Mist (30 ~ 90) Armor (30 ~ 90) Magic Resist Takes 30% damage from lane minions"
+    },
+    {
+      "path": "gaps.1.detail",
+      "issue": "HP 계수 소유자 한계도 기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Yorick summons the Maiden of the Mist with ((1050 ~ 3200) + (60% bonus Health)) Health and (50/75/100 + (30% bonus Attack Damage)) Magic Attack Damage plus 2/3/4 Mist Walkers. The Maiden automatically raises Mist Walkers from nearby enemy deaths and marks enemy Champions with her attacks. When Yorick damages the Maiden's target, he deals 2/2.5/3% max Health magic damage. After 10 seconds, Yorick can Recast this Ability to free the Maiden, sending her down the nearest lane. Maiden of the Mist (30 ~ 90) Armor (30 ~ 90) Magic Resist Takes 30% damage from lane minions"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 673,
+      "verdict": "repaired",
+      "reason": "본문은 Maiden's target을 대상으로 하므로 추가표식 검사를 제거했다."
+    },
+    {
+      "index": 674,
+      "verdict": "repaired",
+      "reason": "같은2/2.5/3%가 amount와 maxHealth 비율에 중복돼 ratio_output만 유지했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "note": "안개 마녀의 방어력과 마법 저항력 수치가 한 문장에 연속 표기되어 각 30~90 범위가 맞지만 성장 조건이나 레벨별 구간인지 등은 명시되지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "note": "마녀HP의 추가체력 및 마법 공격력의 추가AD 계수 소유자를 원문에서 별도로 명시하지 않아 unknown으로 보존한다."
+    }
+  ],
+  "validation": {
+    "id": "Yorick.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.9",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "id": "Malzahar.W",
+  "sourceHash": "0f76c6b8fc8890b7d3f0f3acfbd4324cb84bb1f58c72d44e001c6b54859f60c8",
+  "beforeCandidateHash": "694b051596dc7e2be23602d7c0fa4818a28bbffaf04eeb4d5ddf5fb6f8b4d677",
+  "candidateHash": "98351e3d3f400cd2f488a1016698cab9e47f4a30c6592917c7af7292ffd99d4a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 3,
+  "summaryCheck": "다른스킬시전중첩1최대2,기본1+보유중첩당1공허충,랭크별수명/각공격마법의랭크+레벨+bonusAD/AP,환상묻은공격로미니언300%·에픽50%를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.other eq 다른 스킬 사용; caster: 공허충 중첩을 얻습니다. 중첩은 최대치가 있습니다.; 수치 amount ko:body:n0=1 상수 scalar / storage_cap en:body:n0=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 기본 공허충 한 마리와 보유 중첩마다 공허충 한 마리를 추가로 소환합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 소환된 공허충은 일정 시간 동안 유지됩니다.; 수치 duration_seconds en:body:n1=8,en:body:n2=8,en:body:n3=9,en:body:n4=9,en:body:n5=10 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 summon; 조건 별도 제한 없음; target: 공허충은 공격할 때마다 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n6=12,en:body:n7=14,en:body:n8=16,en:body:n9=18,en:body:n10=20 상수 rank_values / min_amount en:body:n11=5 상수 level_range / max_amount en:body:n12=65 상수 level_range / stat_coefficient en:body:n13=40%(백분율) caster.bonusAttackDamage formula_components / stat_coefficient en:body:n14=20%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 summon; 조건 target.target_type eq minion / target.mark present Malefic Visions / target.other eq 공격로 미니언; target: 재앙의 환상 효과가 적용된 공격로 미니언에게 입히는 피해가 증가합니다. [magic]; 수치 damage_multiplier en:body:n15=300%(백분율) 상수 scalar; flags replaces_base,per_target"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 summon; 조건 target.target_type eq monster / target.other eq 에픽 몬스터; target: 에픽 몬스터에게만 공허충 피해가 원문에 명시된 비율로 감소합니다. [magic]; 수치 damage_multiplier en:body:n16=50%(백분율) 상수 scalar; flags replaces_base,per_target"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "최대중첩2를획득량2로잘못사용,레벨범위형태와공격로미니언조건누락 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Malzahar's other Abilities give him a stack when cast (max 2). Active: Malzahar summons a Voidling plus an additional Voidling per stack. Voidlings last 8/8/9/9/10 seconds and deal (12/14/16/18/20 + (5 ~ 65) + (40% bonus Attack Damage) + (20% Ability Power)) magic damage each hit. Voidlings deal 300% damage to lane minions affected by Malefic Visions. Voidlings deal 50% damage to epic monsters."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "본문은 중첩 획득 가능 범위를 다른 스킬로 한정하지만, 소환 중첩 소모 여부는 설명하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "에픽 몬스터 대상 피해가 기본 공허충 피해 전체에 적용되는지, 추가 피해 계산의 어느 부분을 대체하는지 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "공허충 총 소환 수는 기본 한 마리에 보유 중첩당 한 마리를 더하는 관계로 보존했습니다. 패시브의 최대 중첩 수는 별도 규칙에만 남겼으며 이를 총 소환 수로 대신 사용하지 않았습니다. 스키마는 이 가변 합계를 현재 중첩에 따라 실행 가능하게 표현하지 못합니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

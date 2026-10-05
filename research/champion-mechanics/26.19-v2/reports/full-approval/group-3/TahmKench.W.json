@@ -1,0 +1,77 @@
+{
+  "id": "TahmKench.W",
+  "sourceHash": "60c6b5310a9726c28bb1a0ce6b47fde2772737bbaaaf2f7b6d4ae2d061ca713a",
+  "beforeCandidateHash": "2e71bf34a8280fd35591ad5b8d25a7971f6c70286da154ccc1c6b39e5f74a707",
+  "candidateHash": "58901d951e29cdbfbfc2b3b3498dd4b5d690bf02bbea87ed9d704d99d1dac610",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "이동·지역마법피해/AP150%·1초공중띄우기·적챔피언1이상 적중시40~50%쿨다운/마나환급·삼킨아군동행및조기하차·0.75초목적지비공개를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 잠수한 뒤 지정 위치에 다시 나타난다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → nearby_enemies: 범위 내 모든 적에게 마법 피해를 입힌다. [magic] / amount=100/135/170/205/240 [rank_values]; stat_coefficient=150% (caster abilityPower) [scalar] | nearby_enemies: 범위 내 모든 적을 공중으로 띄운다. [knockup] / duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; nearby_enemies entity_count gte one → caster: 적 챔피언을 하나 이상 적중시키면 재사용 대기시간의 일부를 돌려받는다. / amount=40/42.5/45/47.5/50% [rank_values] | caster: 적 챔피언을 하나 이상 적중시키면 소모한 마나의 일부를 돌려받는다. / resource_refund=40/42.5/45/47.5/50% [rank_values]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 ally activation eq Devour로 삼킨 아군과 동행 중 → ally: 삼킨 아군을 데리고 이동할 수 있으며, 아군은 이동 중 언제든 일찍 나올 수 있다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster time lt 0.75 → enemy: 정신 집중 시작 후 지정 위치는 적에게 보이지 않는다. / duration_seconds=0.75 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2.trigger.subject",
+      "issue": "적이시전자행위자로기록",
+      "correction": "caster로변경",
+      "sourceId": "en:body",
+      "quote": "Hitting at least one enemy champion refunds 40/42.5/45/47.5/50% of the Cooldown and Mana cost."
+    },
+    {
+      "path": "rules.4.conditions.0",
+      "issue": "적자체가unseen일때만목적지가가려지는조건",
+      "correction": "현재시야조건삭제·정신집중0.75초유지",
+      "sourceId": "en:body",
+      "quote": "Enemies cannot see where you are headed to until 0.75 seconds into the channel."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

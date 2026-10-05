@@ -1,0 +1,131 @@
+{
+  "id": "Zac.P",
+  "sourceHash": "b9f6e7978e92b25b44cb6897410f7edc5aa1cd8af78fb55412d1ac741d6cb097",
+  "beforeCandidateHash": "1d9b1e2a0de3a1de6b913d5d0deef84438586f5db703a51724a8e2da84512823",
+  "candidateHash": "23bdaaf0cd3215f215fc315f744430da3c1150dcf3eff6190a796a4fc6d9c1d0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "스킬적중조각낙하후재흡수자기최대HP4~8%회복,죽음4조각/8~4초재결합후생존조각기반HP10~50%부활,부활CD300초및요약조각스탯비율미제공을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적스킬적중때몸조각낙하.회복은재흡수후이며적중즉시회복이아니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "부활패시브사용가능한죽음에4조각분열.요약의조각별자크최대HP/방어력/마저일부보유도보존하고비율미제공gap."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "부활기능CD300초=5분.고정CD변화발생이아닌보유정보."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "8~4초재결합기간후조각하나라도남으면생존조각HP에따라자신HP10~50%로부활. EN -50은범위대시파싱오류이므로동일내용KO50%참조."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몸조각재흡수할때자신최대HP4~8%회복.중간값/레벨진행미추정."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3",
+      "issue": "즉시죽음과생존조각조건의지연부활을분리",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Each time Zac hits an enemy with an Ability, he sheds a chunk of Goo that can be reabsorbed to restore (4.0% ~ 8.0%) Max Health. Upon dying, Zac splits into 4 bloblets that attempt to recombine. If any bloblets remain after (8 ~ 4) seconds, he will revive with 10-50% Health based on the surviving bloblet's Health. This has a 300 second Cooldown."
+    },
+    {
+      "path": "rules.1.effects.1",
+      "issue": "요약의조각스탯일부보유누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Each time Zac hits an enemy with an Ability, he sheds a chunk of Goo that can be reabsorbed to restore (4.0% ~ 8.0%) Max Health. Upon dying, Zac splits into 4 bloblets that attempt to recombine. If any bloblets remain after (8 ~ 4) seconds, he will revive with 10-50% Health based on the surviving bloblet's Health. This has a 300 second Cooldown."
+    },
+    {
+      "path": "rules.4",
+      "issue": "조각흡수회복을명중낙하와분리",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Each time Zac hits an enemy with an Ability, he sheds a chunk of Goo that can be reabsorbed to restore (4.0% ~ 8.0%) Max Health. Upon dying, Zac splits into 4 bloblets that attempt to recombine. If any bloblets remain after (8 ~ 4) seconds, he will revive with 10-50% Health based on the surviving bloblet's Health. This has a 300 second Cooldown."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "EN범위대시숫자표한계기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Each time Zac hits an enemy with an Ability, he sheds a chunk of Goo that can be reabsorbed to restore (4.0% ~ 8.0%) Max Health. Upon dying, Zac splits into 4 bloblets that attempt to recombine. If any bloblets remain after (8 ~ 4) seconds, he will revive with 10-50% Health based on the surviving bloblet's Health. This has a 300 second Cooldown."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 699,
+      "verdict": "repaired",
+      "reason": "frozenEN-50%는10-50%의범위대시를오독한값이다.공급KO본문의양수50%번호를사용했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "note": "몸 조각이 자크의 최대 체력, 방어력, 마법 저항력에서 보유하는 비율이 요약문에 언급되지만 구체적인 수치는 제공되지 않았습니다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "note": "EN10-50%의lexical숫자표는범위구분대시를-50%부호로읽는다.KO동일본문의양수50%참조와10~50%텍스트를사용해음수부활량으로실행하지않는다."
+    }
+  ],
+  "validation": {
+    "id": "Zac.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

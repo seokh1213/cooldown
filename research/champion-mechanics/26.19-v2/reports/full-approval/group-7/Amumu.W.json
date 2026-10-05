@@ -1,0 +1,163 @@
+{
+  "id": "Amumu.W",
+  "sourceHash": "18b9befbaabb042fce4ac7e080e6c8bf3e21d2ed772b02d7a4f9d1573ea8097c",
+  "beforeCandidateHash": "63fc06027fd6505cdd0c73866033ab2986994dc19c157e833a68324a4fe5ea8c",
+  "candidateHash": "635ca2796662b623fb3cab279a14e09b0841b986e771c1cc42734bee7c29e629",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "토글 활성화 중 매초 주변 적 최대 체력 비례 피해와 저주 갱신을 en 요약/본문으로 확인. 형식이 불완전한 식은 실행하지 않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "토글 true 조건 아래 매초 주변 적에 마법 피해와 저주 갱신. 고정10과 각 적 최대체력 항, 시전자 AP0.5% 참조 구분."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.1",
+      "issue": "최대체력 비율의 소유자 및 raw 단위 한계가 구조에서 사라짐",
+      "correction": "target maxHealth 복합식 요소와 비율 단위 gap으로 보존",
+      "sourceId": "en:summary",
+      "quote": "Overcome by anguish, nearby enemies lose a percentage of their maximum Health each second and have their Curses refreshed."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "최대체력 소유자도 함께 미상으로 읽힐 여지가 있음",
+      "correction": "적 최대체력은 확인하고 비율·AP 합산의 불명확성만 기록",
+      "sourceId": "en:body",
+      "quote": "(1/1.25/1.5/1.75/2 + (0.5% Ability Power))max Health"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "본문 비율 항 1/1.25/1.5/1.75/2 뒤 퍼센트 단위가 없어 raw 숫자로 최대 체력에 곱하지 않는다. 최대 체력 주인은 en 요약으로 각 주변 적임을 확인하지만 AP 항과 비율 항의 정확한 합산·정규화는 확정하지 않는다.",
+      "review": "비율 단위가 본문에 없으므로 formula_components로 보존하고 정확한 계산은 금지. 적 최대체력 소유자는 요약에 명시됨."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ],
+    "draft": {
+      "summary": "토글을 활성화하면 아무무가 울기 시작합니다. 활성화 중 매초 근처 적에게 마법 피해를 입히고 저주를 갱신합니다. 피해 수식의 최대 체력 및 주문력 계수 관계는 원문만으로 확정하기 어렵습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "활성화 중 매초 주변 적에게 고정 피해량 10과 각 적 최대 체력에 비례한 항을 합친 마법 피해를 입힙니다. 비율 항의 정확한 단위·합산식은 공급 본문에서 불명확합니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "mark",
+              "subject": "nearby_enemies",
+              "text": "활성화 중 매초 저주를 갱신합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Toggle: Amumu begins crying, dealing 10 plus (1/1.25/1.5/1.75/2 + (0.5% Ability Power))max Health magic damage to nearby enemies every second and refreshing Curse."
+            },
+            {
+              "sourceId": "en:summary",
+              "quote": "Overcome by anguish, nearby enemies lose a percentage of their maximum Health each second and have their Curses refreshed."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "본문 비율 항 1/1.25/1.5/1.75/2 뒤 퍼센트 단위가 없어 raw 숫자로 최대 체력에 곱하지 않는다. 최대 체력 주인은 en 요약으로 각 주변 적임을 확인하지만 AP 항과 비율 항의 정확한 합산·정규화는 확정하지 않는다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "(1/1.25/1.5/1.75/2 + (0.5% Ability Power))max Health magic damage to nearby enemies every second"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

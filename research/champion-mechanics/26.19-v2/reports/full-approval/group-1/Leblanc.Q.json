@@ -1,0 +1,90 @@
+{
+  "id": "Leblanc.Q",
+  "sourceHash": "2e07a5839633ea670fea9f20682d69c5a663c139413be683503cf80fa33906a1",
+  "beforeCandidateHash": "9cd620400650330cfdb2e8e17dc2271a92b48629bbbaf58835607477e6112f2e",
+  "candidateHash": "ff760b187a2760cd4aed4824a38150b514d21e12897a3fbde1bcd1a809aa8956",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "적 대상 첫 인장의 3.5초 표식, 스킬 피해로 폭발, 두 피해 중 처치 시 마나100%/남은 쿨30% 환급, 최초 인장 미니언 추가 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 적. target damage magic: 인장을 날려 마법 피해를 입힌다. [amount n0=65/n1=90/n2=115/n3=140/n4=165 rank_values; stat_coefficient n5=40% scalar caster.abilityPower] / target mark: 대상에게 표식을 남긴다. [duration_seconds n6=3.5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 target.mark eq 이 스킬의 인장 표식이 남아 있음; caster.other eq 표식이 남은 적에게 스킬로 피해를 줌. target damage magic: 표식이 남은 적에게 스킬 피해를 주면 인장이 폭발해 마법 피해를 입힌다. [amount n7=65/n8=90/n9=115/n10=140/n11=165 rank_values; stat_coefficient n12=40% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.kill; 조건 target.other eq 대상이 최초 인장 피해 또는 폭발 피해로 처치됨. caster resource_change: 최초 인장 피해 또는 폭발 피해로 대상을 처치하면 소모 마나 비용의 100%를 돌려받는다. [resource_refund n13=100% scalar] / caster cooldown_change: 최초 인장 피해 또는 폭발 피해로 처치하면 이 스킬의 남은 재사용 대기시간이 30% 감소한다. [amount n14=30% scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq minion; caster.other eq 이 스킬의 최초 인장 피해. target other: 최초 인장은 미니언에게 10~146의 추가 피해를 입힌다. 추가 피해 유형은 공급 문장에 명시되지 않았다. [amount n15=10/n16=146 level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3;gaps.0",
+      "issue": "대상 범위/폭발 사건/마나 숫자 누락/초기 인장 조건 주인/추가 피해 범위 의미 오류",
+      "correction": "적과 르블랑의 최초 인장 피해 조건, 피해 발생 폭발, 마나100% 환급 및 10~146 추가 피해 범위를 수정했다. 추가 피해 유형은 원문 미명시로 남긴다.",
+      "sourceId": "en:body",
+      "quote": "If either part kills the target, Leblanc refunds 100% of the Mana cost and 30% of this spell's remaining Cooldown."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 244,
+      "verdict": "repaired",
+      "reason": "any 대신 적이라는 텍스트 조건을 사용하여 우호 대상까지 넓히지 않았다."
+    },
+    {
+      "index": 245,
+      "verdict": "repaired",
+      "reason": "적중 자체 대신 표식 적에게 스킬 피해를 주는 사건·조건으로 고쳤다."
+    },
+    {
+      "index": 246,
+      "verdict": "repaired",
+      "reason": "입력 n13=100%가 존재하여 마나 비용 환급 참조를 복구하고 잘못된 숫자 누락 gap을 제거했다."
+    },
+    {
+      "index": 247,
+      "verdict": "repaired",
+      "reason": "대상 활성화 상태 대신 최초 인장 피해 사건에 적용한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "최초 인장 피해 또는 폭발 피해로 처치라는 조건을 other 텍스트로 명시했다. 피해 발생을 전용 typed event로 분류하지 않고 문구로 보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "최초 인장의 미니언 추가 피해는 수치는 명시하지만 추가분 피해 유형은 해당 원문 문장에 없어 별도 유형을 확정하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

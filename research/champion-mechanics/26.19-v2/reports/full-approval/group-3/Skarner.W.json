@@ -1,0 +1,56 @@
+{
+  "id": "Skarner.W",
+  "sourceHash": "bf99266866da367d0e3f109b71b8c55edbc348e9e6f35e7b1ac167cf832ef334",
+  "beforeCandidateHash": "d6ea5b7b144b581eb3f4d55b4f3ae8484d3a955b4d17c27183522b525f33e151",
+  "candidateHash": "edb72801a0a4d4befc16e4137f9f48ffb7a6b632c77583049aa12a55bb3bcb62",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "자기체력8%2.5초보호막과주변적50~130+AP80%마법피해/1초20%둔화를전체본문과대조하고누락된피해·둔화를복구했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 자신의 체력(종류미명시)8% 보호막을2.5초 얻는다. / stat_coefficient=8% [formula_components]; duration_seconds=2.5 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → nearby_enemies: 지진이 주변 적에게 마법 피해를 준다. [magic] / amount=50/70/90/110/130 [rank_values]; stat_coefficient=80% (caster abilityPower) [formula_components] | nearby_enemies: 주변 적을1초 동안20% 둔화시킨다. [slow] / amount=20% [scalar]; duration_seconds=1 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "본문마법피해·둔화핵심규칙통째누락",
+      "correction": "50~130+자기AP80%주변마법피해·1초20%둔화복구",
+      "sourceId": "en:body",
+      "quote": "triggers an earthquake that deals (50/70/90/110/130 + (80% Ability Power)) magic damage and Slows nearby enemies by 20% for 1s."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "보호막 수치는 Health의 8%로 제시되지만, 원문이 기준 체력 통계의 범위를 특정하지 않아 통계를 null로 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

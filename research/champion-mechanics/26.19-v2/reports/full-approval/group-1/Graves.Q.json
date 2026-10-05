@@ -1,0 +1,60 @@
+{
+  "id": "Graves.Q",
+  "sourceHash": "08e5d88dc2f6298af922c6d481b6a96017a860bbdf4a5d83b675b70920f359f2",
+  "beforeCandidateHash": "0f32492cd3441c714527b6d495c63afd4c5a2e42f05b0d9b28b8de1bd529db48",
+  "candidateHash": "7fe309af30ec478515633285e4ac30bbac7c03fd5701cf41fcaf563346f8cea9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "초기탄환50~150+추가AD55%물리,1초OR지형충돌폭발80~260+추가AD45~105%/경로재피해및폭발근처적을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. target damage physical: 화약 탄환은 물리 피해를 입힌다. [amount n0=50/n1=75/n2=100/n3=125/n4=150 rank_values; stat_coefficient n5=55% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 탄환 발사 후1초 경과 또는 지형 충돌; target.other eq 탄환 이동 경로상의 적 또는 폭발 근처의 적. target damage physical: 탄환은 폭발하며 이동 경로상의 적에게 다시 피해를 주고 폭발 근처의 적도 피해를 받는다. [amount n7=80/n8=125/n9=170/n10=215/n11=260 rank_values; stat_coefficient n12=45%/n13=60%/n14=75%/n15=90%/n16=105% rank_values caster.bonusAttackDamage]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1",
+      "issue": "행위자및대상unknown",
+      "correction": "caster발사/폭발,피해target와경로/폭발근처조건",
+      "sourceId": "en:body",
+      "quote": "After 1 second or after colliding with terrain, it detonates"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 95,
+      "verdict": "repaired",
+      "reason": "Graves발사는caster이고탄환적중target이다. unknown을명확한행위자/대상으로수정했다."
+    },
+    {
+      "index": 96,
+      "verdict": "repaired",
+      "reason": "폭발도Graves스킬에서발생하며경로/폭발주변적대상을target로구조화했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 1초 경과 또는 지형 충돌 중 하나가 발생하면 폭발한다고 합니다. 스키마 조건으로 OR를 정확히 나타낼 수 없어 명시적 OR 텍스트 조건으로 보존했습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

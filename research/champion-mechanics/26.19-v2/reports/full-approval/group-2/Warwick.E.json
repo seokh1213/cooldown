@@ -1,0 +1,80 @@
+{
+  "id": "Warwick.E",
+  "sourceHash": "18f07a885ec304462ab5881c0808d51ee24f807fe4480214b072091ccf97b1b9",
+  "beforeCandidateHash": "c45da443de1be1035efd9745ac2247b155a4b155428dc5b2766101922523fdfc",
+  "candidateHash": "d01592d25cb50b614d4be98ac805e8560bd83e98e25bdb0d29551d82594c280d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "35~55%피해감소2.75초,종료·조기재사용의주변1초공포를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 받는 피해가 감소한다.; 수치 amount en:body:n0=35(백분율),en:body:n1=40(백분율),en:body:n2=45(백분율),en:body:n3=50(백분율),en:body:n4=55%(백분율) 상수 rank_values / duration_seconds en:body:n5=2.75 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: expiry 사건의 행위자 caster; 조건 별도 제한 없음; nearby_enemies: 주변 적을 공포에 빠뜨린다. [fear]; 수치 duration_seconds en:body:n6=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 스킬을 일찍 종료한다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 별도 제한 없음; nearby_enemies: 재사용으로 스킬을 일찍 종료하면 주변 적을 공포에 빠뜨린다. [fear]; 수치 duration_seconds en:summary:n1=1 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "요약2.5초와본문2.75초충돌 gap 누락 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Warwick gains 35/40/45/50/55% damage reduction for 2.75 seconds. After it ends, Warwick howls, Fearing nearby enemies for 1 second. Warwick can Recast to end the Ability early."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en/ko요약은2.5초이나 본문은2.75초; 구체 본문의2.75초 피해감소 우선.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

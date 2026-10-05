@@ -1,0 +1,96 @@
+{
+  "id": "MissFortune.W",
+  "sourceHash": "4aca9fea4047e4dcb99ef92e0fd37cac0c3f53c0f3cea6278f8e230f0099c0b3",
+  "beforeCandidateHash": "b62f6b4d8f712af856b6748cdf5f1c87380dd1f7e8623414c424a9a53b8df14c",
+  "candidateHash": "064873996fbcb9493fedde63fb2fbd2acc53107bf970892c3beed9c044ce6055",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "4초무피해첫이속후추가3초무피해의최대이속대체,사용즉시최대이속·4초공속,사랑한방실제발동2초쿨다운감소를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.time gte 4, caster.other eq 해당 시간 동안 피해를 받지 않음 적용. caster: 이동 속도가 증가합니다.; amount=30/35/40/45/50  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.time gte 3, caster.other eq 추가 시간 동안 피해를 받지 않음, caster.other eq 첫4초 무피해 이동 속도 효과를 얻은 뒤 추가3초 동안 피해를 입지 않음 적용. caster: 첫단계이동속도증가량이해당최대단계값으로대체된다.첫단계값에추가합산되는량이아니다.; amount=60/70/80/90/100  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 기본 지속 효과의 이동 속도 증가를 최대로 얻습니다.; amount=60/70/80/90/100  rank_values / caster: 공격 속도가 증가합니다.; amount=40/55/70/85/100%  rank_values, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 사랑의 한 방이 실제 발동함 적용. caster: 이 스킬의 재사용 대기시간이 감소합니다.; cooldown_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,2",
+      "issue": "두번째이속을추가량처럼서술하고초기단계뒤3초관계불명확",
+      "correction": "초기4초뒤추가3초조건·최대단계대체값·시전최대값연결",
+      "sourceId": "en:body",
+      "quote": "After another 3 seconds, this increases to 60/70/80/90/100."
+    },
+    {
+      "path": "rules.3",
+      "issue": "사랑한방발동을target속성/attack으로지정",
+      "correction": "caster의실제발동사건과2초쿨다운역할",
+      "sourceId": "en:body",
+      "quote": "Love Taps reduce the Cooldown of this Ability by 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 300,
+      "verdict": "repaired",
+      "reason": "최대단계값이첫단계에추가합산되지않는대체값임을명시했다."
+    },
+    {
+      "index": 301,
+      "verdict": "false_positive",
+      "reason": "4초파라미터는공격속도효과에만연결되어있다.최대이속효과에4초를추정하지않았다."
+    },
+    {
+      "index": 302,
+      "verdict": "repaired",
+      "reason": "caster의실제사랑한방발동조건으로수정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

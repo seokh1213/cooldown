@@ -1,0 +1,66 @@
+{
+  "id": "Velkoz.E",
+  "sourceHash": "66d744c84489d29eb17c04b5611b29039216036e9473a5593a89031a21739b68",
+  "beforeCandidateHash": "e3a444a233dcf9aa8e6a8e621a35cd314e6c2441d9b60b44c166a70063e325e8",
+  "candidateHash": "29c43fb9b08692767495092a2cac634fa6bb60fe44096f5ba92be8bfcf9bd96f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "폭발마법피해는가까운/먼적모두동일,먼적0.75초띄우기·가까운적대신밀치기,가까움의미제공거리값을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.distance eq 벨코즈와 가까운 범위 밖에서 이 스킬에 적중한 적 적용. target: 폭발로 마법 피해를 입힙니다. (magic); amount=70/100/130/160/190  rank_values, stat_coefficient=30% caster의 abilityPower scalar / target: 적을 공중으로 띄웁니다. (knockup); duration_seconds=0.75  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.distance eq 벨코즈와 가까운 범위에서 이 스킬에 적중한 적 적용. target: 폭발로 마법 피해를 입힙니다. (magic); amount=70/100/130/160/190  rank_values, stat_coefficient=30% caster의 abilityPower scalar / target: 공중으로 띄우는 대신 뒤로 밀어냅니다. (knockback);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.trigger.subject,conditions",
+      "issue": "적중행위자enemy및텍스트거리와gt/lte부정확비교",
+      "correction": "caster적중·가까운/먼적text조건으로보존",
+      "sourceId": "en:body",
+      "quote": "Enemies close to Vel'Koz will be Knocked Back instead of Knocked Up."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "툴팁은 ‘close’ 조건을 명시하지만 그 거리 기준을 수치로 제시하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

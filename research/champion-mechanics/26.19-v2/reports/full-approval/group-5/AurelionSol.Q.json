@@ -1,0 +1,618 @@
+{
+  "id": "AurelionSol.Q",
+  "sourceHash": "c6d86cc11686bd662247199e3e2c11f3b2e1c803971811e673a955f22c46c252",
+  "beforeCandidateHash": "1883f91f0a479ab879eb4ad4f0ab5018bdf9b01352f24f31c02ab93082c41444",
+  "candidateHash": "47d5e37df61ca8b020eb5056aa9d0ccdc85e9319a346670784e93335738f21e3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 9,
+  "checkedGapCount": 4,
+  "summaryCheck": "최대 정신집중 3.25/9999초, 첫 적 초당 피해/주변50%, 동일 적 완료초 폭발과 챔피언별가루2, 사거리, 조기취소 잠금, 최소마나, 몬스터 비례성분300상한을 검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫 적에게 초당45~105+자기AP55%, 최대정신집중3.25×4랭크/9999초5랭크를 원문 그대로 보존.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "3.25",
+              "value": 3.25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "3.25",
+              "value": 3.25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "3.25",
+              "value": 3.25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "3.25",
+              "value": 3.25,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "9999",
+              "value": 9999,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "45",
+              "value": 45,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n10"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n10",
+              "raw": "55%",
+              "value": 55,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변 적에게 본 지속 피해50%.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "damage_multiplier",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 적 완료 매1초 폭발60~100+AP30%+대상maxHP0.03%; 취소 잠금1초를 반복 조건으로 재사용하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "같은 적에게 성운파를 뿜은 완료된 매 1초"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "same_target"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n12",
+            "en:body:n13",
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n14",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n17"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n17",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n18"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n18",
+              "raw": "0.03%",
+              "value": 0.03,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "사거리750~920은 이동효과가 아닌 스킬 사거리 특성.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "distance_units",
+          "numberRefs": [
+            "en:body:n20",
+            "en:body:n21"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n20",
+              "raw": "750",
+              "value": 750,
+              "percent": false
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "920",
+              "value": 920,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전 후0.25초 안에 정신집중 취소하면 스킬1초 잠금;기본공격 취소 사건이 아님.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n22"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬 정신집중을 취소함"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n23"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n23",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정글 몬스터의 비례 피해 성분만 max300;전체 피해/추가 지급 아님.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "정글 몬스터"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n29"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n29",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "완료 매초의 대상이 챔피언인 경우에만 별가루2 흡수.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "같은 적에게 성운파를 뿜은 완료된 매 1초"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "same_target"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n19"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n19",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전 최소 마나30/35/40/45/50 비용;부호/역할은 resource_cost.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "resource_cost",
+          "numberRefs": [
+            "en:body:n24",
+            "en:body:n25",
+            "en:body:n26",
+            "en:body:n27",
+            "en:body:n28"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n24",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "en:body:n25",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "en:body:n26",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "en:body:n27",
+              "raw": "45",
+              "value": 45,
+              "percent": false
+            },
+            {
+              "id": "en:body:n28",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "요약의 별가루에 따른 추가 피해 증가를 보존하고 미제공 연산을 gap으로 남김.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules",
+      "issue": "별가루 챔피언 조건이 효과 텍스트에만 있고 다른 문장의1초를 반복조건으로 참조했다. 능력취소/사거리 분류 및 최소마나/별가루 증폭규칙 누락.",
+      "correction": "대상/반복조건,챔피언 별가루규칙 분리,other취소/사거리,최소마나/증폭한계를 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Each full second of breath on the same enemy deals a burst of (60/70/80/90/100 + (30% Ability Power)) magic damage plus 0.03% max Health magic damage and absorbs 2 Stardust if they are a champion."
+    },
+    {
+      "path": "rules.5.effects.0.damageType",
+      "issue": "상한의 other 분류에 damageType이 남아 스키마 오류였다.",
+      "correction": "상한 문구의 마법 피해는 text로 보존하고 분류 메타데이터는 null로 맞췄다.",
+      "sourceId": "en:body",
+      "quote": "Percent damage deals a max of 300 magic damage against jungle monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 17,
+      "verdict": "false_positive",
+      "reason": "정신집중 시간 매개변수는 명확히 duration_seconds이고 피해amount와 역할이 구분되어 잘못된 피해값이 아니다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "‘각 완료된 1초’ 반복 발동은 같은 적에게 집중한 완료 초마다로 보존했지만, 고정 조건 필드에 반복 간격과 매 회차 판정을 명확히 표현할 수 없어 원문 설명을 effect.text에 남겼습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "사거리의 양 끝값이 적용되는 조건은 원문에 명시되지 않았습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "정글 몬스터 대상 조건을 표현할 전용 target_type 허용값이 없어 텍스트 값으로 보존했습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 3,
+      "reason": "unsupported_formula",
+      "detail": "summary는 별가루에 따라 추가 피해가 증가한다고 하지만 body의0.03% 최대체력 수치에 별가루와의 연산은 없다. 그 증가 공식을 추정하지 않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.8",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "4 unresolved source gaps"
+      }
+    ]
+  }
+}

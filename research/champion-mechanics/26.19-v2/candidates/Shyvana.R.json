@@ -1,0 +1,545 @@
+{
+  "summary": "기본 공격과 스킬로 적을 타격하면 용의 분노를 얻습니다. 용 형상에서는 생성량이 증가하며, 비챔피언에게 광역 피해를 입힐 때 감소합니다. 사용하면 저지 불가 상태로 용 형상으로 변신해 대상 위치로 날아가며 경로의 적에게 마법 피해와 도주를 적용합니다. 변신 중 기본 스킬이 강화되고 추가 체력, 크기, 공격 사거리를 얻습니다. 분노가 바닥나면 변신이 끝납니다. 궁극기 가속에 따라 모든 출처의 분노 획득량이 증가하며, 사망 중 얻은 궁극기 가속은 부활 전까지 적용되지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "적을 기본 공격 또는 스킬로 타격하면 용의 분노를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Shyvana generates 1.25 Dragon Fury by striking enemies with Attacks and Abilities"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Shyvana generates 1.25 Dragon Fury by striking enemies with Attacks and Abilities, increased by 200% while in Dragon Form, and reduced 75% by when striking in an area against non-champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dragon Form"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "용 형상일 때 용의 분노 생성량이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "increased by 200% while in Dragon Form"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Shyvana generates 1.25 Dragon Fury by striking enemies with Attacks and Abilities, increased by 200% while in Dragon Form, and reduced 75% by when striking in an area against non-champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "광역 피해"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "비챔피언에게 광역 피해를 입힐 때 용의 분노 생성량이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and reduced 75% by when striking in an area against non-champions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Shyvana generates 1.25 Dragon Fury by striking enemies with Attacks and Abilities, increased by 200% while in Dragon Form, and reduced 75% by when striking in an area against non-champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "용 형상으로 변신하고 저지 불가 상태가 되어 대상 위치로 날아가며 경로의 적에게 불을 내뿜습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Shyvana transforms into her Dragon Form, becoming Unstoppable, and flying to the target location breathing fire on enemies below"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "날아가며 경로 아래의 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "flying to the target location breathing fire on enemies below dealing (150/250/350 + (100% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Shyvana transforms into her Dragon Form, becoming Unstoppable, and flying to the target location breathing fire on enemies below dealing (150/250/350 + (100% Ability Power)) magic damage and causing them Flee for 0.75 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "경로에 있는 적을 도주하게 합니다.",
+          "damageType": null,
+          "crowdControl": "fear",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and causing them Flee for 0.75 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Shyvana transforms into her Dragon Form, becoming Unstoppable, and flying to the target location breathing fire on enemies below dealing (150/250/350 + (100% Ability Power)) magic damage and causing them Flee for 0.75 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "변신 중 추가 체력을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "bonusHealth",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "변신 중 크기와 공격 사거리가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "용 형상 동안 기본 스킬이 강화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While transformed, Shyvana's basic Abilities are upgraded, she gains 150/250/350 bonus Health, size, and Attack Range."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "resource_depleted",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "용의 분노 잔량 없음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "용의 분노가 남아 있지 않으면 변신이 끝납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shyvana loses Dragon Fury over time and her transformation ends when she has no Dragon Fury remaining."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Shyvana generates 1.25 Dragon Fury by striking enemies with Attacks and Abilities, increased by 200% while in Dragon Form, and reduced 75% by when striking in an area against non-champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "궁극기 가속에 의한 분노 획득 증가; 사망 중 획득분은 부활 후 적용"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "궁극기 가속에 따라 모든 출처에서 얻는 분노가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shyvana gains 1% increased Fury from all sources per 1 Ultimate Ability Haste."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "stat_gain",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "궁극기 가속을 사망 상태에서 획득"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "사망 상태에서 얻은 궁극기 가속은 부활할 때까지 분노 획득량 증가 효과를 적용하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ultimate Haste acquired while dead does not take effect until Shyvana revives."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dragon Form"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "용 형상에서는 시간이 지남에 따라 용의 분노가 소모됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shyvana loses Dragon Fury over time and her transformation ends when she has no Dragon Fury remaining."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Shyvana generates 1.25 Dragon Fury by striking enemies with Attacks and Abilities, increased by 200% while in Dragon Form, and reduced 75% by when striking in an area against non-champions."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "비챔피언 대상 광역 적중의 분노 감소 문구에 문법상 불명확한 부분이 있어, 감소량을 어떤 기준으로 적용하는지 확정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and reduced 75% by when striking in an area against non-champions."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "변신 시 증가하는 크기와 공격 사거리는 구체적인 수치가 없으며, 기존 통계 슬롯으로 표현할 수 없어 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While transformed, Shyvana's basic Abilities are upgraded, she gains 150/250/350 bonus Health, size, and Attack Range."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "궁극기 가속은 일반 abilityHaste와 구별되는 통계이나 전용 스탯 키가 없어 가속 1당 분노 획득 1% 증가를 텍스트/비율 구성요소로 보존.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shyvana gains 1% increased Fury from all sources per 1 Ultimate Ability Haste."
+        }
+      ]
+    }
+  ]
+}

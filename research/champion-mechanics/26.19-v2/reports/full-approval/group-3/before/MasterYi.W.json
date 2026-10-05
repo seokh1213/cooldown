@@ -1,0 +1,267 @@
+{
+  "summary": "정신 집중 중 체력을 회복하고 피해 감소 효과를 얻는다. 피해 감소량은 정신 집중 및 종료 직후 구간에 적용되며, 이후 첫 구간보다 낮아진다. 포탑에 대한 피해 감소 효과는 절반으로 줄어든다. 정신 집중 중 2연속 공격 중첩을 얻고 우주류 검술 및 최후의 전사 남은 지속시간이 일시 정지된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "정신 집중 중 체력을 회복한다. 잃은 체력에 따라 회복량이 최대치까지 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Master Yi channels, restoring (120/200/280/360/440 + (100% Ability Power)) Health over 4 seconds. This healing is increased by up to 100% based on Master Yi's missing Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "정신 집중 중과 종료 후 짧은 시간 동안 받는 피해가 감소한다. 첫 구간 이후 감소량이 낮아진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While channeling and for 0.5 seconds afterwards, he takes 70/70/70/70/70% reduced damage, decreased to 45/47.5/50/52.5/55% after the first 0.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "정신 집중 중 2연속 공격 중첩을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "In addition, Master Yi will gain stacks of Double Strike and pause the remaining duration on Wuju Style and Highlander for each second he channels."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "정신 집중 중 우주류 검술과 최후의 전사 남은 지속시간이 일시 정지된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "In addition, Master Yi will gain stacks of Double Strike and pause the remaining duration on Wuju Style and Highlander for each second he channels."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Damage reduction is halved against turrets."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "포탑에 대한 피해"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "포탑에 대한 피해 감소 효과는 절반으로 줄어든다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage reduction is halved against turrets."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "While channeling and for 0.5 seconds afterwards, he takes 70/70/70/70/70% reduced damage, decreased to 45/47.5/50/52.5/55% after the first 0.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "포탑 상대 피해 감소가 절반으로 적용된다는 수치는 number 목록에 해당하는 영어 본문 숫자 ID가 없어 parameters에서 수치로 참조할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage reduction is halved against turrets."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "요약은 정신 집중 매초 중첩 획득 및 두 다른 스킬의 지속시간 정지를 설명하지만, 각 효과의 세부 적용 시점이나 누적 계산은 본문에 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "In addition, Master Yi will gain stacks of Double Strike and pause the remaining duration on Wuju Style and Highlander for each second he channels."
+        }
+      ]
+    }
+  ]
+}

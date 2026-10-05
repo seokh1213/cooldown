@@ -1,0 +1,102 @@
+{
+  "id": "Rengar.W",
+  "sourceHash": "db093a4ef9fa504792e15f0bad9051ecbf04c37ee16c5d66639cd0f21e9dc48e",
+  "beforeCandidateHash": "4ccf56ca1162e9659cdee37e32e6272d22bcde3897e15e79daab9df7110e2be5",
+  "candidateHash": "4df52e5078f4ad33d73c076c6fe7984ac3df6816614db535e1a1fa5986dbf570",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "주변 일반/최대야성 마법 피해, 최근1.5초 받은 피해50% 회복, 강화 CC 해제, 정글 추가 마법 피해·정글에서 받은 피해100% 회복을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation neq empowered; nearby_enemies: 주변 적에게 마법 피해를 준다. [magic]; 수치 amount en:body:n0=50,en:body:n1=80,en:body:n2=110,en:body:n3=140,en:body:n4=170 상수 rank_values / stat_coefficient en:body:n5=80%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 지난 1.5초 동안 자신이 받은 피해의 50%를 체력으로 회복합니다.; 수치 ratio_input en:body:n6=50%(백분율) 상수 formula_components / duration_seconds en:body:n7=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered; nearby_enemies: 주변 적에게 마법 피해를 준다. [magic]; 수치 min_amount en:body:n8=50 상수 level_range / max_amount en:body:n9=220 상수 level_range / stat_coefficient en:body:n10=80%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered; caster: 자신에게 적용된 군중 제어 효과를 해제한다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq monster / target.other eq 정글 몬스터; target: 정글 몬스터에게 추가 마법 피해를 준다. [magic]; 수치 min_amount en:body:n11=65 상수 level_range / max_amount en:body:n12=130 상수 level_range; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.other eq 회복 대상인 최근 피해 중 정글 몬스터에게 받은 피해 부분; caster: 정글 몬스터에게 받은 피해의 전부를 체력으로 회복한다.; 수치 ratio_input en:body:n13=100%(백분율) 상수 formula_components; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "정글 적중이 아닌 과거 정글 피격 부분의 회복 조건, 100% 대체와 범위 수치 형태, 과거 집계 시간 역할을 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Rengar roars, dealing (50/80/110/140/170 + (80% Ability Power)) magic damage to nearby enemies and restoring 50% of the damage taken in the last 1.5 seconds as Health. Max Ferocity: Deals ((50 ~ 220) + (80% Ability Power)) magic damage and additionally cleanses Rengar of crowd control. Deals an additional (65 ~ 130) magic damage to jungle monsters. Restores 100% of damage taken from jungle monsters."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "최근 받은 피해량은 통계 키가 없어 회복식을 텍스트/구성요소로 보존; 1.5초는 과거 피해 집계창이며 미래 회복 지속시간이 아님.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

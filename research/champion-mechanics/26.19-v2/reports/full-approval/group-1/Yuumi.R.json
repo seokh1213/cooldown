@@ -1,0 +1,102 @@
+{
+  "id": "Yuumi.R",
+  "sourceHash": "338dc50d41610d8c1ebc1037fabe544c911633a51ae79d36254c6ff6662701bc",
+  "beforeCandidateHash": "c63ca5e665d9d6f566a35b138b643b1e83977e5f112a6f95fb16e83c1c5e2589",
+  "candidateHash": "8aca096490c0a3708a1f980b2bda48ff9ac27aa172ba86c81ff71cdcdb069e49",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "3.5초5파동, 최초밀착시 조종, 첫/이후미사일피해와단일최대, 둔화10%+파동당10%/1.25초, 아군챔피언파동회복/초과보호막,단짝1.3~1.6배,이동/W방향고정/E시전가능을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 유미가 정신을 집중해 여러 마법 파동을 발사합니다. 밀착 상태에서 처음 시전하면 파동을 마우스로 조종할 수 있습니다. [duration_seconds n0=3.5 scalar; count n1=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 첫 번째 미사일이 적 적중. enemy damage magic: 첫 번째 미사일은 적중한 적에게 일반 마법 피해를 입힌다. [amount n2=75/n3=125/n4=175 rank_values; stat_coefficient n5=25% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. enemy crowd_control slow: 적중한 적을 둔화시킵니다. 둔화량은 적중한 파동 수에 따라 증가합니다. [amount n6=10% scalar; duration_seconds n7=1.25 scalar; other n8=10% formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 ally.target_type eq champion. ally heal: 아군 챔피언은 파동마다 체력을 회복합니다. 초과 회복량은 보호막으로 전환됩니다. [amount n9=30/n10=50/n11=70 rank_values; stat_coefficient n12=12% scalar caster.abilityPower] / ally shield: 파동 회복의 초과분은 대신 보호막으로 전환된다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 ally.form eq 단짝. ally heal: 단짝은 파동마다 증가한 체력을 회복합니다. [amount n13=30/n14=50/n15=70 formula_components; stat_coefficient n16=12% formula_components caster.abilityPower; damage_multiplier n17=1.3/n18=1.6 formula_components] flags=replaces_base"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 없음. caster other: 정신 집중 중 이동하거나 E 슈우우웅!을 시전할 수 있다. W 너랑 유미랑!을 시전하면 파동이 현재 방향으로 고정된다. []"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 첫 번째 이후 미사일이 적 적중. enemy damage magic: 첫 번째 이후 미사일은 감소된 마법 피해를 입힌다. [amount n19=18.75/n20=31.25/n21=43.75 rank_values; stat_coefficient n22=6.25% scalar caster.abilityPower]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 없음. enemy other: 단일 적에게 입힐 수 있는 총 최대 마법 피해는150/250/350+50% 유미AP다. 별도 추가타가 아니다. [max_amount n23=150/n24=250/n25=350 rank_values; stat_coefficient n26=50% scalar caster.abilityPower]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.1/2/3/4/5/new",
+      "issue": "Zoomies를Q사르르탄으로오역·서로다른피해합산·단짝회복대체/아군챔피언조건·조종summary충돌",
+      "correction": "E슈우우웅, 첫/이후/최대 분리, 회복대체 및초과shield,출처충돌gap",
+      "sourceId": "en:body",
+      "quote": "Yuumi can move and cast Zoomies while channeling."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 684,
+      "verdict": "false_positive",
+      "reason": "원문 magical waves와Missiles afterthefirst는 동일 시전의 파동/미사일을 가리킨다. 독립 피해 출처라는 근거는 없다. 미사일 표현으로 보존하며 피해를 분리했다."
+    },
+    {
+      "index": 685,
+      "verdict": "false_positive",
+      "reason": "현 parameters에 단일적 max150/250/350+AP50%가 이미 있었다. 실제오류는 첫/이후/최대 수치를 한 피해에 합칠 수 있는 구조여서 분리했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "summary는단짝밀착만마우스조종이라하나 en/ko본문은처음밀착상태시전이면조종가능하다. 본문을우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

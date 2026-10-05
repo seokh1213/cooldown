@@ -1,0 +1,242 @@
+{
+  "summary": "4초동안 이동속도75%를 얻습니다. 이번R중각적과최초접촉할때100/200/300+50%AP마법/1~1.5초매혹을 적용합니다. 처음접촉한챔피언은150%감소이속효과를 부여합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "라칸의 이동 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rakan gains 75% Move Speed for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 R의4초활성상태"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 R동안 각적별 최초접촉"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "이번 R중 해당적과처음접촉할때100/200/300+50%AP마법피해를줍니다. 처음적하나로제한하지않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "이번 R중 해당적과처음접촉할때1/1.25/1.5초매혹합니다.",
+          "damageType": null,
+          "crowdControl": "charm",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rakan deals (100/200/300 + (50% Ability Power)) magic damage and Charms enemies for 1/1.25/1.5 second(s) the first time he touches them."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rakan gains 75% Move Speed for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 R의4초활성상태"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "접촉대상이 챔피언"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 R에서 처음접촉하는 챔피언; 앞서비챔피언접촉과무관"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "처음 닿은 챔피언이 라칸에게 점차 감소하는 이동 속도 증가 효과를 부여한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The first champion touched grants Rakan 150% decaying Move Speed."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rakan gains 75% Move Speed for 4 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "처음 챔피언에게 닿아 얻는 감소하는 이동 속도 증가 효과의 지속시간은 원문에 제시되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The first champion touched grants Rakan 150% decaying Move Speed."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "처음챔피언접촉150%감소이속과기본75%이속의가산/대체관계,감소곡선은 원문이명시하지않는다. 두개백분율을임의가산하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rakan gains 75% Move Speed for 4 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The first champion touched grants Rakan 150% decaying Move Speed."
+        }
+      ]
+    }
+  ]
+}

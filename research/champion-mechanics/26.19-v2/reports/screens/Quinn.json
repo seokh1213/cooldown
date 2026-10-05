@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Quinn.E",
+      "sourceHash": "9b7c6427f280674da7e986b84e362ecbd56d7fd7316f842588094efd217a0f8b",
+      "candidateHash": "1869d06cce33963c372e9cbd0737010f3e2abc6a9a422622d4cdcf3d010bb834"
+    },
+    {
+      "id": "Quinn.P",
+      "sourceHash": "67edcf94926c41bc3e4155effbf1222649e8e3b1a52def0a02f87a6ed7975e36",
+      "candidateHash": "9854f2a7c4cc2e678a872813c6b3f10b4df83f0d1d041cbe6121cb9dc95711aa"
+    },
+    {
+      "id": "Quinn.Q",
+      "sourceHash": "4d5a9fef99038b9f7c375904a0691800c24588eae5f72fa79db264fb473aadcd",
+      "candidateHash": "7179a1b3833536ef6e6ccbe9b96cd1b9522f1a35cbf215c4caa81fa0b5f525a8"
+    },
+    {
+      "id": "Quinn.R",
+      "sourceHash": "0da37066e02243b4fe7ede34848fdd8622cf847d87c3386308cab66e946b063a",
+      "candidateHash": "4481d1e67abfce48216cfa2fe79ad656f414ec11744765dcc881bc9a741f3239"
+    },
+    {
+      "id": "Quinn.W",
+      "sourceHash": "1267d494c6597774e3801a7d6838fd0f99712c994ec879d40a68c0784de2847f",
+      "candidateHash": "aef33cf1a36202a7e12d747f9e565a90e994e0615b6e7d2e48358129ca7b9819"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Quinn.P",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "causing Quinn's next Attack On-Hit against them to deal ((15 ~ 120) + (40% bonus Attack Damage)) bonus physical damage.",
+      "issue": "효과 설명에 표식 대상에 대한 다음 공격 적중이라는 소모 조건은 보존했지만, 규칙의 공격 이벤트와 조건은 표식이 있는 동안의 모든 공격에 피해가 적용되는 것으로 표현되어 있습니다.",
+      "correction": "다음 공격 적중 1회에만 피해가 적용되도록 횟수 조건을 구조화하거나, 스키마에서 표현할 수 없다면 불확실한 조건을 gap에 남기고 규칙이 반복 공격에 적용되지 않도록 하세요."
+    },
+    {
+      "id": "Quinn.Q",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "making the first enemy hit with Harrier",
+      "issue": "원문은 처음 적중한 적에게 매사냥 표식을 남긴다고 하지만, 효과 설명은 표식 부여를 명시하지 않습니다.",
+      "correction": "처음 적중한 적에게 매사냥 표식을 남긴다는 효과를 설명에 보존하세요."
+    },
+    {
+      "id": "Quinn.Q",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If the first enemy struck is not a champion, it is Disarmed for 1.75 seconds.",
+      "issue": "최초 대상이 챔피언이 아닌 경우를 표현했지만, 원문은 그 대상이 챔피언이 아닌 동시에 몬스터에게만 공격 불가 효과가 적용되는지 구분하지 않습니다. 현재 조건 자체는 원문과 일치하므로 해당 항목은 문제로 볼 수 없습니다.",
+      "correction": "해당 조건은 수정할 필요가 없습니다."
+    },
+    {
+      "id": "Quinn.R",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Being damaged by non-minions removes the Move Speed bonus for 3 seconds.",
+      "issue": "피해를 주는 주체가 미니언이 아닌 경우로 조건을 표현했으나, 원문은 피해를 받은 대상이 미니언이 아닌 경우라고 하지 않고 피해의 출처가 미니언이 아닌 경우라고 명시합니다.",
+      "correction": "damage_taken 이벤트에서 조건의 주체가 피해를 준 대상임을 명확히 표현하거나, 이 구분을 타입으로 표현할 수 없다면 조건을 설명 텍스트에 보존하세요."
+    },
+    {
+      "id": "Quinn.W",
+      "path": "rules.0.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "grants Quinn 28/41/54/67/80% Attack Speed and 20/25/30/35/40% Move Speed for 2 seconds.",
+      "issue": "공격 속도 증가 효과에 2초 지속시간이 연결되어 있지만, 이동 속도 증가 효과에도 같은 지속시간이 연결된 것은 구조상 불명확합니다.",
+      "correction": "두 효과 모두 2초간 지속된다는 점을 명시적으로 보존하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,247 @@
+{
+  "summary": "오리아나 스킬은 구체에서 시작하며 너무 멀어지면 구체가 돌아옵니다. 기본공격은 추가 마법 피해를 주고4초 안 같은 대상 후속공격은 제한된 추가 피해를 더합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본공격은(10~50+15%AP)의 추가 마법 피해를 줍니다. 범위의 변화 기준은 공급본문에 없습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Orianna's Attacks deal an additional ((10 ~ 50) + (15% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "직전 기본공격과 동일한 대상"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "동일대상 직전공격 후4초 안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "4초 안 동일대상 후속공격은(2~8+2.25%AP)의 마법 피해 증가분을 더하며, 해당 증가분의 최대식은(3~15+4.5%AP)입니다. 증가분식과 최대식의 계수를 합산하지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Subsequent Attacks against the same target within 4 seconds deal an additional ((2 ~ 8) + (2.25% Ability Power)) magic damage (max of ((3 ~ 15) + (4.5% Ability Power)) damage)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "오리아나의 스킬은 구체에서 시작합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Orianna's Abilities originate from her Ball."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "구체에서 너무 멀리 떨어짐"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "summon",
+          "text": "오리아나가 구체에서 너무 멀리 떨어지면 구체는 자동으로 오리아나에게 돌아옵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Orianna's Ball automatically returns to her if she is too far away from it."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "기본10~50/후속증분2~8/최대증분3~15 범위의 변화 기준이나 누적식은 주어지지 않았다. 레벨비례 또는 증분 두배의 기본수치를 추정하지 않고 원문 최대식을 보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Subsequent Attacks against the same target within 4 seconds deal an additional ((2 ~ 8) + (2.25% Ability Power)) magic damage (max of ((3 ~ 15) + (4.5% Ability Power)) damage)."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "구체 자동귀환의 너무멀리 거리 임계값이 공급원문에 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "if she is too far away from it."
+        }
+      ]
+    }
+  ]
+}

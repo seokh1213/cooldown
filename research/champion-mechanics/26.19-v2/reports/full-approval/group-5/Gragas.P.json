@@ -1,0 +1,92 @@
+{
+  "id": "Gragas.P",
+  "sourceHash": "c911a57c82feff1d2044fe9dd660c3b3169ef578fd00efbde209ce3aadf5df03",
+  "beforeCandidateHash": "f68c63a40a9ae2a48b9706b073ac0580098e46672c65f5bce6e373e7e890fc2e",
+  "candidateHash": "5b6f6ab5ec9e2309c9abb52e14a509141960a441693e1f60b45092f7e32d69d8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 2,
+  "summaryCheck": "스킬사용회복5.5%Health와요약의주기적발동을확인했다. 회복체력종류/주기초는미공급.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "시전자회복·스킬사용·주기준비조건,5.5%Health이며Health종류미명시로일반amount절대값실행을막았다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "주기적 패시브 회복이 준비됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "5.5%",
+              "value": 5.5,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary,rules.0",
+      "issue": "요약의periodic을누락해모든cast회복가능·%Health를절대amount.",
+      "correction": "주기준비와5.5%Health문구·other참조.",
+      "sourceId": "en:summary",
+      "quote": "Gragas periodically heals upon using a skill."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "회복량의 기준이 되는 체력 스탯의 종류가 원문에 명시되지 않았습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_number",
+      "detail": "periodically라고만하여회복가능주기의초수는미공급이다. 모든스킬마다항상회복한다고실행하지않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

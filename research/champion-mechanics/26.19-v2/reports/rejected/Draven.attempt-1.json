@@ -1,0 +1,1006 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "드레이븐은 비챔피언 유닛이나 포탑을 처치하거나 회전 도끼를 잡으면 중첩을 얻습니다. 적 챔피언 처치 시 중첩에 비례한 추가 골드를 얻고, 사망하면 중첩 일부를 잃습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "비챔피언 유닛 또는 포탑을 처치하거나 회전 도끼를 잡으면 중첩을 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven gains 1 stack whenever he kills a non-champion unit or turret, catches a Spinning Axe."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "적 챔피언 처치 시 추가 골드를 얻습니다. 추가 골드는 기본량에 현재 중첩 수에 따른 골드를 더해 계산됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "unknown"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven gains 25 gold plus 2 additional gold per stack upon killing a champion."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "death",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "보유 중첩의 일부를 잃습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven loses 50% of stacks upon death."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "회전 도끼를 준비하면 다음 공격이 추가 물리 피해를 입히고 도끼가 공중으로 튕깁니다. 도끼를 잡으면 다시 준비하며, 일정 시간 공격하지 않거나 포탑·구조물을 공격하면 도끼를 잃거나 튕기지 않습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "structure"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "강화된 다음 기본 공격이 추가 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven readies a Spinning Axe, causing his next Attack to deal an additional (40/45/50/55/60 + (75/85/95/105/115% bonus Attack Damage)) physical damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Draven readies a Spinning Axe, causing his next Attack to deal an additional (40/45/50/55/60 + (75/85/95/105/115% bonus Attack Damage)) physical damage and ricochet into the air."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "structure"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_modifier",
+              "subject": "target",
+              "text": "공격한 대상에게서 도끼가 공중으로 튕깁니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven readies a Spinning Axe, causing his next Attack to deal an additional (40/45/50/55/60 + (75/85/95/105/115% bonus Attack Damage)) physical damage and ricochet into the air."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Attacking a turret or structure will not cause Draven's Spinning Axes to richochet."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "structure"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "attack_followup",
+              "subject": "caster",
+              "text": "공중에 뜬 회전 도끼를 잡으면 회전 도끼를 다시 준비합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Draven catches it, he readies another Spinning Axe."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n11"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "followup_status",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "cancelled"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "이 시간 동안 공격하지 않으면 회전 도끼를 모두 떨어뜨립니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven will drop any Spinning Axes if he does not attack for 6 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "도끼 준비 동작 및 강화 공격 활성 상태의 판정 조건이 원문에 구체적으로 설명되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven readies a Spinning Axe, causing his next Attack"
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "회전 도끼를 잡는 사건의 구체적인 판정 방식은 설명되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Draven catches it, he readies another Spinning Axe."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "드레이븐은 유닛을 통과할 수 있는 상태가 되고 이동 속도와 공격 속도가 증가합니다. 이동 속도 증가는 지속시간 동안 감소하며, 회전 도끼를 잡으면 이 스킬의 재사용 대기시간이 초기화됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "유닛을 통과할 수 있는 상태가 됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가하고 지속시간 동안 점차 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": "attackSpeed",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven becomes Ghosted, gains 50/55/60/65/70% Move Speed decaying over 1.5 seconds and 20/25/30/35/40% Attack Speed for 3 seconds. Ghosted units can pass through other units."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "회전 도끼를 잡음"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "이 스킬의 재사용 대기시간이 초기화됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When Draven catches a Spinning Axe, this Ability's Cooldown is refreshed."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "E": {
+      "summary": "드레이븐은 도끼를 던져 물리 피해를 입히고 대상을 밀쳐내며 둔화시킵니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "도끼가 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "도끼가 대상을 뒤로 밀쳐냅니다.",
+              "damageType": null,
+              "crowdControl": "knockback",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "대상이 둔화됩니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven chucks a sideways axe that deals (75/110/145/180/215 + (50% bonus Attack Damage)) physical damage, Knocks Back, and Slows by 20/25/30/35/40% for 2 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "드레이븐은 도끼를 던져 맞은 적에게 물리 피해를 입힙니다. 챔피언 적중 또는 재사용 시 도끼가 되돌아오며, 적중한 적 수에 따라 피해가 감소하고 방향 전환 시 감소가 초기화됩니다. 도끼 피해로 현재 중첩 수에 비례한 체력 이하가 되는 적 챔피언은 처형됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "도끼가 적중한 대상에게 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": [
+                "decays",
+                "per_target"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Draven hurls two massive axes that deal (200/300/400 + (110/130/150% bonus Attack Damage)) physical damage. The axes deal 5% less damage for each enemy hit, down to a minimum of 50%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "도끼가 방향을 바꾸어 드레이븐에게 돌아옵니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Upon hitting a champion or Recasting, they reverse direction and return to Draven."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "도끼가 방향을 바꾸어 드레이븐에게 돌아옵니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Upon hitting a champion or Recasting, they reverse direction and return to Draven."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "transform",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "도끼가 방향을 바꾸면 피해 감소가 초기화됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Damage falloff resets after reversing direction."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "health_threshold",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n9"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "execute",
+              "subject": "target",
+              "text": "도끼 피해 후 체력이 드레이븐의 현재 드레이븐의 리그 중첩 수对应的阈值以下면 처형합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "other",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Whirling Death would leave an enemy champion with less health than 100% of Draven's current League of Draven stacks (1), he will execute them."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "적중할 때마다 피해가 감소하는 방식이 적중 횟수별 구체적인 계산식으로 제시되지 않아 계산식을 확정할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The axes deal 5% less damage for each enemy hit, down to a minimum of 50%."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "처형 조건의 중첩 수가 원문 수치 표기 '(1)'과 연결되어 있으나, 이 표기가 현재 중첩 수를 나타내는 방식은 불명확합니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Whirling Death would leave an enemy champion with less health than 100% of Draven's current League of Draven stacks (1), he will execute them."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Draven.W",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.0.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n0"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n1"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n2"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n3"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n4"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n5"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n6"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n7"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n8"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n9"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n10"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n11"
+        }
+      ]
+    },
+    {
+      "id": "Draven.R",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.0.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n1"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n2"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n3"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n4"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n5"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n6"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n7"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n8"
+        }
+      ]
+    }
+  ]
+}

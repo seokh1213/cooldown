@@ -1,0 +1,485 @@
+{
+  "drafts": {
+    "E": {
+      "summary": "도약해 착지할 때 물리 피해를 줍니다. 날개 진화 시 도약 사거리가 증가하며, 챔피언 처치 또는 어시스트 시 도약의 재사용 대기시간이 초기화됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "도약해 착지할 때 물리 피해를 줍니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Kha'Zix leaps, dealing (65/100/135/170/205 + (40% bonus Attack Damage)) physical damage upon landing."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Evolve Wings"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "도약 사거리가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "distance_units",
+                  "numberRefs": [
+                    "en:summary:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "If he chooses to Evolve Wings, Leap's range increases by 200 and the cooldown resets on champion kill or assist."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "takedown",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "도약의 재사용 대기시간을 초기화합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "If he chooses to Evolve Wings, Leap's range increases by 200 and the cooldown resets on champion kill or assist."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "P": {
+      "summary": "적 팀에게 보이지 않을 때 다음 챔피언 대상 공격은 추가 마법 피해를 주고 둔화시킵니다. 근처에 아군이 없는 적은 고립됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "entity_count",
+              "operator": "eq",
+              "value": {
+                "kind": "number_ref",
+                "ref": "zero"
+              }
+            },
+            {
+              "subject": "nearby_enemies",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "nearby_enemies",
+              "text": "근처에 아군이 없는 적은 고립됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies with no nearby allies become Isolated."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "근처 아군이 없다는 조건을 인원수 0으로 표현했지만, 인원수 0에 해당하는 numberRef의 인용 근거가 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies with no nearby allies become Isolated."
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "summary": "대상에게 물리 피해를 줍니다. 아군으로부터 고립된 적에게는 별도의 피해량이 적용됩니다. 거대 갈고리 진화 시 고립된 대상에게 사용하면 재사용 대기시간 일부를 돌려받지만, 반환 비율은 제시되지 않았습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "absent",
+              "value": {
+                "kind": "enum",
+                "value": "isolated"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "고립되지 않은 대상에게 물리 피해를 줍니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Kha'Zix slashes a nearby enemy, dealing (80/105/130/155/180 + (105% bonus Attack Damage)) physical damage. This deals (168/220.5/273/325.5/378 + (220.5% bonus Attack Damage)) damage instead to enemies Isolated from their allies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "isolated"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "고립된 대상에게 기본 피해를 대체하는 물리 피해를 줍니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This deals (168/220.5/273/325.5/378 + (220.5% bonus Attack Damage)) damage instead to enemies Isolated from their allies."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_number",
+          "detail": "거대 갈고리 진화 시 고립된 대상에게 재사용 대기시간 일부를 돌려주지만, 반환 비율이 제시되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "If he chooses to Evolve Reaper Claws, this refunds a percent of it's cooldown against Isolated targets."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "가시가 좁은 범위에서 첫 적중 적을 대상으로 물리 피해를 줍니다. 카직스가 범위 안에 있으면 체력을 회복합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "가시가 좁은 범위에서 첫 적중 적을 기준으로 물리 피해를 줍니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Kha'Zix fires a spike dealing (75/105/135/165/195 + (100% bonus Attack Damage)) physical damage to the first enemy hit in a small area."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "distance",
+              "operator": "lte",
+              "value": {
+                "kind": "text",
+                "value": "폭발 범위 안"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "체력을 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Kha'Zix is inside the area, he restores (55/75/95/115/135 + (50% Ability Power)) Health"
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "missing_variant",
+          "detail": "진화 시 세 가시 원뿔 발사, 둔화 및 챔피언 드러내기 효과는 요약에만 있으며 입력 variants에는 해당 진화 variant가 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "If he chooses to Evolve Spike Racks, Void Spike now fires three spikes in a cone, slow enemies hit, and reveals enemy champions hit for 2 seconds. Isolated targets are slowed for extra."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Khazix.P",
+      "errors": [
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: zero"
+        }
+      ]
+    }
+  ]
+}

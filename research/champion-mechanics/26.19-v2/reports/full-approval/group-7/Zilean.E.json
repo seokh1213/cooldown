@@ -1,0 +1,237 @@
+{
+  "id": "Zilean.E",
+  "sourceHash": "1df188e25cdd64e02c7b2fdb784cec72be04556fa1cd9ecf9d282c37257e5789",
+  "beforeCandidateHash": "081895e0f802d12aa9e407057e428e3520b3712b44938a93c6499b33c3a45073",
+  "candidateHash": "1a40c37815661c0c241b2c45615952cc1b52212b7b4de08af1d6f83152ebf037",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "적챔피언둔화와아군챔피언이속 증가를 분리하며 두 효과40~99%·2.5초 확인. any unit 요약과 챔피언 본문 충돌 기록.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적 챔피언에만 slow40/55/70/85/99%2.5초. 아군에 둔화를 확대하지 않음."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군 챔피언 본인의moveSpeed 증가40/55/70/85/99%2.5초. 시전자 스탯 주인으로 혼동하지 않음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "gaps.0",
+      "issue": "대상 범위 en 요약/본문 충돌 누락",
+      "correction": "source_conflict를 기록하고 조건 문장을 한국어로 정리",
+      "sourceId": "en:summary",
+      "quote": "Zilean bends time around any unit"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en 요약은 any unit이라고 하지만 en/ko 본문은 적/아군 챔피언을 대상으로 한정한다. 챔피언 범위의 본문을 우선한다.",
+      "review": "요약any unit과 본문champion 제한의 불일치를 두 출처 그대로 남기고 본문 우선."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ],
+    "draft": {
+      "summary": "질리언은 적 챔피언을 둔화시키거나 아군 챔피언의 이동 속도를 높인다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "적 챔피언"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적 챔피언을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zilean Slows an enemy champion by 40/55/70/85/99%"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "for 2.5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Zilean Slows an enemy champion by 40/55/70/85/99% or grants an allied champion 40/55/70/85/99% Move Speed for 2.5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "아군 챔피언"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "target",
+              "text": "아군 챔피언의 이동 속도를 높인다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "target",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "or grants an allied champion 40/55/70/85/99% Move Speed for 2.5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Zilean Slows an enemy champion by 40/55/70/85/99% or grants an allied champion 40/55/70/85/99% Move Speed for 2.5 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "source_conflict",
+          "detail": "en 요약은 any unit이라고 하지만 en/ko 본문은 적/아군 챔피언을 대상으로 한정한다. 챔피언 범위의 본문을 우선한다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "Zilean bends time around any unit"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Zilean Slows an enemy champion by 40/55/70/85/99% or grants an allied champion 40/55/70/85/99% Move Speed for 2.5 seconds."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

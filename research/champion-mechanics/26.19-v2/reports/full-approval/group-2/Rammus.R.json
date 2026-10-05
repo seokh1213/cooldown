@@ -1,0 +1,140 @@
+{
+  "id": "Rammus.R",
+  "sourceHash": "75b023ff20e4a8ea15f063589d349d7e54de54a8859c9839bea3fff91393b552",
+  "beforeCandidateHash": "7d37ba408be7080296d4b7b9c5e71e55c51d994b5e98ef53b1eea948d8abd7c7",
+  "candidateHash": "bb4eb1f5f52eac9d7425f393964e2d6a775606f2dfa5dc43d2a52b06ffae4b8d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 3,
+  "summaryCheck": "착지150/250/350+60%AP마법/30~50%둔화1.5초;대회전시중앙80~240+100%AP추가마법/0.75초띄움;3.5초3회여진반복둔화;이속사거리·포탑200% 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.distance eq 이번 착지지역 안 대상; target: 지역에 착지해 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=150,en:body:n1=250,en:body:n2=350 상수 rank_values / stat_coefficient en:body:n3=60%(백분율) caster.abilityPower scalar; flags per_target | target: 지역의 적을 둔화시킵니다. [slow]; 수치 amount en:body:n4=30(백분율),en:body:n5=40(백분율),en:body:n6=50%(백분율) 상수 rank_values / duration_seconds en:body:n7=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.form eq Powerball 중 시전 / target.activation eq 이번 착지지역 중앙에 있는 적; target: 대회전 중 사용하면 중앙의 적은 추가 마법 피해를 입습니다. [magic]; 수치 amount en:body:n8=80,en:body:n9=120,en:body:n10=160,en:body:n11=200,en:body:n12=240 상수 formula_components / stat_coefficient en:body:n13=100%(백분율) caster.abilityPower scalar; flags per_target | target: 대회전 중 사용하면 중앙의 적을 공중에 띄웁니다. [knockup]; 수치 duration_seconds en:body:n14=0.75 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 nearby_enemies.distance eq 이번 착지 후 여진지역 안; nearby_enemies: 착지 후3.5초에 걸쳐3회 여진이 발생해 같은 둔화30/40/50%를 반복 적용합니다. 여진피해는 원문에 없으며 한국어의 둔화중첩을 영문반복으로 임의 합산하지 않습니다.; 수치 count en:body:n15=3 상수 scalar / duration_seconds en:body:n16=3.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq structure / target.target_type eq 포탑; target: 이 스킬의 포탑 대상 피해는 일반 피해의200%입니다. 별도200%절대피해를 더하지 않습니다. [magic]; 수치 damage_multiplier en:body:n17=200%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이 스킬의 사거리는 람머스의 이동 속도에 따라 증가합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "범위중앙predicate·AP계수·여진중첩번역충돌·포탑전용대체배율·사거리효과분류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Rammus hops into the air and slams down in an area, dealing (150/250/350 + (60% Ability Power)) magic damage and Slowing by 30/40/50% for 1.5 seconds. If used during Powerball, enemies in the center take an additional (80/120/160/200/240 + (100% Ability Power)) magic damage and are Knocked Up for 0.75 seconds. Rammus then creates 3 aftershocks in the area over 3.5 seconds, repeating the Slow. The range of this Ability is increased by Rammus's Move Speed. This Ability deals 200% damage to turrets."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 393,
+      "verdict": "repaired",
+      "reason": "거리등식 대신 중앙에있는적이라는 텍스트 activation 범위조건으로 보존."
+    },
+    {
+      "index": 394,
+      "verdict": "false_positive",
+      "reason": "R기본과추가피해 모두 magic이고 포탑문장은 이스킬피해200%배율이다. 피해종류를새로단정한독립피해가 아닌 기존피해modifier로 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "이동 속도에 따른 사거리 증가량의 수식이나 수치가 원문에 없어 정량화할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "여진은 영문 repeating Slow,한국어 둔화중첩으로 표현. 영문 반복우선이며 중첩가산 또는여진피해는 추정하지 않는다.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "기본피해3개값과 대회전추가피해5개값의 인덱스축이 다르며 추가5개값의 기준을 이 R원문이 지정하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

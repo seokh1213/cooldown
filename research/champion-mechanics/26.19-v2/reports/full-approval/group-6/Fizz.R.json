@@ -1,0 +1,117 @@
+{
+  "id": "Fizz.R",
+  "sourceHash": "0bda1f6f2e52d06d57a985a2abe67aeea706bb0241ae446246647391a3cbc0ad",
+  "beforeCandidateHash": "547d6b5d696270962012e0f3d8093bf8832a229cac81ca56057e82d488f2beed",
+  "candidateHash": "fd922525dbf1a8a82f8a18063ac09f39c0e6dbd6e19f36cd54081f147457c7fa",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "첫 챔피언 부착·절대 시야·거리별 둔화와 2초 후 상어의 띄우기·주변 밀치기·마법 피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "처음 적중한 챔피언에게 물고기를 붙이고 True Sight와 부착 전 이동 거리별 40~80% 둔화를 적용한다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "부착 2초 후 물고기 대상은 1초 knockup과 거리별 최소 180/300/420 + 주문력 60%, 최대 270/450/630 + 주문력 90% 피해다. AP 두 끝점을 합산하지 않았다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "상어에 맞은 주변 적은 knockback과 같은 거리별 마법 피해를 받는다. 요약의 모든 적중 적 둔화도 수치 추정 없이 보존했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.2",
+      "issue": "물고기 표식과 부착 2초 지연이 누락됐다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz launches a fish that attaches to the first champion hit. The victim is afflicted with True Sight and Slowed by between 40% to 80% based on how far the fish travelled before attaching. After 2 seconds a shark erupts on the target, Knocking Up the target with the fish for 1 second, Knocking Back everything else, and dealing between (180/300/420 + (60% Ability Power)) to (270/450/630 + (90% Ability Power)) magic damage based on how far the fish travelled before attaching."
+    },
+    {
+      "path": "rules.1.conditions.0.value",
+      "issue": "임의 표식이 아닌 이 물고기 부착 후 지연 조건이다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz launches a fish that attaches to the first champion hit. The victim is afflicted with True Sight and Slowed by between 40% to 80% based on how far the fish travelled before attaching. After 2 seconds a shark erupts on the target, Knocking Up the target with the fish for 1 second, Knocking Back everything else, and dealing between (180/300/420 + (60% Ability Power)) to (270/450/630 + (90% Ability Power)) magic damage based on how far the fish travelled before attaching."
+    },
+    {
+      "path": "rules.1.effects.1.kind",
+      "issue": "최소·최대 AP 계수를 동시 합산하는 damage 실행을 피하고 두 끝점으로 보존했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Fizz launches a fish that attaches to the first champion hit. The victim is afflicted with True Sight and Slowed by between 40% to 80% based on how far the fish travelled before attaching. After 2 seconds a shark erupts on the target, Knocking Up the target with the fish for 1 second, Knocking Back everything else, and dealing between (180/300/420 + (60% Ability Power)) to (270/450/630 + (90% Ability Power)) magic damage based on how far the fish travelled before attaching."
+    },
+    {
+      "path": "rules.2.effects.1",
+      "issue": "공급 요약의 All enemies hit 마법 피해에 주변 적도 포함된다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Fizz tosses a fish in a direction that attaches to any champion that touches it, slowing the target. After a short delay, a shark erupts from the ground, knocking up the target and knocking any nearby enemies aside. All enemies hit are dealt magic damage and slowed."
+    },
+    {
+      "path": "rules.2.effects.2",
+      "issue": "요약의 모든 적중 적 둔화가 누락됐다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Fizz tosses a fish in a direction that attaches to any champion that touches it, slowing the target. After a short delay, a shark erupts from the ground, knocking up the target and knocking any nearby enemies aside. All enemies hit are dealt magic damage and slowed."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "이동 거리에 따라 달라지는 둔화 및 피해의 정확한 거리 구간별 계산식은 원문에 없습니다."
+    },
+    {
+      "index": 1,
+      "reason": "missing_source",
+      "note": "요약의 모든 상어 적중 적 둔화에 대해 본문은 주변 적 둔화 비율·시간을 명시하지 않는다. 물고기 부착 대상의 둔화 수치를 그대로 복사하지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "Fizz.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

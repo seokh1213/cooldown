@@ -1,0 +1,57 @@
+{
+  "id": "Graves.W",
+  "sourceHash": "ad8f647d62ae309bec047e618a2f8c3c1672e05a42fa9943319a2c1f142610a2",
+  "beforeCandidateHash": "f3764e2874620b50de915e6d62493030512b747871b3d24f3af39161ab02456a",
+  "candidateHash": "43dfafe3e25cd1136e7b1eb56e2a775d7c29f0714902f62477d304bf82b03f73",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "연막4초/내부적50%slow/외부시야차단,initialimpact60~260+AP60%마법을 대조했다. 초기impact와처음한적은다른범위다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 검은 연막 구름이 지속되며, 구름 안의 적은 둔화되고 구름 바깥 시야가 차단된다. [duration_seconds n0=4 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 연막탄의 최초 충돌 범위에 맞은 적. target damage magic: 연막탄의 초기 충돌은 마법 피해를 입힌다. [amount n2=60/n3=110/n4=160/n5=210/n6=260 rank_values; stat_coefficient n7=60% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 enemy.other eq 4초간 지속하는 연막 구름 내부. enemy crowd_control slow: 연막 구름 안의 적은 둔화된다. [amount n1=50% scalar] / enemy visibility: 연막 구름 안의 적은 구름 바깥을 볼 수 없다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/new/gaps",
+      "issue": "연막내조건없음·초기impact행위자/대상unknown",
+      "correction": "구름지속과내부적slow/vision분리,초기impact적중caster/target및summary영역근거",
+      "sourceId": "en:summary",
+      "quote": "Enemies caught in the initial impact are dealt magic damage"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "연막안적의외부시야차단방향은본문이명확히말한다.정확한연막영역치수/경계는원문에없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

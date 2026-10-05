@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Kaisa.E",
+      "sourceHash": "4718b20fee69bcb7651a167eb66bd486758fcf1816437f8614ad0c2ed9156c2d",
+      "candidateHash": "970f0a542e095b8d4ee26a501670016520434a6335e4110262b543c0434c59bf"
+    },
+    {
+      "id": "Kaisa.R",
+      "sourceHash": "a333f918b5a057273b0f27f74339dcc8d540121563ba1db863c93b85d1e1e32b",
+      "candidateHash": "e5ca55f4bb7f7357d6da222bf335b63cd54e4db86ed6b5aeeedd736233a16e04"
+    },
+    {
+      "id": "Kaisa.W",
+      "sourceHash": "6fa6d442eec9a3546511e9ba01a43a0b39418e62418035a81719f42d117a7264",
+      "candidateHash": "090dc68a4cf2889572f669d1cb4b0b7eefd35bf9cdf505b4e17fc74a57a59696"
+    },
+    {
+      "id": "Kaisa.P",
+      "sourceHash": "42e807c28bef13a07aee24209f32a525e16fdb079ad544f2dc86b0256d25bfbb",
+      "candidateHash": "1c76174a0dec77e4c3556594004658a52a292bc61e3723c9ff2ce29a4ea638e3"
+    },
+    {
+      "id": "Kaisa.Q",
+      "sourceHash": "2696a272c621fb7c76078b50672ba4247585a71d9c933e2fb62f0e500d28d6fe",
+      "candidateHash": "f1d4cd2a7f38b0211881d37b31a80332a67ac2a452013d04dfef268f5a38a644"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Kaisa.Q",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kai'Sa launches 6 missiles that split among nearby enemies, each dealing (40/55/70/85/100 + (55% bonus Attack Damage) + (20% Ability Power)) physical damage, up to a maximum of (90/123.75/157.5/191.25/225 + (123.75% bonus Attack Damage) + (45% Ability Power)).",
+      "issue": "‘count’가 6발의 미사일 수를 피해 효과의 수량으로 기록해, 효과가 미사일 수만큼 중첩 적용되는 것처럼 읽힙니다. 원문은 발사 수와 각 미사일의 피해를 구분합니다.",
+      "correction": "피해 효과에서 count 매개변수를 제거하고, 6발은 발사체 수로 별도 보존하세요."
+    },
+    {
+      "id": "Kaisa.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Additional missile hits on champions or monsters deal 25% damage.",
+      "issue": "대상 유형 조건이 챔피언만 지정하지만, 원문에는 챔피언과 몬스터가 모두 포함됩니다.",
+      "correction": "대상 유형을 챔피언 또는 몬스터로 표현하거나, 몬스터 조건을 포함하세요."
+    },
+    {
+      "id": "Kaisa.Q",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Minions below 35% Health take 200% damage.",
+      "issue": "조건의 health_threshold가 35% 미만 체력을 뜻한다고 명시되어 있지 않아, 설명 텍스트의 체력 조건과 구조화된 조건이 일치한다고 확인할 수 없습니다.",
+      "correction": "조건 필드를 원문 의미에 맞게 확인 가능한 형태로 지정하세요. 필드 의미를 확정할 수 없다면 이 조건은 구조화하지 말고 텍스트와 gap으로 보존하세요."
+    }
+  ],
+  "notes": []
+}

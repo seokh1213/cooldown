@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Akshan.E",
+      "sourceHash": "7f86f994dd5fae4a766cff933c175beff0c568c925bf63ff72e20d099335792d",
+      "candidateHash": "7c3dfc144e3cc173c057bb9d05fdfb519f366b10f64d4deeed70d315fa0a6295"
+    },
+    {
+      "id": "Akshan.P",
+      "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+      "candidateHash": "250ec4540982e01333e37c5e5f003e2d799cbbd4ba1f2f44f18d30ebe0cdd880"
+    },
+    {
+      "id": "Akshan.Q",
+      "sourceHash": "be3c250575c912590cb890038162e70a631a54ad8acbb24733fb08d6e0ee113e",
+      "candidateHash": "5ad94f824288b94b507f1cf283c0e33a20a595434dcf8f15019dc3b79493ada5"
+    },
+    {
+      "id": "Akshan.R",
+      "sourceHash": "820cedfc9e2b6231467a5349b1f3d384dedf3fa9363afa308f6922ee7eb5a1ba",
+      "candidateHash": "01746b049dc11aed94e9a7ea732dfc26d7c9bfc4122c478d82e37ce90ec6adce"
+    },
+    {
+      "id": "Akshan.W",
+      "sourceHash": "b2563d682e3a7d54fcc038656b9a3f7a0d5c65cc839d01eef6bd507592d566f6",
+      "candidateHash": "1e2541065c6ccac073711bf218d6af0acaed3bda0f1bbdab07b78e1b57343604"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Akshan.P",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every three hits from Attacks or Abilities deals an additional ((15 ~ 150) + (60% Ability Power)) magic damage.",
+      "issue": "조건이 누적 적중 횟수가 정확히 3일 때만 발동한다고 제한합니다. 원문은 3회마다 발동한다고 하므로 네 번째 이후의 주기적 발동도 포함해야 합니다.",
+      "correction": "정확히 3회라는 동등 조건 대신 3회마다 발동하는 주기 조건으로 표현하세요."
+    },
+    {
+      "id": "Akshan.P",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Against champions, Akshan also gains ((40 ~ 280) + (35% bonus Attack Damage)) Shield for 2 seconds ((16 ~ 4) second Cooldown).",
+      "issue": "보호막 조건에도 적중 횟수가 정확히 3이어야 한다고 제한합니다. 원문은 세 번째 적중마다 보호막을 얻는다고 하므로 이후 주기 발동도 포함해야 합니다.",
+      "correction": "정확히 3회라는 조건 대신 세 번째 적중마다 반복되는 조건으로 표현하세요."
+    },
+    {
+      "id": "Akshan.R",
+      "path": "rules.0.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Recast: Akshan unleashes the stored bullets, each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health.",
+      "issue": "탄환 저장과 발사를 같은 cast 트리거에 묶었습니다. 원문에서 저장은 최초 사용, 발사는 재사용 시 발생하므로 피해·처형·흡혈 효과가 최초 사용에도 일어나는 것처럼 해석될 수 있습니다.",
+      "correction": "저장은 최초 사용 규칙에 두고, 탄환 발사와 그 부가 효과는 재사용 트리거에 연결하세요."
+    },
+    {
+      "id": "Akshan.R",
+      "path": "rules.0.effects.3",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Bullets execute minions and apply Lifesteal.",
+      "issue": "미니언 처형 효과에 대상 유형 조건이 없습니다. 현재 규칙은 탄환이 적중하는 모든 대상에게 처형을 적용하는 것처럼 읽힙니다.",
+      "correction": "처형 효과를 미니언 대상에만 적용한다고 명시하세요."
+    },
+    {
+      "id": "Akshan.W",
+      "path": "rules.1.conditions.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Akshan can only claim Scoundrels when he is alive.",
+      "issue": "악당 처치 관여 조건에 아크샨이 보이는 상태여야 한다는 조건을 추가했습니다. 원문이 요구하는 조건은 아크샨이 살아 있는 것뿐입니다.",
+      "correction": "시야 상태 조건을 제거하고 생존 조건만 사용하세요."
+    },
+    {
+      "id": "Akshan.W",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Akshan can only claim Scoundrels when he is alive.",
+      "issue": "생존 조건을 체력 임계값 100 초과로 표현했지만, 100은 같은 툴팁의 골드 수치이며 생존 여부를 나타내지 않습니다.",
+      "correction": "골드 수치 참조를 제거하고 아크샨의 생존 상태를 조건으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,75 @@
+{
+  "id": "Ryze.P",
+  "sourceHash": "9fc473031b92e1c1b56a59b23143383f995ac6fd755fc054ad5dd16a350d1ed0",
+  "beforeCandidateHash": "3fc828dae196d0bff5612b13688784a5203f75066feafd68b175d2f5efdfd2df",
+  "candidateHash": "fce15d6e04187f84c7560f8ef0e904fc99328d5eee4d7271b7a6306836f20e5e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "AP에따른 최대마나 백분율증가/본문10%AP 표기와 보너스마나 추가스킬피해, 두 산식의 공급한계를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 주문력에 비례해 최대 마나가 백분율로 증가합니다. 본문은(10%AP) max Mana라고 표기합니다. 10%를 입력/출력비율 두 번 적용하거나 단순 고정마나로 바꾸지 않습니다.; 수치 stat_coefficient en:body:n0=10%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 스킬은 라이즈의 추가 마나에 비례한 추가 피해를 입힙니다. 이 패시브 본문에는 계수나 피해 종류가 없습니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "중복 input/output10%비율 제거·요약단위 보존·누락된추가피해효과 추가",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Ryze gains (10% Ability Power)max Mana. His Abilities do additional damage based on his bonus Mana."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "스킬 피해가 추가 마나에 비례해 증가하지만 피해 계수가 제공되지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "summary는 최대마나의 백분율 증가를 말하지만 body의(10%AP)maxMana를 실제 백분율로 바꾸는 정확한 식은 명시하지 않는다. 원문 표현만 보존하며 입력/출력10% 이중 비율 계산을 하지 않는다.",
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

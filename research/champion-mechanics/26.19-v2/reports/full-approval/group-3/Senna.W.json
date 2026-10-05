@@ -1,0 +1,49 @@
+{
+  "id": "Senna.W",
+  "sourceHash": "6a4e42df9ccac5be5d9483686beff4e30da550992311e6f1a8a8576672c6ed51",
+  "beforeCandidateHash": "b402d62858a76ec65850bc4ab782db1517af9f6d8a2d1d850f7c7060df73f79e",
+  "candidateHash": "6f9c84758de993b3f6baab74b76b143b96cbed52ed6175d848497c0085591105",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫적중적70~230+추가AD90%물리피해와1초뒤그대상및주변적1.25~2.25초속박을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq any; target hit_order eq first → target: 첫 번째로 적중한 적에게 물리 피해를 준다. [physical] / amount=70/110/150/190/230 [rank_values]; stat_coefficient=90% (caster bonusAttackDamage) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 unknown time gte 1; target activation eq 첫 적중 후 1초 경과 → target: 1초 지연 후 첫 번째 적중 대상과 그 주변의 다른 적들을 속박한다. [root] / duration_seconds=1.25/1.5/1.75/2/2.25 [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.subject",
+      "issue": "피격적이발동행위자",
+      "correction": "caster",
+      "sourceId": "en:body",
+      "quote": "Senna sends forth the Black Mist"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

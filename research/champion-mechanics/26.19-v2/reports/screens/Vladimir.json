@@ -1,0 +1,134 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Vladimir.E",
+      "sourceHash": "04bcf9a193823a78fbdc867d268dc9653b67a7df8c93f23ecef230ca7acc81da",
+      "candidateHash": "5c9122867f35413aad0642c4e8a1395d6565e7258b71d5e6b1c9220b591b4ed5"
+    },
+    {
+      "id": "Vladimir.P",
+      "sourceHash": "aaeb084ee2f3daad5394d5eb834c23cdefed302d0b8eacb41862f990278e8b37",
+      "candidateHash": "3f6bc4d77c7c0f63228474afff93e919ed5ef8ce9fa3f5354a7c254b1edeb1fb"
+    },
+    {
+      "id": "Vladimir.Q",
+      "sourceHash": "4d73df576b508f5fdda779e84a182bc7eeed57f7bed3f829c1e95c7f53a269a4",
+      "candidateHash": "c5d9075bcf29d18dfbf0db9d11a01867cd49052f8258251b680d1fe0a7f1d432"
+    },
+    {
+      "id": "Vladimir.R",
+      "sourceHash": "ac77ce8aaf58415d47ea3aa6129985474ce58484d72d9491a99e876981208dcb",
+      "candidateHash": "ac324e96f824e376a00be7daa050ee1eb8a59210645733921e0d3fc93feda81d"
+    },
+    {
+      "id": "Vladimir.W",
+      "sourceHash": "69334d7f22d44e8976ae4b84626b695a628e94e29f2128033cf6b7c9c89b7228",
+      "candidateHash": "e74aabb59d8da19505ecabf3c4c5b243005d67ffd77c474f03029e49de73614e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Vladimir.E",
+      "path": "rules.0.effects.0.parameters.0.stat",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "spending up to (8% Health) Health.",
+      "issue": "`8% Health`는 지출 상한의 기준 체력만 나타내며 최대 체력이라고 하지 않습니다. `maxHealth`로 특정하면 근거가 없습니다.",
+      "correction": "`maxHealth` 지정을 제거하고 Health 기준을 미확정 텍스트로 보존하세요."
+    },
+    {
+      "id": "Vladimir.E",
+      "path": "rules.2.effects.0.parameters.1.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(1.5% Health)",
+      "issue": "피해 계수의 Health를 `maxHealth`로 특정했습니다. 원문은 Health라고만 합니다.",
+      "correction": "`maxHealth` 지정을 제거하고 Health 기준을 미확정으로 보존하세요."
+    },
+    {
+      "id": "Vladimir.E",
+      "path": "rules.2.effects.0.parameters.4.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(6% Health)",
+      "issue": "피해 계수의 Health를 `maxHealth`로 특정했습니다. 원문은 Health라고만 합니다.",
+      "correction": "`maxHealth` 지정을 제거하고 Health 기준을 미확정으로 보존하세요."
+    },
+    {
+      "id": "Vladimir.Q",
+      "path": "rules.2.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "After using this Ability twice, Vladimir gains (10 ~ 40)% Move Speed for 0.5 seconds",
+      "issue": "사용 횟수 2회를 `hit_count = 10`으로 기록해, 사용 횟수 조건을 적중 횟수 10회 조건으로 바꿨습니다.",
+      "correction": "조건을 스킬 사용 횟수 2회로 보존하고, 횟수 초기화 규칙은 현재 gaps처럼 미확정으로 남기세요."
+    },
+    {
+      "id": "Vladimir.Q",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "gains (10 ~ 40)% Move Speed for 0.5 seconds",
+      "issue": "이동 속도 증가량이 백분율인데 값의 `percent`가 false입니다.",
+      "correction": "10과 40을 백분율 값으로 기록하세요."
+    },
+    {
+      "id": "Vladimir.R",
+      "path": "rules.2.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Vladimir restores (150/250/350 + (70% Ability Power)) Health if he hits a champion",
+      "issue": "조건에서 `150`을 챔피언 수 기준으로 써서 `entity_count >= 150`이 됐습니다. 이 값은 회복량 수식의 첫 랭크값이지 대상 수 조건이 아닙니다.",
+      "correction": "이 조건을 제거하고 챔피언 적중 조건만 남기세요."
+    },
+    {
+      "id": "Vladimir.R",
+      "path": "rules.3.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "for each champion beyond the first.",
+      "issue": "조건에서 회복량의 첫 랭크값 `150`을 대상 수 문턱값으로 잘못 사용해 `entity_count > 150`이 됐습니다.",
+      "correction": "`150` 기반 조건을 제거하세요. 첫 챔피언 이후 추가 회복이라는 범위는 원문대로 텍스트로 보존하세요."
+    },
+    {
+      "id": "Vladimir.W",
+      "path": "rules.3.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Vladimir deals (80/135/190/245/300 + (15% bonus Health)) magic damage",
+      "issue": "피해에 붙인 2초 지속시간은 원문에서 피해가 지속되는 시간이라고 명시되지 않습니다. 인접한 2초는 웅덩이 상태 지속시간입니다.",
+      "correction": "피해 효과의 `duration_seconds`를 제거하세요."
+    },
+    {
+      "id": "Vladimir.W",
+      "path": "rules.3.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Vladimir deals (80/135/190/245/300 + (15% bonus Health)) magic damage and restores (24/40.5/57/73.5/90 + (4.5% bonus Health)) Health per enemy over the duration.",
+      "issue": "한국어 텍스트에 오타 `웅池`가 있습니다.",
+      "correction": "`웅덩이 위의 적`으로 고치세요."
+    },
+    {
+      "id": "Vladimir.W",
+      "path": "rules.4.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "restores (24/40.5/57/73.5/90 + (4.5% bonus Health)) Health per enemy over the duration.",
+      "issue": "회복에 붙인 2초는 원문상 웅덩이 상태의 지속시간이며, 회복량 자체의 명시적 지속시간은 아닙니다.",
+      "correction": "회복 효과의 `duration_seconds`를 제거하세요."
+    },
+    {
+      "id": "Vladimir.W",
+      "path": "rules.7.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Healing is 60% effective against minions.",
+      "issue": "조건을 minion에만 한정했지만 한국어 원문에는 정글 몬스터도 포함됩니다.",
+      "correction": "조건 범위를 미니언과 정글 몬스터로 기록하세요."
+    }
+  ],
+  "notes": []
+}

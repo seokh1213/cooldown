@@ -1,0 +1,112 @@
+{
+  "id": "KSante.Q",
+  "sourceHash": "be3fc9a87838eee09f683b5f657b8922822944ee32ff037fa3904cdd09c2fa89",
+  "beforeCandidateHash": "7304d69880b289522843a0750bed816330ef9ca2a057e93398eac410c39269f9",
+  "candidateHash": "3efd371b250455136a57c410997e918959e705a3223dcdf962e474654aaf3170",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "70/100/130/160/190+추가armor/MR각40%물리와80%0.5초둔화·적중한중첩6초·2보유충격파1초기절/끌기·총공세CD33%감소·저항력CD/시전시간미해결식을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "무기공격물리70~190+자신추가armor40%+추가MR40%,80%0.5초둔화."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "스킬명중한번에한중첩을얻고6초지속.2는발동보유량이며획득수가아님."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "2중첩보유시대신충격파,적1초기절및끌기. Stuns and Pulls for1second의두CC공통시간."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "총공세중CD33%감소.고정33초아님."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.1.role",
+      "issue": "저항력계수를amount로분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante slams his weapon, dealing (70/100/130/160/190 + (40% bonus Armor) + (40% bonus Magic Resist)) physical damage and Slowing enemies by 80% for 0.5s. If he hits, he gains a stack of Ntofo Strikes for 6 seconds. At 2 stacks, he instead fires a shockwave that Stuns and Pulls enemies for 1 second. All Out: Cooldown is reduced by 33%. Cooldown & cast time reduced by Bonus Armor and Magic Resist: ? / 120."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.0",
+      "issue": "2보유문턱을적중획득수로기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante slams his weapon, dealing (70/100/130/160/190 + (40% bonus Armor) + (40% bonus Magic Resist)) physical damage and Slowing enemies by 80% for 0.5s. If he hits, he gains a stack of Ntofo Strikes for 6 seconds. At 2 stacks, he instead fires a shockwave that Stuns and Pulls enemies for 1 second. All Out: Cooldown is reduced by 33%. Cooldown & cast time reduced by Bonus Armor and Magic Resist: ? / 120."
+    },
+    {
+      "path": "rules.2.effects.1.parameters.0",
+      "issue": "원문1초끌기지속누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante slams his weapon, dealing (70/100/130/160/190 + (40% bonus Armor) + (40% bonus Magic Resist)) physical damage and Slowing enemies by 80% for 0.5s. If he hits, he gains a stack of Ntofo Strikes for 6 seconds. At 2 stacks, he instead fires a shockwave that Stuns and Pulls enemies for 1 second. All Out: Cooldown is reduced by 33%. Cooldown & cast time reduced by Bonus Armor and Magic Resist: ? / 120."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "두본문이기절및끌기를1초로명시",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante slams his weapon, dealing (70/100/130/160/190 + (40% bonus Armor) + (40% bonus Magic Resist)) physical damage and Slowing enemies by 80% for 0.5s. If he hits, he gains a stack of Ntofo Strikes for 6 seconds. At 2 stacks, he instead fires a shockwave that Stuns and Pulls enemies for 1 second. All Out: Cooldown is reduced by 33%. Cooldown & cast time reduced by Bonus Armor and Magic Resist: ? / 120."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 148,
+      "verdict": "repaired",
+      "reason": "현재count는6이아닌2이지만2도보유발동문턱이다.잘못된획득count삭제하고한중첩을명시했다."
+    },
+    {
+      "index": 149,
+      "verdict": "false_positive",
+      "reason": "현재duration_seconds는n9=6초로이미올바르다.2는기존count문제라그부분만수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "note": "추가 방어력 및 마법 저항력에 따른 재사용 대기시간·시전 시간 감소 수치는 원문에 물음표로 표시되어 해결되지 않습니다."
+    }
+  ],
+  "validation": {
+    "id": "KSante.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Nautilus.E",
+      "sourceHash": "5cd964190f1d0bcfe56c03286f0e73077b9019b66ff1da7c833f7c6ec6a99988",
+      "candidateHash": "1d92705622b63f06ad9fe05f239370b93fb9ea42e3210dbd2abc2e6cdf71e8f2"
+    },
+    {
+      "id": "Nautilus.P",
+      "sourceHash": "4f364afbaead84995ffafd3d92d442a666345c7fc5abecdb377049c061b109de",
+      "candidateHash": "7026f73710068f5ca38ed7d86f02df106fb2db514955ef85d7f84c43956ee755"
+    },
+    {
+      "id": "Nautilus.Q",
+      "sourceHash": "6731e7430496a05f0e10586581efc332ecb713c510dc35438eb17f659447a1da",
+      "candidateHash": "55a15f19143ba61bda8a625eac3305da7e7fe94f966a5d863fd0d6812a82679a"
+    },
+    {
+      "id": "Nautilus.R",
+      "sourceHash": "ea6b153acb2f6abb2e985ba7a130223e1d57434afb75da6b5375020a58945301",
+      "candidateHash": "43154e203d85d10a6e240c933cdf643009432c15ce8b58e5a6a1c05b687d19ab"
+    },
+    {
+      "id": "Nautilus.W",
+      "sourceHash": "35c33b0eb8e888318c835d44479ccf7618cc3a99c123fd68b2f647b6a3b1a523",
+      "candidateHash": "3fedab3e5727bff3ff5078c0fa00f9aed913ce7451d437497d490b7f2a719d03"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Nautilus.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Waves deal 50% less damage after the first.",
+      "issue": "파동 순서 조건을 대상의 적중 횟수(`hit_count > 3`)로 표현해, 세 번째 이후 적중에만 감소 피해를 적용합니다. 원문은 첫 파동 뒤의 파동을 가리킵니다.",
+      "correction": "대상별 적중 횟수 조건을 제거하고, 첫 파동 이후의 파동 순서 조건으로 표현하세요. 파동 순서를 인코딩할 수 없다면 해당 조건은 텍스트와 gap으로 남기세요."
+    },
+    {
+      "id": "Nautilus.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If it hits an enemy, Nautilus drags himself and the target together, dealing (85/125/165/205/245 + (90% Ability Power)) magic damage and Stunning them briefly.",
+      "issue": "적중 대상을 챔피언으로 한정해 일반 적에게 적용될 수 있는 효과를 좁혔습니다. 원문은 enemy라고만 합니다.",
+      "correction": "챔피언 조건을 제거하거나 적 대상 범위를 더 넓게 표현하고, 정확한 대상 범위가 불명확하면 텍스트와 gap으로 남기세요."
+    },
+    {
+      "id": "Nautilus.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If the anchor hits terrain, Nautilus will drag himself towards it.",
+      "issue": "지형 적중 조건을 구조물 적중으로 인코딩했습니다. 원문은 terrain을 말하며 구조물과 동일하다고 명시하지 않습니다.",
+      "correction": "구조물 조건을 지형 적중으로 바꾸거나, 지형을 표현할 수 없다면 해당 조건을 텍스트와 gap으로 남기세요."
+    },
+    {
+      "id": "Nautilus.R",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nautilus fires a shockwave that chases an enemy champion, dealing (150/275/400 + (80% Ability Power)) magic damage, Knocking them Up and Stunning them for 1/1.5/2 seconds.",
+      "issue": "주 대상이 적 챔피언이라는 설명을 `target_type = champion`으로 조건화했지만, 해당 규칙에 연결된 대상이 추격 대상인지 실제 적중 대상인지는 구분되지 않습니다. 이 조건은 추격 대상을 정하는 제약을 적중 효과 조건으로 바꿀 수 있습니다.",
+      "correction": "챔피언 추격 대상을 발사 효과의 텍스트로 유지하고, 적중 효과의 조건으로 옮기지 마세요. 적중 대상 범위를 특정할 근거가 없다면 조건을 생략하세요."
+    },
+    {
+      "id": "Nautilus.R",
+      "path": "rules.2.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Other enemies hit by the shockwave are also Knocked Up and Stunned and take (125/175/225 + (40% Ability Power)) magic damage.",
+      "issue": "다른 적에게 적용되는 피해 수치를 누락했습니다.",
+      "correction": "해당 피해의 125/175/225 랭크별 기본 피해와 주문력 40% 계수를 추가하세요."
+    },
+    {
+      "id": "Nautilus.R",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Other enemies hit by the shockwave are also Knocked Up and Stunned and take (125/175/225 + (40% Ability Power)) magic damage.",
+      "issue": "다른 적중 대상의 유형을 챔피언으로 제한했지만, 원문은 다른 적(other enemies)이라고만 합니다.",
+      "correction": "챔피언 조건을 제거하거나, 대상 유형의 불확실성을 텍스트와 gap으로 남기세요."
+    },
+    {
+      "id": "Nautilus.W",
+      "path": "rules.0.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nautilus gains a (50/60/70/80/90 + (8/9/10/11/12% Health)) Shield for 6 seconds.",
+      "issue": "보호막 계수를 최대 체력으로 특정했지만, 원문은 Health라고만 하므로 체력 종류를 단정할 수 없습니다.",
+      "correction": "최대 체력으로 단정하지 말고 체력 계수를 텍스트/미확정 값으로 유지하고, 체력 종류가 불명확하다는 gap을 남기세요."
+    }
+  ],
+  "notes": []
+}

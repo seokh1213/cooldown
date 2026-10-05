@@ -1,0 +1,222 @@
+{
+  "id": "Kled.Q",
+  "sourceHash": "f028be419aafd9acb8f02b6f1d419494e7cb854a12d3fd3e158ab0114bcc7692",
+  "beforeCandidateHash": "68cfe920f992cc33a14e7590d45a2b55df4889b50b8f6215a0e7929b02118882",
+  "candidateHash": "6c1bade4bbc7a23eb7a7df2930a85d37ea387881352379e2be94d9b70c5accea",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 9,
+  "checkedGapCount": 0,
+  "summaryCheck": "탑승 덫의 일반 피해, 첫 챔피언/대형 몬스터 붙잡기, 지속 근접 뒤 자동 추가 피해/끌기/둔화, 붙잡힌 동안 절대 시야, 미니언 배율과 미탑승 교체를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.form eq 탑승 적용. target: 덫에 적중한 적에게 물리 피해를 입힌다. (physical); amount=30/55/80/105/130  rank_values, stat_coefficient=60% caster의 bonusAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.form eq 탑승, target.target_type eq monster, target.other eq 대형 정글 몬스터, target.hit_order eq first 적용. target: 첫 번째로 적중한 대형 정글 몬스터를 덫으로 붙잡는다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.form eq 탑승, target.other eq 덫에 붙잡힌 적, caster.time gte 1.75, caster.distance eq 붙잡힌 적과 해당 시간 동안 근거리를 유지함 적용. target: 근거리를 유지한 뒤 붙잡힌 적에게 추가 물리 피해를 입힌다. (physical); amount=60/110/160/210/260  rank_values, stat_coefficient=120% caster의 bonusAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.form eq 탑승, target.other eq 덫에 붙잡힌 적, caster.time gte 1.75, caster.distance eq 붙잡힌 적과 해당 시간 동안 근거리를 유지함 적용. target: 적을 클레드 쪽으로 끌어당긴다. (pull);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.form eq 탑승, target.other eq 덫에 붙잡힌 적, caster.time gte 1.75, caster.distance eq 붙잡힌 적과 해당 시간 동안 근거리를 유지함 적용. target: 적을 둔화시킨다. (slow); amount=30/35/40/45/50%  rank_values, duration_seconds=2.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.form eq 탑승, target.other eq 덫에 붙잡힌 적 적용. caster: 클레드가 붙잡은 적에 대한 절대 시야를 얻는다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "caster의 cast 사건에서 caster.form eq 미탑승 적용. caster: 덫날리기 대신 빵야!를 사용한다. 이 스킬은 원거리 공격이며 클레드를 뒤로 밀어내고 용기를 회복시킨다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.form eq 탑승, target.target_type eq champion, target.hit_order eq first 적용. target: 첫 번째로 적중한 적 챔피언을 덫으로 붙잡는다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.form eq 탑승, target.target_type eq minion 적용. target: 미니언에게 기본 피해의 해당 배율을 입힌다. (physical); damage_multiplier=150%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1,7",
+      "issue": "초기 피해를 붙잡기 대상만으로 제한",
+      "correction": "일반 적중 피해와 첫 챔피언/대형 몬스터 붙잡기를 분리",
+      "sourceId": "en:body",
+      "quote": "Mounted: Kled throws a bear trap that deals (30/55/80/105/130 + (60% bonus Attack Damage)) physical damage and hooks onto the first enemy champion or large jungle monster hit."
+    },
+    {
+      "path": "rules.2-4",
+      "issue": "자동 발동을 재시전으로 기록하며 근접 유지 누락",
+      "correction": "expiry 및 붙잡힘/지속 근접 유지 조건 보완",
+      "sourceId": "en:body",
+      "quote": "If Kled stays near a hooked enemy for 1.75 seconds, he yanks out the trap"
+    },
+    {
+      "path": "rules.2.effects.0",
+      "issue": "피해에 둔화 지속시간 연결",
+      "correction": "피해의 2.5초 제거",
+      "sourceId": "en:body",
+      "quote": "Slowing by 30/35/40/45/50% for 2.5 seconds."
+    },
+    {
+      "path": "rules.5",
+      "issue": "붙잡힘을 불명확한 mark로 표현하고 시야 수혜자 잘못 지정",
+      "correction": "붙잡힌 적 조건과 caster 시야로 수정",
+      "sourceId": "en:body",
+      "quote": "While hooked, Kled has True Sight to the enemy."
+    },
+    {
+      "path": "rules.8",
+      "issue": "미니언 배율 규칙 누락",
+      "correction": "150% 피해 대체 배율 추가",
+      "sourceId": "en:body",
+      "quote": "Deals 150% damage to minions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 226,
+      "verdict": "repaired",
+      "reason": "본문의 미니언 배율이 규칙에도 없어 규칙과 요약을 보완했다."
+    },
+    {
+      "index": 227,
+      "verdict": "false_positive",
+      "reason": "첫 챔피언과 대형 몬스터를 별도 규칙으로 나눈 조건 자체는 원문과 맞는다. 일반 피해를 그 조건에 묶은 별도 오류를 수정했다."
+    },
+    {
+      "index": 228,
+      "verdict": "repaired",
+      "reason": "근접 유지 뒤 자동 발동이므로 recast를 expiry로 변경했다."
+    },
+    {
+      "index": 229,
+      "verdict": "repaired",
+      "reason": "2.5초는 둔화 지속시간이다. 피해에서 제거했다."
+    },
+    {
+      "index": 230,
+      "verdict": "repaired",
+      "reason": "mark 존재를 붙잡힘 상태로 명시하고 지속 근접 조건을 추가했다."
+    },
+    {
+      "index": 231,
+      "verdict": "repaired",
+      "reason": "동일한 붙잡힘/지속 근접 조건을 끌기 규칙에 반영했다."
+    },
+    {
+      "index": 232,
+      "verdict": "repaired",
+      "reason": "지적 경로는 어긋났으나 둔화와 시야 규칙 모두 mark를 실제 붙잡힘 상태로 정정했다."
+    },
+    {
+      "index": 233,
+      "verdict": "repaired",
+      "reason": "True Sight를 얻는 caster를 수혜자로 지정했다."
+    },
+    {
+      "index": 234,
+      "verdict": "false_positive",
+      "reason": "Mounted 문단의 덫 효과이며 미탑승 스킬은 별도로 교체된다. 탑승 조건은 문맥에서 뒷받침된다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.7",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

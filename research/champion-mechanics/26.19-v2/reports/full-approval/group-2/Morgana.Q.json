@@ -1,0 +1,43 @@
+{
+  "id": "Morgana.Q",
+  "sourceHash": "55af183a7a6d8083a8309b48da62086bdce64a45db8067581c614db1b552b295",
+  "beforeCandidateHash": "baf5d37cd95b4f92968c7d93eb1f5b5ec3e43439a093af982040f7a038c586dc",
+  "candidateHash": "198328b5fcd9c2d6564c2b03eb642c006e79949ec1eb77c2d648e4e447cc9e9e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫적중대상2~3초속박과80~300+90%AP마법을대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first; target: 처음 맞은 적을 속박합니다. [root]; 수치 duration_seconds en:body:n0=2,en:body:n1=2.25,en:body:n2=2.5,en:body:n3=2.75,en:body:n4=3 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq first; target: 처음 맞은 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n5=80,en:body:n6=135,en:body:n7=190,en:body:n8=245,en:body:n9=300 상수 rank_values / stat_coefficient en:body:n10=90%(백분율) caster.abilityPower scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "스킬적중행위자caster로교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Morgana hurls a blast of starfire that Roots the first enemy hit for 2/2.25/2.5/2.75/3 seconds and deals (80/135/190/245/300 + (90% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

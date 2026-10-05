@@ -1,0 +1,100 @@
+{
+  "id": "Smolder.P",
+  "sourceHash": "55f643678951bf46af6e4c58585288cc8e8b81b6539598d2444062c954b13f0b",
+  "beforeCandidateHash": "4898ed0c9917c1b83be12cc0342e2249b50949abefb572f8f149d8211483e1fe",
+  "candidateHash": "516c409840c38290cb0ce4019eb4ec9d7f2b18bb506badc7230aaadf8f1c9f27",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "스킬 챔피언 적중과 Q 적 처치의 각각 중첩 획득, 기본 스킬별 추가 마법 피해와 Q 25/125/225·E 100중첩당 탄환을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 용 훈련 중첩을 얻습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: kill 사건의 행위자 caster; 조건 caster.activation eq 초강력 화염 숨결로 적 처치; caster: 초강력 화염 숨결로 적을 처치하면 용 훈련 중첩을 얻습니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; unknown: 용 훈련 중첩이 초강력 화염 숨결의 추가 마법 피해를 높입니다. 25/125/225 중첩에 새 효과를 얻습니다.; 수치 amount en:body:n0=0.25 상수 scalar / other en:body:n1=25,en:body:n2=125,en:body:n3=225 상수 unknown; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; unknown: 에취!의 폭발은 마법 피해를 추가로 입힙니다.; 수치 amount en:body:n4=0.55 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; unknown: 펄럭펄럭은 적중할 때마다 마법 피해를 추가로 입히며, 용 훈련 중첩이 100회 쌓일 때마다 추가 탄환을 얻습니다.; 수치 amount en:body:n5=0.08 상수 scalar / ratio_input en:body:n6=100 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "Q 처치의 구조화 조건 누락; Q 피해를 25스택 이상으로 제한 및 W/E 강화조건 추정; 100을 탄환 수로 표기한 역할 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Hitting champions with Abilities and killing enemies with Super Scorcher Breath grants a stack of Dragon Practice, which improves Smolder's basic Abilities. Super Scorcher Breath: Deal an additional 0.25 magic damage and gain new effects at 25, 125, and 225 stacks.Achooo!: Explosions deal an additional 0.55 magic damage.Flap, Flap, Flap: Each hit deals an additional 0.08 magic damage and gain an extra bolt every 100 stacks."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "스키마의 조건 필드에 용 훈련 중첩 수를 나타내는 항목이 없습니다. 25·125·225 중첩 효과와 100 중첩마다 추가 탄환 효과를 정확한 조건으로 표현할 수 없어 원문 텍스트로 보존했습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "Talon.W",
+  "sourceHash": "3d0dcdb9470f6a71e8e71b29c95718f3df89d2bd49fe557a7f6f9bfe51f43f5e",
+  "beforeCandidateHash": "87ca2d1bbb7531b3d93ae59aef96af42e627524a582c48a140d57a412fec7a38",
+  "candidateHash": "ca63452de69c60605673ae6427a3df2e502f985876fe43c7674aff22d543b2e1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "발사와 복귀의 두 관통 피해 및 돌아오는 칼날에만 적용되는 둔화를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "발사 칼날이 지나가는 적마다 50/60/70/80/90 + 추가 공격력 40% 물리 피해를 준다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "돌아오는 칼날 적중은 60/90/120/150/180 + 추가 공격력 90% 물리 피해와 40/45/50/55/60% 1초 둔화다. 복귀 단계 조건을 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.subject",
+      "issue": "공급 요약은 지나가는 적마다 피해를 설명하므로 단일 대상에만 한정하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Talon sends out a volley of daggers that then return back to him, dealing physical damage every time it passes through an enemy. The returning blades deal bonus damage and slow units hit."
+    },
+    {
+      "path": "rules.1.trigger.event",
+      "issue": "복귀 피해와 둔화의 실제 칼날 적중 사건을 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon tosses a volley of blades, dealing (50/60/70/80/90 + (40% bonus Attack Damage)) physical damage. The blades then return to him, dealing (60/90/120/150/180 + (90% bonus Attack Damage)) physical damage and Slowing by 40/45/50/55/60% for 1 second."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "40/45/50/55/60% 둔화 배열 앞 항목은 frozen lexical percent=false지만 실제 단위는 모두 퍼센트다. lexical 숫자표만으로 단위를 실행하지 말 것."
+    }
+  ],
+  "validation": {
+    "id": "Talon.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

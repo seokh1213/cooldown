@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Yuumi.E",
+      "sourceHash": "3fb86a4c3a0f3d2178af4d4aa6bd8dba7c66de82e4f2cd804a3e997673447a03",
+      "candidateHash": "7873295c73128ad72b272897584eca1e10378918496015cd0d4ba4a8600ce139"
+    },
+    {
+      "id": "Yuumi.P",
+      "sourceHash": "0f5d5250b7b36d089531f3e66d7d93941ac9f857f2d186ddd378e11b7202e529",
+      "candidateHash": "481fb300f511e177f57c2f670dbb92025a5b2029e76e7e6215aae6747f10069d"
+    },
+    {
+      "id": "Yuumi.Q",
+      "sourceHash": "c203b80b2565b01af29e2521f5801af35db5a14f59e4e03c3072a23f415f3618",
+      "candidateHash": "b8d01c608ec6d0386eb32cd96d4bbcca79b98037e45ce7072819a594b455ea8b"
+    },
+    {
+      "id": "Yuumi.R",
+      "sourceHash": "338dc50d41610d8c1ebc1037fabe544c911633a51ae79d36254c6ff6662701bc",
+      "candidateHash": "c63ca5e665d9d6f566a35b138b643b1e83977e5f112a6f95fb16e83c1c5e2589"
+    },
+    {
+      "id": "Yuumi.W",
+      "sourceHash": "c18c7d85ab3fe5ebf412ec781e0d03a745b82a62af916f6062d6a2ef70e9adf1",
+      "candidateHash": "fe568a0440846c7d096a9c9f3c32d1fef5fd09a0a723082ab300e7b50e346323"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Yuumi.E",
+      "path": "rules.0.effects.2.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "While the shield persists, the target also gains 20% Move Speed.",
+      "issue": "이동 속도 효과의 대상은 본문에서 ‘target’으로 표현돼 있는데, 기본 규칙은 유미로 고정합니다. 보호막이 아군에게 적용되는 밀착 규칙에서는 아군이 대상이므로, 효과 대상을 유미로 제한하면 본문과 맞지 않습니다.",
+      "correction": "대상을 보호막을 받은 대상 또는 효과 대상자로 표현하고, 기본 시전에서는 유미, 밀착 중에는 아군으로 연결하세요."
+    },
+    {
+      "id": "Yuumi.P",
+      "path": "rules.1.effects.0.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Yuumi Attaches to an ally within 4 seconds, they are healed as well.",
+      "issue": "아군 회복 효과는 4초 안에 밀착하는 경우에 적용되지만, 해당 조건이 회복량이 아니라 지속시간으로 기록되어 있습니다. 회복 효과에 수치가 없어서 실제 양도 규칙에서 빠졌습니다.",
+      "correction": "아군 회복량을 앞 규칙의 ((20 ~ 110) + (30% Ability Power))와 연결하고, 4초는 밀착 조건의 시간으로만 기록하세요."
+    },
+    {
+      "id": "Yuumi.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:summary",
+      "quote": "It deals bonus damage and an enchanced slow if it takes at least 1.35 seconds to get to its target.",
+      "issue": "조건을 target의 time 필드와 비교해, 대상이 1.35초 동안 어떤 상태를 유지해야 한다는 뜻으로 읽힙니다. 출처의 조건은 미사일이 대상까지 도달하는 데 걸린 시간입니다.",
+      "correction": "조건을 미사일의 비행 또는 도달 시간으로 표현하세요."
+    },
+    {
+      "id": "Yuumi.Q",
+      "path": "rules.3.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Best Friend Bonus: Prowling Projectile's Slow will always be enhanced and hitting an enemy champion also grants them (10/12/14/16/18/20 + (5% Ability Power)) magic damage On-Hit for 5 seconds.",
+      "issue": "텍스트는 추가 적중 피해를 적 챔피언에게 부여한다고 되어 있어, 단짝이 피해를 받는 것으로 오해될 수 있습니다. 본문에서는 단짝에게 5초 동안 적중 시 추가 피해를 부여하는 효과입니다.",
+      "correction": "‘적 챔피언을 맞히면 단짝에게 5초 동안 적중 시 추가 마법 피해 효과를 부여합니다’로 고치세요."
+    },
+    {
+      "id": "Yuumi.R",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Missiles after the first deal (18.75/31.25/43.75 + (6.25% Ability Power)) magic damage.",
+      "issue": "본문은 첫 번째 이후의 미사일이 지정된 피해를 준다고 하지만, 규칙 문장은 이를 파동 피해처럼 ‘첫 파동 이후’로 설명합니다. 미사일과 파동을 구분하지 않아 피해 출처를 잘못 전달합니다.",
+      "correction": "해당 피해를 파동이 아닌 첫 번째 이후 미사일의 피해로 설명하세요."
+    },
+    {
+      "id": "Yuumi.R",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Max possible damage to a single enemy is (150/250/350 + (50% Ability Power)) magic damage.",
+      "issue": "단일 적 대상 최대 피해량이 명시되어 있지만, 규칙 문장은 이를 별도로 강조하거나 연결하지 않습니다. 현재 문장의 ‘같은 적에게 가능한 최대 피해량도 명시되어 있습니다’는 설명에 그치며 실제 최대값이 포함돼 있지 않습니다.",
+      "correction": "최대 피해량 수치와 주문력 계수를 같은 대상에게 적용되는 상한으로 명시하세요."
+    },
+    {
+      "id": "Yuumi.W",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "her ally also restores (3/4/5/6/7 + (3% Ability Power)) health On-Hit.",
+      "issue": "효과는 단짝의 적중 시 회복인데, 텍스트는 기본 공격 적중으로 범위를 좁힙니다. 원문은 On-Hit이라고만 하므로 적중 조건을 기본 공격으로 한정할 근거가 없습니다.",
+      "correction": "‘단짝은 적중 시 체력을 회복합니다’로 고치세요."
+    }
+  ],
+  "notes": []
+}

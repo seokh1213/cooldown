@@ -1,0 +1,67 @@
+{
+  "id": "Varus.P",
+  "sourceHash": "66c5be9f29b869325d9689b4d4f3c065c238bfde8124481ede7c327067b75b8a",
+  "beforeCandidateHash": "b8bc222346ab3b441303061a0769e68ba57a49ae205ec062ff946312f9e07a64",
+  "candidateHash": "314debf96abbf3b5a21e115b64cfffa656725a7b26a68a106d4b94703e864b09",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "비챔피언처치10~20%AS/추가AS1100%AD/AP와5~11초,챔피언처치관여30%AS상한초과·추가AS3300%AD/AP대체효과를본문기준검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 kill / 조건 target target_type neq champion → caster: 일정 시간 공격 속도가 증가합니다. / min_amount=10% [level_range]; max_amount=20% [level_range]; duration_seconds=5/11 [level_range] | caster: 추가 공격 속도에 비례해 공격력이 증가합니다. / stat_coefficient=1100% (caster bonusAttackSpeed) [formula_components] | caster: 추가 공격 속도에 비례해 주문력이 증가합니다. / stat_coefficient=1100% (caster bonusAttackSpeed) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 takedown / 조건 target target_type eq champion → caster: 공격 속도가 증가하며 공격 속도 제한을 초과할 수 있습니다. / amount=30% [scalar] | caster: 추가 공격 속도에 비례해 공격력이 증가합니다. / stat_coefficient=3300% (caster bonusAttackSpeed) [formula_components] | caster: 추가 공격 속도에 비례해 주문력이 증가합니다. / stat_coefficient=3300% (caster bonusAttackSpeed) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.effects.1-2",
+      "issue": "동일1100/1100·3300/3300입출력으로추가AS1:1변환오류",
+      "correction": "추가AS1100%/3300%를AD/AP증가계수로보존",
+      "sourceId": "en:body",
+      "quote": "(1100% bonus Attack Speed) Attack Damage, and (1100% bonus Attack Speed) Ability Power"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 589,
+      "verdict": "false_positive",
+      "reason": "챔피언takedown본문은instead라고명시해일반효과대체다.일반규칙의비챔피언제한이중복적용을막는다."
+    },
+    {
+      "index": 590,
+      "verdict": "false_positive",
+      "reason": "Champion takedowns는처치대상챔피언조건이며대상유형조건이원문사건을정확하게표현한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "요약은모든처치/어시스트라고하나본문은일반적kill과챔피언takedown을구분한다.본문을우선하며챔피언규칙은일반효과대신적용된다.챔피언효과의지속시간은본문의instead관계외별도수치가없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

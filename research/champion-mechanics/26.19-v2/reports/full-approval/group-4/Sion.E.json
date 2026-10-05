@@ -1,0 +1,94 @@
+{
+  "id": "Sion.E",
+  "sourceHash": "90f1cb1e9e88de79895f89a040f68773140bfa05dab04963b47fbb8f897073a7",
+  "beforeCandidateHash": "bed79a3c03313946714446309020919195b843966f57cb1bb6f244c0bab00821",
+  "candidateHash": "facf1d782db40790d5ae6694541be004c34a0282ed5348479e121378656ad76c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫 적중 충격파의마법 피해·2.5초40~60%둔화·4초25%방어 감소,비챔피언 밀치기,밀린 유닛과 충돌한 적의 동일 피해/효과를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 충격파가 적중하면 마법 피해를 입힌다. (magic); amount=65/100/135/170/205  rank_values, stat_coefficient=55% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 충격파가 적중하면 둔화시킨다. (slow); amount=40/45/50/55/60%  rank_values, duration_seconds=2.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 방어력을 감소시킨다.; amount=25%  scalar, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type neq champion, target.hit_order eq first 적용. target: 챔피언이 아닌 대상은 뒤로 밀려난다. (knockback);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "secondary_targets의 other 사건에서 secondary_targets.other eq 이 스킬로 밀려난 유닛과 충돌한 적 적용. secondary_targets: 밀려난 유닛에 부딪힌 적에게 동일한 피해와 효과를 적용한다. (magic); amount=65/100/135/170/205  rank_values, stat_coefficient=55% caster의 abilityPower scalar / secondary_targets: 밀려난 유닛에 부딪힌 적에게 동일한 둔화 효과를 적용한다. (slow); amount=40/45/50/55/60%  rank_values, duration_seconds=2.5  scalar / secondary_targets: 밀려난 유닛에 부딪힌 적의 방어력을 동일하게 감소시킨다.; amount=25%  scalar, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3",
+      "issue": "충격파 피해/CC가 시전 순간으로 표시하고 밀치기 첫 대상 누락",
+      "correction": "스킬 적중 및 첫 대상 조건 보완",
+      "sourceId": "en:summary",
+      "quote": "Sion fires a short range shockwave that damages and slows and reduces the Armor of the first enemy hit."
+    },
+    {
+      "path": "rules.4",
+      "issue": "동일 피해와 효과의 수치 관계 및 충돌 대상 불명확",
+      "correction": "초기 수치/근거 참조와 실제 충돌 대상 조건 명시",
+      "sourceId": "en:body",
+      "quote": "Enemies hit by a Knocked Back unit take the same damage and effects."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "충격파 기본 효과의 적용 대상이 원문 요약에서 첫 번째 적중 대상으로 한정되지만, 본문은 별도 구분 없이 ‘them’으로 표현한다. 본문 수치는 첫 적중 대상 요약을 근거로 연결했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

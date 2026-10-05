@@ -1,0 +1,49 @@
+{
+  "id": "Leblanc.W",
+  "sourceHash": "0966d5d63ab08957bea9719a94125a4dd09b7a98aaa3a41e5c1fca4613039e35",
+  "beforeCandidateHash": "32432cdcbd351efa19009c45515b381f2d09a9c19056fc8650a9937b0b6b6cab",
+  "candidateHash": "fa3a75b2309b052c63bdc7b64f4f30065bbed7c4bd55c1773ae71cbf8bb39ba0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "지정 위치 돌진, 도착지 주변 적 마법 피해 75/115/155/195/235+주문력90%, 돌진 이후4초 내 재사용으로 출발점 복귀를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 지정 위치로 돌진한다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. nearby_enemies damage magic: 돌진 후 주변 적에게 마법 피해를 입힌다. [amount n0=75/n1=115/n2=155/n3=195/n4=235 rank_values; stat_coefficient n5=90% scalar caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.recast; 조건 caster.time lte n6=4; caster.other eq time은 최초 돌진 후 경과한 초. caster movement: 처음 위치로 돌아간다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.conditions",
+      "issue": "4초 시간 조건 기준점 생략",
+      "correction": "시간 기준을 최초 돌진 후 경과시간으로 명시했다.",
+      "sourceId": "en:body",
+      "quote": "For 4 seconds after dashing, LeBlanc can Recast."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

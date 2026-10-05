@@ -1,0 +1,94 @@
+{
+  "id": "Skarner.R",
+  "sourceHash": "a3b89633286906b4f9a1c04e7933e97b3674a046156b729cd77910e5e5e40ea0",
+  "beforeCandidateHash": "4953d5aebac67ac101dd1799155681ac5a71a41dc10954dfc4e652b507a7db73",
+  "candidateHash": "526a8da17a4b5cb913f2dd641f65614f17df6fe251729aa8c1be825e8580c02e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "꼬리마법피해150~350+AP100%·첫3챔피언1.5초제압/운반·챔피언1이상40%MS1.5초·Q바위활성시지반돌출선시전을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 꼬리 공격이 적에게 마법 피해를 입힌다. [magic] / amount=150/250/350 [rank_values]; stat_coefficient=100% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order lte 3 → target: 처음 적중한 챔피언 최대 3명을 제압한다. [suppression] / count=3 [scalar]; duration_seconds=1.5 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target target_type eq champion; target hit_order lte 3 → target: 적중한 적은 이 스킬의 지속시간 동안 스카너를 따라 끌려간다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 enemy target_type eq champion; enemy hit_count gte one → caster: 챔피언을 한 명 이상 적중시키면 스카너의 이동 속도가 증가한다. / amount=40% (caster moveSpeed) [scalar]; duration_seconds=1.5 [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster activation eq 부서진 대지 활성화 → caster: 부서진 대지가 활성화되어 있으면 지반 돌출을 먼저 사용한다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2.conditions",
+      "issue": "최초1대상조건과최대3명조건을동시요구",
+      "correction": "챔피언적중순서3이하",
+      "sourceId": "en:body",
+      "quote": "Suppressing the first 3 champions he hits for 1.5s."
+    },
+    {
+      "path": "summary",
+      "issue": "지반돌출을W로잘못표기",
+      "correction": "원문명지반돌출로표기",
+      "sourceId": "en:body",
+      "quote": "If Shattered Earth is active, Skarner will cast Upheaval first."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "피해가 적중한 모든 대상에 적용되는지, 제압 가능한 첫 3명의 챔피언에만 적용되는지 원문이 별도로 특정하지 않아 피해 대상을 적으로 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

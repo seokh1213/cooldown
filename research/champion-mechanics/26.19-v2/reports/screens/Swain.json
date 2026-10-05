@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Swain.E",
+      "sourceHash": "2be9f6f2ef1a0258280b3c969093f245c189adb86753f1ee739eb31540920066",
+      "candidateHash": "e001acc8bc7d18672a828610fb46c76f5150678a32bff4392366dbc8438d884f"
+    },
+    {
+      "id": "Swain.P",
+      "sourceHash": "b6f16bd9892ce3a714029799e59a0341f1269cac5e623b0902010f2868584df4",
+      "candidateHash": "b01c05498a18ab5520ac4dc1ab0a1cb82b0e6de4862b40ab6ce11daa2f3fea81"
+    },
+    {
+      "id": "Swain.Q",
+      "sourceHash": "05f94da209dce3f5a5d97830fe8c2de57cd90f5bbdd64151b5b75f8894af7b8a",
+      "candidateHash": "d415e9095d23b423008952ebb60b3c911b22983c63fd731c9111f1ac1d77b224"
+    },
+    {
+      "id": "Swain.W",
+      "sourceHash": "d71670e09044ca9a76d57ff038721a894ef0d14569565a2b5be7f6788d3e0ee3",
+      "candidateHash": "7f90df02bfa14c9387505e36d99971fd8bd1dfa165a8b894058ddc106d4ae979"
+    },
+    {
+      "id": "Swain.R",
+      "sourceHash": "6fc46444038da5a450da13621de7b82c2814471064da925fed8544392de2b020",
+      "candidateHash": "1abd22518d086c2e28118521baecd2be27f2b1dbb45ad5202abfd65c7dda59c9"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Swain.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Rooting a champion allows Swain to reactivate this ability to pull all champions Rooted by Nevermove toward him, gaining a Soul Fragment for each.",
+      "issue": "재사용 조건을 대상 챔피언이 속박명령 표식을 보유해야 하는 것으로 제한했지만, 출처는 챔피언을 속박하면 재사용할 수 있다고 설명합니다. 모든 속박 대상 챔피언을 끌어당기는 효과도 조건에 반영되지 않았습니다.",
+      "correction": "특정 대상의 표식 조건을 제거하고 챔피언 속박으로 재사용할 수 있음을 표현하세요. 끌어당김 효과는 속박명령으로 속박된 모든 챔피언을 대상으로 하세요."
+    },
+    {
+      "id": "Swain.E",
+      "path": "rules.2.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nevermove temporarily grants vision of rooted champions.",
+      "issue": "속박된 챔피언의 시야 제공을 적중 이벤트에 연결했지만, 출처는 속박된 챔피언에게 일시적으로 시야를 제공한다고만 합니다.",
+      "correction": "속박 및 시야 제공을 나타내는 트리거를 사용하거나, 적중 이벤트와의 연결을 확정하지 않는 텍스트/미확정 표현으로 남기세요."
+    },
+    {
+      "id": "Swain.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Swain collects Soul Fragments from Vision of Empire, Nevermove, and enemy champion deaths.",
+      "issue": "영혼 조각 획득 조건의 설명이 제국의 눈과 속박명령의 적중으로 한정되어 있습니다. 출처는 제국의 눈, 속박명령, 적 챔피언 사망을 획득 경로로 들며 두 스킬의 적중을 명시하지 않습니다.",
+      "correction": "세 획득 경로를 모두 포함하고, 스킬 적중 여부는 출처에 없는 조건으로 단정하지 마세요."
+    },
+    {
+      "id": "Swain.W",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Champions hit grant Swain a Soul Fragment and are revealed for 6 seconds.",
+      "issue": "미니언이 아닌 모든 대상에게 기본 피해와 둔화를 적용하는 것으로 모델링되어 있습니다. 출처가 구분하는 대상은 챔피언과 미니언이므로 몬스터 등 다른 비미니언 대상에 대한 적용은 뒷받침되지 않습니다.",
+      "correction": "기본 피해와 둔화의 대상 범위를 출처가 명시한 챔피언으로 제한하거나, 다른 대상에 대해서는 미확정으로 남기세요."
+    },
+    {
+      "id": "Swain.R",
+      "path": "rules.1.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "drains (15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health per second from nearby enemies.",
+      "issue": "흡수 효과의 주체를 스웨인(회복)으로 기록해 원문상 대상인 주변 적을 빠뜨렸습니다.",
+      "correction": "흡수 대상을 주변 적으로 기록하고, 흡수량이 스웨이인의 회복량과 같다고 단정할 근거가 없다면 회복 효과는 별도 근거가 있을 때만 추가하세요."
+    },
+    {
+      "id": "Swain.R",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Healing is reduced to 10% against non-champions.",
+      "issue": "비챔피언 조건을 흡수 대상의 종류로 좁혔습니다. 원문은 비챔피언 상대 회복량 감소를 말하지만 흡수 대상별 조건인지는 특정하지 않습니다.",
+      "correction": "대상 조건을 명시하지 않거나, 회복 감소가 비챔피언을 상대로 적용된다는 원문 수준으로만 표현하세요."
+    }
+  ],
+  "notes": []
+}

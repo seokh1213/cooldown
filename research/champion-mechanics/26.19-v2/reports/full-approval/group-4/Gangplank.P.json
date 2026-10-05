@@ -1,0 +1,80 @@
+{
+  "id": "Gangplank.P",
+  "sourceHash": "e91e0003570ea8694759c23472b9355b7cca8fe387c8b74b90f0c7113212773f",
+  "beforeCandidateHash": "6c4b9f0e494da3ba45b0fbae774f0794415d9db478ea7606175108e84c930c02",
+  "candidateHash": "14eb376a038ba79927445d0338972d445cc79a6634c95d9ce6e8fc9225cb6184",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "준비된근접공격의2.5초추가고정피해와2초15~30%이동속도,화약통파괴의쿨다운초기화·같은이동속도를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 attack 사건에서 caster.other eq 근접 기본 공격, caster.spell_ready eq ready 적용. target: 근접 기본 공격이 대상을 불태워 지속 시간에 걸쳐 추가 고정 피해를 입힙니다. (true); min_amount=50  level_range, max_amount=250  level_range, stat_coefficient=100% caster의 bonusAttackDamage scalar, duration_seconds=2.5  scalar / caster: 갱플랭크의 이동 속도가 증가합니다.; min_amount=15%  level_range, max_amount=30%  level_range, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 갱플랭크가 화약통을 파괴함 적용. caster: 화약통을 파괴하면 이 스킬의 재사용 대기시간이 초기화됩니다.;  / caster: 화약통을 파괴하면 갱플랭크가 같은 이동 속도 효과를 얻습니다.; min_amount=15%  level_range, max_amount=30%  level_range, duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions",
+      "issue": "근접 공격과주기적준비범위미표현",
+      "correction": "근접평타및준비상태조건",
+      "sourceId": "en:body",
+      "quote": "Gangplank's melee Attacks ignite the target"
+    },
+    {
+      "path": "rules.1",
+      "issue": "화약통파괴를일반구조물공격으로확대",
+      "correction": "화약통파괴사건과조건으로정정",
+      "sourceId": "en:body",
+      "quote": "Destroying a Powder Keg refreshes this Cooldown and grants Gangplank the same Move Speed."
+    },
+    {
+      "path": "rules.parameters",
+      "issue": "물결범위를랭크배열로기록",
+      "correction": "level_range로정정",
+      "sourceId": "en:body",
+      "quote": "((50 ~ 250) + (100% bonus Attack Damage))"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 76,
+      "verdict": "repaired",
+      "reason": "근접기본공격조건을추가했다."
+    },
+    {
+      "index": 77,
+      "verdict": "repaired",
+      "reason": "일반구조물조건을제거하고화약통파괴로명시했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

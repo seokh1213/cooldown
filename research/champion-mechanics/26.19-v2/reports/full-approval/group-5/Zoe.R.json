@@ -1,0 +1,63 @@
+{
+  "id": "Zoe.R",
+  "sourceHash": "27dd23bf6931f70360a052cfc2396828287dcb0d74d25f72ac695f5ab42d0f12",
+  "beforeCandidateHash": "07a433b674f3388ba9e753c1f9255c27c49665384524f2047ca108b4db5f83f1",
+  "candidateHash": "856b6a1632a3f7731459515d1e2841069a2d1cce98d28cadc89e6a95c5516601",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "근처순간이동1초뒤복귀,그동안공격/스킬가능·이동불가·벽너머시야를전문대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "1초원위치복귀·행동제한과벽시야. 행동제한은UI정보가아닌실제other효과이다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1.kind",
+      "issue": "행동가능/불가를UI정보로분류.",
+      "correction": "실제행동제한other로분류.",
+      "sourceId": "en:body",
+      "quote": "Zoe can use Abilities and Attack, but can't move during this time."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "id": "Janna.E",
+  "sourceHash": "4b47d02bcea0151fb2b41ceddc5450a9bf3a1b2eb7b4774b30d5792337255c20",
+  "beforeCandidateHash": "a90deb9177ed766fa03c805c284ca3e8bcce844eca80e7e21e08e03c16ed96f3",
+  "candidateHash": "3158bc3e9152a94a95f88599f89e37abcf2a4cfc3d476b6f8161e7a367c299ff",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "아군 챔피언 또는 포탑의 보호막과 보호막 중 공격력, 스킬 이동 방해마다 E 쿨다운 20% 환급을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군 챔피언 또는 포탑만 80/120/160/200/240 + 주문력 55% 보호막을 4초 얻는다. any로 범위를 넓히지 않았다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 수혜자가 잔나 E 보호막을 유지하는 동안만 공격력 10/15/20/25/30 + 주문력 10%를 얻는다. 다른 보호막의 준비 여부가 아니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "스킬로 적 챔피언 이동을 방해할 때마다 E 쿨다운 20%를 환급한다. 일반 능력 적중을 필수 조건으로 추가하지 않았으며 자원 환급과 구분했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0.field",
+      "issue": "any 대상 조건은 원문의 아군 챔피언 또는 포탑 범위를 넓힌다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna grants an ally champion or turret (80/120/160/200/240 + (55% Ability Power)) Shield for 4 seconds. While shielded, they gain (10/15/20/25/30 + (10% Ability Power)) Attack Damage. Janna refunds 20% of the cooldown whenever she impairs an enemy champion's movement with an Ability."
+    },
+    {
+      "path": "rules.1.conditions.1.field",
+      "issue": "While shielded는 이 보호막 활성 상태이며 shield_ready 여부가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna grants an ally champion or turret (80/120/160/200/240 + (55% Ability Power)) Shield for 4 seconds. While shielded, they gain (10/15/20/25/30 + (10% Ability Power)) Attack Damage. Janna refunds 20% of the cooldown whenever she impairs an enemy champion's movement with an Ability."
+    },
+    {
+      "path": "rules.2.trigger.event",
+      "issue": "원문 사건은 스킬에 의한 이동 방해이며 ability_hit 자체를 별도 필수 조건으로 단정하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna grants an ally champion or turret (80/120/160/200/240 + (55% Ability Power)) Shield for 4 seconds. While shielded, they gain (10/15/20/25/30 + (10% Ability Power)) Attack Damage. Janna refunds 20% of the cooldown whenever she impairs an enemy champion's movement with an Ability."
+    },
+    {
+      "path": "rules.2.effects.0.parameters.0.role",
+      "issue": "쿨다운 20% 환급은 마나 등 resource_refund가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna grants an ally champion or turret (80/120/160/200/240 + (55% Ability Power)) Shield for 4 seconds. While shielded, they gain (10/15/20/25/30 + (10% Ability Power)) Attack Damage. Janna refunds 20% of the cooldown whenever she impairs an enemy champion's movement with an Ability."
+    },
+    {
+      "path": "gaps",
+      "issue": "대상 범위와 보호막 조건은 텍스트로 정확히 표현되며 쿨다운 비율도 other 매개변수와 문장으로 보존되어 기존 스키마 불가 주장은 해소됐다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna grants an ally champion or turret (80/120/160/200/240 + (55% Ability Power)) Shield for 4 seconds. While shielded, they gain (10/15/20/25/30 + (10% Ability Power)) Attack Damage. Janna refunds 20% of the cooldown whenever she impairs an enemy champion's movement with an Ability."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 126,
+      "verdict": "repaired",
+      "reason": "any를 원문의 아군 챔피언 또는 포탑 텍스트 조건으로 바꿨다."
+    },
+    {
+      "index": 127,
+      "verdict": "repaired",
+      "reason": "공격력 수혜자도 같은 대상 범위와 이 E 보호막 지속 조건으로 제한했다."
+    },
+    {
+      "index": 128,
+      "verdict": "repaired",
+      "reason": "trigger를 other로 두고 스킬 이동 방해 조건을 명시했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "id": "Janna.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

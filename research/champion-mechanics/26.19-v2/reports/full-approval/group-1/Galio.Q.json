@@ -1,0 +1,67 @@
+{
+  "id": "Galio.Q",
+  "sourceHash": "83ed71d34ce12c8feb83fe3e2df8b44ab0bb868e8957d47fe18bb664258f0625",
+  "beforeCandidateHash": "eab96c56e65a201932ad9db32b8ee01fd0d673ff6cf7a8dc5c9ffa9b149317eb",
+  "candidateHash": "e659a6b9ef9503e7a1e2a725ecafb6919a55f3241990c865544c81c73cc77c76",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "두돌풍각70~210+AP70%마법,합쳐진tornado(8+AP4%)maxHealth마법over2초,정글몬스터percentHP피해200cap 대조했다. 복합체력피해율단위는툴팁한계다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. target damage magic: 각 돌풍이 적중한 대상에게 마법 피해를 입힙니다. [amount n1=70/n2=105/n3=140/n4=175/n5=210 rank_values; stat_coefficient n6=70% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 두 돌풍이 만나 생성된 소용돌이에 적중. target damage magic: 두 돌풍이 만나 생긴 소용돌이는2초에 걸쳐(8+4% 갈리오AP)maxHealth라는 원문 식의 총 마법 피해를 준다. base8의백분율단위와체력주인의명시는없어단순식으로실행하지않는다. [amount n7=8 formula_components; stat_coefficient n8=4% formula_components caster.abilityPower; duration_seconds n9=2 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq monster; target.other eq 정글 몬스터에게 이 스킬의 체력 비례 피해 적용. target other: 정글 몬스터에게 입히는 체력 비례 피해는 최대 피해량이 제한됩니다. [max_amount n10=200 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/2/gaps",
+      "issue": "tornado발생조건·junglecap대상조건없음/전체피해cap오해·8단위미확정",
+      "correction": "돌풍합류조건/정글몬스터와percentHP파트상한other,단위/체력주인gap",
+      "sourceId": "en:body",
+      "quote": "Percent Health damage deals a max of 200 damage to jungle monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 67,
+      "verdict": "false_positive",
+      "reason": "현재effect.text는대상최대체력비례를이미보존하며원문은초당이라고말하지않는다. 공식의숫자8단위는gap에추가했다."
+    },
+    {
+      "index": 68,
+      "verdict": "false_positive",
+      "reason": "over2seconds는2초에걸친피해를명시한다. duration과amount공존은오류가아니며현재text에총량해석을명확히했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "(8+(4%AP))maxHealth식은복합체력비례피해지만8의백분율단위가숫자표에서직접명시되지않고체력주인도별도명시없다.2초총피해구성요소로보존하고raw8을8배최대체력/고정8피해로실행하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

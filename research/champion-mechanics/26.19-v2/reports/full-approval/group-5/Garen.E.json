@@ -1,0 +1,540 @@
+{
+  "id": "Garen.E",
+  "sourceHash": "37ab3ebd3be3deaed7828eec570441abf749bd5041e8a067f9dc72adf1cf48b4",
+  "beforeCandidateHash": "3c6b5977b0e1cd546c43d99f1ba50930515f3289ff44febf9a19079ae16f83fb",
+  "candidateHash": "01a6768e7c8c158e99a456fd70b7eed3643294b4b081f4b66962f0c21367107e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "3초7기본타격·nearest25%증가·챔피언6hitarmor25%6초·조기종료·item/levelAS25%당1타격·crit복합식을대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "3초기본7타격의rank4/7/10/13/16+AD40/43/46/49/52% physical.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "7",
+              "value": 7,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "13",
+              "value": 13,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "16",
+              "value": 16,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "43",
+              "value": 43,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "46",
+              "value": 46,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "49",
+              "value": 49,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "52%",
+              "value": 52,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "7",
+              "value": 7,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "각타격nearest피해25%증가보정,추가독립damage아님.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "가장 가까운 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이E6회이상맞은챔피언armor25%감소6초.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n13"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 타격을 받은 횟수"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n15"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "E재사용조기종료.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "items/levelsAS25%당1타격추가. 일반모든bonusAS로확대안함.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "아이템 및 레벨에서 얻은 공격 속도만 계산"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n17"
+          ],
+          "stat": "attackSpeed",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n17",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "count",
+          "numberRefs": [
+            "en:body:n16"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n16",
+              "raw": "one",
+              "value": 1,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "crit타격만원문곱식으로대체보정.0.7과30%critDamage를선형피해에더하지않음.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이E의 타격에 치명타가 적용됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n18",
+            "en:body:n19",
+            "en:body:n20",
+            "en:body:n21",
+            "en:body:n22"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n18",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            },
+            {
+              "id": "en:body:n19",
+              "raw": "7",
+              "value": 7,
+              "percent": false
+            },
+            {
+              "id": "en:body:n20",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "13",
+              "value": 13,
+              "percent": false
+            },
+            {
+              "id": "en:body:n22",
+              "raw": "16",
+              "value": 16,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n23",
+            "en:body:n24",
+            "en:body:n25",
+            "en:body:n26",
+            "en:body:n27"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n23",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n24",
+              "raw": "43",
+              "value": 43,
+              "percent": true
+            },
+            {
+              "id": "en:body:n25",
+              "raw": "46",
+              "value": 46,
+              "percent": true
+            },
+            {
+              "id": "en:body:n26",
+              "raw": "49",
+              "value": 49,
+              "percent": true
+            },
+            {
+              "id": "en:body:n27",
+              "raw": "52%",
+              "value": 52,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "damage_multiplier",
+          "numberRefs": [
+            "en:body:n28"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n28",
+              "raw": "0.7",
+              "value": 0.7,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n29"
+          ],
+          "stat": "critDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n29",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,4,5,gaps",
+      "issue": "nearest증가25%를별도damageMultiplier·crit식독립damage·AS범위스탯미지정.",
+      "correction": "other보정/정확곱식·itemslevelsAS입력범위.",
+      "sourceId": "en:body",
+      "quote": "Can critically strike for (4/7/10/13/16 + (40/43/46/49/52% Attack Damage)) × (0.7 + 30% Critical Strike Damage) physical damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "치명타 피해에 적용되는 덧셈·곱셈 결합 수식을 parameters만으로 정확히 표현할 수 없습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

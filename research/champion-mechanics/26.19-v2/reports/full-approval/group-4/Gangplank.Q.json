@@ -1,0 +1,122 @@
+{
+  "id": "Gangplank.Q",
+  "sourceHash": "36e308be9fcd02938b818407aab6dd4c45a916dda8b4945b245561038c2dd6a4",
+  "beforeCandidateHash": "04117f4f5d60ea6edb4bccadd024e07235e09dd92ce2042f09dc495da557c6c2",
+  "candidateHash": "0f712c79034b017ee5a35c8b9a59f78f53fa11c509b80194912d4b09661f3fbf",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "총알의물리피해,챔피언실제피해7%골드/은화,이공격처치추가보상,은화상점R강화,불의심판제외적중시효과와실제치명타의곱수식을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 총알이 대상에게 물리 피해를 입힙니다. (physical); amount=10/40/70/100/130  rank_values, stat_coefficient=100% caster의 totalAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion, target.other eq 이 총알로 실제 피해를 입은 적 챔피언 적용. caster: 적 챔피언에게 입힌 피해량에 따라 골드와 바다뱀 은화를 얻습니다.; ratio_output=7%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 이 총알에 의해 처치됨 적용. caster: 이 공격으로 대상을 처치하면 추가 골드와 바다뱀 은화를 얻습니다.; amount=3/4/5/6/7  rank_values, amount=4/5/6/7/8  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 이 공격은 불의 심판을 제외한 적중 시 효과를 적용하며 치명타가 적용될 수 있습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.activation eq 이 총알에 치명타가 발생함 적용. target: 치명타가 적용되면 치명타 피해량 계수가 적용된 물리 피해를 입힙니다. (physical); amount=10/40/70/100/130  formula_components, stat_coefficient=100% caster의 totalAttackDamage formula_components, damage_multiplier=100% caster의 critDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 상점에서 바다뱀 은화를 사용함 적용. caster: 바다뱀 은화를 사용해 포탄 세례를 업그레이드할 수 있다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-4",
+      "issue": "피해사건과Q처치조건불명확,적중효과/치명타를근거없는강화조건으로제한",
+      "correction": "총알적중·총알처치·일반적중효과·실제치명타대체피해로정정",
+      "sourceId": "en:body",
+      "quote": "The shot applies On-Hit effects (other than Trial by Fire) and can critically strike for (10/40/70/100/130 + (100% Attack Damage)) × (100% Critical Strike Damage) physical damage."
+    },
+    {
+      "path": "rules.5",
+      "issue": "은화의궁극기상점강화누락",
+      "correction": "해당UI효과보존",
+      "sourceId": "en:body",
+      "quote": "Gangplank can spend Silver Serpents in the shop to upgrade Cannon Barrage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 78,
+      "verdict": "repaired",
+      "reason": "사격자체적중효과이므로empowered조건제거."
+    },
+    {
+      "index": 79,
+      "verdict": "repaired",
+      "reason": "실제총알치명타발생조건과피해대체관계로수정."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "치명타피해는기본총알피해식전체×(100%치명타피해량)이다.기본고정피해와총공격력계수에치명타배율을곱하는중첩식을구성요소로보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "id": "Seraphine.W",
+  "sourceHash": "a0c06380b0172e8d1637eb503ea08e5b83a2d4aa9b3f665fe2329f13b0581c7f",
+  "beforeCandidateHash": "b823995f7979743278bea049e03d4e81a636e0fd9c3fd077ecf9320d6ef92bed",
+  "candidateHash": "6b78383227923029857660d8e570c62e5b8c03e115296e91ae183b31571d42bd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "주변아군/자신각각다른AP100당복합이속·자신감소,양쪽동일보호막2.5초,사전보호막시2.5초지연후아군잃은체력랭크비율회복·두시전에도1회 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; ally: 주변 아군 챔피언의 이동 속도가 증가합니다.; 수치 amount en:body:n0=8%(백분율) 상수 formula_components / stat_coefficient en:body:n1=0.8%(백분율) caster.abilityPower formula_components / ratio_input en:body:n2=100 상수 scalar / duration_seconds en:body:n12=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 세라핀의 이동 속도가 점차 감소하는 방식으로 증가합니다.; 수치 amount en:body:n3=20%(백분율) 상수 formula_components / stat_coefficient en:body:n4=2%(백분율) caster.abilityPower formula_components / ratio_input en:body:n5=100 상수 scalar / duration_seconds en:body:n12=2.5 상수 scalar; flags decays"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; ally: 주변 아군 챔피언에게 보호막을 부여합니다.; 수치 amount en:body:n6=60,en:body:n7=80,en:body:n8=100,en:body:n9=120,en:body:n10=140 상수 rank_values / stat_coefficient en:body:n11=20%(백분율) caster.abilityPower scalar / duration_seconds en:body:n12=2.5 상수 scalar; flags 없음 | caster: 세라핀 자신도 같은 보호막을 얻습니다.; 수치 amount en:body:n6=60,en:body:n7=80,en:body:n8=100,en:body:n9=120,en:body:n10=140 상수 rank_values / stat_coefficient en:body:n11=20%(백분율) caster.abilityPower scalar / duration_seconds en:body:n12=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.shield_ready eq ready; ally: 2.5초 후 주변 아군의 잃은 체력 비율만큼 회복시킵니다. 이 스킬을 두 번 시전해도 회복은 한 번만 적용됩니다.; 수치 ratio_output en:body:n13=8(백분율),en:body:n14=10(백분율),en:body:n15=12(백분율),en:body:n16=14(백분율),en:body:n17=16%(백분율) 상수 rank_values / other en:body:n18=2.5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "자신보호막효과의subject누락·이속복합식·회복지연을지속시간으로오표기 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Seraphine spurs her nearby allied champions in song, granting them (8% + (0.8% per 100 Ability Power)) Move Speed, herself (20% + (2% per 100 Ability Power)) decaying Move Speed and both (60/80/100/120/140 + (20% Ability Power)) Shield for 2.5 seconds. If Seraphine is already Shielded, she calls out to her allies to join her, restoring 8/10/12/14/16% missing Health to them after a 2.5 second delay. This Ability only heals once, even if cast twice."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 443,
+      "verdict": "false_positive",
+      "reason": "한국어본문은2.5초동안아군의이동속도라고명시하므로지속근거존재."
+    },
+    {
+      "index": 444,
+      "verdict": "false_positive",
+      "reason": "en:body:n13~n17 모두percent=true로동일백분율단위;16%의value16은표준정규화입력."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "원문이 회복량을 missing Health에 비례한다고 표현하지만, 현재 스키마의 통계 목록에는 잃은 체력을 정확히 나타내는 항목이 없습니다. 특정 체력 통계로 바꾸지 않고 원문 표현을 유지했습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "영문은자신이속만decaying,한국어는전체이속감소처럼서술;아군이속은영문우선감소flag없음.한국어2.5초이속범위는지속근거로보완.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -81,8 +81,6 @@ export interface UseAdvisorResult {
   settle: () => void;
   /** 자리를 띄워 두고 답을 찾는 중이거나, 코드가 쓴 답을 흘려 보이는 중 */
   working: boolean;
-  /** 답변 평가. 기기 안에만 쌓인다. */
-  rate: (turnId: number, rating: "up" | "down", patch: string) => void;
   /**
    * 내려받은 모델을 삭제하고 처음 상태로 되돌린다.
    *
@@ -130,7 +128,6 @@ export function useAdvisor(): UseAdvisorResult {
     completeReply,
     answerWithoutModel,
     remember,
-    rate,
     reset,
     replaceTurns,
   } = useAdvisorTurns(lang, setError);
@@ -338,7 +335,6 @@ export function useAdvisor(): UseAdvisorResult {
     begin,
     settle,
     working,
-    rate,
     deleteModel,
     model,
     stop,

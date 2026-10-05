@@ -1,0 +1,158 @@
+{
+  "id": "Kalista.Q",
+  "sourceHash": "c0be72c5b096e0083f56acaef6dd254247786fcb899ebf98b5795a4ac18ac98f",
+  "beforeCandidateHash": "04363e9bc47b45a35edce9df2a60b3a656560b55772a8aa94616d0a719bf0850",
+  "candidateHash": "fa6534a3c13d7a61276076ec823d0c26f94dc11fe12b40757bc1aa615ac95293",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "창첫적중physical,이창처치때관통/중첩운반,패시브도약을두언어에서확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "처음맞은적에게10/75/140/205/270+105%totalAD physical.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "140",
+              "value": 140,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "205",
+              "value": 205,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "270",
+              "value": 270,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "totalAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "105%",
+              "value": 105,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이Q에맞아처치된적의Rend중첩을다음맞는적으로운반·창관통. 최초적한정추정없이연속처치관통범위.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 꿰뚫는 창에 적중하여 처치됨"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Q사용후MartialPoise도약가능.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,gaps",
+      "issue": "처치조건이첫순서로대체됐고불가gap.",
+      "correction": "이Q처치kill조건으로수정.",
+      "sourceId": "en:body",
+      "quote": "If this kills the target, the spear continues onward, carrying any Rend stacks to the next target hit."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 162,
+      "verdict": "repaired",
+      "reason": "첫순서만으로충분하지않아Q에맞아처치된조건과kill사건을명시했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

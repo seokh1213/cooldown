@@ -1,0 +1,59 @@
+{
+  "id": "Katarina.Q",
+  "sourceHash": "505dd66f81692a069a787e112dfefdc23872d8ae76baf671df989f3dbf1a7b89",
+  "beforeCandidateHash": "8137681e797b6a1f2b76ca7f6b85a9fbb57f24c8241927ee919165cc32f33fc2",
+  "candidateHash": "8137681e797b6a1f2b76ca7f6b85a9fbb57f24c8241927ee919165cc32f33fc2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "주대상과주변2적에각80~220+40%AP마법,단검은주대상뒤바닥에떨어짐을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 단검이 대상에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=80,en:body:n1=115,en:body:n2=150,en:body:n3=185,en:body:n4=220 상수 rank_values / stat_coefficient en:body:n5=40%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; secondary_targets: 단검이 대상 주변의 적 두 명에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=80,en:body:n1=115,en:body:n2=150,en:body:n3=185,en:body:n4=220 상수 rank_values / stat_coefficient en:body:n5=40%(백분율) caster.abilityPower scalar / count en:body:n6=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 unknown; 조건 별도 제한 없음; unknown: 단검은 최초 대상 뒤의 땅에 튕겨 떨어집니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [],
+  "proposalDecisions": [
+    {
+      "index": 176,
+      "verdict": "false_positive",
+      "reason": "rule0 주대상과 rule1 주변2적이 동일피해식으로 따로 보존되어 있어 범위누락이 없다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

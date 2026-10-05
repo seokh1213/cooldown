@@ -1,0 +1,498 @@
+{
+  "drafts": {
+    "E": {
+      "summary": "나서스가 영혼의 불길로 마법 피해를 입히고, 해당 지역의 적 방어력을 낮추며 5초 동안 마법 피해를 입힙니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "영혼의 불길로 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Nasus ignites a spirit flame, dealing (50/80/110/140/170 + (60% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "unknown"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "distance",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "nearby_enemies",
+              "text": "해당 지역에 있는 적의 방어력이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "armor",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies in the area lose 30/35/40/45/50% Armor"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies in the area lose 30/35/40/45/50% Armor and take (50/80/110/140/170 + (60% Ability Power)) magic damage over 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "unknown"
+          },
+          "conditions": [
+            {
+              "subject": "nearby_enemies",
+              "field": "distance",
+              "operator": "present",
+              "value": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "해당 지역의 적은 5초 동안 마법 피해를 입습니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and take (50/80/110/140/170 + (60% Ability Power)) magic damage over 5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies in the area lose 30/35/40/45/50% Armor and take (50/80/110/140/170 + (60% Ability Power)) magic damage over 5 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "본문은 효과 대상을 해당 지역의 적으로 표현하지만, 범위에 진입하거나 이탈할 때의 판정은 설명하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies in the area lose 30/35/40/45/50% Armor and take (50/80/110/140/170 + (60% Ability Power)) magic damage over 5 seconds."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "나서스가 15초 동안 모래 폭풍 속에서 강화되어 최대 체력, 방어력, 마법 저항력을 얻습니다. 폭풍이 부는 동안 주변 적은 매초 최대 체력 비례 마법 피해를 입고, 흡수의 일격 재사용 대기시간이 50% 감소합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "모래 폭풍 속에서 최대 체력이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "maxHealth",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "모래 폭풍 속에서 방어력이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "armor",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "모래 폭풍 속에서 마법 저항력이 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "magicResist",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Nasus becomes empowered in the sandstorm for 15 seconds, increasing his maximum Health by 300/450/600 and Armor and Magic Resistance by 40/55/70."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "폭풍이 부는 동안 주변 적은 매초 최대 체력에 비례한 마법 피해를 입습니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "While the storm rages, nearby enemies take (3/4/5% + (1% per 100 Ability Power)) of their maximum Health as magic damage each second."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "While the storm rages, nearby enemies take (3/4/5% + (1% per 100 Ability Power)) of their maximum Health as magic damage each second and Siphoning Strike has a 50% reduced Cooldown."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "폭풍이 부는 동안 흡수의 일격 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Siphoning Strike has a 50% reduced Cooldown."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "While the storm rages, nearby enemies take (3/4/5% + (1% per 100 Ability Power)) of their maximum Health as magic damage each second and Siphoning Strike has a 50% reduced Cooldown."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "모래 폭풍은 매초 주는 피해에 상한이 있습니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The storm deals a max of 240 damage per second."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "missing_source",
+          "detail": "요약에는 폭풍이 부는 동안 공격 사거리가 증가한다고 하지만 본문에는 해당 효과의 수치가 없어 정량 규칙을 구성할 근거가 부족합니다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "While the storm rages, he gains increased Health, Attack Range, damages nearby enemies, has a reduced cooldown on Siphoning Strike, and gains bonus Armor and Magic Resistance."
+            }
+          ]
+        },
+        {
+          "reason": "unsupported_formula",
+          "detail": "피해는 주변 적의 최대 체력에 비례하며 주문력은 100당 추가 비율로 제시되지만, 고정 스키마로 이 결합식을 정확히 표현할 수 없어 계산 구조를 확정하지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "While the storm rages, nearby enemies take (3/4/5% + (1% per 100 Ability Power)) of their maximum Health as magic damage each second."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Nasus.R",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.1.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "evidence",
+          "path": "gaps.1.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        }
+      ]
+    }
+  ]
+}

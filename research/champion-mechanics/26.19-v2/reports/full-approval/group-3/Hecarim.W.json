@@ -1,0 +1,122 @@
+{
+  "id": "Hecarim.W",
+  "sourceHash": "7b334753b10a5f9ecb637d60a6f69a2339a1f3e79d4b7f37a34da2fbb6ae160c",
+  "beforeCandidateHash": "250ca425f569693a433d6cd042cce217e6d7bf6fbba2add5e60c83a18e99233c",
+  "candidateHash": "3032ef17f86c82d25122aa6adafa391794bb55b3c63914e89013363fa51386d2",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "4초에 걸친총80/120/160/200/240+AP80% 주변마법피해,방어력/마저5/10/15/20/25,활성중주변적이본인에게받은피해25%/아군에게받은피해12.5%회복,미니언 또는정글몬스터회복상한120/150/180/210/240을 대조했다. 상한의대상별/시전총량구분은미명시다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → nearby_enemies: 4초에 걸쳐 주변 적에게 총80/120/160/200/240+주문력80%의 마법 피해를 입힙니다. [magic] / amount=80/120/160/200/240 [rank_values]; stat_coefficient=80% (caster abilityPower) [formula_components]; duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 방어력과 마법 저항력을 얻습니다. / amount=5/10/15/20/25 (caster armor) [rank_values]; amount=5/10/15/20/25 (caster magicResist) [rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: nearby_enemies의 damage_taken / 조건 enemy other eq 피해를 받은 대상이 주변 적이고, 그 피해를 헤카림이 입힘; caster other eq 이 스킬의 회복 효과가 활성화된 동안 → caster: 주변 적이 헤카림에게서 받은 피해량의 일정 비율만큼 회복합니다. / ratio_output=25% [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: nearby_enemies의 damage_taken / 조건 caster other eq 이 스킬의 회복 효과가 활성화된 동안; nearby_enemies other eq 헤카림의 아군으로부터 피해를 받을 때 → caster: 스킬 활성 중 주변 적이 헤카림의 아군에게 받은 피해의12.5%만큼 헤카림이 회복합니다. / ratio_output=12.5% [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: nearby_enemies의 damage_taken / 조건 target other eq 회복을 유발한 주변 적이 미니언 또는 정글 몬스터이고 이 스킬의 회복 효과가 활성화된 동안 → caster: 미니언 또는 정글 몬스터의 피해로 유발되는 이 스킬의 회복량은120/150/180/210/240을 초과할 수 없습니다. 상한이 대상별인지 시전 총량인지 본문은 명시하지 않습니다. / max_amount=120/150/180/210/240 [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "4초 동안 각틱이 같은 전체피해로 읽힐 수 있었다.",
+      "correction": "4초에 걸친 총피해임을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "magic damage over 4 seconds to nearby enemies"
+    },
+    {
+      "path": "rules.2-3.conditions",
+      "issue": "아군피해 회복에 피해 주인 조건이 없고 회복효과 활성 범위가 불명확했다.",
+      "correction": "스킬활성기간과 주변 적이 아군에게 받은피해 조건을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "heals for 25% of damage nearby enemies take from Hecarim and 12.5% of damage taken from his allies."
+    },
+    {
+      "path": "rules.4",
+      "issue": "몬스터도 명시된 회복 상한이 미니언만 제한하고 별도 회복발동으로 표현했다.",
+      "correction": "미니언 또는 정글몬스터 회복에 대한 상한 제약으로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "Hecarim cannot heal more than 120/150/180/210/240 Health from minions or jungle monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 102,
+      "verdict": "false_positive",
+      "reason": "문장을 전체로 읽으면 damage nearby enemies take from Hecarim and ...from his allies에서 주변 적 범위가 두회복에 공통이다. 대상 범위를 제거하라는 지적은 오탐이고 아군 피해 조건은 별도로 복구했다."
+    },
+    {
+      "index": 103,
+      "verdict": "repaired",
+      "reason": "본문이 minions or jungle monsters를 명시하므로 OR텍스트조건으로 두범위를 모두 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "미니언 및 정글 몬스터 대상 회복 상한이 각각의 대상별인지, 해당 시전 중 총 회복량인지 원문만으로는 명확하지 않습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": "Velkoz.Q",
+  "sourceHash": "a0f9d187afbc98b98247d6a0abae92a95829f72b552501758c39ed9e8fbaf588",
+  "beforeCandidateHash": "498cd086d9c4493069ec86c8f46d1716c7e99ac4dac9dc71c1e1aa4e6130f43f",
+  "candidateHash": "ff685b862306d9380f69c181f9c7c170974f86e5e94ac2a860ad0d5e30bc3fb7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "광선적중마법피해/감소70%둔화,사거리끝·적중·재사용의각각90도2광선분열,이Q로유닛처치마나회복을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 광선이 적중한 적에게 마법 피해를 입힙니다. (magic); amount=80/120/160/200/240  rank_values, stat_coefficient=90% caster의 abilityPower scalar / target: 적중한 적을 둔화시키며 둔화 효과는 시간이 지나며 감소합니다. (slow); amount=70%  scalar, duration_seconds=1/1.4/1.8/2.2/2.6  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.other eq 이 광선이 사거리 끝에 도달함 적용. unknown: 사거리 끝에 도달하면 광선이 갈라져 새 광선 두 개를 90도 각도로 발사합니다.; count=two  scalar, other=90  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. unknown: 적을 맞히면 광선이 갈라져 새 광선 두 개를 90도 각도로 발사합니다.; count=two  scalar, other=90  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 별도 조건 없이 적용. unknown: 재사용하면 광선이 갈라져 새 광선 두 개를 90도 각도로 발사합니다.; count=two  scalar, other=90  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.other eq 이 플라즈마 분열로 처치된 유닛 적용. caster: 이 스킬로 유닛을 처치하면 마나를 회복합니다.; amount=20/22.5/25/27.5/30  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-4",
+      "issue": "적중/처치행위자가대상,사거리끝/이Q처치조건누락",
+      "correction": "caster행위자및정확한분열/처치사건조건",
+      "sourceId": "en:body",
+      "quote": "Killing a unit with this restores 20/22.5/25/27.5/30 Mana."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

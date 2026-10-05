@@ -1,0 +1,90 @@
+{
+  "summary": "아지르가 모든 모래 병사를 지정 위치로 보내 통과하는 적에게 마법 피해와 둔화를 적용합니다. 여러 병사에게 맞아도 추가 피해는 받지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "모래 병사가 지나가며 적에게 마법 피해를 입힌다. 여러 모래 병사에게 맞아도 추가 피해는 입지 않는다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "모래 병사가 지나가며 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Azir orders all Sand Soldiers to an area, dealing (75/95/115/135/155 + (35/40/45/50/55% Ability Power)) magic damage to enemies they pass through and Slowing them by 25% for 1 second. Enemies hit by multiple Sand Soldiers will not take additional damage."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

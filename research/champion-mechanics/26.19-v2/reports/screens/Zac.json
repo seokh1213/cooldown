@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Zac.E",
+      "sourceHash": "f407143d3b7f95399feaad35d1f675c2c0591806813cf61f04d4b48aeece45c9",
+      "candidateHash": "c06860938d92f1ccbf1dafd88de2ab11cf6f1eb84dc9724082ca2339dbf4c118"
+    },
+    {
+      "id": "Zac.P",
+      "sourceHash": "b9f6e7978e92b25b44cb6897410f7edc5aa1cd8af78fb55412d1ac741d6cb097",
+      "candidateHash": "1d9b1e2a0de3a1de6b913d5d0deef84438586f5db703a51724a8e2da84512823"
+    },
+    {
+      "id": "Zac.Q",
+      "sourceHash": "b112609e300f326b769629d0be9f979a49702eec7e86e21098b47529101e35cc",
+      "candidateHash": "def74d0d69543c823d54b235be2679065526e6da4b2787503c03a2c437cca3b0"
+    },
+    {
+      "id": "Zac.R",
+      "sourceHash": "7f99adea6e26a860320a8f5d0308a353210bcd669dbfe65b1c6253d936ed815d",
+      "candidateHash": "13ca0ddddb077d61aff06792497c95dc7acf11b968889ea730fb386612f1cadf"
+    },
+    {
+      "id": "Zac.W",
+      "sourceHash": "12b60427305133c28e9e49a5686c81ddb7b712c1c6c0b47a758b60d16b10aa4e",
+      "candidateHash": "d56bd2a11af0e273477d454cbea8e2a3ddd2ed9dfeba07fed5703f388c7af3fe"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Zac.E",
+      "path": "rules.3.effects.0.parameters.0.numberRefs",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zac spawns an extra chunk of Goo for each enemy champion hit.",
+      "issue": "조각 생성 수를 충전 시간 숫자 0.9로 연결했습니다. 원문은 적중한 적 챔피언마다 조각을 하나 추가로 생성한다고 하며, 0.9는 충전 시간 값입니다.",
+      "correction": "count 매개변수의 numberRefs를 제거하거나 실제 수량 1을 가리키도록 하고, 적 챔피언 적중마다 조각 하나가 생성된다는 근거만 연결하세요."
+    },
+    {
+      "id": "Zac.P",
+      "path": "rules.1.effects.1.parameters.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "he will revive with 10-50% Health based on the surviving bloblet's Health.",
+      "issue": "부활 체력 상한을 -50%로 기록했습니다. 원문의 10-50%는 양수 범위이며, 50%가 최대값입니다.",
+      "correction": "max_amount를 50%로 기록하세요."
+    },
+    {
+      "id": "Zac.Q",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Zac hits a different enemy with this Attack, he Knocks Up both towards each other.",
+      "issue": "다른 적에게 공격해야 한다는 조건 대신 mark가 same_target인 조건을 붙였습니다. 이는 설명문과 반대되는 조건입니다.",
+      "correction": "서로 다른 적을 공격한 경우로 조건을 표현하세요. 스키마로 표현할 수 없다면 이 조건을 제거하고 제한을 설명문과 gap에 보존하세요."
+    },
+    {
+      "id": "Zac.R",
+      "path": "rules.1.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The first bounce to hit each enemy Knocks them back and deals (120/190/260 + (40% Ability Power)) magic damage.",
+      "issue": "원문은 각 적에게 처음 적중할 때 뒤로 밀어냅니다. 효과를 공중으로 띄우기(knockup)로 구조화해 군중 제어 유형을 바꿨습니다.",
+      "correction": "crowdControl을 knockback으로 유지하고, 설명도 뒤로 밀어낸다고 표현하세요."
+    },
+    {
+      "id": "Zac.R",
+      "path": "rules.3.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Zac gains up to 50% Move Speed over time and can cast Unstable Matter while bouncing.",
+      "issue": "효과의 최대 이동 속도를 50%로만 기록해 원문에 있는 20% 시작값이 빠졌습니다. 한국어 요약도 이동 속도가 시간에 따라 증가한다고만 해 범위를 생략합니다.",
+      "correction": "20%에서 50%까지 증가한다는 범위를 min_amount와 max_amount로 기록하세요."
+    }
+  ],
+  "notes": []
+}

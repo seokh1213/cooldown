@@ -1,0 +1,92 @@
+{
+  "id": "Malphite.Q",
+  "sourceHash": "c272d4253a4109d3a50f364174a30c82002696c357232b78032d94428f171e22",
+  "beforeCandidateHash": "1bb6aecaf574e9541ddee0cca82e5c23b8c55ea3b3cf1cb8750c5192e2be7d11",
+  "candidateHash": "0fe7737ed76ebacb914a47b0c82b9c9ed6095dac73c7f59227d924331c4b8e29",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "적의70/120/170/220/270+AP60%마법피해,3초20/25/30/35/40%둔화와 그 적의 둔화된 이동속도량을3초 훔치는 효과를 대조했다. 시전자 자신의 이동속도20~40%증가로 오해하지 않도록 입력 기준을 보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이 스킬로 맞힌 적 → target: 대지 조각이 적중하면 마법 피해를 입힙니다. [magic] / amount=70/120/170/220/270 [rank_values]; stat_coefficient=60% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이 스킬로 맞힌 적 → target: 맞힌 적을3초 동안20/25/30/35/40% 둔화시킵니다. [slow] / amount=20/25/30/35/40% [rank_values]; duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이 스킬로 맞힌 적 → caster: 맞힌 적에게 적용된20/25/30/35/40% 둔화로 감소한 이동속도량을 말파이트가3초 동안 얻습니다. 시전자 자신의 이동속도의20~40%를 얻는 뜻이 아닙니다. / stat_coefficient=20/25/30/35/40% (target moveSpeed) [formula_components]; duration_seconds=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.*.trigger/conditions",
+      "issue": "스킬적중 행위자가 target이고 any대상조건이 적제한을 표현하지 않았다.",
+      "correction": "시전자스킬적중/맞힌적 범위로 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Malphite launches a shard of earth at an enemy"
+    },
+    {
+      "path": "rules.2.effects.0",
+      "issue": "훔치는 이동속도의 계산입력이 caster이므로 본인MS비례증가로 읽혔다.",
+      "correction": "대상이 둔화된 실제량을 입력으로, 시전자3초 증가를 출력으로 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Malphite also steals the amount Slowed, gaining it as Move Speed for 3 seconds."
+    },
+    {
+      "path": "gaps",
+      "issue": "랭크 퍼센트 단위 표의 실제 한계가 누락됐다.",
+      "correction": "모든랭크%단위를 텍스트에보존하고 숫자표한계를 기록했다.",
+      "sourceId": "en:body",
+      "quote": "20/25/30/35/40%"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "20/25/30/35/40%의 모든 랭크는 둔화 퍼센트지만 frozen 숫자표는 마지막값만 percent=true다. 모든 랭크의%단위를 텍스트에 보존한다. 훔치는 양은 대상에게 실제 적용된 둔화량이다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

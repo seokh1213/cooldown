@@ -1,0 +1,50 @@
+{
+  "id": "Katarina.W",
+  "sourceHash": "d7ed7f2f91ef89dfd74a929d37b8cb496791486bc3609faaf1a07b01dcf29fb7",
+  "beforeCandidateHash": "500dde42abb37a281be991577abd06bf3fa5aca17f266569118430af88d0ab31",
+  "candidateHash": "e37d20b37c854cb7ec5f68c14cbc804b9c46e6bc5585d1b123d52e624029f54b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "단검자신머리위투척,50~90%이속1.25초에걸쳐감소를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; unknown: 자신의 바로 머리 위 공중으로 단검을 던집니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이동 속도가 증가하고 지속 시간 동안 감소합니다.; 수치 amount en:body:n0=50(백분율),en:body:n1=60(백분율),en:body:n2=70(백분율),en:body:n3=80(백분율),en:body:n4=90%(백분율) caster.moveSpeed rank_values / duration_seconds en:body:n5=1.25 상수 scalar; flags decays"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "단검위치를summary의 directly above herself까지 보존",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Katarina tosses a Dagger into the air and gains 50/60/70/80/90% Move Speed decaying over 1.25 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

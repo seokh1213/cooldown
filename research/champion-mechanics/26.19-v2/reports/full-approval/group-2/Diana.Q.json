@@ -1,0 +1,56 @@
+{
+  "id": "Diana.Q",
+  "sourceHash": "f253e2e0e1d3c946e3a82a559a7dcdb4fae1f6d771aa6a37a4678fa56edda3ed",
+  "beforeCandidateHash": "2e2e9d006dc55825f717cdf63136bfd9f13e116d166520f0d555c99bcae56b30",
+  "candidateHash": "6f9d63cce55be9becdd5cebe6af433eecb041f3c80d10f45a7665cfe155332e1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "호형태에너지의마법피해/3초달빛표식,표식중은신아닌적만드러냄을 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; target: 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=70,en:body:n1=105,en:body:n2=140,en:body:n3=175,en:body:n4=210 상수 rank_values / stat_coefficient en:body:n5=70%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 별도 제한 없음; target: 달빛 표식을 남깁니다.; 수치 duration_seconds en:body:n6=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 target; 조건 target.visibility eq 은신 상태가 아님 / target.mark present Moonlight; target: 대상을 드러냅니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "스킬적중행위자를caster로교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Diana unleashes an arc of lunar energy, dealing (70/105/140/175/210 + (70% Ability Power)) magic damage and marking with Moonlight for 3 seconds. Moonlight reveals enemies that are not stealthed."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

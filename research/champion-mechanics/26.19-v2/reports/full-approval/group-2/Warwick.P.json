@@ -1,0 +1,67 @@
+{
+  "id": "Warwick.P",
+  "sourceHash": "8dfb6b3d1f71ea83367b5e6e5e3be4e72a020f5a225f45bb5f45031bab467b6d",
+  "beforeCandidateHash": "87de88fdc59400bbd89fd309c74156a8f78e914f82fe5e75ac069ed200eb6abc",
+  "candidateHash": "a297f7831e8cda44fa3a1958f3174aa1c90e05765b65d366599cfce17259adf8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "평타적중의 레벨범위 추가마법 및 bonusAD/AP계수,자신50%미만100%회복·25%미만대신250%회복과 요약3배충돌을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 별도 제한 없음; target: 기본 공격 적중 시 추가 마법 피해를 입힌다. [magic]; 수치 min_amount en:body:n0=6 상수 level_range / max_amount en:body:n1=55 상수 level_range / stat_coefficient en:body:n2=15%(백분율) caster.bonusAttackDamage scalar / stat_coefficient en:body:n3=10%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.health_threshold lt en:body:n4=50%(백분율); caster: 끝없는 허기로 입힌 피해량의 일부만큼 체력을 회복한다.; 수치 ratio_output en:body:n5=100%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.health_threshold lt en:body:n6=25%(백분율); caster: 워윅 체력25% 미만일 때 기본 회복 대신 끝없는 허기 피해의250%를 회복합니다.; 수치 ratio_output en:body:n7=250%(백분율) 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "범위형태·회복비율역할 및25%미만회복 대체 표시와 source_conflict누락 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Warwick's Attacks deal an additional ((6 ~ 55) + (15% bonus Attack Damage) + (10% Ability Power)) magic damage On-Hit. If Warwick is below 50% Health, he also heals for 100% of the damage dealt by Eternal Hunger. If Warwick is below 25% health, the healing is increased to 250% of the damage dealt."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en/ko 요약은25%미만 회복3배, 본문은 피해250%로 충돌. 더 구체 본문의250%를 우선.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

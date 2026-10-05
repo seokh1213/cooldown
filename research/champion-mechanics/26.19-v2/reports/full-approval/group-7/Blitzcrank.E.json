@@ -1,0 +1,181 @@
+{
+  "id": "Blitzcrank.E",
+  "sourceHash": "ef7f1e8ac9239f7fa71822770a07642f593ecdd054e1d186bf6edc747aa8570c",
+  "beforeCandidateHash": "440825931022b0e2f15e6e244a0217e80ae9c28ed1d3ec75f754c8a66db190d7",
+  "candidateHash": "666bdd87e96f209c72d69512a8420d22af0f17b37b165b21fc8d4a52679b53e1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "E강화후다음한번평타가1초띄우기와총AD200%+AP25%물리피해.기본평타위에AD200%를추가합산하지않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "E시전시다음공격강화준비.시전순간에적피해/띄우기를주지않음."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이E강화된다음caster.attack한번에target1초knockup및대체물리피해.총AD200%와AP25%시전자기준,여러공격전체로넓히지않음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions",
+      "issue": "generic empowered만으로다른강화공격까지발동가능",
+      "correction": "이E의다음평타한번으로조건특정",
+      "sourceId": "en:body",
+      "quote": "Blitzcrank charges up their fist, causing their next Attack to Knock Up for 1 second(s) and deal ((200% Attack Damage) + (25% Ability Power)) physical damage."
+    },
+    {
+      "path": "rules.1.effects.1.flags/text",
+      "issue": "기본공격피해에강화피해를추가합산할수있는표현",
+      "correction": "총강화평타피해인replaces_base명시",
+      "sourceId": "en:summary",
+      "quote": "Blitzcrank charges up their fist to make the next attack deal double damage and pop their target up in the air."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "주먹을 강화해 다음 공격을 강화합니다. 다음 공격은 적을 띄우고 물리 피해를 줍니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "attack_followup",
+              "subject": "caster",
+              "text": "다음 공격을 강화합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Blitzcrank charges up their fist, causing their next Attack"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "이 E로 강화된 다음 공격"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적을 공중으로 띄웁니다.",
+              "damageType": null,
+              "crowdControl": "knockup",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "강화된 다음 공격은 기본 공격 피해 대신 공격력 200% + 주문력 25%의 물리 피해를 입힙니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "their next Attack to Knock Up for 1 second(s) and deal ((200% Attack Damage) + (25% Ability Power)) physical damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Blitzcrank charges up their fist, causing their next Attack to Knock Up for 1 second(s) and deal ((200% Attack Damage) + (25% Ability Power)) physical damage."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

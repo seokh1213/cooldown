@@ -1,0 +1,92 @@
+{
+  "id": "Teemo.E",
+  "sourceHash": "c364952dadcb6e69271a778268e07d2c2d74b7fb9ec3817a8fd0789401437136",
+  "beforeCandidateHash": "c52e7abc5ecc2dd5d25fa579403cf57817326af9d14305ed8f7b6b5f6b990327",
+  "candidateHash": "19b63ad4a26b87ec7a20d7961231deee39b21cb78f76fd8e11c39ba722d41d34",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "기본공격적중에만즉시9/23/37/51/65+AP30%+추가AD5%,4초매초총24/48/72/96/120+AP40%+추가AD10%마법피해와정글독배율160%를대조했다. 독배율의즉시/지속세부범위미명시는유지했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 기본공격이적중할때 → target: 기본 공격이 적중하면 독이 적용되어 추가 마법 피해를 입힙니다. [magic] / amount=9/23/37/51/65 [rank_values]; stat_coefficient=30% (caster abilityPower) [formula_components]; stat_coefficient=5% (caster bonusAttackDamage) [formula_components] | target: 독은4초동안매초지속피해를주며총24/48/72/96/120+주문력40%+추가공격력10%마법피해입니다. [magic] / amount=24/48/72/96/120 [rank_values]; stat_coefficient=40% (caster abilityPower) [formula_components]; stat_coefficient=10% (caster bonusAttackDamage) [formula_components]; duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 target target_type eq monster; caster other eq 기본공격이적중할때; target other eq 정글몬스터 → target: 정글몬스터에게이독이주는피해배율은160%입니다.기본피해를160단위피해로대체하지않습니다. / damage_multiplier=160% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.trigger/conditions",
+      "issue": "기본공격OnHit독효과가attack_or_ability_hit이어서일반스킬에도발동하고monster범위가정글로한정되지않았다.",
+      "correction": "기본공격적중과정글몬스터범위를명시했다.",
+      "sourceId": "en:body",
+      "quote": "Teemo's Attacks apply poison On-Hit"
+    },
+    {
+      "path": "rules.1.effects.0",
+      "issue": "독160%배율이damage/replaces_base로작성됐다.",
+      "correction": "피해배율수정만보존하며대체플래그를제거했다.",
+      "sourceId": "en:body",
+      "quote": "This poison deals 160% damage to jungle monsters."
+    },
+    {
+      "path": "rules.0.effects.1",
+      "issue": "4초전체피해의틱주기와복합계수shape가불완전했다.",
+      "correction": "요약의매초틱/본문의총4초피해로대조해명시했다.",
+      "sourceId": "en:summary",
+      "quote": "each second after for 4 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 531,
+      "verdict": "repaired",
+      "reason": "기본공격적중으로제한했다."
+    },
+    {
+      "index": 532,
+      "verdict": "repaired",
+      "reason": "monsterenum에정글몬스터한정을명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "원문은 정글 몬스터에게 독이 160% 피해를 준다고 하지만, 이 적용 범위가 적중 피해와 지속 피해 각각인지 또는 독 피해 합계인지는 명시하지 않습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

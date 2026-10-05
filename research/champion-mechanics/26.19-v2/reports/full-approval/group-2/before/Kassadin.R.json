@@ -1,0 +1,214 @@
+{
+  "summary": "카사딘이 근처 위치로 순간이동하며 주변 적 유닛에게 마법 피해를 입힙니다. 다음 15초 안에 후속 사용하면 마나 비용이 두 배가 되고 추가 마법 피해를 입힙니다. 비용 및 피해 증가는 최대 4회까지 중첩됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "카사딘이 근처 위치로 순간이동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "주변 적 유닛에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kassadin teleports to a nearby location, dealing (80/95/110 + (50% Ability Power) + (2% Mana)) magic damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Kassadin teleports to a nearby location dealing damage to nearby enemy units."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n5"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "후속 사용 시 추가 마법 피해를 입힙니다. 추가 피해 증가는 중첩될 수 있습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "후속 사용 시 마나 비용이 두 배가 되며, 비용 증가는 중첩될 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each subsequent use of this Ability within the next 15 seconds doubles the Mana cost and deals an additional (35/45/55 + (7% Ability Power) + (1% Mana)) magic damage. The cost and damage increases can stack up to 4 times."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문은 Mana라고만 하므로 비례하는 마나 스탯의 종류와 소유자를 특정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(2% Mana)"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "(1% Mana)"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "마나 비용은 두 배가 되고 비용 증가가 최대 4회까지 중첩된다고 설명하지만 단계별 누적 비용 계산 방식은 제시되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each subsequent use of this Ability within the next 15 seconds doubles the Mana cost"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The cost and damage increases can stack up to 4 times."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "추가 피해 증가의 단계별 누적 계산 방식은 제시되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The cost and damage increases can stack up to 4 times."
+        }
+      ]
+    }
+  ]
+}

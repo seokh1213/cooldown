@@ -1,0 +1,247 @@
+{
+  "id": "KSante.W",
+  "sourceHash": "db66618c11dc7f8cc2bc43274fbfdaf455921dc0ef3bd2ead19c81c2adc4803f",
+  "beforeCandidateHash": "99d92eb9cd23027ce4508deab54e2bde248bc22b8ebf67a8cbb85c57acb12725",
+  "candidateHash": "d0efbbc255c9f9275c91db83580bf4db4997784b81c64ea3757def905a77f3f4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 2,
+  "summaryCheck": "충전0.4~1초저지불가/기본30%감소,돌진복합물리,일반넉백/0.5~1.75초기절,총공세CD리셋·10~80%추가고정·75%감소/돌진가속/CC없음,90%충전최대·몬스터180~500상한을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "방어태세0.4~1초저지불가.하이픈음수참조는KO동일양수범위로교체.90%충전에서최대효과."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "충전후돌진45/75/105/135/165+maxHP(8%+자신추가armor100당2%+MR100당2%)물리. maxHP소유자원문미명시unknown."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "비총공세에만넉백및충전시간기반0.5~1.75초기절.시간범위는레벨값아님."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "총공세충전기반피해10~80%추가고정. EN음수80파싱은KO80%로교체."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "총공세방어태세중피해75%감소와돌진속도증가.기본30%감소와중복적용하지않음."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "총공세진입시WCD초기화.매W시전CD초기화로읽지않음."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몬스터최대180/260/340/420/500.유형·전체/부분범위미명시라정보효과로보존."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비총공세방어태세에받는피해30%감소."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.7",
+      "issue": "기본30%와총공세75%피해감소를별도조건으로분리",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "시간범위대시를음수1초및레벨범위로오기",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.0.effects.1",
+      "issue": "90%충전최대효과누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.1.effects.0.parameters",
+      "issue": "최대HP소유자확정및100분모계수혼동",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.1.effects.1",
+      "issue": "전방돌진movement누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.2.effects.1.parameters.0.numberRefs",
+      "issue": "EN기절범위대시음수참조",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.3.effects.0.parameters.0.numberRefs",
+      "issue": "추가고정비율상한음수80",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.4.effects.0.parameters.0.role",
+      "issue": "피해감소율을일반amount로분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.5.trigger.event",
+      "issue": "총공세진입CD리셋을일반시전으로표기",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "rules.6.effects.0.kind",
+      "issue": "미확정몬스터상한을물리damage로확정",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "스탯소유자·복합식·숫자표범위한계기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante raises his weapons defensively for 0.4-1.0s, becoming Unstoppable and reducing incoming damage by 30%. Then, he rams forward, dealing 45/75/105/135/165 + (8% + (2% per 100 bonus Armor) + (2% per 100 bonus Magic Resist)) max Health physical damage. Enemies hit are Knocked Back and Stunned for 0.5-1.75s (based on charge time). All Out: Cooldown is refreshed. Deals an additional 10-80% damage as true damage (based on charge time), damage reduction is increased to 75% and dash speed is increased, but no longer Knocks Back or Stuns. Maximum effect is reached at 90% charge time. Maximum of 180/260/340/420/500 damage against monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 154,
+      "verdict": "repaired",
+      "reason": "W본문/요약에는maxHP주인을직접설명하지않아unknown과gap으로보존했다."
+    },
+    {
+      "index": 155,
+      "verdict": "repaired",
+      "reason": "KO동일본문의양수80%참조로교체했다."
+    },
+    {
+      "index": 156,
+      "verdict": "repaired",
+      "reason": "감소율을other역할과75%감소명시텍스트로보존했다."
+    },
+    {
+      "index": 157,
+      "verdict": "repaired",
+      "reason": "상한은other정보효과로두고물리타입확정을제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "note": "몬스터 대상 최대 피해량 제한이 전체 피해에 적용되는지 개별 피해 구성 요소에 적용되는지 원문만으로 확정하기 어렵습니다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "note": "돌진maxHealth소유자는공급본문에미명시이며저항력100당비율의복합곱을단순선형합으로실행하지않는다.EN0.4-1.0s/0.5-1.75s/10-80%는lexical표가상한을음수로읽어KO동일범위양수참조를사용했다."
+    }
+  ],
+  "validation": {
+    "id": "KSante.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.7",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

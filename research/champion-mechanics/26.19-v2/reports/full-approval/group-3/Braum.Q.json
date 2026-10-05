@@ -1,0 +1,71 @@
+{
+  "id": "Braum.Q",
+  "sourceHash": "48ac59bcbef384726b55400dd790ba297bec20b6b665b5f1db66e35a6f5ba765",
+  "beforeCandidateHash": "6becf3a14f59c7237f870b6af1030a4b745c1083a88ffb7ebb87a96361ea74ee",
+  "candidateHash": "368674956a80fd2b67a6b864fffe1a71bb6f4e7392054d1583db6d635ad193e0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫 적중 적의75/120/165/210/255+Health2.5% 마법 피해,70% 둔화의2초 감쇠와 뇌진탕 펀치1중첩을 양 언어 본문과 대조했다. Health의 주인/최대·현재 구분은 공급 본문에 없으므로 기존 한계를 유지했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first → target: 첫 적중 적에게 마법 피해를 입힌다. [magic] / amount=75/120/165/210/255 [rank_values]; stat_coefficient=2.5% [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first → target: 첫 적중 적을 둔화시키며 효과는 시간이 지나면서 감소한다. [slow] / amount=70% [scalar]; duration_seconds=2 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target hit_order eq first → target: 첫 적중 적에게 뇌진탕 펀치 중첩을 1회 적용한다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.*.trigger.subject",
+      "issue": "스킬 적중 행위자가 적중 대상이었다.",
+      "correction": "브라움의 스킬 적중을 caster로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "Braum propels freezing ice from his shield"
+    },
+    {
+      "path": "rules.2",
+      "issue": "표식 부여만 첫 적중 적 제한을 누락했다.",
+      "correction": "첫 적중 적 조건과 본문 인용을 추가했다.",
+      "sourceId": "en:body",
+      "quote": "magic damage to the first enemy hit"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "피해 계수의 Health가 누구의 체력 스탯인지 원문에서 특정되지 않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

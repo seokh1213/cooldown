@@ -1,0 +1,100 @@
+{
+  "id": "Zed.E",
+  "sourceHash": "49a1c6c31b93c16be9e79979f6fdb39d74d9d359360bb712657714ae84de6638",
+  "beforeCandidateHash": "950579c99515d64b801e6639f748bffb80fadfa7e3338a3ead053a5778371f70",
+  "candidateHash": "91e240989bf8bc6102d67460692455beea8f543b65880709a9dcc206ac9c90e9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "제드/그림자주변물리70~160+70%추가AD 한시전중복추가피해없음; 제드챔피언적중당W3초감소; 그림자20~40%1.5초/복수베기30~60%대체둔화 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.activation eq 제드 또는 그림자의 이번 베기에 적중; 복수베기 중복이면 피해는 한 번만 적용; nearby_enemies: 제드와 각 그림자의 베기는 각각 주변 적에게 해당식의 물리 피해를 줍니다. 같은 적이 이 시전의 복수 베기에 맞아도 추가피해는 없습니다. [physical]; 수치 amount en:body:n0=70,en:body:n1=92.5,en:body:n2=115,en:body:n3=137.5,en:body:n4=160 상수 rank_values / stat_coefficient en:body:n5=70%(백분율) caster.bonusAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / caster.activation eq 제드 자신의 베기 적중; 그림자 베기 제외; caster: 제드의 베기가 적 챔피언에게 맞을 때마다 살아있는 그림자의 재사용 대기시간이 감소합니다.; 수치 cooldown_seconds en:body:n6=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 summon; 조건 별도 제한 없음; target: 그림자의 베기에 맞은 적을 둔화시킵니다. [slow]; 수치 amount en:body:n7=20(백분율),en:body:n8=25(백분율),en:body:n9=30(백분율),en:body:n10=35(백분율),en:body:n11=40%(백분율) 상수 rank_values / duration_seconds en:body:n12=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 summon; 조건 target.hit_count eq 이번 시전의 여러 베기가 같은 대상에 적중; target: 이 시전의 복수 베기에 맞은 대상은 추가피해 없이, 일반둔화 대신30/37.5/45/52.5/60%로 둔화됩니다. [slow]; 수치 amount en:body:n13=30(백분율),en:body:n14=37.5(백분율),en:body:n15=45(백분율),en:body:n16=52.5(백분율),en:body:n17=60%(백분율) 상수 rank_values / duration_seconds en:body:n12=1.5 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "지속시간을횟수로 사용한 오조건·중복피해금지·강둔화대체관계·W감소3초 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Zed and his Shadows slash, dealing (70/92.5/115/137.5/160 + (70% bonus Attack Damage)) physical damage to nearby enemies. Each enemy champion hit by Zed's slash reduces Living Shadow's Cooldown by 3 seconds. Enemies hit by a Shadow's slash are Slowed by 20/25/30/35/40% for 1.5 seconds. Enemies hit by multiple slashes take no additional damage but are Slowed by 30/37.5/45/52.5/60% instead."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 703,
+      "verdict": "repaired",
+      "reason": "1.5초는 지속시간 parameter로 보존하고 복수베기 동일대상 적중을 텍스트 조건으로 교정."
+    },
+    {
+      "index": 704,
+      "verdict": "false_positive",
+      "reason": "계약Effect.subject는 효과를 받는 대상이다. nearby_enemies는 피해대상으로 정확하며 caster로 바꾸면 제드에게 피해를 주는 오정보가 된다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문은 multiple slashes, 한국어는 그림자 베기로 여러번 맞힌 경우라 중복 범위 표현이 다르다. 영문 베기중복 우선; 기본둔화와 중첩이 아니라 instead 대체임은 명시되어 있다.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

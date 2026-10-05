@@ -1,0 +1,70 @@
+[
+  {"id":"pyke-original","area":"original","turns":[
+    {"q":"파이크는 체력 템 가면 어떻게되지?","require":["추가.*체력|체력.*템","공격력","14"],"forbid":["근거를 찾지 못","어느 쪽"]},
+    {"q":"파이크 체력템을가도되나? 패시브나 이런곳에 뭐 있엇던것같은데","require":["체력","공격력","14"],"forbid":["근거를 찾지 못"]}
+  ]},
+  {"id":"akshan-original","area":"original","turns":[
+    {"q":"아크샨은 평타 한대 치면 어떻게되지?","require":["추가 공격|두 번째 공격","취소","이동 속도"],"forbid":["어느 쪽","악당","되살아"]},
+    {"q":"아크샨은 평타 한대 치면 어떻게되지? (내가 할 때)","require":["추가 공격|두 번째 공격","취소","이동 속도"],"forbid":["악당","되살아"]}
+  ]},
+  {"id":"pyke-arithmetic","area":"calculation","turns":[
+    {"q":"파이크 체력 140짜리 템이면 공격력 얼마야?","require":["공격력 10(?:입니다|\\b)"],"forbid":["800%"]},
+    {"q":"그럼 280짜리는?","require":["공격력 20(?:입니다|\\b)"],"forbid":["공격력 10(?:입니다|\\b)"]},
+    {"q":"기본 체력도 전환되는거야?","require":["기본.*포함되지|기본.*전환.*아니|기본.*전환.*않"],"forbid":["공격력 20"]}
+  ]},
+  {"id":"pyke-short-followup","area":"memory","turns":[
+    {"q":"파이크 체력 140이면 공격력 얼마야?","require":["공격력 10(?:입니다|\\b)"]},
+    {"q":"280은?","require":["공격력 20(?:입니다|\\b)"]}
+  ]},
+  {"id":"pyke-zero","area":"calculation","turns":[
+    {"q":"파이크 추가 체력 0이면 추가 공격력은 얼마야?","require":["추가 공격력 0(?:입니다|\\b)"],"forbid":["추가 공격력 1입니다"]}
+  ]},
+  {"id":"pyke-correct-number","area":"correction","turns":[
+    {"q":"파이크 체력 140 말고 280이면 공격력은?","require":["추가 공격력 20(?:입니다|\\b)"],"forbid":["추가 공격력 10(?:입니다|\\b)"]}
+  ]},
+  {"id":"pyke-fraction","area":"calculation","turns":[
+    {"q":"파이크 체력 150 템이면 공격력은?","require":["10\\.714"]},
+    {"q":"그럼 체력 14.5면?","require":["1\\.036"]}
+  ]},
+  {"id":"pyke-growth","area":"scope","turns":[
+    {"q":"파이크 성장 체력도 공격력으로 바뀌어?","require":["성장.*포함되지|성장.*전환.*않|성장.*아니"]}
+  ]},
+  {"id":"pyke-replaces","area":"scope","turns":[
+    {"q":"파이크 체력템 사면 체력도 늘고 공격력도 늘어?","require":["대체|체력.*늘.*않|체력.*증가.*않"],"forbid":["체력과 공격력이 모두 증가"]}
+  ]},
+  {"id":"akshan-both-shots","area":"condition","turns":[
+    {"q":"아크샨 두 번째 공격 취소하면 뭐가 좋아?","require":["취소","이동 속도"]},
+    {"q":"그럼 두 발 다 쏘면 이속도 얻어?","require":["취소 조건에 해당하지|이동 속도.*않|이속.*않"],"forbid":["체력.*공격력"]}
+  ]},
+  {"id":"akshan-first-cancel","area":"condition","turns":[
+    {"q":"아크샨 첫 평타를 발사 전에 취소해도 이속 올라?","require":["첫.*취소.*(?:다르|해당하지|않)|발사 전.*(?:다르|해당하지|않)|추가 공격.*취소.*조건"],"forbid":["첫 평타를 취소하면 이동 속도가 증가"]}
+  ]},
+  {"id":"akshan-shield","area":"condition","turns":[
+    {"q":"아크샨 미니언 세 대 치면 보호막 생겨?","require":["미니언.*해당하지|미니언.*않"]},
+    {"q":"아니 챔피언 세 대면?","require":["챔피언","3회|세 번째","보호막"]},
+    {"q":"보호막 쿨이 아직 남아 있으면?","require":["남아.*해당하지|남아.*않"]}
+  ]},
+  {"id":"akshan-shield-short","area":"memory","turns":[
+    {"q":"아크샨 챔피언 세 대 치면 보호막 생겨?","require":["챔피언","보호막"]},
+    {"q":"쿨 남았으면?","require":["보호막.*남아.*해당하지|보호막.*남아.*않"]}
+  ]},
+  {"id":"akshan-shield-ready","area":"negation","turns":[
+    {"q":"아크샨 보호막 쿨이 안 남았으면 세 대에 보호막 생겨?","require":["챔피언","보호막 사용 가능|사용 가능.*보호막"],"forbid":["조건에 해당하지 않습니다"]}
+  ]},
+  {"id":"akshan-one-shield","area":"condition","turns":[
+    {"q":"아크샨 챔피언 한 대만 쳐도 보호막이 생겨?","require":["3회|세 번째"],"forbid":["한 대.*보호막을 얻"]}
+  ]},
+  {"id":"akshan-damage-type","area":"source-conflict","turns":[
+    {"q":"아크샨 패시브 세 번째 적중 추가 피해는 물리야 마법이야?","require":["마법 피해"],"forbid":["추가 물리 피해"]}
+  ]},
+  {"id":"champion-switch","area":"memory","turns":[
+    {"q":"파이크 체력 280짜리 사면 공격력 얼마야?","require":["공격력 20(?:입니다|\\b)"]},
+    {"q":"아크샨 두 번째 평타 취소하면?","require":["취소","이동 속도"],"forbid":["추가 공격력 20","체력 14"]},
+    {"q":"그럼 두 발 모두 쏘면?","require":["취소 조건에 해당하지|이동 속도.*않"],"forbid":["체력 14","추가 공격력 20"]}
+  ]},
+  {"id":"item-switch","area":"boundary","turns":[
+    {"q":"아크샨 평타 한 대 치면?","require":["취소","이동 속도"]},
+    {"q":"도란검 가격은?","sameAsBaseline":true,"forbid":["추가 공격 취소","Move Speed"]},
+    {"q":"그럼 280짜리는?","sameAsBaseline":true,"forbid":["추가 공격력 20","Move Speed"]}
+  ]}
+]

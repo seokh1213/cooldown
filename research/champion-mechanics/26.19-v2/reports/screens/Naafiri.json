@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Naafiri.E",
+      "sourceHash": "2e8af42addee4960e52dfd4570acf5b2a5b16333a9376916856ff4c0adb05d30",
+      "candidateHash": "b89ff69cff7333e35a43b6ab8b4d6863c099a2440429bc999409321c0fc7dc76"
+    },
+    {
+      "id": "Naafiri.P",
+      "sourceHash": "87d0426210e58e06068d3a593f241980b4d5a78ad7dad9e5e863dbde615c23a5",
+      "candidateHash": "cd2e556c1c250625b224dadb7f70e6083c5a0f4543abb7cc0ebd0f7729546e79"
+    },
+    {
+      "id": "Naafiri.Q",
+      "sourceHash": "18f0898a4df99b64529ba65974f0516aa7c62d89cbc382dc66597764d01dabcc",
+      "candidateHash": "0226c20d2d7ca812730b018ba71616318f3ed4fef3596fb617f5cc7bbf5058f4"
+    },
+    {
+      "id": "Naafiri.R",
+      "sourceHash": "3dccdbf9fdaffcbc4ac27e4af84851c6735647d447a025af71674185e17f0b3b",
+      "candidateHash": "3161387d17b7b2eb56ea33f07d2c419fa91701b10b771742bc2a3b5977e5399e"
+    },
+    {
+      "id": "Naafiri.W",
+      "sourceHash": "72f14f16db885da29ac6a3c56157a7793c774d5833426101d013e0684bfbc1f2",
+      "candidateHash": "2ee8ebe569e4e67c357695130545425079f2aebf062868f3857ff598c588ee96"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Naafiri.P",
+      "path": "rules.0.effects.0.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Naafiri creates a Packmate every (30 ~ 10) seconds",
+      "issue": "생성 간격을 `duration_seconds`로 분류해 시간 효과처럼 표현했습니다. 원문은 무리 생성 주기를 말합니다.",
+      "correction": "이 수치를 생성 주기 또는 간격으로 분류하고, 2~5는 최대 보유 무리 수로 유지하세요."
+    },
+    {
+      "id": "Naafiri.Q",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "dealing (35/40/45/50/55 + (20% bonus Attack Damage)) physical damage and inflicting a bleed, dealing (35/60/85/110/135 + (80% bonus Attack Damage)) physical damage over 5 seconds.",
+      "issue": "첫 적중 피해와 5초에 걸친 출혈 피해를 하나의 피해 효과에 함께 넣어, 5초 지속시간이 첫 적중 피해에도 붙는 것처럼 보입니다.",
+      "correction": "첫 적중 물리 피해와 5초 지속 출혈 피해를 별도 효과로 나누세요."
+    },
+    {
+      "id": "Naafiri.Q",
+      "path": "rules.2.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If that target was a champion or large monster, Naafiri restores (45/60/75/90/105 + (40% bonus Attack Damage)) Health.",
+      "issue": "`mark present` 조건은 원문의 회복 조건에 없습니다. 출혈 상태여야 회복한다는 추가 조건을 만들었습니다.",
+      "correction": "챔피언 또는 대형 몬스터 대상 조건만 회복 조건으로 두세요."
+    },
+    {
+      "id": "Naafiri.Q",
+      "path": "rules.3.effects.1.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Packmates will leap at the first champion or monster hit and attack them for 2 seconds.",
+      "issue": "2초는 무리의 공격 지속시간인데 `attack_followup` 효과의 `duration_seconds`로 붙어 있어 공격 자체의 지속시간인지 표현이 모호합니다.",
+      "correction": "2초 동안 무리가 해당 대상을 공격한다는 지속 효과로 명시하세요."
+    },
+    {
+      "id": "Naafiri.Q",
+      "path": "rules.4.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Executes lane minions and non-epic monsters below (30 ~ 70) health.",
+      "issue": "`target_type=minion` 조건과 `other=non-epic monster` 조건이 동시에 적용되는 것으로 표현되어, 공격로 미니언과 비에픽 몬스터를 함께 포함하는 원문 범위와 충돌합니다.",
+      "correction": "미니언 또는 비에픽 몬스터 중 하나이며 기준 체력 미만인 경우로 표현하세요."
+    },
+    {
+      "id": "Naafiri.R",
+      "path": "rules.1.effects.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Packmates become Untargetable and dash alongside Naafiri, dealing (12.5/20/27.5 + (10% bonus Attack Damage)) physical damage per Packmate.",
+      "issue": "무리별 피해가 `per_target`로 표시됐습니다. 원문은 대상 수가 아니라 무리 한 마리당 피해를 명시합니다.",
+      "correction": "`per_target` 대신 무리 개체당 피해라는 수량 기준을 표시하세요."
+    },
+    {
+      "id": "Naafiri.R",
+      "path": "rules.2.effects.1.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "can recast this Ability once.",
+      "issue": "재사용 가능한 횟수 1회를 7초 조건의 `count`로 연결해, 7초가 재사용 횟수처럼 읽힙니다.",
+      "correction": "7초는 처치 관여 후 조건 시간으로만 연결하고, 재사용 1회는 별도 횟수로 표시하세요."
+    },
+    {
+      "id": "Naafiri.W",
+      "path": "rules.0.effects.0.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Naafiri becomes Untargetable for 1 second",
+      "issue": "1초는 무적 지속시간이지만 효과를 `visibility`로 분류해 시야 효과로 읽힐 수 있습니다.",
+      "correction": "대상 지정 불가 상태의 1초 지속시간으로 분명히 분류하세요."
+    }
+  ],
+  "notes": []
+}

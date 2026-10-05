@@ -1,0 +1,67 @@
+{
+  "id": "Qiyana.P",
+  "sourceHash": "0f28d488c0073dd6df55be053ff152e7ba244e5f36143db2ecfc1c2fdb2815e5",
+  "beforeCandidateHash": "a49d9ee796761f3a983d0c68fde41f726d7ec23148dd54c2556f60c13c10a536",
+  "candidateHash": "776bc9ba505f3cca6c4c5f43c499935f959c92593a1bf09990864d8df092ea0c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "대상별사용가능시공격/스킬추가물리15~83+추가AD25%+AP30%,대상별25초쿨,다른원소획득시모든대상쿨초기화를확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack_or_ability_hit / 조건 target activation eq 이 대상에 대한 패시브 효과가 사용 가능 (대상별 25초 재사용 대기시간) → target: 키아나의 기본 공격 또는 스킬이 적중하면 추가 물리 피해를 줍니다. [physical] / min_amount=15 [level_range]; max_amount=83 [level_range]; stat_coefficient=25% (caster bonusAttackDamage) [scalar]; stat_coefficient=30% (caster abilityPower) [scalar]; cooldown_seconds=25 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 transform / 조건 caster other eq 대지창조로 다른 무기 원소를 획득 → target: 이 효과의 재사용 대기시간을 모든 대상에 대해 초기화합니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions/parameters",
+      "issue": "대상별첫공격을영구첫발동으로해석가능·25초쿨수치누락",
+      "correction": "대상별효과사용가능조건및25초쿨명시",
+      "sourceId": "en:body",
+      "quote": "This effect has a 25 second per-target Cooldown."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "첫 기본 공격 또는 스킬이라는 발동 조건은 요약문에 있지만, 상세 tooltip은 기본 공격과 스킬이 추가 피해를 준다고만 설명합니다. 대상별 첫 발동 조건을 activation 텍스트로 보존했습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

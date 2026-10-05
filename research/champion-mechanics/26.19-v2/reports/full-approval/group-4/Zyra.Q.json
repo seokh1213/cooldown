@@ -1,0 +1,84 @@
+{
+  "id": "Zyra.Q",
+  "sourceHash": "369b888d946e14f00e4691a76d4bb6dd0050320c1a540fa34096f2cca4efaab1",
+  "beforeCandidateHash": "a34e24d357257a3d9ab2e7836a4ccabc7ab62f2c4b44f366f2aee1a50b084b0b",
+  "candidateHash": "d150ce1c32181bfc30ca630c3e28f470a0163f98f56abb8963e30cfd8246e23d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "영역가시폭발마법피해,씨앗근처시전의가시발사꽃생성·8초생존/575사거리,꽃공격의15~75+20%자이라주문력마법피해를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.distance eq 가시가 폭발하는 영역 안의 적 적용. target: 가시가 폭발해 적에게 마법 피해를 입힙니다. (magic); amount=60/100/140/180/220  rank_values, stat_coefficient=65% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.other eq 씨앗 근처에서 이 스킬을 시전함 적용. summon: 씨앗이가시발사꽃으로자라8초동안유지되며사거리는575다.; duration_seconds=8  scalar, distance_units=575  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 attack 사건에서 summon.other eq 이 스킬로 자란 가시 발사 꽃 적용. target: 가시발사꽃의원거리공격이적에게마법피해를입힌다. (magic); min_amount=15  level_range, max_amount=75  level_range, stat_coefficient=20% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions",
+      "issue": "적target거리와씨앗근처시전혼동",
+      "correction": "시전행동의씨앗근처조건으로정정",
+      "sourceId": "en:body",
+      "quote": "If this Ability is cast near a Seed"
+    },
+    {
+      "path": "rules.1,2.effects",
+      "issue": "식물피해를소환effect안의수치로만보존",
+      "correction": "생존/사거리소환과실제식물공격마법피해분리",
+      "sourceId": "en:body",
+      "quote": "the Seed grows into a Thorn Spitter that deals ((15 ~ 75) + (20% Ability Power)) magic damage and lasts 8 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 733,
+      "verdict": "repaired",
+      "reason": "적과의거리가아닌씨앗근처시전으로조건을명시했다."
+    },
+    {
+      "index": 734,
+      "verdict": "repaired",
+      "reason": "소환damageType은계약상null이어야한다.별도식물damage효과에magic과피해수치를보존했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "summary": "잔나가 마법의 계절풍을 소환해 주변 적을 밀어낸 뒤 주변 아군을 치유합니다. 이동하거나 스킬을 사용하면 계절풍이 일찍 끝나며, 밀쳐내기는 적을 벽 너머로 보내지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "주변 적들을 뒤로 밀어냅니다. 밀쳐내기는 적을 벽 너머로 보내지 않습니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Janna summons a magical monsoon, Knocking Back nearby enemies"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The Knock Back cannot push enemies over walls."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "nearby_enemies",
+          "text": "주변 아군을 계절풍이 지속되는 동안 치유합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Janna summons a magical monsoon, Knocking Back nearby enemies then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "이동하거나 스킬을 사용하면 계절풍이 일찍 끝납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Moving or using an Ability ends the monsoon early."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "치유 대상은 nearby allies지만 스키마가 효과 주체에서 아군을 표현하도록 허용하지 않아 nearby_enemies로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "healing nearby allies"
+        }
+      ]
+    }
+  ]
+}

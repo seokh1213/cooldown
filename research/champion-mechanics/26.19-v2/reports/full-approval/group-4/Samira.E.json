@@ -1,0 +1,73 @@
+{
+  "id": "Samira.E",
+  "sourceHash": "01277e99fd632751153b8b30e24790fc718511db241f5b93cb667da4f713c9fd",
+  "beforeCandidateHash": "c5ac233f8cfa1f7ba173fea73ae0b4b6fa4209b28a6770e46fd0fadb1efa84ae",
+  "candidateHash": "160407b3fb442e133fa74acdc1f1045c091ecc21885604990340e5605e877c75",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "적/구조물대상돌진·경로적마법피해·자기5초공격속도,사미라피해뒤3초안에해당적챔피언사망시쿨다운초기화를대조했다.사미라본인처치로제한하지않았다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.target_type eq 적 유닛 또는 구조물 적용. caster: 대상을 통과해 돌진한다. 적과 구조물을 대상으로 할 수 있다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 enemy.other eq 돌진 중 통과 적용. enemy: 돌진 중 통과하는 적을 베어 마법 피해를 준다. (magic); amount=50/60/70/80/90  rank_values, stat_coefficient=20% caster의 bonusAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 공격 속도가 증가한다.; amount=20/25/30/35/40%  rank_values, duration_seconds=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "target의 death 사건에서 target.target_type eq champion, target.other eq 사미라가 피해를 입힌 뒤3초 이내에 사망함 적용. caster: 이 스킬의 재사용 대기시간을 초기화한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,3",
+      "issue": "피해행위자enemy,사망을enemy의kill행위로표시",
+      "correction": "caster피해및target사망,피해후3초이력조건",
+      "sourceId": "en:body",
+      "quote": "If an enemy champion is killed within 3 seconds of Samira damaging them, This Ability's Cooldown is reset."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

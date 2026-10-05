@@ -1,0 +1,101 @@
+{
+  "id": "Zac.W",
+  "sourceHash": "12b60427305133c28e9e49a5686c81ddb7b712c1c6c0b47a758b60d16b10aa4e",
+  "beforeCandidateHash": "d56bd2a11af0e273477d454cbea8e2a3ddd2ed9dfeba07fed5703f388c7af3fe",
+  "candidateHash": "ad87fbe79145afb82172743bb56a745a41551ce31fe06118f19a906c7172fd0d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "주변고정피해+대상최대HP(4~8%+AP100당3%)마법,미니언/정글비례부분상한200,조각흡수CD1초감소대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "기본40/50/60/70/80+대상최대HP의4/5/6/7/8%+자신AP100당3%복합식."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언HP비례부분200상한."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정글몬스터HP비례부분200상한."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "조각흡수마다이스킬CD1초감소.강화상태조건없음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.2.role",
+      "issue": "AP100당비율을선형AP계수로분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Zac's body erupts, dealing 40/50/60/70/80 + (4/5/6/7/8% + (3% per 100 Ability Power)) max Health magic damage to nearby enemies. Absorbing Goo reduces this Ability's Cooldown by 1 second. Percent Health damage against minions and jungle monsters is capped at 200."
+    },
+    {
+      "path": "rules.2.conditions.1",
+      "issue": "정글조건누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Zac's body erupts, dealing 40/50/60/70/80 + (4/5/6/7/8% + (3% per 100 Ability Power)) max Health magic damage to nearby enemies. Absorbing Goo reduces this Ability's Cooldown by 1 second. Percent Health damage against minions and jungle monsters is capped at 200."
+    },
+    {
+      "path": "rules.3.conditions.0",
+      "issue": "원문없는강화조건",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Zac's body erupts, dealing 40/50/60/70/80 + (4/5/6/7/8% + (3% per 100 Ability Power)) max Health magic damage to nearby enemies. Absorbing Goo reduces this Ability's Cooldown by 1 second. Percent Health damage against minions and jungle monsters is capped at 200."
+    },
+    {
+      "path": "rules.3.effects.0.parameters.0.role",
+      "issue": "1초를other분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Zac's body erupts, dealing 40/50/60/70/80 + (4/5/6/7/8% + (3% per 100 Ability Power)) max Health magic damage to nearby enemies. Absorbing Goo reduces this Ability's Cooldown by 1 second. Percent Health damage against minions and jungle monsters is capped at 200."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "주 대상 최대 체력 비례 피해의 계수는 주문력 100당 3%입니다. 스키마의 parameters로 '주문력 100당'의 입력 단위와 최대 체력 비율을 완전하게 나타내기 어려워 원문 수식을 보존합니다."
+    }
+  ],
+  "validation": {
+    "id": "Zac.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

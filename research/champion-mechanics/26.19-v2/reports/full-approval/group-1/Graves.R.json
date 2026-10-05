@@ -1,0 +1,63 @@
+{
+  "id": "Graves.R",
+  "sourceHash": "795127d1b49b6591907ae80d1b762f4bbe29516151f63188e2162b48aba1a4e0",
+  "beforeCandidateHash": "f16a32380b2870b1773cb43fc35131a2c4160b4fea7a7e1329fe7eb78a2cb8ce",
+  "candidateHash": "60568f449907e9d6c81c7f79ae53808e8f3b8f951de8f51577d4f2c2ee9f5b78",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "발사후자기후퇴,firstenemy275/425/575+AD150%물리,챔프적중OR끝도달원뿔폭발200/320/440+AD120%를 대조했다. summaryfirstchamp와bodyfirstenemy차이는기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 탄환 발사와 함께 뒤로 밀려난다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.hit_order eq first. target damage physical: 탄환이 처음 맞은 적에게 물리 피해를 입힌다. [amount n0=275/n1=425/n2=575 rank_values; stat_coefficient n3=150% formula_components caster.bonusAttackDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 탄환이 적 챔피언 적중 또는 사거리 끝 도달; target.other eq 탄환의 원뿔 폭발 범위 내 적. target damage physical: 탄환은 챔피언을 맞히거나 사거리 끝에 도달하면 원뿔 범위로 폭발해 물리 피해를 입힌다. [amount n4=200/n5=320/n6=440 rank_values; stat_coefficient n7=120% formula_components caster.bonusAttackDamage]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/2/gaps",
+      "issue": "OR분기누락·원뿔summary범위무시·actor및source충돌",
+      "correction": "caster/OR사건과원뿔target, source_conflict",
+      "sourceId": "en:body",
+      "quote": "After hitting an enemy champion or reaching the end of its range, the cartridge explodes outward"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 93,
+      "verdict": "repaired",
+      "reason": "사거리끝대안은gap으로숨길수없어OR텍스트조건으로복원했다. 근거없는activation=true삭제했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en/ko summary는최초챔피언피해라하지만en/ko본문은최초적피해다.본문firstenemy를우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

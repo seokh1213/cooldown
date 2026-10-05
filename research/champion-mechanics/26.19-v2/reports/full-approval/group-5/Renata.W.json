@@ -1,0 +1,655 @@
+{
+  "id": "Renata.W",
+  "sourceHash": "c1ed135199625e3d231bfa511f5fec61838b65a273358554927669bb020f593c",
+  "beforeCandidateHash": "df9bacdd026709a1ad512f8bc1a6a226bd92a43017f598799452101a046e3b7f",
+  "candidateHash": "d20b2592bd4eaa82c411a5a0d966bf80057ffe527635666c549c7f095f286766",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 3,
+  "summaryCheck": "아군챔피언AS/적향MS 초기→5초후증가율,자기AP100당1%→2%,처치buff갱신,죽음대신fullHP/3초감소,처치시HP20%설정,회복지연한계/1회제한을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군챔피언AS초기10~30%+레나타AP100당1%→5초후20~60%+AP100당2%;단계합산안함.",
+      "verifiedConditions": [
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "10",
+              "value": 10,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "15",
+              "value": 15,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "25",
+              "value": 25,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "1%",
+              "value": 1,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17",
+            "en:body:n18"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "50",
+              "value": 50,
+              "percent": true
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n19"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n19",
+              "raw": "2%",
+              "value": 2,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n28"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n28",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n20"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n20",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적향MS초기10~20%+레나타AP100당1%→5초후20~40%+AP100당2%;분모100복원.",
+      "verifiedConditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적을 향해 이동 중"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "min_amount",
+          "numberRefs": [
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10",
+            "en:body:n11"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "10",
+              "value": 10,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "12.5",
+              "value": 12.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "15",
+              "value": 15,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "17.5",
+              "value": 17.5,
+              "percent": true
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "20%",
+              "value": 20,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "1%",
+              "value": 1,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n21",
+            "en:body:n22",
+            "en:body:n23",
+            "en:body:n24",
+            "en:body:n25"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n21",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n22",
+              "raw": "25",
+              "value": 25,
+              "percent": true
+            },
+            {
+              "id": "en:body:n23",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n24",
+              "raw": "35",
+              "value": 35,
+              "percent": true
+            },
+            {
+              "id": "en:body:n25",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n26"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n26",
+              "raw": "2%",
+              "value": 2,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n28"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n28",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n27"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n27",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이buff아군처치관여시buff지속시간갱신;ability쿨감소아님.",
+      "verifiedConditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 긴급구제 buff를 받은 아군"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이buff아군이죽을상황이며미사용일때실제죽음대신fullHP로돌리고3초감소(decays).",
+      "verifiedConditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "죽을 상황"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 buff를 받은 아군이 아직 이 죽음지연을 발동하지 않음"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n29"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n29",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "그감소중처치관여시현재HP를maxHP20%로설정하고감소중단;20%추가회복아님.",
+      "verifiedConditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "체력 감소 중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n30"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "ally",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n30",
+              "raw": "20%",
+              "value": 20,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "감소중회복등은죽음지연가능,처치관여없이방지는불가.",
+      "verifiedConditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "체력 감소 중"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "죽음지연1회제한이며20%HP참조와무관;UI분류제거.",
+      "verifiedConditions": [],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules",
+      "issue": "AP분모100누락/초기최대값중복amount/아군버프대상누락,죽음지연을실제death·회복으로분류,1회제한에20%HP연결.",
+      "correction": "각단계백분율과분모입력,챔피언buff조건,죽음대신/HP설정other·decays 및무관참조제거했다.",
+      "sourceId": "en:body",
+      "quote": "Champions can only delay their death once."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 404,
+      "verdict": "repaired",
+      "reason": "죽음지연1회제한에20%HP는무관하므로제거하고other제한으로보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "공격 속도와 이동 속도 증가 효과가 5초에 걸쳐 증가한다고만 되어 있어, 구간별 변화 방식은 특정하지 않았다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "강화 효과의 기본 지속시간은 제시되지 않았다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "죽음 지연과 체력 감소의 세부 판정 방식은 원문에서 수치화되지 않았다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

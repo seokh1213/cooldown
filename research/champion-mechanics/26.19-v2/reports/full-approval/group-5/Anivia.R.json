@@ -1,0 +1,354 @@
+{
+  "id": "Anivia.R",
+  "sourceHash": "5704ac37da6ac1854f786896e330acf385c97b49c713230f8dcfe8a544df4049",
+  "beforeCandidateHash": "cfc958bf199d40ca53aae3bd82bb5eae927d8f84ac71849de4cef99a118a1c44",
+  "candidateHash": "042b7cbe06d8bde1b5672cccf1da7d4f492e059063c344aaa0d3bd660b2b5529",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "토글 폭풍 생성·1.5초 성장, 미완성/완성 단계별 초당 피해·퍼센트 둔화·완성 냉각, 비활성화 및 먼 거리 종료를 양언어 원문 전체로 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "토글 활성화로 폭풍을 생성하고1.5초 동안 최대 크기까지 성장한다.1.5초는 성장시간이고 전체 폭풍 지속시간이 아니다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "얼음 폭풍 토글을 활성화함"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "1.5",
+              "value": 1.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "폭풍 활성·아직 미완성·폭풍 안 적 조건에서 초당30/45/60+AP12.5%마법 피해 및20/30/40%둔화. caster 주변 모든 적으로 확대하지 않았고 시전 즉시 단발 피해로 실행하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "토글이 켜져 폭풍이 활성화되어 있으며 아직 최대 크기에 이르지 않음"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭풍 범위 안의 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "45",
+              "value": 45,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "12.5%",
+              "value": 12.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "20",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "1.5초 성장하여 완성된 활성 폭풍 안 적에게 대체 초당90/135/180+AP37.5%마법 피해·30/45/60%둔화·냉각. 두 단계 피해/둔화는 instead이므로 합산하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "활성 폭풍이 1.5초 성장하여 완전히 형성됨"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭풍 범위 안의 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n11",
+            "en:body:n12",
+            "en:body:n13"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "180",
+              "value": 180,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "37.5%",
+              "value": 37.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "45",
+              "value": 45,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "KO본문 활성화/비활성화 토글과 EN too far away 종료를 보존했다. 자원 소모 조건은 원문에 없어 추가하지 않았다. 거리 수치 임계만 실제 부족이다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭풍 토글을 비활성화하거나 폭풍에서 너무 멀어짐"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules;gaps",
+      "issue": "기본 단계 조건 누락·caster 주변 대상 확대·성장/종료/냉각 상태 누락 및 토글/성장 가짜 gap",
+      "correction": "폭풍 생성·두 배타적 단계·냉각·종료 규칙을 보존하고 실제 거리 수치 부족만 기록했다.",
+      "sourceId": "en:body",
+      "quote": "Toggle: Anivia calls forth a driving rain of ice and hail that Slows enemies by 20/30/40% and deals (30/45/60 + (12.5% Ability Power)) magic damage per second. The storm increases in size over 1.5 seconds. When the storm is fully formed, it Chills, Slows by 30/45/60%, and does (90/135/180 + (37.5% Ability Power)) magic damage per second instead. The storm ends if Anivia is too far away."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 16,
+      "verdict": "repaired",
+      "reason": "Toggle 및 KO 활성화/비활성화는 토글을 명시한다. 자원 소모는 공급 정보가 아니므로 부족 조건으로 만들지 않고 해당 gap을 삭제했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "폭풍 종료의 너무 먼 거리 임계값은 공급문에 수치로 명시되지 않습니다. 둔화20/30/40% 및30/45/60%는 각 값에 공통 퍼센트가 적용되며 lexical 표의 앞부분 percent=false를 절대량으로 실행하지 않습니다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

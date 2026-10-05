@@ -1,0 +1,120 @@
+{
+  "id": "Sion.Q",
+  "sourceHash": "7a9b4d6d1d576a07fc4c8980213a59f7e3949fe6c7e02b2cd0a2cf51983eb7c5",
+  "beforeCandidateHash": "afffaa9fa8091635daccece2c53b4752a9ea1df3060ccc732062dc233fde7c1d",
+  "candidateHash": "ed220f08c2f4d118cce2c312d5fc1d225f030c2f864280f27046fdcf650195cd",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "최대2초 충전,해제 후 충전 시간별 피해와 짧은 둔화,1초 이상 충전 시1.25~2.25초 띄우기/기절,정글 몬스터165%·미니언60%배율을 대조했다. 한국어의CC지속시간 오해를 기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 강력한 일격을 최대 해당 시간(초)까지 충전한다.; duration_seconds=2  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 충전 후 발사한 전방 일격에 적중함 적용. target: 일격을 발사해 적중한 대상에게 충전 시간에 따라 물리 피해를 입힌다. (physical); min_amount=30/45/60/75/90  formula_components, stat_coefficient=40/50/60/70/80% caster의 totalAttackDamage formula_components, max_amount=90/155/220/285/350  formula_components, stat_coefficient=120/150/180/210/240% caster의 totalAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 충전 후 발사한 전방 일격에 적중함 적용. target: 발사한 일격에 적중한 대상을 잠시 둔화시킨다. (slow);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.time gte 1, target.other eq 충전 후 발사한 전방 일격에 적중함 적용. target: 발사한 일격에 적중한 대상을 공중에 띄운다. 지속시간은 충전 시간에 따라 해당 최소~최대 시간(초) 범위에서 달라진다. (knockup); min_amount=1.25  scalar, max_amount=2.25  scalar / target: 발사한 일격에 적중한 대상을 충전 시간에 따라 기절시킨다. 지속시간은 충전 시간에 따라 해당 최소~최대 시간(초) 범위에서 달라진다. (stun); min_amount=1.25  scalar, max_amount=2.25  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq monster, target.other eq 충전 후 발사한 전방 일격에 적중함, target.other eq 정글 몬스터 적용. target: 정글 몬스터에게 입히는 피해는 기본 피해에 해당 비율을 적용한다. (physical); damage_multiplier=165%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq minion, target.other eq 충전 후 발사한 전방 일격에 적중함 적용. target: 미니언에게 입히는 피해는 기본 피해에 해당 비율을 적용한다. (physical); damage_multiplier=60%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-5",
+      "issue": "피해/CC는 충전 발사 적중인데 recast로만 표현하고 띄우기 지속시간 누락",
+      "correction": "발사 적중 조건,두CC지속시간,정글 몬스터 조건 보완",
+      "sourceId": "en:body",
+      "quote": "If Sion charged for at least 1 second, enemies are Knocked Up and Stunned for between 1.25 and 2.25 seconds based on charge time."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "충전 시간에 따른 기본/최대 피해 수식 및 CC 지속시간 사이의 정확한 보간식은 공급 원문에 없다. 하한/상한 계수를 단일 선형 피해로 합산하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "영문은1초 이상 충전 시1.25~2.25초 동안 띄우고 기절한다고 설명하나 한국어는1.25~2.25초를 충전 시간처럼 번역한다. 영어의CC지속시간을 우선했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

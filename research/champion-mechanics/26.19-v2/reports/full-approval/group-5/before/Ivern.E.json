@@ -1,0 +1,258 @@
+{
+  "summary": "아이번은 아군 챔피언이나 데이지에게 보호막을 부여합니다. 잠시 뒤 보호막이 폭발해 적에게 마법 피해와 둔화를 줍니다. 폭발할 때 보호막이 남아 있고 적 챔피언을 하나도 맞히지 못하면 해당 아군에게 보호막을 다시 부여합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아군 챔피언 또는 데이지"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "target",
+          "text": "아이번이 아군 챔피언 또는 데이지에게 보호막을 부여한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ivern grants (75/115/155/195/235 + (50% Ability Power)) Shield to an ally champion or Daisy."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "ally"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "보호막이 폭발해 적에게 마법 피해를 준다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "폭발이 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After 2 seconds, it bursts, dealing (70/90/110/130/150 + (80% Ability Power)) magic damage and Slowing enemies by 40/45/50/55/60% for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "shield_ready",
+          "operator": "eq",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "보호막이 폭발하는 순간 보호막이 남아 있고 적 챔피언을 하나도 맞히지 못했다면 해당 아군에게 보호막을 부여한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Triggerseed detonates and no enemy champions are hit while the shield still persists, the ally will be shielded for (75/115/155/195/235 + (50% Ability Power)) for 2 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "폭발 피해와 둔화의 정확한 범위·적중 판정은 본문에 명시되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After 2 seconds, it bursts, dealing (70/90/110/130/150 + (80% Ability Power)) magic damage and Slowing enemies by 40/45/50/55/60% for 2 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "적 챔피언 적중 여부와 보호막 잔존 조건은 기록했으나, 조건 필드는 ‘적 챔피언을 하나도 맞히지 않음’을 직접 표현할 수 없어 원문 조건은 효과 설명에 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Triggerseed detonates and no enemy champions are hit while the shield still persists, the ally will be shielded for (75/115/155/195/235 + (50% Ability Power)) for 2 seconds."
+        }
+      ]
+    }
+  ]
+}

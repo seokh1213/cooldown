@@ -1,0 +1,96 @@
+{
+  "id": "Yuumi.Q",
+  "sourceHash": "c203b80b2565b01af29e2521f5801af35db5a14f59e4e03c3072a23f415f3618",
+  "beforeCandidateHash": "b8d01c608ec6d0386eb32cd96d4bbcca79b98037e45ce7072819a594b455ea8b",
+  "candidateHash": "98b3960f258db92f06bada1e65bf6511a4bf66349b2bc4bad26d0ded26feda5f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "첫 적 마법/20%slow,밀착 미사일조종 후 가속 강화피해/2초50~65slow,1.35초요약보완, 단짝항상강한slow와챔피언적중5초온힛/AP및단짝crit확률효율을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.hit_order eq first. target damage magic: 미사일은 처음 적중한 적에게 마법 피해를 입힙니다. [amount n0=60/n1=95/n2=130/n3=165/n4=200/n5=235 rank_values; stat_coefficient n7=20% scalar caster.abilityPower] / target crowd_control slow: 대상을 둔화시킵니다. [amount n6=20% scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 미사일이1.35초 이상 날아가 가속된 뒤 대상 적중; target.hit_order eq first. target damage magic: 가속된 미사일은 첫 적중 대상에게 대신 증가한 마법 피해를 입힙니다. [amount n8=80/n9=135/n10=190/n11=245/n12=300/n13=355 rank_values; stat_coefficient n14=30% scalar caster.abilityPower] flags=replaces_base / target crowd_control slow: 가속된 미사일은 대상을 더 강하게 둔화시킵니다. [amount n15=50%/n16=53%/n17=56%/n18=59%/n19=62%/n20=65% rank_values; duration_seconds n21=2 scalar] flags=replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 유미가 단짝에게 밀착 중; target.hit_order eq first. target crowd_control slow: 단짝 효과로 둔화가 항상 강화됩니다. [amount n15=50%/n16=53%/n17=56%/n18=59%/n19=62%/n20=65% rank_values; duration_seconds n21=2 scalar] flags=replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.form eq 유미가 단짝에게 밀착 중; target.target_type eq champion. ally attack_modifier: Q가 적 챔피언에게 적중하면 단짝에게5초간 추가 마법온힛 피해를 부여한다. 기본10~20+유미AP5%, 단짝치명확률에 따라 최대75%까지 증가한다. [amount n22=10/n23=12/n24=14/n25=16/n26=18/n27=20 rank_values; stat_coefficient n28=5% scalar caster.abilityPower; duration_seconds n29=5 scalar; other n30=75% formula_components ally.critChance]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq 아군에게 밀착한 상태에서 Q시전. unknown other: 미사일을 잠시 마우스로 조종할 수 있다. 이후 가속해 직선으로 나가며 더 이상 조종할 수 없다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4",
+      "issue": "비행시간주인·first·단짝slow숫자·버프모델·조종누락",
+      "correction": "미사일비행조건,first와근거,단짝강화slow대체,ally버프,조종규칙",
+      "sourceId": "en:body",
+      "quote": "Best Friend Bonus: Prowling Projectile's Slow will always be enhanced"
+    },
+    {
+      "path": "rules.4.effects.0",
+      "issue": "미사일조종을유미본인의이동으로분류",
+      "correction": "미사일의조종/가속동작으로분류하여유미에게이동을실행하지않는다.",
+      "sourceId": "en:body",
+      "quote": "If cast while Attached, Yuumi can control the missile using her mouse for a short period before it accelerates in a straight line."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 682,
+      "verdict": "repaired",
+      "reason": "미사일 비행시간을 caster.other 텍스트로 바꿨다."
+    },
+    {
+      "index": 683,
+      "verdict": "false_positive",
+      "reason": "현 text는 단짝에게온힛 부여라고 적었다. 다만 damage target 모델은 즉시피해로오해되어 ally강화로 수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "영문 툴팁은 조종 후 미사일 가속을 설명하지만 가속 전환 시점을 지정하지 않습니다. 요약 출처의 1.35초 조건을 적용했으며, 본문과 요약의 조건 범위가 완전히 일치하는지 확인할 수 없습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "단짝 치명타확률에 따른 온힛증가75%는 증가효율이며 고정 피해배율0.75가 아니다. 정확한 합성식은 구성요소로 보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

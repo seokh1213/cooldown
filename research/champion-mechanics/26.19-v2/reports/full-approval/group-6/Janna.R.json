@@ -1,0 +1,87 @@
+{
+  "id": "Janna.R",
+  "sourceHash": "8cc551fc8512088a8d72b03acbd776d032580bb07977aaa847686f17766b28e4",
+  "beforeCandidateHash": "8cf9d20282d66cb8751fff502b3198fae18f23525e9755ee6f28bf80301ace29",
+  "candidateHash": "78e7b7e48a5cce9cfc3a15e7b797591453c9291f311bb554e158f251502bf0e7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "주변 적 밀치기 후 주변 아군의 3초 치유와 이동·스킬 종료, 벽 통과 불가를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변 적 knockback은 벽 너머로 밀지 못한다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변 아군에게 총 300/450/600 + 주문력 150%를 3초에 걸쳐 치유한다. enemy 주체 오류를 ally와 거리 조건으로 바로잡았다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "잔나 이동 또는 스킬 사용이 계절풍을 조기 종료하므로 채널 지속 조건을 명시했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.0.subject",
+      "issue": "healing nearby allies를 nearby_enemies로 보존한 것은 원문과 반대다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a magical monsoon, Knocking Back nearby enemies then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds. Moving or using an Ability ends the monsoon early. The Knock Back cannot push enemies over walls."
+    },
+    {
+      "path": "rules.2.conditions.0",
+      "issue": "조기 종료의 실제 조건을 구조에 보충했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a magical monsoon, Knocking Back nearby enemies then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds. Moving or using an Ability ends the monsoon early. The Knock Back cannot push enemies over walls."
+    },
+    {
+      "path": "gaps",
+      "issue": "ally와 거리 텍스트 조건으로 치유 대상이 정확히 표현되어 스키마가 아군을 지원하지 않는다는 gap은 거짓이다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Janna summons a magical monsoon, Knocking Back nearby enemies then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds. Moving or using an Ability ends the monsoon early. The Knock Back cannot push enemies over walls."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 130,
+      "verdict": "repaired",
+      "reason": "치유 subject를 ally로 고치고 주변 거리 조건을 명시했으며 잘못된 스키마 제한 gap을 삭제했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "id": "Janna.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

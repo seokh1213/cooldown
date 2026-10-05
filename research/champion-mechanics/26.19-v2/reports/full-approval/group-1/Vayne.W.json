@@ -1,0 +1,62 @@
+{
+  "id": "Vayne.W",
+  "sourceHash": "dbd7dd6fc56b45ae1c0ad3795e3e86adebc83a05eafcf6553e3a5d2882bebc15",
+  "beforeCandidateHash": "74ed63e3b7db713261c0f9156cb4d4cde6ecf6ec42009a62ea042a1d34e1751b",
+  "candidateHash": "365fe363500b22ade2f09ca3eedc8d3b7c1880d58d14c0fee5a21ec60737f7ec",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "동일 적의세 번째 연속 공격/스킬 적중에대상 최대 체력4~10%고정 추가 피해 및랭크별 최소40~100, 정글 몬스터140~200대체 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.other eq 적; target.other eq 동일 적에게 세 번째 연속 기본 공격 또는 스킬 적중. target damage true: 대상 최대 체력에 비례한 추가 고정 피해를 입히며, 최소 피해량이 적용된다. [stat_coefficient n0=4%/n1=5.5%/n2=7%/n3=8.5%/n4=10% rank_values target.maxHealth; min_amount n5=40/n6=55/n7=70/n8=85/n9=100 rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.target_type eq monster; target.other eq 정글 몬스터이며 동일 적에게 세 번째 연속 기본 공격 또는 스킬 적중. target damage true: 정글 몬스터에게 별도의 고정 피해를 입힌다. [amount n10=140/n11=155/n12=170/n13=185/n14=200 rank_values] flags=replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1.conditions;rules.0.parameters",
+      "issue": "횟수 empowered와 generic표식으로 조건 오기, any대상 및 모든 몬스터로 범위 확장, 최대 체력 계수를 ratio_input으로 기록",
+      "correction": "동일 적의 세 번째 연속 적중과 정글 몬스터 조건을 명시하고 최대 체력 계수로 고쳤다.",
+      "sourceId": "en:summary",
+      "quote": "The third consecutive attack or ability against the same target deals a percentage of the target's max health as bonus true damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 596,
+      "verdict": "repaired",
+      "reason": "hit_count=empowered를 제거하고 동일 적에게 세 번째 연속 공격/스킬 적중이라는 정확한 횟수 조건으로 바꿨다."
+    },
+    {
+      "index": 597,
+      "verdict": "false_positive",
+      "reason": "Deals 140/...damage against jungle monsters는 같은 은화살 발동의 특정 대상 피해량을 지정한다. 추가로 해당 고정값을 더한다는 표현이 없어 기존 피해 대체값으로 유지한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "툴팁은 세 번째 연속 적중을 명시하지만, 연속 적중 횟수가 언제 초기화되는지는 설명하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

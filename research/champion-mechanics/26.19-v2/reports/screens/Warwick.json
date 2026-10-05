@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Warwick.E",
+      "sourceHash": "18f07a885ec304462ab5881c0808d51ee24f807fe4480214b072091ccf97b1b9",
+      "candidateHash": "c45da443de1be1035efd9745ac2247b155a4b155428dc5b2766101922523fdfc"
+    },
+    {
+      "id": "Warwick.P",
+      "sourceHash": "8dfb6b3d1f71ea83367b5e6e5e3be4e72a020f5a225f45bb5f45031bab467b6d",
+      "candidateHash": "87de88fdc59400bbd89fd309c74156a8f78e914f82fe5e75ac069ed200eb6abc"
+    },
+    {
+      "id": "Warwick.Q",
+      "sourceHash": "226a1c26d848a529ae832c9b94b436a23d94ea82bd0c380e0c5c73f005dc126a",
+      "candidateHash": "d8757c1f8ae25c5b8dd8cf032e36610ee3eec4a595f9639ec38b86b7f59f16b2"
+    },
+    {
+      "id": "Warwick.R",
+      "sourceHash": "88bbd03052f557200b8ee215937556f5002d338e40ea84c2c550c3f84453df14",
+      "candidateHash": "b1658c9e1adf5a024cfa9de784d4bbbc69a316636e03ba0602b2553240522a60"
+    },
+    {
+      "id": "Warwick.W",
+      "sourceHash": "b3e00001d8355bd93f526de68622522020377845e1ce00486df504bca22086b5",
+      "candidateHash": "7bf73aaaadf1b7c9348c5abfb38ce974526730d31e2e724c438211b49798ca95"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Warwick.Q",
+      "path": "rules.1.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "plus 6/7/8/9/10% max Health magic damage",
+      "issue": "최대 체력 비례 피해의 소유자가 대상(target)으로 지정됐지만, 원문은 소유자를 명시하지 않습니다. 한국어 본문도 단순히 ‘최대 체력’이라고만 하므로 대상 최대 체력으로 단정할 근거가 없습니다.",
+      "correction": "statSubject를 미지정으로 두거나 소유자가 불명확하다는 gap을 남기세요."
+    },
+    {
+      "id": "Warwick.R",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "He attacks that champion 3 times over the duration",
+      "issue": "‘3회 공격’은 공격 횟수이지 대상과의 충돌 횟수가 아닙니다. hit_order=first 조건으로 공격 피해를 첫 충돌 챔피언에만 적용하면 원문이 명시하지 않은 충돌 판정을 추가합니다.",
+      "correction": "first 충돌 조건을 공격 피해 규칙에서 제거하고, 피해 대상은 원문의 ‘that champion’에 연결하세요."
+    },
+    {
+      "id": "Warwick.R",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Warwick heals for 100% of all damage dealt during the channel.",
+      "issue": "회복은 정신 집중 중 입힌 모든 피해를 기준으로 하지만, 규칙에 첫 충돌 챔피언 조건이 붙어 회복 대상 피해 범위를 임의로 제한합니다.",
+      "correction": "첫 충돌 조건을 제거하고, 회복 기준을 정신 집중 중 입힌 모든 피해로 유지하세요."
+    },
+    {
+      "id": "Warwick.R",
+      "path": "rules.4.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This Ability applies On-Hit and On-Attack effects 3 distinct times over its duration",
+      "issue": "적중 및 공격 시 효과를 3회 적용한다는 규칙에 첫 충돌 챔피언 조건이 붙어 있습니다. 원문은 효과 적용 횟수를 설명할 뿐, 해당 조건을 제시하지 않습니다.",
+      "correction": "첫 충돌 조건을 제거하고 3회 적용 사실만 기록하세요."
+    },
+    {
+      "id": "Warwick.R",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This Ability Knocks Down enemies.",
+      "issue": "쓰러뜨리기 효과에 ‘첫 충돌 챔피언’ 조건이 붙어 있지만, 원문은 챔피언이나 첫 충돌 대상으로 범위를 한정하지 않고 적(enemies)이라고 합니다.",
+      "correction": "target_type=champion 및 hit_order=first 조건을 제거하거나, 원문에 없는 적용 범위는 미지정으로 두세요."
+    },
+    {
+      "id": "Warwick.W",
+      "path": "rules.4.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If no champions are found, this Ability's cooldown is reduced by 30%.",
+      "issue": "조건이 주변 적 수가 8명과 같은지 검사합니다. 8은 감지 효과 지속시간(초)이지 개체 수가 아니므로, 이 규칙은 재사용 대기시간 감소 조건을 잘못 표현합니다.",
+      "correction": "‘챔피언이 발견되지 않음’을 조건으로 기록하고 8초를 개체 수로 사용하지 마세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,125 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Sett.E",
+      "sourceHash": "d929ed73b569f363dc2bf250b94a659b3effcd772fc8a8727964502623842332",
+      "candidateHash": "935827dd2a8d29db9231a5eaafc9dfec5497766be63be2281761ade16aff15f5"
+    },
+    {
+      "id": "Sett.P",
+      "sourceHash": "aaaca7c5e58f321be35fcdcfbc405e2ef2d16b7e37a8b1124627e8baf47a542f",
+      "candidateHash": "33716160684f6be4ab69f956a83b075178267bf98e5608498b5079ae2e0be9b4"
+    },
+    {
+      "id": "Sett.Q",
+      "sourceHash": "2f8eb7224b9d047e38374be5384bf4629bd0318796c5602cd79e99b2bbe8c392",
+      "candidateHash": "5673767e5f89fdd6b6e8961185cba3caf4a2b156a1b9143057124906691b5734"
+    },
+    {
+      "id": "Sett.R",
+      "sourceHash": "54564192a08e59ef93aea7cee9b9b1203a784727079ca3f58c825024b3ef456d",
+      "candidateHash": "67336ef3a1dbef7861198b2948ad4b7ac94644d13b65293b632b66cb0ee41249"
+    },
+    {
+      "id": "Sett.W",
+      "sourceHash": "353291f30b0f71f2f9506b28b9af3d2595d29f2ef1c9257cb519c3ccbe56c37d",
+      "candidateHash": "50b9f7d5f9729e46a7c37caef22f65b974a8db67bd2fdcec8c3c87a9c46a6f51"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Sett.E",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Sett smashes enemies on either side of him into each other, dealing (50/70/90/110/130 + (60% Attack Damage)) physical damage and Slowing them by 70% for 0.5 seconds.",
+      "issue": "피해 설명에 70% 둔화가 포함돼 있는데, 이 효과의 대상은 둔화 효과 규칙에만 기록되어 있어 이 피해 규칙만 보면 둔화가 누락된 것처럼 표현됩니다.",
+      "correction": "피해 규칙 설명에서 둔화 문구를 제거하거나, 피해와 둔화를 함께 적용한다고 명시하세요."
+    },
+    {
+      "id": "Sett.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Sett grabbed at least one enemy on each side, all enemies are Stunned for 1 second.",
+      "issue": "조건이 양쪽에서 적을 붙잡았다는 사실을 세트의 `other` 텍스트 값으로만 기록해, ‘양쪽 각각 최소 한 명’이라는 두 측면의 조건이 구조화되어 있지 않습니다.",
+      "correction": "양쪽 각각 한 명 이상을 붙잡았다는 조건을 명시적으로 보존하세요."
+    },
+    {
+      "id": "Sett.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Right punches follow the left quickly and deal an additional ((5 ~ 90) + (55% bonus Attack Damage)) physical damage.",
+      "issue": "오른쪽 주먹의 추가 피해는 왼쪽 주먹 뒤에 이어지는 오른쪽 주먹에 해당하지만, 조건 문구만으로 왼쪽 주먹 뒤라는 순서가 명확하지 않습니다.",
+      "correction": "조건에 왼쪽 주먹 다음의 빠른 오른쪽 주먹이라는 순서를 분명하게 나타내세요."
+    },
+    {
+      "id": "Sett.Q",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Sett itches for a fight, gaining 30% Move Speed towards enemy champions for 1.5 seconds.",
+      "issue": "요약은 적 챔피언을 향해 이동하면 이동 속도를 얻는다고 하지만, 이동 속도 증가량 30%와 지속 시간 1.5초를 생략해 효과의 크기와 기간을 알 수 없습니다.",
+      "correction": "요약에 이동 속도 30% 증가와 1.5초 지속을 포함하세요."
+    },
+    {
+      "id": "Sett.Q",
+      "path": "rules.1.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals a max of 400 damage to monsters per punch.",
+      "issue": "400은 몬스터에게 주먹을 날릴 때의 피해 상한인데, `max_amount`만 기록되어 상한의 대상이 몬스터라는 적용 범위가 구조화되어 있지 않습니다.",
+      "correction": "상한이 몬스터 대상 피해에 적용되고 주먹당 계산된다는 범위를 보존하세요."
+    },
+    {
+      "id": "Sett.R",
+      "path": "rules.1.effects.0.parameters.2.numbers.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "40/50/60% of the grabbed enemy's bonus Health",
+      "issue": "추가 체력 계수 세 수치가 모두 `percent: true`로 표시되지 않았고 마지막 값도 원문과 달리 `60`으로 적혀 있습니다.",
+      "correction": "세 값 모두 퍼센트로 표시하고, 마지막 값의 원문 표기 `60%`를 보존하세요."
+    },
+    {
+      "id": "Sett.R",
+      "path": "rules.1.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies take less damage the further they are from where Sett lands.",
+      "issue": "설명에는 착지 지점에서 멀수록 피해가 감소한다고 되어 있지만, 이 피해 규칙의 설명문에는 거리별 감소가 빠져 있어 규칙 텍스트만 읽으면 해당 효과를 알 수 없습니다.",
+      "correction": "설명문에 착지 지점과의 거리가 멀수록 피해가 감소한다고 포함하세요."
+    },
+    {
+      "id": "Sett.R",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Sett grabs an enemy champion and Suppresses them as he carries them forward, then slams them into the ground, dealing (200/300/400 + (120% bonus Attack Damage)) plus 40/50/60% of the grabbed enemy's bonus Health physical damage to surrounding enemies and Slowing them by 99% for 1 second.",
+      "issue": "조건이 붙잡힌 대상이 챔피언임을 요구하지만, 둔화 대상은 착지 주변의 적입니다. 이 조건이 주변 적 전체에도 챔피언 유형을 요구하는 것으로 읽힐 수 있습니다.",
+      "correction": "챔피언 조건은 붙잡는 대상에 적용되고, 둔화는 착지 주변 적을 대상으로 한다는 범위를 분리해 표현하세요."
+    },
+    {
+      "id": "Sett.W",
+      "path": "rules.2.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Sett consumes all Grit, gaining a 100% Grit consumed Shield decaying over 3 seconds.",
+      "issue": "설명은 보호막이 지속 시간 동안 감소한다고만 하여, 원문의 3초가 보호막 감소 효과의 기간임을 규칙 설명에서 특정하지 않습니다.",
+      "correction": "보호막이 3초에 걸쳐 감소한다고 명시하세요."
+    },
+    {
+      "id": "Sett.W",
+      "path": "rules.3.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(max (50% Health) × (25% + 0.25% bonus Attack Damage) damage)",
+      "issue": "`50% Health`의 체력 기준이 불명확한 점은 갭에 기록되어 있지만, 피해 상한 매개변수의 역할과 값은 `Health` 기준이라는 원문을 연결하지 않습니다.",
+      "correction": "체력 기준이 불명확하다는 점을 유지하면서, 상한이 체력의 50%에 피해 계수를 곱한 식임을 매개변수 설명에 보존하세요."
+    }
+  ],
+  "notes": []
+}

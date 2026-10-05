@@ -1,0 +1,224 @@
+{
+  "summary": "아칼리가 연막을 생성하고 이동 속도를 얻습니다. 연막이 활성화된 동안 최대 기력이 증가하며, 연막 안에서는 투명 상태가 됩니다. 공격하거나 스킬을 사용하면 잠시 모습이 드러납니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "연막을 생성한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가하고 2초에 걸쳐 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "연막이 활성화된 동안 최대 기력이 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akali drops a smoke bomb, unleashing a spreading cover of smoke lasting 5/5.5/6/6.5/7 seconds and granting herself 30/35/40/45/50% Move Speed decaying over 2 seconds. Akali increases her max Energy by 100 while the shroud is active."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "연막 안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "연막 안에서 투명 상태가 된다. 포탑이나 절대 시야만 투명 유닛을 드러낼 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While inside the smoke, Akali is Invisible. Invisible units cannot be revealed except by turrets or True Sight."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "공격하면 잠시 모습이 드러난다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Attacking or using abilities will briefly reveal her."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "스킬을 사용하면 잠시 모습이 드러난다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Attacking or using abilities will briefly reveal her."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "영어 요약은 공격 또는 스킬 사용 시 잠시 드러난다고 하지만, 영어 본문은 포탑이나 절대 시야만 투명 유닛을 드러낼 수 있다고 한다. 한국어 요약도 공격 또는 스킬 사용 시 드러남을 언급한다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Attacking or using abilities will briefly reveal her."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Invisible units cannot be revealed except by turrets or True Sight."
+        },
+        {
+          "sourceId": "ko:summary",
+          "quote": "아칼리가 공격하거나 스킬을 사용하면 순간적으로 아칼리의 모습이 드러납니다."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "최대 기력 증가량은 원문에 있지만 고정 통계 목록에 Energy에 대응하는 항목이 없어 statTo를 지정하지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akali increases her max Energy by 100 while the shroud is active."
+        }
+      ]
+    }
+  ]
+}

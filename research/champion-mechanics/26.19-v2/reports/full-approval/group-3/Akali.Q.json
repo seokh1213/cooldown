@@ -1,0 +1,68 @@
+{
+  "id": "Akali.Q",
+  "sourceHash": "c9dae57fe35e8575b7f150a697e9e3056f463111c8b0d4d0ce7721334b3d3430",
+  "beforeCandidateHash": "5204f2288abe0885887e5444721992590f3e66c6b5697f391b3f1a1860d677e5",
+  "candidateHash": "3f56d24bcc5695220406c2d228ac34d6394118d085e37f1239b6e1e111d528c0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "본문의45/70/95/120/145+총AD65%+AP60%마법피해와사거리끝적에게만50%둔화0.5초를대조했다. 요약추가AD와본문AD의충돌은본문우선으로기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → enemy: 부채꼴로 단검을 던져 적에게 마법 피해를 입힌다. [magic] / amount=45/70/95/120/145 [rank_values]; stat_coefficient=65% (caster totalAttackDamage) [formula_components]; stat_coefficient=60% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 이 스킬의 사거리 끝부분에 맞은 적 → target: 사거리 끝에 있는 적을 둔화시킨다. [slow] / amount=50% [scalar]; duration_seconds=0.5 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1",
+      "issue": "사거리끝둔화가조건없는피해규칙과묶여모든피해대상에게발생했다.",
+      "correction": "적중피해와사거리끝적중둔화를분리하고복합계수shape를보존했다.",
+      "sourceId": "en:body",
+      "quote": "Slowing enemies at the tip by 50% for 0.5 seconds."
+    },
+    {
+      "path": "gaps",
+      "issue": "요약추가AD와본문AD충돌이누락됐다.",
+      "correction": "본문우선총AD계수와출처충돌을기록했다.",
+      "sourceId": "en:summary",
+      "quote": "her bonus Attack Damage"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en/ko요약은추가AD기준이라하지만en/ko본문은Attack Damage/공격력65%라명시한다. 더구체적인본문의총AD계수를유지한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

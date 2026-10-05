@@ -1,0 +1,225 @@
+{
+  "id": "Tristana.W",
+  "sourceHash": "56a0f458db728c9caf8e7df9dc877d6396cf4eedf4ac566edf0d516604737491",
+  "beforeCandidateHash": "babea3538c59d4b0e9d36fd35128a8f3c365bd22e5888bbedb518823e1ac3291",
+  "candidateHash": "16952141e8de67bc87551038cecfa27315785a488816ecc39ef36bd06dd133b6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "도약착지피해/slow,챔피언takedown/챔피언최대E중첩폭발의Wreset를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "도약착지시주변70/105/140/175/210+100%bonusAD+50%AP magic,40%slow2초.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "140",
+              "value": 140,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "175",
+              "value": 175,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "210",
+              "value": 210,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 2,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언처치관여Wreset. Championtakedowns원문자체가챔피언조건명시.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "챔피언에붙은최대중첩E폭발의Wreset,텍스트조건정확하며허용불가gap제거.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭발 화약"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭발 화약이 최대 중첩 상태로 폭발함"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "gaps",
+      "issue": "명시최대중첩폭발조건을표현불가gap으로기록.",
+      "correction": "텍스트조건이이미보존하므로불필요한gap제거.",
+      "sourceId": "en:body",
+      "quote": "Champion takedowns and max stack Explosive Charge detonations on champions refresh this Ability's Cooldown."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 549,
+      "verdict": "false_positive",
+      "reason": "원문Champion takedowns가대상챔피언을명시한다. target_type champion은정확하다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

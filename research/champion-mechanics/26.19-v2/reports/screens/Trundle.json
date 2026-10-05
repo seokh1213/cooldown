@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Trundle.E",
+      "sourceHash": "832e80d134a1b04d0d020c7e3bce83e1e28ae02ecf76bc0e36feb251ae5475ef",
+      "candidateHash": "758856bf6e36d297050d3173287a23b34e3ee8bd743048743f18935f76a483e9"
+    },
+    {
+      "id": "Trundle.P",
+      "sourceHash": "48af356da17391acc383a4fcfcc081452c6369ff2a29fa46670f23cf8393df8c",
+      "candidateHash": "ef30ebeb280560d656b43908011904b1c46c511d8b73f005a44ebe610cf7dd8e"
+    },
+    {
+      "id": "Trundle.Q",
+      "sourceHash": "4b6257b00b58032c409f83e8540a9555adf1e9e598c8a46aa190fc1f52e3452b",
+      "candidateHash": "95b0aa7fbdc7674a72db5ca7c8c0a47fdb85c64fcd314713d0ab61708d7a5ee8"
+    },
+    {
+      "id": "Trundle.W",
+      "sourceHash": "3b040cf897f0605809ce2c5f97ad96796218c5985ba2957ceabf798139c41223",
+      "candidateHash": "be7d7d360d91a53ad5dbe3db50dc160756588748b0062e3f8bea220b04a9470f"
+    },
+    {
+      "id": "Trundle.R",
+      "sourceHash": "f12c7d3b15f3c94aa7d5de61d64247ad0a5d8a801247863bb9a48abed986e339",
+      "candidateHash": "cfd9b16c6320b7a40866589fc5982e671cb135cb5765775a81050e803d5d5c6b"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Trundle.R",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Half of the damage and shred happen immediately and the other half happens over the duration.",
+      "issue": "요약 문구가 절반 적용을 명시하지만, 해당 효과의 수치에는 ‘절반’이라는 배분이 연결되어 있지 않아 입력값상 피해 전량이 적용되는 것처럼 읽힙니다.",
+      "correction": "즉시 피해와 지속 피해를 각각 전체 피해의 절반으로 표현하거나, 분할을 수치화할 수 없다면 그 제한을 명시하세요."
+    },
+    {
+      "id": "Trundle.R",
+      "path": "rules.0.effects.1.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Half of the damage and shred happen immediately and the other half happens over the duration.",
+      "issue": "방어력·마법 저항력 감소량도 절반씩 나뉘지만, 효과 설명은 즉시 절반만큼 감소시키고 나머지는 지속시간 동안 감소시킨다고만 하며 총 훔치는 양의 40%를 명시하지 않습니다.",
+      "correction": "감소 효과의 총량이 방어력과 마법 저항력 각각 40%이며 그 절반이 즉시, 나머지 절반이 지속시간에 적용된다고 명시하세요."
+    },
+    {
+      "id": "Trundle.R",
+      "path": "rules.0.effects.1.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "stealing 40% Armor and Magic Resist over 5 seconds.",
+      "issue": "5초는 방어력·마법 저항력 훔침이 진행되는 시간인데, 이를 duration_seconds로 저장하면 감소 버프 자체의 지속시간처럼 해석될 수 있습니다. 원문은 감소 효과가 흡수 종료 후 4초 더 유지된다고 구분합니다.",
+      "correction": "5초를 훔침 진행 시간으로 표현하고, 감소 효과의 추가 유지 시간은 4초로 별도 기록하세요."
+    }
+  ],
+  "notes": []
+}

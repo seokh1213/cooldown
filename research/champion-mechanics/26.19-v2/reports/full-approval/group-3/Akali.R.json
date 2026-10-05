@@ -1,0 +1,103 @@
+{
+  "id": "Akali.R",
+  "sourceHash": "94ccc76550ef8a600523d07354d6c713f4ef04f0581c4fc866023bfecc652423",
+  "beforeCandidateHash": "a16a9c68c95a918111f0c5ca88460719d6be353acd62404e27d488f913684959",
+  "candidateHash": "55cb7b8470b99bc437c0455318c8720220ad0d39db7de3463decd3dc2accf127",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "적챔피언을넘는첫돌진경로110/220/330+추가AD50%+AP30%마법피해,첫시전2.5초후재시전관통돌진/대상손실HP별최소70/140/210+AP30%~최대210/420/630+AP90%,영문HP30%미만최대/한국어30%이하충돌을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target other eq 첫시전도약의선택대상이적챔피언 → caster: 적 챔피언을 뛰어넘는다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast / 조건 caster time gte 2.5; caster other eq 이궁극기의첫시전이후2.5초가지나재시전가능할때 → caster: 관통하는 찌르기를 하며 돌진한다. | enemy: 재시전관통돌진경로에서맞은적에게그대상의잃은체력에따라최소(70/140/210+주문력30%)~최대(210/420/630+주문력90%)마법피해를입힙니다. [magic] / min_amount=70/140/210 [formula_components]; stat_coefficient=30% (caster abilityPower) [formula_components]; max_amount=210/420/630 [formula_components]; stat_coefficient=90% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target health_threshold lt 30%; target other eq 이궁극기의재시전관통돌진에맞은적 → target: 영문본문기준대상체력이30%미만이면재시전피해가최대(210/420/630+주문력90%)가됩니다. 추가별도피해를주는뜻이아닙니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 target other eq 첫돌진경로에서맞은적 → enemy: 경로 내 모든 적에게 마법 피해를 입힌다. [magic] / amount=110/220/330 [rank_values]; stat_coefficient=50% (caster bonusAttackDamage) [formula_components]; stat_coefficient=30% (caster abilityPower) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/3",
+      "issue": "첫도약적챔피언선택조건과전체경로피해가한조건없는시전규칙으로묶였다.",
+      "correction": "적챔피언선택이동과모든경로적적중피해를분리했다.",
+      "sourceId": "en:body",
+      "quote": "Akali vaults over an enemy champion"
+    },
+    {
+      "path": "rules.1-2/gaps",
+      "issue": "재시전2.5초시작기준/피해양끝복합식이불명확하고최대피해별도규칙이추가피해처럼읽혔으며30%경계충돌이누락됐다.",
+      "correction": "첫시전기준재사용과양끝완전식,최대피해수정/원문경계충돌을보존했다.",
+      "sourceId": "en:body",
+      "quote": "Deals max damage to targets below 30% Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "최대피해체력기준은영문below30%(<)와한국어30%이하(<=)가다르다. 영문<를유지하고경계차이를기록했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "대상손실체력별최소~최대복합피해의정확한보간식은공급본문에없다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "id": "Viktor.W",
+  "sourceHash": "26d1bf2b36cf9853f81b0eadb95f096958c99f4d98c42a5ca191b617f1957fc9",
+  "beforeCandidateHash": "b312d8ed53ce82a4d9afaceb3a87fe7ba9a0968f2a2205ec9934974132be18a3",
+  "candidateHash": "ac48c517587bbd28ed720ddb6dc2b16a64ece7a7cf5a3f01cfc281a9bc0e670c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "4초중력장·내부33~45%둔화,1.25초머묾시1.5초기절,증강스킬적중20%1초둔화,이장판기절시knockdown 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 빅토르가 일정 시간 유지되는 중력장을 배치합니다.; 수치 duration_seconds en:body:n0=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: enter_area 사건의 행위자 enemy; 조건 target.other eq 중력장 내부에 머무르는 동안; enemy: 중력장 안의 적을 둔화시킵니다. [slow]; 수치 amount en:body:n1=33(백분율),en:body:n2=36(백분율),en:body:n3=39(백분율),en:body:n4=42(백분율),en:body:n5=45%(백분율) 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 enemy; 조건 target.time gte en:body:n6=1.25 / target.other eq 중력장 반경 안에 계속 머뭄; enemy: 범위 안에 계속 머문 적을 기절시킵니다. [stun]; 수치 duration_seconds en:body:n7=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.activation eq empowered; enemy: 증강 기본 지속 효과로 빅토르의 스킬이 적을 둔화시킵니다. [slow]; 수치 amount en:body:n8=20%(백분율) 상수 scalar / duration_seconds en:body:n9=1 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 이 스킬로 기절함; enemy: 이 스킬로 기절한 적을 넘어뜨립니다. [knockdown]; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "비증강전제·내부시간과전체4초둔화지속혼동·기절시점·knockdown주체/번역충돌 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Viktor deploys a gravitational imprisonment device for 4 seconds, Slowing enemies inside it by 33/36/39/42/45%. Enemies who remain within its radius for 1.25 seconds are Stunned for 1.5 seconds. Upgraded Passive: Viktor's Abilities Slow by 20% for 1 second. Enemies that are Stunned by this Ability are also Knocked Down."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 626,
+      "verdict": "repaired",
+      "reason": "일반장판둔화의미증강제한제거."
+    },
+    {
+      "index": 627,
+      "verdict": "false_positive",
+      "reason": "ability_hit:caster는빅토르가스킬로적중시키는사건;caster피격사건은damage_taken으로다름."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "영문Knocked Down과한국어뒤로밀려남은다른CC표현;영문knockdown우선.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

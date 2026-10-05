@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Hecarim.P",
+      "sourceHash": "cf624ded1fa7f8d4ceb8877d0a4752950985e3632a51945798c26e0330de1b32",
+      "candidateHash": "15c1c1a18f192694519f503bdbe51505c39470ac866a54696e1b7b7e96ebb7df"
+    },
+    {
+      "id": "Hecarim.E",
+      "sourceHash": "64177d57122c56b1b15719aded65cab3337f221310408775ed1a5153e8103cf9",
+      "candidateHash": "6abe1adafc3324a2058ae170cb2f8cdab95c5d4efb5419a5eb2db41e628429cc"
+    },
+    {
+      "id": "Hecarim.Q",
+      "sourceHash": "3661557ecbf5635b7d898831c0865b6a446454dae862628d8b62757f433acc0f",
+      "candidateHash": "497595b4cd3c5fb5fe678f78bc4a3ec39d03e2fae142e953238cd32b90ab3fbe"
+    },
+    {
+      "id": "Hecarim.R",
+      "sourceHash": "d3f75b7aa52a308f4a4185fb00300edc6709119001c5e8e81d274f30e6d8c7cd",
+      "candidateHash": "b781f8eadf12fa6f8d0c02a5160409f9aa05ea2b23fb21ddb3c68157743a8e16"
+    },
+    {
+      "id": "Hecarim.W",
+      "sourceHash": "7b334753b10a5f9ecb637d60a6f69a2339a1f3e79d4b7f37a34da2fbb6ae160c",
+      "candidateHash": "250ca425f569693a433d6cd042cce217e6d7bf6fbba2add5e60c83a18e99233c"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Hecarim.Q",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals a base of (36/54/72/90/108 + (54% bonus Attack Damage)) damage to minions.",
+      "issue": "조건이 대상 유형을 minion으로만 제한해 정글 몬스터에는 별도 기본 피해량이 적용되지 않는 것으로 표현합니다. 원문은 미니언과 정글 몬스터를 구분하지 않지만, 이 문장 자체가 정글 몬스터 적용 여부를 명시하지는 않습니다.",
+      "correction": "정글 몬스터를 제외한다고 단정하지 않도록 조건을 완화하거나, 적용 대상 범위는 불명으로 두세요."
+    },
+    {
+      "id": "Hecarim.W",
+      "path": "rules.3.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "12.5% of damage taken from his allies.",
+      "issue": "회복 사건의 주체가 nearby_enemies로 지정되어 있지만, 원문은 아군이 가한 피해를 기준으로 헤카림이 회복한다고만 합니다. 이 표현은 피해를 받은 대상이 주변 적이어야 한다고 뒷받침하지 않습니다.",
+      "correction": "피해를 받은 대상 범위를 원문에서 확인할 수 없는 상태로 두고 nearby_enemies 주체를 제거하세요."
+    },
+    {
+      "id": "Hecarim.W",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hecarim cannot heal more than 120/150/180/210/240 Health from minions or jungle monsters.",
+      "issue": "조건이 대상 유형을 minion으로만 제한해 정글 몬스터에게서 얻는 회복량에는 상한이 적용되지 않는 것으로 표현합니다.",
+      "correction": "정글 몬스터를 제외한다고 단정하지 않도록 조건을 완화하거나, 적용 대상 범위는 불명으로 두세요."
+    }
+  ],
+  "notes": []
+}

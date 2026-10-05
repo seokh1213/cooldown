@@ -24,6 +24,7 @@ import { AdvisorComposer } from "./AdvisorComposer";
 import { useAskAdvisor } from "./useAskAdvisor";
 import { useReferencePanelSize } from "./useReferencePanelSize";
 import { useDrawerWheelTrap } from "./useDrawerWheelTrap";
+import { useMobileAdvisorViewport } from "./useMobileAdvisorViewport";
 import { useReferenceSelection } from "./useReferenceSelection";
 
 interface AdvisorPanelProps {
@@ -184,13 +185,14 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   }, [drawerWidth, onWidthChange]);
 
   const drawerRef = useDrawerWheelTrap();
+  useMobileAdvisorViewport(isMobile, drawerRef);
 
   return (
     <div
       ref={drawerRef}
       role="dialog"
       aria-label={copy.title}
-      className="fixed inset-0 z-50 flex overflow-hidden overscroll-contain bg-background shadow-2xl md:inset-y-0 md:left-auto md:right-0 md:w-[var(--drawer-w)] md:border-l"
+      className="fixed inset-x-0 top-[var(--advisor-viewport-top,0px)] z-50 flex h-[var(--advisor-viewport-height,100dvh)] overflow-hidden overscroll-none bg-background shadow-2xl md:inset-y-0 md:left-auto md:right-0 md:h-auto md:w-[var(--drawer-w)] md:border-l"
       style={{ "--drawer-w": `${drawerWidth}px` } as React.CSSProperties}
     >
       {showReferencePanel && (
@@ -205,7 +207,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         />
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
       <AdvisorHeader
         view={view}
         onViewChange={setView}
@@ -312,7 +314,6 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             onShowDoc={showDoc}
             onPickChampion={pickChampion}
             onNavigate={onNavigate}
-            onRate={advisor.rate}
           />
 
           <AdvisorComposer

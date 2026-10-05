@@ -1,0 +1,164 @@
+{
+  "id": "Sejuani.E",
+  "sourceHash": "148f69b952ea8cc10c4610301b9e900b3518bd5eb095a6cc28ab581983a3a662",
+  "beforeCandidateHash": "91a7f338ad448d027bd7a4ba380d20d0bf02b7f78b369cbfa2e498efadead741",
+  "candidateHash": "8adcfcc661014b2132dfb4b83970db0afb50fb67fe6add67bd2acabe486f7d2b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "근처 아군 근접 챔피언의 중첩, 4중첩 대상 피해·기절과 밀치기·knockdown 및 챔피언 중첩 금지, 커서 우선순위를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "근처의 아군 근접 챔피언이 적 챔피언을 기본 공격해 중첩을 적용하는 세 가지 출처 조건을 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 출처의 정글 몬스터 중첩 분기를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "서리 4중첩 대상에게 55/105/155/205/255 + 주문력 70% 마법 피해를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "4중첩 대상의 1초 기절을 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이 스킬로 기절당한 대상의 약한 knockback을 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "E가 적을 knockdown시키는 별도 효과를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "세주아니가 기절시킨 챔피언은 8초 동안 중첩을 얻지 못한다. 새 표식을 부여하는 효과와 구분했다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "커서에 가장 가까운 유효 적을 고르며 챔피언 우선인 선택 정보를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.3",
+      "issue": "중첩을 주는 근접 아군은 챔피언으로 제한되어야 한다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Nearby melee allied champions' Attacks apply a stack to champions and jungle monsters. Active: Sejuani deals (55/105/155/205/255 + (70% Ability Power)) magic damage to target enemy with 4 stacks and Stuns them for 1 second. Champions Stunned by Sejuani can't gain stacks for 8 seconds. Enemies Stunned by this Ability are slightly Knocked Back. Permafrost will target the closest valid enemy to your cursor (prioritizing champions). This Ability Knocks Down enemies."
+    },
+    {
+      "path": "rules.4.effects.0.kind",
+      "issue": "slightly Knocked Back을 이동이 아닌 knockback CC로 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Nearby melee allied champions' Attacks apply a stack to champions and jungle monsters. Active: Sejuani deals (55/105/155/205/255 + (70% Ability Power)) magic damage to target enemy with 4 stacks and Stuns them for 1 second. Champions Stunned by Sejuani can't gain stacks for 8 seconds. Enemies Stunned by this Ability are slightly Knocked Back. Permafrost will target the closest valid enemy to your cursor (prioritizing champions). This Ability Knocks Down enemies."
+    },
+    {
+      "path": "rules.6.effects.0.kind",
+      "issue": "중첩 금지는 새 mark 부여가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Nearby melee allied champions' Attacks apply a stack to champions and jungle monsters. Active: Sejuani deals (55/105/155/205/255 + (70% Ability Power)) magic damage to target enemy with 4 stacks and Stuns them for 1 second. Champions Stunned by Sejuani can't gain stacks for 8 seconds. Enemies Stunned by this Ability are slightly Knocked Back. Permafrost will target the closest valid enemy to your cursor (prioritizing champions). This Ability Knocks Down enemies."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "중첩 4회는 이미 텍스트 조건으로 정확히 표현되어 스키마 표현 불가라는 gap은 실제 한계가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Nearby melee allied champions' Attacks apply a stack to champions and jungle monsters. Active: Sejuani deals (55/105/155/205/255 + (70% Ability Power)) magic damage to target enemy with 4 stacks and Stuns them for 1 second. Champions Stunned by Sejuani can't gain stacks for 8 seconds. Enemies Stunned by this Ability are slightly Knocked Back. Permafrost will target the closest valid enemy to your cursor (prioritizing champions). This Ability Knocks Down enemies."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "note": "근처 아군의 범위가 수치로 명시되지 않았다."
+    }
+  ],
+  "validation": {
+    "id": "Sejuani.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

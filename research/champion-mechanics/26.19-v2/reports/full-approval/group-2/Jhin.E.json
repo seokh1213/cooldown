@@ -1,0 +1,143 @@
+{
+  "id": "Jhin.E",
+  "sourceHash": "411a684defcea13404ffc970a2ce3212556ce53085160b22e8eb63a8a178aee8",
+  "beforeCandidateHash": "c1dba490a6e801c48b80a380497ec8f9e09f8926bab04ab3bf3571b5a9358bcb",
+  "candidateHash": "0b3038c5c0b23fd05bc1fbfe15acea484ff2a81964d9869b340ea1e8aa23e872",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 3,
+  "summaryCheck": "챔피언처치 위치 함정/폭발,3분 은신 함정,밟으면35%둔화·2초 후 폭발,2충전과 랭크별 충전시간,미니언과 최근 다른함정 적중적65%피해를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: kill 사건의 행위자 caster; 조건 target.target_type eq champion; summon: 진이 적 챔피언을 처치하면 해당 위치에 연꽃 함정이 생겨 폭발한다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 3분 동안 유지되는 보이지 않는 연꽃 함정을 하나 설치합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: enter_area 사건의 행위자 enemy; 조건 별도 제한 없음; enemy: 적이 함정을 밟으면 둔화된다. [slow]; 수치 amount en:body:n1=35%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 summon; 조건 summon.time gte en:body:n2=2 / summon.activation eq 적이 밟아 발동한 뒤; unknown: 함정이 폭발해 마법 피해를 입힌다. [magic]; 수치 amount en:body:n3=20,en:body:n4=80,en:body:n5=140,en:body:n6=200,en:body:n7=260 상수 rank_values / stat_coefficient en:body:n8=120%(백분율) caster.totalAttackDamage scalar / stat_coefficient en:body:n9=100%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq minion; target: 연꽃 함정은 미니언에게 감소한 피해를 입힌다. [magic]; 수치 damage_multiplier en:body:n16=65%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 최근에 다른 연꽃 함정에 적중한 적; target: 최근 다른 연꽃 함정에 맞은 적은 연꽃 함정 피해를 덜 받는다. [magic]; 수치 damage_multiplier en:body:n16=65%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이 스킬은 최대2회 충전을 보유하며 24/21.5/19/16.5/14초마다 충전됩니다.; 수치 storage_cap en:body:n10=2 상수 scalar / cooldown_seconds en:body:n11=24,en:body:n12=21.5,en:body:n13=19,en:body:n14=16.5,en:body:n15=14 상수 rank_values; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "3분을3초로 실행, 폭발지연/충전수 숫자 혼동 및 충전시간누락, mark bool, 거짓65% 미확정 gap을 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Passive: Champions Jhin kills will create and detonate a Lotus Trap at their location. Active: Jhin places an invisible Lotus Trap for 3 minutes that creates a zone that Slows by 35% when stepped on by an enemy. After 2 seconds, the trap detonates, dealing (20/80/140/200/260 + (120% Attack Damage) + (100% Ability Power)) magic damage. This ability has 2 charges (24/21.5/19/16.5/14 second refresh). Lotus Trap hits deal 65% damage to minions, and enemies recently hit by another Lotus Trap."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 137,
+      "verdict": "repaired",
+      "reason": "본문 폭발 피해 대상은 미명시하여 unknown으로 보존."
+    },
+    {
+      "index": 138,
+      "verdict": "false_positive",
+      "reason": "Lotus Trap hits deal 65% damage to minions, and enemies recently hit by another Lotus Trap의 병렬 두 목적어 모두65% 적용; 한국어도 동일."
+    },
+    {
+      "index": 139,
+      "verdict": "repaired",
+      "reason": "최근 다른 연꽃 함정 적중 조건으로 복원."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "최근 다른 연꽃 함정 적중의 최근성 시간창과 동일 대상 감소의 중복 적용 방식은 원문 미명시; 감소율 자체는 두 대상군에 모두65%.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "함정을 밟은 적의 둔화 지속시간은 제시되지 않았다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_number",
+      "detail": "함정 수명3은 분 단위이므로 duration_seconds로 실행하지 않고 3분 텍스트 보존. 폭발 피해 대상 범위는 본문에 미명시하여 unknown.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "Lux.Q",
+  "sourceHash": "3b0948c0a934e35e38b2def0751d19cbb613265d53f486b9270aefa62fec3f28",
+  "beforeCandidateHash": "757295f55b59090171e4385ddc22c855081c2e85dc5eb39735907fd5c38fc396",
+  "candidateHash": "ee3502077c34ed5f8619f78f3464b43dc694d1f3123660755faa045d8ffdcf2b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "구체첫두적 각80~240+75%AP마법/2초속박, 같은구체적중순서와두대상상한 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order lte en:body:n0=two / target.hit_order eq 이번 빛의 구체에서의 적중 순서; target: 빛의 구체가 처음 적중한 두 적을 속박합니다. [root]; 수치 duration_seconds en:body:n1=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order lte en:body:n0=two / target.hit_order eq 이번 빛의 구체에서의 적중 순서; target: 빛의 구체는 적중한 적에게 마법 피해를 줍니다. [magic]; 수치 amount en:body:n2=80,en:body:n3=120,en:body:n4=160,en:body:n5=200,en:body:n6=240 상수 rank_values / stat_coefficient en:body:n7=75%(백분율) caster.abilityPower formula_components; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "target를적중행위자로 기록한오류·AP계수역할·구체별순서 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Lux fires a ball of light, Rooting the first two enemies for 2 seconds and dealing (80/120/160/200/240 + (75% Ability Power)) magic damage to each."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

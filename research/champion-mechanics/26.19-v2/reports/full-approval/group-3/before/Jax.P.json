@@ -1,0 +1,63 @@
+{
+  "summary": "잭스의 기본 공격은 공격 속도 중첩을 부여합니다. 중첩은 일정 시간 유지됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "기본 공격 시 공격 속도 중첩을 얻습니다. 각 중첩은 일정 시간 유지됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "level_range"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Jax's Attacks grant a stack for 2.5 seconds that gives him (5.0% ~ 12.5%) Attack Speed (max (40.0% ~ 100.0%) Attack Speed)."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

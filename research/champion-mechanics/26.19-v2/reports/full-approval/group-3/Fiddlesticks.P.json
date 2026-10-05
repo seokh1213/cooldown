@@ -1,0 +1,78 @@
+{
+  "id": "Fiddlesticks.P",
+  "sourceHash": "6d0c25741d30dba94f7b09cd5cad7223e8a747cdd3c0b41bbe983da32030dcd1",
+  "beforeCandidateHash": "f8b727c383ebde0f172d28adbde61f96b12d46de642b237000c529d56e3ce5e0",
+  "candidateHash": "0a22a4fac538fc6efd640df9b26541648353ad0384d410f26c110983994c04b1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "장신구허수아비대체·발각된허수아비잠시본체흉내·본체2초정지후허수아비흉내·6레벨이상허수아비6초주변와드시야를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 장신구가 허수아비로 대체됩니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster time gte 2; caster other eq 움직이지 않음 → caster: 움직이지 않으면 허수아비를 흉내 냅니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other gte six → summon: 자신이6레벨이상이면허수아비가6초동안근처와드를드러낸다. / duration_seconds=6 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: summon의 other / 조건 summon visibility eq 적에게 발견됨 → summon: 적에게발각된허수아비는잠시피들스틱을흉내낸다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects",
+      "issue": "2초정지를효과지속으로오표현·6레벨을파라미터만보존·발각허수아비흉내누락",
+      "correction": "본체정지조건/6레벨조건/허수아비발각효과를분리복구",
+      "sourceId": "en:body",
+      "quote": "When discovered by enemies, Effigies briefly impersonate Fiddlesticks. If Fiddlesticks does not move for 2 seconds, he will impersonate an Effigy."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

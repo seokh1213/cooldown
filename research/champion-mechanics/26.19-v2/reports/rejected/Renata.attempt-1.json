@@ -1,0 +1,676 @@
+{
+  "drafts": {
+    "Q": {
+      "summary": "미사일은 처음 적중한 적을 속박하고 마법 피해를 입힌다. 재사용하면 적을 지정한 방향으로 당겨 던지며, 던진 적과 충돌한 적에게 마법 피해를 입힌다. 던진 적이 챔피언이면 충돌한 적을 기절시킨다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 적중한 적을 속박한다.",
+              "damageType": null,
+              "crowdControl": "root",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Renata sends out a missile from her arm, Rooting the first enemy hit for 1 second and dealing (80/125/170/215/260 + (80% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "target",
+              "text": "적을 지정한 방향으로 당겨 던진다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Recast: Renata Pulls the enemy in a direction"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "secondary_targets",
+              "text": "던져진 적과 충돌한 적에게 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Recast: Renata Pulls the enemy in a direction, dealing (80/125/170/215/260 + (80% Ability Power)) magic damage to enemies they are thrown into"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Recast: Renata Pulls the enemy in a direction, dealing (80/125/170/215/260 + (80% Ability Power)) magic damage to enemies they are thrown into and Stunning for 0.5 seconds if the thrown enemy is a champion."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "secondary_targets",
+              "text": "던져진 적이 챔피언이면 충돌한 적을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Stunning for 0.5 seconds if the thrown enemy is a champion."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Recast: Renata Pulls the enemy in a direction, dealing (80/125/170/215/260 + (80% Ability Power)) magic damage to enemies they are thrown into and Stunning for 0.5 seconds if the thrown enemy is a champion."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "재사용 시 충돌 피해 및 기절을 받는 적의 구체적인 대상 범위는 원문에서 더 세분해 설명하지 않는다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "dealing (80/125/170/215/260 + (80% Ability Power)) magic damage to enemies they are thrown into and Stunning for 0.5 seconds if the thrown enemy is a champion."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "레나타가 아군 챔피언을 강화해 공격 속도 증가 효과와 적을 향해 이동할 때의 이동 속도 증가 효과를 부여한다. 두 효과는 5초에 걸쳐 증가하며, 처치 관여 시 강화 효과의 지속시간이 갱신된다. 대상이 죽을 상황이면 체력을 완전히 회복하고, 회복된 체력은 3초에 걸쳐 감소한다. 체력 감소 중 처치 관여 시 체력이 최대 체력의 20%로 설정되고 감소가 멈춘다. 감소 중에는 회복 등으로 죽음을 늦출 수 있지만, 처치 관여 없이는 막을 수 없다. 챔피언은 죽음을 한 번만 늦출 수 있다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "ally",
+              "text": "아군 챔피언에게 공격 속도 증가 효과를 부여하고, 효과는 5초에 걸쳐 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n28"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Renata infuses an ally champion, granting (10/15/20/25/30% + (1% per 100 Ability Power)) Attack Speed and (10/12.5/15/17.5/20% + (1% per 100 Ability Power)) Move Speed towards enemies, increasing to (20/30/40/50/60% + (2% per 100 Ability Power)) Attack Speed and (20/25/30/35/40% + (2% per 100 Ability Power)) Move Speed over 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "적을 향해 이동 중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "ally",
+              "text": "아군 챔피언이 적을 향해 이동할 때 이동 속도 증가 효과를 얻으며, 효과는 5초에 걸쳐 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n21",
+                    "en:body:n22",
+                    "en:body:n23",
+                    "en:body:n24",
+                    "en:body:n25"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n26"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n28"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Renata infuses an ally champion, granting (10/15/20/25/30% + (1% per 100 Ability Power)) Attack Speed and (10/12.5/15/17.5/20% + (1% per 100 Ability Power)) Move Speed towards enemies, increasing to (20/30/40/50/60% + (2% per 100 Ability Power)) Attack Speed and (20/25/30/35/40% + (2% per 100 Ability Power)) Move Speed over 5 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "takedown",
+            "subject": "ally"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "ally",
+              "text": "아군의 강화 효과 지속시간을 갱신한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Takedowns refresh the duration of the buff."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "death",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "죽을 상황"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "ally",
+              "text": "아군이 죽을 상황이면 체력을 완전히 회복한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "other",
+              "subject": "ally",
+              "text": "회복된 체력이 3초에 걸쳐 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n29"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the ally would die, they instead return to full Health, which then decays over 3 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "takedown",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "체력 감소 중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "ally",
+              "text": "체력을 최대 체력의 20%로 설정한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n30"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "ally",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "other",
+              "subject": "ally",
+              "text": "체력 감소를 중단한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If they get a Takedown while decaying, they will be set to 20% max Health and stop decaying."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "ally",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "체력 감소 중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "ally",
+              "text": "회복 또는 비슷한 효과로 죽음을 늦출 수 있지만, 처치 관여가 없으면 죽음을 막을 수 없다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Champion's death can be delayed by healing or similar effects while in the decaying state, but cannot be prevented unless the Champion gets a Takedown."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "death",
+            "subject": "ally"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "ally",
+              "text": "챔피언은 죽음을 한 번만 늦출 수 있다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n30"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Champions can only delay their death once."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "If they get a Takedown while decaying, they will be set to 20% max Health and stop decaying."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "공격 속도와 이동 속도 증가 효과가 5초에 걸쳐 증가한다고만 되어 있어, 구간별 변화 방식은 특정하지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "increasing to (20/30/40/50/60% + (2% per 100 Ability Power)) Attack Speed and (20/25/30/35/40% + (2% per 100 Ability Power)) Move Speed over 5 seconds."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "강화 효과의 기본 지속시간은 제시되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Takedowns refresh the duration of the buff."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "죽음 지연과 체력 감소의 세부 판정 방식은 원문에서 수치화되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the ally would die, they instead return to full Health, which then decays over 3 seconds."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Renata.W",
+      "errors": [
+        {
+          "code": "count_unit",
+          "path": "rules.6",
+          "detail": "A plain count cannot refer to a percentage; stat-scaled formulas must identify their stat"
+        }
+      ]
+    }
+  ]
+}

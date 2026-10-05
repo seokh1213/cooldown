@@ -1,0 +1,55 @@
+{
+  "id": "Xayah.R",
+  "sourceHash": "ee13990307f5438c74ea10a9ae74b08b2891e8416df90f6c5f38b3c9d51ea5c2",
+  "beforeCandidateHash": "3ad1c68d2d96a5d695df4a4b13561621693f19025ff75cbfa601807b80d21f26",
+  "candidateHash": "45cd271db1bc6ff78e35d7b672c02a53edb84bca11deb2676737e910bf6a2e86",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "1.5초 공중에서 대상 지정 불가·유닛 충돌 무시·이동 가능, 이후 부채꼴 단검 물리 피해/일렬 깃털, 이미 영향을 받은 공격·스킬 예외를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 공중으로 도약해1.5초 동안 대상 지정 불가 및 유체화 상태가 된다. 이미 영향을 받은 경우를 제외하고 적 기본 공격·스킬에 영향을 받지 않으며 다른 유닛의 충돌을 무시한다. [duration_seconds n0=1.5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.expiry; 조건 caster.other eq 공중 도약의1.5초 단계가 종료됨. target damage physical: 공중 도약 후 부채꼴로 단검을 퍼부어 적에게 물리 피해를 입힌다. [amount n1=200/n2=300/n3=400 rank_values; stat_coefficient n4=100% scalar caster.bonusAttackDamage] / unknown other: 단검이 일렬로 깃털을 남긴다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 이 스킬로 공중에 떠 있는 동안. caster movement: 공중에 있는 동안 이동할 수 있습니다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "지연 피해의 cast 사건 및 엄격한1.5초 초과, 대상 지정 불가 예외/유체화 충돌 제한 미보존, 공중 이동 조건 없음",
+      "correction": "공중 단계 종료 시 피해로 기록하고 예외·충돌 제한·공중 이동 조건 및 별도 깃털 잔류를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been affected by them."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 649,
+      "verdict": "repaired",
+      "reason": "피해 발동을 최초 cast 이후 시간이 지난 조건 대신1.5초 공중 단계 종료 사건으로 고쳤다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

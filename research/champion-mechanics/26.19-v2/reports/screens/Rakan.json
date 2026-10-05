@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Rakan.E",
+      "sourceHash": "7c5992cd419888af472342273a969bdc904a131a65ba3415b7cabf6efc5c6dbe",
+      "candidateHash": "2b9fafccd5e5d04fdf2e74d977970d0543cc01343d0ab9fee6f17e6bf450075d"
+    },
+    {
+      "id": "Rakan.W",
+      "sourceHash": "be0c27aea0e8cb9f91f2c436c5d4d30745095f146f37dc014a267bfb2ffbba44",
+      "candidateHash": "a864619da8f980f8072d15a15cf660a1f294f1fc2125931323c210bcb0cb6e53"
+    },
+    {
+      "id": "Rakan.P",
+      "sourceHash": "3469441fcfd4412de0c43974f55df57986a40923ed8959ff9142cd492bf7ce11",
+      "candidateHash": "c1ca5706f049f5e76ea2964f4bc0210d8a4cabf9a366810b38057713dc100436"
+    },
+    {
+      "id": "Rakan.Q",
+      "sourceHash": "07a4f35f501f08c8f9b801007b2f74a7cda04086dbdfb84370c7ac84027d378d",
+      "candidateHash": "c78e2d2f9863a32d6cfb3dcdbce28d3d4b1f1cf4eccd90ff3153e396e625ab4a"
+    },
+    {
+      "id": "Rakan.R",
+      "sourceHash": "fc7c257fbeb5ff5485248bea53a3200310bb76192434086604c369d2c42ad008",
+      "candidateHash": "df467f69bb2d7d7fbbb61a517bd38dacbc0a1fe2ea9d90ca8ad6242084bfeec7"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Rakan.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Rakan flings a magical feather that deals (70/115/160/205/250 + (70% Ability Power)) magic damage to the first enemy hit.",
+      "issue": "피해 규칙에 첫 적중 조건은 맞지만, 규칙 발동을 `cast`로 지정해 적중 사건이 누락됐습니다. 설명문은 피해가 첫 적중 적에게 적용된다고 명시합니다.",
+      "correction": "발동을 첫 적중 사건으로 표현하고, `first` 조건은 유지하세요."
+    },
+    {
+      "id": "Rakan.R",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Rakan deals (100/200/300 + (50% Ability Power)) magic damage and Charms enemies for 1/1.25/1.5 second(s) the first time he touches them.",
+      "issue": "피해와 매혹은 적마다 ‘처음 닿을 때’ 적용되지만, 단일 `first` 조건은 첫 번째 적 하나에게만 적용되는 것처럼 표현합니다. 원문은 각 적을 처음 접촉하는 경우를 뜻합니다.",
+      "correction": "접촉 대상별 최초 적중이라는 조건을 표현하세요."
+    },
+    {
+      "id": "Rakan.R",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The first champion touched grants Rakan 150% decaying Move Speed.",
+      "issue": "`hit_order = first`는 첫 적중 전체를 뜻할 수 있어, 첫 접촉 대상이 챔피언이어야 하는 조건을 충분히 나타내지 않습니다.",
+      "correction": "첫 챔피언 접촉을 명시하는 조건으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

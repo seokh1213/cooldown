@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 2,
+  "id": "Renata.R",
+  "champion": "Renata",
+  "slot": "R",
+  "patch": "26.19",
+  "sourceHash": "d647deaea18448dfe8e3258ec43282cab60586904e862c77469308fc4a096239",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Hostile Takeover",
+      "ko": "적대적 인수"
+    },
+    "cooldownSeconds": [
+      150,
+      130,
+      110
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      2000,
+      2000,
+      2000
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "150/130/110"
+      },
+      {
+        "label": "Duration",
+        "values": "1.25/1.75/2.25"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "berserk",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Renata_Glasc"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Renata.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Renata sends out a wave of chemicals, causing any enemies hit to go Berserk.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Renata sends out a wave of chemicals, Berserking enemies for 1.25/1.75/2.25 seconds, causing them to Attack the nearest unit, prioritizing their allies. While Berserk, enemies gain 100% Attack Speed.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "레나타가 화학 물질의 파도를 방출해 적중하는 적을 광란 상태에 빠트립니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "레나타가 화학 물질의 파도를 방출합니다. 적중당한 적은 1.25/1.75/2.25초간 광란 상태에 빠져 근처 유닛을 기본 공격합니다. (자신의 아군 우선) 광란 상태에 빠진 적은 공격 속도가 100% 증가합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 61,
+      "end": 65
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 66,
+      "end": 70
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "2.25",
+      "value": 2.25,
+      "percent": false,
+      "start": 71,
+      "end": 75
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 181,
+      "end": 185
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 31,
+      "end": 35
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 36,
+      "end": 40
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "2.25",
+      "value": 2.25,
+      "percent": false,
+      "start": 41,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 107,
+      "end": 111
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "레나타가 화학 물질의 파도를 방출해 적중한 적을 광란 상태로 만든다. 광란 상태의 적은 가장 가까운 유닛을 공격하며 아군을 우선하고 공격 속도가 증가한다.",
+  "rules": [
+    {
+      "id": "81c42db02c8368e87475",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "enemy"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "적중한 적을 광란 상태로 만든다.",
+          "damageType": null,
+          "crowdControl": "berserk",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Renata sends out a wave of chemicals, Berserking enemies for 1.25/1.75/2.25 seconds, causing them to Attack the nearest unit, prioritizing their allies."
+        }
+      ]
+    },
+    {
+      "id": "a969e81fbe2a02225061",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 파도에 의해 광란 상태임"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "enemy",
+          "text": "광란 적은 가장 가까운 유닛을 공격하며 그 적 자신의 아군을 우선한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Berserking enemies for 1.25/1.75/2.25 seconds, causing them to Attack the nearest unit, prioritizing their allies."
+        }
+      ]
+    },
+    {
+      "id": "f1433f5e002724949748",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 파도에 의해 광란 상태임"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "enemy",
+          "text": "광란 상태인 적의 공격 속도가100% 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While Berserk, enemies gain 100% Attack Speed."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "e10ae1af7c5890a7c3a6986ed2d51616a07eba8126c76c550e9baadfac0901d2"
+}

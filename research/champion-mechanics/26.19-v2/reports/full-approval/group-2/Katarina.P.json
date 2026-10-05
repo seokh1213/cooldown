@@ -1,0 +1,75 @@
+{
+  "id": "Katarina.P",
+  "sourceHash": "3518e33ab8d8516c1775fc6e926fb61b50ecba6b7f0c8b63071c5e4964a46e13",
+  "beforeCandidateHash": "da41c7d1f881880362274cad22129d08925c13cf5612680677ba2196c0b5f25e",
+  "candidateHash": "27b8dd514329c5064db9b8e03c51fcf4dfd505b3cc7bf4a60df68ca458534233",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "본인이3초내피해준적챔피언사망스킬쿨15초감소;단검줍기주변모든적68~240+60%추가AD+70~100%AP마법 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: death 사건의 행위자 enemy; 조건 enemy.target_type eq champion / enemy.time eq 죽은 이 적챔피언에게 카타리나가 마지막으로 피해를 준 뒤3초 이내; caster: 해당 적챔피언이 사망하면 카타리나의 스킬쿨타임을15초 줄입니다.; 수치 cooldown_seconds en:body:n1=15 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq 단검 획득; nearby_enemies: 단검을 주우면 카타리나 주변 모든 적에게(68~240+60%추가AD+(70~100)%AP)의 마법피해를 줍니다. 범위의 변화 기준은 공급원문에 없습니다. [magic]; 수치 min_amount en:body:n2=68 상수 formula_components / max_amount en:body:n3=240 상수 formula_components / stat_coefficient en:body:n4=60%(백분율) caster.bonusAttackDamage formula_components / min_amount en:body:n5=70%(백분율) caster.abilityPower formula_components / max_amount en:body:n6=100%(백분율) caster.abilityPower formula_components; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "죽은적과본인피해 사이3초관계·쿨감초단위·범위레벨단정 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Whenever an enemy champion dies that Katarina has damaged in the last 3 seconds, her Ability Cooldowns are reduced by 15 seconds. If Katarina picks up a Dagger, she uses it to slash through all nearby enemies, dealing ((68 ~ 240) + (60% bonus Attack Damage) + ((70% ~ 100%) Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 175,
+      "verdict": "repaired",
+      "reason": "enemy의 카타리나에게 피해받은시점→사망3초 관계로 구체화."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "68~240 기본피해와70~100%AP 범위의 변화 기준/중간 산식이 본문·요약에 없어 레벨비례를 단정하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

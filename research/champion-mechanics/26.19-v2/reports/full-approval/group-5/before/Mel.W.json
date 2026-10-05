@@ -1,0 +1,215 @@
+{
+  "summary": "멜이 자신을 감싸는 방어막을 얻고 이동 속도가 증가한다. 적 챔피언의 투사체를 반사하며, 범위 내 각 적을 대상으로 하는 투사체는 파괴된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "멜이 보호막을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "gaining (80/110/140/170/200 + (70% Ability Power)) Shields for 0.75 seconds and 40% decaying Move Speed for 0.75 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Mel forms a barrier around herself that reflects projectiles from enemy champions, gaining (80/110/140/170/200 + (70% Ability Power)) Shields for 0.75 seconds and 40% decaying Move Speed for 0.75 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "멜의 이동 속도가 증가하며 효과가 점차 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Mel forms a barrier around herself that reflects projectiles from enemy champions, gaining (80/110/140/170/200 + (70% Ability Power)) Shields for 0.75 seconds and 40% decaying Move Speed for 0.75 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적 챔피언이 발사한 투사체"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "투사체를 반사해 공격자에게 원래 피해량의 일정 비율을 마법 피해로 입힌다. 반사 피해는 원래 시전자의 능력치를 피해 조정 및 마법 관통력 적용 전에 기준으로 계산하며, 원래 시전자의 아이템 효과는 적용하지 않는다. 물리 피해를 마법 피해로 전환할 때 피해량이 감소한다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "unknown",
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Reflected projectiles deal (40/45/50/55/60% + (5% per 100 Ability Power)) original damage as magic damage. Reflected projectile damage is calculated using the original caster's attributes before damage adjustments and magic penetration. Physical damage is reduced by 30% when converted to magic damage. Does not apply item effects from the original caster."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "반사 피해의 Ability Power 계수 주체를 원문만으로 확정할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Reflected projectiles deal (40/45/50/55/60% + (5% per 100 Ability Power)) original damage as magic damage."
+        }
+      ]
+    }
+  ]
+}

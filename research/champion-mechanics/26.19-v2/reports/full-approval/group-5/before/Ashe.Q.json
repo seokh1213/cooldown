@@ -1,0 +1,247 @@
+{
+  "summary": "애쉬의 기본 공격은 집중 중첩을 부여합니다. 중첩이 기준에 도달하면 스킬을 사용할 수 있으며, 사용하면 공격 속도가 증가하고 일정 시간 기본 공격이 강화됩니다. 강화 공격은 여러 개의 작은 타격으로 구성되며 공격당 적중 시 효과는 한 번만 적용됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "애쉬의 기본 공격이 집중 중첩을 부여하며, 각 중첩은 일정 시간 유지됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Ashe's Attacks grant a stack for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "gte",
+          "value": {
+            "kind": "text",
+            "value": "집중 중첩 4회"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "애쉬는 이 중첩 조건에서 스킬을 사용할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At 4 stacks, she may activate this Ability."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "gte",
+          "value": {
+            "kind": "text",
+            "value": "집중 중첩 4회"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "애쉬의 공격 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Ashe gains 20/30/40/50/60% Attack Speed and her Attacks deal (110/115/120/125/130% Attack Damage) damage instead for 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "강화된 기본 공격은 기본 공격 피해를 대체하여 공격력 계수에 따른 피해를 입힙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "강화 공격은 여러 개의 작은 타격으로 구성되지만 적중 시 효과는 공격당 한 번만 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Ashe gains 20/30/40/50/60% Attack Speed and her Attacks deal (110/115/120/125/130% Attack Damage) damage instead for 6 seconds. The empowered Attacks are comprised of a flurry of 5 small strikes. They only apply on-hit effects once per Attack."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "스키마에 중첩 수를 나타내는 전용 조건 필드가 없어 4중첩 조건을 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At 4 stacks, she may activate this Ability."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "MonkeyKing.W",
+      "sourceHash": "9e026243f3bde09140443a1296ee66feb968220c5b7f74504cb53e17cdca41c7",
+      "candidateHash": "98edc4d1a3380a058354c50e7830dabd1cf60bb06fc9e45b9a02d2b46447d6bb"
+    },
+    {
+      "id": "MonkeyKing.E",
+      "sourceHash": "75bd2d95c906283ec39ad5863312ac7d7fbf1c499478806ec1513436b918a4eb",
+      "candidateHash": "a4e504af54d5f5027bdad12b845e05cd3fa6ff6295c322acde554dbe4e56fcb2"
+    },
+    {
+      "id": "MonkeyKing.P",
+      "sourceHash": "04a3b0414a745be0ce123fd8e134cc7f6faa4c73e3addf5b8de12249a304c9a2",
+      "candidateHash": "02336d79dc09e7bbb5b8bad6d6d23f67722ff21d85f8939a3bdcb9d245a4f918"
+    },
+    {
+      "id": "MonkeyKing.Q",
+      "sourceHash": "9e9201349c71c772aae0f4ecc37ba9218b1b470138160d85801e523cdc4e62d6",
+      "candidateHash": "456ac223ba4bf9ebdc1e323d790d90d358524ea80061d394c581158c02511259"
+    },
+    {
+      "id": "MonkeyKing.R",
+      "sourceHash": "30e756881d258b9647a21b7f477d6aaf6d0be53a5dd25daca2eec18d8ae50e58",
+      "candidateHash": "22c15edf78b24ca637ab5fe2069ea02974140f41caad878fb4f7bc41f02fde89"
+    }
+  ],
+  "findings": [
+    {
+      "id": "MonkeyKing.E",
+      "path": "rules.2.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "He and his Clone gain 40/45/50/55/60% Attack Speed for 5 seconds.",
+      "issue": "효과의 text와 근거는 오공과 분신 모두가 공격 속도를 얻는다고 하지만, subject는 caster만 지정합니다.",
+      "correction": "오공과 분신 모두를 나타내도록 subject를 고치거나, 현재 스키마로 표현할 수 없다면 누락된 주체를 불확실성으로 표시하세요."
+    },
+    {
+      "id": "MonkeyKing.P",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "These bonuses are increased by 100% for 5 seconds every time he or his Clone hit an enemy champion or jungle monster with an Attack or Ability, stacking up to 5 times.",
+      "issue": "조건이 챔피언 적중만 지정해, 바로 아래 규칙의 몬스터 조건과 별개로 이 규칙을 정글 몬스터 적중에는 적용하지 않습니다.",
+      "correction": "챔피언 또는 정글 몬스터 적중을 이 규칙의 조건으로 표현하세요."
+    },
+    {
+      "id": "MonkeyKing.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "These bonuses are increased by 100% for 5 seconds every time he or his Clone hit an enemy champion or jungle monster with an Attack or Ability, stacking up to 5 times.",
+      "issue": "조건이 몬스터 적중만 지정해, 바로 위 규칙의 챔피언 조건과 별개로 이 규칙을 챔피언 적중에는 적용하지 않습니다.",
+      "correction": "챔피언 또는 정글 몬스터 적중을 이 규칙의 조건으로 표현하세요."
+    },
+    {
+      "id": "MonkeyKing.R",
+      "path": "rules.1.effects.1.parameters.2.numbers",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "plus 8/12/16% max Health physical damage over 2 seconds.",
+      "issue": "원문의 계수는 8/12/16%인데 추출된 세 값은 각각 8, 12, 16으로 percent가 false여서 백분율 단위가 빠졌습니다.",
+      "correction": "세 값 모두를 백분율로 표시하세요."
+    },
+    {
+      "id": "MonkeyKing.R",
+      "path": "rules.1.effects.1.parameters.2.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "plus 8/12/16% max Health physical damage over 2 seconds.",
+      "issue": "max Health 기준 소유자는 원문에서 특정되지 않아 gap에서 불확실성을 올바르게 보존했지만, 정형화된 statSubject는 unknown이고 stat은 maxHealth로 단정합니다. STATS에 currentHealth나 missingHealth가 없다는 점을 고려해도 이 단정은 근거를 넘습니다.",
+      "correction": "max Health 기준 소유자를 정형 필드에서 unknown으로 유지하고, 원문 표현은 text와 gap으로 보존하세요."
+    }
+  ],
+  "notes": []
+}

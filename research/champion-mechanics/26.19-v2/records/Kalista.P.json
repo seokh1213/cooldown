@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 2,
+  "id": "Kalista.P",
+  "champion": "Kalista",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "30749fd814a6c7a1d2d5033ebc6cd4da9065709b5a2b39cb71c8640ee8782b9e",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Martial Poise",
+      "ko": "전투 태세"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Kalista.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Enter a movement command while winding up Kalista's basic attack or Pierce to lunge a short distance when she launches her attack.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Martial PoiseEnter a movement command while winding up Kalista's basic attack or Pierce to lunge a short distance when she launches her attack. Lunge distance scales with boot tier. Kalista's basic attacks have unique drawbacks. They:Cannot be cancelled;Miss if her target leaves vision;Deal only 90% of her total attack damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "칼리스타가 기본 공격이나 꿰뚫는 창의 준비 동작을 하는 동안 이동 명령을 하면, 칼리스타가 기본 공격과 함께 해당 위치로 도약합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "전투 태세칼리스타가 기본 공격이나 꿰뚫는 창의 준비 동작을 하는 동안 이동 명령을 하면, 칼리스타가 기본 공격과 함께 해당 위치로 도약합니다. 도약 거리는 장화의 단계에 비례합니다. 칼리스타의 기본 공격에는 다음과 같은 고유한 단점이 있습니다.취소 불가대상이 시야에서 사라지면 빗나감총 공격력의 90%만 적용됨",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 297,
+      "end": 300
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 165,
+      "end": 168
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "기본 공격이나 Q의 준비 동작 중 이동 명령을 입력하면 공격 발사와 함께 도약합니다. 기본 공격은 취소할 수 없고, 대상이 시야에서 사라지면 빗나가며 총 공격력의 90%만 피해를 줍니다.",
+  "rules": [
+    {
+      "id": "e9255a2afb579c23a3ab",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격 또는 Q 준비 동작 중 이동 명령 입력"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격 또는 꿰뚫는 창이 발사됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "공격을 발사할 때 짧은 거리를 도약하며, 도약 거리는 장화 단계에 따라 달라집니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enter a movement command while winding up Kalista's basic attack or Pierce to lunge a short distance when she launches her attack. Lunge distance scales with boot tier."
+        }
+      ]
+    },
+    {
+      "id": "162d438976187fe7c953",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "unseen"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "기본 공격은 빗나갑니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Miss if her target leaves vision;"
+        }
+      ]
+    },
+    {
+      "id": "0064151808dc9c2d78b9",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "칼리스타의 기본 공격은 총 공격력의 90%만 피해를 줍니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deal only 90% of her total attack damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "They:Cannot be cancelled;Miss if her target leaves vision;Deal only 90% of her total attack damage."
+        }
+      ]
+    },
+    {
+      "id": "b5e52280b3b0770a4d63",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "칼리스타의 기본 공격은 취소할 수 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cannot be cancelled;"
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "3bad1939af7fe928b0b992da741424f30ea609be801caff037fe47b6a7b6cd8f"
+}

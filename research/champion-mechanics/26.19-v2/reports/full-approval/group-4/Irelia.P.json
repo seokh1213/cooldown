@@ -1,0 +1,141 @@
+{
+  "id": "Irelia.P",
+  "sourceHash": "83c6413c97718a6dedb60a55b1b9084a9bf9f87a764fbd5e4a2dda6aa3ab6218",
+  "beforeCandidateHash": "d93c49bd97bbc3deec53553f17862d35725f7bf807474a6f3d97d2dc4bb92f53",
+  "candidateHash": "253dc983542240510a030782e65c1f991b8368d2c8e121e82b8f0d53f195aa18",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 1,
+  "summaryCheck": "스킬 적중 시 챔피언마다/비챔피언 하나 이상당 중첩, 6초·최대4, 중첩당 10~25% 공격 속도, 최대 중첩 추가 피해, 챔피언/구조물/대형 몬스터 공격 갱신을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion 적용. caster: 챔피언을 맞힐 때마다 중첩을 얻습니다.; count=one  scalar, duration_seconds=6  scalar, storage_cap=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type neq champion, enemy.hit_count gte one 적용. caster: 한 스킬이 챔피언이 아닌 적을 하나 이상 맞히면 중첩 하나를 얻는다.; count=one  scalar, duration_seconds=6  scalar, storage_cap=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 보유 중첩 하나당 레벨 범위로 제시된 해당 백분율(%)만큼 공격 속도가 증가한다.; min_amount=10.0  level_range, max_amount=25.0  level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.resource eq 4 적용. target: 최대 중첩에서 기본 공격이 추가 마법 피해를 입힙니다. (magic); min_amount=10  level_range, max_amount=61  level_range, stat_coefficient=20% caster의 bonusAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.target_type eq champion 적용. caster: 챔피언을 공격하면 중첩 지속시간이 초기화됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.target_type eq structure 적용. caster: 구조물을 공격하면 중첩 지속시간이 초기화됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.target_type eq monster, target.other eq 대형 몬스터 적용. caster: 대형 몬스터를 공격하면 중첩 지속시간이 초기화됩니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1",
+      "issue": "중첩 지속시간/상한 누락",
+      "correction": "6초·최대4 매개변수와 시전자 사건 보완",
+      "sourceId": "en:body",
+      "quote": "Irelia gains a stack for 6 seconds when she hits an enemy with an Ability (max 4)."
+    },
+    {
+      "path": "rules.2",
+      "issue": "최대4인데 4초과 조건으로 공격 속도 차단",
+      "correction": "중첩당 효과로 정정하고 백분율 명시",
+      "sourceId": "en:body",
+      "quote": "She gains (10.0 ~ 25.0)% Attack Speed per stack"
+    },
+    {
+      "path": "rules.3,6",
+      "issue": "최대 중첩 표현과 대형 몬스터 범위 불명확",
+      "correction": "resource=4 및 대형 몬스터 text 조건",
+      "sourceId": "en:body",
+      "quote": "Attacking a champion, structure, or large monster refreshes the duration of the stacks."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 116,
+      "verdict": "repaired",
+      "reason": "공격 속도는 최대 중첩만이 아니라 중첩마다 적용된다. 잘못된 4초과 조건을 제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "공격 속도 (10.0 ~ 25.0)%는 백분율 범위이지만 frozen lexical 숫자표의 양 끝 percent는 false다. 효과 text의 백분율 단위를 우선하고 숫자표만으로 절대값 증가를 실행하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,1512 @@
+{
+  "summary": {
+    "stories": 41,
+    "turns": 51,
+    "reviewedSlots": 91,
+    "questionHash": "f539ec1d9a745f53796b6f72918824d02e808f7dbf7b419e40e07f4ecf35c634",
+    "baselinePass": 26,
+    "variantPass": 35,
+    "improved": 12,
+    "regressed": 3,
+    "replaced": 24,
+    "scope": "App entrypoint without judge/generation; purpose-built fixed questions, not an overall user quality estimate. No production integration."
+  },
+  "rows": [
+    {
+      "id": "pyke-purchase",
+      "area": "conversion",
+      "turn": 1,
+      "question": "파이크는 체력 템 가면 어떻게되지?",
+      "expected": {
+        "q": "파이크는 체력 템 가면 어떻게되지?",
+        "require": [
+          "추가.*체력",
+          "공격력",
+          "14"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 17.94
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 15.58
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-amount",
+      "area": "conversion",
+      "turn": 1,
+      "question": "파이크 체력 140짜리 템이면 공격력 얼마나 올라?",
+      "expected": {
+        "q": "파이크 체력 140짜리 템이면 공격력 얼마나 올라?",
+        "require": [
+          "공격력 10"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 10"
+        ],
+        "ms": 3.74
+      },
+      "variant": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 10"
+        ],
+        "source": "baseline",
+        "ms": 2.87
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-amount",
+      "area": "conversion",
+      "turn": 2,
+      "question": "그럼 280짜리는?",
+      "expected": {
+        "q": "그럼 280짜리는?",
+        "require": [
+          "공격력 20"
+        ],
+        "forbid": [
+          "공격력 10"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 20"
+        ],
+        "ms": 48.16
+      },
+      "variant": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 20"
+        ],
+        "source": "baseline",
+        "ms": 18.87
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-amount",
+      "area": "conversion",
+      "turn": 3,
+      "question": "기본 체력도 전환되는 거야?",
+      "expected": {
+        "q": "기본 체력도 전환되는 거야?",
+        "require": [
+          "기본",
+          "(?:포함되지|전환되지|않)"
+        ],
+        "forbid": [
+          "공격력 20"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:기본",
+          "missing:(?:포함되지|전환되지|않)"
+        ],
+        "ms": 6.32
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n기본·성장 체력은 이 추가 체력 전환에 포함되지 않습니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 7.43
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-nonmultiple",
+      "area": "conversion",
+      "turn": 1,
+      "question": "파이크 추가 체력 150 올리면 공격력 얼마야?",
+      "expected": {
+        "q": "파이크 추가 체력 150 올리면 공격력 얼마야?",
+        "require": [
+          "공격력 10\\.714"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 10\\.714"
+        ],
+        "ms": 6.45
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 150이면 추가 공격력 10.714입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 8.48
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-replace",
+      "area": "conversion",
+      "turn": 1,
+      "question": "파이크 체력템 가면 체력이랑 공격력 둘 다 늘어?",
+      "expected": {
+        "q": "파이크 체력템 가면 체력이랑 공격력 둘 다 늘어?",
+        "require": [
+          "추가.*체력",
+          "(?:대체|대신|붙지|늘지)"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:대체|대신|붙지|늘지)"
+        ],
+        "ms": 1.01
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 1.68
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-growth",
+      "area": "conversion",
+      "turn": 1,
+      "question": "파이크 성장 체력도 공격력으로 바뀌어?",
+      "expected": {
+        "q": "파이크 성장 체력도 공격력으로 바뀌어?",
+        "require": [
+          "성장",
+          "(?:포함되지|전환되지|않)"
+        ]
+      },
+      "baseline": {
+        "text": "체력 (1레벨)는 파이크 670입니다.\n\n공격력 (1레벨)는 파이크 62입니다.",
+        "pass": false,
+        "failures": [
+          "missing:성장",
+          "missing:(?:포함되지|전환되지|않)"
+        ],
+        "ms": 7.45
+      },
+      "variant": {
+        "text": "체력 (1레벨)는 파이크 670입니다.\n\n공격력 (1레벨)는 파이크 62입니다.",
+        "pass": false,
+        "failures": [
+          "missing:성장",
+          "missing:(?:포함되지|전환되지|않)"
+        ],
+        "source": "baseline",
+        "ms": 7.38
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-one",
+      "area": "attack",
+      "turn": 1,
+      "question": "아크샨은 평타 한대 치면 어떻게되지?",
+      "expected": {
+        "q": "아크샨은 평타 한대 치면 어떻게되지?",
+        "require": [
+          "취소",
+          "(?:이동 속도|Move Speed)"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 3.99
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 3.85
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-cancel",
+      "area": "attack",
+      "turn": 1,
+      "question": "아크샨 두 번째 공격 취소하면?",
+      "expected": {
+        "q": "아크샨 두 번째 공격 취소하면?",
+        "require": [
+          "취소",
+          "(?:이동 속도|Move Speed)"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 3.66
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 4.53
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-fired",
+      "area": "attack",
+      "turn": 1,
+      "question": "아크샨 평타 두 대 다 치면 이속도 올라?",
+      "expected": {
+        "q": "아크샨 평타 두 대 다 치면 이속도 올라?",
+        "require": [
+          "(?:취소 조건에 해당하지|발동하지|증가하지|오르지)"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:취소 조건에 해당하지|발동하지|증가하지|오르지)"
+        ],
+        "ms": 3.41
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격까지 발사하면 취소 조건에 해당하지 않습니다.\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 4.83
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield",
+      "area": "conditions",
+      "turn": 1,
+      "question": "아크샨 미니언 평타 세대 맞추면 보호막 생겨?",
+      "expected": {
+        "q": "아크샨 미니언 평타 세대 맞추면 보호막 생겨?",
+        "require": [
+          "미니언",
+          "(?:해당하지|생기지|없)"
+        ]
+      },
+      "baseline": {
+        "text": "기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다.",
+        "pass": false,
+        "failures": [
+          "missing:미니언",
+          "missing:(?:해당하지|생기지|없)"
+        ],
+        "ms": 3.99
+      },
+      "variant": {
+        "text": "미니언은 이 효과의 챔피언 대상 조건에 해당하지 않습니다.\n3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 4.86
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield",
+      "area": "conditions",
+      "turn": 2,
+      "question": "아니 챔피언 세대면?",
+      "expected": {
+        "q": "아니 챔피언 세대면?",
+        "require": [
+          "챔피언",
+          "보호막",
+          "(?:사용 가능|쿨.*돌|대기시간.*끝)"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": false,
+        "failures": [
+          "missing:챔피언",
+          "missing:보호막",
+          "missing:(?:사용 가능|쿨.*돌|대기시간.*끝)"
+        ],
+        "ms": 19.53
+      },
+      "variant": {
+        "text": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 19.45
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-shield",
+      "area": "conditions",
+      "turn": 3,
+      "question": "보호막 쿨 아직 남아 있으면?",
+      "expected": {
+        "q": "보호막 쿨 아직 남아 있으면?",
+        "require": [
+          "(?:해당하지|생기지|발동하지)"
+        ]
+      },
+      "baseline": {
+        "text": "보호막 · 이동 속도 증가 · 주문력 60%",
+        "pass": false,
+        "failures": [
+          "missing:(?:해당하지|생기지|발동하지)"
+        ],
+        "ms": 2.72
+      },
+      "variant": {
+        "text": "보호막 · 이동 속도 증가 · 주문력 60%",
+        "pass": false,
+        "failures": [
+          "missing:(?:해당하지|생기지|발동하지)"
+        ],
+        "source": "baseline",
+        "ms": 3.07
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "akshan-one-shield",
+      "area": "conditions",
+      "turn": 1,
+      "question": "아크샨 평타 한대만 치면 보호막 생겨?",
+      "expected": {
+        "q": "아크샨 평타 한대만 치면 보호막 생겨?",
+        "require": [
+          "(?:3회|세 번째|3번째)",
+          "챔피언"
+        ]
+      },
+      "baseline": {
+        "text": "기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 3.88
+      },
+      "variant": {
+        "text": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 4.09
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "switch-champion",
+      "area": "memory",
+      "turn": 1,
+      "question": "파이크 체력 280짜리 템 사면?",
+      "expected": {
+        "q": "파이크 체력 280짜리 템 사면?",
+        "require": [
+          "공격력 20"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "missing:공격력 20"
+        ],
+        "ms": 1.34
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.\n추가 체력 280이면 추가 공격력 20입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 1.56
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "switch-champion",
+      "area": "memory",
+      "turn": 2,
+      "question": "아크샨은 두 번째 공격 취소하면?",
+      "expected": {
+        "q": "아크샨은 두 번째 공격 취소하면?",
+        "require": [
+          "취소",
+          "(?:이동 속도|Move Speed)"
+        ],
+        "forbid": [
+          "체력 14",
+          "공격력 20"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 3.61
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 3.87
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "switch-champion",
+      "area": "memory",
+      "turn": 3,
+      "question": "그럼 두 발 다 쏘면 이속도 얻어?",
+      "expected": {
+        "q": "그럼 두 발 다 쏘면 이속도 얻어?",
+        "require": [
+          "(?:취소 조건에 해당하지|발동하지|오르지)"
+        ],
+        "forbid": [
+          "체력 14"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨 이동 속도 (1레벨)는 330입니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:취소 조건에 해당하지|발동하지|오르지)"
+        ],
+        "ms": 6.96
+      },
+      "variant": {
+        "text": "아크샨 이동 속도 (1레벨)는 330입니다.",
+        "pass": false,
+        "failures": [
+          "missing:(?:취소 조건에 해당하지|발동하지|오르지)"
+        ],
+        "source": "baseline",
+        "ms": 7.8
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "lee-control",
+      "area": "cc",
+      "turn": 1,
+      "question": "리신 궁에는 CC 종류가 뭐야?",
+      "expected": {
+        "q": "리신 궁에는 CC 종류가 뭐야?",
+        "require": [
+          "속박",
+          "(?:밀쳐|밀치|넉백|날려)",
+          "(?:띄|공중)"
+        ]
+      },
+      "baseline": {
+        "text": "리 신 R 용의 분노 군중 제어는 속박 (하드 · 시전 중 주 대상) · 에어본(밀치기) (하드 · 주 대상) · 에어본(띄우기) (하드 · 날아간 대상과 충돌한 적)입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 1.09
+      },
+      "variant": {
+        "text": "시전 시 · 대상 종류: 챔피언:\n대상은 시전 시간 동안 속박된다.\n\n대상 종류: 챔피언:\n적 챔피언에게 물리 피해를 입힌다.\n적 챔피언을 뒤로 날려 보낸다.\n적 챔피언을 뒤로 밀쳐낸다.\n\n충돌한 대상 · collides with the kicked enemy champion:\n날아간 대상과 충돌한 적을 잠시 공중에 띄운다.\n날아간 대상과 충돌한 적에게 물리 피해를 입힌다. 추가 피해는 날아간 대상의 추가 체력에 비례한다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 1.79
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "lee-control",
+      "area": "cc",
+      "turn": 2,
+      "question": "리신 궁은 속박 먼저하고 날아가나?",
+      "expected": {
+        "q": "리신 궁은 속박 먼저하고 날아가나?",
+        "require": [
+          "시전",
+          "속박",
+          "(?:밀쳐|밀치|넉백|날려)"
+        ]
+      },
+      "baseline": {
+        "text": "### 리 신 궁극기의 CC 적용 순서\n주 대상은 먼저 속박되고, 그다음 발차기로 밀쳐집니다. 속박은 리 신 R의 시전 중에 적용되고, 밀치기는 발차기가 적중할 때 적용됩니다. 날아간 주 대상과 충돌한 다른 적에게는 별도로 띄우기·에어본이 적용됩니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 1.21
+      },
+      "variant": {
+        "text": "시전 시 · 대상 종류: 챔피언:\n대상은 시전 시간 동안 속박된다.\n\n대상 종류: 챔피언:\n적 챔피언에게 물리 피해를 입힌다.\n적 챔피언을 뒤로 날려 보낸다.\n적 챔피언을 뒤로 밀쳐낸다.\n\n충돌한 대상 · collides with the kicked enemy champion:\n날아간 대상과 충돌한 적을 잠시 공중에 띄운다.\n날아간 대상과 충돌한 적에게 물리 피해를 입힌다. 추가 피해는 날아간 대상의 추가 체력에 비례한다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 1.42
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "lee-collision",
+      "area": "cc",
+      "turn": 1,
+      "question": "리신 R 날아간 대상이랑 충돌한 적도 속박이야?",
+      "expected": {
+        "q": "리신 R 날아간 대상이랑 충돌한 적도 속박이야?",
+        "require": [
+          "충돌",
+          "(?:공중|띄|에어본)"
+        ]
+      },
+      "baseline": {
+        "text": "리 신 R 용의 분노 군중 제어는 속박 (하드 · 시전 중 주 대상) · 에어본(밀치기) (하드 · 주 대상) · 에어본(띄우기) (하드 · 날아간 대상과 충돌한 적)입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 0.79
+      },
+      "variant": {
+        "text": "시전 시 · 대상 종류: 챔피언:\n대상은 시전 시간 동안 속박된다.\n\n대상 종류: 챔피언:\n적 챔피언에게 물리 피해를 입힌다.\n적 챔피언을 뒤로 날려 보낸다.\n적 챔피언을 뒤로 밀쳐낸다.\n\n충돌한 대상 · collides with the kicked enemy champion:\n날아간 대상과 충돌한 적을 잠시 공중에 띄운다.\n날아간 대상과 충돌한 적에게 물리 피해를 입힌다. 추가 피해는 날아간 대상의 추가 체력에 비례한다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 1.49
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "mundo-health",
+      "area": "scope",
+      "turn": 1,
+      "question": "문도 박사 패시브 CC 막을 때 체력 뭘 잃어?",
+      "expected": {
+        "q": "문도 박사 패시브 CC 막을 때 체력 뭘 잃어?",
+        "require": [
+          "현재 체력",
+          "4%"
+        ]
+      },
+      "baseline": {
+        "text": "문도 박사 P 가고 싶은 데로 간다 군중 제어는 CC 없음입니다.",
+        "pass": false,
+        "failures": [
+          "missing:현재 체력",
+          "missing:4%"
+        ],
+        "ms": 0.88
+      },
+      "variant": {
+        "text": "문도 박사 P 가고 싶은 데로 간다 군중 제어는 CC 없음입니다.",
+        "pass": false,
+        "failures": [
+          "missing:현재 체력",
+          "missing:4%"
+        ],
+        "source": "baseline",
+        "ms": 1.81
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "mundo-canister",
+      "area": "scope",
+      "turn": 1,
+      "question": "문도 박사 P 통을 밟으면 어떻게 돼?",
+      "expected": {
+        "q": "문도 박사 P 통을 밟으면 어떻게 돼?",
+        "require": [
+          "회복",
+          "최대 체력",
+          "(?:15|재사용)"
+        ]
+      },
+      "baseline": {
+        "text": "**플레이할 때**\nQ 오염된 뼈톱은 상대 현재 체력에 비례하므로 체력이 가득한 상대에게 세고 마무리에는 약합니다. 패시브는 첫 이동 불가 효과를 무시하는 대신 체력을 잃고 근처에 통을 떨어뜨립니다.\n\n**상대할 때**\n문도의 패시브는 첫 이동 불가 효과를 무시합니다. Q 오염된 뼈톱은 처음 맞는 대상에게만 들어가고 현재 체력에 비례합니다.",
+        "pass": false,
+        "failures": [
+          "missing:회복",
+          "missing:최대 체력",
+          "missing:(?:15|재사용)"
+        ],
+        "ms": 18.53
+      },
+      "variant": {
+        "text": "**플레이할 때**\nQ 오염된 뼈톱은 상대 현재 체력에 비례하므로 체력이 가득한 상대에게 세고 마무리에는 약합니다. 패시브는 첫 이동 불가 효과를 무시하는 대신 체력을 잃고 근처에 통을 떨어뜨립니다.\n\n**상대할 때**\n문도의 패시브는 첫 이동 불가 효과를 무시합니다. Q 오염된 뼈톱은 처음 맞는 대상에게만 들어가고 현재 체력에 비례합니다.",
+        "pass": false,
+        "failures": [
+          "missing:회복",
+          "missing:최대 체력",
+          "missing:(?:15|재사용)"
+        ],
+        "source": "baseline",
+        "ms": 17.51
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "mundo-enemy",
+      "area": "scope",
+      "turn": 1,
+      "question": "문도 박사 P 통을 적 챔피언이 밟으면 어떻게 돼?",
+      "expected": {
+        "q": "문도 박사 P 통을 적 챔피언이 밟으면 어떻게 돼?",
+        "require": [
+          "적 챔피언",
+          "파괴"
+        ],
+        "forbid": [
+          "적 챔피언.*회복합니다"
+        ]
+      },
+      "baseline": {
+        "text": "**플레이할 때**\nQ 오염된 뼈톱은 상대 현재 체력에 비례하므로 체력이 가득한 상대에게 세고 마무리에는 약합니다. 패시브는 첫 이동 불가 효과를 무시하는 대신 체력을 잃고 근처에 통을 떨어뜨립니다.\n\n**상대할 때**\n문도의 패시브는 첫 이동 불가 효과를 무시합니다. Q 오염된 뼈톱은 처음 맞는 대상에게만 들어가고 현재 체력에 비례합니다.",
+        "pass": false,
+        "failures": [
+          "missing:적 챔피언",
+          "missing:파괴"
+        ],
+        "ms": 13.98
+      },
+      "variant": {
+        "text": "**플레이할 때**\nQ 오염된 뼈톱은 상대 현재 체력에 비례하므로 체력이 가득한 상대에게 세고 마무리에는 약합니다. 패시브는 첫 이동 불가 효과를 무시하는 대신 체력을 잃고 근처에 통을 떨어뜨립니다.\n\n**상대할 때**\n문도의 패시브는 첫 이동 불가 효과를 무시합니다. Q 오염된 뼈톱은 처음 맞는 대상에게만 들어가고 현재 체력에 비례합니다.",
+        "pass": false,
+        "failures": [
+          "missing:적 챔피언",
+          "missing:파괴"
+        ],
+        "source": "baseline",
+        "ms": 13.84
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "annie-cast",
+      "area": "trigger",
+      "turn": 1,
+      "question": "애니 패시브는 스킬을 맞혀야 중첩이 쌓여?",
+      "expected": {
+        "q": "애니 패시브는 스킬을 맞혀야 중첩이 쌓여?",
+        "require": [
+          "(?:적중 여부와 관계없이|사용)",
+          "(?:네 번|4)"
+        ]
+      },
+      "baseline": {
+        "text": "기절",
+        "pass": false,
+        "failures": [
+          "missing:(?:적중 여부와 관계없이|사용)",
+          "missing:(?:네 번|4)"
+        ],
+        "ms": 2.4
+      },
+      "variant": {
+        "text": "시전 시:\n적중 여부와 관계없이 스킬 사용 횟수를 쌓으며, 네 번 사용한 뒤 다음 피해 스킬을 위한 기절 준비 상태가 된다.\n\n강화:\nPyromania가 준비된 상태에서 다음 피해 스킬이 대상을 적중시키면 대상을 기절시킨다.\n이 강화 사용 후 Pyromania 준비 상태를 소모한다.\n\n게임 시작 또는 애니 재생성:\n게임 시작 및 재생성 시 Pyromania 준비 상태로 시작한다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 3.03
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "annie-spawn",
+      "area": "trigger",
+      "turn": 1,
+      "question": "애니 P는 부활하면 스택이 어떻게 돼?",
+      "expected": {
+        "q": "애니 P는 부활하면 스택이 어떻게 돼?",
+        "require": [
+          "(?:재생성|부활)",
+          "준비"
+        ]
+      },
+      "baseline": {
+        "text": "아니요. 애니에게는 부활 스킬이 없습니다.\n\n_v26.19_",
+        "pass": false,
+        "failures": [
+          "missing:준비"
+        ],
+        "ms": 12.82
+      },
+      "variant": {
+        "text": "아니요. 애니에게는 부활 스킬이 없습니다.\n\n_v26.19_",
+        "pass": false,
+        "failures": [
+          "missing:준비"
+        ],
+        "source": "baseline",
+        "ms": 12.63
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "chogath-cap",
+      "area": "scope",
+      "turn": 1,
+      "question": "초가스 R 미니언 먹으면 중첩 몇 개까지야?",
+      "expected": {
+        "q": "초가스 R 미니언 먹으면 중첩 몇 개까지야?",
+        "require": [
+          "6",
+          "(?:비에픽|non-epic)"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 80/70/60 · 고정 피해 · 주문력 50%",
+        "pass": false,
+        "failures": [
+          "missing:(?:비에픽|non-epic)"
+        ],
+        "ms": 2.2
+      },
+      "variant": {
+        "text": "처치 시:\n이 시전으로 대상을 처치하면 포식 중첩을 하나 얻습니다.\n포식 중첩을 얻으면 몸집이 커집니다.\n포식 중첩 획득 시 최대 체력이 증가합니다.\n포식 중첩에 따라 공격 사거리와 포식 시전 사거리가 증가하며 각각 최대치가 있습니다.\n\n처치 시 · minion or non-epic jungle monster · non-epic jungle monster if target is a monster:\n미니언 또는 비에픽 정글 몬스터 처치로 얻는 포식 중첩에는 별도의 6중첩 최대치가 적용됩니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 3.06
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "chogath-champion",
+      "area": "scope",
+      "turn": 1,
+      "question": "초가스 R 6스택 제한은 챔피언에도 적용돼?",
+      "expected": {
+        "q": "초가스 R 6스택 제한은 챔피언에도 적용돼?",
+        "require": [
+          "미니언",
+          "(?:비에픽|non-epic)"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 80/70/60 · 고정 피해 · 주문력 50%",
+        "pass": false,
+        "failures": [
+          "missing:미니언",
+          "missing:(?:비에픽|non-epic)"
+        ],
+        "ms": 2.16
+      },
+      "variant": {
+        "text": "처치 시:\n이 시전으로 대상을 처치하면 포식 중첩을 하나 얻습니다.\n포식 중첩을 얻으면 몸집이 커집니다.\n포식 중첩 획득 시 최대 체력이 증가합니다.\n포식 중첩에 따라 공격 사거리와 포식 시전 사거리가 증가하며 각각 최대치가 있습니다.\n\n처치 시 · minion or non-epic jungle monster · non-epic jungle monster if target is a monster:\n미니언 또는 비에픽 정글 몬스터 처치로 얻는 포식 중첩에는 별도의 6중첩 최대치가 적용됩니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 3.04
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "morde-stats",
+      "area": "stats",
+      "turn": 1,
+      "question": "모데카이저 궁에 들어가면 상대 스탯도 뺏겨?",
+      "expected": {
+        "q": "모데카이저 궁에 들어가면 상대 스탯도 뺏겨?",
+        "require": [
+          "10%",
+          "(?:빼앗|훔|steal)"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 140/120/100 · 자기 방어력 증가 · 자기 마법 저항력 증가",
+        "pass": false,
+        "failures": [
+          "missing:10%",
+          "missing:(?:빼앗|훔|steal)"
+        ],
+        "ms": 2.73
+      },
+      "variant": {
+        "text": "쿨 140/120/100 · 자기 방어력 증가 · 자기 마법 저항력 증가",
+        "pass": false,
+        "failures": [
+          "missing:10%",
+          "missing:(?:빼앗|훔|steal)"
+        ],
+        "source": "baseline",
+        "ms": 2.91
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "morde-after-kill",
+      "area": "stats",
+      "turn": 1,
+      "question": "모데카이저 R 안에서 상대 죽이면 훔친 능력치 어떻게 돼?",
+      "expected": {
+        "q": "모데카이저 R 안에서 상대 죽이면 훔친 능력치 어떻게 돼?",
+        "require": [
+          "(?:부활|respawn)",
+          "유지"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 140/120/100 · 자기 방어력 증가 · 자기 마법 저항력 증가",
+        "pass": false,
+        "failures": [
+          "missing:(?:부활|respawn)",
+          "missing:유지"
+        ],
+        "ms": 1.91
+      },
+      "variant": {
+        "text": "쿨 140/120/100 · 자기 방어력 증가 · 자기 마법 저항력 증가",
+        "pass": false,
+        "failures": [
+          "missing:(?:부활|respawn)",
+          "missing:유지"
+        ],
+        "source": "baseline",
+        "ms": 2.79
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "draven-axes",
+      "area": "trigger",
+      "turn": 1,
+      "question": "드레이븐 Q 도끼를 주우면 어떻게 돼?",
+      "expected": {
+        "q": "드레이븐 Q 도끼를 주우면 어떻게 돼?",
+        "require": [
+          "도끼",
+          "(?:다시|회전|Spinning)"
+        ]
+      },
+      "baseline": {
+        "text": "쿨 12/11/10/9/8 · 기본 공격 강화 · 추가 공격력 115%",
+        "pass": false,
+        "failures": [
+          "missing:도끼",
+          "missing:(?:다시|회전|Spinning)"
+        ],
+        "ms": 1.95
+      },
+      "variant": {
+        "text": "공중에 뜬 회전 도끼를 잡음:\n드레이븐이 회전 도끼를 잡으면 회전 도끼를 다시 준비합니다.\n\n6 · 해당 시간 동안 공격하지 않음:\n드레이븐이 6초 동안 공격하지 않으면 준비된 회전 도끼를 떨어뜨립니다.\n\n드레이븐은 동시에 최대 두 개의 회전 도끼를 보유할 수 있습니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 2.71
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "darius-five",
+      "area": "trigger",
+      "turn": 1,
+      "question": "다리우스 패시브 최대 중첩이면 어떻게 돼?",
+      "expected": {
+        "q": "다리우스 패시브 최대 중첩이면 어떻게 돼?",
+        "require": [
+          "(?:5|다섯|최대)",
+          "(?:공격력|Noxian|녹서스)"
+        ]
+      },
+      "baseline": {
+        "text": "자기 공격력 증가 · 추가 공격력 30%",
+        "pass": false,
+        "failures": [
+          "missing:(?:5|다섯|최대)"
+        ],
+        "ms": 1.95
+      },
+      "variant": {
+        "text": "Hemorrhage 최대 중첩 상태:\n적이 과다출혈 최대 중첩 상태에 도달하면 다리우스가 추가 공격력을 얻습니다.\n\n처치 시 · 녹서스의 단두대가 적을 처치함:\n녹서스의 단두대가 적을 처치하면 다리우스가 추가 공격력을 얻습니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 2.73
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "bard-shrine",
+      "area": "trigger",
+      "turn": 1,
+      "question": "바드 W 성소는 바로 먹는 것과 기다렸다 먹는 것 차이가 뭐야?",
+      "expected": {
+        "q": "바드 W 성소는 바로 먹는 것과 기다렸다 먹는 것 차이가 뭐야?",
+        "require": [
+          "(?:성장|강화|증가|기다)",
+          "회복"
+        ]
+      },
+      "baseline": {
+        "text": "재충전 18 · 회복 · 주문력 70%",
+        "pass": false,
+        "failures": [
+          "missing:(?:성장|강화|증가|기다)"
+        ],
+        "ms": 2.02
+      },
+      "variant": {
+        "text": "재충전 18 · 회복 · 주문력 70%",
+        "pass": false,
+        "failures": [
+          "missing:(?:성장|강화|증가|기다)"
+        ],
+        "source": "baseline",
+        "ms": 2.59
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "aurora-spirits",
+      "area": "trigger",
+      "turn": 1,
+      "question": "오로라 패시브 정령은 미니언 때려도 나오나?",
+      "expected": {
+        "q": "오로라 패시브 정령은 미니언 때려도 나오나?",
+        "require": [
+          "챔피언",
+          "정령"
+        ]
+      },
+      "baseline": {
+        "text": "회복 · 최대 체력 비례 피해 · 주문력 2%",
+        "pass": false,
+        "failures": [
+          "missing:챔피언",
+          "missing:정령"
+        ],
+        "ms": 2.36
+      },
+      "variant": {
+        "text": "회복 · 최대 체력 비례 피해 · 주문력 2%",
+        "pass": false,
+        "failures": [
+          "missing:챔피언",
+          "missing:정령"
+        ],
+        "source": "baseline",
+        "ms": 2.72
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "aphelios-interface",
+      "area": "fallback",
+      "turn": 1,
+      "question": "아펠리오스 E는 쓰면 무슨 스킬이 나가?",
+      "expected": {
+        "q": "아펠리오스 E는 쓰면 무슨 스킬이 나가?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "쿨 0 · 둔화 · 속박 · 회복",
+        "pass": true,
+        "failures": [],
+        "ms": 1.88
+      },
+      "variant": {
+        "text": "쿨 0 · 둔화 · 속박 · 회복",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 2.36
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "jayce-form",
+      "area": "fallback",
+      "turn": 1,
+      "question": "제이스 망치 Q랑 캐논 Q 쿨타임 알려줘",
+      "expected": {
+        "q": "제이스 망치 Q랑 캐논 Q 쿨타임 알려줘",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "제이스 Q 하늘로! / 전격 폭발 재사용 대기시간은 16/14/12/10/8/6초입니다. 이 스킬의 효과는 둔화, 광역, 이동기, 돌진입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.13
+      },
+      "variant": {
+        "text": "제이스 Q 하늘로! / 전격 폭발 재사용 대기시간은 16/14/12/10/8/6초입니다. 이 스킬의 효과는 둔화, 광역, 이동기, 돌진입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 3.14
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "nidalee-form",
+      "area": "fallback",
+      "turn": 1,
+      "question": "니달리 쿠거 Q 피해는 뭐에 비례해?",
+      "expected": {
+        "q": "니달리 쿠거 Q 피해는 뭐에 비례해?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "인간 형태: 니달리가 창을 던져 (70/90/110/130/150 + (50% 주문력))의 마법 피해를 입힙니다. 피해량은 창이 날아간 거리에 비례해 (227.5/292.5/357.5/422.5/487.5 + (162.5% 주문력))의 마법 피해까지 증가합니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.09
+      },
+      "variant": {
+        "text": "인간 형태: 니달리가 창을 던져 (70/90/110/130/150 + (50% 주문력))의 마법 피해를 입힙니다. 피해량은 창이 날아간 거리에 비례해 (227.5/292.5/357.5/422.5/487.5 + (162.5% 주문력))의 마법 피해까지 증가합니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 2.48
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "unreviewed",
+      "area": "fallback",
+      "turn": 1,
+      "question": "카이사 패시브 평타 세 대 치면?",
+      "expected": {
+        "q": "카이사 패시브 평타 세 대 치면?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "기본 공격 시 4초 동안 플라즈마 중첩을 쌓고 중첩당 ((4 ~ 30) + (12% 주문력)) + ((1 ~ 8) + (3% 주문력))의 마법 피해를 추가로 입힙니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2
+      },
+      "variant": {
+        "text": "기본 공격 시 4초 동안 플라즈마 중첩을 쌓고 중첩당 ((4 ~ 30) + (12% 주문력)) + ((1 ~ 8) + (3% 주문력))의 마법 피해를 추가로 입힙니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 2.54
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "hidden-blackshield",
+      "area": "fallback",
+      "turn": 1,
+      "question": "모르가나 쉴드 있을 때 모데 궁 쓰면?",
+      "expected": {
+        "q": "모르가나 쉴드 있을 때 모데 궁 쓰면?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.1
+      },
+      "variant": {
+        "text": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 2.8
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "hidden-cleanse",
+      "area": "fallback",
+      "turn": 1,
+      "question": "리신 궁은 정화나 수은으로 풀려?",
+      "expected": {
+        "q": "리신 궁은 정화나 수은으로 풀려?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "### 리 신 궁극기의 속박 해제와 시전 취소\n리 신 R은 시전 중 속박과 이후 밀치기·에어본이 별도 단계입니다. 시전 중 속박은 정화·수은 장식띠·미카엘로 해제할 수 있습니다. 속박 해제만으로 후속 밀치기까지 취소된다고 보장할 수는 없습니다. 위키에는 속박을 풀고 시전이 끝나기 전에 시전 유효 사거리 밖으로 이동하면 궁을 피할 수 있다고 설명합니다. 이미 차여 날아가는 밀치기·에어본은 이 세 해제 수단으로 풀 수 없습니다. CC 해제 자체는 궁의 피해를 제거하는 효과도 아닙니다. 속박 해제만 한 경우와 해제 후 점멸·이동까지 한 경우를 구분해야 합니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 0.8
+      },
+      "variant": {
+        "text": "### 리 신 궁극기의 속박 해제와 시전 취소\n리 신 R은 시전 중 속박과 이후 밀치기·에어본이 별도 단계입니다. 시전 중 속박은 정화·수은 장식띠·미카엘로 해제할 수 있습니다. 속박 해제만으로 후속 밀치기까지 취소된다고 보장할 수는 없습니다. 위키에는 속박을 풀고 시전이 끝나기 전에 시전 유효 사거리 밖으로 이동하면 궁을 피할 수 있다고 설명합니다. 이미 차여 날아가는 밀치기·에어본은 이 세 해제 수단으로 풀 수 없습니다. CC 해제 자체는 궁의 피해를 제거하는 효과도 아닙니다. 속박 해제만 한 경우와 해제 후 점멸·이동까지 한 경우를 구분해야 합니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 1.12
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "hidden-smite",
+      "area": "fallback",
+      "turn": 1,
+      "question": "수호천사 발동 중 강타 써져?",
+      "expected": {
+        "q": "수호천사 발동 중 강타 써져?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "### 강타와 수호천사 부활\n수호천사가 발동해 부활을 기다리는 동안에는 강타를 쓸 수 없습니다. 발동 시 사용 가능하던 소환사 주문에 부활 시간인 4초의 대기시간이 걸립니다. 부활이 끝난 뒤 대상·사거리·쿨타임을 만족하면 다시 사용할 수 있습니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 6.84
+      },
+      "variant": {
+        "text": "### 강타와 수호천사 부활\n수호천사가 발동해 부활을 기다리는 동안에는 강타를 쓸 수 없습니다. 발동 시 사용 가능하던 소환사 주문에 부활 시간인 4초의 대기시간이 걸립니다. 부활이 끝난 뒤 대상·사거리·쿨타임을 만족하면 다시 사용할 수 있습니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 7.12
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "stat-pair",
+      "area": "fallback",
+      "turn": 1,
+      "question": "오공 문도 체력하고 체젠 비교해줘",
+      "expected": {
+        "q": "오공 문도 체력하고 체젠 비교해줘",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.\n\n체력 재생 (5초당) (1레벨)는 문도 박사 7 > 오공 3.5입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 6.74
+      },
+      "variant": {
+        "text": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.\n\n체력 재생 (5초당) (1레벨)는 문도 박사 7 > 오공 3.5입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 7.55
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "stat-pair",
+      "area": "fallback",
+      "turn": 2,
+      "question": "그럼 둘 다 공속은?",
+      "expected": {
+        "q": "그럼 둘 다 공속은?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "공격 속도 (1레벨)는 오공 0.69 > 문도 박사 0.67입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 6.65
+      },
+      "variant": {
+        "text": "공격 속도 (1레벨)는 오공 0.69 > 문도 박사 0.67입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 6.97
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "cooldown",
+      "area": "fallback",
+      "turn": 1,
+      "question": "오공 조이 벡스 제이스 Q 쿨타임 알려줘",
+      "expected": {
+        "q": "오공 조이 벡스 제이스 Q 쿨타임 알려줘",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "Q 재사용 대기시간은 오공 8/7.5/7/6.5/6초 · 조이 8.5/8/7.5/7/6.5초 · 벡스 8/7/6/5/4초 · 제이스 16/14/12/10/8/6초입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.28
+      },
+      "variant": {
+        "text": "Q 재사용 대기시간은 오공 8/7.5/7/6.5/6초 · 조이 8.5/8/7.5/7/6.5초 · 벡스 8/7/6/5/4초 · 제이스 16/14/12/10/8/6초입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 2.7
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "range",
+      "area": "fallback",
+      "turn": 1,
+      "question": "제드 궁 사거리 알려줘",
+      "expected": {
+        "q": "제드 궁 사거리 알려줘",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "제드 R 죽음의 표식 사거리는 625입니다. 이 스킬의 효과는 표식 부여, 이동기, 돌진입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.24
+      },
+      "variant": {
+        "text": "제드 R 죽음의 표식 사거리는 625입니다. 이 스킬의 효과는 표식 부여, 이동기, 돌진입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 2.79
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "matchups",
+      "area": "fallback",
+      "turn": 1,
+      "question": "오공으로 럼블 모데카이저 너무 어려운데 방법 없나?",
+      "expected": {
+        "q": "오공으로 럼블 모데카이저 너무 어려운데 방법 없나?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "### 오공 vs 럼블\n**조심할 것**\n럼블 E 전기 작살을 두 발 연속으로 맞으면 둔화가 크게 증폭되어 걸어서는 빠져나갈 수 없고, 마법 저항력도 함께 깎여 이어지는 피해가 커집니다. 첫 발을 맞은 순간이 판단 시점입니다. 그 자리에서 버티지 말고 즉시 거리를 벌리거나, 이동기가 있다면 두 번째 작살이 오기 전에 씁니다.\n\n### 오공 vs 모데카이저\n**조심할 것**\n모데카이저 E 죽음의 손아귀는 범위 안 적을 한꺼번에 끌어당깁니다. 좁은 통로나 아군과 뭉친 상태로 모데카이저 앞에 서면 여러 명이 한 번에 끌려가 Q와 오라를 함께 맞습니다. 모데카이저 정면에서는 간격을 벌려 섭니다.\n\n### 공통 조언\n**아이템**\n럼블·모데카이저의 피해는 주로 마법인데 오공의 마법 저항력이 낮은 편이라 그쪽이 먼저 올릴 저항입니다. 초반에는 마법무효화의 망토로 먼저 버티고 신발은 헤르메스의 발걸음을 고릅니다.\n\n**싸우는 법**\n진입 콤보는 E 근두운 급습으로 붙으면서 돌진 도중에 Q 파쇄격을 미리 눌러 두는 것입니다. R 회전격을 돌린 직후 W 분신 전사를 쓰면 남은 분신이 오공의 궁을 흉내 냅니다. 같은 자리에 R 회전격이 한 번 더 도는 셈이라 R과 W는 붙여 쓸 때 값이 가장 크고, 오공 자신은 투명 상태로 빠지면서 상대 반격까지 피합니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 19.89
+      },
+      "variant": {
+        "text": "### 오공 vs 럼블\n**조심할 것**\n럼블 E 전기 작살을 두 발 연속으로 맞으면 둔화가 크게 증폭되어 걸어서는 빠져나갈 수 없고, 마법 저항력도 함께 깎여 이어지는 피해가 커집니다. 첫 발을 맞은 순간이 판단 시점입니다. 그 자리에서 버티지 말고 즉시 거리를 벌리거나, 이동기가 있다면 두 번째 작살이 오기 전에 씁니다.\n\n### 오공 vs 모데카이저\n**조심할 것**\n모데카이저 E 죽음의 손아귀는 범위 안 적을 한꺼번에 끌어당깁니다. 좁은 통로나 아군과 뭉친 상태로 모데카이저 앞에 서면 여러 명이 한 번에 끌려가 Q와 오라를 함께 맞습니다. 모데카이저 정면에서는 간격을 벌려 섭니다.\n\n### 공통 조언\n**아이템**\n럼블·모데카이저의 피해는 주로 마법인데 오공의 마법 저항력이 낮은 편이라 그쪽이 먼저 올릴 저항입니다. 초반에는 마법무효화의 망토로 먼저 버티고 신발은 헤르메스의 발걸음을 고릅니다.\n\n**싸우는 법**\n진입 콤보는 E 근두운 급습으로 붙으면서 돌진 도중에 Q 파쇄격을 미리 눌러 두는 것입니다. R 회전격을 돌린 직후 W 분신 전사를 쓰면 남은 분신이 오공의 궁을 흉내 냅니다. 같은 자리에 R 회전격이 한 번 더 도는 셈이라 R과 W는 붙여 쓸 때 값이 가장 크고, 오공 자신은 투명 상태로 빠지면서 상대 반격까지 피합니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 4.28
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "item-recommendation",
+      "area": "fallback",
+      "turn": 1,
+      "question": "파이크 체력템 뭐가 좋아?",
+      "expected": {
+        "q": "파이크 체력템 뭐가 좋아?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "**플레이할 때**\n패시브는 적 챔피언에게 받은 피해의 일부를 비축했다가 적에게 보이지 않게 되는 순간 되돌려줍니다. 파이크는 어떤 경로로 얻든 추가 최대 체력을 전부 공격력으로 바꿉니다.\n\n**상대할 때**\n파이크의 Q 뼈 작살, E 망자의 물살과 R 깊은 바다의 처형 피해는 물리라 이 스킬 피해에 대비하려면 방어력을 챙깁니다. 파이크가 근처에서 W로 잠수해 있으면 발밑에 상어 그림자가 맴돕니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 9.07
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "pass": false,
+        "failures": [
+          "changed_protected_answer"
+        ],
+        "source": "reviewed",
+        "ms": 10.36
+      },
+      "improved": false,
+      "regressed": true
+    },
+    {
+      "id": "item-memory",
+      "area": "fallback",
+      "turn": 1,
+      "question": "아크샨 평타 한대 치면?",
+      "expected": {
+        "q": "아크샨 평타 한대 치면?",
+        "require": [
+          "취소"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 3.22
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "ms": 3.79
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "item-memory",
+      "area": "fallback",
+      "turn": 2,
+      "question": "도란의 검 가격은?",
+      "expected": {
+        "q": "도란의 검 가격은?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "도란의 검 가격은 450 골드입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 18.2
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": false,
+        "failures": [
+          "changed_protected_answer"
+        ],
+        "source": "reviewed",
+        "ms": 8.42
+      },
+      "improved": false,
+      "regressed": true
+    },
+    {
+      "id": "item-memory",
+      "area": "fallback",
+      "turn": 3,
+      "question": "평타 한대 치면 어떻게 돼?",
+      "expected": {
+        "q": "평타 한대 치면 어떻게 돼?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "pass": true,
+        "failures": [],
+        "ms": 14.61
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "pass": false,
+        "failures": [
+          "changed_protected_answer"
+        ],
+        "source": "reviewed",
+        "ms": 2.96
+      },
+      "improved": false,
+      "regressed": true
+    },
+    {
+      "id": "ordinary-spell",
+      "area": "fallback",
+      "turn": 1,
+      "question": "아리 Q 쿨타임 몇 초야?",
+      "expected": {
+        "q": "아리 Q 쿨타임 몇 초야?",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "아리 Q 현혹의 구슬 재사용 대기시간은 7초입니다. 이 스킬의 효과는 고정 피해입니다.",
+        "pass": true,
+        "failures": [],
+        "ms": 2.24
+      },
+      "variant": {
+        "text": "아리 Q 현혹의 구슬 재사용 대기시간은 7초입니다. 이 스킬의 효과는 고정 피해입니다.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 2.92
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "english",
+      "area": "fallback",
+      "turn": 1,
+      "question": "What happens if Pyke buys health items?",
+      "expected": {
+        "q": "What happens if Pyke buys health items?",
+        "lang": "en_US",
+        "sameAsBaseline": true
+      },
+      "baseline": {
+        "text": "When Pyke is hidden from enemies, he regenerates damage that he has recently taken from champions. Pyke also cannot gain extra Maximum Health from any source, and instead gains Bonus AD. Pyke stores (9% + (0.2% Lethality)) of damage taken from champions, increased to (40% + (0.4% Lethality)) when there's more than one enemy nearby. Pyke can store up to (80 + (800% bonus Attack Damage)) damage. While unseen by enemies, he rapidly regenerates this stored damage. Additionally, Pyke converts all Maximum Health increases to Attack Damage instead at a rate of 14 Health to 1 Attack Damage.",
+        "pass": true,
+        "failures": [],
+        "ms": 17.83
+      },
+      "variant": {
+        "text": "When Pyke is hidden from enemies, he regenerates damage that he has recently taken from champions. Pyke also cannot gain extra Maximum Health from any source, and instead gains Bonus AD. Pyke stores (9% + (0.2% Lethality)) of damage taken from champions, increased to (40% + (0.4% Lethality)) when there's more than one enemy nearby. Pyke can store up to (80 + (800% bonus Attack Damage)) damage. While unseen by enemies, he rapidly regenerates this stored damage. Additionally, Pyke converts all Maximum Health increases to Attack Damage instead at a rate of 14 Health to 1 Attack Damage.",
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 5.55
+      },
+      "improved": false,
+      "regressed": false
+    }
+  ]
+}

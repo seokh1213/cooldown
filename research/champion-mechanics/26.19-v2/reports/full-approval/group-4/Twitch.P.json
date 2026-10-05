@@ -1,0 +1,49 @@
+{
+  "id": "Twitch.P",
+  "sourceHash": "8378aaaa59f8021c039ff00edde7b333c1929fb382719c4fd82fd9297b6617d4",
+  "beforeCandidateHash": "8cbf82c1b5bd4e3f422d999caba21d7e335c88eccd76f206f9427f7acaddb8da",
+  "candidateHash": "37db766042f5412b3a8e1e2eb634e68e6bdf031ef9384bd337140385710bb245",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "트위치평타적중독의중첩당초당고정피해1~5+3%시전자주문력,6초지속/최대6중첩,최대중첩초당합계6~30+18%주문력표시를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.target_type eq any 적용. target: 기본공격적중으로중독된적이중첩하나당초당해당고정피해를6초동안받는다.독은최대6회중첩된다. (true); min_amount=1  level_range, max_amount=5  level_range, stat_coefficient=3% caster의 abilityPower scalar, duration_seconds=6  scalar, storage_cap=6  scalar / target: 최대6중첩의초당전체고정피해표시다.개별중첩피해에더해지는별도피해가아니다.; min_amount=6  level_range, max_amount=30  level_range, stat_coefficient=18% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger",
+      "issue": "기본공격감염을대상의공격또는스킬적중으로확대",
+      "correction": "caster기본공격적중으로정정",
+      "sourceId": "en:body",
+      "quote": "Twitch's Attacks infect his target On-Hit"
+    },
+    {
+      "path": "rules.0.effects",
+      "issue": "보유상한6을발동횟수로표기하고최대중첩합계를별도피해로표기",
+      "correction": "storage_cap및최대합계UI표시로구별",
+      "sourceId": "en:body",
+      "quote": "Max Damage Per Second: ((6 ~ 30) + (18% Ability Power))"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 563,
+      "verdict": "repaired",
+      "reason": "감염은트위치caster의공격적중이다.ability_hit확대도함께제거했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

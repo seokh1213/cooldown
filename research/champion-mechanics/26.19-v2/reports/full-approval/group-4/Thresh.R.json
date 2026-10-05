@@ -1,0 +1,118 @@
+{
+  "id": "Thresh.R",
+  "sourceHash": "73192835942164cf531d293688cd2f5e7e78aac6a007d9e2a9a864c409a3f506",
+  "beforeCandidateHash": "ab719539ed985d1c161a22f18ffe26c1a3756c970956641cf2c6fb601227475b",
+  "candidateHash": "5c515e621c2ae0fcc5d5636bbd2f877b8c50e8a7ec32e07678f499471acf4686",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "장벽 감옥 생성, 최초 장벽 충돌 적 챔피언의 99% 2초 둔화와 250/400/550 + 쓰레쉬 주문력 100% 마법 피해, 충돌 장벽 파괴와 이후 장벽의 무피해·절반 지속시간 둔화를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy의 other 사건에서 target.target_type eq champion, unknown.other eq 이 감옥의 장벽이 아직 하나도 부서지지 않은 상태에서 첫 장벽 충돌 적용. target: 장벽과 충돌한 적 챔피언을 둔화시킵니다. (slow); amount=99%  scalar, duration_seconds=2  scalar / target: 장벽과 충돌한 적 챔피언에게 마법 피해를 입힙니다. (magic); amount=250/400/550  rank_values, stat_coefficient=100% caster의 abilityPower scalar / unknown: 충돌한 해당 장벽은 충돌 한 번 후 부서집니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy의 other 사건에서 target.target_type eq champion, unknown.other eq 장벽 하나가 무너진 뒤 나머지 장벽과 충돌 적용. target: 이미 장벽 하나가 부서진 뒤 남은 장벽에 충돌한 적 챔피언은 피해 없이 99% 둔화됩니다. 지속시간은 기본 2초의 절반입니다. (slow); amount=99%  scalar, duration_seconds=2  formula_components / unknown: 충돌한 해당 장벽은 충돌 한 번 후 부서집니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. unknown: 쓰레쉬가 영혼 장벽으로 이루어진 감옥을 생성합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.1",
+      "issue": "충돌 장벽이 온전하기만 하면 다른 장벽이 이미 부서진 뒤에도 기본 피해를 적용한다.",
+      "correction": "감옥의 첫 장벽이 부서지기 전 최초 충돌로 제한했다.",
+      "sourceId": "en:body",
+      "quote": "after one is broken, the rest deal no damage and Slow for half duration."
+    },
+    {
+      "path": "rules.0-2.effects",
+      "issue": "장벽 생성과 충돌 후 파괴가 규칙에 없고 후속 둔화 시간 구성 참조가 빠졌다.",
+      "correction": "감옥 생성·각 충돌 장벽 파괴를 추가하고 후속 시간은 기본 2초의 절반임을 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Walls break after one collision, and after one is broken, the rest deal no damage and Slow for half duration."
+    },
+    {
+      "path": "gaps",
+      "issue": "절반의 정확한 값이 불명이라고 하지만 기본 2초와 절반 관계는 확정되며 파괴 상태도 텍스트 조건으로 표현 가능하다.",
+      "correction": "숫자 참조에 계산된 1초가 없다는 한계만 남기고 상태 표현 불가능 주장을 제거했다.",
+      "sourceId": "en:body",
+      "quote": "Slow for half duration."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 542,
+      "verdict": "false_positive",
+      "reason": "충돌 한 번 뒤 부서지는 장벽이라는 원문상 온전한 장벽 충돌은 타당하다. 다만 기존 조건은 감옥 전체의 첫 장벽 파괴 전후를 구분하지 못하는 실제 오류가 있어 첫 장벽 충돌 조건으로 수정했다."
+    },
+    {
+      "index": 543,
+      "verdict": "false_positive",
+      "reason": "한국어 본문은 장벽을 통과하는 적 챔피언이 둔화된다고 명시하며 이후 남은 장벽은 같은 충돌 효과의 지속시간만 바뀐다. 남은 장벽 충돌 조건은 타당하다."
+    },
+    {
+      "index": 544,
+      "verdict": "repaired",
+      "reason": "기본 2초의 절반을 text뿐 아니라 duration_seconds의 기준 구성 참조로 보존했다. 계산된 1초 참조 부재는 unresolved_number이며 2초 자체로 실행하지 않도록 명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "후속 장벽의 둔화는 기본 2초의 절반이라는 확정 관계다. frozen 숫자표에는 half에 대한 비율이나 계산된 1초 참조가 없어 2초를 formula_components로 보존한다. 이를 후속 지속시간 2초 자체로 실행하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

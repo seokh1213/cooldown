@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 2,
+  "id": "Hecarim.P",
+  "champion": "Hecarim",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "cf624ded1fa7f8d4ceb8877d0a4752950985e3632a51945798c26e0330de1b32",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Warpath",
+      "ko": "출정"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          12,
+          12,
+          14,
+          14,
+          14,
+          16,
+          16,
+          16,
+          18,
+          18,
+          18,
+          20,
+          20,
+          20,
+          22,
+          22,
+          22,
+          24,
+          24,
+          24
+        ],
+        "digits": 2,
+        "trimZeros": true,
+        "percent": true
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Hecarim.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Hecarim gains Attack Damage equal to a percentage of his bonus Move Speed.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Hecarim gains ((12% ~ 24%) bonus Movement Speed) Attack Damage, increasing based on level.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "헤카림의 공격력이 추가 이동 속도의 일정 비율만큼 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "헤카림이 ((12% ~ 24%) 추가 이동 속도)의 공격력을 얻습니다. 공격력은 레벨에 따라 증가합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "12%",
+      "value": 12,
+      "percent": true,
+      "start": 16,
+      "end": 19
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "24%",
+      "value": 24,
+      "percent": true,
+      "start": 22,
+      "end": 25
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "12%",
+      "value": 12,
+      "percent": true,
+      "start": 7,
+      "end": 10
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "24%",
+      "value": 24,
+      "percent": true,
+      "start": 13,
+      "end": 16
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "헤카림의 추가 이동 속도 일부가 공격력으로 전환됩니다. 전환 비율은 레벨에 따라 증가합니다.",
+  "rules": [
+    {
+      "id": "1388090045624382245f",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "레벨에 따라 자신의 추가 이동 속도의12%~24%만큼 공격력을 추가로 얻습니다. 입력 이동 속도는 소비하거나 대체하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "totalAttackDamage",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim gains ((12% ~ 24%) bonus Movement Speed) Attack Damage, increasing based on level."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "스키마에는 bonus movement speed 입력 스탯이 없다. 전체 moveSpeed로 대체하지 않고 효과 텍스트와12%~24% 계수로 보존하므로 단순 구조화된 선형 스탯 계산은 불가하다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "((12% ~ 24%) bonus Movement Speed)"
+        }
+      ]
+    }
+  ],
+  "candidateHash": "09a4c40ced811691352ba651b0a7fd47795f51ff6a031289f49e01aa7d8d4a1a"
+}

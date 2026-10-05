@@ -1,0 +1,305 @@
+{
+  "id": "Quinn.R",
+  "sourceHash": "0da37066e02243b4fe7ede34848fdd8622cf847d87c3386308cab66e946b063a",
+  "beforeCandidateHash": "4481d1e67abfce48216cfa2fe79ad656f414ec11744765dcc881bc9a741f3239",
+  "candidateHash": "798cd918ce9c044d691c7a3cdd9e5eae2a4832767f93d7773b6ebd491ffdecad",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "2초채널후70/100/130%MS·재사용허용·attack/Q/E자동재사용·주변physical/챔피언표식·종료·비미니언피해MS3초상실을대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "채널2초후70/100/130%MS및R재사용허용,시작즉시MS로오독안함.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "70",
+              "value": 70,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "100",
+              "value": 100,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "130%",
+              "value": 130,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "활성R에서공격은자동재사용.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "발러와 함께하는 이R이 활성화됨"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "활성R에서Q/E사용만자동재사용. 다른cast로확대안함.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "발러와 함께하는 이R이 활성화됨"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "사용한 스킬이 실명 공격 또는 공중제비"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "R재사용주변적60/90/120+35%bonusADphysical,챔피언만Harrier,스킬종료. 범위KO충돌기록.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n4",
+            "en:body:n5",
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n7"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n7",
+              "raw": "35%",
+              "value": 35,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "활성R중비미니언출처에게실제피해를받으면MS보너스3초상실. enemy조건은출처를가리킴.",
+      "verifiedConditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "발러와 함께하는 이R이 활성화됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n8"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n8",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules,gaps",
+      "issue": "자동재사용스킬/활성조건누락·지역범위미공급이라는거짓gap.",
+      "correction": "Q/E와R활성인과조건·명시MS%·본문/요약범위확인및KO충돌gap.",
+      "sourceId": "en:body",
+      "quote": "Attacking or using Blinding Assault or Vault automatically Recasts this Ability."
+    },
+    {
+      "path": "rules.3.effects.1.kind",
+      "issue": "실제 매사냥 표식이 other로 분류됨",
+      "correction": "표식 대상은 공중 강습 적중 챔피언만이라는 텍스트를 유지하고 kind mark로 정정했다.",
+      "sourceId": "en:body",
+      "quote": "Recast: Quinn and Valor perform an aerial maneuver, dealing (60/90/120 + (35% bonus Attack Damage)) physical damage, marking champions with Harrier, and ending this Ability."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 388,
+      "verdict": "false_positive",
+      "reason": "damage_taken.subjectcaster가피해받는퀸이고enemy조건이비미니언출처를제한한다. 원문과일치한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "KO본문은공중강습피해를챔피언만으로서술하나EN본문과두요약은주변적피해/챔피언표식을구분한다. EN본문과요약의주변적피해를기록했다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

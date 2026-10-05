@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Leona.Q",
+      "sourceHash": "c707d18a909f0db3f6b7d5ff428480b9111d27c220e8be4b92dfd2a789a18348",
+      "candidateHash": "2a40049ef0773c37104405d11f5b83ea75e9c35ef5dce2c22ea44f7cd70e3ad4"
+    },
+    {
+      "id": "Leona.R",
+      "sourceHash": "eef1adb72e05b5095d6fac22183c2f45a617193f119e3be17d843252f33a9852",
+      "candidateHash": "9d027e3c409812b83b37972ccbdf36ddab177e7f12e468f4852255c0c5e49d07"
+    },
+    {
+      "id": "Leona.E",
+      "sourceHash": "5656b4fea12de0d52d5129be7c31231c1ad8319a3755287d1945357b99f0f0a8",
+      "candidateHash": "11b9101ea2c76282545814d390dd699b8b2a0a7950b7803ba28883def4794a81"
+    },
+    {
+      "id": "Leona.P",
+      "sourceHash": "e82ec7696f53033a60ffa343be1fd00ac4418f44582bbc1acf29c22b48a978e6",
+      "candidateHash": "9d886a448fe4b7dd5c5c2a4bdb7b3b4710cf469e87cb65ee1f9e1d0480bf21dc"
+    },
+    {
+      "id": "Leona.W",
+      "sourceHash": "5e0d454d791aef4fa9be3396339af9c0e0fc1627a3ab0b1cd39d3c98d14fa9b5",
+      "candidateHash": "54780682e48217d9b02abe39b2d7dd5ddbed2a57c79c1804a690a2577ed28dcf"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Leona.E",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The last champion struck will be Rooted for 0.5 seconds and Leona will dash to them.",
+      "issue": "속박과 돌진은 E 시전 후 마지막으로 적중한 챔피언을 기준으로 발생하는데, 규칙 트리거가 일반적인 `ability_hit`으로 되어 있어 대상 선택의 순서와 마지막 적중 조건이 빠졌습니다.",
+      "correction": "허용된 hit_order에 `last`가 없어도 마지막 적중 대상 조건을 미상으로 남기고, 이 효과가 마지막 적중 챔피언에 귀속됨을 규칙이나 gap에 보존하세요."
+    },
+    {
+      "id": "Leona.P",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Other allied champions consume the mark when they damage the marked enemy, dealing an additional (32 ~ 151) magic damage.",
+      "issue": "표식 소모와 추가 피해는 다른 아군 챔피언이 표식 대상에게 피해를 줄 때 발생하지만, 트리거가 `other`라 피해 발생 조건을 나타내지 않습니다.",
+      "correction": "트리거에 아군의 표식 대상 피해 발생 조건을 보존하세요. 이벤트 어휘로 정확히 표현할 수 없다면 조건을 미상으로 남기세요."
+    },
+    {
+      "id": "Leona.W",
+      "path": "rules.0.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Leona raises her shield, reducing incoming damage by 8/12/16/20/24 and gaining (20/27.5/35/42.5/50 + (20% bonus Armor)) Armor and (20/27.5/35/42.5/50 + (20% bonus Magic Resist)) Magic Resist for 3 seconds.",
+      "issue": "피해 감소 효과에 방어력·마법 저항력 획득과 같은 3초 지속시간이 연결되어 있습니다. 원문은 3초를 방어력과 마법 저항력 획득에만 명시합니다.",
+      "correction": "피해 감소 수치에 3초 지속시간을 연결하지 말고, 방어력 및 마법 저항력 증가 지속시간으로만 기록하세요."
+    },
+    {
+      "id": "Leona.W",
+      "path": "rules.0.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Damage reduction effect can't reduce the damage below 50%.",
+      "issue": "50% 하한이 피해 감소량의 `amount`로 붙어 있어, 피해 감소 효과가 받는 피해를 50%까지만 줄인다는 제한과 다르게 읽힙니다.",
+      "correction": "50%를 피해 감소 효과의 하한 제약으로 별도 기록하고, 감소량 매개변수에서는 분리하세요."
+    },
+    {
+      "id": "Leona.W",
+      "path": "rules.0.effects.1.parameters.4",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Leona raises her shield, reducing incoming damage by 8/12/16/20/24 and gaining (20/27.5/35/42.5/50 + (20% bonus Armor)) Armor and (20/27.5/35/42.5/50 + (20% bonus Magic Resist)) Magic Resist for 3 seconds.",
+      "issue": "방어력과 마법 저항력 증가에 각기 5개 랭크 값과 20% 계수가 있지만, 해당 효과의 전체 매개변수 배열에는 두 값 묶음만 있고 지속시간이 세 번째로 연결됩니다. `parameters.4`는 존재하지 않습니다.",
+      "correction": "방어력과 마법 저항력의 두 수치 묶음 및 두 20% 계수를 각각 보존하고, 3초 지속시간을 별도 매개변수로 포함하세요."
+    }
+  ],
+  "notes": []
+}

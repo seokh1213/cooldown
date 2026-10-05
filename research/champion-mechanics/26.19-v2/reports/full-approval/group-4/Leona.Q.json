@@ -1,0 +1,49 @@
+{
+  "id": "Leona.Q",
+  "sourceHash": "c707d18a909f0db3f6b7d5ff428480b9111d27c220e8be4b92dfd2a789a18348",
+  "beforeCandidateHash": "2a40049ef0773c37104405d11f5b83ea75e9c35ef5dce2c22ea44f7cd70e3ad4",
+  "candidateHash": "592d71ead4e2705ee75a5b63fcaa55e8e88f88dc03735a4a928f00859f6ca3ba",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "다음 강화 기본 공격의 1초 기절과 10/35/60/85/110 + 레오나 주문력 30% 추가 마법 피해, 사용 후 6초 안에 공격하지 않으면 효과 소실을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 다음 기본 공격을 강화한다. 정해진 시간 안에 사용하지 않으면 효과가 사라진다.; duration_seconds=6  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 followup_attack 사건에서 target.target_type eq any, caster.activation eq empowered, caster.other eq 스킬 사용 후 6초 안의 강화된 다음 기본 공격 적용. target: 강화된 다음 기본 공격이 대상을 기절시킨다. (stun); duration_seconds=1  scalar / target: 강화된 다음 기본 공격이 추가 마법 피해를 입힌다. (magic); amount=10/35/60/85/110  rank_values, stat_coefficient=30% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions",
+      "issue": "강화 공격이 실제 적용되는 6초 유효시간·다음 공격 범위가 조건으로 빠졌다.",
+      "correction": "사용 후 6초 안의 다음 강화 기본 공격을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "The Attack must be used within 6 seconds or it is lost."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

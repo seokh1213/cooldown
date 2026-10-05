@@ -1,0 +1,65 @@
+{
+  "summary": "구체가 충격파를 방출해 주변 적에게 마법 피해를 입히고 구체 방향으로 끌어당긴다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "충격파가 주변 적에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "충격파가 주변 적을 구체 방향으로 끌어당긴다.",
+          "damageType": null,
+          "crowdControl": "pull",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Orianna commands her Ball to unleash a shockwave, dealing (225/350/475 + (110% Ability Power)) magic damage to nearby enemies and Knocking them in the direction of the Ball."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

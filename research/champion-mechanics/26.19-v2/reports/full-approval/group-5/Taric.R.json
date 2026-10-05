@@ -1,0 +1,87 @@
+{
+  "id": "Taric.R",
+  "sourceHash": "d460c30cab375f3fdebbadfc2ac194d592e039a3c22973deb6635ec0d273594d",
+  "beforeCandidateHash": "1aea49d9ac8abe0a866a8c7701626a6b17ec974eaafb0213e24855ad9b3d898d",
+  "candidateHash": "d51c96554605aa982747e419261e1cad3178e9b37f29ee2933e920f893687853",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "양언어 원문의 2.5초 시전 지연과 주변 아군 챔피언 무적 지속2.5초를 구별했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "expiry는 시전 지연2.5초 종료다. 그때 주변 아군 챔피언에 invulnerable2.5초를 부여하며 지연과 무적 지속을 중복 duration으로 합산하지 않았다. 무적은 스탯 수치 변경이 아닌 other 상태다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "천상의 광휘 시전으로부터 2.5초가 지남"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "그 시점에 근처에 있는 아군 챔피언"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "2.5",
+              "value": 2.5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "시전 지연과 무적 지속이 동일 effect duration 두 개로 혼합되고 무적이 stat_modifier로 분류됨",
+      "correction": "2.5초 지연 조건과 2.5초 무적 상태 효과를 분리했다.",
+      "sourceId": "en:body",
+      "quote": "After 2.5 seconds, nearby ally champions become invulnerable for 2.5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

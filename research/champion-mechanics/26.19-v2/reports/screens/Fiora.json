@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Fiora.P",
+      "sourceHash": "1f1c503368f17f22c58c273d711d06542a8129df8dd3cec8cf150f2bff61aaac",
+      "candidateHash": "80d7ba8809ef69a9da3fbde9b3b8624a080d6618a81bbb8a3749031d3251e4b4"
+    },
+    {
+      "id": "Fiora.Q",
+      "sourceHash": "0511291d90317efaa4b94cb97d9b89be30f3356e65b9edb4b264a51f1d876f36",
+      "candidateHash": "c4ba4eb43559cb259d0be9981815ce26ad039c313dbc5c2e1d0e2ea9c797c18d"
+    },
+    {
+      "id": "Fiora.E",
+      "sourceHash": "4bf2d96b3ed74a5e97216e17a3a9985b9a283deb12a5b9df9aece40b9cacd350",
+      "candidateHash": "dda85af4cc57769e85bae3277f4caecb7c9d3bdbbc53f49f240560d1eb99ee71"
+    },
+    {
+      "id": "Fiora.R",
+      "sourceHash": "1d68e368e9343b67a1524b7d13cbeb28779e0b4ef9233e5af4cc2552154d2aa2",
+      "candidateHash": "4364590ba08364aa5ad8b6a9e4c65aba5ce252bc6d1eb05c6dad489e6d44b912"
+    },
+    {
+      "id": "Fiora.W",
+      "sourceHash": "c7b42b711a5a5aea04d6dc5e7f20a2b4884b73943a628d9174431fb2e51f4257",
+      "candidateHash": "4dd669a5f5cc123e38845f416a80052d41371384e57ad9e469a5b0d01e7e6e51"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Fiora.E",
+      "path": "rules.2.conditions",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "The second Attack always critically strikes for 160/170/180/190/200% damage.",
+      "issue": "두 번째 공격에만 적용된다는 조건이 없고, 효과 주체도 target으로 기록되어 있어 모든 공격 대상에게 치명타 피해 효과가 적용되는 것처럼 표현됩니다.",
+      "correction": "조건에 두 번째 공격(hit_order=second)을 명시하고, 공격 변형 효과의 주체를 피오라의 공격/대상 적중으로 정리하세요."
+    },
+    {
+      "id": "Fiora.R",
+      "path": "rules.4.trigger",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If Fiora strikes all four Vitals within 8 seconds or if the target dies after she has hit at least one, Fiora restores (80/105/130 + (70% bonus Attack Damage)) Health per second to surrounding allied champions for 5 seconds.",
+      "issue": "이 규칙은 attack 이벤트와 한 번 이상 급소를 적중한 조건으로만 회복을 발동시킵니다. 네 급소를 8초 안에 모두 적중했을 때도 발동해야 합니다.",
+      "correction": "네 급소 모두를 8초 안에 적중하는 조건을 별도 발동 경로로 표현하고, 사망 경로는 대상 사망 이벤트와 사전 급소 적중 조건으로 유지하세요."
+    },
+    {
+      "id": "Fiora.R",
+      "path": "rules.5.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If Fiora strikes all four Vitals within 8 seconds or if the target dies after she has hit at least one",
+      "issue": "사망 후 회복 경로의 조건으로 target.hit_count를 검사하지만, 인용문에서 한 번 이상 적중한 주체는 Fiora입니다. target은 적중 횟수 소유자가 아닙니다.",
+      "correction": "급소 적중 횟수를 피오라가 해당 대상에게 기록한 횟수로 표현하거나 구조화할 수 없다면 조건을 텍스트로 보존하고 gap으로 남기세요."
+    },
+    {
+      "id": "Fiora.R",
+      "path": "rules.5.trigger",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "If Fiora strikes all four Vitals within 8 seconds or if the target dies after she has hit at least one",
+      "issue": "이 규칙은 death 이벤트에서 네 급소 모두를 8초 안에 적중한 경로를 발동시키는 것처럼 보입니다. 그 경로는 네 번째 급소 적중 때 발동하며, 사망 경로와 구별되어야 합니다.",
+      "correction": "네 급소 적중 경로는 공격/급소 적중 이벤트로, 대상 사망 경로는 death 이벤트로 분리하세요."
+    },
+    {
+      "id": "Fiora.W",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Fiora parries an Immobilizing effect, the stabbed enemy is Stunned rather than Slowed.",
+      "issue": "기절 조건에 ‘이동 불가 효과를 막아냄’이 아니라 해당 효과가 없음을 나타내는 absent 조건이 기록되어 있어 설명 문구와 모순됩니다.",
+      "correction": "조건을 이동 불가 효과를 막아낸 경우로 바꾸세요."
+    }
+  ],
+  "notes": []
+}

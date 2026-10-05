@@ -1,0 +1,146 @@
+{
+  "id": "Lissandra.R",
+  "sourceHash": "46020d93a1b38761b00253c959acbf77dd794d42ab2341916836e1c28e1a9efb",
+  "beforeCandidateHash": "4f96f4786edb05a9159652deebaed06c6834fe77bf823a2998f5b3e9b529f667",
+  "candidateHash": "cbbfcb924436b6440b3fd7089dc282ace59aa86c7db6258dd645da0854d7bae4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "적챔피언1.5초기절,자기시전2.5초경직/무적/대상지정불가/행동금지와100/150/200+AP55%회복(본인손실HP1%마다+1%),어느분기든150/250/350+AP75%마법피해/3초얼음구역45/60/75%둔화/knockdown을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target other eq 적 챔피언 → target: 적 챔피언에게 시전하면 대상을 기절시킨다. [stun] / duration_seconds=1.5 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target other eq 자기 자신에게 시전 → caster: 자신에게 시전하면 경직 상태가 된다. [stasis] / duration_seconds=2.5 [scalar] | caster: 자기시전 시100/150/200+자신의주문력55%를 회복하며 자신의 잃은체력1%당 이 회복량이1% 증가합니다. / amount=100/150/200 [rank_values]; stat_coefficient=55% (caster abilityPower) [formula_components]; ratio_input=1% [scalar]; ratio_output=1% [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive / 조건 caster other eq 경직 상태 → caster: 경직 상태의 유닛은 움직이거나 행동할 수 없고, 무적이며 대상으로 지정할 수 없다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 시전 대상에게서 어둠의 얼음이 퍼져 적에게 마법 피해를 준다. [magic] / amount=150/250/350 [rank_values]; stat_coefficient=75% (caster abilityPower) [formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 자기 또는 적챔피언 시전대상에서 퍼진 얼음은3초 유지되며 얼음의 영향받는 적을45/60/75% 둔화시킵니다.3초는얼음지속시간이고개별둔화잔류시간은미명시입니다. / other=3 [scalar]; amount=45/60/75% [rank_values]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target other eq 적 → enemy: 적을 쓰러뜨린다. [knockdown]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/3/4/5.trigger",
+      "issue": "시전행위자가시전대상target이었다.",
+      "correction": "리산드라시전caster로수정했다.",
+      "sourceId": "en:body",
+      "quote": "Lissandra encases herself or an enemy champion in ice."
+    },
+    {
+      "path": "rules.3-4/gaps",
+      "issue": "명시되지않은주변범위와3초개별둔화지속시간을단정했고본인경직속성의적용이불명확하다는falsegap이있었다.",
+      "correction": "얼음영향적과3초구역지속시간/전체둔화%로보존하고명시된자기경직속성의falsegap을제거했다.",
+      "sourceId": "en:body",
+      "quote": "The ice persists for 3 seconds, Slowing enemies by 45/60/75%."
+    },
+    {
+      "path": "rules.1.effects.1.text",
+      "issue": "손실HP회복증가의자기스탯기준이불명확했다.",
+      "correction": "본인손실HP1%당기본회복량+1%를명시했다.",
+      "sourceId": "en:body",
+      "quote": "increased by 1% for each 1% missing Health."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 258,
+      "verdict": "false_positive",
+      "reason": "스키마other+text는구조화불가조건을보존하는허용방식이며현재'자기자신에게시전'은selfcast분기를명시한다. 별도의selfenum이없어원문조건을삭제할이유가없다."
+    },
+    {
+      "index": 259,
+      "verdict": "repaired",
+      "reason": "3초를얼음지속시간other로옮기고구역내둔화45/60/75%를명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "도구 설명은 얼음 피해와 둔화가 적용되는 적의 거리 범위를 명시하지 않아 주변 적 범위가 불확실하다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "45/60/75%는모든랭크%둔화이나frozen숫자표는마지막만percent=true이다. 전체단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Varus.E",
+      "sourceHash": "547ad0fca95010d1f5c851c7dbe91a34c46198001a555a8dda26beee4af3b6d6",
+      "candidateHash": "8f9b7d1365063a00faf3e4852c5b7da50816b70fdeb454810f0aeb7049a84518"
+    },
+    {
+      "id": "Varus.P",
+      "sourceHash": "66c5be9f29b869325d9689b4d4f3c065c238bfde8124481ede7c327067b75b8a",
+      "candidateHash": "b8bc222346ab3b441303061a0769e68ba57a49ae205ec062ff946312f9e07a64"
+    },
+    {
+      "id": "Varus.Q",
+      "sourceHash": "dcd0875a76a638a231c9247e46d933ad004cdd8f34900b8152d5c62ed0b3a26d",
+      "candidateHash": "b81a609dfc1edcf5d51753ac124b0f6686bb911e0cab6029b34a088c5a70ee36"
+    },
+    {
+      "id": "Varus.R",
+      "sourceHash": "b1c366db5ce2b7d22d98e17fe1dbb115be386f08f9a7d328253d88818c88fdb7",
+      "candidateHash": "5fe9f0efd3a1651c13a6bad647e57e35021d258d5a99cab87a969c20128e84a4"
+    },
+    {
+      "id": "Varus.W",
+      "sourceHash": "995b0b2153d626e25dd544b590216afb75f8277b057f8d4d2b0d4b90a2d44af8",
+      "candidateHash": "fe9d8e8b0167fc84303e2aac64a3d24f127541e660919c86ac4252ddfc954594"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Varus.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When Varus kills an enemy, he gains (10% ~ 20%) Attack Speed, (1100% bonus Attack Speed) Attack Damage, and (1100% bonus Attack Speed) Ability Power for (5 ~ 11) seconds.",
+      "issue": "대상 유형이 챔피언이 아닌 경우로 제한되어 있어, 원문에 있는 ‘적 처치’ 조건을 누락합니다. 이 규칙은 조건 없이 적 처치 시 발동하고 챔피언 처치 관여 규칙은 별도로 적용됩니다.",
+      "correction": "이 조건을 제거해 일반 적 처치 규칙이 모든 적 처치에 적용되게 합니다."
+    },
+    {
+      "id": "Varus.P",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Champion takedowns grant 30% Attack Speed that can bypass the Attack Speed cap, (3300% bonus Attack Speed) Attack Damage, and (3300% bonus Attack Speed) Ability Power instead.",
+      "issue": "챔피언 처치 관여 규칙에 대상이 챔피언이어야 한다는 조건이 추가되어 있습니다. 원문은 챔피언 처치 관여라고만 하며 대상 유형 조건을 따로 명시하지 않습니다.",
+      "correction": "대상 유형 조건을 제거하거나, 처치 관여 조건을 원문 수준으로 표현합니다."
+    },
+    {
+      "id": "Varus.R",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The corruption spreads from its target to uninfected enemy champions. If it reaches them, they take the same damage and Root.",
+      "issue": "감염되지 않은 대상이라는 원문 조건을 `mark` 부재로 확정했습니다. gap에서 감염 판정이 이 역병 표식인지 불명확하다고 밝혔으므로, 이 조건은 원문보다 구체적이며 gap과도 충돌합니다.",
+      "correction": "`mark` 부재 조건을 제거하고, 감염되지 않은 챔피언이라는 조건은 gap으로 남깁니다."
+    },
+    {
+      "id": "Varus.W",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Detonating Blight on champions and epic monsters also reduces his basic Abilities' Cooldowns by 13% of their Maximum per stack.",
+      "issue": "쿨다운 감소의 대상 조건에서 에픽 몬스터를 누락했습니다. 현재 조건은 챔피언 처치 대상만 포함합니다.",
+      "correction": "조건을 챔피언 또는 에픽 몬스터로 표현합니다. 몬스터 분류만 지원된다면 에픽 몬스터 범위를 별도 gap으로 남깁니다."
+    },
+    {
+      "id": "Varus.W",
+      "path": "rules.4.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Passive damage from Blight detonations is capped at 120 damage per stack against jungle monsters.",
+      "issue": "피해 상한 조건이 모든 몬스터로 확장되어 있습니다. 원문은 정글 몬스터로 한정합니다.",
+      "correction": "몬스터 전체 조건을 정글 몬스터로 좁히거나, 정글 몬스터 분류를 표현할 수 없다면 조건 범위를 gap으로 남깁니다."
+    },
+    {
+      "id": "Varus.W",
+      "path": "rules.5.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Varus' next Piercing Arrow deals an additional 6/8/10/12/14% missing Health magic damage, increased up to 9/12/15/18/21% missing Health damage based on charge time.",
+      "issue": "충전 시간에 따른 최대 잃은 체력 피해 비율을 `maxHealth` 기준으로 지정했습니다. 원문은 최대 체력이 아니라 잃은 체력 비율이라고 명시합니다.",
+      "correction": "이 통계 입력을 `missingHealth`로 바꾸거나, 해당 통계를 표현할 수 없다면 값은 텍스트 및 gap으로 남깁니다."
+    }
+  ],
+  "notes": []
+}

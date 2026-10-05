@@ -1,0 +1,130 @@
+{
+  "summary": "치명적인 피해를 받으면 알 형태가 되어 체력을 완전히 회복하고 방어력과 마법 저항력이 변동된다. 알로 변한 뒤 살아남으면 환생한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "치명적인 피해를 받음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "알 형태로 변한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "체력을 완전히 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "방어력과 마법 저항력이 변동된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Upon taking fatal damage, Anivia reverts to an egg, healing to full Health and receiving (-40 ~ 20) Armor and Magic Resist."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n2"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "알 형태로 변한 뒤 생존"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "revive",
+          "subject": "caster",
+          "text": "알 형태로 변한 뒤 해당 시간 동안 생존하면 환생한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If she survives for 6 seconds, she is reborn."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

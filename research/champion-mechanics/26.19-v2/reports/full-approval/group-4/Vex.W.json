@@ -1,0 +1,50 @@
+{
+  "id": "Vex.W",
+  "sourceHash": "d72baabbdb95ea4f2466c21258889fe180ab24996fdb480d7f1c2c2e9bdd9cd3",
+  "beforeCandidateHash": "829cb2d897a630e1b963d79eed049cd37532175530b160a1e8d82878ab27552a",
+  "candidateHash": "957adda1ecb0c11aa983528bf1d0cec49ed48a9b88021a3879bd8235a820721e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "자기2.5초보호막50~150+75%벡스주문력,주변적충격파마법피해80~240+30%주문력,맞은적우울소모를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 벡스가 보호막을 얻습니다.; amount=50/75/100/125/150  rank_values, duration_seconds=2.5  scalar, stat_coefficient=75% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. nearby_enemies: 충격파가 적중한 적에게 마법 피해를 줍니다. (magic); amount=80/120/160/200/240  rank_values, stat_coefficient=30% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 별도 조건 없이 적용. target: 충격파에 적중한 적의 우울 표식을 소모합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.trigger.subject",
+      "issue": "우울소모적중행위자가target",
+      "correction": "caster로정정",
+      "sourceId": "en:body",
+      "quote": "Consumes Gloom on enemies hit."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

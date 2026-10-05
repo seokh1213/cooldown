@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Leblanc.P",
+      "sourceHash": "8863d094066f4f3a54c6872a15d2e66670f77af60b9270d2afdad153014e80d8",
+      "candidateHash": "4ce3576c2b7b5335f0e94fdba5129664bf647d7e7caa18bfdd8c149c67c36f7a"
+    },
+    {
+      "id": "Leblanc.W",
+      "sourceHash": "0966d5d63ab08957bea9719a94125a4dd09b7a98aaa3a41e5c1fca4613039e35",
+      "candidateHash": "32432cdcbd351efa19009c45515b381f2d09a9c19056fc8650a9937b0b6b6cab"
+    },
+    {
+      "id": "Leblanc.E",
+      "sourceHash": "4c7318f81303adb0082e5a951379722269abe2f89e0bf982418bc86eb1d6244a",
+      "candidateHash": "1623b8112a8f0b36841143c541dc4e784d75ee63df1fc3c5693bbc195f73ce63"
+    },
+    {
+      "id": "Leblanc.Q",
+      "sourceHash": "2e07a5839633ea670fea9f20682d69c5a663c139413be683503cf80fa33906a1",
+      "candidateHash": "9cd620400650330cfdb2e8e17dc2271a92b48629bbbaf58835607477e6112f2e"
+    },
+    {
+      "id": "Leblanc.R",
+      "sourceHash": "a9d4dd892350ebc80b09638c6e4a43db7f5bf44154be4f004a21fe6d4085dbd1",
+      "candidateHash": "c0e6ae949437e7ed4c948edeb41cd857d75cd47b05d4d6d28ba9d9063da32162"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Leblanc.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "LeBlanc projects a sigil to an enemy, dealing (65/90/115/140/165 + (40% Ability Power)) magic damage and marking them for 3.5 seconds.",
+      "issue": "적을 대상으로 하는 인장 투사에 `target_type=any` 조건을 붙여 유효 대상을 원문보다 넓게 단정합니다.",
+      "correction": "`target_type=any` 조건을 제거하거나, 원문 그대로 적 대상이라고만 기록합니다."
+    },
+    {
+      "id": "Leblanc.Q",
+      "path": "rules.1.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Damaging the marked enemy with an Ability detonates the sigil, dealing (65/90/115/140/165 + (40% Ability Power)) magic damage.",
+      "issue": "폭발 발동을 `ability_hit`으로 기록해 스킬 적중을 요구합니다. 원문은 표식 대상에게 스킬로 피해를 주는 경우라고 하므로, 비적중형 피해도 포함될 수 있습니다.",
+      "correction": "`ability_hit`을 스킬 피해 발생을 나타내는 이벤트로 바꾸거나, 이벤트를 특정하지 않고 원문 조건을 텍스트로 보존합니다."
+    },
+    {
+      "id": "Leblanc.Q",
+      "path": "rules.2.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If either part kills the target, Leblanc refunds 100% of the Mana cost and 30% of this spell's remaining Cooldown.",
+      "issue": "마나 환급량을 효과에 기록하지 않아 원문의 100% 환급 정보가 규칙에서 누락됩니다. 갭에만 적혀 있어 구조화된 규칙에는 반영되지 않았습니다.",
+      "correction": "마나 비용 100% 환급을 수치화할 수 없다면 해당 비율을 효과 텍스트에 보존합니다."
+    },
+    {
+      "id": "Leblanc.Q",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The initial sigil deals an additional (10 ~ 146) damage to minions.",
+      "issue": "`activation=초기 인장`을 등호 조건으로 기록해 인장이 초기 상태일 때만 추가 피해가 적용된다고 표현합니다. 원문은 초기 인장의 미니언 대상 추가 피해를 말합니다.",
+      "correction": "활성화 상태 조건을 제거하고, 초기 인장의 피해라는 설명을 효과 텍스트에 보존합니다."
+    },
+    {
+      "id": "Leblanc.R",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Mimicked Sigil of Malice deals (70/150/230 + (40% Ability Power)) magic damage when applied, and (140/300/460 + (80% Ability Power)) magic damage when consumed.",
+      "issue": "모방한 인장을 적용할 때 피해를 입힌다고 기록하지만, 원문은 인장을 남길 때의 피해입니다. ‘적용’은 효과의 부착·갱신까지 포함하는 것으로 읽힐 수 있습니다.",
+      "correction": "효과 문구를 인장을 남길 때 피해를 준다고 고칩니다."
+    },
+    {
+      "id": "Leblanc.R",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Mimicked Sigil of Malice deals (70/150/230 + (40% Ability Power)) magic damage when applied, and (140/300/460 + (80% Ability Power)) magic damage when consumed.",
+      "issue": "표식 소모 피해 조건은 모방한 인장일 때를 표시하지만, 현재 표식의 존재나 소모 여부를 별도로 나타내지 않아 조건만으로 발동 사건이 식별되지 않습니다.",
+      "correction": "원문이 제공하는 ‘표식을 소모할 때’라는 발동 시점을 조건 또는 효과 텍스트에 명시적으로 보존합니다."
+    }
+  ],
+  "notes": []
+}

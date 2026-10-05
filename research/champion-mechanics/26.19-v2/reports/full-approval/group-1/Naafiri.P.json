@@ -1,0 +1,82 @@
+{
+  "id": "Naafiri.P",
+  "sourceHash": "87d0426210e58e06068d3a593f241980b4d5a78ad7dad9e5e863dbde615c23a5",
+  "beforeCandidateHash": "cd2e556c1c250625b224dadb7f70e6083c5a0f4543abb7cc0ebd0f7729546e79",
+  "candidateHash": "b27f60cf28e95ba008290004e8e3d30b509b6cbfa530e09ca18887cb0eaa3ac3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "30~10초마다packmate생성/최대2~5, 지정적평타물리10~20+추가AD4%,스킬사용후13~26+5.2%대체,챔프/대형몬스터스킬적중4초·적처치1초쿨감까지 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 없음. summon summon: 나피리가 무리를 생성한다. [cooldown_seconds n0=30/n1=10 level_range; storage_cap n10=2/n11=5 level_range]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 없음. target damage physical: 무리가 나피리가 지정한 적을 공격해 물리 피해를 입힌다. [amount n2=10/n3=20 level_range; stat_coefficient n4=4% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.attack; 조건 caster.other eq 나피리가 스킬 사용 후의 무리 강화 상태. target damage physical: 나피리가 스킬을 사용한 뒤에는 무리가 지정한 적에게 증가한 물리 피해를 입힌다. [amount n5=13/n6=26 level_range; stat_coefficient n7=5.2% scalar caster.bonusAttackDamage] flags=replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 챔피언 또는 대형 몬스터. caster cooldown_change: 무리 생성의 재사용 대기시간이 감소한다. [cooldown_seconds n8=4 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.kill; 조건 없음. caster cooldown_change: 무리 생성의 재사용 대기시간이 감소한다. [cooldown_seconds n9=1 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/new",
+      "issue": "주기/생성한도역할·스킬사용상태fired·4초/1초쿨감핵심누락",
+      "correction": "cooldown/storage_cap, summonattack및사용후조건/대체,누락쿨감2규칙복원",
+      "sourceId": "en:body",
+      "quote": "Hitting champions and large monsters with Abilities reduces this Ability's Cooldown by 4 seconds. Killing enemies reduces it by 1 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 315,
+      "verdict": "repaired",
+      "reason": "30~10초는생성간격이므로cooldown_seconds로고쳤다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 스킬 사용 뒤 증가 피해가 적용된다고 하지만, 해당 강화가 얼마나 지속되는지 또는 어떤 시점에 끝나는지는 밝히지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "챔피언과 대형 몬스터 중 하나에 스킬이 적중하면 재사용 대기시간이 감소하는 것으로 읽히지만, 조건 필드 하나로 두 유형의 선택 관계를 명확히 표현할 수 없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

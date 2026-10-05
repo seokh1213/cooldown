@@ -1,0 +1,378 @@
+{
+  "summary": "그레이브즈가 돌진해 탄환을 장전하고 진정한 용기 중첩을 얻습니다. 적 챔피언을 향해 돌진하면 기본 중첩 획득 대신 두 중첩을 얻습니다. 중첩은 방어력과 마법 저항력을 높이며, 미니언이 아닌 대상에게 피해를 주면 갱신됩니다. 기본 공격의 각 탄환 적중은 재사용 대기시간을 줄입니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "전방으로 돌진한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "산탄총에 탄환을 장전한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "진정한 용기 중첩을 얻고, 중첩은 일정 시간 유지되며 최대 보유량이 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Graves dashes and reloads one Shell into his shotgun. He also gains a stack for 4 seconds (max 8 stacks)"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "He also gains a stack for 4 seconds (max 8 stacks) or two stacks if he dashes towards an enemy champion."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n3"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "적 챔피언을 향해 돌진하면 중첩을 두 개 얻는다. 이는 기본 돌진의 중첩 획득을 대신한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replace_input"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He also gains a stack for 4 seconds (max 8 stacks) or two stacks if he dashes towards an enemy champion."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "각 중첩이 방어력을 증가시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Stacks grant him 7/10/13/16/19 Armor"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Graves dashes and reloads one Shell into his shotgun."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Stacks grant him 7/10/13/16/19 Armor and 3.5/5/6.5/8/9.5 Magic Resist."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "각 중첩이 마법 저항력을 증가시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Stacks grant him 7/10/13/16/19 Armor and 3.5/5/6.5/8/9.5 Magic Resist."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Graves dashes and reloads one Shell into his shotgun."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "미니언이 아닌 대상에게 피해를 주면 진정한 용기 중첩을 갱신한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Stacks are refreshed when damaging a non-minion."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "He also gains a stack for 4 seconds (max 8 stacks) or two stacks if he dashes towards an enemy champion."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "그레이브즈의 기본 공격 탄환이 적중할 때마다 이 스킬의 재사용 대기시간을 줄인다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each bullet hit from Graves' Attacks reduces this Ability's Cooldown by 0.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "입력 조건 스키마에는 돌진 방향을 표현하는 필드가 없어, 적 챔피언을 향해 돌진했는지 구조화할 수 없다. 해당 문구는 효과 설명에 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "or two stacks if he dashes towards an enemy champion."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문은 중첩이 4초 동안 유지된다고 하지만 중첩별 만료 처리 방식을 명시하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He also gains a stack for 4 seconds (max 8 stacks)"
+        }
+      ]
+    }
+  ]
+}

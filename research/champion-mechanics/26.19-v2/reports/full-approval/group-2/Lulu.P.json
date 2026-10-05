@@ -1,0 +1,71 @@
+{
+  "id": "Lulu.P",
+  "sourceHash": "515323fe0a04b001ca19b732287ecebaacb3cecbf9e5b1bb1488f4bede711c88",
+  "beforeCandidateHash": "b9d33b42b9297741c1a44dd76bf85a04202182a33083983c8691b28b75b3fa42",
+  "candidateHash": "d88d54d02a6c8f28be46059ab6ace3e2320e3354efbe8fff757237ed2fcb2108",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "픽스가따르는챔피언공격시3추적광선/다른유닛가로막음/첫적15~117+15%AP마법과식기준한계 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 픽스가 현재 룰루를 따라다님 / target.target_type eq 공격대상이 적유닛 / secondary_targets.hit_order eq 각광선을 가로막거나 목표로서 처음 맞은 적; secondary_targets: 픽스가 대상에게 추적광선3개를 발사해 처음맞은적에게(15~117+15%AP)의 마법피해를 줍니다. 다른유닛이가로막을수있으며 공급본문은 이식의총계/광선당기준을명시하지 않습니다. [magic]; 수치 amount en:body:n1=15,en:body:n2=117 상수 formula_components / stat_coefficient en:body:n3=15%(백분율) caster.abilityPower scalar / count en:body:n0=3 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 ally; 조건 ally.activation eq 픽스가 현재 이 아군챔피언을 따라다님 / target.target_type eq 공격대상이 적유닛 / secondary_targets.hit_order eq 각광선을 가로막거나 목표로서 처음 맞은 적; secondary_targets: 픽스를따르는아군챔피언이적을공격하면픽스가그대상에게 같은추적광선을발사합니다. 광선3개/주어진피해식을 개당반복량으로추정하지 않습니다. [magic]; 수치 amount en:body:n1=15,en:body:n2=117 상수 formula_components / stat_coefficient en:body:n3=15%(백분율) caster.abilityPower scalar / count en:body:n0=3 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "summary의추적·가로막힘·따르는아군챔피언발사누락 복원·3광선중복피해위험·레벨단정 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Lulu is assisted by Pix the faerie. When Lulu Attacks, Pix fires 3 bolts at her target, dealing ((15 ~ 117) + (15% Ability Power)) magic damage to the first enemy hit."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "15~117 범위의변화기준과3광선의총계/개당피해관계는 이본문이명시하지않는다.3광선이라는count를피해식에추가곱하지않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "id": "Lillia.R",
+  "sourceHash": "1d04e8b8a91a78a51d85db429a4d667baedc26a7d02b835fa6d73fb268d426d4",
+  "beforeCandidateHash": "2bde76338e41e8f4e04d3218af3e57ac5a9285347e61972387818e00f0ec9fdf",
+  "candidateHash": "29e93210711c81a589e7a38509695c955b7d3dc62fc292071ecf61ffac8e9f58",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "모든 꿈가루 묻은 적 챔피언1.5초 졸음/지속 둔화 뒤2.5초 수면, 적의 비주기적 피해로 일찍 깨어날 때 추가 마법 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion; target.mark eq 꿈가루가 묻어 있음. target crowd_control drowsy: 꿈가루가 묻은 모든 적 챔피언을1.5초 졸음 상태로 만든다. [duration_seconds n0=1.5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.expiry; 조건 target.other eq 이 궁극기의1.5초 졸음이 종료됨. target crowd_control sleep: 이 궁극기의 졸음이 끝나면 최대2.5초 잠들어 움직이거나 행동할 수 없다. 그 전에 적의 비주기적 피해를 받으면 깨어난다. [duration_seconds n1=2.5 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.passive; 조건 target.other eq 이 궁극기의 졸음 상태. target crowd_control slow: 졸음 상태인 유닛은 지속시간에 걸쳐 둔화된다. [duration_seconds n0=1.5 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.damage_taken; 조건 target.other eq 이 궁극기로 잠든 대상이 적의 비주기적 피해를 받아 깨어남. target damage magic: 피해를 받아 깨어날 때 추가 마법 피해를 입힌다. [amount n2=100/n3=150/n4=200 rank_values; stat_coefficient n5=40% formula_components caster.abilityPower]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3",
+      "issue": "임의 표식도 허용, 수면 자연 만료와 단발 피해 조기 종료 혼동, 추가 피해 AP역할 및 깨어남 원인 조건 부족",
+      "correction": "꿈가루와 이 궁극기 졸음/수면으로 제한하고 최대2.5초 또는 적 단발 피해 조기 종료를 명시했다. 피해로 깨어날 때만 AP40% 추가 피해이다.",
+      "sourceId": "en:body",
+      "quote": "Asleep units can't move or act until damaged by an enemy with non-periodic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

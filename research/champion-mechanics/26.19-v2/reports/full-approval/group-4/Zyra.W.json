@@ -1,0 +1,112 @@
+{
+  "id": "Zyra.W",
+  "sourceHash": "04882ac5d8322fff39a37342ba8cdd3dc5d752399747ace79f2eb9ceb9cca987",
+  "beforeCandidateHash": "575d6add126292dfcff6ca896f48d8f57f6c417a4c72fa3e39d8c3965667c177",
+  "candidateHash": "0cc8637989214942baaaa4633c7dcdf5466aee52fdb80817be9f4d6d66a6d248",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 0,
+  "summaryCheck": "60초씨앗심기,적챔피언밟음의2초절대시야/씨앗파괴,최대2충전·18~10초재충전,미니언/몬스터처치35%및챔피언관여100%감소,씨앗근처Q/E식물성장을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. summon: 씨앗을 심습니다.; duration_seconds=60  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "enemy의 enter_area 사건에서 enemy.other eq 적 챔피언이 이 씨앗을 밟음 적용. caster: 밟은적챔피언에대한절대시야를2초동안얻는다.; duration_seconds=2  scalar / summon: 밟힌씨앗은파괴된다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 최대 충전 횟수와 재충전 시간이 정해져 있습니다.; storage_cap=2  scalar, cooldown_seconds=18/16/14/12/10  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.target_type eq minion 적용. caster: 적 미니언을 처치하면 재충전 시간이 감소합니다.; amount=35%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 target.target_type eq monster 적용. caster: 적 몬스터를 처치하면 재충전 시간이 감소합니다.; amount=35%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 takedown 사건에서 target.target_type eq champion 적용. caster: 챔피언 처치 관여 시 재충전 시간이 대신 감소합니다.; amount=100%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq 씨앗 근처에서 치명적인 가시 또는 휘감는 뿌리를 사용함 적용. summon: 씨앗이자이라를위해싸우는식물로자란다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "씨앗밟음의실제사건/조건및파괴효과주체누락",
+      "correction": "밟음사건과챔피언절대시야/씨앗파괴구별",
+      "sourceId": "en:body",
+      "quote": "These Seeds grant True Sight of enemy champions that step on them for 2 seconds, but are still destroyed."
+    },
+    {
+      "path": "rules.2,6",
+      "issue": "충전상한을발동count로표기,요약의식물성장효과누락",
+      "correction": "storage_cap2및Q/E식물성장보완",
+      "sourceId": "en:body",
+      "quote": "This Ability has 2 charges with a 18/16/14/12/10 second recharge time."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 735,
+      "verdict": "repaired",
+      "reason": "기존other에조건부실제밟음을명시하지않았던문제를enter_area/밟음text조건으로수정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

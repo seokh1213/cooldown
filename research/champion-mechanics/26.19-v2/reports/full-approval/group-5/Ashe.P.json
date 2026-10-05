@@ -1,0 +1,191 @@
+{
+  "id": "Ashe.P",
+  "sourceHash": "9ff6e8d010d76bce7859dae2e0d82e3dba418ac66fdd533e87a0faa30e0fdd9b",
+  "beforeCandidateHash": "2a449e0bcf6f02fa66b2360d7c41dbb6c71fdb19e4e6a1857ca58159a8d94ded",
+  "candidateHash": "8baff17ab023e29b44bb7130a934e1d1de7c1e9d5e6b5a15068ac9d3a714fef3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "공격/스킬20~30%slow2초,공격피해100%+critChance100%,crit추가피해없이40~60%감쇠slow를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격/스킬적중slow20~30%2초,범위변화기준unknown.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "20%",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격피해배율(100%+critChance×100%),baseAttackDamage를명시하지않았다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": "critChance",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자crit공격은추가crit피해없고기존slow를40~60%감쇠slow로교체.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "애쉬의 기본 공격에 치명타가 적용됨"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules,summary,gaps",
+      "issue": "적중slow가무조건passive·crit조건target·식의baseAD추측·range양끝독립값.",
+      "correction": "적중사건/castercrit·정확배율·unknown범위/원문조건한계.",
+      "sourceId": "en:body",
+      "quote": "Ashe's critical strikes deal no extra damage, instead increasing the Slow to (40% ~ 60%) decaying."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "slow두범위변화기준은미공급이다. 요약은둔화된적추가공격피해를말하나본문의공격피해배율문장에는그조건이없어본문식과범위를보존했다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

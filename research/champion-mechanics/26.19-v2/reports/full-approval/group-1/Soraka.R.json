@@ -1,0 +1,65 @@
+{
+  "id": "Soraka.R",
+  "sourceHash": "64c6bc8b51de7fc7a5feac2432934da32d39f86d0711bbdf620230bcfa291afc",
+  "beforeCandidateHash": "0ef22ff3950e1e6f1ec2df82b728e005937c63f0524fac7540b24185449173c1",
+  "candidateHash": "282c7d5f10796ba3a7ead396324dda7cf52e3427171780325ddbf8efbbdef472",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "거리무관즉시자기/모든아군챔피언회복150/250/350+소라카AP50%,수혜자체력40%미만이면225/375/525+AP75%로대체되는회복을확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 ally.other eq 소라카 자신을 제외한 모든 아군 챔피언 중 수혜자이며 거리 제한 없음. ally heal: 모든 아군 챔피언의 체력을 회복시킨다. [amount n0=150/n1=250/n2=350 rank_values; stat_coefficient n3=50% scalar caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 ally.health_threshold lt n8=40%; ally.other eq 소라카 자신을 제외한 모든 아군 챔피언 중 수혜자이며 거리 제한 없음. ally heal: 기준치 미만인 아군 챔피언의 회복량이 증가한다. [amount n4=225/n5=375/n6=525 rank_values; stat_coefficient n7=75% scalar caster.abilityPower] flags=replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster heal: 소라카 자신의 체력을 회복시킨다. [amount n0=150/n1=250/n2=350 rank_values; stat_coefficient n3=50% scalar caster.abilityPower]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.health_threshold lt n8=40%. caster heal: 소라카 자신의 체력이40% 미만이면 자기 회복량이 증가한 대체값을 적용한다. [amount n4=225/n5=375/n6=525 rank_values; stat_coefficient n7=75% scalar caster.abilityPower] flags=replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary;rules.0-3",
+      "issue": "자기회복누락과아군챔피언범위가조건에명시되지않음",
+      "correction": "자기회복과자기저체력대체값규칙을분리복구하고각아군챔피언에대해서거리무관회복하도록명시했다.",
+      "sourceId": "en:summary",
+      "quote": "Soraka fills her allies with hope, instantly restoring health to herself and all allied champions."
+    },
+    {
+      "path": "summary;rules.2,3.effects.0.text",
+      "issue": "자기 회복 문구의 중복 조사",
+      "correction": "최종 재독에서 중복 조사와 요약의 띄어쓰기를 고쳤다.",
+      "sourceId": "en:summary",
+      "quote": "Soraka fills her allies with hope, instantly restoring health to herself and all allied champions."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,391 @@
+{
+  "id": "Quinn.Q",
+  "sourceHash": "4d5a9fef99038b9f7c375904a0691800c24588eae5f72fa79db264fb473aadcd",
+  "beforeCandidateHash": "7179a1b3833536ef6e6ccbe9b96cd1b9522f1a35cbf215c4caa81fa0b5f525a8",
+  "candidateHash": "3334ad31b51eafa188bd3fda57c39f0abd9b1819b230965dcd61d9a12e354c43",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫적Harrier/1.75초시야감소·주변physical·첫비챔피언disarm·몬스터100%증가피해를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫enemy에Harrier표식과nearsight1.75초. 원래효과문구도표식명시.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "1.75",
+              "value": 1.75,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변비몬스터65..205+bonusAD80/85/90/95/100%+50%AP physical.",
+      "verifiedConditions": [
+        {
+          "subject": "nearby_enemies",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이Q에 맞은 주변 적 중 몬스터가 아닌 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4",
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "65",
+              "value": 65,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "170",
+              "value": 170,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "205",
+              "value": 205,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n6",
+            "en:body:n7",
+            "en:body:n8",
+            "en:body:n9",
+            "en:body:n10"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n6",
+              "raw": "80",
+              "value": 80,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "85",
+              "value": 85,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "90",
+              "value": 90,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "95",
+              "value": 95,
+              "percent": true
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n11"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n11",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주변몬스터100%증가한130..410+bonusAD160/170/180/190/200%+100%AP 대체physical. 일반식중복안함.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n14",
+            "en:body:n15",
+            "en:body:n16",
+            "en:body:n17",
+            "en:body:n18"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            },
+            {
+              "id": "en:body:n16",
+              "raw": "270",
+              "value": 270,
+              "percent": false
+            },
+            {
+              "id": "en:body:n17",
+              "raw": "340",
+              "value": 340,
+              "percent": false
+            },
+            {
+              "id": "en:body:n18",
+              "raw": "410",
+              "value": 410,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n19",
+            "en:body:n20",
+            "en:body:n21",
+            "en:body:n22",
+            "en:body:n23"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n19",
+              "raw": "160",
+              "value": 160,
+              "percent": true
+            },
+            {
+              "id": "en:body:n20",
+              "raw": "170",
+              "value": 170,
+              "percent": true
+            },
+            {
+              "id": "en:body:n21",
+              "raw": "180",
+              "value": 180,
+              "percent": true
+            },
+            {
+              "id": "en:body:n22",
+              "raw": "190",
+              "value": 190,
+              "percent": true
+            },
+            {
+              "id": "en:body:n23",
+              "raw": "200%",
+              "value": 200,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n24"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n24",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫대상이비챔피언이면disarm1.75초,몬스터전용이라고좁히지않음.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "1.75",
+              "value": 1.75,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-2",
+      "issue": "몬스터대체식과일반피해조건겹침·공통%미명시.",
+      "correction": "일반비몬스터조건과양식의실제계수%문구.",
+      "sourceId": "en:body",
+      "quote": "Deals 100% increased damage to Monsters ((130/200/270/340/410 + (160/170/180/190/200% bonus Attack Damage) + (100% Ability Power)))."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 386,
+      "verdict": "false_positive",
+      "reason": "원래text가처음적중적에게매사냥표식을남긴다고명시하며kindmark도정확하다."
+    },
+    {
+      "index": 387,
+      "verdict": "false_positive",
+      "reason": "proposal자체가원문과일치한다고한다. 첫비챔피언1.75초disarm조건정확."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

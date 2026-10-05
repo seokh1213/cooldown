@@ -1,0 +1,109 @@
+{
+  "id": "Taliyah.R",
+  "sourceHash": "43c821113aa1b1c5c03b42d10e894ac27aa389ae2b6c339a3803e36f9bc1bfcd",
+  "beforeCandidateHash": "904b4eabf77c83c370e4cddc879f7f2aa74de9fa44d23973ed7af8043a5bf8b9",
+  "candidateHash": "2263aba7c53d12088285b8e16535d13d86ce6bd4d2a32196554752ebdae9c893",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "벽4초·즉시재사용탑승·이동/immobilized탑승종료·최근3초챔피언/구조물피해시시전불가·완성후재사용조기파괴를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자신이최근3초챔피언또는구조물피해를받지않아야벽소환,벽4초지속.생성개체를summon로표시."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "벽시전즉시재사용이면펼쳐지는벽을따라자신이탑승이동."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "탑승중이동입력또는이동불가상태면탑승종료."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "벽완성후재사용은벽조기파괴.즉시재사용탑승과단계구분."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0.value.value",
+      "issue": "시전금지시간창3초누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Taliyah creates a massive earthen wall for 4 seconds. If she immediately Recasts, she will ride along the wall as it unravels. Moving or being immobilized will end the ride. This ability cannot be cast if Taliyah has taken damage from Champions or structures within the last 3 seconds. Once the wall is fully formed, Taliyah can Recast to destroy it early."
+    },
+    {
+      "path": "rules.0.effects.0.subject",
+      "issue": "벽생성개체unknown표기",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Taliyah creates a massive earthen wall for 4 seconds. If she immediately Recasts, she will ride along the wall as it unravels. Moving or being immobilized will end the ride. This ability cannot be cast if Taliyah has taken damage from Champions or structures within the last 3 seconds. Once the wall is fully formed, Taliyah can Recast to destroy it early."
+    },
+    {
+      "path": "summary",
+      "issue": "핵심시전제한요약누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Taliyah creates a massive earthen wall for 4 seconds. If she immediately Recasts, she will ride along the wall as it unravels. Moving or being immobilized will end the ride. This ability cannot be cast if Taliyah has taken damage from Champions or structures within the last 3 seconds. Once the wall is fully formed, Taliyah can Recast to destroy it early."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 517,
+      "verdict": "repaired",
+      "reason": "최근피해조건에정확한3초시간창을명시했다."
+    },
+    {
+      "index": 518,
+      "verdict": "repaired",
+      "reason": "벽소환개체를summon으로명시하고4초지속을유지했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "id": "Taliyah.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

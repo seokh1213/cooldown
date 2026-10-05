@@ -1,0 +1,62 @@
+{
+  "id": "Neeko.E",
+  "sourceHash": "b353747d6d7184d53f24f2082725937baa0640aeeef71f7cc88aebca9469b398",
+  "beforeCandidateHash": "f4d251b7e9c7e8b32eafef4ef9ea6f3da671b70aed343da1f5722c47b39dfa16",
+  "candidateHash": "f8c2e3c4d131a9915632acd61849b848fe54bb5c10c2f9e24ae4514a15f00e53",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "올가미 모든적70~210+AP65%마법/0.7~1.5초root,적적중후커짐/빨라짐/1.8~3초대체root를 대조했다. en요약의kill/champion조건은본문과충돌이다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. target damage magic: 올가미가 적중한 적에게 마법 피해를 입힌다. [amount n0=70/n1=105/n2=140/n3=175/n4=210 rank_values; stat_coefficient n5=65% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. target crowd_control root: 올가미가 적중한 적을 속박한다. [duration_seconds n6=0.7/n7=0.9/n8=1.1/n9=1.3/n10=1.5 rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 caster.other eq 적을 맞힌 뒤 올가미가 강화된 상태. target crowd_control root: 강화된 올가미는 적을 더 오래 속박한다. [duration_seconds n11=1.8/n12=2.1/n13=2.4/n14=2.7/n15=3 rank_values] flags=replaces_base / caster other: 적 적중 후 강화된 올가미는 크기가 커지고 더 빠르게 움직인다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/gaps",
+      "issue": "적중행위자·강화root대체누락·크기/속도규칙누락·요약충돌",
+      "correction": "caster,강화발사체조건/대체 및other속성,source_conflict",
+      "sourceId": "en:body",
+      "quote": "The tangle becomes empowered after hitting an enemy, growing larger, moving faster, and Rooting for 1.8/2.1/2.4/2.7/3 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "강화는 적을 맞힌 뒤 발생하지만, 강화된 속박 시간이 해당 적중 대상부터 적용되는지 이후 적중 대상부터 적용되는지는 원문에 명시되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "en요약은적처치또는챔피언통과로강화라하지만en/ko본문과ko요약은적적중후강화다.본문을우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

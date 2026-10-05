@@ -1,0 +1,117 @@
+{
+  "id": "Ornn.R",
+  "sourceHash": "df9afa1061460522e35b9cfe627f2ef24cbcc43e12066bcd22f5ffe097e1cf64",
+  "beforeCandidateHash": "c986d2cf855f75ab1933c4271aed40a4047e7492ea551bc63a87b58910b2477a",
+  "candidateHash": "32103536a3e9c3cdc553430e9f2a5be9b88f602f13f810d55c871e3b5d7c395e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "다가오는정령125~225+AP20%피해/불안정/3초40~60%둔화·재사용돌진·정령충돌진행전환강화·챔피언중첫1초/이후0.5초넉업·동일피해재불안정을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → summon: 오른에게로 쇄도하는 거대한 불의 정령을 소환합니다. | enemy: 정령이 적중한 적에게 마법 피해를 입힙니다. [magic] / amount=125/175/225 [rank_values]; stat_coefficient=20% (caster abilityPower) [formula_components] | enemy: 정령이 적중한 적에게 불안정 상태를 적용합니다. | enemy: 처음 다가오는 정령에 맞은 적을3초 동안40/50/60% 둔화시킨다. [slow] / amount=40/50/60% [rank_values]; duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast → caster: 재사용하면 오른이 박치기하며 돌진한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 summon activation eq empowered; target target_type eq champion; target hit_order eq 챔피언들 중 첫 번째 적중 → target: 강화된 정령이 처음 맞는 적 챔피언을 띄웁니다. [knockup] / duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 summon activation eq empowered; target target_type eq champion; target hit_order neq 챔피언들 중 첫 번째 적중 → target: 강화된 정령이 처음 이후에 맞는 적 챔피언을 띄웁니다. [knockup] / duration_seconds=0.5 [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit / 조건 summon activation eq empowered → enemy: 강화된 정령이 적중한 적에게 마법 피해를 입힙니다. [magic] / amount=125/175/225 [rank_values]; stat_coefficient=20% (caster abilityPower) [formula_components] | enemy: 강화된 정령이 적중한 적에게 불안정 상태를 다시 적용합니다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 정령과 충돌 → summon: 오른의 돌진이 정령에 충돌하면 정령의 진행방향을 바꾸고 강화한다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "정령충돌시에만재사용돌진이발생하도록조건",
+      "correction": "재사용돌진과충돌정령전환분리",
+      "sourceId": "en:body",
+      "quote": "Ornn can Recast to dash with a headbutt. If he dashes into the elemental, he redirects and empowers it"
+    },
+    {
+      "path": "rules.2-4.conditions",
+      "issue": "피격적이강화상태여야함·전체적순서첫번째",
+      "correction": "정령강화상태·챔피언내첫순서",
+      "sourceId": "en:body",
+      "quote": "Knock Up the first champion for 1 second and subsequent champions for 0.5 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 373,
+      "verdict": "false_positive",
+      "reason": "40/50/60%슬래시랭크열전체에%단위가적용된다.효과텍스트도40/50/60%를명시해첫값단위를보존했다."
+    },
+    {
+      "index": 374,
+      "verdict": "repaired",
+      "reason": "전체적적중순서와혼동되지않도록챔피언들중첫/이후순서를텍스트조건에명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "재사용 시 정령과 충돌하지 않는 경우 돌진의 결과와 재사용 가능 조건은 제공된 툴팁에 구체적으로 설명되어 있지 않습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

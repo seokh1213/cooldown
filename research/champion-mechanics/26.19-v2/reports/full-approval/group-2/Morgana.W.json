@@ -1,0 +1,92 @@
+{
+  "id": "Morgana.W",
+  "sourceHash": "5bdaf02e656234f52179921cad1cc4b87847100a3f15f0cce9d7d41032eae32a",
+  "beforeCandidateHash": "2607d9d27037b0876bcac149f2a7e6e50c05cafd38a0e0c1b505c43ec6698148",
+  "candidateHash": "cccec88537aaa6703eb8443139edf28632c8d4104a7364810088bcdc97cce92b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "5초지역초당기본마법과대상잃은체력최대증분식,패시브회복마다쿨5%감소,정글170%피해 및번역증분/총량차이를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 지역안적에게5초동안초당기본식(18~70+20%AP)의마법피해를줍니다.대상잃은체력에따른증분은최대(36~140+40%AP)으로표현됩니다. [magic]; 수치 amount en:body:n1=18,en:body:n2=31,en:body:n3=44,en:body:n4=57,en:body:n5=70 상수 formula_components / stat_coefficient en:body:n6=20%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n0=5 상수 scalar / max_amount en:body:n7=36,en:body:n8=62,en:body:n9=88,en:body:n10=114,en:body:n11=140 상수 formula_components / stat_coefficient en:body:n12=40%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 caster.activation eq Soul Siphon으로 회복함; caster: 모르가나가 Soul Siphon으로 회복될 때마다 이 스킬의 재사용 대기시간이 감소합니다.; 수치 amount en:body:n13=5%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq monster / target.other eq 정글 몬스터; enemy: 정글 몬스터에게 피해를 입힙니다. [magic]; 수치 damage_multiplier en:body:n14=170%(백분율) 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "최대증분AP계수연결과원문충돌·선형계수합산위험 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Morgana ignites the ground for 5 seconds, dealing (18/31/44/57/70 + (20% Ability Power)) magic damage per second, increased by up to (36/62/88/114/140 + (40% Ability Power)) based on the targets' missing Health. This Ability's Cooldown is reduced by 5% every time Morgana is healed by Soul Siphon. This Ability deals 170% damage to jungle monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 314,
+      "verdict": "repaired",
+      "reason": "36~140+40%AP를같은최대증분식으로text/구성요소에명시."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "대상의 잃은 체력에 따라 증가분이 정해지지만, 증가 계산식과 최대 증가분에 도달하는 조건은 원문에 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "영문increased by up to는최대증분식,한국어최대...까지증가는최대총피해처럼표현;영문증분우선,결합산식은unsupported_formula로유지.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

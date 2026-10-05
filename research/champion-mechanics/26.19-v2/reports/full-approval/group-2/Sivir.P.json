@@ -1,0 +1,42 @@
+{
+  "id": "Sivir.P",
+  "sourceHash": "4fb2d22c37a341e47dc6ba9ed8499763982f5551cd01f322526e6cf1cf4f5487",
+  "beforeCandidateHash": "f7fae8b2be5e0e23e01fafe75f19c0c1d86a4c3dbf6f725811dc85f99b6ad4e8",
+  "candidateHash": "9a2cf0813849b04be02362fcdf124d44071c43d4537227859a3e3fd18f8a09e8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "평타/스킬의적챔피언피해시55~75절대이속·1.5초감소를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / caster.activation eq 기본공격또는스킬로적챔피언에게피해를입힘; caster: 적 챔피언에게 피해를 입히면 이동 속도가 증가하고 점차 감소합니다.; 수치 amount en:body:n0=55,en:body:n1=75 상수 level_range / duration_seconds en:body:n2=1.5 상수 scalar; flags decays"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "피해발동과행위자를명확화",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Sivir's Attacks and Abilities grant her a burst of (55 ~ 75) Decaying Move Speed for 1.5 seconds when they damage enemy champions."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

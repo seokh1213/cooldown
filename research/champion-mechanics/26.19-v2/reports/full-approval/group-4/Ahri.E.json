@@ -1,0 +1,58 @@
+{
+  "id": "Ahri.E",
+  "sourceHash": "97e03c6f8e61b6c21606c30e5f5636c21d22e47f3833d34de14ede7c46eae67a",
+  "beforeCandidateHash": "605db11fc082bcf1645162d71938108bbe95223b9d49ce7a00407b50b9eacbed",
+  "candidateHash": "389cb103fdc66c38efb567500fba19a8583c5560860eda29a7cc4108eb250382",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "첫적중대상매혹1.2~1.8초와마법피해,매혹중아리에게무해하게접근·이동스킬즉시중단,같은적의knockdown을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 첫 번째로 맞은 적을 매혹합니다. (charm); duration_seconds=1.2/1.35/1.5/1.65/1.8  rank_values / target: 마법 피해를 입힙니다. (magic); amount=80/120/160/200/240  rank_values, stat_coefficient=85% caster의 abilityPower scalar / target: 매혹된 대상의 이동 스킬을 즉시 중단시키고, 대상이 아리 쪽으로 무해하게 걸어오게 합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 적을 쓰러뜨립니다. (knockdown);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.trigger.subject,rules.1.conditions",
+      "issue": "적중행위자target및knockdown범위불명확",
+      "correction": "caster및첫적중대상으로일치",
+      "sourceId": "en:body",
+      "quote": "Ahri blows a kiss that Charms the first enemy hit for 1.2/1.35/1.5/1.65/1.8 seconds and deals (80/120/160/200/240 + (85% Ability Power)) magic damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "요약은 매혹 대상이 아리 쪽으로 무해하게 걷는다고 설명하지만 그 강제 이동의 지속시간이나 종료 조건은 지정하지 않습니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

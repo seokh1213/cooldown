@@ -1,0 +1,75 @@
+{
+  "id": "Lux.R",
+  "sourceHash": "95ac2ad71529529c957aa36dec5f16e45c78799b57d217a372d949ee7c29fbd2",
+  "beforeCandidateHash": "046cd65808ecdf8c201db81a300ca8b85fea8fc1b909ed0faa5e488f247b1a46",
+  "candidateHash": "287223bcea919df52a11c8bd9c07b40b4c87f8d79bbd39201df1a0e1edb78619",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "에너지모은뒤직선모든적300/400/500+120%AP마법,적중광채패시브발동/지속갱신 및그수치의R입력한계 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 enemy.distance eq 이번 광선의 일직선상 적; enemy: 최후의 섬광은 일직선상의 모든 적에게 마법 피해를 줍니다. [magic]; 수치 amount en:body:n0=300,en:body:n1=400,en:body:n2=500 상수 rank_values / stat_coefficient en:body:n3=120%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.activation eq 이번 최후의 섬광에 적중한 적; target: 최후의 섬광 적중 시 럭스의 광채 패시브를 발동합니다. 이 R 공급원문은 패시브 발동의 추가 피해 수치를 제공하지 않습니다.; 수치 없음; flags 없음 | target: 최후의 섬광 적중 시 대상의 광채 지속시간을 갱신합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "피격대상을행위자로기록한오류·AP계수역할·패시브발동타입 분리·요약보충을충돌로 처리한gap 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Lux fires a dazzling ray of light, dealing (300/400/500 + (120% Ability Power)) magic damage to all enemies in a line."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "패시브 발동과 광채 갱신은 양언어summary에 있고 body에는 설명이 생략되어 있다. 서로 모순되지 않으며 이 R 입력의 패시브추가피해 수치/표식 지속시간은 주어지지 않는다.",
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

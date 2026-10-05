@@ -1,0 +1,92 @@
+{
+  "id": "Morgana.P",
+  "sourceHash": "b417a9da265294a7cb96f3d4d1f45bc3248273f7e9fa0501ac3c0907eda89109",
+  "beforeCandidateHash": "1cc99e767b233d8dcd588427d842c284f05ecfc03ca33d5d4ec6bcfa57630947",
+  "candidateHash": "fc875b811c598bb14b23dc76d3032b97435a1c596ed3b5b62befdd3ca7b3b4c3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "스킬로챔피언OR대형미니언OR중형이상정글몬스터에게입힌피해18%자가회복을 대상별대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / caster.activation eq 스킬로해당대상에실제피해를입힘; caster: 모르가나가 스킬로 챔피언에게 입힌 피해량에 비례해 체력을 회복합니다.; 수치 ratio_output en:body:n0=18%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq minion / target.other eq 대형 미니언 / caster.activation eq 스킬로해당대상에실제피해를입힘; caster: 모르가나가 스킬로 대형 미니언에게 입힌 피해량에 비례해 체력을 회복합니다.; 수치 ratio_output en:body:n0=18%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq monster / target.other eq 중형 이상 정글 몬스터 / caster.activation eq 스킬로해당대상에실제피해를입힘; caster: 모르가나가 스킬로 중형 이상 정글 몬스터에게 입힌 피해량에 비례해 체력을 회복합니다.; 수치 ratio_output en:body:n0=18%(백분율) 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "피해사건행위자와텍스트조건의스키마크기제약 한계기록",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 308,
+      "verdict": "documented_gap",
+      "reason": "schema에는대형미니언enum없음;minion타입AND대형미니언other를보존하고typed실행제한gap추가."
+    },
+    {
+      "index": 309,
+      "verdict": "documented_gap",
+      "reason": "정글/중형이상전용enum없음;monster타입AND중형이상정글텍스트를보존하고gap추가."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "대형미니언및중형이상정글몬스터의크기/종류는전용enum이없어minion/monster타입ANDother텍스트조건으로보존.완전typed판정으로실행하지않음.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

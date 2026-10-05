@@ -1,0 +1,140 @@
+{
+  "id": "Malzahar.E",
+  "sourceHash": "0c36647ec023b00d4fd8d69f55e7e69f1d2fdd7bad586ca2a0c327fff141df87",
+  "beforeCandidateHash": "941ca3f44555cdb1a8504da48b76f1d18691f9badefad5b525b1129a707d759e",
+  "candidateHash": "0abc431a28abfa3529b1247813221c393baf9be18a5929ef960a7f0859d0493d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 3,
+  "summaryCheck": "4초마법,같은대상Q/R갱신,감염대상사망2%Mana/최근접적으로전파,환상미니언10~30체력미만처형,공허충유인을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq any; target: 대상에게 일정 시간 동안 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=80,en:body:n1=115,en:body:n2=150,en:body:n3=185,en:body:n4=220 상수 rank_values / stat_coefficient en:body:n5=80%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n6=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.mark present Malefic Visions / caster.activation eq 환상이활성인같은대상에공허의부름또는황천의손아귀를적용; target: 환상의 지속시간을 갱신합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: death 사건의 행위자 target; 조건 target.mark present Malefic Visions; caster: 원문의 Mana 기준2%에 해당하는 마나를 얻습니다. 최대/현재마나 구별은 미명시입니다.; 수치 amount en:body:n7=2%(백분율) 상수 formula_components; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: death 사건의 행위자 target; 조건 target.mark present Malefic Visions / enemy.distance eq 사망한환상대상에가장가까운적; enemy: 환상이 가장 가까운 적에게 옮겨갑니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 target; 조건 target.target_type eq minion / target.health_threshold eq 이 원문 범위(10~30)의 적용값 미만인 미니언 / target.mark eq 이 스킬의 환상효과가 적용됨; target: 체력이 기준치 미만인 미니언을 처형합니다.; 수치 min_amount en:body:n8=10 상수 level_range / max_amount en:body:n9=30 상수 level_range; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 summon; 조건 target.mark eq Malefic Visions; summon: 공허충은 환상효과가 적용된 대상에게 끌립니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "Mana를maxMana로단정,범위처형을항상10으로고정,갱신사건주체/최근접대상조건/요약공허충유인누락 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Malzahar inflicts terrible visions, dealing (80/115/150/185/220 + (80% Ability Power)) magic damage over 4 seconds. Applying Call of the Void or Nether Grasp to the victim during this time refreshes the visions. If the victim dies, Malzahar gains (2% Mana) Mana and the visions spread to the nearest enemy. Malefic Visions executes minions below (10 ~ 30) Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "본문은 환상을 시전해 대상에게 적용한다고 하지만 대상 선택 범위를 더 설명하지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "마나 획득량의 2%가 어떤 마나 기준값을 참조하는지 본문에서 명확하지 않아 통계 기준을 확정할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "처형 체력은 (10 ~ 30) 범위로 제시되며 스킬 레벨 등 범위를 결정하는 기준은 기재되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

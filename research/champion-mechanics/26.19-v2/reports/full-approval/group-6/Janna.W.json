@@ -1,0 +1,115 @@
+{
+  "id": "Janna.W",
+  "sourceHash": "946e56980af62e84779aba19f768103bf4784963d6a09473a3644a8c89bd2558",
+  "beforeCandidateHash": "89510f3d27dc0486fb1aae943a691c21a8de72af809604e28837e1784dc27498",
+  "candidateHash": "c74b5eb3d296e60aca35bec548d37503196e2d5ccb3142633bd1c31f6f7d911c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "이동 속도·유체화의 지속 효과와 정령 적중의 피해·둔화, 추가 이동 속도 계수 및 유닛 충돌 무시를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "지속 이동 속도 (6/7/8/9/10% + 주문력 100당 2%)와 유체화 충돌 무시, 공급 요약의 정령 소환을 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정령 적중 시 55/85/115/145/175 + 주문력 50% + 잔나 추가 이동 속도 30% 마법 피해다. 전체 이동 속도로 대체하지 않았다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정령 적중 시 (20/24/28/32/36% + 주문력 100당 6%) 2초 둔화다. 100은 별도 분모다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters.1.numberRefs",
+      "issue": "AP 계수와 100당 분모가 같은 stat_coefficient에 혼합됐다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted. Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage. Ghosted units ignore collision with other units."
+    },
+    {
+      "path": "rules.0.effects.1.kind",
+      "issue": "유체화는 유닛 충돌을 무시하는 이동 효과다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted. Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage. Ghosted units ignore collision with other units."
+    },
+    {
+      "path": "rules.0.effects.2",
+      "issue": "공급 요약의 정령 소환을 규칙에 보존했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:summary",
+      "quote": "Janna summons an air elemental that passively increases her Move Speed and enables her to pass through units. She may also activate this ability to deal damage and slow an enemy's Move Speed."
+    },
+    {
+      "path": "rules.1.trigger.event",
+      "issue": "피해는 정령이 적에게 적중할 때 발생한다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted. Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage. Ghosted units ignore collision with other units."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.2.stat",
+      "issue": "bonus Movement Speed를 전체 moveSpeed로 계산하면 안 된다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted. Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage. Ghosted units ignore collision with other units."
+    },
+    {
+      "path": "rules.2.trigger.event",
+      "issue": "둔화도 정령의 적 적중에 적용된다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted. Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage. Ghosted units ignore collision with other units."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 131,
+      "verdict": "documented_gap",
+      "reason": "후보는 frozen numberRefs를 사용하므로 raw 숫자나 percent를 변경할 수 없다. 실제 퍼센트 단위를 효과 문장에 명시하고 lexical 한계를 gap에 기록했다."
+    },
+    {
+      "index": 132,
+      "verdict": "repaired",
+      "reason": "피해 trigger를 정령 적중의 ability_hit로 바꿨다."
+    },
+    {
+      "index": 133,
+      "verdict": "repaired",
+      "reason": "둔화 trigger도 정령 적중의 ability_hit로 바꿨다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "슬래시 이동 속도·둔화 배열의 앞 항목은 frozen lexical percent=false지만 모든 항목이 퍼센트다. lexical 숫자표만으로 단위를 실행하지 말 것. bonusMovementSpeed stat이 없어 전체 moveSpeed로 대체하지 않고 잔나의 추가 이동 속도 30%를 문장으로 보존했다."
+    }
+  ],
+  "validation": {
+    "id": "Janna.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

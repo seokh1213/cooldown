@@ -1,0 +1,169 @@
+{
+  "id": "Talon.R",
+  "sourceHash": "0cee25fce0808166fe6fa5edfca80264e076c6ce50d611a2e4b7dbb9405686fa",
+  "beforeCandidateHash": "37589d1103af59380104d05bf1399455ceb1232d04e534da40c5759d7162ce6f",
+  "candidateHash": "8a9eedb1e983925a12d32fefc4e97dc636a9c9616796936983ea6bd0784d837b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "사방·복귀 칼날 적중 피해, 이동 속도·투명 및 공격·Q 취소의 복귀 목적지와 탐지 예외를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "초기 퍼지는 칼날에 하나 이상 맞은 각 적에 90/135/180 + 추가 공격력 100% 물리 피해다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "이동 속도 40/55/70%와 Invisible 2.5초이며 포탑 또는 True Sight만 탐지한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정상 종료 또는 취소 후 복귀 칼날에 하나 이상 맞은 각 적은 같은 물리 피해를 받는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "투명 중 기본 공격으로 취소하면 칼날의 복귀 목적지는 탈론 대신 그 공격 대상이다. 별도 추가 피해가 아니다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "투명 중 Q로 취소하면 Q 대상에게 복귀한다. invisible과 unseen을 구분했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.event",
+      "issue": "칼날 피해는 실제 칼날 적중에 발생한다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage, gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds. When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again. If Talon cancels the Invisibility with an Attack or with Noxian Diplomacy, the blades return to the target instead. Invisible units cannot be revealed except by turrets or True Sight."
+    },
+    {
+      "path": "rules.1.effects.0.text",
+      "issue": "모든 순위가 퍼센트임을 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage, gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds. When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again. If Talon cancels the Invisibility with an Attack or with Noxian Diplomacy, the blades return to the target instead. Invisible units cannot be revealed except by turrets or True Sight."
+    },
+    {
+      "path": "rules.1.effects.2",
+      "issue": "원문의 투명 탐지 예외가 누락됐다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage, gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds. When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again. If Talon cancels the Invisibility with an Attack or with Noxian Diplomacy, the blades return to the target instead. Invisible units cannot be revealed except by turrets or True Sight."
+    },
+    {
+      "path": "rules.2.trigger.event",
+      "issue": "복귀 피해는 실제 복귀 칼날에 적중한 적에게 적용된다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage, gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds. When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again. If Talon cancels the Invisibility with an Attack or with Noxian Diplomacy, the blades return to the target instead. Invisible units cannot be revealed except by turrets or True Sight."
+    },
+    {
+      "path": "rules.3.conditions.0.value",
+      "issue": "Invisible과 단순 unseen을 구분했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage, gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds. When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again. If Talon cancels the Invisibility with an Attack or with Noxian Diplomacy, the blades return to the target instead. Invisible units cannot be revealed except by turrets or True Sight."
+    },
+    {
+      "path": "rules.3.effects.0",
+      "issue": "공격 취소는 복귀 목적지 변경이며 공통 복귀 피해에 추가되는 별도 피해가 아니다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage, gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds. When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again. If Talon cancels the Invisibility with an Attack or with Noxian Diplomacy, the blades return to the target instead. Invisible units cannot be revealed except by turrets or True Sight."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 521,
+      "verdict": "false_positive",
+      "reason": "en:summary가 enemies hit by at least one blade로 적 대상을 명시한다."
+    },
+    {
+      "index": 522,
+      "verdict": "repaired",
+      "reason": "초기 칼날의 실제 적중 조건과 ability_hit를 명시했다."
+    },
+    {
+      "index": 523,
+      "verdict": "documented_gap",
+      "reason": "frozen raw를 바꾸지 않고 모든 순위의 퍼센트를 문장에 명시하고 lexical 단위 한계를 남겼다."
+    },
+    {
+      "index": 524,
+      "verdict": "repaired",
+      "reason": "복귀 칼날 실제 적중 조건을 명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "40/55/70% 배열 앞 항목은 frozen percent=false지만 실제로 모두 퍼센트다. lexical 숫자표만으로 단위를 실행하지 말 것."
+    }
+  ],
+  "validation": {
+    "id": "Talon.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

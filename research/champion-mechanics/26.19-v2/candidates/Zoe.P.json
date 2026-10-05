@@ -1,0 +1,74 @@
+{
+  "summary": "스킬 사용 후 조이의 다음 기본 공격이 추가 마법 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "스킬 사용 후 다음 기본 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "다음 기본 공격이 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using an Ability, Zoe's next Attack deals an additional ((16 ~ 130) + (20% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "16~130기본피해의변화기준은본문에없어레벨/랭크로확정하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using an Ability, Zoe's next Attack deals an additional ((16 ~ 130) + (20% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ]
+}

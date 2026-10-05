@@ -1,0 +1,190 @@
+{
+  "summary": "주기적으로 다음기본공격이20~160+50%AP 추가마법피해를 주며 구조물에는35~280+87.5%AP로 대체됩니다. 스킬사용마다 이강화공격쿨이4~6초 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "spell_ready",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 패시브의 주기적인 강화공격이 준비되고 아직소모되지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "다음 기본 공격이 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every ? seconds, Ziggs' next Attack deals an additional ((20 ~ 160) + (50% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "스킬 사용 시 짧은 도화선의 재사용 대기시간이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ziggs' abilities reduce this Cooldown by (4 ~ 6) seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "spell_ready",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 패시브의 주기적인 강화공격이 준비되고 아직소모되지 않음"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "구조물에는 강화된 다음 기본 공격이 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It deals ((35 ~ 280) + (87.5% Ability Power)) damage instead to structures."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "강화 공격이 준비되기까지의 주기는 원문에서 ?로 표시되어 수치가 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every ? seconds, Ziggs' next Attack deals an additional ((20 ~ 160) + (50% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "일반20~160/구조물35~280/쿨감4~6 범위의 변화기준은 공급본문·요약에없어 레벨비례로 단정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every ? seconds, Ziggs' next Attack deals an additional ((20 ~ 160) + (50% Ability Power)) magic damage. It deals ((35 ~ 280) + (87.5% Ability Power)) damage instead to structures. Ziggs' abilities reduce this Cooldown by (4 ~ 6) seconds."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "id": "Tristana.R",
+  "sourceHash": "54b2b63056196a5a499cd4e71e2fe48f36f2e6dd28eaaaf295590d3b6ca14ac7",
+  "beforeCandidateHash": "363a7d4ac60b61b91caa8cdba90346d6ee8fb5f0ec39e21cbbaef555056f7bda",
+  "candidateHash": "ec1f089ca8fe14467edbe5b0fb31a8f85e7da888601ad4b9427431e326e0e75b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "대상만magic피해·대상/주변knockback+stun,마지막E중첩밀린후폭발·표식폭발반경두배요약을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "대포알적중대상225/275/325+70%bonusAD+100%AP magic. 주변에도피해주는것아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "225",
+              "value": 225,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "275",
+              "value": 275,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "325",
+              "value": 325,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "70%",
+              "value": 70,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": "abilityPower",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "100%",
+              "value": 100,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "대상및주변모두knockback/stun0.4/0.55/0.7초. 수혜자각각의duration이미동일함확인.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 2,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "0.4",
+              "value": 0.4,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "0.55",
+              "value": 0.55,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "0.7",
+              "value": 0.7,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 3,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n5",
+            "en:body:n6",
+            "en:body:n7"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "0.4",
+              "value": 0.4,
+              "percent": false
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "0.55",
+              "value": 0.55,
+              "percent": false
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "0.7",
+              "value": 0.7,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "R이E마지막중첩적용했을때만밀린후폭발이라는순서특례.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭발 화약"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬이 폭발 화약의 마지막 중첩을 적용함"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "E폭탄붙은대상R의E폭발반경두배를요약에서복원.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "폭발 화약 폭탄이 붙은 R 대상"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-3,gaps",
+      "issue": "적중효과cast사건·요약의E반경두배누락.",
+      "correction": "ability_hit사건·stun문구명시·요약규칙복원.",
+      "sourceId": "en:summary",
+      "quote": "If the target is carrying the Explosive Charge bomb, the bomb detonation radius is doubled."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 547,
+      "verdict": "repaired",
+      "reason": "피해/CC를대포알ability_hit으로수정해실제적중에연결."
+    },
+    {
+      "index": 548,
+      "verdict": "false_positive",
+      "reason": "원래대상/주변stun둘다동일duration0.4/0.55/0.7참조가있다. 지속시간누락은없으나문구에도명시."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

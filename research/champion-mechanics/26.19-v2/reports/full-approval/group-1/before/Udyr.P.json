@@ -1,0 +1,190 @@
+{
+  "summary": "네 가지 기본 스킬로 태세를 바꾼다. 재사용 대기 중인 스킬을 재사용하면 궁극기 효과와 함께 보너스를 다시 얻는다. 스킬 사용 후 정해진 시간 안에 다음 두 번의 공격을 하면 공격 속도가 증가하고 각성의 재사용 대기시간 일부를 돌려받는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "네 가지 기본 스킬로 태세를 바꾼다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Udyr has four basic Abilities that swap between Stances."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Awakened Spirit: Udyr has four basic Abilities that swap between Stances."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "spell_ready",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "down"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "재사용 대기 중인 스킬을 재사용하면 해당 스킬의 보너스를 궁극기 효과와 함께 다시 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Udyr can Recast an Ability that is on Cooldown to gain its bonuses again with Ultimate benefits. ((50 ~ 20) second Cooldown)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n3"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n4"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "스킬 사용 후 정해진 시간 안에 다음 공격들이 공격 속도 증가 효과를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "해당 공격마다 각성의 재사용 대기시간 일부를 돌려받는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Monk Training: After using an Ability, Udyr's next two Attacks within 4 seconds gain 30% Attack Speed and refund 5% of Awaken's Cooldown."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

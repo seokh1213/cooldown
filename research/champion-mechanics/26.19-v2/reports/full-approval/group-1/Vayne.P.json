@@ -1,0 +1,35 @@
+{
+  "id": "Vayne.P",
+  "sourceHash": "f23dd875603872cd06b2145c077808dc501087252eb9690f2a2bcf48a7ead9f3",
+  "beforeCandidateHash": "a33c4768f200c2b4d5078d776e0ba2442a3fe537e0ce654ff8188b57cc92dcae",
+  "candidateHash": "cddbbf0413e40c9cf65fd244f56bed3a7a576467b3b8918becd0cf1960d65b20",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "근처 적 챔피언을 향해 이동하는 동안 자기 평면 이동 속도30증가를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 nearby_enemies.target_type eq champion; caster.other eq 근처 적 챔피언을 향해 이동 중. caster stat_modifier: 근처 적 챔피언에게 접근하는 동안 이동 속도가 증가한다. [amount n0=30 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.1",
+      "issue": "거리값 존재로만 표현되어 근처 적 챔피언을 향해 이동할 조건 누락",
+      "correction": "이동 방향과 가까운 적 챔피언 조건을 명시했다.",
+      "sourceId": "en:body",
+      "quote": "Vayne ruthlessly hunts evil-doers, gaining 30 Move Speed when moving toward nearby enemy champions."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

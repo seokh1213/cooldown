@@ -1,0 +1,184 @@
+{
+  "summary": "해머 형태에서 캐논으로 변환하면 다음 공격이 대상의 방어력과 마법 저항력을 감소시킵니다. 캐논 형태에서 해머로 변환하면 방어력과 마법 저항력을 얻고 다음 공격에 추가 마법 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Hammer"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "무기를 머큐리 캐논으로 변환하고 사거리와 새로운 스킬을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "다음 공격은 대상의 방어력과 마법 저항력을 감소시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n0",
+                "form:A:en:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:A:en:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Mercury Hammer: Jayce transforms his weapon into the Mercury Cannon, gaining Attack Range and new Abilities. Jayce's next Attack removes (20% ~ 35%) Armor and Magic Resist for 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Cannon"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "무기를 머큐리 해머로 변환하고 근접 사거리가 되며 새로운 스킬을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "방어력과 마법 저항력을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n0",
+                "form:B:en:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n2"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "다음 공격은 추가 마법 피해를 입힙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n3",
+                "form:B:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Mercury Cannon: Jayce transforms his weapon into the Mercury Hammer, becoming melee ranged and gaining new Abilities and ((5 ~ 26) + (7.5% bonus Attack Damage)) Armor and Magic Resist. Jayce's next Attack deals an additional ((25 ~ 130) + (30% bonus Attack Damage)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "폼 변환 시 방어력/마법 저항력 증가 및 추가 피해의 기본 수치가 레벨 범위로 제공되나 중간 레벨별 수치 참조는 없으므로 범위 끝값만 기록했습니다.",
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Mercury Cannon: Jayce transforms his weapon into the Mercury Hammer, becoming melee ranged and gaining new Abilities and ((5 ~ 26) + (7.5% bonus Attack Damage)) Armor and Magic Resist. Jayce's next Attack deals an additional ((25 ~ 130) + (30% bonus Attack Damage)) magic damage."
+        }
+      ]
+    }
+  ]
+}

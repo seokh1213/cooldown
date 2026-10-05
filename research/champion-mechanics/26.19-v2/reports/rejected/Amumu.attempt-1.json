@@ -1,0 +1,664 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "아무무의 공격은 적을 저주하며, 저주받은 적은 마법 피해를 받을 때마다 추가 고정 피해를 받습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "target",
+              "text": "기본 공격을 받은 적에게 저주를 겁니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Amumu's Attacks Curse his enemies for 3 seconds"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Amumu's Attacks Curse his enemies for 3 seconds, causing them to take an additional 10% true damage from all magic damage they take."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "저주받은 적이 받는 모든 마법 피해에 추가 고정 피해가 적용됩니다.",
+              "damageType": "true",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "causing them to take an additional 10% true damage from all magic damage they take."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Amumu's Attacks Curse his enemies for 3 seconds, causing them to take an additional 10% true damage from all magic damage they take."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "아무무가 붕대를 던져 처음 적중한 적에게 다가가고, 적을 기절시키며 마법 피해를 입힙니다. 충전 횟수가 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "붕대가 처음 적중한 적에게 아무무가 다가갑니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 적중한 적을 기절시킵니다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "처음 적중한 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Amumu launches a bandage, pulling himself to the first enemy hit, Stunning them for 1 second, and dealing (70/95/120/145/170 + (85% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "caster",
+              "text": "이 스킬은 충전 횟수를 보유합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability has 2 charges."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "W": {
+      "summary": "활성화하면 아무무가 울며 매초 근처 적에게 최대 체력 비례 마법 피해를 입히고 저주를 갱신합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "활성화 중 매초 근처 적에게 마법 피해를 입힙니다. 피해량은 고정량에 최대 체력 비례량을 더한 값입니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "unknown"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Toggle: Amumu begins crying, dealing 10 plus (1/1.25/1.5/1.75/2 + (0.5% Ability Power))max Health magic damage to nearby enemies every second"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Toggle: Amumu begins crying, dealing 10 plus (1/1.25/1.5/1.75/2 + (0.5% Ability Power))max Health magic damage to nearby enemies every second and refreshing Curse."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "mark",
+              "subject": "nearby_enemies",
+              "text": "활성화 중 저주를 갱신합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "and refreshing Curse."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "최대 체력 비례식의 괄호 및 계수 구조가 원문 표기상 불명확하여 ratio_output과 Ability Power 계수의 조합을 확정할 수 없습니다. 매초 반복 발동을 duration_seconds로 나타내지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "(1/1.25/1.5/1.75/2 + (0.5% Ability Power))max Health magic damage to nearby enemies every second"
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "기본 지속 효과로 아무무가 받는 물리 피해를 줄이고, 기본 공격에 맞으면 재사용 대기시간이 감소합니다. 사용 시 주변 적에게 마법 피해를 입힙니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "받는 물리 피해를 감소시킵니다. 감소 효과는 피해를 원래 피해의 50% 미만으로 낮출 수 없습니다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "bonusArmor",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "bonusMagicResist",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Amumu takes (5/7/9/11/13 + (3% bonus Armor) + (3% bonus Magic Resist)) reduced physical damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Damage reduction effect can't reduce the damage below 50%."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Amumu throws a tantrum, dealing (65/95/125/155/185 + (50% Ability Power)) magic damage to nearby enemies."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "기본 공격에 맞으면 이 스킬의 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "when Amumu is hit by an Attack, this Ability's Cooldown is reduced by 0.75 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Additionally, when Amumu is hit by an Attack, this Ability's Cooldown is reduced by 0.75 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "사용 시 주변 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Amumu throws a tantrum, dealing (65/95/125/155/185 + (50% Ability Power)) magic damage to nearby enemies."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Amumu takes (5/7/9/11/13 + (3% bonus Armor) + (3% bonus Magic Resist)) reduced physical damage."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "영문 원문은 피해를 원래 피해의 50% 미만으로 낮출 수 없다고 적지만, 감소량의 하한인지 최종 피해량의 하한인지 해석 범위가 모호합니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Damage reduction effect can't reduce the damage below 50%."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "영문은 아무무가 Attack에 맞을 때라고 하나, 공격 주체나 공격 대상 유형의 제한은 명시하지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "when Amumu is hit by an Attack"
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "아무무가 붕대를 펼쳐 적을 기절시키고 마법 피해를 입히며 저주를 적용합니다. 적을 쓰러뜨립니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "적을 기절시킵니다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "mark",
+              "subject": "enemy",
+              "text": "적에게 저주를 적용합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "적을 쓰러뜨립니다.",
+              "damageType": null,
+              "crowdControl": "knockdown",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Amumu flares out his bandages, Stunning for 1.5 seconds, dealing (200/300/400 + (80% Ability Power)) magic damage and applying Curse."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability Knocks Down enemies."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  },
+  "failures": [
+    {
+      "id": "Amumu.E",
+      "errors": [
+        {
+          "code": "damage_type",
+          "path": "rules.0",
+          "detail": "Non-damage effect must use null damageType"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "id": "Neeko.P",
+  "sourceHash": "507bf117e9cd4552d1e14588646e2a8c307f4f6ee04824f26e9528e12647d042",
+  "beforeCandidateHash": "946f56b49b1a480afd603f3e1c52d28ded5ecae73823fd24f0784ccd1d939749",
+  "candidateHash": "df7cec9336aad201c8137501d7c266cff488e00ca708415d9cb75d21c9318470",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 0,
+  "summaryCheck": "아군챔피언즉시변장/아군중립근처쇼마저장변장/특징획득,이동불가·피해스킬시전·비챔프적포탑피해·변장체력만큼피격OR해제를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.transform; 조건 없음. caster transform: 언제든 아군 챔피언으로 변신할 수 있다. 아군 또는 중립 유닛 근처에 서서 그 유닛의 쇼마를 저장하면 해당 유닛으로 변신할 수 있다. [] / caster other: 변신한 유닛의 긍정적·부정적 특징을 다수 얻는다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.damage_taken; 조건 caster.other eq 변장한 모습의 체력바만큼 피해를 받음. caster transform: 변장한 모습의 체력바와 같은 양의 피해를 받으면 변장이 풀린다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 이동 불가 군중 제어기를 받음. caster transform: 변장이 풀린다. []"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 피해를 입히는 스킬. caster transform: 변장이 풀린다. []"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 target.target_type eq structure; target.other eq 적 포탑; caster.form eq non-champion; caster.other eq 적 포탑에 실제 피해를 가함. caster transform: 비챔피언 형태로 적 포탑에 피해를 주면 변장이 풀린다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions/rules.4.trigger",
+      "issue": "변장체력바만큼피격조건없음·타워피격관찰사건주체",
+      "correction": "변장피격량조건및caster포탑피해other사건",
+      "sourceId": "en:body",
+      "quote": "damaging enemy towers as a non-champion, or your disguise taking damage equal to its healthbar."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 338,
+      "verdict": "repaired",
+      "reason": "기존damage_taken.target는포탑피격으로해석가능하지만니코의가한피해사건을분명히other.caster로기록했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

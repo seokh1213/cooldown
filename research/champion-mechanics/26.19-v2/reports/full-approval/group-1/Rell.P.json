@@ -1,0 +1,75 @@
+{
+  "id": "Rell.P",
+  "sourceHash": "59f0966283cf66ccdb2b8e276254f61ce1749c79d4e92a383f84c9e38fe55182",
+  "beforeCandidateHash": "8114e8bc09a0b8a74801ebd4b38e8cf329d64eb3045be4c105d204aa984171f7",
+  "candidateHash": "3d2a1a4d69fe3bd3bf350ce82cdcf5a833234fafc8f01e4802ff5e2b6a21f96b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 3,
+  "summaryCheck": "공격/스킬적중targetArmor3%/MR3%5초steal/최대15%,기본공격만5%Armor+5%MR추가magic을 대조했다. ability온힛damage라는summary와body차이는gap이다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 없음. caster stat_modifier: 렐이 적중 대상의 방어력과 마법 저항력을 훔친다. [amount n0=3% scalar target.armor; amount n1=3% scalar target.magicResist; duration_seconds n2=5 scalar] / target stat_modifier: 훔치는 동안 적중 대상의 방어력과 마법 저항력은 각각3% 감소하며 렐이 해당 수치를 얻는다. 효과는5초이다. [amount n0=3% scalar target.armor; amount n1=3% scalar target.magicResist; duration_seconds n2=5 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 없음. caster stat_modifier: 훔친 방어력과 마법 저항력에는 최대치가 있다. [storage_cap n3=15% scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 기본 공격 적중. target damage magic: 기본 공격 적중 시 방어력5%와 마법 저항력5%를 더한 마법 피해를 입힌다. 소유자를 본문에서 직접 명시하지 않아 unknown으로 보존한다. [stat_coefficient n4=5% scalar unknown.armor; stat_coefficient n5=5% scalar unknown.magicResist]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/new/gaps",
+      "issue": "행위자target·핵심평타magic피해누락·summary스킬추가damage범위충돌",
+      "correction": "caster적중/target스탯steal,추가magic온힛복구및범위gap",
+      "sourceId": "en:body",
+      "quote": "Basic attacks deal ((5% Armor) + (5% Magic Resist)) magic damage on-hit."
+    },
+    {
+      "path": "rules.0.effects.1",
+      "issue": "방어력/마법저항력훔치기의대상감소효과누락",
+      "correction": "렐획득과함께같은대상수치감소를보존했다.",
+      "sourceId": "en:body",
+      "quote": "Rell's Attacks and Abilities steal 3% Armor and 3% Magic Resist for 5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "원문은 최대치가 방어력과 마법 저항력 각각에 적용되는지, 두 수치의 합계에 적용되는지 밝히지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "추가magicdamage의Armor/MR계수주인은직접명시되지않아unknown으로보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "summary는AttacksandAbilities추가magic이라하지만본문피해문장은Basicattacksonly다.본문을우선하여추가magic은기본공격에만표현한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

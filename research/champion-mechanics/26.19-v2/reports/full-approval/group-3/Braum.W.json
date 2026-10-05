@@ -1,0 +1,116 @@
+{
+  "id": "Braum.W",
+  "sourceHash": "d85b8cf5054c862b98d8ab3deaf1a024604d8570f751e641661880063d303bad",
+  "beforeCandidateHash": "5407384ec1e393479a499309192e4e094b3e5f7d8ec6836352aa2ec16943241a",
+  "candidateHash": "cf2bb9e89f288a57abe651362511555346a536556fc9e20496ea000582736e3c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "아군챔피언/미니언도약도착,아군3초각기본20~40+추가Armor/MR12%,본인3초각기본20~40+본인추가Armor/MR36%를재검수했다.아군에주는12%입력의주인미명시를unknown으로구조보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq champion; target other eq 아군 대상 → caster: 아군 챔피언에게 도약한다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq minion; target other eq 아군 대상 → caster: 아군 미니언에게 도약한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 이 스킬로 선택한 아군 챔피언 또는 미니언에게 도약해 도착할 때 → target: 도약 도착 시 대상의 방어력은20/25/30/35/40+추가방어력12%, 마법 저항력은20/25/30/35/40+추가마법저항력12%만큼3초 동안 증가합니다.12% 입력 추가 스탯의 주인은 공급 본문이 명시하지 않습니다. / amount=20/25/30/35/40 (target armor) [rank_values]; stat_coefficient=12% (unknown bonusArmor) [formula_components]; amount=20/25/30/35/40 (target magicResist) [rank_values]; stat_coefficient=12% (unknown bonusMagicResist) [formula_components]; duration_seconds=3 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other eq 이 스킬로 선택한 아군 챔피언 또는 미니언에게 도약해 도착할 때 → caster: 도착 시 브라움 자신의 방어력과 마법 저항력을 증가시킨다. / amount=20/25/30/35/40 (caster armor) [rank_values]; stat_coefficient=36% (caster bonusArmor) [formula_components]; amount=20/25/30/35/40 (caster magicResist) [rank_values]; stat_coefficient=36% (caster bonusMagicResist) [formula_components]; duration_seconds=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-1.conditions",
+      "issue": "도약의 아군 제한이 텍스트에만 있어 조건은 적 대상도 허용했다.",
+      "correction": "아군 챔피언/미니언 조건을 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Braum leaps to an allied champion or minion."
+    },
+    {
+      "path": "rules.2-3",
+      "issue": "대상 도착 사건 주인이 target이고 도착 조건이 없으며 기본 스탯 증가량의 스탯 연결이 없었다.",
+      "correction": "브라움의 해당 도약 도착 사건을 명시하고 각 기본증가량에 armor/magicResist를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "On arrival, Braum grants the target"
+    },
+    {
+      "path": "rules.2.effects.0.parameters",
+      "issue": "12% 계수의 스탯 주인을 target으로 단정했다.",
+      "correction": "본문이 주인을 명시하지 않아 구조화된 stat/statSubject를 null로 두고 스탯 이름·계수는 텍스트와 숫자로 유지했다.",
+      "sourceId": "en:body",
+      "quote": "(12% bonus Armor)"
+    },
+    {
+      "path": "rules.2.effects.0.parameters",
+      "issue": "12%계수의스탯주인을target으로단정했다.",
+      "correction": "본문미명시주인을unknown으로두고bonusArmor/bonusMagicResist입력스탯및계수는완전히유지했다.",
+      "sourceId": "en:body",
+      "quote": "(12% bonus Armor)"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "아군에게 부여하는 방어력/마법 저항력의12% 추가 스탯 계수는 누구의 추가 스탯인지 본문에 명시되지 않는다. 대상의 스탯이라고 확정하지 않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

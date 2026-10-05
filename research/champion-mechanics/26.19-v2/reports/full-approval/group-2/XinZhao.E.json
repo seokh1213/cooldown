@@ -1,0 +1,54 @@
+{
+  "id": "XinZhao.E",
+  "sourceHash": "536c30b4d3a066a442e8113b851396e8336b9d5cfb73b5f75f4b61734967339e",
+  "beforeCandidateHash": "084f0b859c32346eac4f7e115d02a9fcef97045412fa34e4a9aa52c64ed718e6",
+  "candidateHash": "76d77988e654614ff272e1dda1b8928b06c6e6b5ee0fe9ddc18f930a4b3b6145",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "적돌격·주변AP마법/30%0.5초둔화·자기38~70%5초공속,도전표식대상사거리증가 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 적에게 돌격합니다.; 수치 없음; flags 없음 | nearby_enemies: 주변 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=50,en:body:n1=75,en:body:n2=100,en:body:n3=125,en:body:n4=150 상수 rank_values / stat_coefficient en:body:n5=120%(백분율) caster.abilityPower scalar; flags 없음 | nearby_enemies: 주변 적을 둔화시킵니다. [slow]; 수치 amount en:body:n6=30%(백분율) 상수 scalar / duration_seconds en:body:n7=0.5 상수 scalar; flags 없음 | caster: 공격 속도가 증가합니다.; 수치 amount en:body:n8=38(백분율),en:body:n9=46(백분율),en:body:n10=54(백분율),en:body:n11=62(백분율),en:body:n12=70%(백분율) 상수 rank_values / duration_seconds en:body:n13=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.mark eq Challenged; caster: 도전 받은 적을 대상으로 하면 이 스킬의 사거리가 증가합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "도전표식을empowered로잘못특정한조건과사거리효과분류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Xin Zhao charges an enemy, dealing (50/75/100/125/150 + (120% Ability Power)) magic damage to nearby enemies and Slowing them by 30% for 0.5 seconds. Xin Zhao grants himself 38/46/54/62/70% Attack Speed for 5 seconds. This Ability's range is increased on enemies that are Challenged."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

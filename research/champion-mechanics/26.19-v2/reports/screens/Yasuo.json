@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Yasuo.E",
+      "sourceHash": "fbc033d4882a50d67a738f3d855456eb02066e7ca37069165e86a5dbeaab1f9e",
+      "candidateHash": "ca4364ed25b1d19577800df628444610e4af46735e4559ec2d134e9d71cd3c5a"
+    },
+    {
+      "id": "Yasuo.P",
+      "sourceHash": "66708dccb4cd69716a64cb7b360e67f3ae08c6365ec8860102c225f91c9704b0",
+      "candidateHash": "ed798853abb328fed3b67bbf33816790b5a9af9cf2b7d3d352970db8caf9a86e"
+    },
+    {
+      "id": "Yasuo.Q",
+      "sourceHash": "aa3c7c1f45f3119c367b6642cc04b113c093c24da77aa56223b8296bf7bb4c47",
+      "candidateHash": "4ab107de5160968cf408bf1d2927738f672a02c0a8ea54a4015e1187d637e00f"
+    },
+    {
+      "id": "Yasuo.R",
+      "sourceHash": "a3d8e0212907ebc633b4c6677444043e7fba606e8aadb25a3ab9d8334c7f742e",
+      "candidateHash": "a18aae34edaafc8b788e11426631106b03ba063866b808f9233396a5ecde503c"
+    },
+    {
+      "id": "Yasuo.W",
+      "sourceHash": "a1596b32becb897d7e73271bc6cc67edd804c6679eaed85c1ce3a46e9c70282d",
+      "candidateHash": "81481287e3bee3b0ab096f1c2b7ddb1cabafe02b52767cb221444ad04ee70d6c"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Yasuo.E",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:summary",
+      "quote": "Dashes through target enemy, dealing magic damage.",
+      "issue": "대상 유형을 `any`로 제한해 적이 아닌 대상에게도 돌진 및 피해가 적용되는 것으로 표현합니다.",
+      "correction": "대상 조건을 적으로 한정하거나, 대상 유형이 불명확하면 조건을 텍스트로 남기세요."
+    },
+    {
+      "id": "Yasuo.P",
+      "path": "rules.0.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "At maximum Flow, damage from a champion or monster briefly grants (125 ~ 600) Shield.",
+      "issue": "보호막 조건이 챔피언 피해만 허용해 몬스터에게서 피해를 받아도 발동한다는 원문과 모순됩니다.",
+      "correction": "이 규칙에 몬스터 피해도 허용하거나, 챔피언과 몬스터 조건을 함께 표현하세요."
+    },
+    {
+      "id": "Yasuo.R",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "and holding all nearby Airborne enemies up for an additional 1 second.",
+      "issue": "주변에서 공중에 뜬 대상의 유형을 챔피언으로 한정했지만, 원문은 모든 주변 공중 대상이라고 합니다.",
+      "correction": "챔피언 조건을 제거하거나, 대상 유형을 특정하지 않는 조건으로 표현하세요."
+    }
+  ],
+  "notes": []
+}

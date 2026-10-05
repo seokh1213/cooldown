@@ -1,0 +1,61 @@
+{
+  "id": "Rammus.W",
+  "sourceHash": "31c0523f54c68e4821478d1a97824b8b0493b5416ec60df989e4da934b505acf",
+  "beforeCandidateHash": "e0d295a76d940b08a5c8b8fb4cc23c03c733613954d1b744260f99abd901cfd1",
+  "candidateHash": "587462dc334adb1ec1f2eb595c04dbdd40fd7c354354d536d931424ba8075f0b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "7초방어태세방어35.1~75.2+30~60%Armor/마저26~64+30~60%MR;공격한적15+10%Armor+10%MR마법;재사용조기종료 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 7초 방어태세에서 방어력을35.1/44/53.65/64.05/75.2+(30/37.5/45/52.5/60)%자신방어력만큼 얻습니다.; 수치 amount en:body:n1=35.1,en:body:n2=44,en:body:n3=53.65,en:body:n4=64.05,en:body:n5=75.2 상수 rank_values / stat_coefficient en:body:n6=30(백분율),en:body:n7=37.5(백분율),en:body:n8=45(백분율),en:body:n9=52.5(백분율),en:body:n10=60%(백분율) caster.armor rank_values / duration_seconds en:body:n0=7 상수 scalar; flags 없음 | caster: 같은7초 태세에서 마법저항력을26/34.375/43.5/53.375/64+(30/37.5/45/52.5/60)%자신마저만큼 얻습니다.; 수치 amount en:body:n11=26,en:body:n12=34.375,en:body:n13=43.5,en:body:n14=53.375,en:body:n15=64 상수 rank_values / stat_coefficient en:body:n16=30(백분율),en:body:n17=37.5(백분율),en:body:n18=45(백분율),en:body:n19=52.5(백분율),en:body:n20=60%(백분율) caster.magicResist rank_values / duration_seconds en:body:n0=7 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 enemy; 조건 caster.form eq 이 W의7초 방어태세가 유지됨 / enemy.activation eq 이 적이 람머스를 기본공격함; enemy: 이 방어태세 중 람머스를 공격한 적에게15+10%람머스방어력+10%람머스마저의 마법 피해를 줍니다. [magic]; 수치 amount en:body:n21=15 상수 scalar / stat_coefficient en:body:n22=10%(백분율) caster.armor formula_components / stat_coefficient en:body:n23=10%(백분율) caster.magicResist formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 재사용하면 이 방어태세를 일찍 종료합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "누락된반격피해와재사용종료 복원·방어/MR효과분리·고정량스탯계수혼동·단순합산식의가짜gap 제거",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Rammus enters a defensive formation for 7 seconds, gaining (35.1/44/53.65/64.05/75.2 + (30/37.5/45/52.5/60% Armor)) Armor and (26/34.375/43.5/53.375/64 + (30/37.5/45/52.5/60% Magic Resist)) Magic Resist and dealing (15 + (10% Armor) + (10% Magic Resist)) magic damage to enemies that Attack him. Recast: Rammus ends this Ability early."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

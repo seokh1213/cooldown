@@ -1,0 +1,92 @@
+{
+  "id": "KSante.P",
+  "sourceHash": "9205fbe1b740a317a91be0bae452f6a7301b7b08f524ebd34107eb54654954a3",
+  "beforeCandidateHash": "3eeabdb226f57541006d6bf6cf1a4f4ab8654d501d40aca245b19ebae1b7a7f5",
+  "candidateHash": "ad1e08ae1cccf54b8a5c2dc89a1db7ab38ed53945b519a28a70655ce215b605f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "피해스킬표식·평타소모12+대상최대HP1~2%물리,총공세공격/스킬/패시브에최대HP(1%+자신추가armor100당1%+추가MR100당1%)추가물리를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "피해를주는스킬명중에만적표식.비피해스킬명중까지확대하지않음."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "크산테표식적을공격하면12+대상최대HP1~2%물리추가후표식소모.레벨범위중간값미제공."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "총공세중공격·스킬·패시브에대상최대HP의1%+자신추가armor100당1%+추가MR100당1%.두100은자신저항력입력분모이며HP계수가아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0",
+      "issue": "damaging스킬조건누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante's damaging Abilities mark enemies hit. Attacking a marked enemy deals 12 plus (1% ~ 2%) max Health physical damage and consumes the mark. All Out: K'Sante's Attacks, Abilities and Passive deal an additional (1% + (1% per 100 bonus Armor) + (1% per 100 bonus Magic Resist)) max Health physical damage."
+    },
+    {
+      "path": "rules.2.effects.0.parameters",
+      "issue": "자신저항력계수·분모를모두대상HPamount로합침",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante's damaging Abilities mark enemies hit. Attacking a marked enemy deals 12 plus (1% ~ 2%) max Health physical damage and consumes the mark. All Out: K'Sante's Attacks, Abilities and Passive deal an additional (1% + (1% per 100 bonus Armor) + (1% per 100 bonus Magic Resist)) max Health physical damage."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "추상공격종류gap대신실제복합수식한계기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "K'Sante's damaging Abilities mark enemies hit. Attacking a marked enemy deals 12 plus (1% ~ 2%) max Health physical damage and consumes the mark. All Out: K'Sante's Attacks, Abilities and Passive deal an additional (1% + (1% per 100 bonus Armor) + (1% per 100 bonus Magic Resist)) max Health physical damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "총공세피해는대상최대HP에자신추가방어력/마저100당1%씩늘어나는비율을곱한다.구성요소를HP와저항력의단순선형합으로실행하지않는다.표식1~2%범위중간값미제공."
+    }
+  ],
+  "validation": {
+    "id": "KSante.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

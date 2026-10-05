@@ -1,0 +1,122 @@
+{
+  "summary": "최근5초 챔피언이나 포탑에게 피해를 입지 않았다면 이동속도가 증가합니다. 사용하면3초 동안 더 높은 이동속도 증가 효과를 얻으며 피격되어도 사라지지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "최근5초동안챔피언또는포탑에게피해를받지않은경우"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "최근5초챔피언/포탑무피해이면이동속도가12/16/20/24/28%증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Teemo gains 12/16/20/24/28% Move Speed while he hasn't been damaged by a champion or turret in the last 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "3초동안이동속도가24/32/40/48/56%증가하며이사용효과는피격되어도사라지지않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Teemo sprints, gaining 24/32/40/48/56% Move Speed that is not lost when struck for 3 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "12/16/20/24/28%,24/32/40/48/56%는전체랭크%지만frozen숫자표는각마지막값만percent=true이다.전체단위를텍스트에보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "12/16/20/24/28% Move Speed"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "24/32/40/48/56% Move Speed"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "LeeSin.Q",
+  "sourceHash": "e76ef3ee64b0a5e96b1068da12688525e73ca36f50c180bba115097c146d7196",
+  "beforeCandidateHash": "37d8f4f177232cdf9a2bd46f0d18f6ea81697791d62dab08001609c3e5e5331d",
+  "candidateHash": "5ab4769ae410b86d56361f376e24b94517de991d3cb5f6a4711d2a95450d7dd1",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 1,
+  "summaryCheck": "음파 첫 적중의 물리 피해·절대 시야·3초 재사용 가능, 그 적에게 돌진하는 공명의 일격 및 잃은 체력에 따른 최소·최대 피해 구성의 관계를 확인했다. 재사용 피해 계수는 최소식과 최대식 각각에 속한다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 음파가 처음 적중한 적에게 물리 피해를 입힌다. (physical); amount=60/90/120/150/180  rank_values, stat_coefficient=90% caster의 bonusAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 해당 적에 대한 절대 시야를 얻는다.;  / caster: 음파가 적중하면 재사용할 수 있다.; duration_seconds=3  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 target.other eq 음파가 처음 적중한 바로 그 적, caster.other eq 음파 적중 이후 3초 재사용 가능 시간 안 적용. caster: 음파에 맞은 적에게 돌진한다.;  / target: 음파에 맞은 대상에게 최소 (60/90/120/150/180 + 리 신 추가 공격력의 90%)부터 최대 (120/180/240/300/360 + 추가 공격력의 180%) 사이의 물리 피해를 입힙니다. 피해는 대상의 잃은 체력에 비례하며 두 식은 서로의 경계여서 계수를 함께 더하지 않습니다. (physical); min_amount=60/90/120/150/180  formula_components, stat_coefficient=90% caster의 bonusAttackDamage formula_components, max_amount=120/180/240/300/360  formula_components, stat_coefficient=180% caster의 bonusAttackDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger,conditions",
+      "issue": "시전만으로 음파 피해가 적용되며 첫 적중 조건이 효과 text에만 있다.",
+      "correction": "실제 첫 적중 사건과 조건으로 피해를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "physical damage to the first enemy hit"
+    },
+    {
+      "path": "rules.1.trigger",
+      "issue": "맞은 대상이 리 신 스킬 적중 행위자다.",
+      "correction": "시전자 적중 사건으로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "granting True Sight of them, and allows Lee Sin to Recast for the next 3 seconds."
+    },
+    {
+      "path": "rules.2.conditions,effects.1.parameters",
+      "issue": "재사용 3초 조건이 빠지고 최소·최대의 두 추가 공격력 계수를 단순 합산할 여지가 있다.",
+      "correction": "같은 첫 적중 적과 3초 재사용 시간, 각각의 경계식 계수를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "dealing between (60/90/120/150/180 + (90% bonus Attack Damage)) to (120/180/240/300/360 + (180% bonus Attack Damage)) physical damage scaling with the target's missing Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "재사용 피해가 대상의 잃은 체력에 비례한다고 되어 있지만 비례식이나 최저·최고 피해 사이의 보간 방식은 원문에 없다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

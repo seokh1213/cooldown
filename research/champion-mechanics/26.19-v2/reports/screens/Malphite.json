@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Malphite.P",
+      "sourceHash": "72efbfb29099c18a1b349ea2d396c67e36b4825f4b1bfd72443cbe42ab9a3993",
+      "candidateHash": "b4e5bf3cd20f00245abbd012d24721afab867d3d1c8cd36b2d3b109146d37e9d"
+    },
+    {
+      "id": "Malphite.E",
+      "sourceHash": "4c1d1bbbf4f1f46d21dd8e43dffb31dad9d573303684b8c0df610f8e004d1c21",
+      "candidateHash": "584115660d769588205a2cf8b91a305a2d5ce12b901b9568c1ab6a924370cb1c"
+    },
+    {
+      "id": "Malphite.Q",
+      "sourceHash": "c272d4253a4109d3a50f364174a30c82002696c357232b78032d94428f171e22",
+      "candidateHash": "1bb6aecaf574e9541ddee0cca82e5c23b8c55ea3b3cf1cb8750c5192e2be7d11"
+    },
+    {
+      "id": "Malphite.R",
+      "sourceHash": "fb56a392900478445c850d713bf61f5be06febf2c003e65974be507a56fb12b3",
+      "candidateHash": "c66afcb573cf83e5df7677352b96e68e15f94b8dcdc42b12641488f7359bb238"
+    },
+    {
+      "id": "Malphite.W",
+      "sourceHash": "f1b224e95c36ae8d97dc0f7995b85af7dfe7329352a856a3a95b0fc9f8654104",
+      "candidateHash": "45fc4b966ecf0a7026e6853c63e211052e27eb7c338b56db801fab20fad6dc31"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Malphite.W",
+      "path": "rules.4.effects.0.parameters.2.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "creates an aftershock which deals (15/25/35/45/55 + (30% Ability Power) + (15% Armor)) physical damage On-Hit in their direction.",
+      "issue": "여진 피해의 방어력 계수 소유자를 unknown으로 두었지만, 문맥상 말파이트의 능력치입니다. 계수 소유자가 불명확하다는 gap도 이 점을 잘못 미해결로 처리합니다.",
+      "correction": "여진 피해의 15% Armor 계수 소유자를 caster로 기록하고, 해당 소유자 불명확 gap을 제거하세요."
+    },
+    {
+      "id": "Malphite.W",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "His Attacks continue to create aftershocks On-Hit for the next 5 seconds.",
+      "issue": "조건이 시전 후 5초 이내라는 지속 시간만 담고 공격 적중 조건은 담지 않았습니다. 현재 규칙은 그 시간 동안 공격하기만 해도 여진 피해가 발생하는 것으로 표현됩니다.",
+      "correction": "공격 적중 시 여진이 발생한다는 조건을 규칙에 반영하고, 5초 제한은 그 효과의 지속 시간으로 유지하세요."
+    },
+    {
+      "id": "Malphite.W",
+      "path": "rules.6.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals 180% damage to jungle monsters.",
+      "issue": "정글 몬스터 대상의 180% 피해 배율을 기본 피해를 대체하는 damage 효과로 기록했습니다. 원문은 배율만 명시하며 어떤 피해에 적용되는지는 불분명하므로, 이 표현은 기본 피해가 대체된다는 뜻을 근거 없이 더합니다.",
+      "correction": "기본 피해 대체 의미를 제거하고 배율 효과로만 기록하세요. 어느 피해에 적용되는지 불명확하다는 gap은 유지하세요."
+    }
+  ],
+  "notes": []
+}

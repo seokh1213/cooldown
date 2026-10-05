@@ -1,0 +1,159 @@
+{
+  "id": "Quinn.P",
+  "sourceHash": "67edcf94926c41bc3e4155effbf1222649e8e3b1a52def0a02f87a6ed7975e36",
+  "beforeCandidateHash": "9854f2a7c4cc2e678a872813c6b3f10b4df83f0d1d041cbe6121cb9dc95711aa",
+  "candidateHash": "9820073bc53bdf2cd68d5f271cd9b9a5705d274beb62dea19c967df92b8fda3f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 2,
+  "summaryCheck": "발러가근처적하나에주기표식/4초시야,그대상다음공격onhit추가physical. 주기?를추측하지않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "주기?미공급,근처적하나표식과4초시야. 주변모든적동시표식아님.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 1,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "Harrier그대상다음공격적중에15~120+40%bonusADphysical. 모든표식/모든공격아님.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Harrier"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 매사냥 표식 대상에게 다음 기본 공격이 적중"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1",
+            "en:body:n2"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "unknown",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "15",
+              "value": 15,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules,gaps",
+      "issue": "근처모든적표식·any표식/다음공격조건누락·level_range추측.",
+      "correction": "근처하나target·Harrier다음적중조건·unknown범위.",
+      "sourceId": "en:body",
+      "quote": "Every ? seconds, Valor marks a nearby enemy with Harrier, revealing it for 4 seconds and causing Quinn's next Attack On-Hit against them to deal ((15 ~ 120) + (40% bonus Attack Damage)) bonus physical damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 385,
+      "verdict": "repaired",
+      "reason": "Harrier와그대상다음기본공격적중조건을명시해반복발동오독을막았다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "표식을 남기는 주기는 원문에서 ?로 표시되어 수치를 특정할 수 없다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "15~120기본피해변화기준이본문에없다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "id": "RekSai.P",
+  "sourceHash": "9c4c1a4241a8a40b5d8a9b08155120f868e1ecaff3e03123837fc761ed4d7ee3",
+  "beforeCandidateHash": "c5a69b8c1e1ac155475338224234ad7a66b7d1e2742914eb587037caf1eecb0e",
+  "candidateHash": "c82d8c2d59241842bc2aeb4037e43647cfc2305ff825d4075a045f7c8e3de2b9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 3,
+  "summaryCheck": "공격/기본스킬분노25,매복분노소모3초회복·레벨별최대9~20%체력을확인했다. KO본문의스킬사용/요약적중차이를기록.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자기본공격에서25분노.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:summary",
+        "en:body"
+      ],
+      "note": "시전자기본스킬적중으로25분노. caster는행위자이며자기가맞는사건이아니다. KO사용vs적중충돌gap.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n1"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n1",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "매복분노소모와3초총회복. 레벨별상한9~20%이며9%가모든회복의최소치는아니다. Health기준/소모량실제부족gap유지.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Burrowed"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "max_amount",
+          "numberRefs": [
+            "en:body:n2",
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "level_range",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "9%",
+              "value": 9,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "20%",
+              "value": 20,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n4",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2",
+      "issue": "레벨별회복상한9~20%를최소회복9%로기록.",
+      "correction": "최대회복량범위한파라미터와분노소모명시.",
+      "sourceId": "en:body",
+      "quote": "While Burrowed, she consumes her Fury to restore up to ((9% ~ 20%) Health) Health over 3 seconds, increasing with level."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 396,
+      "verdict": "false_positive",
+      "reason": "ability_hit의caster는렉사이가스킬을맞히는행위자다. 피해자subject만강제하는계약이아니다."
+    },
+    {
+      "index": 397,
+      "verdict": "repaired",
+      "reason": "9%는낮은레벨에서의최대치이지회복최소량이아니다. min_amount삭제및max범위로수정."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "회복에 필요한 분노량과 소모 방식은 명시되지 않았다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "회복량이 비율로 표현되지만 기준 체력 스탯을 원문만으로 특정하지 않아 stat 및 statSubject를 지정하지 않았다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "EN요약 및KO요약은기본스킬적중,KO본문은기본스킬사용시라고한다. 적중을기준으로기록하며단순사용만으로분노생성을확정하지않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "id": "Maokai.E",
+  "sourceHash": "91e137de2200c1e7199d4fb14efee1f6d9aa2befb93a1e5dbdcbef51f0baa625",
+  "beforeCandidateHash": "a927ba1803b9b7306f500f58ffb3ac9c6a339d7be92926b928e5fae5075370f0",
+  "candidateHash": "ca284e3659842bf65e76cd4cd6cc89a7cb5551e3a449f681655845b873853d8c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "보통묘목30초/추격MS400~460/도착magic50~150+AP25%+bonusHP5%/45%2초slow,brush수명30+HP1.5%/큰폭발2초두배피해/가산slow,champorepic적중P추가4초감소/미니언보통피해를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other neq 묘목을 수풀에 설치. summon summon: 묘목을 소환해 주변을 감시하게 합니다. [duration_seconds n0=30 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 summon.other eq 수풀 밖에 설치한 묘목이 적에게 도착해 폭발. enemy damage magic: 적에게 접근하면 폭발해 마법 피해를 입힙니다. [amount n1=50/n2=75/n3=100/n4=125/n5=150 rank_values; stat_coefficient n6=25% scalar caster.abilityPower; stat_coefficient n7=5% scalar caster.bonusHealth] / nearby_enemies crowd_control slow: 폭발로 주변 적을 둔화시킵니다. [amount n8=45% scalar; duration_seconds n9=2 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 묘목을 수풀에 설치. summon summon: 수풀에 설치된 묘목은 추가 체력에 비례해 더 오래 유지됩니다. [duration_seconds n11=30 scalar; stat_coefficient n12=1.5% scalar caster.bonusHealth] flags=replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.ability_hit; 조건 enemy.other eq 묘목에 맞은 적 챔피언 또는 에픽 몬스터. caster cooldown_change: 묘목이 적 챔피언이나 에픽 몬스터에게 적중하면 마법 흡수의 재사용 대기시간이 추가로 감소합니다. [cooldown_seconds n10=4 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 enemy.other eq 묘목근처의적을감지하여추격. summon movement: 묘목은 근처 적을 추격하며 이동 속도는400~460이다. [amount n26=400/n27=460 level_range]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 caster.other eq 묘목을 수풀에 설치; summon.other eq 묘목이 적에게 도착해 폭발; enemy.target_type neq minion. enemy damage magic: 수풀 묘목은 더 큰 폭발로 마법 피해를 입히며, 피해는 2초에 걸쳐 적용됩니다. [amount n13=100/n14=150/n15=200/n16=250/n17=300 rank_values; stat_coefficient n18=50% scalar caster.abilityPower; stat_coefficient n19=10% scalar caster.bonusHealth; duration_seconds n20=2 scalar]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 caster.other eq 묘목을 수풀에 설치; summon.other eq 묘목이 적에게 도착해 폭발. enemy crowd_control slow: 수풀 묘목은 적을 둔화시킵니다. [amount n21=45% formula_components; stat_coefficient n22=1% formula_components caster.abilityPower; ratio_input n23=100 formula_components caster.abilityPower; stat_coefficient n24=1% formula_components caster.bonusHealth; ratio_input n25=100 formula_components caster.bonusHealth]"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, summon.other; 조건 caster.other eq 묘목을 수풀에 설치; summon.other eq 묘목이 적에게 도착해 폭발; enemy.target_type eq minion. enemy damage magic: 수풀 묘목도 미니언에게는 일반 묘목의 기본 피해량만 입힌다. [amount n1=50/n2=75/n3=100/n4=125/n5=150 rank_values; stat_coefficient n6=25% scalar caster.abilityPower; stat_coefficient n7=5% scalar caster.bonusHealth]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/new/gaps",
+      "issue": "brush피해시전즉시발동·보통/brush중복·미니언대체피해누락·cooldownOR·서로같은문구를충돌gap",
+      "correction": "생성/추격/폭발분리,brush피해nonminion/미니언기본피해,OR4초/불필요충돌삭제",
+      "sourceId": "en:body",
+      "quote": "Brush saplings do not deal the increased damage to minions."
+    },
+    {
+      "path": "rules.4.conditions",
+      "issue": "거리값존재만으로묘목추격발동조건기록",
+      "correction": "묘목근처의적을추격한다는조건으로교체했다.",
+      "sourceId": "en:body",
+      "quote": "Saplings chase nearby enemies"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 280,
+      "verdict": "repaired",
+      "reason": "champion AND monster 조건은불가능하며챔프or에픽몬스터하나로수정했다. monster+epic조건 자체는올바른하위분류다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "수풀 묘목 둔화율에 주문력과 추가 체력 각각 100당 증가가 명시되어 있으나, 현재 parameters 역할로 입력 스탯별 분모를 정확히 나타낼 수 없습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "id": "Locke.P",
+  "sourceHash": "30151ab440f43832fe81d45366b6bb3c17cceb980aec598597c383a6d3d075cb",
+  "beforeCandidateHash": "98b1f0286d07efd07270ee99bd6ffd7acaae051a4daf16da29a109634eda9d3c",
+  "candidateHash": "15b8008623b56b9556e790c50aaadc3e3c44d1ce82c6e03396060e4ca125d624",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "평타적중 추가마법피해 기본5~40+AP10%부터 대상잃은HP에 따라 최대10~80+AP20%까지 증가를 두 본문과 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "두 레벨범위는 피해의 기본식과 최대식이다. 기본5~40/AP10%, 최대10~80/AP20%를 각각 묶고 대상잃은HP 증가임을 보존. 범위 중간값이나 증가 보간식 미추정."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.parameters",
+      "issue": "레벨범위 양끝을 독립 min/max로 나누어 피해범위와 혼동",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke's Attacks deal an additional ((5 ~ 40) + (10% Ability Power)) magic damage on-hit, increased up to ((10 ~ 80) + (20% Ability Power)) magic damage based on the target's missing Health."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "기본·최대 복합식을 단일 선형식으로 실행하지 않게 한계 기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Locke's Attacks deal an additional ((5 ~ 40) + (10% Ability Power)) magic damage on-hit, increased up to ((10 ~ 80) + (20% Ability Power)) magic damage based on the target's missing Health."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "최소/최대 피해식은 제공되지만 대상 잃은HP에 따른 정확한 보간식과 각 레벨 중간값은 제공되지 않는다. 두 식의 AP계수를 무조건 더하는 식으로 실행하지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "Locke.P",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

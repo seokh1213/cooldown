@@ -1,0 +1,821 @@
+{
+  "id": "Kayn.R",
+  "sourceHash": "20936130fc07cd4d22443473e852e640ccd89f1da5c077e2fa7436798b07c61c",
+  "beforeCandidateHash": "3776791e74c17c864d39a3d1029e784041061ce89d973df2a93ff9353762117a",
+  "candidateHash": "c152b9e30514c7294acd7bbd91e4554d33bf6a5da7256107f4a325305067dd0a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 11,
+  "checkedGapCount": 1,
+  "summaryCheck": "케인 피해 표식3.15초, 표식 적 파고들기/지정불가,2.5초 또는 재사용 탈출,그림자 사거리/패시브 초기화,다르킨 대체피해/회복을 검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "대상 챔피언이 케인에게 피해를 받는 사건이며 스킬 적중만으로 제한하지 않는다. 표식3.15초.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "케인이 대상에게 피해를 입힘"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "3.15",
+              "value": 3.15,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "표식 적에게 파고들고 자기 지정불가. 투명 효과가 아니므로 other; 이미 적중한 공격/스킬 예외를 보존.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "파고든 적에게2.5초 경과 자동 탈출 피해150/250/350+추가AD150%;다르킨 제외.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 파고든 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "350",
+              "value": 350,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "150%",
+              "value": 150,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "동일 피해의 재사용 탈출이며 진입 이후 표식 재존재 조건은 부과하지 않음.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 파고든 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n2",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "250",
+              "value": 250,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "350",
+              "value": 350,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "stat_coefficient",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "150%",
+              "value": 150,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "그림자 자동 탈출시 다르킨의 낫 cooldown초기화.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Shadow Assassin"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 파고든 적"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "그림자 재사용 탈출에도 동일 초기화.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 파고든 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Shadow Assassin"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다르킨 자동 탈출 대체 물리피해는 대상 maxHP×(15%+추가AD당0.1%);선형 두 항의 합으로 계산하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 파고든 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "15%",
+              "value": 15,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "0.1%",
+              "value": 0.1,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다르킨 재사용 탈출도 동일 대체식.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 파고든 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n12"
+          ],
+          "stat": "maxHealth",
+          "statSubject": "target",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n12",
+              "raw": "15%",
+              "value": 15,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n13"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n13",
+              "raw": "0.1%",
+              "value": 0.1,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다르킨 자동 탈출 자기회복11.25%+추가AD100당7.5%;75%관계는 input불명확 gap.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 파고든 적"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "11.25%",
+              "value": 11.25,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n15"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "7.5%",
+              "value": 7.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n16"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n16",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n17"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n17",
+              "raw": "75%",
+              "value": 75,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "다르킨 재사용 탈출 동일 회복;입력/output 역할 보정.",
+      "verifiedConditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기로 파고든 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Darkin Slayer"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n14"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n14",
+              "raw": "11.25%",
+              "value": 11.25,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_output",
+          "numberRefs": [
+            "en:body:n15"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n15",
+              "raw": "7.5%",
+              "value": 7.5,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "ratio_input",
+          "numberRefs": [
+            "en:body:n16"
+          ],
+          "stat": "bonusAttackDamage",
+          "statSubject": "caster",
+          "shape": "formula_components",
+          "numbers": [
+            {
+              "id": "en:body:n16",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n17"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n17",
+              "raw": "75%",
+              "value": 75,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "그림자 사거리/탈출 거리 증가는 형식의 지속 특성으로 탈출 사건에 늦게 부여하지 않는다.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Shadow Assassin"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0",
+      "issue": "모든 케인 피해 표식을 스킬 적중으로 한정했다.",
+      "correction": "케인이 가한 대상 피해 사건으로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "Champions damaged by Kayn are marked for 3.15 seconds."
+    },
+    {
+      "path": "rules.1.effects.0",
+      "issue": "지정불가를 visibility로 분류하고 이미 적중한 효과 예외를 누락했다.",
+      "correction": "other와 지정불가 예외 텍스트를 보존했다.",
+      "sourceId": "en:body",
+      "quote": "Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been hit by them."
+    },
+    {
+      "path": "rules.2/rules.3/rules.4/rules.5/rules.10",
+      "issue": "기본 피해 다르킨 중복 및 탈출 규칙 대상/사거리 적용시점이 불완전했다.",
+      "correction": "기본 다르킨 제외,파고든 적 참조,사거리 passive 분리했다.",
+      "sourceId": "en:body",
+      "quote": "Shadow Assassin: Increases this Ability's range, the distance Kayn exits, and refreshes The Darkin Scythe's Cooldown on exit."
+    },
+    {
+      "path": "rules.6/rules.7/rules.8/rules.9",
+      "issue": "비율 중첩 식과 회복 분모/분자 역할이 불완전했다.",
+      "correction": "전체 중첩 식을 텍스트로 보존하고100은 ratio_input,7.5%는 ratio_output,75%는 other로 수정했다.",
+      "sourceId": "en:body",
+      "quote": "Darkin Slayer: Instead deals (15% + (0.1% bonus Attack Damage)) max Health physical damage and restores (11.25% + (7.5% per 100 bonus Attack Damage)) Health (75% damage amount)."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 188,
+      "verdict": "false_positive",
+      "reason": "expiry는2.5초 잠입 지속이 끝난 사건을 나타내며 효과 텍스트에 탈출 피해가 있다."
+    },
+    {
+      "index": 189,
+      "verdict": "repaired",
+      "reason": "진입한 적의 참조를 자동 탈출 조건에 추가했다. 표식의 재존재 조건은 원문에 없다."
+    },
+    {
+      "index": 190,
+      "verdict": "false_positive",
+      "reason": "rules.5에 재사용 탈출 cooldown초기화가 이미 있다. 사거리 적용시점 오류는 별도로 수정했다."
+    },
+    {
+      "index": 191,
+      "verdict": "false_positive",
+      "reason": "자동 expiry와 별도 recast 규칙이 모두 있으므로 사건 둘을 이미 보존한다."
+    },
+    {
+      "index": 192,
+      "verdict": "repaired",
+      "reason": "다르킨 자동 탈출 규칙에도 파고든 적을 명시했다."
+    },
+    {
+      "index": 193,
+      "verdict": "repaired",
+      "reason": "대상에게 실제 입힌 피해 기반으로 단정한 회복 설명을 원문 백분율 및 미확정 입력으로 수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "원문은 회복량을 '75% damage amount'라고 덧붙이지만, 그 관계를 수식으로 확정하지 않았다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.10",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.10",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

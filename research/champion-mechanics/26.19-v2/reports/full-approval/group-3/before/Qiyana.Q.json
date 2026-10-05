@@ -1,0 +1,394 @@
+{
+  "summary": "원소 강화 여부에 따라 기본 베기 또는 원소별 효과를 얻습니다. 야생의 힘으로 사용하면 첫 대상 뒤의 적에게 감소된 피해를 주며, 정글 몬스터에게 피해 배율이 적용됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "무기에 원소 강화 없음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "좁은 영역의 적에게 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Qiyana does not have an Enchantment, she slashes, dealing (80/110/140/170/200 + (90% bonus Attack Damage)) physical damage to enemies in a small area."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "얼음의 힘 강화"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "적을 잠시 속박합니다.",
+          "damageType": null,
+          "crowdControl": "root",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "속박한 뒤 적을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ice Enchantment: Briefly Roots, then Slows by 20% for 1 second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If she does, this Ability gains extra range and an additional effect based on the type of Enchantment:Ice Enchantment: Briefly Roots, then Slows by 20% for 1 second.Rock Enchantment: Deals an additional (48/66/84/102/120 + (54% bonus Attack Damage)) physical damage to units below 50% Health.Wild Enchantment: Leaves a trail that turns Qiyana Invisible and grants 20% Move Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "바위의 힘 강화"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n14"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "체력이 50% 미만인 유닛에게 추가 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rock Enchantment: Deals an additional (48/66/84/102/120 + (54% bonus Attack Damage)) physical damage to units below 50% Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If she does, this Ability gains extra range and an additional effect based on the type of Enchantment:Ice Enchantment: Briefly Roots, then Slows by 20% for 1 second.Rock Enchantment: Deals an additional (48/66/84/102/120 + (54% bonus Attack Damage)) physical damage to units below 50% Health.Wild Enchantment: Leaves a trail that turns Qiyana Invisible and grants 20% Move Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "야생의 힘 강화"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "첫 번째 적을 지나 그 뒤에 있는 적은 물리 피해를 받습니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Wild Enchantment: Leaves a trail that turns Qiyana Invisible and grants 20% Move Speed. Enemies beyond the first take 75% physical damage instead."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "야생의 힘 강화"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "야생의 힘이 흔적을 남겨 키아나를 투명하게 하고 이동 속도를 높입니다. 투명 유닛은 포탑이나 절대 시야로만 모습이 드러납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Wild Enchantment: Leaves a trail that turns Qiyana Invisible and grants 20% Move Speed."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Invisible units cannot be revealed except by turrets or True Sight."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If she does, this Ability gains extra range and an additional effect based on the type of Enchantment:Ice Enchantment: Briefly Roots, then Slows by 20% for 1 second.Rock Enchantment: Deals an additional (48/66/84/102/120 + (54% bonus Attack Damage)) physical damage to units below 50% Health.Wild Enchantment: Leaves a trail that turns Qiyana Invisible and grants 20% Move Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "정글 몬스터에게 이 스킬의 피해가 160%가 됩니다. 적용되는 피해 구성요소의 범위는 tooltip에서 특정하지 않습니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "unknown"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability deals 160% damage to jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "야생의 힘 사용 시 첫 적중 대상 뒤의 적이라는 관계를 hit_order 필드로 정확히 표현할 수 없어 효과 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies beyond the first take 75% physical damage instead."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "정글 몬스터 대상 피해 배율은 기재했지만, 어느 피해 구성요소에 적용되는지는 tooltip만으로 확정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability deals 160% damage to jungle monsters."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "야생의 힘이 남기는 흔적의 지속시간은 제시되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Wild Enchantment: Leaves a trail that turns Qiyana Invisible and grants 20% Move Speed."
+        }
+      ]
+    }
+  ]
+}

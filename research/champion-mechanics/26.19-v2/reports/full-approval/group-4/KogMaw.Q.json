@@ -1,0 +1,56 @@
+{
+  "id": "KogMaw.Q",
+  "sourceHash": "c71e91968a73c79fbb17e52a9898a7b4e9125cced06b22ab349f9018dc0073be",
+  "beforeCandidateHash": "67c37a35863d2274c112943fb5d3e89a40592b455854d941c440f38f40356e42",
+  "candidateHash": "bf50817b6d5f3b12b67e084785301a680cd2a966ef100143bae9abf877fab329",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "상시공속5랭크,첫투사체적중의마법피해와같은대상방어력/마법저항력16~32%4초감소를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 공격 속도가 증가합니다.; amount=5/10/15/20/25%  rank_values 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 부식성 투사체가 처음 맞은 적에게 마법 피해를 입힙니다. (magic); amount=80/125/170/215/260  rank_values, stat_coefficient=90% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first 적용. target: 첫적중대상의방어력을해당비율만큼4초동안낮춘다.; amount=16/20/24/28/32%  rank_values, duration_seconds=4  scalar / target: 같은첫적중대상의마법저항력을해당비율만큼4초동안낮춘다.; amount=16/20/24/28/32%  rank_values, duration_seconds=4  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,2,gaps",
+      "issue": "피해와저항력감소적중범위를다르게해석하여일반시전시감소",
+      "correction": "첫적중대상의피해및두스탯감소로일치시킴",
+      "sourceId": "en:body",
+      "quote": "Active: Kog'Maw vomits a corrosive projectile that deals (80/125/170/215/260 + (90% Ability Power)) magic damage to the first enemy hit and shreds 16/20/24/28/32% Armor and Magic Resist for 4 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 241,
+      "verdict": "repaired",
+      "reason": "문장상의같은첫적중대상에게감소가적용된다.시전을스킬적중사건으로정정했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

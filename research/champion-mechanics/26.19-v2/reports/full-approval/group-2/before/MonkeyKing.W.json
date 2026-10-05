@@ -1,0 +1,183 @@
+{
+  "summary": "오공은 돌진하며 잠시 투명 상태가 되고, 일정 시간 움직이지 않는 분신을 남깁니다. 분신은 오공이 최근 피해를 준 근처 적을 공격하고 궁극기를 모방합니다. 투명 유닛은 포탑이나 절대 시야로만 드러납니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "오공이 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "오공이 잠시 투명 상태가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "오공이 일정 시간 움직이지 않는 분신을 남깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Wukong dashes and becomes Invisible for 1 second, leaving behind a stationary Clone for 4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "nearby_enemies",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "오공이 최근 피해를 입힌 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "분신이 오공이 최근 피해를 준 근처 적을 공격하고 궁극기를 모방해 통상 피해의 일정 비율만큼 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Clone Attacks nearby enemies Wukong has recently damaged and will mimic his ultimate, each dealing 40/45/50/55/60% of normal damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "unknown"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "unknown",
+          "text": "투명 유닛은 포탑이나 절대 시야로만 드러납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Invisible units cannot be revealed except by turrets or true sight."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "분신 피해 비율의 기준인 normal damage가 무엇을 참조하는지 원문에서 추가 정의가 없어 기준을 확정하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Clone Attacks nearby enemies Wukong has recently damaged and will mimic his ultimate, each dealing 40/45/50/55/60% of normal damage."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "투명 유닛이 포탑 또는 절대 시야로 드러날 수 있다는 규칙의 적용 대상을 원문에서 특정할 수 없어 unknown으로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Invisible units cannot be revealed except by turrets or true sight."
+        }
+      ]
+    }
+  ]
+}

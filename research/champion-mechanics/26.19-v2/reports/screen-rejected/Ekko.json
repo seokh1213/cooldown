@@ -1,0 +1,68 @@
+{
+  "findings": [
+    {
+      "id": "Ekko.P",
+      "path": "rules.0.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every third Attack or damaging Ability on the same target deals an additional ((30 ~ 140) + (80% Ability Power)) magic damage.",
+      "issue": "조건이 세 번째 공격 또는 피해를 주는 스킬을 ‘적중 횟수’로 표현해, 스킬별 적중 수를 세는 것으로 오해될 수 있습니다.",
+      "correction": "hit_count 대신 공격 또는 피해 스킬의 발생 순서를 설명하는 텍스트를 사용하세요."
+    },
+    {
+      "id": "Ekko.P",
+      "path": "rules.1.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every third Attack or damaging Ability on the same target deals an additional ((30 ~ 140) + (80% Ability Power)) magic damage.",
+      "issue": "이동 속도 증가 조건도 적중 횟수로 표현되어 개별 스킬의 적중 수 조건처럼 읽힙니다.",
+      "correction": "세 번째 공격 또는 피해를 주는 스킬을 같은 대상에게 가한 조건으로 표현하세요."
+    },
+    {
+      "id": "Ekko.P",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This effect can't trigger on the same enemy more than once every 4 seconds.",
+      "issue": "재발동 제한을 attack_or_ability_hit 이벤트에 연결했지만, 원문은 효과가 같은 적에게 4초에 한 번보다 자주 발동할 수 없다는 제한만 명시합니다.",
+      "correction": "발동 이벤트는 특정하지 말고, 동일 적 대상 4초 재발동 제한으로 기록하세요."
+    },
+    {
+      "id": "Ekko.R",
+      "path": "rules.0.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ekko turns back time, entering Stasis while teleporting to where he was 4 seconds ago and dealing (200/350/500 + (175% Ability Power)) magic damage to nearby enemies. Units in Stasis cannot move or act, and are Invulnerable and Untargetable.",
+      "issue": "‘순간이동하는 동안’ 경직이라고 하여 경직이 순간이동 중에만 지속되는 것으로 한정합니다. 원문은 지속 종료 시점을 제시하지 않습니다.",
+      "correction": "순간이동과 경직 진입을 함께 기술하고, 경직 지속 시간은 특정하지 마세요."
+    },
+    {
+      "id": "Ekko.R",
+      "path": "rules.0.effects.1.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ekko turns back time, entering Stasis while teleporting to where he was 4 seconds ago",
+      "issue": "4초는 이동 지속 시간이 아니라 되돌아갈 위치의 시점입니다. 이를 duration_seconds로 분류하면 의미가 바뀝니다.",
+      "correction": "duration_seconds 대신 과거 위치의 시간 기준임을 나타내는 텍스트 또는 알 수 없는 역할로 기록하세요."
+    },
+    {
+      "id": "Ekko.R",
+      "path": "rules.2.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "In addition, Ekko restores (100/150/200 + (60% Ability Power)) Health, increased by 3% for each 1% Health he lost in last 4 seconds.",
+      "issue": "효과 문구가 계산 기준을 ‘더 설명하지 않는다’고 서술해, 최근 4초 동안 잃은 체력 1%당 회복량이 3% 증가한다는 원문 내용을 누락합니다.",
+      "correction": "최근 4초 동안 잃은 체력 1%마다 회복량이 3% 증가한다고 명시하고, 계산식이 불명확하다는 gap은 유지하세요."
+    },
+    {
+      "id": "Ekko.W",
+      "path": "rules.5.conditions.0.value.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Bonus Attack damage deals a min of 15 and a max of 150 damage against minions and monsters.",
+      "issue": "대상 조건이 any로 되어 있어 미니언과 몬스터 한정이라는 원문 범위와 모순됩니다.",
+      "correction": "대상 범위를 미니언과 몬스터로 지정하거나, 정확한 유형 조건을 표현할 수 없으면 범위를 텍스트로 보존하세요."
+    }
+  ],
+  "notes": []
+}

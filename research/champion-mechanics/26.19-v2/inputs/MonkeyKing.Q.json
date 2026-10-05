@@ -1,0 +1,484 @@
+{
+  "champion": "MonkeyKing",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Wukong's next attack gains attack range, deals bonus damage, and reduces the target's armor for a few seconds.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Wukong and his Clone's next Attack gains 135/145/155/165/175 range, deals an additional (20/45/70/95/120 + (50% bonus Attack Damage)) physical damage, and removes 10/15/20/25/30% Armor for 3 seconds. This Ability's cooldown is reduced by 0.5 seconds every time Wukong or his Clone hit an enemy with an Attack or Ability. This Ability triggers spell effects upon dealing damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "오공의 다음 공격 사거리가 증가하고 추가 피해를 입히며 맞은 대상의 방어력이 몇 초 동안 낮아집니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "오공과 분신이 다음 공격 시 사거리가 135/145/155/165/175 증가하고 (20/45/70/95/120 + (50% 추가 공격력))의 물리 피해를 추가로 입히며 3초 동안 대상의 방어력이 10/15/20/25/30% 감소합니다. 오공이나 오공의 분신이 기본 공격 및 스킬로 적을 공격할 때마다 이 스킬의 재사용 대기시간이 0.5초 감소합니다. 이 스킬은 피해를 입힐 때 효과가 발동합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Crushing Blow",
+      "ko": "파쇄격"
+    },
+    "cooldownSeconds": [
+      8,
+      7.5,
+      7,
+      6.5,
+      6
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      250,
+      275,
+      300,
+      325,
+      350
+    ],
+    "cost": {
+      "values": [
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "20/45/70/95/120"
+      },
+      {
+        "label": "Armor Reduction %",
+        "values": "10%/15%/20%/25%/30%"
+      },
+      {
+        "label": "Range",
+        "values": "135/145/155/165/175"
+      },
+      {
+        "label": "Cooldown",
+        "values": "8/7.5/7/6.5/6"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "BonusDamageTT",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          20,
+          45,
+          70,
+          95,
+          120
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/MonkeyKing.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "MonkeyKing.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 41,
+      "end": 44
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "145",
+      "value": 145,
+      "percent": false,
+      "start": 45,
+      "end": 48
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "155",
+      "value": 155,
+      "percent": false,
+      "start": 49,
+      "end": 52
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 53,
+      "end": 56
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 89,
+      "end": 91
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 92,
+      "end": 94
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 95,
+      "end": 97
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 98,
+      "end": 100
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 101,
+      "end": 104
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 108,
+      "end": 111
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 163,
+      "end": 165
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 166,
+      "end": 168
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 169,
+      "end": 171
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 172,
+      "end": 174
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 175,
+      "end": 178
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 189,
+      "end": 190
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 238,
+      "end": 241
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 21,
+      "end": 24
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "145",
+      "value": 145,
+      "percent": false,
+      "start": 25,
+      "end": 28
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "155",
+      "value": 155,
+      "percent": false,
+      "start": 29,
+      "end": 32
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 33,
+      "end": 36
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 37,
+      "end": 40
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 47,
+      "end": 49
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 50,
+      "end": 52
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 53,
+      "end": 55
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 56,
+      "end": 58
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 66,
+      "end": 69
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 95,
+      "end": 96
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 110,
+      "end": 112
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 113,
+      "end": 115
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 116,
+      "end": 118
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 119,
+      "end": 121
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 122,
+      "end": 125
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 185,
+      "end": 188
+    }
+  ],
+  "sourceHash": "9e9201349c71c772aae0f4ecc37ba9218b1b470138160d85801e523cdc4e62d6",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

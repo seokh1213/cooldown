@@ -1,0 +1,148 @@
+{
+  "id": "Teemo.R",
+  "sourceHash": "4407b89de74fc2c80174c1a28150a33dbf954e532edd1c8b3e6d415e7795cd66",
+  "beforeCandidateHash": "a2edb163bc431db26e1f2f4f5fab4a8d94e332ccd881fb2f558fb36489e8ae20",
+  "candidateHash": "114e1284abf5d79a8683322701c5e29ca59cb16f0d43724f213bb8e06b300ac0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "충전버섯하나를소모해은신함정5분,적이밟으면폭발/주변독구름의4초30/40/50%둔화·총200/325/450+AP50%마법피해·모습공개,기존버섯위에던지면튕김,최대3충전/35/30/25초갱신을대조했다.5분을5초로실행하지않도록단위를보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast → summon: 저장된버섯충전하나를써버섯함정을던집니다.함정은은신상태로5분유지되며적이밟으면폭발합니다. / other=5 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: enemy의 enter_area / 조건 enemy other eq 적이이버섯함정을밟아폭발했을때독구름에영향받는적 → enemy: 함정폭발의독구름에영향받은적을4초동안30/40/50%둔화합니다. [slow] / amount=30/40/50% [rank_values]; duration_seconds=4 [scalar] | enemy: 함정폭발의독구름에영향받은적에게4초에걸쳐총200/325/450+주문력50%마법피해를입힙니다. [magic] / amount=200/325/450 [rank_values]; stat_coefficient=50% (caster abilityPower) [formula_components]; duration_seconds=4 [scalar] | enemy: 적의 모습을 피해와 같은 시간 동안 드러냅니다. / duration_seconds=4 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: summon의 passive → summon: 함정은 은신 상태로 유지됩니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: summon의 expiry / 조건 summon other eq 이함정설치후5분수명이다했을때 → summon: 설치된이함정이5분의수명을다하면만료됩니다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 summon other eq 던진 버섯이 다른 버섯 위에 떨어지는 위치 관계 → summon: 던진 버섯 함정이 튕긴 뒤 착지 지점에 떨어집니다. 기존버섯위에서튕겨추가사거리를얻습니다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 이 스킬은 충전 횟수를 보유하며 시간이 지나면 충전됩니다. / storage_cap=3 [scalar]; cooldown_seconds=35/30/25 [rank_values]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/3",
+      "issue": "함정수명5분을expiry의duration_seconds=5로기록하여5초로오독했고충전소모가누락됐다.",
+      "correction": "함정생성의5분수명과만료조건으로보존하고저장버섯하나소모를명시했다.",
+      "sourceId": "en:body",
+      "quote": "Traps last 5 minutes and are stealthed."
+    },
+    {
+      "path": "rules.1",
+      "issue": "폭발조건/피해4초매개변수가누락되고랭크둔화퍼센트단위가손실됐다.",
+      "correction": "함정밟아폭발조건,전체4초피해/둔화/시야와단위한계를보존했다.",
+      "sourceId": "en:body",
+      "quote": "deal (200/325/450 + (50% Ability Power)) magic damage over 4 seconds."
+    },
+    {
+      "path": "rules.4.effects.0",
+      "issue": "요약의버섯튕김추가사거리가누락됐다.",
+      "correction": "기존버섯위튕김의추가사거리를보존했다.",
+      "sourceId": "en:summary",
+      "quote": "it will bounce, gaining additional range."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 537,
+      "verdict": "documented_gap",
+      "reason": "frozen inputs수정은금지다.30/40도%라는원문사실은효과텍스트에명시하고lexicalpercent한계gap으로기록했다."
+    },
+    {
+      "index": 538,
+      "verdict": "repaired",
+      "reason": "피해효과에도4초전체피해지속시간을연결했다."
+    },
+    {
+      "index": 539,
+      "verdict": "repaired",
+      "reason": "enter_area를적이함정을밟아실제로폭발한사건으로명시했다."
+    },
+    {
+      "index": 540,
+      "verdict": "repaired",
+      "reason": "5분을함정생성의other수명및만료조건으로옮겼고expiry duration_seconds=5를삭제했다."
+    },
+    {
+      "index": 541,
+      "verdict": "false_positive",
+      "reason": "원본조건'던진버섯이다른버섯위에떨어지는위치관계'가새버섯이기존버섯위에던져지는조건을이미명시한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "둔화30/40/50%의처음두값은frozen숫자표percent=false이다.전체랭크%를텍스트보존하며표수정은금지되어단순실행불가다.함정5분역시초단위numberRef300이없어서other5와5분텍스트로보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

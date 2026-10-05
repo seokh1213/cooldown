@@ -1,7 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { answerChampionIds, type AdvisorAnswer } from "@/lib/advisor/answer";
-import { matchupStateOf } from "@/lib/advisor/conversation";
-import { appendFeedback } from "@/lib/advisor/feedback";
+import { type AdvisorAnswer } from "@/lib/advisor/answer";
 import { dialogueAnswerText, type AnswerDelivery } from "@/lib/advisor/dialogueReply";
 import type { DialogueMemory } from "@/lib/advisor/dialogueState";
 import type { DialogueTrace } from "@/lib/advisor/requestContract";
@@ -175,47 +173,6 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
     });
   }, []);
 
-  /*
-   * 기록은 상태 갱신 함수 밖에서 남긴다. 갱신 함수 안에서 남기면 개발 모드(StrictMode)가 갱신 함수를 두 번 불러
-   * 같은 평가가 두 번 쌓였다.
-   */
-  const rate = useCallback((turnId: number, rating: "up" | "down", patch: string) => {
-    const index = turns.findIndex((t) => t.id === turnId);
-    if (index < 0) return;
-    // 같은 버튼을 다시 누르면 평가를 물린다
-    const next = turns[index].rating === rating ? undefined : rating;
-    setTurns((prev) => prev.map((t) => (t.id === turnId ? { ...t, rating: next } : t)));
-    if (!next) return;
-    // 바로 앞 사용자 발화가 이 답의 질문이다
-    const before = turns.slice(0, index);
-    const question = [...before].reverse().find((t) => t.role === "user");
-    const questionAt = question ? before.lastIndexOf(question) : -1;
-    const previousQuestion = [...before.slice(0, Math.max(0, questionAt))].reverse().find((t) => t.role === "user");
-    const state = matchupStateOf(before.slice(0, Math.max(0, questionAt)).map((t) => (t.role === "assistant" ? t.answer : undefined)));
-    const previousMemory = [...before.slice(0, Math.max(0, questionAt))].reverse().find(t => t.role === "assistant" && t.memory)?.memory;
-    const answer = turns[index].answer;
-    try {
-      appendFeedback({
-        at: new Date().toISOString(),
-        question: question?.content ?? "",
-        answer: turns[index].content,
-        rating,
-        patch,
-        lang,
-        previousQuestion: previousQuestion?.content,
-        previousMatchup: previousMemory?.matchup ? { mine: previousMemory.matchup.mine, enemy: previousMemory.matchup.enemy }
-          : state ? { mine: state.mine.id, enemy: state.enemy.id } : undefined,
-        answerKind: turns[index].answers?.length ? "multiple" : answer?.kind,
-        champions: turns[index].answers?.length ? [...new Set(turns[index].answers!.flatMap(answerChampionIds))] : answer ? answerChampionIds(answer) : undefined,
-        previousMemory,
-        memory: turns[index].memory,
-        trace: turns[index].trace,
-      });
-    } catch {
-      // 저장에 실패해도 화면 표시는 유지한다
-    }
-  }, [turns, lang]);
-
   const reset = useCallback(() => {
     finishReveal();
     pendingRef.current = null;
@@ -248,7 +205,6 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
     completeReply,
     answerWithoutModel,
     remember,
-    rate,
     reset,
     replaceTurns,
   };

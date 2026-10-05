@@ -1,0 +1,42 @@
+{
+  "id": "Singed.P",
+  "sourceHash": "c12e6000b914f40c22cb5754d778140bbe5b3fa56b81dbdde3a2dba548299ce1",
+  "beforeCandidateHash": "72c502f8355fd39caee9f7bebbc7080734234df8b9ef5491dc2a415ee7bc2554",
+  "candidateHash": "21d5a0375b3e2c5ce393bd5978e6d69ba755ec90173a26383a2bf0fa1e3867d9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "근처 아군/적 챔피언을 지나칠 때25%2초 이속과 해당 챔피언별8초 발동 쿨을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 target.target_type eq champion; target.other eq 근처 아군 또는 적 챔피언을 신지드가 지나침; caster.other eq 그 챔피언에 대한 이 효과의8초 재사용 대기시간이 준비됨. caster stat_modifier: 신지드가 근처 아군 또는 적 챔피언을 지나치면 이동 속도가 증가한다. [amount n0=25% scalar; duration_seconds n1=2 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.other; 조건 caster.other eq 근처 챔피언을 지나쳐 이 이동 속도 효과가 발동함. caster cooldown_change: 이 효과의 재사용 대기시간은 지나친 해당 챔피언별8초이다. [cooldown_seconds n2=8 scalar] flags=per_target"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,1",
+      "issue": "챔피언 여부만 조건으로 있어 통과/근접 사건과 대상별 발동 쿨이 분명하지 않음",
+      "correction": "근처 아군/적 챔피언 통과와 그 챔피언에 대한 쿨 준비를 명시하고 챔피언별 쿨을 효과와 분리했다.",
+      "sourceId": "en:body",
+      "quote": "This effect has an 8 second Cooldown per champion."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

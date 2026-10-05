@@ -1,0 +1,66 @@
+{
+  "id": "Milio.E",
+  "sourceHash": "52112667d55564953b094075b5db0d0e317578ede767e0ac2f4c24c56ebe64a7",
+  "beforeCandidateHash": "4a841fbe0b8e8b8e84ba80a8d19f4342564ab39519133deebd98dda2fcc4b4d5",
+  "candidateHash": "b1a0e0defe67a976fe43afccc5edbc006b9170af20dbd3c79cc716ba762b0368",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "아군챔피언45~165+45%AP보호막/12~20%이속2.5초, 최대2충전/동일대상효과중첩 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion / target.other eq 아군 대상; target: 아군 챔피언에게 보호막을 부여한다.; 수치 amount en:body:n0=45,en:body:n1=75,en:body:n2=105,en:body:n3=135,en:body:n4=165 상수 rank_values / stat_coefficient en:body:n5=45%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n11=2.5 상수 scalar; flags 없음 | target: 아군 챔피언의 이동 속도를 증가시킨다.; 수치 amount en:body:n6=12(백분율),en:body:n7=14(백분율),en:body:n8=16(백분율),en:body:n9=18(백분율),en:body:n10=20%(백분율) 상수 rank_values / duration_seconds en:body:n11=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이 E는 최대2회충전을보유합니다.2초나사용횟수하한이아닙니다.; 수치 storage_cap en:body:n12=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq 아군 챔피언 / target.activation eq 동일대상에게 이 E의 효과가 남아있을때 반복적용; target: 같은 대상에게 반복 적용하면 효과가 중첩된다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "불가능한보유충전>2조건을상시cap2로 교정·same_target가짜표식제거·아군유형범위 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Milio wraps an ally champion in protective flames, granting (45/75/105/135/165 + (45% Ability Power)) Shield and 12/14/16/18/20% Move Speed for 2.5 seconds. This ability has 2 charges and the effects stack on repeat targets."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

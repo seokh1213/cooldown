@@ -1,0 +1,125 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Shyvana.E",
+      "sourceHash": "a379db5e749e13e5ee631a4b93dee0b99f8e08077099ba17c513b8a69abd21da",
+      "candidateHash": "b8c79ef854d489df4bc69d6fc14d969c80ad6803e3cda19826d84c5c27e4e114"
+    },
+    {
+      "id": "Shyvana.P",
+      "sourceHash": "9b59d2414e775d100088123f7e20683d080a604be5a67702a0a8cc741e7b9502",
+      "candidateHash": "3447f9c0b631e22fd434377ae912bb64ab7505ac7f2ec0e207a8b808617bf886"
+    },
+    {
+      "id": "Shyvana.Q",
+      "sourceHash": "33caaf419cc7a1a1c6333ee7a70faa0777e384d7675e7e59459fcc4b1058a722",
+      "candidateHash": "451dca328b99286b663c388fcf2f04955681a65faeb0ce83d4a2c3eeb115e6e7"
+    },
+    {
+      "id": "Shyvana.R",
+      "sourceHash": "7fdeb06394a19d92871b8c9448782e4e5165c9ccae97ec81c86dbce70f150d86",
+      "candidateHash": "e9c9b0f6651ddf9a2a0fbfd1b2bc5e8c5fb1c679832e082d8926de976b204ffd"
+    },
+    {
+      "id": "Shyvana.W",
+      "sourceHash": "a5ece87dcf3bde36500b9db55a90b3142fff355cbb644f2a457beeaf3265c6bc",
+      "candidateHash": "1b009dd598a3ec50a33e56b363b0b81bb1a2c6abedbd008d105ae9604939a1f1"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Shyvana.E",
+      "path": "rules.3.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Upon striking a champion, large monster, or reaching its terminus it triggers a pulse of fire",
+      "issue": "용 형상 파동 규칙이 챔피언 적중으로만 제한되어 대형 몬스터 적중과 끝 지점 도달 조건을 누락합니다.",
+      "correction": "대상 조건을 챔피언 또는 대형 몬스터 적중으로 확장하고, 끝 지점 도달도 별도 발동 조건으로 보존하세요."
+    },
+    {
+      "id": "Shyvana.E",
+      "path": "rules.4.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Upon striking a champion, large monster, or reaching its terminus it triggers a pulse of fire that deals (62.5/81.25/100/118.75/137.5 + (75/81.25/87.5/93.75/100% Ability Power)) + 6.25% Max Health magic damage and Slows by 30% for 2 seconds.",
+      "issue": "둔화 규칙도 파동 규칙과 같이 챔피언 적중에만 연결되어, 대형 몬스터 적중 및 끝 지점 도달 후 파동의 둔화를 빠뜨립니다.",
+      "correction": "둔화 조건을 파동의 전체 발동 조건(챔피언 또는 대형 몬스터 적중, 끝 지점 도달)에 맞추세요."
+    },
+    {
+      "id": "Shyvana.E",
+      "path": "rules.5.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The fireball leaves behind a trail for 2 seconds that deals ((15 ~ 25) + (5% Ability Power)) magic damage per second.",
+      "issue": "불길 피해를 챔피언 적중에만 조건부로 묶었습니다. 원문은 화염구가 남기는 흔적의 피해를 설명할 뿐 챔피언 적중을 발동 조건으로 두지 않습니다.",
+      "correction": "챔피언 적중 조건을 제거하고, 불길 피해 대상을 원문대로 불명확하게 두세요."
+    },
+    {
+      "id": "Shyvana.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Takedowns on champions, large minions, and monsters earn Shyvana stacks of Scalemail",
+      "issue": "대상 조건이 챔피언만 허용해, 대형 미니언과 몬스터 처치 관여도 중첩을 준다는 원문 내용을 누락합니다.",
+      "correction": "대형 미니언과 몬스터도 적격 대상으로 포함하세요. 요약과 범위 차이는 gap으로 계속 기록할 수 있습니다."
+    },
+    {
+      "id": "Shyvana.Q",
+      "path": "rules.0.effects.0.parameters.0.statSubject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(1% + (1.1% per 100 bonus Attack Damage)) max Health magic damage On-Hit",
+      "issue": "최대 체력의 소유자가 원문에 명시되지 않는데, 이를 대상 최대 체력으로 단정했습니다.",
+      "correction": "statSubject를 미지정으로 두고 소유자 불명확성을 gap으로 보존하세요."
+    },
+    {
+      "id": "Shyvana.Q",
+      "path": "rules.5.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Dragon Form's final Recast cannot critically strike.",
+      "issue": "치명타 불가 사실을 피해 효과 문장에 넣었지만, 이 규칙은 피해 유형이나 피해 발생을 정의하지 않습니다.",
+      "correction": "치명타 불가를 피해 규칙의 텍스트에서 제거하고 별도 제한/정보로 표현하세요."
+    },
+    {
+      "id": "Shyvana.R",
+      "path": "rules.6.effects.0.statTo",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "she gains 150/250/350 bonus Health",
+      "issue": "추가 체력을 maxHealth 증가로 구조화했으나 원문은 보너스 체력 획득만 명시하며, 이 데이터 모델에서 추가 체력 자체는 최대 체력 증가로 확정할 수 없습니다.",
+      "correction": "구체적인 statTo를 지정하지 않고 추가 체력 획득을 텍스트로 보존하세요."
+    },
+    {
+      "id": "Shyvana.R",
+      "path": "rules.7.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "her transformation ends when she has no Dragon Fury remaining.",
+      "issue": "고갈 조건을 남은 분노가 1.25 이하일 때로 표현했습니다. 원문은 잔량 없음(0)을 조건으로 하며 1.25는 분노 생성량입니다.",
+      "correction": "조건에서 1.25 수치 참조를 제거하고 분노 잔량 없음으로 표현하세요."
+    },
+    {
+      "id": "Shyvana.R",
+      "path": "rules.8.parameters.0.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Shyvana gains 1% increased Fury from all sources per 1 Ultimate Ability Haste.",
+      "issue": "궁극기 가속 1당 분노 획득 증가를 출력 계수 역할로 1% 해석하지 않았고, 추출된 값 1에는 퍼센트 단위가 없습니다. 원문은 가속 1마다 분노 획득량이 1% 증가한다고 명시합니다.",
+      "correction": "1%를 증가율 값으로 보존하고 궁극기 가속 1당 적용되는 비율임을 명확히 하세요."
+    },
+    {
+      "id": "Shyvana.W",
+      "path": "rules.5.effects.0.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Shyvana heals for (60 ~ 100) + (4% ~ 8%) Missing Health.",
+      "issue": "회복 비율의 기준을 시전자 최대 체력으로 잘못 지정했습니다. 원문은 잃은 체력 비례 회복이며 이 모델에는 잃은 체력 통계가 없습니다.",
+      "correction": "stat을 미지정으로 두고 잃은 체력 비례라는 내용을 텍스트와 gap에 보존하세요."
+    }
+  ],
+  "notes": []
+}

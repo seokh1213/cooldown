@@ -1,0 +1,56 @@
+{
+  "id": "Hecarim.Q",
+  "sourceHash": "3661557ecbf5635b7d898831c0865b6a446454dae862628d8b62757f433acc0f",
+  "beforeCandidateHash": "497595b4cd3c5fb5fe678f78bc4a3ec39d03e2fae142e953238cd32b90ab3fbe",
+  "candidateHash": "1918fc2f61dfdd620a91d4857edde161750490e7c0d2a2cb8ce3717a4e35949d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "주변 적의60/90/120/150/180+추가AD90% 물리 피해, 적중시8초 중첩으로 매중첩Q쿨타임0.75초 감소/피해3+추가AD3%증가,최대3중첩, 미니언기본36/54/72/90/108+추가AD54%를 대조했다. 몬스터 미니언특례는 원문이 말하지 않으므로 추가하지 않았다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → nearby_enemies: 주변 적에게 물리 피해를 입힙니다. [physical] / amount=60/90/120/150/180 [rank_values]; stat_coefficient=90% (caster bonusAttackDamage) [formula_components]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 ability_hit → caster: 이 스킬이 적중하면 중첩을 얻습니다. | caster: 이 스킬 적중으로 얻은 각 중첩은 이후 이 스킬의 재사용 대기시간을0.75초 감소시킵니다. / duration_seconds=0.75 [scalar] | caster: 이 스킬 적중으로 얻은 각 중첩은8초 동안 이후 Q피해를3+자신의 추가공격력3%만큼 증가시킵니다. 최대3중첩입니다. / amount=3 [scalar]; stat_coefficient=3% (caster bonusAttackDamage) [formula_components]; duration_seconds=8 [scalar]; storage_cap=3 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq minion → target: 미니언에게는 기본 피해량을 적용합니다. [physical] / amount=36/54/72/90/108 [rank_values]; stat_coefficient=54% (caster bonusAttackDamage) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.1-2",
+      "issue": "쿨타임 변화0.75의 초 단위 및 중첩의 이후Q적용 범위가 불분명했다.",
+      "correction": "0.75초 감소와8초 중첩의 이후Q피해증가/최대3회를 명시했다.",
+      "sourceId": "en:body",
+      "quote": "he gains a stack that decreases its Cooldown by 0.75 seconds and increases its damage by (3 + (3% bonus Attack Damage))for 8 seconds. Stacks up to 3 times."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 101,
+      "verdict": "false_positive",
+      "reason": "본문은 별도 기본 피해량의 대상을 명확히 minions로 한정한다. 정글 몬스터에도 적용하려고 조건을 완화하면 원문 없는 범위가 생긴다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

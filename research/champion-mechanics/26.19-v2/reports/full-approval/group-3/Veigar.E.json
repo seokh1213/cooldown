@@ -1,0 +1,73 @@
+{
+  "id": "Veigar.E",
+  "sourceHash": "25cca18eadaa0a8dbc5b604c14015263d540b924bc17927c0548e6e4257aefaa",
+  "beforeCandidateHash": "146069bd19f25cd5ad6db44d0b8829c095cfccce1d46de66e6ce40a59c1f405c",
+  "candidateHash": "85afc4f02bc228279ada1bdfd3fc4fb8c799a1ee9098d1f5e60f5c04665f8c43",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "감옥3초생성,그경계를지나는적에게기절1.5/1.75/2/2.25/2.5초와knockdown을양언어본문대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: enemy의 enter_area / 조건 enemy other present 이3초감옥의경계를지나가는적 → enemy: 감옥을 지나가는 적을 기절시킵니다. [stun] / duration_seconds=1.5/1.75/2/2.25/2.5 [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: enemy의 enter_area / 조건 enemy other present 이3초감옥의경계를지나가는적 → enemy: 감옥경계에영향받은적에게knockdown을적용합니다. [knockdown]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → unknown: 시전으로3초유지되는공간감옥을생성합니다. / duration_seconds=3 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "원문KnocksDown이일반other로분류되고조건없는시전에서모든적에게발생했다.",
+      "correction": "실제knockdownCC와감옥경계적용사건으로보존했다.",
+      "sourceId": "en:body",
+      "quote": "This Ability Knocks Down enemies."
+    },
+    {
+      "path": "rules.0/2",
+      "issue": "경계통과및감옥생성효과가불명확했다.",
+      "correction": "3초감옥생성과경계통과범위를명시했다.",
+      "sourceId": "en:body",
+      "quote": "Veigar twists the edges of space, creating a cage"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

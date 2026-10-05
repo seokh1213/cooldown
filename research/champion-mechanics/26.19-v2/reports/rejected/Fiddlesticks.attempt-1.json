@@ -1,0 +1,1137 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "장신구가 허수아비로 대체됩니다. 적에게 발각되면 잠시 피들스틱을 흉내 내며, 가만히 있으면 허수아비인 척합니다. 일정 레벨부터 주변 와드를 드러냅니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "장신구가 허수아비로 대체됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "transform",
+              "subject": "caster",
+              "text": "움직이지 않으면 허수아비를 흉내 냅니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "visibility",
+              "subject": "summon",
+              "text": "레벨 조건을 충족하면 허수아비가 주변 와드를 드러냅니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "other",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks' trinket is replaced by Scarecrow Effigies. When discovered by enemies, Effigies briefly impersonate Fiddlesticks. If Fiddlesticks does not move for 2 seconds, he will impersonate an Effigy. At level six Effigies reveal nearby wards for 6 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "시야에 보이지 않고 전투에서 벗어나 있거나 허수아비인 척할 때, 스킬로 적에게 피해를 입히면 대상을 공포에 빠뜨립니다. 사용 시 적을 공포에 빠뜨리고 현재 체력 비례 마법 피해를 입히며, 최근 피들스틱에게 공포를 당한 대상에게는 피해 비율과 최소 피해가 달라집니다. 미니언과 정글 몬스터 대상 피해에는 최대치가 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "visibility",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "unseen"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "전투에서 벗어남 또는 허수아비인 척함"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "스킬로 피해를 입힌 적을 공포에 빠뜨립니다.",
+              "damageType": null,
+              "crowdControl": "fear",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: While unseen and out of combat or impersonating an Effigy, damaging an enemy with an ability Fears them for 1.2/1.4/1.6/1.8/2 second(s)."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적을 공포에 빠뜨립니다.",
+              "damageType": null,
+              "crowdControl": "fear",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "적에게 현재 체력 비례 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n16"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Fear an enemy for 1.2/1.4/1.6/1.8/2 second(s) and deal (4/4.5/5/5.5/6% + (3% per 100 Ability Power)) current Health magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "최근 피들스틱에게 공포를 당한 대상에게는 현재 체력 비례 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "ratio_input",
+                  "numberRefs": [
+                    "en:body:n23"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the target has recently been Feared by Fiddlesticks, instead deal (8/9/10/11/12% + (6% per 100 Ability Power)) current Health magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "present",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "최근 피들스틱에게 공포를 당한 대상에게는 최소 마법 피해량이 적용됩니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n24",
+                    "en:body:n25",
+                    "en:body:n26",
+                    "en:body:n27",
+                    "en:body:n28"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n29",
+                    "en:body:n30",
+                    "en:body:n31",
+                    "en:body:n32",
+                    "en:body:n33"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Deals a minimum of 40/60/80/100/120 magic damage, or 80/120/160/200/240 magic damage if the target has been recently Feared by Fiddlesticks."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "미니언과 정글 몬스터에게 입히는 피해에는 최대치가 적용됩니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n34"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Deals a maximum of 400 magic damage to minions and jungle monsters."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "최근 피들스틱에게 공포를 당한 상태를 표현할 구체적인 mark 값이 제공되지 않아 일반 존재 조건으로 보존했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If the target has recently been Feared by Fiddlesticks, instead deal (8/9/10/11/12% + (6% per 100 Ability Power)) current Health magic damage."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "최소 피해 문장의 기본값과 최근 공포 대상 값이 함께 제시되지만, 현재 체력 비례 피해의 어느 경우에 각각 적용되는지 수치 구조만으로 완전히 구분하기 어렵습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Deals a minimum of 40/60/80/100/120 magic damage, or 80/120/160/200/240 magic damage if the target has been recently Feared by Fiddlesticks."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "단일 target_type 값으로 미니언과 정글 몬스터를 함께 표현할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Deals a maximum of 400 magic damage to minions and jungle monsters."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "정신 집중해 주변 적의 영혼을 흡수하며 지속 피해를 주고, 종료 시 대상의 잃은 체력에 비례한 피해를 입힙니다. 피해 일부를 체력으로 회복하며, 방해 없이 집중을 끝내면 남은 재사용 대기시간이 감소합니다. 몬스터와 미니언에게는 별도의 피해 및 회복 비율이 적용됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "정신 집중 중 주변 적에게 초당 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks channels and drains the souls of nearby enemies, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage per second for 2 seconds"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks channels and drains the souls of nearby enemies, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage per second for 2 seconds, plus 12/14.5/17/19.5/22% missing Health magic damage at the end."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "target"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "집중 시간이 끝날 때 대상의 잃은 체력에 비례한 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "plus 12/14.5/17/19.5/22% missing Health magic damage at the end."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks channels and drains the souls of nearby enemies, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage per second for 2 seconds, plus 12/14.5/17/19.5/22% missing Health magic damage at the end."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "입힌 피해의 일부만큼 체력을 회복합니다. 회복량은 경감 전 피해를 기준으로 합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n12",
+                    "en:body:n13",
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks restores 25/32.5/40/47.5/55% of damage as Health. Healing based on pre-mitigation damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "followup_status",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "fired"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "방해 없이 집중을 끝내면 남은 재사용 대기시간이 감소합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n17"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Fiddlesticks ends the channel without interruption, the remaining Cooldown is reduced by 60%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "monster"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "몬스터 대상에게는 피해량이 조정됩니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            },
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "몬스터 대상 피해로 입힌 피해의 일부만큼 체력을 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Against monsters, this Ability deals 135% damage and heals 45% of damage done."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "minion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "미니언 대상에게는 피해량이 조정됩니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n20"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            },
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "미니언 대상 피해로 입힌 피해의 일부만큼 체력을 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Against minions, this Ability deals 50% damage and heals 15% of damage done."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unsupported_formula",
+          "detail": "잃은 체력의 퍼센트 피해 비율은 제공되지만, 피해 계산의 체력 기준 통계를 입력 스탯으로 표현할 수 없어 수식 구조를 완전히 모델링하지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "plus 12/14.5/17/19.5/22% missing Health magic damage at the end."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "방해 없이 집중을 끝내는 상태를 fired 상태값으로 근사했습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Fiddlesticks ends the channel without interruption, the remaining Cooldown is reduced by 60%."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "어둠의 마력을 방출해 적에게 마법 피해와 둔화를 적용합니다. 범위 중심의 적은 지속시간 동안 침묵합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks unleashes dark magic, dealing (70/105/140/175/210 + (50% Ability Power)) magic damage"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks unleashes dark magic, dealing (70/105/140/175/210 + (50% Ability Power)) magic damage and Slowing by 30/35/40/45/50% for 1.25 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적을 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Slowing by 30/35/40/45/50% for 1.25 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks unleashes dark magic, dealing (70/105/140/175/210 + (50% Ability Power)) magic damage and Slowing by 30/35/40/45/50% for 1.25 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "distance",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "isolated"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "범위 중심에 있는 적을 침묵시킵니다.",
+              "damageType": null,
+              "crowdControl": "silence",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies in the center are also Silenced for the duration."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks unleashes dark magic, dealing (70/105/140/175/210 + (50% Ability Power)) magic damage and Slowing by 30/35/40/45/50% for 1.25 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "범위 중심 조건을 거리 조건의 isolated 값으로 보존했으며, 구체적인 판정 기준은 제공되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies in the center are also Silenced for the duration."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "정신 집중 후 대상 지역으로 순간 이동해 까마귀 떼를 불러내고, 일정 시간 동안 마법 피해를 입힙니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "정신 집중 후 대상 지역으로 순간 이동합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "까마귀 떼가 일정 시간 동안 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Fiddlesticks channels for 1.5 seconds, then teleports and unleashes a murder of crows, dealing (750/1250/1750 + (250% Ability Power)) magic damage over 5 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  },
+  "failures": [
+    {
+      "id": "Fiddlesticks.W",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.2.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.2",
+          "detail": "Number reference lacks quoted evidence: en:body:n12"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.2",
+          "detail": "Number reference lacks quoted evidence: en:body:n13"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.2",
+          "detail": "Number reference lacks quoted evidence: en:body:n14"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.2",
+          "detail": "Number reference lacks quoted evidence: en:body:n15"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.2",
+          "detail": "Number reference lacks quoted evidence: en:body:n16"
+        }
+      ]
+    }
+  ]
+}

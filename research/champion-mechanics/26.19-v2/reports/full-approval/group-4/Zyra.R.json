@@ -1,0 +1,71 @@
+{
+  "id": "Zyra.R",
+  "sourceHash": "bf206499356964ba6587d04dfdf68daf00007ad48f542b150dea602809ce170b",
+  "beforeCandidateHash": "8efc468208e92545d856526739036f74622f958580a858adcaca2c4b630b4017",
+  "candidateHash": "7e59e0dd0a0703abcfd6aacd743f05d8fe5e3c2cdcb3c6494263fb24d0ba2ea7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "영역덩굴마법피해,2초뒤영역적1초띄우기,영역안자이라식물의지속시간초기화·체력50%증가·공격피해50%추가를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 target.distance eq 궁극기의 덩굴 영역 안에 있는 적 적용. target: 뒤틀린 덩굴손이 마법 피해를 입힙니다. (magic); amount=200/300/400  rank_values, stat_coefficient=70% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.time eq 2, enemy.distance eq 궁극기의 덩굴 영역 안에 있는 적 적용. enemy: 덩굴이 솟아오르며 적을 공중으로 띄웁니다. (knockup); duration_seconds=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 other 사건에서 summon.other eq 궁극기 덩굴 영역 안에 있는 자이라의 식물 적용. summon: 범위안식물이격분해지속시간이초기화된다.;  / summon: 식물의체력이50%증가한다.; ratio_output=50%  scalar / summon: 식물공격이일반공격피해에50%추가피해를입힌다.50%가전체잔여피해배율은아니다.; ratio_output=50%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,2",
+      "issue": "지연/영역행위자불명확및식물추가50%를전체배율50%로표기",
+      "correction": "범위/식물조건과초기화·체력증가·추가피해분리",
+      "sourceId": "en:body",
+      "quote": "Zyra's plants within the thicket become enraged, resetting their duration, gaining 50% Health and Attacking for 50% bonus damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

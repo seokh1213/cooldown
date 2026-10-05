@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Ekko.E",
+      "sourceHash": "d922e94101c77358448758437dca6065ae87b2ca5f1300ebb7310b889699ac49",
+      "candidateHash": "fde061cf9089af7b9bbd693a72c96e042a4c74e24e3fea5535544ed5eb6520c1"
+    },
+    {
+      "id": "Ekko.Q",
+      "sourceHash": "9b61183be1962091cc54d19dd411fa42f864588a14b0f93c3536021e364e7ac3",
+      "candidateHash": "0cdd35ce5b64c9e6364a1817627ca6ef7a476aed0a323f3af6aa98e47d06da25"
+    },
+    {
+      "id": "Ekko.P",
+      "sourceHash": "8a474ddb31324b6b606a6fb74f54368cd7130aa8e8f87e290e3a85e52d0c42a6",
+      "candidateHash": "4578fc736b1376d54adacb255aa672c9a56dae706a4eab7dfbc24db9ea02e6a5"
+    },
+    {
+      "id": "Ekko.R",
+      "sourceHash": "42eeaafa06c834f3055a28feaeff4edf760bee9073dcfa61df02488df3d7fa88",
+      "candidateHash": "3c413719b3a4b32578c6b3fd608a780e73cbb548f7e0cc5178e14c8e2f3f4278"
+    },
+    {
+      "id": "Ekko.W",
+      "sourceHash": "803f96acd8225277fdbd044f653022941402ca0ace557e24db3a86da635606f2",
+      "candidateHash": "e2b6d737b3cecb658a2a9556e9712eeed464a9166c60ab68d4709824d00e5fd9"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Ekko.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "On hitting a champion or reaching the end of its range, it expands into a field that Slows enemies inside by 40/45/50/55/60%.",
+      "issue": "구체 전개 규칙에 챔피언 적중 조건만 적혀 있습니다. 사거리 끝에 도달해도 전개된다는 대체 조건이 별도 규칙에 나타나지만, 이 규칙의 조건으로는 연결되지 않습니다.",
+      "correction": "챔피언 적중 또는 사거리 끝 도달 중 하나를 만족하면 전개되도록 두 조건을 결합합니다."
+    },
+    {
+      "id": "Ekko.Q",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "On hitting a champion or reaching the end of its range, it expands into a field that Slows enemies inside by 40/45/50/55/60%.",
+      "issue": "사거리 끝 도달 시 전개 규칙의 trigger가 other라 사건을 구체적으로 나타내지 않습니다. 원문은 사거리 끝 도달을 명시합니다.",
+      "correction": "트리거를 사거리 끝 도달 사건으로 표현합니다."
+    },
+    {
+      "id": "Ekko.P",
+      "path": "rules.0.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every third Attack or damaging Ability on the same target deals an additional ((30 ~ 140) + (80% Ability Power)) magic damage.",
+      "issue": "세 번째 공격/피해 스킬을 대상별 `hit_count`로 표현해, 공격과 스킬 적중을 하나의 횟수로 누적하는 조건으로 읽힙니다. 원문은 같은 대상에 대한 세 번째 공격 또는 피해 스킬이 발동한다고만 명시합니다.",
+      "correction": "횟수 필드를 유지한다면 공격과 피해 스킬이 같은 대상에 대해 누적되는 횟수임을 설명 텍스트로 한정하고, 원문에 없는 별도 타격 카운터 의미를 부여하지 마세요."
+    },
+    {
+      "id": "Ekko.R",
+      "path": "rules.0.effects.1.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ekko turns back time, entering Stasis while teleporting to where he was 4 seconds ago",
+      "issue": "과거 위치를 가리키는 `4 seconds ago`를 이동 효과의 `duration_seconds`로 연결했습니다. 이 값은 이동 지속 시간이 아니라 되돌아갈 위치의 시간 기준입니다.",
+      "correction": "4초를 이동 지속 시간으로 구조화하지 말고, 4초 전 위치로 되돌아간다는 설명 텍스트나 별도의 시간 기준으로 남기세요."
+    },
+    {
+      "id": "Ekko.R",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ekko turns back time, entering Stasis while teleporting to where he was 4 seconds ago and dealing (200/350/500 + (175% Ability Power)) magic damage to nearby enemies.",
+      "issue": "주변 적 피해를 시전 이벤트에 직접 연결했습니다. 원문은 순간이동 중 피해를 준다고 설명할 뿐, 피해 발생이 시전 시점이라고 특정하지 않습니다.",
+      "correction": "피해 시점을 시전으로 단정하지 말고, 순간이동/도착 과정에 연결하거나 이벤트를 미확정으로 표현하세요."
+    },
+    {
+      "id": "Ekko.W",
+      "path": "rules.0.trigger.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Passive: Ekko's Attacks against enemies below 30% Health deal (3% + (3% per 100 Ability Power)) missing Health magic damage.",
+      "issue": "기본 공격 패시브의 트리거 주체를 `target`으로 지정했습니다. 원문에서 공격을 하는 주체는 Ekko이고, 대상은 체력 조건 및 피해의 수신자입니다.",
+      "correction": "트리거 주체를 에코/시전자에 해당하는 주체로 두고, 적 대상을 피해 수신자로 유지하세요."
+    },
+    {
+      "id": "Ekko.W",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Bonus Attack damage deals a min of 15 and a max of 150 damage against minions and monsters.",
+      "issue": "추가 공격 피해의 최소·최대값 규칙에 대상 유형을 `any`로 지정해, 미니언과 몬스터 외 대상에도 적용되는 것처럼 표현했습니다.",
+      "correction": "대상 유형을 미니언과 몬스터로 한정하세요."
+    }
+  ],
+  "notes": []
+}

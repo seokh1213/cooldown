@@ -1,0 +1,72 @@
+{
+  "id": "Leona.P",
+  "sourceHash": "e82ec7696f53033a60ffa343be1fd00ac4418f44582bbc1acf29c22b48a978e6",
+  "beforeCandidateHash": "9d886a448fe4b7dd5c5c2a4bdb7b3b4710cf469e87cb65ee1f9e1d0480bf21dc",
+  "candidateHash": "7ef0faebcc342f952606681936e7300813c980d0cfe0c52185d763740461c95c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "레오나의 스킬 적중 적에 본문 기준 2.5초 표식, 레오나 외 아군 챔피언의 대상 피해에 표식 소모·32~151 추가 마법 피해를 확인했다. 요약의 1.5초와 본문의 2.5초 충돌은 본문 우선으로 보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 레오나의 스킬에 적중한 적 적용. target: 레오나의 스킬이 적에게 표식을 남긴다.; duration_seconds=2.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 other 사건에서 target.mark present true, ally.target_type eq champion, ally.other eq 레오나가 아닌 아군 챔피언이 표식 대상에게 피해를 준 경우 적용. target: 다른 아군 챔피언이 표식 대상에게 피해를 주면 표식을 소모해 추가 마법 피해를 입힌다. (magic); amount=32/151  level_range / target: 다른 아군 챔피언이 피해를 주면 이 대상의 레오나 표식을 소모합니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions,rules.1.conditions,effects",
+      "issue": "표식 대상과 레오나 외 아군 챔피언의 실제 피해 사건이 조건으로 특정되지 않고 표식 소모는 피해 text에만 있다.",
+      "correction": "스킬 적중 적·레오나 외 아군 챔피언의 피해 조건과 표식 소모 효과를 연결했다.",
+      "sourceId": "en:body",
+      "quote": "Other allied champions consume the mark when they damage the marked enemy, dealing an additional (32 ~ 151) magic damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 253,
+      "verdict": "repaired",
+      "reason": "일반 피해를 준 사건 전용 enum은 없으므로 other를 유지하되 레오나 외 아군 챔피언이 표식 적에게 실제 피해를 준 조건을 명시했다. 표식 소모 효과도 따로 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "표식 지속시간이 영문 summary에는 1.5초, tooltip에는 2.5초로 다르게 적혀 있어 tooltip 수치를 사용했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

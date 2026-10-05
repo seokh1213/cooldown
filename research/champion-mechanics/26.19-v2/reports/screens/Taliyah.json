@@ -1,0 +1,161 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Taliyah.E",
+      "sourceHash": "61d0311de867f995da548afd5387b41efcdbea9a929c4b71c2ce4feb8ab6441d",
+      "candidateHash": "d83a68eff30201e700f1657377736e8eec59f05b7e86b9d696a5f6c413b978ec"
+    },
+    {
+      "id": "Taliyah.P",
+      "sourceHash": "352cd348efc6b366cf641699d68280f5e4d8c8cdcb5b9d0213a834f48600d6b7",
+      "candidateHash": "6e72f72ffcc308b0c3cf63f76b53a95943843669c2ffcb5fb4fe700f001b152f"
+    },
+    {
+      "id": "Taliyah.Q",
+      "sourceHash": "3af42cfdcefc669e2234b7924e0b993ec47d9be1133176731ed407c36d398104",
+      "candidateHash": "741e044758f669fbfefc4fe20761b716f70b5a919157e592900a131535256fc1"
+    },
+    {
+      "id": "Taliyah.R",
+      "sourceHash": "43c821113aa1b1c5c03b42d10e894ac27aa389ae2b6c339a3803e36f9bc1bfcd",
+      "candidateHash": "904b4eabf77c83c370e4cddc879f7f2aa74de9fa44d23973ed7af8043a5bf8b9"
+    },
+    {
+      "id": "Taliyah.W",
+      "sourceHash": "5c2245192eecfa9a00092a23ef045f06b6a0de222da9055c16725b7009d72eda",
+      "candidateHash": "e3477f174bd5022dc11dfd2d1eb9f82aca2754453c6129a77bc9944aa8f83b5a"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Taliyah.E",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Stunning for the remaining movement duration + 0.75 seconds",
+      "issue": "기절 지속시간을 0.75초만 반영해 ‘남은 이동 시간’을 누락했습니다.",
+      "correction": "기절 지속시간은 남은 이동 시간에 0.75초를 더한 값으로 기록하세요."
+    },
+    {
+      "id": "Taliyah.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Each enemy can only be stunned once per cast.",
+      "issue": "적의 기절 횟수 제한을 `hit_count` 1회 조건으로 바꿨습니다. 원문은 적마다 시전당 한 번만 기절한다고 할 뿐, 적중 횟수 제한이 아닙니다.",
+      "correction": "`hit_count` 조건을 제거하고, 시전당 대상별 기절 1회 제한으로 표현하세요."
+    },
+    {
+      "id": "Taliyah.E",
+      "path": "rules.2.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Each enemy can only be stunned once per cast.",
+      "issue": "설명 효과를 `target`에 적용해 적 대상에 대한 제한으로 표현했지만, 기절 횟수 제한의 대상은 적이며 효과 주체는 제한 규칙입니다.",
+      "correction": "적별 시전당 기절 1회 제한을 규칙이나 플래그로 기록하고 `ui_information` 효과는 제거하세요."
+    },
+    {
+      "id": "Taliyah.E",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Stones beyond the first one deal 25% less damage.",
+      "issue": "첫 돌 이후를 같은 적의 `hit_count > 1`로 단정했습니다. 원문은 첫 돌 이후의 돌에 대한 규칙이며, 같은 적의 후속 적중 조건이라고 특정하지 않습니다.",
+      "correction": "적중 횟수 조건을 제거하고, 첫 돌 이후 돌의 피해 감소로 기록하세요."
+    },
+    {
+      "id": "Taliyah.E",
+      "path": "rules.5.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Max detonation damage: (62.5/100/137.5/175/212.5 + (75% Ability Power))",
+      "issue": "최대 폭발 피해량을 모든 대상에 항상 적용되는 피해 규칙으로 만들었습니다. 원문은 최대 폭발 피해량을 제시할 뿐, 모든 폭발이 이 피해를 입힌다고 하지 않습니다.",
+      "correction": "`target_type=any` 조건의 일반 피해 효과로 처리하지 말고, 적용 조건이 불명확한 최대 폭발 피해량으로 남기세요."
+    },
+    {
+      "id": "Taliyah.E",
+      "path": "rules.6.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This ability deals 225% damage to monsters.",
+      "issue": "몬스터 피해 배율을 225%로 기록했지만 `damage_multiplier` 값이 225%로 표현되면 기본 피해에 225%를 추가하는 325% 배율로 해석될 수 있습니다.",
+      "correction": "몬스터 피해가 225%가 된다는 배율로 명시하고, 초과 피해량으로 해석되지 않게 하세요."
+    },
+    {
+      "id": "Taliyah.P",
+      "path": "rules.0.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "within the last 3 seconds",
+      "issue": "최근 3초 조건의 연산자를 `lte`로 지정해 시간값과 3초의 비교 방향이 분명하지 않습니다.",
+      "correction": "벽 근처에 있었던 시점이 현재로부터 3초 이내라는 시간창 조건으로 표현하세요."
+    },
+    {
+      "id": "Taliyah.P",
+      "path": "rules.0.conditions.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "if she has been near a wall within the last 3 seconds",
+      "issue": "벽 근처 조건을 거리 필드의 텍스트 등식으로 표현했습니다. 원문은 최근 3초 안에 벽 근처에 있었는지를 조건으로 합니다.",
+      "correction": "`distance` 등식 대신 최근 3초 내 벽 근처에 있었는지 나타내는 조건으로 기록하세요."
+    },
+    {
+      "id": "Taliyah.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Subsequent hits against the same enemy deal 60% less damage.",
+      "issue": "후속 적중 피해 감소 조건에 `hit_count > 5`를 사용해 바위 개수와 대상의 적중 횟수를 혼동했습니다. 원문은 같은 적에 대한 후속 적중이라고 합니다.",
+      "correction": "`hit_count > 5`를 제거하고 같은 적에 대한 후속 적중 조건으로 표현하세요."
+    },
+    {
+      "id": "Taliyah.Q",
+      "path": "rules.3.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "have 50% less Cooldown",
+      "issue": "재사용 대기시간 감소량을 `amount: 50%`로 두어 50% 감소인지 50%로 설정하는 것인지 모호하게 기록했습니다.",
+      "correction": "재사용 대기시간이 50% 감소하는 효과임을 명시하세요."
+    },
+    {
+      "id": "Taliyah.Q",
+      "path": "rules.7.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Total damage to a single target: (143/188.5/234/279.5/325 + (130% Ability Power))",
+      "issue": "단일 대상 총 피해량을 다져진 땅에서 시전할 때 발생하는 별도 피해 효과처럼 추가했습니다. 원문은 단일 대상 총 피해량을 안내하는 문구일 뿐 별도 피해를 가한다는 규칙이 아닙니다.",
+      "correction": "이를 별도 피해 효과로 모델링하지 말고 총 피해량 설명으로만 유지하세요."
+    },
+    {
+      "id": "Taliyah.Q",
+      "path": "rules.8.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Each rock deals 20/25/30/35/40 additional damage to monsters.",
+      "issue": "몬스터 추가 피해를 다져진 땅에서 던지는 바위에는 적용되지 않는다고 제한했습니다. 원문은 각 바위가 몬스터에게 추가 피해를 입힌다고 하며 그런 제외 조건은 없습니다.",
+      "correction": "근거가 없는 `mark absent` 제한을 제거하고 적용 범위의 불확실성은 gap으로 남기세요."
+    },
+    {
+      "id": "Taliyah.R",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This ability cannot be cast if Taliyah has taken damage from Champions or structures within the last 3 seconds.",
+      "issue": "3초 내 챔피언 또는 구조물 피해가 없어야 시전 가능하다는 제한을 조건에서 빠뜨렸습니다.",
+      "correction": "최근 3초 내 해당 피해를 받지 않았다는 시전 조건을 명시하세요."
+    },
+    {
+      "id": "Taliyah.R",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Taliyah creates a massive earthen wall for 4 seconds.",
+      "issue": "4초를 벽 지속시간으로 연결한 것은 근거가 있지만, `summon` 주체가 `unknown`이라 벽이라는 생성 개체를 특정하지 못했습니다.",
+      "correction": "생성 주체를 벽 개체로 기록하고 4초 지속시간을 연결하세요."
+    }
+  ],
+  "notes": []
+}

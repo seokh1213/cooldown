@@ -1,0 +1,204 @@
+{
+  "summary": "니코는 아군 챔피언 또는 아군·중립 유닛의 모습으로 변신하고, 변신한 유닛의 긍정적·부정적 특징을 다수 얻는다. 이동 불가 군중 제어기를 받거나 피해를 주는 스킬을 시전하거나 비챔피언 형태로 적 포탑에 피해를 주거나 변장한 모습의 체력바만큼 피해를 받으면 변장이 풀린다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "언제든 아군 챔피언으로 변신할 수 있다. 아군 또는 중립 유닛 근처에 서서 그 유닛의 쇼마를 저장하면 해당 유닛으로 변신할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "변신한 유닛의 긍정적·부정적 특징을 다수 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At any time she can disguise as an allied champion, or Neeko can stand next to any allied or neutral unit to store their Sho'ma and be able to transform into it."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Neeko gains many of the properties of the units she turns into, negative and positive."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "변장한 모습의 체력바와 같은 양의 피해를 받으면 변장이 풀린다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Your disguise will break upon receiving immobilizing crowd control, casting a damaging spell, damaging enemy towers as a non-champion, or your disguise taking damage equal to its healthbar."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이동 불가 군중 제어기를 받음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "변장이 풀린다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Your disguise will break upon receiving immobilizing crowd control, casting a damaging spell, damaging enemy towers as a non-champion, or your disguise taking damage equal to its healthbar."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "피해를 입히는 스킬"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "변장이 풀린다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Your disguise will break upon receiving immobilizing crowd control, casting a damaging spell, damaging enemy towers as a non-champion, or your disguise taking damage equal to its healthbar."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적 포탑"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "non-champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "비챔피언 형태로 적 포탑에 피해를 주면 변장이 풀린다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Your disguise will break upon receiving immobilizing crowd control, casting a damaging spell, damaging enemy towers as a non-champion, or your disguise taking damage equal to its healthbar."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

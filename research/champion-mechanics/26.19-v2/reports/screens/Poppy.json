@@ -1,0 +1,71 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Poppy.E",
+      "sourceHash": "988ee299ca0ed2b98ff1235c99ad2f679aefb0504e64acf317af3d53f0bd71b9",
+      "candidateHash": "7d872f2d65907d27f74f7bdaa295e2c3f2030f749e0c11182a127d5755c88537"
+    },
+    {
+      "id": "Poppy.P",
+      "sourceHash": "c46573ac54e41201350178fa1e3e6e34a1516bd3bc235ae4fbd64250f2c76379",
+      "candidateHash": "ade54e16d5aba3b72f51ecbe4d83c786386abca2b84fb6adf284e89b222c5f4c"
+    },
+    {
+      "id": "Poppy.Q",
+      "sourceHash": "654139280ba40e7642c4504e55fb888ebf3ceba021f9b1f3fdbe2e52d65dd331",
+      "candidateHash": "eb664f30a4f85170684d97736243836ae8d730c8ac1eedece92101cb87d7d7b4"
+    },
+    {
+      "id": "Poppy.R",
+      "sourceHash": "30418ef26c6c96aa10e7b977b3e82a7eaf0ad7614792ecf9414fa6dc3af7a104",
+      "candidateHash": "de4fb3defdc40d8df57d924691332c977587d4ac8eb207a8c283d42ab8be91be"
+    },
+    {
+      "id": "Poppy.W",
+      "sourceHash": "e196ff0b282f21df75a35d0bcd457669bb99fc2984b9c78b2d9d29c2148d0c7b",
+      "candidateHash": "bfaa4b717efdb0ca5099b1f89c7ed08e9fdf10fc806ed7461f9efc48825127d1"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Poppy.Q",
+      "path": "rules.2.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The unstable area Slows enemies by (20/23/26/29/32% + (0.8% per 100 bonus Health))",
+      "issue": "둔화는 시전 즉시가 아니라 불안정한 지대에 있는 동안 적용되는데, 규칙 트리거가 시전으로 되어 있어 발동 시점이 다릅니다.",
+      "correction": "둔화 규칙의 트리거를 지대에 있는 적에게 둔화가 적용되는 시점으로 표현하거나, 해당 시점이 불명확하면 시전 트리거를 제거하고 텍스트로만 보존하세요."
+    },
+    {
+      "id": "Poppy.Q",
+      "path": "rules.4.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Percent Health damage deals a max of 70/105/140/175/210 damage to minions and jungle monsters per hit.",
+      "issue": "상한은 체력 비례 피해의 각 적중에 적용되지만, 규칙의 공격 또는 능력 적중 트리거는 다른 공격·능력까지 포괄해 효과 범위를 넓힙니다.",
+      "correction": "상한을 뽀삐 Q의 체력 비례 피해 적중에만 연결하고, 별도 trigger 값이 없다면 그 제한을 효과 텍스트에 명시하세요."
+    },
+    {
+      "id": "Poppy.R",
+      "path": "rules.0.effects.0.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Poppy begins charging her hammer for up to 4 seconds",
+      "issue": "최대 충전 시간 4초가 둔화 효과의 매개변수로 기록됐습니다. 원문은 충전 지속 시간 상한을 뜻하며 둔화 지속 시간을 뜻하지 않습니다.",
+      "correction": "4초를 둔화 매개변수에서 빼고 충전 시간 상한으로 보존하세요."
+    },
+    {
+      "id": "Poppy.R",
+      "path": "rules.0.effects.0.parameters.1.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Slowing herself by 15%",
+      "issue": "15%는 자기 둔화의 수치지만 role이 일반 amount로만 되어 있어 둔화율임을 표현하지 않습니다.",
+      "correction": "둔화율을 나타내는 매개변수 역할로 기록하세요."
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,81 @@
+{
+  "id": "JarvanIV.E",
+  "sourceHash": "e0c67e81c3d947bd29d4236c6754dd8869c1010777c6094f14577dc43118714f",
+  "beforeCandidateHash": "dc1a36ff67309e62bafb4cf91f68319fa65241b652a28ee6e0b2e5637da1f83e",
+  "candidateHash": "cf547325fd70eb31db34d4fcd0a1c33db1a18419af05ca931da16fc431baf196",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "패시브본인AS20/22.5/25/27.5/30%,깃발설치마법피해80/120/160/200/240+AP80%,깃발근처아군AS같은%8초를대조했다. 요약아군챔피언/본문아군전체범위차이는본문우선으로기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 본인의공격속도가20/22.5/25/27.5/30%증가합니다. / amount=20/22.5/25/27.5/30% (caster attackSpeed) [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 깃발이 지면에 닿을 때 적에게 마법 피해를 입힙니다. [magic] / amount=80/120/160/200/240 [rank_values]; stat_coefficient=80% (caster abilityPower) [formula_components] | summon: 지면에데마시아의깃발을설치합니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 ally other eq 이데마시아의깃발근처에있는아군 → ally: 이깃발근처아군의공격속도가8초동안20/22.5/25/27.5/30%증가합니다. / amount=20/22.5/25/27.5/30% (ally attackSpeed) [rank_values]; duration_seconds=8 [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects",
+      "issue": "데마시아깃발설치가실제효과로누락됐다.",
+      "correction": "지면깃발소환효과를복구했다.",
+      "sourceId": "en:body",
+      "quote": "Jarvan throws a standard into the ground"
+    },
+    {
+      "path": "rules.2/gaps",
+      "issue": "아군AS증가량의스탯주인이caster이고깃발근처조건이없으며모든랭크%/요약범위충돌이누락됐다.",
+      "correction": "아군스탯주인/깃발근처조건/모든%단위와출처한계를기록했다.",
+      "sourceId": "en:body",
+      "quote": "granting allies near the standard 20/22.5/25/27.5/30% Attack Speed for 8 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en/ko요약은근처아군챔피언,본문은깃발근처allies/아군으로기록한다. 본문범위를우선해챔피언전용제한을추정하지않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "20/22.5/25/27.5/30%는모든랭크%이지만frozen숫자표는각마지막값만percent=true이다.전체단위를텍스트에보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

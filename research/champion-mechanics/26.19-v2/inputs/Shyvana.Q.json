@@ -1,0 +1,558 @@
+{
+  "champion": "Shyvana",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Shyvana's next attack strikes both the target and the surrounding area. This Ability can be recast. While in Dragon Form, it gains an additional recast, dealing massive damage to a single target.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive: Shyvana's Attacks deal (1% + (1.1% per 100 bonus Attack Damage)) max Health magic damage On-Hit and reduce this Ability's Cooldown by 0.5 seconds. Active: Shyvana's next Attack strikes the target and the surrounding area dealing (10/15/20/25/30 + (110% Attack Damage) + (30% Ability Power)) physical damage. This Ability may be Recast after an Attack or short delay within the next 4 seconds. Dragon Form: Shyvana gains an additional Recast, causing her to bite the target of her next Attack dealing (15/22.5/30/37.5/45 + (165% Attack Damage) + (45% Ability Power)) true damage. Deals 10 additional damage to monsters. Maximum health damage does not affect structures and against non-champions has a minimum of 10 and maximum of 200. Dragon Form's final Recast cannot critically strike.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "쉬바나의 다음 기본 공격이 대상과 주변 지역을 모두 타격합니다. 이 스킬은 재사용할 수 있습니다. 용 형상일 때는 스킬을 한 번 더 사용할 수 있으며, 단일 대상에게 막대한 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과: 기본 공격 적중 시 최대 체력의 (1% + (추가 공격력 100당 1.1%))만큼 마법 피해를 입히고, 이 스킬의 재사용 대기시간이 0.5초 감소합니다. 사용 시: 쉬바나의 다음 기본 공격이 대상 및 주변 지역을 타격해 (10/15/20/25/30 + (110% 공격력) + (30% 주문력))의 물리 피해를 입힙니다. 이 스킬은 공격 후 또는 잠시 후 4초 안에 재사용할 수 있습니다. 용 형상: 쉬바나가 추가로 1회 더 재사용할 수 있으며 다음 기본 공격 시 대상을 물어뜯어 (15/22.5/30/37.5/45 + (165% 공격력) + (45% 주문력))의 고정 피해를 입힙니다. 몬스터에게는 10의 추가 피해를 입힙니다. 최대 체력 비례 피해는 구조물에 적용되지 않으며, 챔피언이 아닌 대상에게는 10 ~ 200의 피해를 입힙니다. 용 형상의 마지막 재사용에는 치명타가 적용되지 않습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Emberstrike",
+      "ko": "잉걸불 일격"
+    },
+    "cooldownSeconds": [
+      10,
+      9,
+      8,
+      7,
+      6
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      25000,
+      25000,
+      25000,
+      25000,
+      25000
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "10/9/8/7/6"
+      },
+      {
+        "label": "Damage",
+        "values": "10/15/20/25/30"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:Calc_Max_Health_Damage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "Calc_Damage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          10,
+          15,
+          20,
+          25,
+          30
+        ],
+        "terms": [
+          {
+            "stat": "totalAttackDamage",
+            "coefficientsByRank": [
+              1.100000023841858,
+              1.100000023841858,
+              1.100000023841858,
+              1.100000023841858,
+              1.100000023841858
+            ]
+          },
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Shyvana.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Shyvana.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "1%",
+      "value": 1,
+      "percent": true,
+      "start": 33,
+      "end": 35
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "1.1%",
+      "value": 1.1,
+      "percent": true,
+      "start": 39,
+      "end": 43
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 143,
+      "end": 146
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 239,
+      "end": 241
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 242,
+      "end": 244
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 245,
+      "end": 247
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 248,
+      "end": 250
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 251,
+      "end": 253
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "110%",
+      "value": 110,
+      "percent": true,
+      "start": 257,
+      "end": 261
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 280,
+      "end": 283
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 391,
+      "end": 392
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 510,
+      "end": 512
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "22.5",
+      "value": 22.5,
+      "percent": false,
+      "start": 513,
+      "end": 517
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 518,
+      "end": 520
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "37.5",
+      "value": 37.5,
+      "percent": false,
+      "start": 521,
+      "end": 525
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 526,
+      "end": 528
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "165%",
+      "value": 165,
+      "percent": true,
+      "start": 532,
+      "end": 536
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 555,
+      "end": 558
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 594,
+      "end": 596
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 720,
+      "end": 722
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 738,
+      "end": 741
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1%",
+      "value": 1,
+      "percent": true,
+      "start": 29,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "1.1%",
+      "value": 1.1,
+      "percent": true,
+      "start": 47,
+      "end": 51
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 84,
+      "end": 87
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 134,
+      "end": 136
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 137,
+      "end": 139
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 140,
+      "end": 142
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 143,
+      "end": 145
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 146,
+      "end": 148
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "110%",
+      "value": 110,
+      "percent": true,
+      "start": 152,
+      "end": 156
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 165,
+      "end": 168
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 208,
+      "end": 209
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 242,
+      "end": 243
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 279,
+      "end": 281
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "22.5",
+      "value": 22.5,
+      "percent": false,
+      "start": 282,
+      "end": 286
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 287,
+      "end": 289
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "37.5",
+      "value": 37.5,
+      "percent": false,
+      "start": 290,
+      "end": 294
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 295,
+      "end": 297
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "165%",
+      "value": 165,
+      "percent": true,
+      "start": 301,
+      "end": 305
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 314,
+      "end": 317
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 345,
+      "end": 347
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 404,
+      "end": 406
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 409,
+      "end": 412
+    }
+  ],
+  "sourceHash": "33caaf419cc7a1a1c6333ee7a70faa0777e384d7675e7e59459fcc4b1058a722",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

@@ -1,0 +1,119 @@
+{
+  "id": "Blitzcrank.P",
+  "sourceHash": "0e0c06cf22c4e14f05f09395ef564b09667da468cc723eaad1e2f3ce2b78db82",
+  "beforeCandidateHash": "f8862ba8ac110fcf91a4cd35c6ed4554de3e7489991ea77b5b2bb2c28d64eac5",
+  "candidateHash": "f8862ba8ac110fcf91a4cd35c6ed4554de3e7489991ea77b5b2bb2c28d64eac5",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "본인체력이30%미만으로내려가면마나35%에해당하는10초보호막.최대/현재마나나별도패시브쿨을추측하지않음.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자저체력발동health_threshold<30%와자신보호막35%마나·10초를원문영한양쪽대조.이미낮은체력인모든순간재발동이나부활로확장하지않음."
+    }
+  ],
+  "repairs": [],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "보호막 비율의 참조 대상인 Mana가 현재 마나인지 다른 마나 통계인지 툴팁에서 특정되지 않습니다.",
+      "review": "Mana가현재/최대마나인지공급자료에서불명확하므로maxMana로임의확정하지않고보호막기준한계보존."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ],
+    "draft": {
+      "summary": "체력이 기준치 아래로 내려가면 마나에 비례한 보호막을 얻습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "health_threshold",
+              "operator": "lt",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "마나에 비례하는 보호막을 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "ratio_output",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When Blitzcrank falls below 30% Health, they gain (35% Mana) Shield for 10 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "보호막 비율의 참조 대상인 Mana가 현재 마나인지 다른 마나 통계인지 툴팁에서 특정되지 않습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "(35% Mana) Shield"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

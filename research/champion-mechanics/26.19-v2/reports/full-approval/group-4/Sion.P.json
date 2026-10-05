@@ -1,0 +1,61 @@
+{
+  "id": "Sion.P",
+  "sourceHash": "6ef098d9f878a942f4388e1d67f4a0da490b69bb2d7cd2e17235b1cf7b262359",
+  "beforeCandidateHash": "db96722a9ecf1f1512a38ce4ab17a240d76904fd953bc5f949e0bf087bb39141",
+  "candidateHash": "001a1a7d2163a3564ce4acf810849860732048e7f75361a2fffa1efc555bed91",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "사망 뒤 일시 재활성화·이동/공격·빠른 체력 감소,100%생명력 흡수·매우 빠른 공격,대상 최대 체력10% 추가 물리 피해,모든 스킬 죽음의 물결 교체 및 이동 속도 폭발을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 death 사건에서 별도 조건 없이 적용. caster: 사이온이 되살아나 이동하고 공격할 수 있지만, 부활 중 체력이 빠르게 감소한다.;  / caster: 부활 중 생명력 흡수 효과를 얻는다.; amount=100%  scalar / caster: 모든 스킬이 죽음의 물결로 대체된다.;  / caster: 되살아난 동안 매우 빠르게 공격한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.form eq 사망 후 되살아난 상태 적용. target: 공격 적중 시 대상 최대 체력에 비례한 물리 피해를 추가로 입힌다. (physical); amount=10% target의 maxHealth formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 caster.activation eq 교체된 죽음의 물결 사용 적용. caster: 죽음의 물결을 사용하면 이동 속도가 일시적으로 크게 증가한다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "매우 빠른 공격과 죽음의 물결 이동 효과가 누락되고 부활 조건이 일반 empowered",
+      "correction": "명시적인 되살아난 상태와 공격 속도/교체 스킬 이동 규칙 보완",
+      "sourceId": "en:body",
+      "quote": "He also gains 100% Lifesteal, attacks extremely fast, and his Attacks deal an additional 10% max Health physical damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

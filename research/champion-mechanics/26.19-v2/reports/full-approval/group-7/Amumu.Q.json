@@ -1,0 +1,185 @@
+{
+  "id": "Amumu.Q",
+  "sourceHash": "96e30693b9328c0db912f3452efe12080a0fb7619f90cce609c7317792f0d68f",
+  "beforeCandidateHash": "12c91f7cdd4e3aa31972e53bf7b5a145cdea54691711e0b358f58e70fa98d9ce",
+  "candidateHash": "e0d9cb1d7956ee0f757b3954a5a7377dcdf7091c27b5bdc2bb82cca64a9912af",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫 적중 적으로 자기 이동·1초 기절·70~170+AP85% 피해와 별도 2충전을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자 스킬의 첫 적중 대상에만 자기 이동, 기절1초, 마법 피해 랭크값/AP계수를 함께 적용."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "2는 발동 횟수나 적중 조건이 아니라 스킬 보유 충전 수."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.subject",
+      "issue": "스킬 적중의 행위자를 대상에 배치",
+      "correction": "시전자 스킬 적중으로 명시",
+      "sourceId": "en:body",
+      "quote": "Amumu launches a bandage, pulling himself to the first enemy hit"
+    },
+    {
+      "path": "rules.1.effects.0.text",
+      "issue": "충전 수를 본문에서 설명하지 않음",
+      "correction": "효과 문장에 2회 충전을 명시",
+      "sourceId": "en:body",
+      "quote": "This Ability has 2 charges."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "draft": {
+      "summary": "아무무가 붕대를 던집니다. 붕대가 처음 적중한 적에게 아무무가 다가가며, 그 적을 기절시키고 마법 피해를 입힙니다. 이 스킬은 충전 횟수가 있습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "붕대가 처음 적중한 대상에게 아무무가 다가갑니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 적중한 대상을 기절시킵니다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "처음 적중한 대상에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Amumu launches a bandage, pulling himself to the first enemy hit, Stunning them for 1 second, and dealing (70/95/120/145/170 + (85% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "ui_information",
+              "subject": "caster",
+              "text": "이 스킬은 최대 2회 충전됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability has 2 charges."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

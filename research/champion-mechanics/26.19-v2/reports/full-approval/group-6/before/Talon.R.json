@@ -1,0 +1,312 @@
+{
+  "summary": "탈론이 칼날을 사방으로 던져 맞은 적에게 물리 피해를 입히고 이동 속도가 증가하며 투명 상태가 됩니다. 투명 상태가 끝나면 칼날이 탈론에게 돌아오며 다시 피해를 입힙니다. 공격이나 녹서스식 외교로 투명 상태를 취소하면 칼날이 해당 대상에게 돌아가 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "사방으로 던진 칼날에 맞은 적에게 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage, gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "투명 상태가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage, gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "투명 상태가 끝나면 돌아오는 칼날에 맞은 적에게 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "unseen"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "공격으로 투명 상태를 취소"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "투명 상태를 취소한 공격 대상에게 돌아가는 칼날이 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Talon cancels the Invisibility with an Attack or with Noxian Diplomacy, the blades return to the target instead."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "unseen"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "녹서스식 외교로 투명 상태를 취소"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "투명 상태를 취소한 녹서스식 외교의 대상에게 돌아가는 칼날이 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Talon cancels the Invisibility with an Attack or with Noxian Diplomacy, the blades return to the target instead."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

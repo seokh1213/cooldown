@@ -1,0 +1,133 @@
+{
+  "id": "Nunu.W",
+  "sourceHash": "844a9cb5b9ad53a3cf26326d54470a7e0fa65eb57ff87691be657a18d4ed9ea8",
+  "beforeCandidateHash": "944c561978868632f012c0243e79756cc07f6f20f35d8b5cc8ab8099dfd7fc02",
+  "candidateHash": "f39ea3f59baecf6b807fbbb48151a27af22f939c0ec4df750d528c852ffdcc7f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "눈덩이 성장과 회전, 조기 재사용, 챔피언/대형 몬스터/벽 충돌, 거리별 피해 하한·상한과 0.5~1.25초 띄우기를 대조했다. 벽 충돌의 실제 피해 대상은 원문이 확정하지 않는다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 누누와 윌럼프가 굴릴수록 크기와 속도가 증가하는 눈덩이를 만듭니다. 굴리는 동안 회전 속도가 느려지지만 회전 입력을 유지하면 회전 속도를 높일 수 있습니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 별도 조건 없이 적용. caster: 재사용하면 눈덩이를 일찍 보냅니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "target의 other 사건에서 target.target_type eq champion 적용. target: 충돌 시 굴린 거리에 따라 마법 피해를 줍니다. (magic); min_amount=59.94/74.925/89.91/104.895/119.88  formula_components, stat_coefficient=49.95% caster의 abilityPower formula_components, max_amount=180/225/270/315/360  formula_components, stat_coefficient=150% caster의 abilityPower formula_components / target: 눈덩이에 충돌한 대상을 굴린 거리에 따라 하한부터 상한까지의 시간(초) 동안 공중으로 띄운다. (knockup); min_amount=0.5  scalar, max_amount=1.25  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "target의 other 사건에서 target.target_type eq monster, target.other eq 대형 몬스터 적용. target: 충돌 시 굴린 거리에 따라 마법 피해를 줍니다. (magic); min_amount=59.94/74.925/89.91/104.895/119.88  formula_components, stat_coefficient=49.95% caster의 abilityPower formula_components, max_amount=180/225/270/315/360  formula_components, stat_coefficient=150% caster의 abilityPower formula_components / target: 눈덩이에 충돌한 대상을 굴린 거리에 따라 하한부터 상한까지의 시간(초) 동안 공중으로 띄운다. (knockup); min_amount=0.5  scalar, max_amount=1.25  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "unknown의 other 사건에서 unknown.other present 눈덩이가 벽에 충돌 적용. unknown: 벽 충돌로 눈덩이의 피해 효과가 발생한다. 실제 피해 대상은 공급 원문에 명시되지 않는다. (magic); min_amount=59.94/74.925/89.91/104.895/119.88  formula_components, stat_coefficient=49.95% caster의 abilityPower formula_components, max_amount=180/225/270/315/360  formula_components, stat_coefficient=150% caster의 abilityPower formula_components / unknown: 벽에 충돌하면 공중 띄우기 효과가 발생한다. 실제 효과 대상은 공급 원문에 명시되지 않는다. 지속시간은 굴린 거리에 따라 하한부터 상한까지 변한다. (knockup); min_amount=0.5  scalar, max_amount=1.25  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3.conditions",
+      "issue": "대형 몬스터 범위 누락",
+      "correction": "대형 몬스터 조건 추가",
+      "sourceId": "en:body",
+      "quote": "when it collides with a champion, large monster or wall."
+    },
+    {
+      "path": "rules.2-4.effects",
+      "issue": "피해 하한/상한 계수의 선형화 위험 및 띄우기 시간 단위/거리 성장 불명확",
+      "correction": "수식 구성요소 및 시간(초) 범위를 명시",
+      "sourceId": "en:body",
+      "quote": "These values scale up with distance rolled."
+    },
+    {
+      "path": "rules.4.effects",
+      "issue": "벽이 피해/띄우기 대상인 듯한 표현",
+      "correction": "충돌 발생과 실제 미상 효과 대상을 구별",
+      "sourceId": "en:body",
+      "quote": "when it collides with a champion, large monster or wall."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 361,
+      "verdict": "documented_gap",
+      "reason": "벽은 충돌 원인이고 효과 대상은 원문이 명시하지 않는다. 이 구별을 텍스트와 gap에 명시했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "벽 충돌은 text 조건으로 보존했다. 벽 자체가 피해 또는 공중 띄우기의 대상이라는 뜻은 아니며, 벽 충돌 시 실제 효과 대상/범위는 공급 원문에 명시되지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "굴린 거리에 따른 피해와 공중 띄우기 지속시간의 구체적인 보간식은 제시되지 않는다. 최소/최대 피해 수식은 별도 구간이므로 계수를 단일 선형 피해로 합산하지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

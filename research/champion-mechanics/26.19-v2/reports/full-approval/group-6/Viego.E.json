@@ -1,0 +1,105 @@
+{
+  "id": "Viego.E",
+  "sourceHash": "97684d4b68a65ad29d55cf16ad1ec593a751064c867c359745377c97c8baecde",
+  "beforeCandidateHash": "c0e50cf94080f3278daa1384980394498af2957c5d005616b2f8f39468072698",
+  "candidateHash": "bed9c7d0083ab45ff052f09a42bb8aa67f9b21c8a83bbb7c92244a8a129372c6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫 지형 8초 안개, 내부 위장·자신 이동 및 공격 속도, 감지 반경 예외, 공격/스킬 사용 시 0.6초 노출을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "처음 적중한 지형을 8초 안개로 둘러싼다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "안개 안의 자신 위장 및 MS25/27.5/30/32.5/35%+AP100당4%, AS30/35/40/45/50%. AP 비율 입력의 소유자는 자신."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "위장된 자신은 적 챔피언이 감지 반경에 들어오면 보인다. 감지 예외로 적의 visibility를 변경하는 것이 아니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격 또는 스킬 사용 시 자신 0.6초 노출. 명중 사건으로 제한하지 않는다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.effects.1.parameters.1.stat",
+      "issue": "AP100당 비율의 stat 누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego sends forth a spectre to haunt the first terrain hit, surrounding it with Mist for 8 seconds. Viego gains Camouflage, (25/27.5/30/32.5/35% + (4% per 100 Ability Power)) Move Speed, and 30/35/40/45/50% Attack Speed while inside the Mist. Camouflaged units cannot be seen unless an enemy champion is inside their detection radius. Viego reveals himself for 0.6 seconds whenever he attacks or uses an Ability."
+    },
+    {
+      "path": "rules.2.conditions.2",
+      "issue": "위장 감지 규칙에 위장 조건 누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego sends forth a spectre to haunt the first terrain hit, surrounding it with Mist for 8 seconds. Viego gains Camouflage, (25/27.5/30/32.5/35% + (4% per 100 Ability Power)) Move Speed, and 30/35/40/45/50% Attack Speed while inside the Mist. Camouflaged units cannot be seen unless an enemy champion is inside their detection radius. Viego reveals himself for 0.6 seconds whenever he attacks or uses an Ability."
+    },
+    {
+      "path": "rules.2.effects.0.subject",
+      "issue": "노출되는 위장 유닛 대신 적 관찰자 주체",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego sends forth a spectre to haunt the first terrain hit, surrounding it with Mist for 8 seconds. Viego gains Camouflage, (25/27.5/30/32.5/35% + (4% per 100 Ability Power)) Move Speed, and 30/35/40/45/50% Attack Speed while inside the Mist. Camouflaged units cannot be seen unless an enemy champion is inside their detection radius. Viego reveals himself for 0.6 seconds whenever he attacks or uses an Ability."
+    },
+    {
+      "path": "rules.3.trigger.event",
+      "issue": "스킬 사용·공격을 적중으로 제한",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Viego sends forth a spectre to haunt the first terrain hit, surrounding it with Mist for 8 seconds. Viego gains Camouflage, (25/27.5/30/32.5/35% + (4% per 100 Ability Power)) Move Speed, and 30/35/40/45/50% Attack Speed while inside the Mist. Camouflaged units cannot be seen unless an enemy champion is inside their detection radius. Viego reveals himself for 0.6 seconds whenever he attacks or uses an Ability."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "id": "Viego.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

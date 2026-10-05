@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 2,
+  "id": "Bard.R",
+  "champion": "Bard",
+  "slot": "R",
+  "patch": "26.19",
+  "sourceHash": "e79c6ea1a01b791b91fd1d5c9a3d275938b6c40a5febe972796b2377803283a7",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Tempered Fate",
+      "ko": "운명의 소용돌이"
+    },
+    "cooldownSeconds": [
+      110,
+      95,
+      80
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      3400,
+      3400,
+      3400
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "110/95/80"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "stasis",
+          "target": "all",
+          "source": "https://wiki.leagueoflegends.com/en-us/Bard",
+          "condition": "범위 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Bard.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Bard sends spirit energy arcing to a location, putting all champions, minions, monsters, and turrets hit into stasis for a brief time.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Bard hurls magical protective energy to an area, placing all units and structures hit into Stasis for 2.5 seconds. Units in Stasis cannot move or act, and are invulnerable and Untargetable.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "바드가 목표 지점에 영적 에너지를 발사하여 잠시 동안 모든 유닛과 포탑을 정지시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "바드가 지정한 지역에 마법의 보호 에너지를 던집니다. 적중한 모든 유닛과 구조물은 2.5초 동안 경직 상태가 됩니다. 경직 상태에 빠진 유닛은 움직이거나 행동할 수 없으며 대상으로 지정할 수 없는 무적 상태가 됩니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 102,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 46,
+      "end": 49
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "바드가 지정한 지역에 보호 에너지를 던져 적중한 유닛과 구조물을 일정 시간 경직시킨다. 경직된 유닛은 움직이거나 행동할 수 없고 무적 및 대상으로 지정 불가 상태가 된다.",
+  "rules": [
+    {
+      "id": "824eb2a79a9fef2f85eb",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적중한 유닛과 구조물을 경직시킨다.",
+          "damageType": null,
+          "crowdControl": "stasis",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "경직 상태에서는 움직이거나 행동할 수 없으며, 무적이고 대상으로 지정할 수 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard hurls magical protective energy to an area, placing all units and structures hit into Stasis for 2.5 seconds. Units in Stasis cannot move or act, and are invulnerable and Untargetable."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "13ff48bbe67729daaa43dfd4bc99194bf3c91174516577017ca1e0a35ed81b7d"
+}

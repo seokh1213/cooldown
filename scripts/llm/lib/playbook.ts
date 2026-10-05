@@ -8,6 +8,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import type { Playbook } from "../../../src/lib/knowledge/playbookCore";
+import { loadComboNotes } from "./comboNotes";
 
 export * from "../../../src/lib/knowledge/playbookCore";
 
@@ -24,6 +25,12 @@ export function loadPlaybooks(root = PLAYBOOK_ROOT): Map<string, Playbook> {
       against: parsed.against ?? [],
     });
   }
+  if (root === PLAYBOOK_ROOT) {
+    for (const [champion, entries] of loadComboNotes()) {
+      const book = map.get(champion) ?? { champion, playing: [], against: [] };
+      // 상성·조건 대응의 기존 우선순서는 보존한다. 명시적 콤보는 combo 메타데이터로 고른다.
+      map.set(champion, { ...book, playing: [...book.playing, ...entries] });
+    }
+  }
   return map;
 }
-

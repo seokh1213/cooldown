@@ -1,0 +1,56 @@
+{
+  "id": "Sona.R",
+  "sourceHash": "a2b89f5aa8abe2f40f19b0c2d6c98b713e4def1f2661c1f7d0e5cf796be728ea",
+  "beforeCandidateHash": "baf4725f5128c8115401174dbb928b0000b81f455b1fb4ea8eaf0efe0d81866e",
+  "candidateHash": "402a6a8ecfccbe7be2247cf516df6de09ca39926083d2d87bc909d89758b3a21",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "적의1.5초 기절과150/250/350+50%소나 주문력 마법 피해, 춤출 줄 아는 적의 기절 중 춤을 대조했다. 요약의 챔피언 한정과 본문의 적 일반 표현을 기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. enemy: 적을 기절시키며, 춤출 줄 아는 적은 기절 중에 춤을 춥니다. (stun); duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. enemy: 적에게 마법 피해를 줍니다. (magic); amount=150/250/350  rank_values, ratio_output=50% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.evidence",
+      "issue": "효과의 조건부 춤 주장을 인용하지 않음",
+      "correction": "해당 원문 근거 추가",
+      "sourceId": "en:body",
+      "quote": "Enemies that know how to dance, will dance during the stun."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "요약은 enemy champions라고 한정하지만 본문은 enemy 일반의 기절과 피해를 설명한다. 더 구체적인 본문 효과를 우선했다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

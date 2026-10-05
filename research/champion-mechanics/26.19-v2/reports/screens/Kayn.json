@@ -1,0 +1,197 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Kayn.E",
+      "sourceHash": "d9ae0e29dd02eb4990b895b78b95b902932a6013b9dd64ca6b4186c159a0f702",
+      "candidateHash": "d78362f167641c5c1d58d19fddb809ba2581d4a411f7cf248ee05f367f78cfca"
+    },
+    {
+      "id": "Kayn.W",
+      "sourceHash": "f6e3c9bf610527de1ae10c40bbb4fb81c9f7baee69b36b460de8af233d9c7963",
+      "candidateHash": "cbbcb340e871258c4c24801e41b0d70346f09731f8e4a92407fb42b78d12160e"
+    },
+    {
+      "id": "Kayn.P",
+      "sourceHash": "0cb64b258e6a7f605ce5fab719b9841414f0d9714e626e1cc336663b1fe77335",
+      "candidateHash": "3fb8be958101b640d38d32f2a2ba2b411355dcf1cb6daf0262b0ef5f23c9d251"
+    },
+    {
+      "id": "Kayn.Q",
+      "sourceHash": "47e21b4e2031abacdb200fd84e7c7191b09c48ca44cbd1b76064da1657c6cf50",
+      "candidateHash": "bf8980b429a7a0782c7a5ae61233d3b4fef5428a7cf91fd82a6276adb323b3da"
+    },
+    {
+      "id": "Kayn.R",
+      "sourceHash": "20936130fc07cd4d22443473e852e640ccd89f1da5c077e2fa7436798b07c61c",
+      "candidateHash": "3776791e74c17c864d39a3d1029e784041061ce89d973df2a93ff9353762117a"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Kayn.P",
+      "path": "rules.0.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Damaging ranged champions charges the Shadow Assassin, and damaging melee champions charges the Darkin Slayer.",
+      "issue": "피해를 입히는 주체가 케인이라고 원문은 한정하지 않는데, 규칙은 `damage_taken`으로 케인이 피해를 받는 사건을 조건으로 합니다. 이는 충전 획득 사건을 잘못 나타냅니다.",
+      "correction": "챔피언에게 피해를 입히는 사건으로 표현하세요. 피해 원천은 원문에 없으므로 특정하지 마세요."
+    },
+    {
+      "id": "Kayn.P",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Damaging ranged champions charges the Shadow Assassin, and damaging melee champions charges the Darkin Slayer.",
+      "issue": "원거리 챔피언 규칙과 마찬가지로, 근접 챔피언에게 피해를 입히는 사건을 케인이 피해를 받는 `damage_taken`으로 잘못 기록했습니다.",
+      "correction": "근접 챔피언에게 피해를 입히는 사건으로 고치고, 피해 원천은 미지정으로 두세요."
+    },
+    {
+      "id": "Kayn.P",
+      "path": "rules.0.conditions.1.value.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Damaging ranged champions charges the Shadow Assassin, and damaging melee champions charges the Darkin Slayer.",
+      "issue": "피해 대상이 원거리 챔피언이라는 조건이 텍스트에만 들어 있어, 타입이 지정된 이 조건 자체는 이를 검증하지 않습니다.",
+      "correction": "원거리 챔피언 조건을 타입이 확인 가능한 필드로 표현하거나, 구조화된 술어를 미지정으로 두세요."
+    },
+    {
+      "id": "Kayn.P",
+      "path": "rules.1.conditions.1.value.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Damaging ranged champions charges the Shadow Assassin, and damaging melee champions charges the Darkin Slayer.",
+      "issue": "피해 대상이 근접 챔피언이라는 조건이 텍스트에만 들어 있어, 타입이 지정된 이 조건 자체는 이를 검증하지 않습니다.",
+      "correction": "근접 챔피언 조건을 타입이 확인 가능한 필드로 표현하거나, 구조화된 술어를 미지정으로 두세요."
+    },
+    {
+      "id": "Kayn.P",
+      "path": "rules.3.conditions.2.value.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This only occurs if Kayn has been out of combat for 8 seconds or used Umbral Trespass.",
+      "issue": "요약한 조건은 8초 전투 이탈과 궁극기 사용을 ‘전투 진입 전’의 대안으로 한정합니다. 원문은 둘 중 하나를 충족하면 된다고만 하며 그 시간 순서를 명시하지 않습니다.",
+      "correction": "전투 중 추가 피해는 케인이 8초 동안 비전투 상태였거나 Umbral Trespass를 사용한 경우에만 발생한다고 요약하세요."
+    },
+    {
+      "id": "Kayn.P",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "deal an additional (20% ~ 40%) damage dealt magic damage for 3 seconds.",
+      "issue": "20~40% 값을 `level_range`로 표시했지만, 원문은 레벨에 따라 증가한다고 밝히지 않습니다. 랭크나 레벨 기반 값으로 해석할 근거가 없습니다.",
+      "correction": "백분율 값을 범위 그대로 보존하고, 증가 기준은 미지정으로 두세요."
+    },
+    {
+      "id": "Kayn.P",
+      "path": "rules.4.conditions.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kayn heals for (25% + (0.5% per 100 bonus Health)) of physical damage dealt to champions.",
+      "issue": "조건이 물리 피해 유형을 `other` 텍스트에만 넣었습니다. 구조화된 조건에는 피해 유형이 지정되지 않아, 조건을 읽는 쪽에서 물리 피해 여부를 판정할 수 없습니다.",
+      "correction": "물리 피해 유형을 구조화된 피해 유형 필드로 표현하거나, 검증 가능한 조건으로 분리하세요."
+    },
+    {
+      "id": "Kayn.Q",
+      "path": "rules.3.conditions.0.value.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Darkin Slayer: Instead deal (65% Attack Damage) plus (6% + (3.5% per 100 bonus Attack Damage)) max Health physical damage.",
+      "issue": "다르킨 학살자 조건은 Darkin Slayer와 정확히 일치해야 하지만, 현재 규칙은 그 형식이 아닌 모든 케인에게 기본 피해식을 적용합니다. 입력 요약도 다르킨 학살자의 별도 피해식을 명시하므로 규칙 조건과 설명이 충돌합니다.",
+      "correction": "기본 피해식의 제외 조건을 실제 다르킨 학살자 형식과 일치시키세요."
+    },
+    {
+      "id": "Kayn.Q",
+      "path": "rules.4.conditions.0.value.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals an additional 40 physical damage to minions and jungle monsters (max: 200/250/300/350/400).",
+      "issue": "추가 피해 규칙을 Darkin Slayer 형식으로 한정했지만, 원문은 해당 추가 피해에 형식 조건을 붙이지 않습니다.",
+      "correction": "원문이 뒷받침하는 대상 조건만 유지하고, 형식 조건은 제거하세요."
+    },
+    {
+      "id": "Kayn.Q",
+      "path": "rules.4.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(max: 200/250/300/350/400).",
+      "issue": "상한값을 `rank_values`로 기록했지만, 원문은 값이 스킬 랭크에 따라 달라진다고 명시하지 않습니다.",
+      "correction": "값의 열거는 보존하되, 랭크 의존성은 미지정으로 두세요."
+    },
+    {
+      "id": "Kayn.Q",
+      "path": "rules.2.effects.0.parameters.0.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(65% Attack Damage)",
+      "issue": "피해식의 `Attack Damage`가 총 공격력인지 추가 공격력인지 원문은 한정하지 않는데, 매개변수는 총 공격력으로 좁혔습니다.",
+      "correction": "공격력이라는 원문 표현을 유지하고 총 공격력 여부는 미지정으로 두세요."
+    },
+    {
+      "id": "Kayn.R",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 2.5 seconds or after Recasting, Kayn bursts out, dealing (150/250/350 + (150% bonus Attack Damage)) physical damage to the enemy.",
+      "issue": "2.5초가 지나면 피해를 입히는 사건을 `expiry`로 표현해, 지속시간 종료 시 효과가 끝나는 사건처럼 기록했습니다. 원문은 Kayn이 빠져나오는 시점에 피해를 입힌다고 합니다.",
+      "correction": "2.5초 경과 후 빠져나오며 피해를 입히는 사건으로 표시하세요."
+    },
+    {
+      "id": "Kayn.R",
+      "path": "rules.2.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 2.5 seconds or after Recasting, Kayn bursts out, dealing (150/250/350 + (150% bonus Attack Damage)) physical damage to the enemy.",
+      "issue": "자동 발동 규칙은 2.5초 조건은 있지만, 피해를 입히는 대상이 표식이 있는 적이라는 조건을 빠뜨렸습니다. 해당 조건은 진입 규칙에만 있어 자동 피해 규칙을 독립적으로 읽으면 표식 대상 범위가 보장되지 않습니다.",
+      "correction": "자동 발동 피해 규칙에도 진입한 표식 대상에 대한 참조를 포함하세요."
+    },
+    {
+      "id": "Kayn.R",
+      "path": "rules.4.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Shadow Assassin: Increases this Ability's range, the distance Kayn exits, and refreshes The Darkin Scythe's Cooldown on exit.",
+      "issue": "재사용 발동에서도 효과가 발생할 수 있는데, 규칙은 `expiry`에만 묶여 있습니다. 원문은 빠져나올 때 효과가 적용된다고 명시합니다.",
+      "correction": "재사용을 포함해 케인이 빠져나오는 사건에 연결하세요."
+    },
+    {
+      "id": "Kayn.R",
+      "path": "rules.6.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "After 2.5 seconds or after Recasting, Kayn bursts out, dealing (150/250/350 + (150% bonus Attack Damage)) physical damage to the enemy.",
+      "issue": "2.5초가 지나면 다르킨 피해를 입히는 사건도 `expiry`로 표현했습니다. 원문은 시간이 지나거나 재사용한 뒤 빠져나오며 피해를 입힌다고 합니다.",
+      "correction": "2.5초 경과 또는 재사용 후 빠져나오며 피해를 입히는 사건으로 표시하세요."
+    },
+    {
+      "id": "Kayn.R",
+      "path": "rules.6.conditions",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kayn infests a marked enemy, becoming Untargetable.",
+      "issue": "자동 피해 규칙에 표식 대상 조건이 없습니다. 피해 대상과 진입 대상이 연결되지 않아, 해당 규칙만으로는 피해가 진입한 표식 적에게 적용된다고 확인할 수 없습니다.",
+      "correction": "진입한 표식 적을 피해 대상으로 연결하세요."
+    },
+    {
+      "id": "Kayn.R",
+      "path": "rules.8.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Darkin Slayer: Instead deals (15% + (0.1% bonus Attack Damage)) max Health physical damage and restores (11.25% + (7.5% per 100 bonus Attack Damage)) Health (75% damage amount).",
+      "issue": "다르킨 회복은 케인이 빠져나올 때 발생하지만, 2.5초 경과에만 연결해 재사용 후 빠져나오는 경우를 놓칩니다.",
+      "correction": "재사용을 포함해 빠져나오는 사건에 회복을 연결하세요."
+    },
+    {
+      "id": "Kayn.R",
+      "path": "rules.8.effects.0.text",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(75% damage amount).",
+      "issue": "회복량 설명이 ‘대상에게 입힌 피해량’으로 단정되어 있습니다. 원문은 피해량의 75%라는 괄호만 제공하며, 피해량의 기준 대상을 명시하지 않습니다.",
+      "correction": "기준 대상을 추가로 정하지 말고, 회복 수치가 피해량의 75%라는 원문 표현을 유지하세요."
+    }
+  ],
+  "notes": []
+}

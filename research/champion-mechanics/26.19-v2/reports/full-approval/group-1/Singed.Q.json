@@ -1,0 +1,96 @@
+{
+  "id": "Singed.Q",
+  "sourceHash": "43fc1fa55e87a49b74944d29e95a0100d1a8d18777a792b3ba4833463206071e",
+  "beforeCandidateHash": "ae3bb9051b91adb2c5d4f670460966f538a3b0d3ac6a0512eaf467c959809458",
+  "candidateHash": "01c490bf2384722f8cda61d4dc1c36e53edc4cc8b1b17277379105f7d9fb4369",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "토글 독 자취, 경로 적의 초당 마법 피해와 구름3.25초·중독2초, 예상 총 피해는 정보값임을 확인했다. 중독 미니언이 미니언 피해로 죽으면 신지드가 대신 처치자로 인정된다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 토글을 활성화하면 신지드가 독성 흔적을 남기며, 토글 상태를 전환할 수 있다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 target.other eq 독 자취 경로에 노출되거나 그 자취에 중독된 적. target damage magic: 독성 흔적이 적에게 초당 마법 피해를 준다. [amount n0=20/n1=30/n2=40/n3=50/n4=60 rank_values; stat_coefficient n5=42.5% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, unknown.passive; 조건 없음. unknown ui_information: 독성 흔적의 구름 지속시간이 제시되어 있다. [duration_seconds n6=3.25 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, target.passive; 조건 target.other eq 독 자취 경로에 걸린 적. target mark: 독 상태가 적용된다. [duration_seconds n7=2 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, unknown.passive; 조건 없음. unknown ui_information: 초당 피해와 별도로 예상 총 피해량이 제시되어 있다. [amount n8=95/n9=142.5/n10=190/n11=237.5/n12=285 rank_values; stat_coefficient n13=201.875% formula_components caster.abilityPower]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.death; 조건 target.target_type eq minion; target.other eq 독 자취의 영향을 받는 동안 미니언 피해로 죽음. caster other: 독 자취의 영향을 받는 미니언이 미니언 피해로 죽으면 신지드가 대신 처치자로 인정된다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,3,5;gaps",
+      "issue": "토글이 켜진 동안 모든 대상에 피해, 중독 적용 조건 없고 미니언 스스로 kill 사건, 처치권 조건이 텍스트에만 있음",
+      "correction": "독 경로/중독 상태 피해와 중독 적용 조건을 명시하고 미니언 death에 미니언 피해 원인을 요구했다. 처치권은 신지드가 대신 얻는다.",
+      "sourceId": "en:body",
+      "quote": "If a minion would be killed by minion damage while under the effects of Poison Trail, Singed claims the kill credit instead."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 475,
+      "verdict": "repaired",
+      "reason": "any를 제거하고 독 자취 경로의 적 또는 그 자취 중독 대상 조건을 명시했다."
+    },
+    {
+      "index": 476,
+      "verdict": "false_positive",
+      "reason": "원래 얻는다는 말은 claims kill credit과 같은 의미이며 다른 처치자도 유지된다고 단정하지 않는다. 대신이라는 말을 명시해 의미를 더 분명히 했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "독 경로에 걸린 적에게 적용되는 중독2초와 구름3.25초를 보존했다. 중독 재갱신 방식 및 경로 이탈 후 남은 시간 계산은 제공되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "초당 피해는 명시하지만 실제 피해 tick 간격과 예상 총 피해의 계산·노출 시간 가정은 제공되지 않았다. 예상 총 피해는 별도 실제 피해로 실행하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

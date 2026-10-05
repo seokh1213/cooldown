@@ -1,0 +1,96 @@
+{
+  "id": "Belveth.Q",
+  "sourceHash": "495fbe3df43f7b803b7e5f46f6212f35d44af0bfb7abc1a9ceac31d949c38846",
+  "beforeCandidateHash": "bd5b96fa01f55f76382225aa9d134080ef67475f9da59fab68a1f8b25b934866",
+  "candidateHash": "9afe62e8197b681c3b08e40af3c005870ae96be0313c8830f1130480b1e6c694",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "방향 돌진·경로상 물리 피해·첫 대상 적중 효과·방향별 재사용 대기시간과 공격 속도 변환·몬스터 추가 70을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전자가 선택 방향으로 돌진하는 이동 효과다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "경로상 적 물리 피해는 12/14/16/18/20 + 자신 총 공격력 105%다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫 적중 순서 조건에서만 적중 시 효과를 대상에게 적용한다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "방향마다 독립 16/15/14/13/12초 쿨다운이며 자기 공격 속도에 따라 감소한다. 무기 보유·총 스탯 조건은 원문에 없다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "자기 공격 속도 1%가 해당 스킬 방향별 스킬 가속 0.2에 대응한다. 전체 스킬 가속 부여가 아니다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몬스터 적중에 한해 70 추가 물리 피해다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3.conditions",
+      "issue": "방향별 쿨다운을 무기로 분류하고 원문 없는 total 조건을 부가",
+      "correction": "방향별 범위를 other에 보존하고 total 조건 삭제",
+      "sourceId": "en:body",
+      "quote": "Each direction has an unique Cooldown of 16/15/14/13/12 seconds that scales down based on her Attack Speed."
+    },
+    {
+      "path": "rules.4.conditions",
+      "issue": "공격 속도 변환에 원문 없는 total 조건",
+      "correction": "추가 조건 없이 공격 속도 변환 보존",
+      "sourceId": "en:body",
+      "quote": "Each 1% Attack Speed is equivalent to 0.2 Ability Haste for this Ability's per-direction Cooldown."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "재사용 대기시간의 rank 값이 스킬 랭크별인지 다른 단계별인지 입력 툴팁만으로 명시되지 않았다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

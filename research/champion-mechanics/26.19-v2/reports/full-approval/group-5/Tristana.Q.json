@@ -1,0 +1,103 @@
+{
+  "id": "Tristana.Q",
+  "sourceHash": "d048fbfc1e33a09bd2b3a3209add1214549a4dfd00d7632e9df829273b0cb607",
+  "beforeCandidateHash": "66dcf1fb266d5f958822f6b535c545b2ae527190192df8c6f95128cb8b53c9bf",
+  "candidateHash": "4508868ad896fa4b2738ca87778e09446f595b7d8a77738bd8f5c0d8c828e93e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "본인공격속도60/75/90/105/120% 증가7초를두언어에서확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "5랭크공격속도보너스%와7초지속. lexical앞4값percent=false를절대값으로읽지않는다.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0",
+            "en:body:n1",
+            "en:body:n2",
+            "en:body:n3",
+            "en:body:n4"
+          ],
+          "stat": "bonusAttackSpeed",
+          "statSubject": "caster",
+          "shape": "rank_values",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "60",
+              "value": 60,
+              "percent": true
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "75",
+              "value": 75,
+              "percent": true
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "90",
+              "value": 90,
+              "percent": true
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "105",
+              "value": 105,
+              "percent": true
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "120%",
+              "value": 120,
+              "percent": true
+            }
+          ]
+        },
+        {
+          "effectIndex": 0,
+          "role": "duration_seconds",
+          "numberRefs": [
+            "en:body:n5"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n5",
+              "raw": "7",
+              "value": 7,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "슬래시AS값의공통퍼센트단위누락.",
+      "correction": "5값모두%단위와7초명시.",
+      "sourceId": "en:body",
+      "quote": "Tristana goes full-auto, gaining 60/75/90/105/120% Attack Speed for 7 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

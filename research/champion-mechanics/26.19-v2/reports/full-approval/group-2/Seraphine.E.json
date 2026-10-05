@@ -1,0 +1,95 @@
+{
+  "id": "Seraphine.E",
+  "sourceHash": "b9e4fb2fde8d52ee19bea83fe5d13558c0b5dfa4914d8562737f2fe502246f9a",
+  "beforeCandidateHash": "7ea6ece804a45f5df85d7e1565f93878f67a3c92b5e5faaa32c76904f4d2e999",
+  "candidateHash": "3a85e338b68ad8403f044321ef1d411b3fdc4761cf7478facce1c8b14d00b237",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 1,
+  "summaryCheck": "일직선마법·미니언70%,일반99%랭크지속둔화/이미둔화속박대체/이동불가기절,동시상태우선순위미명시를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; enemy: 일직선상의 적에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=70,en:body:n1=100,en:body:n2=130,en:body:n3=160,en:body:n4=190 상수 rank_values / stat_coefficient en:body:n5=50%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq minion; enemy: 일직선상의 미니언에게 감소된 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=70,en:body:n1=100,en:body:n2=130,en:body:n3=160,en:body:n4=190 상수 rank_values / stat_coefficient en:body:n5=50%(백분율) caster.abilityPower scalar / damage_multiplier en:body:n12=70%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.other eq 적중 전에 둔화도 이동 불가도 아닌 일반 대상; enemy: 적중 전에 둔화도 이동불가도 아니었던 일반 대상은99% 둔화됩니다. 이미 둔화/이동불가인 대상은 별도 대체CC 규칙을 적용합니다. [slow]; 수치 amount en:body:n6=99%(백분율) 상수 scalar / duration_seconds en:body:n7=1.1,en:body:n8=1.2,en:body:n9=1.3,en:body:n10=1.4,en:body:n11=1.5 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.other eq 이미 둔화된 상태; enemy: 이미 둔화된 적을 속박합니다. [root]; 수치 없음; flags replaces_base"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.other eq 이미 이동 불가 상태; enemy: 이미 이동 불가 상태인 적을 기절시킵니다. [stun]; 수치 없음; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "일반둔화가대체속박/기절과독립누적되는표현을교정; 최종 감독 감사에서 기본둔화의 일반대상 부정조건을 명확히 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Seraphine unleashes a heavy soundwave, dealing (70/100/130/160/190 + (50% Ability Power)) magic damage to enemies in a line and Slowing them by 99% for 1.1/1.2/1.3/1.4/1.5 seconds. Enemies that are already Slowed are Rooted instead, and Immobilized enemies are Stunned. Deals 70% damage against minions."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 이미 둔화된 대상과 이동 불가 대상의 결과를 각각 명시하지만, 두 상태가 동시에 성립할 때 처리 우선순위는 밝히지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

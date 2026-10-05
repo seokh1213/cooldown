@@ -1,0 +1,544 @@
+{
+  "champion": "Ryze",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Passively, Ryze's other basic abilities reset the cooldown of Overload and charge a rune. When Ryze casts Overload with 2 runes charged, he gains a brief burst of Move Speed. On cast, Ryze throws a charge of pure energy in a line, dealing damage to the first enemy struck. If the target has Flux on it, Overload deals extra damage and bounces to nearby enemies with Flux.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive: Rune Prison and Spell Flux refresh this Ability's Cooldown and charge a rune for 4 seconds (max 2 runes). Active: Ryze unleashes a blast, dealing (75/95/115/135/155 + (55% Ability Power) + (2% bonus Mana)) magic damage to the first enemy hit. If the target has Flux on it, it is consumed, causing this Ability to deal 15/40/65/90% increased damage and bounces to nearby enemies with Flux. Ryze also discharges all runes, granting Ryze 28/32/36/40/44% Move Speed for 2 seconds if 2 runes were charged.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "기본 지속 효과로 라이즈가 다른 스킬을 사용하면 과부하의 재사용 대기시간이 초기화되고 룬 하나를 충전합니다. 룬이 2개 충전된 상태에서 과부하를 사용하면 이동 속도가 잠시 대폭 증가합니다. 사용 시 라이즈가 순수한 에너지를 일직선으로 발사해 첫 번째 맞는 적에게 피해를 입힙니다. 대상에게 전이 표식이 있으면 과부하가 추가 피해를 입히고 전이 표식이 있는 주변 적에게 튕깁니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과: 룬 감옥과 주문 전이 사용 시 이 스킬의 재사용 대기시간이 초기화되고 4초 동안 룬이 충전됩니다. 룬은 최대 2개까지 충전됩니다. 사용 시: 돌풍을 발사하여 처음으로 맞힌 적에게 (75/95/115/135/155 + (55% 주문력) + (2% 추가 마나))의 마법 피해를 입힙니다. 대상에게 전이 표식이 있으면 과부하가 표식을 소모하여 15/40/65/90% 증가한 피해를 입히고 전이 표식이 있는 주변 적에게 튕깁니다. 라이즈가 룬을 전부 방출합니다. 룬이 2개 충전되면 2초 동안 이동 속도가 28/32/36/40/44%상승합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Overload",
+      "ko": "과부하"
+    },
+    "cooldownSeconds": [
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1000,
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "cost": {
+      "values": [
+        40,
+        38,
+        36,
+        34,
+        32
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "75/95/115/135/155"
+      },
+      {
+        "label": "Move Speed",
+        "values": "28%/32%/36%/40%/44%"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "40/38/36/34/32"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:QDamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "QDamageCalc",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          75,
+          95,
+          115,
+          135,
+          155
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.550000011920929,
+              0.550000011920929,
+              0.550000011920929,
+              0.550000011920929,
+              0.550000011920929
+            ]
+          },
+          {
+            "stat": "bonusMana",
+            "coefficientsByRank": [
+              0.019999999552965164,
+              0.019999999552965164,
+              0.019999999552965164,
+              0.019999999552965164,
+              0.019999999552965164
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Ryze.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Ryze.Q",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 120,
+      "end": 121
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 90,
+      "end": 91
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 105,
+      "end": 106
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 156,
+      "end": 158
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 159,
+      "end": 161
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "115",
+      "value": 115,
+      "percent": false,
+      "start": 162,
+      "end": 165
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 166,
+      "end": 169
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "155",
+      "value": 155,
+      "percent": false,
+      "start": 170,
+      "end": 173
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "55%",
+      "value": 55,
+      "percent": true,
+      "start": 177,
+      "end": 180
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "2%",
+      "value": 2,
+      "percent": true,
+      "start": 199,
+      "end": 201
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 327,
+      "end": 329
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 330,
+      "end": 332
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "65",
+      "value": 65,
+      "percent": true,
+      "start": 333,
+      "end": 335
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 336,
+      "end": 339
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "28",
+      "value": 28,
+      "percent": true,
+      "start": 444,
+      "end": 446
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "32",
+      "value": 32,
+      "percent": true,
+      "start": 447,
+      "end": 449
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "36",
+      "value": 36,
+      "percent": true,
+      "start": 450,
+      "end": 452
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 453,
+      "end": 455
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "44%",
+      "value": 44,
+      "percent": true,
+      "start": 456,
+      "end": 459
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 475,
+      "end": 476
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 488,
+      "end": 489
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 64,
+      "end": 65
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 49,
+      "end": 50
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 71,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 111,
+      "end": 113
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 114,
+      "end": 116
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "115",
+      "value": 115,
+      "percent": false,
+      "start": 117,
+      "end": 120
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 121,
+      "end": 124
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "155",
+      "value": 155,
+      "percent": false,
+      "start": 125,
+      "end": 128
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "55%",
+      "value": 55,
+      "percent": true,
+      "start": 132,
+      "end": 135
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "2%",
+      "value": 2,
+      "percent": true,
+      "start": 144,
+      "end": 146
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 199,
+      "end": 201
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 202,
+      "end": 204
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "65",
+      "value": 65,
+      "percent": true,
+      "start": 205,
+      "end": 207
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 208,
+      "end": 211
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 268,
+      "end": 269
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 276,
+      "end": 277
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "28",
+      "value": 28,
+      "percent": true,
+      "start": 289,
+      "end": 291
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "32",
+      "value": 32,
+      "percent": true,
+      "start": 292,
+      "end": 294
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "36",
+      "value": 36,
+      "percent": true,
+      "start": 295,
+      "end": 297
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 298,
+      "end": 300
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "44%",
+      "value": 44,
+      "percent": true,
+      "start": 301,
+      "end": 304
+    }
+  ],
+  "sourceHash": "f6654f6e1fe4ea12d786a66c1684586ae4876f215a8891156de0983c83a20c23",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

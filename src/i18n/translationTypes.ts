@@ -425,6 +425,9 @@ export interface Translations {
     emptyHint: string;
     rateUp: string;
     rateDown: string;
+    copyAnswer: string;
+    answerCopied: string;
+    answerCopyFailed: string;
     errorPrefix: string;
   };
 }

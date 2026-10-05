@@ -1,0 +1,63 @@
+{
+  "id": "Shaco.E",
+  "sourceHash": "4dd8c83ba433bcdbaba0b6525f5eb25f349d16fcceb8c0a0f11b94376a5d28b2",
+  "beforeCandidateHash": "5146f28dcd55d589d79302c76e0b10bff618f02ffb15e64154cc39372f547bb4",
+  "candidateHash": "45ae2c1ef60d55dfa709b860c8b701a06aeb1d7fb3ec7cf45c942f64126d1961",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "쿨 준비 시 기본공격2초 둔화, 사용 시 마법피해/3초 둔화 및 체력30% 미만 대체 피해를 대조했다. ko 요약 이하와 본문 미만 충돌을 보존했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "E쿨 준비일 때 caster 공격이 대상20~30%를2초 둔화한다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "기본 활성피해70~170+80% caster 추가AD+60% AP를 확인했다. 체력 낮은 대체는 별도 규칙이다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "활성 단검 둔화20~30%,3초는 체력 분기와 무관하다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "체력30% 미만105~255+120% caster 추가AD+90% AP는 기본피해 대체이다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger.subject/gaps",
+      "issue": "평타 행위자 오류 및 이하/미만 충돌 누락",
+      "correction": "caster 공격 및 source_conflict",
+      "sourceId": "ko:summary",
+      "quote": "대상의 체력이 30% 이하면 추가 피해를 입힙니다."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "ko 요약은30% 이하이지만 en/ko 본문은30% 미만이다. 본문 lt를 우선한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

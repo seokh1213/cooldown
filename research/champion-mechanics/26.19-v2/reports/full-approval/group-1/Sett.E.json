@@ -1,0 +1,81 @@
+{
+  "id": "Sett.E",
+  "sourceHash": "d929ed73b569f363dc2bf250b94a659b3effcd772fc8a8727964502623842332",
+  "beforeCandidateHash": "935827dd2a8d29db9231a5eaafc9dfec5497766be63be2281761ade16aff15f5",
+  "candidateHash": "18ade67a1c13dace7fe7101ad17e060a0b93eec13ff197347358388ef2db79da",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "양옆적pull/물리50~130+총AD60%,70%0.5초slow/양쪽최소1씩잡으면1초stun,monster추가125~250을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. target damage physical: 세트 양옆에서 잡힌 적에게 물리 피해를 입힌다. [amount n0=50/n1=70/n2=90/n3=110/n4=130 rank_values; stat_coefficient n5=60% formula_components caster.totalAttackDamage] flags=per_target / target crowd_control pull: 양옆의 적을 세트 쪽으로 끌어당겨 서로 부딪치게 한다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. target crowd_control slow: 세트 양쪽에서 서로 부딪히는 적을 둔화시킨다. [amount n6=70% scalar; duration_seconds n7=0.5 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.other eq 양쪽에서 각각 적을 하나 이상 붙잡음. target crowd_control stun: 부딪힌 모든 적을 기절시킨다. [duration_seconds n9=1 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq monster. target other: 몬스터에게 추가 피해125~250을 입힌다. 이 문장은 피해 유형을 직접 명시하지 않는다. [amount n10=125/n11=250 level_range] flags=per_target"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/new/gaps",
+      "issue": "몬스터추가를일반피해합산·pull누락·stun대체와scope",
+      "correction": "monster추가분리/지정영역pull 및typed범위,source summary/본문대체차이보존",
+      "sourceId": "en:body",
+      "quote": "Deals (125 ~ 250) bonus damage against monsters."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 445,
+      "verdict": "false_positive",
+      "reason": "피해와둔화는별개규칙으로모두보존되며모든effect에동일정보를복제할요건없다."
+    },
+    {
+      "index": 446,
+      "verdict": "false_positive",
+      "reason": "양쪽에서각각적을하나이상은정확한두측면AND조건이다. dedicated측면필드가없어other텍스트보존이맞다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "몬스터추가피해문장은독립타입을명시하지않아타입단정없이other에양을보존했다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "summary는양쪽잡으면slow대신stun이라하지만본문은기본slow뒤양쪽stun추가로서대체관계를명시하지않는다.본문규칙을우선하고독립stun/slow를보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "id": "Gwen.R",
+  "sourceHash": "0da6226fef0767ac7acf47d5b130fe76ba403d372f48ca1ba0eecb37d658255e",
+  "beforeCandidateHash": "a1c78100136c3d9c669e476e2ff93faf6598f0b853281bbe46584721164b2e7a",
+  "candidateHash": "55f134a7281626c154a0ae16e856bb7f131fd2a723ea8f06e49edb4613a462cf",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 2,
+  "summaryCheck": "첫1바늘30/50/70+AP10%·40/50/60%1.5초둔화·패시브,6초내2재사용/간격1초,두번째3바늘90/150/210+AP30%,세번째5바늘150/250/350+AP50%,동일유닛후속15/20/25%둔화,최대총피해를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫시전만초기피해·둔화·모든적패시브적용.패시브를mark로추정하지않는다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "첫시전후6초내최대2추가,시전간CD1초."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "두번째시전3개발사/총제시피해90/150/210+AP30%;발사수는hit_count조건/피해반복배수가아니다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "세번째시전5개발사/총제시피해150/250/350+AP50%;단계조건과발사수별효과로구분."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은유닛이후속바늘에맞으면기존둔화대신15/20/25%;별도표식필수조건없음."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최대총270/450/630+AP90%와AThousandCuts최대HP9%+AP100당5.4%주석.일반각적중에더하는추가피해가아니다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0",
+      "issue": "첫시전범위조건누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "rules.0.effects.2.kind",
+      "issue": "패시브효과적용을mark로오분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "rules.2.conditions.0",
+      "issue": "재사용단계조건누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "rules.2.effects.1",
+      "issue": "발사수를피해횟수와분리",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "rules.3.conditions.0",
+      "issue": "재사용단계조건누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "rules.3.effects.1",
+      "issue": "발사수를피해횟수와분리",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "rules.4.conditions.0",
+      "issue": "원문없는표식필수조건",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "rules.4.effects.0.flags",
+      "issue": "후속둔화가instead대체임을누락",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "rules.5.effects.0.kind",
+      "issue": "최대총피해를각적중damage효과로기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "이전동일유닛바늘명중을other조건으로표현가능",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "두번째/세번째시전을activation텍스트로표현가능",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "요약/본문패시브대상범위충돌",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "First Cast: Hurl a needle that deals (30/50/70 + (10% Ability Power)) magic damage, Slows by 40/50/60% for 1.5 seconds, and applies A Thousand Cuts to all enemies hit. Gwen can Recast this ability up to 2 additional times within 6 seconds (1s cooldown between casts). Second Cast: Fire three needles to deal (90/150/210 + (30% Ability Power)) magic damage Third Cast: Fire five needles to deal (150/250/350 + (50% Ability Power)) magic damage Subsequent needle hits on the same unit Slow by 15/20/25% instead. Max damage: (270/450/630 + (90% Ability Power)), plus (9% + (5.4% per 100 Ability Power)) max health damage from A Thousand Cuts."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 99,
+      "verdict": "repaired",
+      "reason": "발사count와피해효과를분리해3개발사가명중문턱/피해배수로읽히지않도록했다."
+    },
+    {
+      "index": 100,
+      "verdict": "repaired",
+      "reason": "5개발사도별도정보효과로분리했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "최대 피해 설명의 체력 비례 피해가 참조하는 최대 체력의 소유자 및 정확한 계산 방식이 툴팁에 명시되지 않아 확정된 체력 스탯으로 구조화하지 않았습니다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "note": "두요약은AThousandCuts적용을챔피언으로제한하지만두본문은all enemies hit라고명시하므로본문을우선한다."
+    }
+  ],
+  "validation": {
+    "id": "Gwen.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

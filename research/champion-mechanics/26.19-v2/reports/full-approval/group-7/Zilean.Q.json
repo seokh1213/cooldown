@@ -1,0 +1,362 @@
+{
+  "id": "Zilean.Q",
+  "sourceHash": "e91e170013929041c86bcf70e380afb67cc33e97ecf785e9515385fa1edc07bd",
+  "beforeCandidateHash": "5ec31fbbb771981d163d91a1ba8df5e45609d6cf8575cd7675bb6a6f4f88de18",
+  "candidateHash": "b33918338529842c567abf793a43d8b345ada2a6a6b93672734771caedfa1a32",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; root supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "부착 작은 반경과 폭발 반경을 구분. 3초 폭발 지연, 같은 유닛 두번째 설치의 첫 폭탄 즉시 폭발 및1.1~1.5초 광역기절, 우선부착 대상을 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "cast만으로 임의 대상에 붙는 효과가 아니라 폭탄 작은 반경의 첫 유닛 진입·우선순위에 따른 부착."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "ko:summary"
+      ],
+      "note": "3초는 지속 피해 시간이 아니라 폭탄 폭발 지연. 폭발시75~300+자기AP90% 광역 마법 피해."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "질리언 폭탄이 이미 붙은 같은 유닛에 두번째 설치한 사건에 첫 폭탄 즉시 폭발."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 조기폭발 조건에서만 폭발 범위 적에 기절1.1/1.2/1.3/1.4/1.5초. 일반 지연 폭발에 기절 확대하지 않음."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "summary/rules.0",
+      "issue": "부착 작은 반경과 폭발 반경 혼용,cast 무조건 부착 표현",
+      "correction": "진입/첫유닛/우선대상 부착을 명시",
+      "sourceId": "en:body",
+      "quote": "Zilean tosses a time-delayed bomb that sticks to the first unit which comes within a small area around it."
+    },
+    {
+      "path": "rules.1",
+      "issue": "폭발 지연3초를 damage의duration_seconds에 부착",
+      "correction": "폭발 expiry 지연 조건으로 이동",
+      "sourceId": "en:body",
+      "quote": "After 3 seconds it detonates, dealing (75/115/165/230/300 + (90% Ability Power)) magic damage."
+    },
+    {
+      "path": "rules.2/3",
+      "issue": "임의 표식 존재 및 일반cast에서 조기폭발 허용",
+      "correction": "질리언폭탄 표식+같은 유닛 두번째 설치 조건으로 특정",
+      "sourceId": "en:body",
+      "quote": "Placing a second bomb on a unit that already has one detonates the first bomb immediately"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 726,
+      "verdict": "repaired",
+      "reason": "피해 지속시간으로 혼동되던3초 파라미터를 제거하고 폭발 지연의 시간 조건으로 보존했다."
+    },
+    {
+      "index": 727,
+      "verdict": "repaired",
+      "reason": "일반cast를 other 설치 사건으로 바꾸고 이미 질리언 폭탄이 있는 같은 유닛에 두 번째 폭탄을 설치하는 activation을 명시했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ],
+    "draft": {
+      "summary": "폭탄 주변 작은 반경의 첫 유닛에 부착하며, 챔피언과 이미 폭탄이 있는 유닛을 우선합니다. 폭탄은 3초 지연 뒤 광역 마법 피해를 주고, 같은 유닛에 두 번째 폭탄을 설치하면 첫 폭탄이 즉시 폭발하며 폭발 반경의 적을 기절시킵니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "enter_area",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "폭탄 주변 작은 반경에 들어온 첫 유닛, 챔피언·기존 폭탄 유닛 우선"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "target",
+              "text": "시한 폭탄이 주변 작은 반경에 처음 들어온 유닛에게 부착된다. 폭탄은 챔피언과 이미 폭탄이 있는 유닛에게 우선 부착된다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Zilean tosses a time-delayed bomb that sticks to the first unit which comes within a small area around it."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "The bomb will prioritize attaching to champions and units that already have a bomb."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "expiry",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "시한 폭탄의 폭발 지연이 끝남"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "폭탄이 폭발해 폭발 범위 안의 적에게 마법 피해를 준다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After 3 seconds it detonates, dealing (75/115/165/230/300 + (90% Ability Power)) magic damage."
+            },
+            {
+              "sourceId": "ko:summary",
+              "quote": "폭탄은 3초 뒤 폭발하여 적에게만 광역 피해를 입힙니다."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "이미 질리언 Q 시한 폭탄이 붙어 있음"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "같은 유닛에 두 번째 폭탄을 설치함"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "두 번째 폭탄을 이미 폭탄이 있는 유닛에게 설치하면 첫 번째 폭탄이 즉시 폭발해 폭발 범위 안의 적에게 마법 피해를 준다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Placing a second bomb on a unit that already has one detonates the first bomb immediately"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "After 3 seconds it detonates, dealing (75/115/165/230/300 + (90% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "mark",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "이미 질리언 Q 시한 폭탄이 붙어 있음"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "같은 유닛에 두 번째 폭탄을 설치함"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "첫 번째 폭탄이 즉시 폭발할 때 폭발 범위 안의 적을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Placing a second bomb on a unit that already has one detonates the first bomb immediately and Stuns enemies in the blast for 1.1/1.2/1.3/1.4/1.5 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  }
+}

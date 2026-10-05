@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "MasterYi.E",
+      "sourceHash": "ca8f0deada9f87920ddb523ffebb5948d4aa46703dbdba9c5b38bfe460bfe052",
+      "candidateHash": "3e41b6fdccb6aeb73a719f9aceb0971ce88a99c4fbcebd7ccdb0567e217352ac"
+    },
+    {
+      "id": "MasterYi.P",
+      "sourceHash": "48a76076e62103f9c5bb96c68f2248bf4b40146bf63a10c912a6484c623df88a",
+      "candidateHash": "02ccf9153e2d613f1dff1d3eee406ebc3b49b80734c5be4cc828d9df78c3c607"
+    },
+    {
+      "id": "MasterYi.Q",
+      "sourceHash": "5ea97f13c130f6536bfe4cbcb3baf152ae2cae644400e6bf3c8809ea5cabadd6",
+      "candidateHash": "883c29485b33dd574ae42d17b5ea7539d810b730ae746e76f290dbd1a4c3b0d7"
+    },
+    {
+      "id": "MasterYi.R",
+      "sourceHash": "995a0d30eebe2a9ce832fff9db186de0f272aa9582464e412dd835fde60890b8",
+      "candidateHash": "12de5b3ae8dbb065f1b4e19e49ddd69588f5af509afee84fae72f15f6d4844ce"
+    },
+    {
+      "id": "MasterYi.W",
+      "sourceHash": "b57aa752a075db1b6744a2a409d2716ff0fe1a5668f671b661b80f2502eea1ce",
+      "candidateHash": "7067bfdb88e344505a189ef6dceb2c7a663c2136a2b7d5d3b4007e9680498ef4"
+    }
+  ],
+  "findings": [
+    {
+      "id": "MasterYi.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "dealing (20/40/60/80/100 + (70% Attack Damage)) physical damage to all enemies hit after 4 hits.",
+      "issue": "조건이 시전자 전체의 적중 횟수를 `gt 4`로 판정합니다. 원문은 4회 적중 후의 피해를 설명하지만, 이 구조는 횟수 주체를 시전자로 지정하고 4회 초과를 조건으로 둡니다.",
+      "correction": "횟수 주체와 `after 4 hits`의 경계가 확정되지 않으므로 구조화 조건을 제거하고 해당 문구를 텍스트 및 gap으로 보존하세요."
+    },
+    {
+      "id": "MasterYi.Q",
+      "path": "rules.6.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Applies On-Hit effects at 75% damage. Subsequent hits are reduced to 25% of this.",
+      "issue": "후속 적중의 적중 시 효과에 25%를 곱하도록 읽힙니다. 원문은 후속 적중이 앞서 말한 75% 피해 기준의 25%로 감소한다고 하므로, 별도 25% 승수는 기준 효과와 결합되지 않아 의미가 불명확합니다.",
+      "correction": "후속 적중의 적중 시 효과를 기준 75%의 25%로 표현하거나, 결합 계산을 확정할 수 없다면 수치 관계를 텍스트와 gap으로 보존하세요."
+    },
+    {
+      "id": "MasterYi.R",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "gaining 40/50/60% Move Speed, 25/45/65% Attack Speed, and immunity to Slows for 7 seconds.",
+      "issue": "이동 속도 수치의 첫 두 값이 원문 그대로는 `%` 단위가 없는데, 구조화된 수치는 세 단계 모두 퍼센트로 표시됩니다.",
+      "correction": "원문 표기대로 40, 50, 60%를 보존하고 첫 두 값의 단위가 불명확하다는 gap을 남기세요."
+    },
+    {
+      "id": "MasterYi.W",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "While channeling and for 0.5 seconds afterwards, he takes 70/70/70/70/70% reduced damage, decreased to 45/47.5/50/52.5/55% after the first 0.5 seconds.",
+      "issue": "첫 0.5초와 이후 구간이 `duration_seconds`와 두 수치 묶음으로만 표현되어 있어, 감소율이 각 구간에 적용된다는 관계가 구조화되어 있지 않습니다.",
+      "correction": "두 감소율을 각각 해당 시간 구간에 연결하거나, 구간별 적용 관계를 효과 텍스트와 gap으로 명시하세요."
+    },
+    {
+      "id": "MasterYi.W",
+      "path": "rules.4.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Damage reduction is halved against turrets.",
+      "issue": "절반이라는 관계의 수치로 `0.5`를 참조하지만, 영어 본문에는 이 수치가 없고 NumberRef의 출처가 본문 밖입니다. 따라서 참조는 원문의 근거가 되지 않습니다.",
+      "correction": "`0.5` NumberRef를 제거하고 절반 적용을 텍스트로 보존하세요. 별도 수치 근거가 없다면 수치 참조 불가 gap을 유지하세요."
+    }
+  ],
+  "notes": []
+}

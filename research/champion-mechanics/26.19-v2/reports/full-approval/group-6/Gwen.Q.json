@@ -1,0 +1,245 @@
+{
+  "id": "Gwen.Q",
+  "sourceHash": "eb78e1703259c52105904018aad257f3968450470e4b1374d2615522f7248d24",
+  "beforeCandidateHash": "a382b31da6e1d5d7beebbf401e71485710e3ac1246e3d0d0bfe6bb909e1b2f8c",
+  "candidateHash": "9a7d11812e961bf76cbfda023da84e38d3f485fbc0611a083142dce2d8d8cd13",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 1,
+  "summaryCheck": "공격중첩1·상한4·6초,시전중첩소모+일반/마지막가위질구분,중앙50%고정전환과패시브적용,미니언80%와HP20%미만1000%추가,최대총피해주석을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "적평타적중1중첩·최대4·6초.보유량과가위질횟수분리."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전첫가위질+소모중첩당추가+마지막으로최대6회가위질."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마지막이외가위질10/14/18/22/26+AP5%마법.마지막피해식과동시에더하지않는다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "각중앙명중에만해당피해50%를마법대신고정으로전환하고AThousandCuts패시브적용.패시브는mark가아니다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언HP20%이상이면피해80%.고정전환의구성을모두마법으로덮지않는다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "HP20%미만미니언은감소대신기본피해1000%추가.순수고정amount1000%가아니며감소규칙대체."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최대총피해110/155/200/245/290+AP60%와패시브HP6%+AP100당3.6%주석.매적중마다추가피해로실행하지않는다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "마지막가위질60/85/110/135/160+AP35%마법.일반가위질식대체."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0",
+      "issue": "적평타적중조건을gap으로만보존",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.7",
+      "issue": "첫/일반과마지막피해를매적중하나식으로합침",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.3.conditions.0",
+      "issue": "중앙조건누락을스키마불가능으로오기",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.3.effects.0.flags",
+      "issue": "고정전환50%를원피해에더하는것으로오인방지",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.3.effects.1.kind",
+      "issue": "패시브피해적용을표식부여로분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.4.conditions.1",
+      "issue": "저HP미니언대체규칙과중복",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.4.effects.0.damageType",
+      "issue": "전체피해배수에마법단일분류추정",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.5.effects.0.parameters.0.role",
+      "issue": "추가1000%를고정amount로분류",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.6.effects.0.kind",
+      "issue": "최대총피해주석을각적중별추가damage로기록",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "중앙조건을other로표현가능하므로허위gap제거",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "gaps.0",
+      "issue": "적공격조건을other로표현가능하므로허위gap제거",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.4.effects.0.kind",
+      "issue": "피해유형을확정하지않는배수규칙은other로보존",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.5.effects.0.kind",
+      "issue": "피해구성에적용되는추가배수판정은other로보존",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    },
+    {
+      "path": "rules.4.evidence.1",
+      "issue": "HP20%조건의정확한인용범위추가",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Gwen gains 1 stack when she hits an enemy with an attack (max 4, lasts 6 seconds). Active: Consumes stacks. Gwen snips once for (10/14/18/22/26 + (5% Ability Power)) magic damage, snips again for each ammo consumed, and then snips a final time for (60/85/110/135/160 + (35% Ability Power)) magic damage. The center of each strikes converts 50% of the damage into true damage instead and applies A Thousand Cuts to enemies hit. Deals 80% damage to minions. Minions below 20% health take 1000% bonus damage instead of reduced damage. Max damage: (110/155/200/245/290 + (60% Ability Power)), plus (6% + (3.6% per 100 Ability Power)) percent health from A Thousand Cuts."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 98,
+      "verdict": "repaired",
+      "reason": "1000%는기본피해추가배수다.damage_multiplier와명확한추가피해text로수정하며80%감소규칙대체를보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "최대 피해 설명의 체력 비례 피해가 참조하는 체력의 종류와 소유자, 정확한 계산 방식이 툴팁에 명시되지 않아 확정된 체력 스탯으로 구조화하지 않았습니다."
+    }
+  ],
+  "validation": {
+    "id": "Gwen.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

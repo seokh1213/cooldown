@@ -1,0 +1,1352 @@
+{
+  "drafts": {
+    "E": {
+      "summary": "유미가 자신에게 보호막과 공격 속도를 부여합니다. 보호막이 유지되는 동안 보호막 대상의 이동 속도가 증가합니다. 밀착 상태에서는 효과 대상이 아군으로 바뀌고, 아군은 마나를 회복하며 회복량은 잃은 마나에 따라 증가합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "neq",
+              "value": {
+                "kind": "text",
+                "value": "아군에게 밀착"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "caster",
+              "text": "유미는 자신에게 보호막을 부여합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "유미는 공격 속도를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "보호막이 유지되는 동안 보호막 대상의 이동 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yuumi shields herself, blocking (65/90/115/140/165 + (40% Ability Power)) damage and gains (25/27.5/30/32.5/35 + (8% Ability Power))Attack Speed for 3 seconds. While the shield persists, the target also gains 20% Move Speed."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "아군에게 밀착"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "shield",
+              "subject": "ally",
+              "text": "밀착 상태에서는 보호막 대상이 아군으로 바뀝니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "ally",
+              "text": "밀착한 아군은 공격 속도를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "ally",
+              "text": "보호막이 유지되는 동안 밀착한 아군의 이동 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "resource_change",
+              "subject": "ally",
+              "text": "밀착한 아군은 마나를 회복하며, 회복량은 대상의 잃은 마나에 따라 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n19"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "If Yuumi is Attached, this Ability affects her ally instead and also restores 20/24/28/32/36 Mana to them, increased by up to 100% based on the target's missing Mana."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Yuumi shields herself, blocking (65/90/115/140/165 + (40% Ability Power)) damage and gains (25/27.5/30/32.5/35 + (8% Ability Power))Attack Speed for 3 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "While the shield persists, the target also gains 20% Move Speed."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "원문에서 이동 속도 증가 대상은 ‘the target’이며, 밀착 상태에서 보호막 효과가 아군에게 적용될 때 같은 아군을 가리키는 것으로 해석했다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "While the shield persists, the target also gains 20% Move Speed. If Yuumi is Attached, this Ability affects her ally instead"
+            }
+          ]
+        }
+      ]
+    },
+    "P": {
+      "summary": "유미의 기본 공격이나 스킬이 챔피언에게 적중하면 유미가 회복합니다. 적중 후 정해진 시간 안에 아군에게 밀착하면 그 아군도 같은 회복 효과를 받으며, 이미 밀착 중이면 회복이 자동으로 발동합니다. 밀착 중 아군이 챔피언이나 미니언을 처치하면 우정을 쌓고, 우정이 가장 높은 아군은 단짝이 되어 밀착 중 유미의 스킬에 추가 효과를 줍니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "caster",
+              "text": "유미의 기본 공격 또는 스킬이 챔피언에게 적중하면 유미가 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "이 회복 효과에는 재사용 대기시간이 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When Yuumi's Attacks and Abilities strike champions, she heals herself for ((20 ~ 110) + (30% Ability Power)) health. This effect has a (20 ~ 8) second Cooldown."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "lte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n3"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "ally",
+              "text": "적중 후 조건 시간 안에 밀착하는 아군은 유미와 같은 회복 효과를 받습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "When Yuumi's Attacks and Abilities strike champions, she heals herself for ((20 ~ 110) + (30% Ability Power)) health. If Yuumi Attaches to an ally within 4 seconds, they are healed as well."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "already Attached to an ally"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "ally",
+              "text": "유미가 이미 아군에게 밀착 중이면 해당 아군도 회복 효과를 받습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n2"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The heal will automatically trigger if Yuumi is already Attached to an ally."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "When Yuumi's Attacks and Abilities strike champions, she heals herself for ((20 ~ 110) + (30% Ability Power)) health."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Attached"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "밀착한 아군이 챔피언 또는 미니언을 처치하면 유미가 우정을 쌓습니다. 우정이 가장 높은 아군은 단짝이 되며, 그 아군에게 밀착해 있는 동안 유미의 스킬에 추가 효과를 줍니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "While Attached, Yuumi gains Friendship with her ally whenever they kill a champion or minion. The ally with the most Friendship becomes her Best Friend and grants Yuumi bonus effects to her Abilities while she is Attached to them."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "유미가 미사일을 발사해 처음 적중한 적에게 마법 피해와 둔화를 줍니다. 밀착 상태에서 시전하면 잠시 조종할 수 있고, 가속된 미사일은 기본 효과를 대체해 더 큰 피해와 강화된 둔화를 줍니다. 단짝에게 밀착 중이면 둔화가 항상 강화되며, 적 챔피언 적중 시 단짝에게 일정 시간 적중 시 추가 마법 피해를 부여합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "미사일은 처음 적중한 적에게 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "처음 적중한 적을 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yuumi summons an errant missile that deals (60/95/130/165/200/235 + (20% Ability Power)) magic damage to the first enemy and Slows the target for 20%."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "time",
+              "operator": "gte",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:summary:n0"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "가속된 미사일은 기본 피해를 대체해 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "가속된 미사일은 대상을 강화된 둔화 효과로 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18",
+                    "en:body:n19",
+                    "en:body:n20"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The accelerated missile deals (80/135/190/245/300/355 + (30% Ability Power)) magic damage and Slows the target for 50/53/56/59/62/65% for 2 seconds, instead."
+            },
+            {
+              "sourceId": "en:summary",
+              "quote": "It deals bonus damage and an enchanced slow if it takes at least 1.35 seconds to get to its target."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "단짝에게 밀착 중"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "단짝에게 밀착 중이면 둔화 효과가 항상 강화됩니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Best Friend Bonus: Prowling Projectile's Slow will always be enhanced"
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "단짝에게 밀착 중"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "ally",
+              "text": "적 챔피언을 맞히면 단짝에게 5초 동안 적중 시 추가 마법 피해 효과를 부여합니다. 피해량은 단짝의 치명타 확률에 따라 증가할 수 있습니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n22",
+                    "en:body:n23",
+                    "en:body:n24",
+                    "en:body:n25",
+                    "en:body:n26",
+                    "en:body:n27"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n28"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n29"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n30"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Best Friend Bonus: Prowling Projectile's Slow will always be enhanced and hitting an enemy champion also grants them (10/12/14/16/18/20 + (5% Ability Power)) magic damage On-Hit for 5 seconds. The bonus On-Hit damage can be increased by 75% based her ally's Critical Strike Chance."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "요약은 미사일이 대상에 도달하는 데 최소 시간이 걸리면 강화된다고 설명하지만, 본문은 조종 후 가속을 설명할 뿐 전환 시점을 수치로 지정하지 않습니다. 시간 조건의 정확한 판정을 확정할 수 없습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "It deals bonus damage and an enchanced slow if it takes at least 1.35 seconds to get to its target."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "If cast while Attached, Yuumi can control the missile using her mouse for a short period before it accelerates in a straight line."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "유미가 정신을 집중해 양 팀에 영향을 주는 파동을 발사합니다. 적은 피해와 누적 강화되는 둔화를 받고, 아군 챔피언은 파동마다 회복하며 초과 회복량은 보호막으로 전환됩니다. 단짝 회복량이 증가합니다. 처음 밀착 상태에서 시전하면 파동을 조종할 수 있고, 정신 집중 중 이동 및 사르르탄 시전이 가능합니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "other",
+              "subject": "caster",
+              "text": "유미가 정신을 집중해 일정 시간 동안 파동을 발사합니다. 처음 밀착 상태에서 시전하면 파동을 마우스로 조종할 수 있습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Yuumi channels for 3.5 seconds, launching 5 magical waves affecting both teams. If initially cast while Attached, Yuumi can steer the waves to follow her mouse."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "파동에 맞은 적은 마법 피해를 입습니다. 첫 번째 이후 미사일은 별도의 마법 피해를 입히며, 단일 적에게 입힐 수 있는 최대 피해량은 상한으로 적용됩니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n22"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n23",
+                    "en:body:n24",
+                    "en:body:n25"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n26"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies struck are dealt (75/125/175 + (25% Ability Power)) magic damage and Slowed by 10% for 1.25 seconds, increased by 10% per wave hit."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Missiles after the first deal (18.75/31.25/43.75 + (6.25% Ability Power)) magic damage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Max possible damage to a single enemy is (150/250/350 + (50% Ability Power)) magic damage."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "W": {
+      "summary": "단짝에게 밀착하면 유미의 회복 및 보호막 효과가 증가하고 단짝은 적중 시 체력을 회복합니다. 사용하면 아군 챔피언에게 돌진해 밀착하고, 함께 이동하며 포탑을 제외한 대상 지정 불가 상태가 됩니다. 유미에게 이동 불가 효과가 적용되면 재사용 대기시간이 생깁니다. 밀착 중에는 아군을 바꾸거나 해제할 수 있고, 밀착한 아군이 순간이동을 사용하면 밀착이 해제됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Best Friend에게 밀착"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "단짝에게 밀착한 동안 유미의 체력 회복 및 보호막 효과가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: While on her Best Friend, Yuumi gains an additional 4/5/6/7/8% Heal & Shield Power"
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: While on her Best Friend, Yuumi gains an additional 4/5/6/7/8% Heal & Shield Power and her ally also restores (3/4/5/6/7 + (3% Ability Power)) health On-Hit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "ally"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Best Friend에게 밀착"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "heal",
+              "subject": "ally",
+              "text": "단짝은 적중 시 체력을 회복합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n10"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "her ally also restores (3/4/5/6/7 + (3% Ability Power)) health On-Hit."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: While on her Best Friend, Yuumi gains an additional 4/5/6/7/8% Heal & Shield Power and her ally also restores (3/4/5/6/7 + (3% Ability Power)) health On-Hit."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "유미가 아군 챔피언에게 돌진해 밀착합니다. 밀착 중에는 아군의 이동을 따라가며 포탑을 제외한 대상 지정 불가 상태가 됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Active: Yuumi dashes to an ally champion and Attaches to them. While Yuumi is Attached, she follows her partner's movement and is Untargetable except from towers."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "immobilized"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "유미에게 이동 불가 효과가 적용되면 이 스킬에 재사용 대기시간이 적용됩니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Immobilizing effects on Yuumi place this Ability on a 5 second Cooldown."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "other",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Attached"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "transform",
+              "subject": "caster",
+              "text": "이미 밀착 중이면 이 스킬을 시전해 친구를 바꾸거나 밀착을 해제할 수 있습니다. 밀착한 아군이 순간이동을 사용하면 유미는 밀착을 해제합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "cooldown_seconds",
+                  "numberRefs": [
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "This Ability has a (10 ~ 0) second Cooldown, but Yuumi can cast it anytime she is already Attached to switch between friends or Unattach. Yuumi will Unattach if her ally uses Summoner Teleport."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    }
+  },
+  "failures": [
+    {
+      "id": "Yuumi.P",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.0.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n0"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n1"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n2"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n4"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.0",
+          "detail": "Number reference lacks quoted evidence: en:body:n5"
+        }
+      ]
+    },
+    {
+      "id": "Yuumi.W",
+      "errors": [
+        {
+          "code": "evidence",
+          "path": "rules.4.evidence.0",
+          "detail": "Quote is not an exact source substring"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.4",
+          "detail": "Number reference lacks quoted evidence: en:body:n12"
+        },
+        {
+          "code": "number_evidence",
+          "path": "rules.4",
+          "detail": "Number reference lacks quoted evidence: en:body:n13"
+        }
+      ]
+    }
+  ]
+}

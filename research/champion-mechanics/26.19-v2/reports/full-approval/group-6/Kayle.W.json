@@ -1,0 +1,87 @@
+{
+  "id": "Kayle.W",
+  "sourceHash": "cb1478eec450d5fdf7d7c61de55f1f2ce6df521f0f444f0db36e631674801036",
+  "beforeCandidateHash": "fc5cebd4a3f64ea1a7a93e4def2efb901b040a91db60ad3dd8f06856fc8d815f",
+  "candidateHash": "19315fc82f42086bfb20172fd10b9dbcb910d4c0953a2dbdb6ddd80748ba37b6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 3,
+  "summaryCheck": "케일 자신과 아군 챔피언의 치유·이동 속도 및 무대상 자동 치유를 대조했다. 본문은 가장 피해가 큰 아군이며 요약의 가장 가까운 아군과 다르다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "아군 챔피언과 케일 자신 각각 55/80/105/130/155 + 주문력 25% 치유다. caster 효과가 ally 표기에 가려지지 않도록 분리했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "양 수혜자의 이동 속도 (24/28/32/36/40% + 주문력 100당 8%) 2초를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "무대상 시 자동 선택은 범위 내 최대 체력 대비 가장 많이 다친 아군의 치유 대상을 고르는 정보다. 추가 heal 이벤트로 중복하지 않았다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1",
+      "issue": "케일 자신의 치유가 ally 효과 하나에만 표현되어 caster 수혜자를 보충했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Kayle infuses herself and an allied champion with light, restoring (55/80/105/130/155 + (25% Ability Power)) Health and granting (24/28/32/36/40% + (8% per 100 Ability Power)) Move Speed for 2 seconds. If cast without a target, this Ability will heal the most wounded ally in range."
+    },
+    {
+      "path": "rules.1.effects.0.text",
+      "issue": "이동 속도의 퍼센트 배열과 100당 분모를 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Kayle infuses herself and an allied champion with light, restoring (55/80/105/130/155 + (25% Ability Power)) Health and granting (24/28/32/36/40% + (8% per 100 Ability Power)) Move Speed for 2 seconds. If cast without a target, this Ability will heal the most wounded ally in range."
+    },
+    {
+      "path": "rules.2.effects.0.kind",
+      "issue": "무대상 문장은 별도 추가 치유가 아니라 기존 치유의 자동 대상 선택이다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Kayle infuses herself and an allied champion with light, restoring (55/80/105/130/155 + (25% Ability Power)) Health and granting (24/28/32/36/40% + (8% per 100 Ability Power)) Move Speed for 2 seconds. If cast without a target, this Ability will heal the most wounded ally in range."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "note": "대상 미지정 시 자동 선택 규칙은 치유 대상으로만 명시되어 있어 이동 속도 증가에도 적용되는지는 확정할 수 없다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "note": "양 언어 요약은 가장 가까운 아군이라고 하지만 본문은 무대상 시 가장 많이 다친 아군이라고 명시한다. 자동 선택 규칙은 구체적인 본문을 보존한다."
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "note": "24/28/32/36/40% 배열 앞 항목의 lexical percent=false를 절대 이동 속도로 해석하지 않는다. 효과 문장의 퍼센트와 주문력 100당 8%를 보존하며 lexical 숫자표만으로 단위를 실행하지 말 것."
+    }
+  ],
+  "validation": {
+    "id": "Kayle.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

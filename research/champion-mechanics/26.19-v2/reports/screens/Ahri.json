@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Ahri.E",
+      "sourceHash": "97e03c6f8e61b6c21606c30e5f5636c21d22e47f3833d34de14ede7c46eae67a",
+      "candidateHash": "605db11fc082bcf1645162d71938108bbe95223b9d49ce7a00407b50b9eacbed"
+    },
+    {
+      "id": "Ahri.Q",
+      "sourceHash": "f59c556125e7cad6c30aa624affec969f3c69c736d60a1a44aa8ae42cdceedbe",
+      "candidateHash": "59c773528434927cfa98f3a37a531fa86bb3886fe2946f485f5cbcc8d5e702f1"
+    },
+    {
+      "id": "Ahri.P",
+      "sourceHash": "a3a4613c60db7580d9145ec0e1303d494de83b5760df84a976531b6540649755",
+      "candidateHash": "59f7215549de18e81891368d8de91b9ce8620596c44a190f0cc4ae7c9ba82d3d"
+    },
+    {
+      "id": "Ahri.R",
+      "sourceHash": "b38f908a3f0d4a72d5c65e54dcfe2477f7a86ef631e76e3f843a08e7324c67f0",
+      "candidateHash": "19244a835d313898d03f44de6557249125c81cb75c336c04cf3c709b3daf882b"
+    },
+    {
+      "id": "Ahri.W",
+      "sourceHash": "c9dfe43b854a0a68008c733096c6cef8d3b2cc838ac6f87951ee830223721ee6",
+      "candidateHash": "17b1125da345f391cfe12a51ec353637fc01e027d7a652f29140aa92701955f1"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Ahri.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Killing minions or monsters grants Ahri an Essence Fragment.",
+      "issue": "조건이 `target_type=any`라 모든 대상 처치가 정기 조각 획득 조건인 것처럼 범위를 넓힙니다. 원문은 미니언 또는 몬스터 처치로 한정합니다.",
+      "correction": "`any` 조건을 제거하고 미니언 또는 몬스터 처치라는 원문 범위를 텍스트로 보존하세요."
+    },
+    {
+      "id": "Ahri.W",
+      "path": "rules.0.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Ahri releases 3 fox-fires that seek nearby enemies",
+      "issue": "여우불을 방출하는 주체가 명시되어 있는데 효과의 주체가 `unknown`으로 되어 있습니다.",
+      "correction": "효과 주체를 `caster`로 지정하세요."
+    },
+    {
+      "id": "Ahri.W",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "reduced to (16/24/32/40/48 + (16% Ability Power)) damage beyond the first.",
+      "issue": "조건의 `hit_order`는 첫 번째 적중을 기준으로 읽힐 수 있지만, 원문은 여우불 발사체 순서에서 첫 번째 이후의 피해 감소를 말합니다. 첫 발사체가 맞은 대상만 고피해를 받는다는 뜻은 아닙니다.",
+      "correction": "첫 번째 발사체와 이후 발사체를 구분하는 의미로 조건을 표현하고, 적중 대상 순서 제한으로 해석되지 않도록 하세요."
+    }
+  ],
+  "notes": []
+}

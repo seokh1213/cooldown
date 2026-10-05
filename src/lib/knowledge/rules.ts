@@ -246,6 +246,6 @@ export function buildRuleAnswer(rules: RuleNotes[], patch: string): string | und
   return [
     ...answerFirst,
     ...blocks,
-    `_v${patch} · 위키 판정 규칙 (CC BY-SA)_`,
+    `_v${patch}_`,
   ].join("\n\n");
 }

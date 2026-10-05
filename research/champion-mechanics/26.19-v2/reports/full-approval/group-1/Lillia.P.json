@@ -1,0 +1,70 @@
+{
+  "id": "Lillia.P",
+  "sourceHash": "766afaaff7f1114b772b733037b3e38d360a58af2a9259184e1c44fcad65c626",
+  "beforeCandidateHash": "423773d7f9a5930bc014aee6397fd3e41e19bab1a5bb79bec7c6f51828602653",
+  "candidateHash": "83ed991457590e032a205573b874a447ce85a92d71b657c4c610c62ec0be216e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "꿈가루3초 최대 체력 비율 마법 피해 및 주문력100당1.25% 증가, 대형 정글 몬스터39+AP15% 지속 회복과 챔피언6~90+AP30% 회복을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.other eq 릴리아의 스킬에 적중한 적. target mark: 릴리아의 스킬이 꿈가루를 적용한다. [] / target damage magic: 꿈가루는3초에 걸쳐 최대 체력의 (5% + 주문력100당1.25%) 마법 피해를 입힌다. 최대 체력의 주인은 공급 원문이 명시하지 않았다. [other n0=5%/n1=1.25% formula_components; ratio_input n2=100 formula_components caster.abilityPower; duration_seconds n3=3 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq monster; target.other eq large jungle monster; target.other eq 릴리아의 스킬로 꿈가루가 적용된 대상. caster heal: 대형 정글 몬스터에게 꿈가루가 적용되면 릴리아가 지속시간 동안 체력을 회복한다. [amount n4=39 scalar; stat_coefficient n5=15% formula_components caster.abilityPower; duration_seconds n3=3 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; target.other eq 릴리아의 스킬로 꿈가루가 적용된 대상. caster heal: 챔피언에게 꿈가루가 적용되면 릴리아가 체력을 회복한다. [amount n6=6/n7=90 level_range; stat_coefficient n8=30% formula_components caster.abilityPower]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.*.trigger;rules.0.effects.1;rules.1,2.parameters;gaps",
+      "issue": "스킬 적중 행위자 target, 비율 입력/계수 혼동, 챔피언 회복 범위의 최솟값·최댓값 의미 오인, 복합 체력 식 한계 누락",
+      "correction": "릴리아 스킬 사건과 AP계수·100단위 비율을 바로잡고 챔피언 기본 회복량을 레벨 범위로 보존했다. 최대 체력 주인과 공급 요약 대상 범위 차이, 비선형 식 한계를 기록했다.",
+      "sourceId": "en:body",
+      "quote": "Lillia's Abilities apply Dream Dust, dealing (5% + (1.25% per 100 Ability Power)) max Health magic damage over 3 seconds."
+    },
+    {
+      "path": "rules.*.conditions",
+      "issue": "꿈가루효과의적대상과회복발동의꿈가루적용조건이명시되지않음",
+      "correction": "한글본문의적에게꿈가루적용과해당꿈가루대상회복을조건으로보존했다.",
+      "sourceId": "ko:body",
+      "quote": "릴리아의 스킬이 적에게 꿈가루를 묻혀 3초 동안 최대 체력의 (5% + (주문력 100당 1.25%))에 해당하는 마법 피해를 입힙니다."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "5%+주문력100당1.25%는 비율을 더한 뒤 최대 체력에 곱하는 식이며 구성요소를 선형 피해 합으로 실행하지 않는다. 최대 체력의 소유자는 명시되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "source_conflict",
+      "detail": "요약은 챔피언 또는 몬스터 적중을 명시하지만 본문은 스킬의 적에게 꿈가루 적용을 일반적으로 서술한다. 본문 표현을 유지하며 그 밖의 대상에 대한 배제 조건은 확정하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

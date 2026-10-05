@@ -1,0 +1,229 @@
+{
+  "summary": "올가미가 처음 맞힌 적 챔피언을 기절시키고 모습을 드러내며 마법 피해를 입힌다. 올가미가 사거리의 일정 비율 이상 이동하면 기절과 드러내기 지속 시간이 늘어난다. 얼음 폭풍은 주변 적을 둔화시키며, 스킬에 영향을 받은 모든 적은 마법 피해를 입는다. 기절한 적은 즉시, 폭풍 안의 적은 폭풍이 끝난 뒤 피해를 받으며 폭풍 안의 적은 추가로 둔화된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "lt",
+          "value": {
+            "kind": "text",
+            "value": "25% of bola range"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "처음 맞힌 적 챔피언을 기절시킨다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "target",
+          "text": "처음 맞힌 적 챔피언의 모습을 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "처음 맞힌 적 챔피언에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sejuani throws her True Ice bola, Stunning and revealing the first enemy champion hit for 1 second and dealing (125/150/175 + (40% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If the bola travels at least 25% of its range, it Stuns and reveals for 1.5 seconds instead."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "gte",
+          "value": {
+            "kind": "text",
+            "value": "25% of bola range"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "처음 맞힌 적 챔피언을 기절시킨다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "target",
+          "text": "처음 맞힌 적 챔피언의 모습을 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the bola travels at least 25% of its range, it Stuns and reveals for 1.5 seconds instead."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Sejuani throws her True Ice bola, Stunning and revealing the first enemy champion hit for 1 second and dealing (125/150/175 + (40% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "도달한 사거리 비율을 distance 필드로 직접 표현할 수 없어 문맥 조건으로 보존했다. 장거리 효과는 처음 맞힌 적 챔피언에 적용된다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the bola travels at least 25% of its range, it Stuns and reveals for 1.5 seconds instead."
+        }
+      ]
+    }
+  ]
+}

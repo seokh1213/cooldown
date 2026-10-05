@@ -1,0 +1,223 @@
+{
+  "summary": "스킬로 적 챔피언을 맞히면 해당 챔피언 주위에 고리가 생기고, 아칼리는 고리 쪽으로 이동할 때 빨라집니다. 고리를 넘으면 다음 기본 공격의 사거리가 두 배가 되고 추가 마법 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "적중한 적 챔피언 주위에 일정 시간 동안 고리를 생성한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Akali hits an enemy champion with an Ability, she reveals a ring around them for 4 seconds and gains (30% ~ 60%) Move Speed towards the ring."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "자신이 만든고리의 경계를 넘어 바깥으로 나갈 때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_followup",
+          "subject": "caster",
+          "text": "고리의경계를밖으로넘으면다음기본공격의사거리가두배가되고추가마법피해가준비됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Crossing the ring causes Akali's next Attack to have doubled range and deal an additional ((35 ~ 182) + (60% bonus Attack Damage) + (55% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Exiting that ring empowers Akali's next Attack with bonus range and damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "자신이 생성한4초고리가 있는 동안 그 고리를 향해 이동할 때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "고리를 향해 이동하는 동안 이동 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Akali hits an enemy champion with an Ability, she reveals a ring around them for 4 seconds and gains (30% ~ 60%) Move Speed towards the ring."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "고리의경계를밖으로넘은뒤다음기본공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "그 고리에서 바깥으로 나온 뒤 다음기본공격은35~182+추가공격력60%+주문력55%의추가마법피해를입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Crossing the ring causes Akali's next Attack to have doubled range and deal an additional ((35 ~ 182) + (60% bonus Attack Damage) + (55% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Exiting that ring empowers Akali's next Attack with bonus range and damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "기본공격사거리2배는문자doubled로만제공되어숫자표에2참조가없고스키마에공격사거리스탯이없다. 정확한두배의미는텍스트에보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "next Attack to have doubled range"
+        }
+      ]
+    }
+  ]
+}

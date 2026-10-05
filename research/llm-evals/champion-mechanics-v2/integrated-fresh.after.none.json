@@ -1,0 +1,1137 @@
+{
+  "summary": {
+    "stories": 9,
+    "turns": 17,
+    "reviewedSlots": 865,
+    "judge": "none",
+    "questionHash": "41a37a86ef01e91c2a60347eab9ad264a74c7fcff25bcf84e775f81f24257618",
+    "baselinePass": 1,
+    "variantPass": 17,
+    "improved": 16,
+    "regressed": 0,
+    "replaced": 16,
+    "codeHashes": {
+      "scripts/llm/champion-mechanics/answerReviewed.ts": "cd12a29fc40b2bfce48428312c3b96812c7134f51792f191634e09441474935d",
+      "scripts/llm/champion-mechanics/retrieval.ts": "9fa96c53e31c9c3ae2be279c94339142b13a6afb328d5df5fbb71d9c4567c531",
+      "scripts/llm/champion-mechanics/ruleAnswer.ts": "2af7bc45b5eee388fcf97fe40682ab5b45379e4d383e05669d507df53504335f",
+      "scripts/llm/champion-mechanics/questionDetails.ts": "d43ce7cebbeb04e846a0f864fcb82f5ee6f5634f30b048c0059da84621de4252"
+    },
+    "scope": "Held-out variations frozen before answer runs; adapter, approved data and rubric unchanged throughout this evaluation. Actual app entrypoint with dialogue storage/restore and separate research topic memory; shared production dialogue path; no generation."
+  },
+  "rows": [
+    {
+      "id": "pyke-new-quantity",
+      "area": "fresh",
+      "turn": 1,
+      "question": "파이크 체력 126짜리 템 하나면?",
+      "expected": {
+        "q": "파이크 체력 126짜리 템 하나면?",
+        "require": [
+          "공격력 9"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "cardType": "spell",
+        "pass": false,
+        "failures": [
+          "missing:공격력 9"
+        ],
+        "ms": 27.54
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 126이면 추가 공격력 9입니다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Pyke",
+          "championName": "파이크",
+          "spell": {
+            "slot": "P",
+            "name": "가라앉은 자들의 축복",
+            "summary": "파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.",
+            "text": "파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 보이지 않는 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다. 또한 파이크가 최대 체력을 모두 공격력으로 전환합니다. 전환 비율은 체력 14당 공격력 1입니다.",
+            "damageTypes": [],
+            "effects": [
+              "회복"
+            ],
+            "ratios": {
+              "추가 공격력": 800
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 126이면 추가 공격력 9입니다.\n추가 체력 14당 추가 공격력 1입니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 31.03
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-new-quantity",
+      "area": "fresh",
+      "turn": 2,
+      "question": "그럼 같은 템 7개면?",
+      "expected": {
+        "q": "그럼 같은 템 7개면?",
+        "require": [
+          "공격력 63"
+        ]
+      },
+      "baseline": {
+        "text": "**플레이할 때**\n패시브는 적 챔피언에게 받은 피해의 일부를 비축했다가 적에게 보이지 않게 되는 순간 되돌려줍니다. 파이크는 어떤 경로로 얻든 추가 최대 체력을 전부 공격력으로 바꿉니다.\n\n**상대할 때**\n파이크의 Q 뼈 작살, E 망자의 물살과 R 깊은 바다의 처형 피해는 물리라 이 스킬 피해에 대비하려면 방어력을 챙깁니다. 파이크가 근처에서 W로 잠수해 있으면 발밑에 상어 그림자가 맴돕니다.",
+        "cardType": "champion",
+        "pass": false,
+        "failures": [
+          "missing:공격력 63"
+        ],
+        "ms": 37.78
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 882 (126 × 7개)이면 추가 공격력 63입니다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Pyke",
+          "championName": "파이크",
+          "spell": {
+            "slot": "P",
+            "name": "가라앉은 자들의 축복",
+            "summary": "파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.",
+            "text": "파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 보이지 않는 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다. 또한 파이크가 최대 체력을 모두 공격력으로 전환합니다. 전환 비율은 체력 14당 공격력 1입니다.",
+            "damageTypes": [],
+            "effects": [
+              "회복"
+            ],
+            "ratios": {
+              "추가 공격력": 800
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 882 (126 × 7개)이면 추가 공격력 63입니다.\n추가 체력 14당 추가 공격력 1입니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 4.84
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-new-quantity",
+      "area": "fresh",
+      "turn": 3,
+      "question": "아니 12.6이면?",
+      "expected": {
+        "q": "아니 12.6이면?",
+        "require": [
+          "공격력 0.9"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "cardType": "text",
+        "pass": false,
+        "failures": [
+          "missing:공격력 0.9"
+        ],
+        "ms": 41.94
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 12.6이면 추가 공격력 0.9입니다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Pyke",
+          "championName": "파이크",
+          "spell": {
+            "slot": "P",
+            "name": "가라앉은 자들의 축복",
+            "summary": "파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.",
+            "text": "파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 보이지 않는 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다. 또한 파이크가 최대 체력을 모두 공격력으로 전환합니다. 전환 비율은 체력 14당 공격력 1입니다.",
+            "damageTypes": [],
+            "effects": [
+              "회복"
+            ],
+            "ratios": {
+              "추가 공격력": 800
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 12.6이면 추가 공격력 0.9입니다.\n추가 체력 14당 추가 공격력 1입니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 19.45
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-new-grouped",
+      "area": "fresh",
+      "turn": 1,
+      "question": "파이크 HP 1,260이면 공격력 얼마나?",
+      "expected": {
+        "q": "파이크 HP 1,260이면 공격력 얼마나?",
+        "require": [
+          "공격력 90"
+        ]
+      },
+      "baseline": {
+        "text": "파이크의 상점 가격은 블루 정수 1,575 또는 790 RP입니다.\n\n공식 롤 위키 기준(2026-09-26 확인)",
+        "pass": false,
+        "failures": [
+          "missing:공격력 90"
+        ],
+        "ms": 42.12
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 1260이면 추가 공격력 90입니다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Pyke",
+          "championName": "파이크",
+          "spell": {
+            "slot": "P",
+            "name": "가라앉은 자들의 축복",
+            "summary": "파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.",
+            "text": "파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 보이지 않는 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다. 또한 파이크가 최대 체력을 모두 공격력으로 전환합니다. 전환 비율은 체력 14당 공격력 1입니다.",
+            "damageTypes": [],
+            "effects": [
+              "회복"
+            ],
+            "ratios": {
+              "추가 공격력": 800
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 1260이면 추가 공격력 90입니다.\n추가 체력 14당 추가 공격력 1입니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 26.8
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-new-grouped",
+      "area": "fresh",
+      "turn": 2,
+      "question": "기본 체력 말고 체력 14짜리 템 여섯 개면?",
+      "expected": {
+        "q": "기본 체력 말고 체력 14짜리 템 여섯 개면?",
+        "require": [
+          "공격력 6"
+        ]
+      },
+      "baseline": {
+        "text": "### 아이템 등급\n| 등급 | 특징 | 데이터 판정 |\n|---|---|---|\n| 소모품·장신구 | 물약, 와드 | `Consumable`, `Trinket` 태그 |\n| 시작 아이템 | 도란 계열, 정글 아이템, 여신의 눈물 | 이름과 가격, 조합 관계 |\n| 기본 | 조합 재료 | 상위 조합만 있고 하위 조합 없음 |\n| 서사 | 부가 효과가 붙기 시작 | 하위·상위 조합 모두 있음 |\n| 전설 | 최종 아이템 | 상위 조합 없음 |\n| 장화 | 이동 속도 전용 계열 | `Boots` 태그 |\n\n_v26.19_",
+        "pass": false,
+        "failures": [
+          "missing:공격력 6"
+        ],
+        "ms": 23.46
+      },
+      "variant": {
+        "text": "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 84 (14 × 6개)이면 추가 공격력 6입니다.\n추가 체력 14당 추가 공격력 1입니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Pyke",
+          "championName": "파이크",
+          "spell": {
+            "slot": "P",
+            "name": "가라앉은 자들의 축복",
+            "summary": "파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.",
+            "text": "파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 보이지 않는 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다. 또한 파이크가 최대 체력을 모두 공격력으로 전환합니다. 전환 비율은 체력 14당 공격력 1입니다.",
+            "damageTypes": [],
+            "effects": [
+              "회복"
+            ],
+            "ratios": {
+              "추가 공격력": 800
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "추가 능력치:\n추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다.\n추가 체력 84 (14 × 6개)이면 추가 공격력 6입니다.\n추가 체력 14당 추가 공격력 1입니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 7.8
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "vladimir-new-directions",
+      "area": "fresh",
+      "turn": 1,
+      "question": "블라디미르 패시브 추가 체력 450이면?",
+      "expected": {
+        "q": "블라디미르 패시브 추가 체력 450이면?",
+        "require": [
+          "주문력 15"
+        ]
+      },
+      "baseline": {
+        "text": "자기 주문력 증가 · 추가 체력 3.533%",
+        "cardType": "spell",
+        "pass": false,
+        "failures": [
+          "missing:주문력 15"
+        ],
+        "ms": 13.88
+      },
+      "variant": {
+        "text": "두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음:\n추가 체력을 주문력으로 비례하여 추가로 얻습니다.\n추가 체력 450이면 주문력 15입니다.\n추가 체력 30당 주문력 1입니다. 두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음:\n주문력을 최대 체력으로 비례하여 추가로 얻습니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Vladimir",
+          "championName": "블라디미르",
+          "spell": {
+            "slot": "P",
+            "name": "핏빛 계약",
+            "summary": "블라디미르는 추가 체력 30당 1의 주문력을 얻으며, 주문력 1당 1.6의 체력을 얻습니다. (이 효과는 서로 중첩되지 않습니다.)",
+            "text": "추가 체력 30당 블라디미르의 주문력이 1 증가합니다. 또한 주문력 1당 최대 체력이 1.6만큼 증가합니다. 추가 주문력: ((3.533% 추가 체력) + (-5.653% 주문력)) 추가 체력: ((169.6% 추가 주문력) + (-5.653% 추가 체력))",
+            "damageTypes": [],
+            "effects": [
+              "자기 주문력 증가"
+            ],
+            "ratios": {
+              "추가 체력": 3.533
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음:\n추가 체력을 주문력으로 비례하여 추가로 얻습니다.\n추가 체력 450이면 주문력 15입니다.\n추가 체력 30당 주문력 1입니다.",
+            "두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음:\n주문력을 최대 체력으로 비례하여 추가로 얻습니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Vladimir.P",
+        "sourceHash": "aaeb084ee2f3daad5394d5eb834c23cdefed302d0b8eacb41862f990278e8b37",
+        "candidateHash": "e397286ebfe69ae4db6167c5d931c7fab803d622e1cacc1561f6a0eedb1cbb6f",
+        "ms": 5.88
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "vladimir-new-directions",
+      "area": "fresh",
+      "turn": 2,
+      "question": "그럼 AP 25면?",
+      "expected": {
+        "q": "그럼 AP 25면?",
+        "require": [
+          "최대 체력 40"
+        ]
+      },
+      "baseline": {
+        "text": "주문력 수치는 아직 확인할 수 없어요.",
+        "cardType": "text",
+        "pass": false,
+        "failures": [
+          "missing:최대 체력 40"
+        ],
+        "ms": 25.79
+      },
+      "variant": {
+        "text": "두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음:\n추가 체력을 주문력으로 비례하여 추가로 얻습니다. 두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음:\n주문력을 최대 체력으로 비례하여 추가로 얻습니다.\n주문력 25이면 최대 체력 40입니다.\n주문력 1당 최대 체력 1.6입니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Vladimir",
+          "championName": "블라디미르",
+          "spell": {
+            "slot": "P",
+            "name": "핏빛 계약",
+            "summary": "블라디미르는 추가 체력 30당 1의 주문력을 얻으며, 주문력 1당 1.6의 체력을 얻습니다. (이 효과는 서로 중첩되지 않습니다.)",
+            "text": "추가 체력 30당 블라디미르의 주문력이 1 증가합니다. 또한 주문력 1당 최대 체력이 1.6만큼 증가합니다. 추가 주문력: ((3.533% 추가 체력) + (-5.653% 주문력)) 추가 체력: ((169.6% 추가 주문력) + (-5.653% 추가 체력))",
+            "damageTypes": [],
+            "effects": [
+              "자기 주문력 증가"
+            ],
+            "ratios": {
+              "추가 체력": 3.533
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음:\n추가 체력을 주문력으로 비례하여 추가로 얻습니다.",
+            "두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음:\n주문력을 최대 체력으로 비례하여 추가로 얻습니다.\n주문력 25이면 최대 체력 40입니다.\n주문력 1당 최대 체력 1.6입니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Vladimir.P",
+        "sourceHash": "aaeb084ee2f3daad5394d5eb834c23cdefed302d0b8eacb41862f990278e8b37",
+        "candidateHash": "e397286ebfe69ae4db6167c5d931c7fab803d622e1cacc1561f6a0eedb1cbb6f",
+        "ms": 10.13
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-new-shot",
+      "area": "fresh",
+      "turn": 1,
+      "question": "아크샨 2타 캔슬하면 뭐 줌?",
+      "expected": {
+        "q": "아크샨 2타 캔슬하면 뭐 줌?",
+        "require": [
+          "이동 속도"
+        ],
+        "forbid": [
+          "취소 조건에 해당하지"
+        ]
+      },
+      "baseline": {
+        "text": "**플레이할 때**\nE는 처치 관여 시 쿨이 초기화됩니다. 아군을 처치한 적에게는 악당 표식이 붙고, 그 악당을 잡으면 그에게 죽은 아군이 되살아나고 추가 골드까지 들어옵니다.\n\n**상대할 때**\nW 위장은 지형과 수풀 근처에서만 오래 갑니다. E는 지형에 갈고리를 걸어야 성립합니다.",
+        "cardType": "champion",
+        "pass": false,
+        "failures": [
+          "missing:이동 속도"
+        ],
+        "ms": 34.08
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다. 추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Akshan",
+          "championName": "아크샨",
+          "spell": {
+            "slot": "P",
+            "name": "비열한 싸움",
+            "summary": "아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다. 아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.",
+            "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다. 기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다. (재사용 대기시간 (16 ~ 4)초)",
+            "damageTypes": [
+              "물리",
+              "마법"
+            ],
+            "effects": [
+              "보호막",
+              "이동 속도 증가"
+            ],
+            "ratios": {
+              "공격력": 50,
+              "주문력": 60,
+              "추가 공격력": 35
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "기본 공격을 시작한 뒤 추가 공격을 발사한다.",
+            "추가 공격 취소:\n추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 15.09
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-new-shot",
+      "area": "fresh",
+      "turn": 2,
+      "question": "그럼 두 발 전부 쏠게. 이속 생겨?",
+      "expected": {
+        "q": "그럼 두 발 전부 쏠게. 이속 생겨?",
+        "require": [
+          "취소 조건에 해당하지"
+        ]
+      },
+      "baseline": {
+        "text": "아크샨 이동 속도 (1레벨)는 330입니다.",
+        "cardType": "champion",
+        "pass": false,
+        "failures": [
+          "missing:취소 조건에 해당하지"
+        ],
+        "ms": 19.24
+      },
+      "variant": {
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다. 추가 공격까지 발사하면 취소 조건에 해당하지 않습니다.\n발동 조건: 추가 공격 취소.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Akshan",
+          "championName": "아크샨",
+          "spell": {
+            "slot": "P",
+            "name": "비열한 싸움",
+            "summary": "아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다. 아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.",
+            "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다. 기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다. (재사용 대기시간 (16 ~ 4)초)",
+            "damageTypes": [
+              "물리",
+              "마법"
+            ],
+            "effects": [
+              "보호막",
+              "이동 속도 증가"
+            ],
+            "ratios": {
+              "공격력": 50,
+              "주문력": 60,
+              "추가 공격력": 35
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "기본 공격을 시작한 뒤 추가 공격을 발사한다.",
+            "추가 공격까지 발사하면 취소 조건에 해당하지 않습니다.\n발동 조건: 추가 공격 취소."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 15.36
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-new-target",
+      "area": "fresh",
+      "turn": 1,
+      "question": "아크샨 미니언 세 대에 쉴드 받을 수 있어?",
+      "expected": {
+        "q": "아크샨 미니언 세 대에 쉴드 받을 수 있어?",
+        "require": [
+          "미니언.*해당하지"
+        ]
+      },
+      "baseline": {
+        "text": "[미니언 행동] 챔피언이 미니언의 진로에 서 있고, 미니언 공격 사거리 안에 다른 표적이 없으며, 포탑 사거리 밖일 때입니다.\n[미니언 행동] 챔피언이 적 챔피언에게 기본 공격, 대다수의 대상 지정 스킬, 그리고 그와 비슷하게 분류된 일부 스킬로 피해를 입힌 경우입니다. 원인이 여럿이면 미니언은 가장 가까운 챔피언을 우선합니다.\n[미니언 행동] 첫 웨이브를 빼면, 미니언이 이미 적 포탑을 때리고 있는 동안에는 도움 요청 신호를 무시합니다.\n[미니언 능력치] 미니언은 정확히 90초마다(세 웨이브마다) 강화되어 체력과 공격력이 오르고, 상황에 따라 추가 버프를 받기도 합니다.\n[미니언 능력치] 미니언이 적 챔피언에게 주는 피해는 50% 줄어듭니다.\n[미니언 능력치] 미니언의 기본 이동 속도는 325에서 시작해 시간이 지나면서 10~25만큼 올라갑니다.\n[미니언] 적 억제기를 파괴하면 그 라인의 아군 미니언이 약한 버프를 받습니다.\n[미니언 압박] 포탑 우위란 양 팀이 파괴한 안쪽 포탑과 넥서스 포탑 수의 차이를 말합니다.\n[웨이브 골드] V8.23 기준으로 미니언 한 웨이브의 평균 골드 가치는 125에서 시작해 25분에 195까지 올라갑니다.\n[웨이브 운영] 플레이어가 개입하지 않으면 라인의 웨이브는 어느 쪽으로도 크게 밀리지 않습니다.\n[웨이브 운영] 앞 웨이브를 따라잡은 미니언 웨이브는 라인을 적 포탑 쪽으로 밀기 시작합니다.\n[웨이브 운영] 미니언이 크게 뭉치면 포탑을 압도할 수 있습니다.\n[웨이브 운영] 적 미니언 웨이브에 개입해 아군 미니언이 받는 피해보다 주는 피해를 크게 만들면 라인이 밀리기 시작합니다.\n[웨이브 운영] 가장 단순한 방법은 아군 미니언의 개입 없이 적 웨이브를 통째로 잡는 것입니다. 그러면 웨이브가 부딪히는 지점이 바뀝니다.\n[용어] 파밍: 미니언에 막타를 넣어 골드와 경험치를 얻는 것입니다.\n[용어] 라인 탄력: 챔피언이 돕지 않아도 그 라인 미니언이 밀고 나가는 힘입니다.\n[용어] 푸시: 적 미니언을 쳐서 아군 미니언을 살려 두고 라인을 밀어 올리는 것입니다.\n[용어] 프리즈: 적 미니언이 라인을 밀지 못하게 하면서 되밀지도 않고 묶어 두는 것입니다.\n[용어] 슈퍼 웨이브: 챔피언이 돕지 않아도 포탑·넥서스·챔피언을 무너뜨릴 만큼 크거나 강한 미니언 무리입니다.\n[용어] 프리 파밍: 적 챔피언의 견제 없이 파밍하는 것입니다.\n[용어] 프록시 파밍: 적 포탑 뒤에서 파밍하는 것입니다. 아군 미니언의 개입이 없어 막타는 쉽지만 대개 훨씬 위험합니다.\n[용어] 스플릿 푸시: 목표 여럿을 동시에 치는 것으로, 그중 적어도 하나는 라인 포탑인 경우를 말합니다.",
+        "cardType": "rule",
+        "pass": false,
+        "failures": [
+          "missing:미니언.*해당하지"
+        ],
+        "ms": 23.72
+      },
+      "variant": {
+        "text": "미니언은 이 효과의 챔피언 대상 조건에 해당하지 않습니다.\n발동 조건: 3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Akshan",
+          "championName": "아크샨",
+          "spell": {
+            "slot": "P",
+            "name": "비열한 싸움",
+            "summary": "아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다. 아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.",
+            "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다. 기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다. (재사용 대기시간 (16 ~ 4)초)",
+            "damageTypes": [
+              "물리",
+              "마법"
+            ],
+            "effects": [
+              "보호막",
+              "이동 속도 증가"
+            ],
+            "ratios": {
+              "공격력": 50,
+              "주문력": 60,
+              "추가 공격력": 35
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "미니언은 이 효과의 챔피언 대상 조건에 해당하지 않습니다.\n발동 조건: 3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 12.35
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-new-target",
+      "area": "fresh",
+      "turn": 2,
+      "question": "그럼 챔피언 세 대는?",
+      "expected": {
+        "q": "그럼 챔피언 세 대는?",
+        "require": [
+          "보호막"
+        ]
+      },
+      "baseline": {
+        "text": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+        "cardType": "text",
+        "pass": false,
+        "failures": [
+          "missing:보호막"
+        ],
+        "ms": 24.45
+      },
+      "variant": {
+        "text": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Akshan",
+          "championName": "아크샨",
+          "spell": {
+            "slot": "P",
+            "name": "비열한 싸움",
+            "summary": "아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다. 아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.",
+            "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다. 기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다. (재사용 대기시간 (16 ~ 4)초)",
+            "damageTypes": [
+              "물리",
+              "마법"
+            ],
+            "effects": [
+              "보호막",
+              "이동 속도 증가"
+            ],
+            "ratios": {
+              "공격력": 50,
+              "주문력": 60,
+              "추가 공격력": 35
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라)."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 9.97
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "akshan-new-target",
+      "area": "fresh",
+      "turn": 3,
+      "question": "그거 아직 쿨다운 중이면?",
+      "expected": {
+        "q": "그거 아직 쿨다운 중이면?",
+        "require": [
+          "대기시간이 남아.*해당하지"
+        ]
+      },
+      "baseline": {
+        "text": "어느 챔피언의 어떤 스킬을 말하나요?",
+        "pass": false,
+        "failures": [
+          "missing:대기시간이 남아.*해당하지"
+        ],
+        "ms": 3.36
+      },
+      "variant": {
+        "text": "보호막 재사용 대기시간이 남아 있으면 이 보호막의 사용 가능 조건에 해당하지 않습니다.\n발동 조건: 3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Akshan",
+          "championName": "아크샨",
+          "spell": {
+            "slot": "P",
+            "name": "비열한 싸움",
+            "summary": "아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다. 대상이 챔피언인 경우 아크샨이 보호막을 얻습니다. 아크샨이 기본 공격 후 피해량이 감소한 두 번째 공격을 발사합니다. 추가 공격을 도중에 취소하면 대신 이동 속도가 증가합니다.",
+            "text": "아크샨이 기본 공격 후 두 번째 공격을 발사해서 (50% 공격력)의 물리 피해를 입힙니다. 두 번째 공격을 도중에 취소하면 이동 속도가 (20 ~ 75) × (1 + 100% 추가 공격 속도) 증가했다가 1초에 걸쳐 원래대로 돌아옵니다. 기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다. 대상이 챔피언인 경우, 2초간 ((40 ~ 280) + (35% 추가 공격력))의 피해를 흡수하는 보호막을 얻습니다. (재사용 대기시간 (16 ~ 4)초)",
+            "damageTypes": [
+              "물리",
+              "마법"
+            ],
+            "effects": [
+              "보호막",
+              "이동 속도 증가"
+            ],
+            "ratios": {
+              "공격력": 50,
+              "주문력": 60,
+              "추가 공격력": 35
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "보호막 재사용 대기시간이 남아 있으면 이 보호막의 사용 가능 조건에 해당하지 않습니다.\n발동 조건: 3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Akshan.P",
+        "sourceHash": "72fbd9e655a84348de189d57357167058ea986ab63dfa7b1e7e215e073ae0d81",
+        "candidateHash": "dbe1a58dfa9b61d7f91ff88034e196e0e4f833b20ca44c7ad96ed58468048824",
+        "ms": 3.31
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "veigar-new",
+      "area": "fresh",
+      "turn": 1,
+      "question": "베이가 패시브 챔피언 처치에 관여하면 몇 스택이야?",
+      "expected": {
+        "q": "베이가 패시브 챔피언 처치에 관여하면 몇 스택이야?",
+        "require": [
+          "5",
+          "처치 관여"
+        ]
+      },
+      "baseline": {
+        "text": "성장 스택 · 자기 주문력 증가",
+        "cardType": "spell",
+        "pass": false,
+        "failures": [
+          "missing:5",
+          "missing:처치 관여"
+        ],
+        "ms": 2.43
+      },
+      "variant": {
+        "text": "스킬 적중 시 · 대상 종류: 챔피언 · 적챔피언:\n베이가가 극악 중첩을 얻습니다.\n중첩/자원 획득량: 1. 처치 관여 시 · 대상 종류: 챔피언:\n베이가가 추가 극악 중첩을 얻습니다.\n중첩/자원 획득량: 5. 극악 중첩:\n극악1중첩당베이가의주문력이1영구증가합니다.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Veigar",
+          "championName": "베이가",
+          "spell": {
+            "slot": "P",
+            "name": "극악무도",
+            "summary": "룬테라에서 가장 강력한 악의 원천인 베이가는 점점 더 강해지고 있습니다. 적 챔피언에게 스킬을 적중시키거나 처치에 관여할 때마다 주문력이 영구적으로 증가합니다.",
+            "text": "베이가는 적 챔피언에게 스킬을 적중시킬 때마다 극악 1중첩을 얻습니다. 챔피언 처치 관여 시 극악 중첩이 5 쌓입니다. 극악 1중첩당 베이가의 주문력이 1 증가합니다.",
+            "damageTypes": [],
+            "effects": [
+              "성장 스택",
+              "자기 주문력 증가"
+            ],
+            "ratios": {},
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "스킬 적중 시 · 대상 종류: 챔피언 · 적챔피언:\n베이가가 극악 중첩을 얻습니다.\n중첩/자원 획득량: 1.",
+            "처치 관여 시 · 대상 종류: 챔피언:\n베이가가 추가 극악 중첩을 얻습니다.\n중첩/자원 획득량: 5.",
+            "극악 중첩:\n극악1중첩당베이가의주문력이1영구증가합니다."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Veigar.P",
+        "sourceHash": "e23268485fa52f025012c3146c8cf139d6d9080064781cb4e1003b051976156d",
+        "candidateHash": "e96cffdac40d7767de31f755b17ec8ef4d71d8fffcddb011042e5239b0f76ec7",
+        "ms": 3.17
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "lucian-new",
+      "area": "fresh",
+      "turn": 1,
+      "question": "루시안 P 아군한테 힐 받으면 평타 어떻게 바뀌어?",
+      "expected": {
+        "q": "루시안 P 아군한테 힐 받으면 평타 어떻게 바뀌어?",
+        "require": [
+          "마법 피해"
+        ]
+      },
+      "baseline": {
+        "text": "대상을 직접 지정하지 않으면 회복은 커서를 중심으로 반경 200 안에서 아군을 찾습니다. 거기서 찾지 못하면 시전 범위 안에서 가장 많이 다친 아군 챔피언을, 그마저 구분되지 않으면 가장 가까운 아군을 대상으로 삼습니다. (\"가장 많이 다친\"이란 현재 체력 비율이 가장 낮은 챔피언을 말합니다.) (분신과의 상호작용도 있습니다.) (두 번째 대상을 제대로 고르지 못하는 버그가 있습니다.)\n최근 35초 안에 이미 회복을 받았다면, 회복을 쓰거나 받을 때 회복량이 줄어든 값으로 적용됩니다. 그 값은 레벨에 따라 달라집니다.",
+        "cardType": "rule",
+        "pass": false,
+        "failures": [
+          "missing:마법 피해"
+        ],
+        "ms": 10.25
+      },
+      "variant": {
+        "text": "아군으로부터 직접 회복 또는 보호막을 받음:\n아군이 루시안을 직접 회복하거나 보호막을 씌우면 권총이 과충전되어 다음 두 번의 기본 공격이 추가 마법 피해를 입히도록 한다.\n횟수/중첩: 2.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Lucian",
+          "championName": "루시안",
+          "spell": {
+            "slot": "P",
+            "name": "빛의 사수",
+            "summary": "루시안이 스킬을 사용할 때마다 다음 공격이 2연속으로 발사됩니다. 아군이 루시안에게 회복 또는 보호막 효과를 부여하거나, 근처 적 챔피언이 이동 불가 상태가 되면 루시안의 다음 기본 공격 2회가 추가 마법 피해를 입힙니다.",
+            "text": "루시안은 스킬을 사용한 후 3.5초 이내에 기본 공격을 하면 총을 두 번 연속 발사합니다. 두 번째 공격은 대상에 ((50% ~ 60%) 공격력)의 물리 피해를 입히며, 미니언을 상대로는 피해가 (100% 공격력)까지 증가합니다. 경계: 아군이 루시안에게 직접 회복 또는 보호막 효과를 부여하거나, 근처 적 챔피언이 이동 불가 상태가 되면 루시안의 권총이 과충전 상태가 되어 다음 2회의 기본 공격 시 (5 + (15% 공격력))의 마법 피해를 추가로 입힙니다.",
+            "damageTypes": [
+              "물리",
+              "마법"
+            ],
+            "effects": [
+              "기본 공격 강화"
+            ],
+            "ratios": {
+              "공격력": 100
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "아군으로부터 직접 회복 또는 보호막을 받음:\n아군이 루시안을 직접 회복하거나 보호막을 씌우면 권총이 과충전되어 다음 두 번의 기본 공격이 추가 마법 피해를 입히도록 한다.\n횟수/중첩: 2."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Lucian.P",
+        "sourceHash": "388a28559a59c687a667d450f8925d2f46e29e23cdac08ce66f3cb2fa416313d",
+        "candidateHash": "9c8b2ceee1bbcac77c5ce600025553e4e6713f1a7b4052cbbb82931d0b101a38",
+        "ms": 4.84
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "jhin-new",
+      "area": "fresh",
+      "turn": 1,
+      "question": "진 패시브 마지막 총알이 왜 세지?",
+      "expected": {
+        "q": "진 패시브 마지막 총알이 왜 세지?",
+        "require": [
+          "치명타",
+          "잃은 체력"
+        ]
+      },
+      "baseline": {
+        "text": "잃은 체력 비례 · 이동 속도 증가 · 치명타 · 추가 공격 속도 44%",
+        "cardType": "spell",
+        "pass": true,
+        "failures": [],
+        "ms": 7.41
+      },
+      "variant": {
+        "text": "잃은 체력 비례 · 이동 속도 증가 · 치명타 · 추가 공격 속도 44%",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Jhin",
+          "championName": "진",
+          "spell": {
+            "slot": "P",
+            "name": "속삭임",
+            "summary": "'속삭임'이라고 불리는 진의 총은 우월한 살상력을 위해 설계된 정밀 기계입니다. 발사 속도는 고정되어 있으며 총탄은 네 발만 장전됩니다. 네 발째 총탄은 진의 어두운 마법에 물들어 항상 치명타를 입히며 잃은 체력에 비례한 피해를 추가로 입힙니다. 속삭임으로 치명타를 발동시키면, 진의 이동 속도가 잠깐 동안 크게 상승합니다.",
+            "text": "진이 사용하는 총은 공격 속도가 고정되어 있으며 4발을 발사한 후엔 재장전해야 합니다. 4번째 총탄은 언제나 치명타가 발동되며, 대상이 잃은 체력의 (15% ~ 25%)만큼 추가 물리 피해를 입힙니다. 추가 효과:진이 ((4% ~ 44%) + (35% 치명타 확률) + (30% 추가 공격 속도))의 추가 공격력을 얻습니다.진의 치명타 피해량이 25% 감소하지만, 2초 동안 이동 속도가 (14% + (44% 추가 공격 속도)) 증가합니다.",
+            "damageTypes": [
+              "물리"
+            ],
+            "effects": [
+              "잃은 체력 비례",
+              "이동 속도 증가",
+              "치명타"
+            ],
+            "ratios": {
+              "추가 공격 속도": 44
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "facts": [
+            {
+              "label": "피해 유형",
+              "value": "물리"
+            },
+            {
+              "label": "효과",
+              "value": "잃은 체력 비례, 이동 속도 증가, 치명타"
+            },
+            {
+              "label": "군중 제어",
+              "value": "CC 없음"
+            },
+            {
+              "label": "계수",
+              "value": "추가 공격 속도 44%"
+            }
+          ],
+          "highlighted": []
+        },
+        "pass": true,
+        "failures": [],
+        "source": "baseline",
+        "ms": 10.02
+      },
+      "improved": false,
+      "regressed": false
+    },
+    {
+      "id": "pyke-new-invalid",
+      "area": "fresh",
+      "turn": 1,
+      "question": "파이크 체력 50+90이면?",
+      "expected": {
+        "q": "파이크 체력 50+90이면?",
+        "require": [
+          "수치를 하나로"
+        ],
+        "forbid": [
+          "공격력 3.571"
+        ]
+      },
+      "baseline": {
+        "text": "파이크 체력 (1레벨)는 670입니다.",
+        "cardType": "champion",
+        "pass": false,
+        "failures": [
+          "missing:수치를 하나로"
+        ],
+        "ms": 14.71
+      },
+      "variant": {
+        "text": "계산할 수치를 하나로 알려 주세요. 예: ‘추가 체력 70짜리 템 2개’ 또는 ‘주문력 100’.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Pyke",
+          "championName": "파이크",
+          "spell": {
+            "slot": "P",
+            "name": "가라앉은 자들의 축복",
+            "summary": "파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.",
+            "text": "파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 보이지 않는 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다. 또한 파이크가 최대 체력을 모두 공격력으로 전환합니다. 전환 비율은 체력 14당 공격력 1입니다.",
+            "damageTypes": [],
+            "effects": [
+              "회복"
+            ],
+            "ratios": {
+              "추가 공격력": 800
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "계산할 수치를 하나로 알려 주세요. 예: ‘추가 체력 70짜리 템 2개’ 또는 ‘주문력 100’."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 13.61
+      },
+      "improved": true,
+      "regressed": false
+    },
+    {
+      "id": "pyke-new-invalid",
+      "area": "fresh",
+      "turn": 2,
+      "question": "파이크 체력 70짜리 템 1.5개면?",
+      "expected": {
+        "q": "파이크 체력 70짜리 템 1.5개면?",
+        "require": [
+          "수치를 하나로"
+        ],
+        "forbid": [
+          "공격력 25"
+        ]
+      },
+      "baseline": {
+        "text": "어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다. 전환 비율은 체력 14당 공격력 1입니다.",
+        "cardType": "spell",
+        "pass": false,
+        "failures": [
+          "missing:수치를 하나로"
+        ],
+        "ms": 1.96
+      },
+      "variant": {
+        "text": "계산할 수치를 하나로 알려 주세요. 예: ‘추가 체력 70짜리 템 2개’ 또는 ‘주문력 100’.",
+        "cardType": "spell",
+        "cardSlot": "P",
+        "cardAnswer": {
+          "kind": "spell",
+          "championId": "Pyke",
+          "championName": "파이크",
+          "spell": {
+            "slot": "P",
+            "name": "가라앉은 자들의 축복",
+            "summary": "파이크가 적에게 보이지 않는 상태가 되면 최근 적 챔피언에게 잃었던 체력의 일부를 빠르게 회복합니다. 또한, 어떤 방법으로든 파이크가 획득한 추가 최대 체력은 모두 추가 공격력으로 전환됩니다.",
+            "text": "파이크는 적 챔피언에게 받는 피해량의 (9% + (0.2% 물리 관통력)), 주변에 적이 둘 이상 있을 때는 최대 (40% + (0.4% 물리 관통력))만큼을 체력으로 비축합니다. 최대 (80 + (800% 추가 공격력))까지 비축되며 적에게 보이지 않는 상태가 되면 비축한 만큼 체력을 빠르게 회복합니다. 또한 파이크가 최대 체력을 모두 공격력으로 전환합니다. 전환 비율은 체력 14당 공격력 1입니다.",
+            "damageTypes": [],
+            "effects": [
+              "회복"
+            ],
+            "ratios": {
+              "추가 공격력": 800
+            },
+            "crowdControl": {
+              "status": "known",
+              "effects": []
+            }
+          },
+          "focus": "effect",
+          "facts": [],
+          "highlighted": [
+            "계산할 수치를 하나로 알려 주세요. 예: ‘추가 체력 70짜리 템 2개’ 또는 ‘주문력 100’."
+          ]
+        },
+        "pass": true,
+        "failures": [],
+        "source": "reviewed",
+        "abilityId": "Pyke.P",
+        "sourceHash": "881c36cfa3fa029952ecf5ee269e8d89047bd86839594a5fb654524019859088",
+        "candidateHash": "675423eef4df3107372d1df4367568df02e18b3407edeb6f7b3cdd20d3280d8a",
+        "ms": 6.25
+      },
+      "improved": true,
+      "regressed": false
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "id": "Skarner.E",
+  "sourceHash": "ad94086316070f690fe148f128ad28ffe4f98d6a4301de8f4a698f2cf407bb0f",
+  "beforeCandidateHash": "a7c1cf578aed0232cfaa2eeeef45af9b8c8d6139e9c9d4e6c19b70dca7be05ab",
+  "candidateHash": "d1c41bdd4035518edd907585ed5844ba69af8c64f462626bcd881f84b37921d8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "지형무시조종돌진·챔피언/대형몬스터운반·벽충돌물리피해/1.1초기절·재사용조기종료·성공충돌쿨다운65%가됨을확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 앞으로 돌진하며 지정한 방향으로 이동하고 지형을 무시한다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: target의 other / 조건 target target_type eq champion; caster other present 돌진 중 대상과 조우 → target: 챔피언을 만나면 스카너가 돌진의 나머지 시간 동안 그 대상을 끌고 간다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: target의 other / 조건 target target_type eq monster; caster other present 돌진 중 대상과 조우; 대형 몬스터 → target: 대형 몬스터를 만나면 스카너가 돌진의 나머지 시간 동안 그 대상을 끌고 간다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: target의 other / 조건 target other present 끌려온 대상과 함께 벽에 충돌 → target: 끌고온적과벽충돌시30/60/90/120/150 + 자신의추가AD120% + 체력6%(소유자/종류미명시) 물리피해를준다. [physical] / amount=30/60/90/120/150 [rank_values]; stat_coefficient=120% (caster bonusAttackDamage) [formula_components]; stat_coefficient=6% [formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: target의 other / 조건 target other present 끌려온 대상과 함께 벽에 충돌 → target: 끌고 온 적과 함께 벽에 충돌하면 해당 적을 기절시킨다. [stun] / duration_seconds=1.1 [scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 recast → caster: 재사용하면 돌진을 일찍 끝낼 수 있다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 other / 조건 caster other present 벽 충돌 성공 → caster: 성공한 벽 충돌은 이 스킬의 재사용 대기시간을 65%로 감소시킨다. / other=65% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.3-4.conditions.0",
+      "issue": "운반벽충돌에발사됨조건추정",
+      "correction": "fired삭제·벽충돌조건유지",
+      "sourceId": "en:body",
+      "quote": "Colliding into a wall with an enemy in tow"
+    },
+    {
+      "path": "rules.3.effects.0.parameters.2",
+      "issue": "6%Health의자신maxHealth단정이gap과모순",
+      "correction": "종류소유자미명시로보존",
+      "sourceId": "en:body",
+      "quote": "(6% Health)"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "벽 충돌 후 피해·기절 조건은 원문에서 끌고 온 적과의 충돌로 한정되지만, 벽 충돌을 일으키는 별도 이벤트 유형은 스키마에 없어 other로 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "벽 충돌 피해의 6% Health가 어떤 체력 통계를 가리키는지 원문에 소유자와 통계 범위가 명시되지 않아 maxHealth/caster로 확정하지 않았다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

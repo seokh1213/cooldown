@@ -1,0 +1,84 @@
+{
+  "id": "Illaoi.R",
+  "sourceHash": "9245da84862b5be4f020590cb21c055b0b985f5b1a934d055459bfb35fa02fb3",
+  "beforeCandidateHash": "961d2fdc171d1a9e87a0ac2e2b250f7b2663ffc873920cdaf2f9d1304fcd6f89",
+  "candidateHash": "79be938ae9b5e260bab3054a6092d1d2015e7ef2b7905243bc9abe821d54e16c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 0,
+  "summaryCheck": "주변물리피해·챔피언및E영혼적중당촉수,이후8초촉수지정불가/50%빠른후려치기/W쿨2초대체를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.distance lte nearby; nearby_enemies: 주변 적에게 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n0=150,en:body:n1=250,en:body:n2=350 상수 rank_values / stat_coefficient en:body:n3=50%(백분율) caster.bonusAttackDamage scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion; summon: 적중한 적 챔피언마다 촉수를 하나 생성합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other eq 영혼의 시험으로 생성된 영혼; summon: 이 스킬에 적중한 영혼에 대해 촉수를 생성합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 촉수를 대상으로 지정할 수 없게 합니다.; 수치 duration_seconds en:body:n4=8 상수 scalar; flags 없음 | summon: 촉수가8초동안50%더빠르게후려칩니다.; 수치 duration_seconds en:body:n4=8 상수 scalar / amount en:body:n5=50%(백분율) 상수 scalar; flags 없음 | caster: 8초동안혹독한가르침의재사용대기시간이2초가됩니다.; 수치 cooldown_seconds en:body:n6=2 상수 scalar / duration_seconds en:body:n4=8 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "지정불가visibility분류·후려치기속도텍스트·W쿨설정과8초범위 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Illaoi smashes her idol into the ground, dealing (150/250/350 + (50% bonus Attack Damage)) physical damage to nearby enemies and spawning a Tentacle for each enemy champion hit. For the next 8 seconds, Tentacles are untargetable and Slam 50% faster, and Harsh Lesson has a 2 second cooldown. Spirits from Test Of Spirit also generate a Tentacle if hit by this ability."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 113,
+      "verdict": "repaired",
+      "reason": "8초동안50%더빠르게후려침으로텍스트명시."
+    },
+    {
+      "index": 114,
+      "verdict": "repaired",
+      "reason": "W재사용대기시간이2초가됨으로대체설정명시."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

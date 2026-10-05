@@ -1,0 +1,128 @@
+{
+  "id": "Morgana.R",
+  "sourceHash": "912675496d60dc5e3f20e534295866a0c274be380110e0ba946430f9e963fa5f",
+  "beforeCandidateHash": "8a0d6c4c633e855de25156a018a0108e91a441240ca21b8d624ebb021cb67f50",
+  "candidateHash": "3f4f1ba0b5cf296aa8ddac813c41c31cad2056b4a5d8e2e759d6954e4f9a57c3",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "초기주변적챔피언200~350+80%AP마법/20%둔화,그사슬3초후안끊어졌을때추가마법/랭크기절,시전중20/40/60%이속·영향대상전체절대시야 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion / target.distance eq 시전시모르가나주변적챔피언; enemy: 주변 적 챔피언에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=200,en:body:n1=275,en:body:n2=350 상수 rank_values / stat_coefficient en:body:n3=80%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 target.target_type eq champion / target.distance eq 시전시모르가나주변적챔피언; enemy: 주변 적 챔피언을 둔화시킵니다. [slow]; 수치 amount en:body:n4=20%(백분율) 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 target.target_type eq champion / target.time eq 이궁극기의사슬생성후3초가끝남 / target.activation eq unable to break the chains; enemy: 사슬을 벗어나지 못한 적에게 추가 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n6=200,en:body:n7=275,en:body:n8=350 상수 rank_values / stat_coefficient en:body:n9=80%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: other 사건의 행위자 caster; 조건 target.target_type eq champion / target.time eq 이궁극기의사슬생성후3초가끝남 / target.activation eq unable to break the chains; enemy: 사슬을 벗어나지 못한 적을 기절시킵니다. [stun]; 수치 duration_seconds en:body:n10=1.5,en:body:n11=1.75,en:body:n12=2 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이 스킬을 시전하는 동안 이동 속도가 증가합니다.; 수치 amount en:body:n13=20(백분율),en:body:n14=40(백분율),en:body:n15=60%(백분율) 상수 rank_values; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 이 스킬의 영향을 받는 모든 적에 대한 절대 시야를 얻습니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "주변조건·3초집계기준·후속효과행위자와이속stat분류 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Morgana chains herself to nearby enemy Champions, dealing (200/275/350 + (80% Ability Power)) magic damage and Slowing them by 20%. After 3 seconds, enemies unable to break the chains take an additional (200/275/350 + (80% Ability Power)) magic damage and are Stunned for 1.5/1.75/2 seconds. While casting this Ability, Morgana gains 20/40/60% Move Speed. Morgana gains True Sight of all enemies affected by this Ability."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 310,
+      "verdict": "repaired",
+      "reason": "초기피해/둔화조건에시전시주변적챔피언범위보존."
+    },
+    {
+      "index": 311,
+      "verdict": "false_positive",
+      "reason": "별도rule1에서둔화20%전부보존;damage텍스트에동일CC중복설명필수아님."
+    },
+    {
+      "index": 312,
+      "verdict": "false_positive",
+      "reason": "trigger cast:caster와target조건은사건에따른대상별효과규칙으로원문과일치;시전자챔피언상태전제아님."
+    },
+    {
+      "index": 313,
+      "verdict": "false_positive",
+      "reason": "rank숫자표raw20이고percent=true로단위보존;frozen원문스팬을20%로조작할필요없음."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "사슬을 벗어나는 판정 조건은 원문에 정의되어 있지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

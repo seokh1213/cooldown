@@ -1,0 +1,36 @@
+{
+  "id": "Nami.P",
+  "sourceHash": "e5ab7ce12391426f9f09f6b01ea939c0ff96f75877e08b214e93b235d373e3d2",
+  "beforeCandidateHash": "36a7a997ab670fddc9a902928d8d6e12c5e1707626372f49f8caec33f887a1b3",
+  "candidateHash": "bb3c5eeec461c9fe2982b018c5ab679f98f9d27502259f0cd1c7cdd7428a23af",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "나미의 스킬에 적중한 아군 챔피언에게 100 + 나미 주문력의 25% 이동 속도를 부여하고 1.5초에 걸쳐 감소하는 관계를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 ally.target_type eq champion 적용. ally: 나미의 스킬에 적중한 아군 챔피언의 이동 속도가 증가하고, 증가량은 시간이 지나며 감소합니다.; amount=100  scalar, stat_coefficient=25% caster의 abilityPower formula_components, duration_seconds=1.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.trigger,conditions",
+      "issue": "적중한 아군을 스킬 적중 행위자로 두고 챔피언 조건 주어는 target으로 분리했다.",
+      "correction": "나미의 스킬 적중 사건과 아군 챔피언 조건을 연결했다.",
+      "sourceId": "en:body",
+      "quote": "When Nami's Abilities hit allied champions, they gain (100 + (25% Ability Power)) Move Speed, decaying over 1.5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

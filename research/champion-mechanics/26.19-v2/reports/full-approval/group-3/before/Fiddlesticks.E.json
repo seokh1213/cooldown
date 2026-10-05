@@ -1,0 +1,176 @@
+{
+  "summary": "어둠의 마력을 방출해 적에게 마법 피해와 둔화를 적용합니다. 범위 중심의 적은 지속시간 동안 침묵합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks unleashes dark magic, dealing (70/105/140/175/210 + (50% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks unleashes dark magic, dealing (70/105/140/175/210 + (50% Ability Power)) magic damage and Slowing by 30/35/40/45/50% for 1.25 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Slowing by 30/35/40/45/50% for 1.25 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks unleashes dark magic, dealing (70/105/140/175/210 + (50% Ability Power)) magic damage and Slowing by 30/35/40/45/50% for 1.25 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "isolated"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "범위 중심에 있는 적을 침묵시킵니다.",
+          "damageType": null,
+          "crowdControl": "silence",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies in the center are also Silenced for the duration."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks unleashes dark magic, dealing (70/105/140/175/210 + (50% Ability Power)) magic damage and Slowing by 30/35/40/45/50% for 1.25 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "범위 중심 조건을 거리 조건의 isolated 값으로 보존했으며, 구체적인 판정 기준은 제공되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies in the center are also Silenced for the duration."
+        }
+      ]
+    }
+  ]
+}

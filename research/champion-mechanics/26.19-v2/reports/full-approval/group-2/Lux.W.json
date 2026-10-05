@@ -1,0 +1,54 @@
+{
+  "id": "Lux.W",
+  "sourceHash": "719f383fb62cf7e003663d01cf2d3678e68900b3b3b4ffa250fa309429f0fbd9",
+  "beforeCandidateHash": "78c5c68c61896d63544d80b2142e9d7a73d186bdc01bf42c082e9de258982fcb",
+  "candidateHash": "58a0fe17895c2130e00dadf0c5d6d199ec0237cfbec93d4fd7ad4eecc4039766",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "마법봉왕복각통과아군40~100+40%AP보호막2.5초,왕복두보호막중첩가능 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 ally.activation eq 던져져 나가는 이번 마법봉이 통과한 아군; ally: 마법봉이 지나간 아군에게 보호막을 부여합니다.; 수치 amount en:body:n0=40,en:body:n1=55,en:body:n2=70,en:body:n3=85,en:body:n4=100 상수 rank_values / stat_coefficient en:body:n5=40%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n6=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 ally.activation eq 돌아오는 이번 마법봉이 통과한 아군; ally: 돌아오는 마법봉은 아군에게 같은 보호막을 부여하며, 두 보호막은 중첩될 수 있습니다.; 수치 amount en:body:n0=40,en:body:n1=55,en:body:n2=70,en:body:n3=85,en:body:n4=100 상수 rank_values / stat_coefficient en:body:n5=40%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n6=2.5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "아군피격을 행위자로 삼은오류·왕복적용조건누락·AP계수역할 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Lux throws her wand, granting (40/55/70/85/100 + (40% Ability Power)) Shield for 2.5 seconds to allies it passes through. Then it returns, granting the same Shield on its return. Both instances of Shield can stack."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

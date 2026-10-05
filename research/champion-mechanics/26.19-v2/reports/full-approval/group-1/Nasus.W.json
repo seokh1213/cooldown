@@ -1,0 +1,42 @@
+{
+  "id": "Nasus.W",
+  "sourceHash": "8824dd4d7d65059384645231c32e376e31385a3f821fe31415d3e987f05cc8a0",
+  "beforeCandidateHash": "c8913d68e476bee98520ea68393f93d4320518b074b7df3ca5f7f25fdb71428e",
+  "candidateHash": "16c5471d640974b9ef0f8a3ae6a64aeb733295c2222b0354f8dba8945ea827a0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "적 챔피언의35% 둔화가5초에 걸쳐47/59/71/83/95%까지 증가하며 공격 속도 감소율은 현재 둔화율의75%임을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion. target crowd_control slow: 챔피언을 둔화시키며 둔화 효과는 지속 시간 동안 증가합니다. [amount n0=35% scalar; max_amount n1=47%/n2=59%/n3=71%/n4=83%/n5=95% rank_values; duration_seconds n6=5 scalar] / target stat_modifier: 대상의 공격 속도 감소율은 이 스킬의 현재 둔화율의75%이다. 공격 속도를 직접75% 감소시키는 효과가 아니다. [other n7=75% formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.1.parameters,text;gaps",
+      "issue": "현재 둔화율에 곱하는75%를 단독 ratio_input으로 기록",
+      "correction": "실시간 둔화율의75%라는 구성요소로 보존하고 시간별 증가 함수 미제공을 기록했다.",
+      "sourceId": "en:body",
+      "quote": "Their Attack Speed is also reduced by 75% of the Slow."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "둔화는35%에서5초 동안 랭크별 상한47/59/71/83/95%로 증가하지만 시간별 정확한 증가 함수는 제공되지 않았다. 공격 속도 감소는 그때의 둔화율에0.75를 곱하므로75% 직접 감소로 실행하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "summary": "시전하면 일정 시간 모든 적 챔피언에게 절대 시야를 얻고 재사용할 수 있습니다. 재사용하면 일정 거리 안으로 순간이동하며, 방해 효과에 맞으면 순간이동이 중단됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "enemy",
+          "text": "맵의 모든 적 챔피언에 대한 절대 시야를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Twisted Fate focuses on his cards, granting True Sight of all enemy champions on the map for 6/8/10 seconds and allowing him to Recast."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "재사용하면 최대 사거리 안의 위치로 순간이동합니다. 방해 효과는 순간이동을 중단시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "distance_units",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Twisted Fate teleports up to 5500 units away. Disabling effects will interrupt the teleport."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "요약에는 순간이동에 1.5초가 걸린다고 되어 있지만, 영어 본문에는 순간이동 시간이나 재사용 가능 시간이 기재되어 있지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Twisted Fate predicts the fortunes of his foes, revealing all enemy champions and enabling the use of Gate, which teleports Twisted Fate to any target location in 1.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Twisted Fate focuses on his cards, granting True Sight of all enemy champions on the map for 6/8/10 seconds and allowing him to Recast. Recast: Twisted Fate teleports up to 5500 units away. Disabling effects will interrupt the teleport."
+        }
+      ]
+    }
+  ]
+}

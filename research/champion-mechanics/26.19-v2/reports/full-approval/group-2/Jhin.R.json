@@ -1,0 +1,99 @@
+{
+  "id": "Jhin.R",
+  "sourceHash": "47da4d453d366f7a828625d4187faa3e601f2789d167fd7aa330931de9745c59",
+  "beforeCandidateHash": "4789863886532a6a0520d3594d3bccfdebdae67e8ad7764b44bc996d3f9df109",
+  "candidateHash": "4abe8171f9f14107d536d095b6d12c35d3ee539b1d8de46b50469dbef99039a8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "4발 정신집중,관통/첫챔피언정지,첫챔피언의 잃은체력에 따른 최소/최대 피해,80%0.5초둔화,4번째200%치명타를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 진이 자세를 잡고 정신을 집중해 탄환을 발사할 수 있는 상태가 된다. 탄환은 미니언과 몬스터를 관통하고 첫 챔피언에서 멈춥니다.; 수치 count en:body:n0=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / target.hit_order eq first; target: 탄환은 처음 적중한 챔피언에게 대상의 잃은 체력 비율에 따라 달라지는 물리 피해를 입힌다. [physical]; 수치 min_amount en:body:n1=64,en:body:n2=128,en:body:n3=192 상수 rank_values / stat_coefficient en:body:n4=25%(백분율) caster.totalAttackDamage formula_components / max_amount en:body:n5=256,en:body:n6=512,en:body:n7=768 상수 rank_values / stat_coefficient en:body:n8=100%(백분율) caster.totalAttackDamage formula_components; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion / target.hit_order eq first; target: 탄환은 처음 적중한 챔피언을 둔화시킨다. [slow]; 수치 amount en:body:n9=80%(백분율) 상수 scalar / duration_seconds en:body:n10=0.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.other eq 네 번째 탄환; target: 네 번째 탄환은 치명타로 적중해 더 큰 피해를 입힌다.; 수치 damage_multiplier en:body:n11=200%(백분율) 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "최소/최대 AD계수를 모두 합산하지 않게 formula_components로 보존; 요약만 있던 관통 조건의 규칙 근거 보완",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Jhin sets up and channels, enabling him to fire 4 super shots, each dealing between (64/128/192 + (25% Attack Damage)) and (256/512/768 + (100% Attack Damage)) physical damage to the first champion hit based on their percentage missing health and Slowing them by 80% for 0.5 seconds. The fourth shot critically strikes for 200% damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 141,
+      "verdict": "false_positive",
+      "reason": "요약은 효과와 잃은체력에 따른 피해범위를 보존하고 상세 숫자·계수·둔화시간은 rules에 모두 존재; 요약에 모든 숫자 강제 필요 없음."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "피해는 대상의 잃은 체력 비율에 따라 달라지지만, 잃은 체력과 두 피해 끝점 사이의 계산식은 원문에 명시되지 않았다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "네 번째 탄환 조건은 허용된 구조화 조건 값에 해당 항목이 없어 텍스트 조건으로 보존했다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,1038 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "유닛을 처치하면 추가 골드를 얻습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "kill",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "처치한 유닛에 따라 추가 골드를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "min_amount",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "max_amount",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Upon killing a unit, Twisted Fate rolls his 'lucky' dice receiving 1 to 6 bonus gold."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "Q": {
+      "summary": "세 장의 카드를 던져 마법 피해를 입힙니다. 같은 적은 카드 한 장으로만 피해를 입습니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "enemy",
+              "text": "던진 카드가 적에게 각각 마법 피해를 입힙니다. 각 적은 카드 한 장으로만 피해를 받습니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n6"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": [
+                "per_target"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Twisted Fate throws three cards that deal (60/105/150/195/240 + (50% bonus Attack Damage) + (85% Ability Power)) magic damage each. Enemies can only be damaged by one of the cards."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "W": {
+      "summary": "덱을 섞은 뒤 재사용해 카드 한 장을 선택하면 다음 기본 공격이 강화됩니다. 카드마다 피해와 부가 효과가 다릅니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "attack_followup",
+              "subject": "caster",
+              "text": "세 카드 중 하나를 선택해 다음 기본 공격을 강화합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "count",
+                  "numberRefs": [
+                    "en:body:n1"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Twisted Fate begins shuffling his deck, allowing him to Recast to lock in one of three cards and enhance his next Attack."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Blue Card"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "푸른색 카드가 대상에게 마법 피해를 입히고 마나를 회복시킵니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4",
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n7"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n8"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "마나를 회복시킵니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n14",
+                    "en:body:n15",
+                    "en:body:n16",
+                    "en:body:n17",
+                    "en:body:n18"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Blue Card"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "푸른색 카드 피해에는 치명타 확률 계수가 적용됩니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11",
+                    "en:body:n12",
+                    "en:body:n13"
+                  ],
+                  "stat": "critChance",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Red Card"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "붉은색 카드가 주변 적에게 피해를 입히고 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21",
+                    "en:body:n22",
+                    "en:body:n23"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n24"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n25"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n26",
+                    "en:body:n27",
+                    "en:body:n28",
+                    "en:body:n29",
+                    "en:body:n30"
+                  ],
+                  "stat": "critChance",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": [
+                "per_target"
+              ]
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "주변 적을 둔화시킵니다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n31",
+                    "en:body:n32",
+                    "en:body:n33",
+                    "en:body:n34",
+                    "en:body:n35"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n36"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Red Card"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "붉은색 카드 피해를 입힙니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n19",
+                    "en:body:n20",
+                    "en:body:n21",
+                    "en:body:n22",
+                    "en:body:n23"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n26",
+                    "en:body:n27",
+                    "en:body:n28",
+                    "en:body:n29",
+                    "en:body:n30"
+                  ],
+                  "stat": "critChance",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": [
+                "per_target"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "followup_attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "activation",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Gold Card"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "황금색 카드가 대상에게 피해를 입히고 기절시킵니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n37",
+                    "en:body:n38",
+                    "en:body:n39",
+                    "en:body:n40",
+                    "en:body:n41"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n42"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n43"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n44",
+                    "en:body:n45",
+                    "en:body:n46",
+                    "en:body:n47",
+                    "en:body:n48"
+                  ],
+                  "stat": "critChance",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "대상을 기절시킵니다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n49",
+                    "en:body:n50",
+                    "en:body:n51",
+                    "en:body:n52",
+                    "en:body:n53"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "붉은색 카드의 피해가 마법 피해인지 원문에서 명시되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds."
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "황금색 카드의 피해 유형이 원문에서 명시되지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "공격 속도가 증가하며, 네 번째 기본 공격마다 추가 마법 피해를 입힙니다. 구조물에는 해당 추가 피해가 절반 효과로 적용됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 속도가 증가합니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2",
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Twisted Fate gains 15/25/35/45/55% Attack Speed and every 4th Attack deals an additional (65/90/115/140/165 + (20% bonus Attack Damage) + (40% Ability Power)) magic damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "eq",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n5"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "structure"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "네 번째 기본 공격이 추가 마법 피해를 입힙니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Twisted Fate gains 15/25/35/45/55% Attack Speed and every 4th Attack deals an additional (65/90/115/140/165 + (20% bonus Attack Damage) + (40% Ability Power)) magic damage. 50% effective against structures."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "attack",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "hit_count",
+              "operator": "eq",
+              "value": {
+                "kind": "number_ref",
+                "ref": "en:body:n5"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "structure"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "네 번째 기본 공격의 추가 피해는 구조물에 절반 효과로 적용됩니다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8",
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n11"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Passive: Twisted Fate gains 15/25/35/45/55% Attack Speed and every 4th Attack deals an additional (65/90/115/140/165 + (20% bonus Attack Damage) + (40% Ability Power)) magic damage. 50% effective against structures."
+            }
+          ]
+        }
+      ],
+      "gaps": []
+    },
+    "R": {
+      "summary": "시전하면 일정 시간 모든 적 챔피언에게 절대 시야를 얻고 재사용할 수 있습니다. 재사용하면 일정 거리 안으로 순간이동하며, 방해 효과에 맞으면 순간이동이 중단됩니다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "visibility",
+              "subject": "enemy",
+              "text": "맵의 모든 적 챔피언에 대한 절대 시야를 얻습니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Twisted Fate focuses on his cards, granting True Sight of all enemy champions on the map for 6/8/10 seconds and allowing him to Recast."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "재사용하면 최대 사거리 안의 위치로 순간이동합니다. 방해 효과는 순간이동을 중단시킵니다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "distance_units",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Recast: Twisted Fate teleports up to 5500 units away. Disabling effects will interrupt the teleport."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "source_conflict",
+          "detail": "요약에는 관문 사용 가능 시간이 1.5초라고 되어 있으나, 영어 본문에는 재사용 가능한 시간으로 기재되어 있지 않습니다. 본문 수치를 사용하지 않았습니다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "Twisted Fate predicts the fortunes of his foes, revealing all enemy champions and enabling the use of Gate, which teleports Twisted Fate to any target location in 1.5 seconds."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Twisted Fate focuses on his cards, granting True Sight of all enemy champions on the map for 6/8/10 seconds and allowing him to Recast. Recast: Twisted Fate teleports up to 5500 units away. Disabling effects will interrupt the teleport."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "TwistedFate.W",
+      "errors": [
+        {
+          "code": "damage_type",
+          "path": "rules.3",
+          "detail": "Damage effect needs an explicit source damage type"
+        },
+        {
+          "code": "damage_type",
+          "path": "rules.4",
+          "detail": "Damage effect needs an explicit source damage type"
+        },
+        {
+          "code": "damage_type",
+          "path": "rules.5",
+          "detail": "Damage effect needs an explicit source damage type"
+        }
+      ]
+    }
+  ]
+}

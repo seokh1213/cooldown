@@ -1,0 +1,110 @@
+{
+  "id": "Irelia.E",
+  "sourceHash": "7dce8aa054117ef4a32745d39e8b7b8313d9953a4f72772c604522a71ac3b315",
+  "beforeCandidateHash": "9e22f50d6de59a5e8e24f8951f5e5a63432281a222c8e27aa696394b72ce52b3",
+  "candidateHash": "f335e6d4f85397c8277054a84b1db3ffd560c4dcff225e12a8a9f02ce6bbc31f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 0,
+  "summaryCheck": "첫 검과3.5초 재사용 가능, 두 번째 검의 수렴 적중 피해/0.75초 기절, 챔피언·대형 정글 몬스터만5초 불안정, 미재사용 시3.5초 자기 위치 자동 재사용을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 지면에 검을 던지고 재사용할 수 있는 상태가 됩니다.; duration_seconds=3.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 recast 사건에서 별도 조건 없이 적용. caster: 두 번째 검을 던진 뒤 두 검이 서로를 향해 날아갑니다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 서로를 향해 날아가는 두 검 사이에서 적중한 적 적용. target: 적을 기절시킵니다. (stun); duration_seconds=0.75  scalar / target: 마법 피해를 입힙니다. (magic); amount=70/110/150/190/230  rank_values, stat_coefficient=100% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq champion 적용. target: 챔피언을 불안정 상태로 만듭니다.; duration_seconds=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.target_type eq monster, target.other eq 대형 정글 몬스터 적용. target: 대형 정글 몬스터를 불안정 상태로 만듭니다.; duration_seconds=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 expiry 사건에서 caster.other eq 아직 두 번째 검을 재사용하지 않음 적용. caster: 재사용하지 않으면 자신의 위치에서 자동으로 재사용합니다.; duration_seconds=3.5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2-4",
+      "issue": "스킬 적중 주체가 enemy이며 대형 정글 몬스터 범위 누락",
+      "correction": "caster 사건, 검 사이 적중, 대형 정글 몬스터 조건 보완",
+      "sourceId": "en:body",
+      "quote": "Champions and large jungle monsters become Unsteady for 5 seconds."
+    },
+    {
+      "path": "rules.5.conditions",
+      "issue": "이미 재사용한 경우 자동 재사용 반복 가능",
+      "correction": "미재사용 상태 조건 명시",
+      "sourceId": "en:body",
+      "quote": "Irelia will automatically Recast at her location after 3.5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

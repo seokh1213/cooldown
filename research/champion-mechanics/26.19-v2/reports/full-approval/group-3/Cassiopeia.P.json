@@ -1,0 +1,49 @@
+{
+  "id": "Cassiopeia.P",
+  "sourceHash": "3a19ff1e5f460b5245a01bc1c67215e8b29de8cb334cb23e161916de882a4311",
+  "beforeCandidateHash": "1b6f3f23989cac0a11d5385c96a2128fbecc4a6bf7540549df91ba2956311845",
+  "candidateHash": "805282e376ebb2018540e31acdc286eab7801eaa279af31d16cbba051416c8cf",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 1,
+  "summaryCheck": "자신에게적용되는모든이동속도추가효과의효율을레벨별5%~36%높이는효과를대조했다. 전체이동속도를직접5~36%증가시키는효과로변경하지않았다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 카시오페아에게적용되는모든이동속도추가효과의효율이레벨별5%~36%증가합니다. 전체이동속도의직접5~36%증가가아닙니다. / other=5%/36% [level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0",
+      "issue": "추가이속효율증가가전체moveSpeed→moveSpeed ratio_input으로표현됐다.",
+      "correction": "전체이속선형변환을제거하고이속추가효과효율+5~36%로보존했다.",
+      "sourceId": "en:body",
+      "quote": "increases the effectiveness of all Move Speed bonuses"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "스키마에는이동속도추가효과효율/증폭전용스탯이없다. 전체moveSpeed변환대신해당효율증가의의미를텍스트와레벨범위로보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

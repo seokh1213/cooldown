@@ -1,0 +1,36 @@
+{
+  "id": "Jax.P",
+  "sourceHash": "0e561605c33785bdb97ba927460da0830b5b5347f5860cb4146b07398e1e8fa2",
+  "beforeCandidateHash": "d0281da8ee9e3d2655507b3c2f066bb4cb45cadacbc0239d59a570d3afd6650d",
+  "candidateHash": "914527093467f8f52a480249c1e12f9c8d0bad1ef0dd02fef63fdef2a231924d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "공격당AS중첩의효과대상능력치는자기공격속도임을확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack → caster: 기본 공격 시 공격 속도 중첩을 얻습니다. 각 중첩은 일정 시간 유지됩니다. / duration_seconds=2.5 [scalar]; amount=5.0%/12.5% (caster attackSpeed) [level_range]; storage_cap=40.0%/100.0% (caster attackSpeed) [level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.statTo",
+      "issue": "공격속도증가도착능력치누락",
+      "correction": "attackSpeed로연결",
+      "sourceId": "en:body",
+      "quote": "gives him (5.0% ~ 12.5%) Attack Speed"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

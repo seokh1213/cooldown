@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Olaf.E",
+      "sourceHash": "84e1e2e614042b55f7fd51254d0aa91fd07b413957efeff50d3bec951cb077d9",
+      "candidateHash": "719f03798a4476c72329985b0feae6e6141e3671ab6c5fd08342b3bee00065e4"
+    },
+    {
+      "id": "Olaf.P",
+      "sourceHash": "dcc6934de7cbfefda82ebcf6df0386c70cbe69008fd2f0504ea2c6132846f9b8",
+      "candidateHash": "ddddbfaa2e6469e765b65c0d73407b5e44bf1ca309fb598157195a4641763841"
+    },
+    {
+      "id": "Olaf.Q",
+      "sourceHash": "718ea6f7b2507f79ace0808ac1c8ff33bc57867e9fc88aa97974d7170dc18b6c",
+      "candidateHash": "11841f188383ab1e27e1a83aff23ee5db46c632dc471626cee74261e4f46b5ae"
+    },
+    {
+      "id": "Olaf.R",
+      "sourceHash": "ece5010bbeba790fb52b43dd0b6508cb3f71f8eaa3d44df9a05b34755e7bd814",
+      "candidateHash": "ca2215d16afa5d9bf441430469de78e781e5abbc99ac4c52ccbbbff8de6fdb62"
+    },
+    {
+      "id": "Olaf.W",
+      "sourceHash": "f07763345c57743a0a332b936e0e376862fd10a1adbd56c4b8ec047f6ae2a143",
+      "candidateHash": "c46a5b6f07f0677f211042ed7fa77cc3fd7f664286d63bc8a6ae1653fb063019"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Olaf.E",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Attacks lower the Cooldown of this Ability by 1 second, increased to 2 seconds when attacking monsters.",
+      "issue": "조건이 몬스터가 아닌 대상만 허용하므로, 원문상 모든 공격에 적용되는 기본 1초 감소가 일반 공격에만 적용되고 몬스터 공격에는 제외되는 것으로 표현됩니다.",
+      "correction": "일반 공격에 대한 별도 대상 조건을 제거해 공격 시 1초 감소를 나타내고, 몬스터 공격 시 2초 감소 규칙을 함께 적용되는 증가분 또는 대체값으로 모델링하세요."
+    },
+    {
+      "id": "Olaf.Q",
+      "path": "rules.0.effects.1.parameters.0.numbers.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Olaf throws an axe, dealing (70/120/170/220/270 + (100% bonus Attack Damage)) physical damage and Slowing by 30/35/40/45/50% for up to 3 seconds (based on distance travelled).",
+      "issue": "둔화 수치의 첫 네 값이 30/35/40/45로 기록되어 퍼센트가 누락됐습니다. 같은 목록의 마지막 값은 50%입니다.",
+      "correction": "rank_values의 첫 네 값도 백분율로 기록하세요."
+    },
+    {
+      "id": "Olaf.Q",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Olaf picks up the axe, this Ability's Cooldown is reduced to 2.5 seconds, or fully refunded if 2.5 seconds has elapsed.",
+      "issue": "재사용 대기시간을 2.5초로 줄이는 값과 완전히 환급되는 시점을 모두 cooldown_seconds로 기록해 두 번째 2.5초가 남은 쿨다운 길이처럼 보입니다. 원문에서 두 번째 값은 경과 시간 조건입니다.",
+      "correction": "첫 2.5초는 재사용 대기시간 값으로, 두 번째 2.5초는 경과 시간 조건으로 구분하세요."
+    },
+    {
+      "id": "Olaf.R",
+      "path": "rules.2.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "While active, Olaf gains (10/20/30 + (25% Attack Damage)) Attack Damage.",
+      "issue": "활성 중 얻는 공격력이 cast 트리거에만 연결되어, 원문이 명시한 활성 지속 중 효과로는 표현되지 않습니다.",
+      "correction": "공격력 증가를 시전 시점의 일회성 효과가 아니라 활성 상태 동안 적용되는 효과로 나타내세요."
+    },
+    {
+      "id": "Olaf.R",
+      "path": "rules.3.effects.0.kind",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Hitting a champion with an Attack or Reckless Swing extends the duration by 2.5 seconds.",
+      "issue": "효과 종류가 cooldown_change라서 스킬 지속시간 연장이 재사용 대기시간 변경으로 분류됩니다.",
+      "correction": "효과를 활성 효과의 지속시간 연장으로 나타내세요."
+    },
+    {
+      "id": "Olaf.R",
+      "path": "rules.4.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Additionally, Olaf gains 20/45/70% Move Speed towards enemy champions for 1 second.",
+      "issue": "1초 지속시간을 이동 속도 효과에 붙여 활성 상태 조건으로만 기록했습니다. 원문은 이동 속도 증가 자체가 1초 동안 지속된다고 명시합니다.",
+      "correction": "1초를 이동 속도 증가 효과의 지속시간으로 연결하세요."
+    },
+    {
+      "id": "Olaf.W",
+      "path": "rules.1.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Olaf gains 40/50/60/70/80% Attack Speed for 5 seconds, and 10/40/70/100/130 plus 17.5% missing Health Shield (up to a maximum of (10/40/70/100/130 + (12.25% Health)) Shield below 30% Health) for 2.5 seconds.",
+      "issue": "17.5% missing Health 계수를 maxHealth로 기록해 잃은 체력 기반 보호막을 최대 체력 기반으로 바꿨습니다.",
+      "correction": "계수를 maxHealth로 지정하지 말고 잃은 체력 기반으로 보존하세요."
+    },
+    {
+      "id": "Olaf.W",
+      "path": "rules.2.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Olaf gains 40/50/60/70/80% Attack Speed for 5 seconds, and 10/40/70/100/130 plus 17.5% missing Health Shield (up to a maximum of (10/40/70/100/130 + (12.25% Health)) Shield below 30% Health) for 2.5 seconds.",
+      "issue": "최대 보호막 계산에 쓰인 12.25% Health를 maxHealth 계수로 특정했으나 원문은 Health라고만 씁니다.",
+      "correction": "해당 stat을 maxHealth로 확정하지 말고 원문의 Health 표기를 불확실한 체력 계수로 보존하세요."
+    }
+  ],
+  "notes": []
+}

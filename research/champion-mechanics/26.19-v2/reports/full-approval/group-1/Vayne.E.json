@@ -1,0 +1,42 @@
+{
+  "id": "Vayne.E",
+  "sourceHash": "aad167fc903a2397eafb6f413d36f8b02072bddcdd12d7d4f79304e91bce583a",
+  "beforeCandidateHash": "2a31792feac8c75c4711103b2375cb303e0f8dad0d6f735861c8fe112c501c72",
+  "candidateHash": "b6354af8a44db44c0df10372b14ae5cb798cfffad89d39a03de6425f09c6227e",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "볼트의물리 피해50~190+추가AD50%및넉백, 그 넉백 대상이 지형과 충돌하면 추가 물리 피해75~285+추가AD75%및1.5초기절을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. target crowd_control knockback: 대상을 뒤로 밀쳐낸다. [] / target damage physical: 물리 피해를 입힌다. [amount n0=50/n1=85/n2=120/n3=155/n4=190 rank_values; stat_coefficient n5=50% scalar caster.bonusAttackDamage]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, target.other; 조건 target.other eq 이 선고의 볼트로 밀쳐진 동일 대상이 지형과 충돌. target damage physical: 추가 물리 피해를 입힌다. [amount n6=75/n7=127.5/n8=180/n9=232.5/n10=285 rank_values; stat_coefficient n11=75% scalar caster.bonusAttackDamage] / target crowd_control stun: 기절시킨다. [duration_seconds n12=1.5 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions",
+      "issue": "임의 지형 충돌에도 추가 피해/기절 가능",
+      "correction": "이 볼트로 밀쳐진 동일 대상의 지형 충돌로 제한했다.",
+      "sourceId": "en:body",
+      "quote": "If the target collides with terrain, they take (75/127.5/180/232.5/285 + (75% bonus Attack Damage)) bonus physical damage and become Stunned for 1.5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

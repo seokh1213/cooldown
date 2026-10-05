@@ -1,0 +1,110 @@
+{
+  "id": "Rell.W",
+  "sourceHash": "9d146b8cb7995b7a75b7b80c8c0993bf2936ab1309db7d7aed68220c456f2397",
+  "beforeCandidateHash": "1034ec8bfb5df6f9a74426fabbc9897bb89a43da9e7a37c24a6fe6534ba703da",
+  "candidateHash": "ce01eea30dfd94eb98d5d8e91b5c0a422a0a2b3a2cc72c2dc1ee78581d499f7d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 8,
+  "checkedGapCount": 2,
+  "summaryCheck": "탑승 중 이동 속도, 붕괴의 피해·보호막, 중갑 능력치와 둔화, 탑승 후 이동 속도 및 다음 공격 띄우기를 양언어 본문·요약과 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.form eq mounted. caster stat_modifier: 탑승 상태에서 이동 속도가 증가한다. [amount n0=20/n1=25/n2=30/n3=35/n4=40 rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq mounted. nearby_enemies crowd_control knockup: 탈것에서 뛰어내리며 적들을 공중으로 띄운다. [] / nearby_enemies damage magic: 적들에게 마법 피해를 입힌다. [amount n5=60/n6=90/n7=120/n8=150/n9=180 rank_values; stat_coefficient n10=60% formula_components caster.abilityPower] / caster transform: 붕괴 후 렐은 중갑 보행 형태로 전환한다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq mounted. caster shield: 다시 탑승할 때까지 지속되는 보호막을 얻으며 렐 자신의 체력 11%를 더한다. 현재/최대 체력 구분은 제공되지 않았다. [amount n11=20/n12=40/n13=60/n14=80/n15=100 rank_values; other n16=11% formula_components]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.transform; 조건 caster.form eq armored. caster stat_modifier: 중갑 상태에서 방어력이 15% 증가한다. [amount n17=15% scalar] / caster stat_modifier: 중갑 상태에서 마법 저항력이 15% 증가한다. [amount n17=15% scalar] / caster stat_modifier: 중갑 상태에서 공격 속도가 20% 증가한다. [amount n18=20% scalar] / caster stat_modifier: 중갑 상태에서 공격 사거리가 75 증가한다. [distance_units n19=75 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.form eq armored. caster ui_information: 중갑 상태에서 철마술: 탑승을 사용할 수 있다. []"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.form eq armored. caster crowd_control slow: 중갑 보행 상태에서는 둔화된다. 둔화량은 요약에 없다. []"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 caster.form eq armored. caster transform: 철마술: 탑승으로 탈것에 올라탄다. [] / caster stat_modifier: 중갑 상태에서 탑승하면 이동 속도가 순간적으로 증가한다. []"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 철마술: 탑승 이후 다음 기본 공격. target crowd_control knockup: 탑승 후 다음 기본 공격을 받는 적을 공중으로 띄운다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0,2,3,5,6",
+      "issue": "평면 이동 속도에 계수 스탯 지정, 불명확한 최대 체력 고정, 전환 조건 및 요약의 핵심 효과 누락",
+      "correction": "이동 속도 평면 증가와 중갑 각 능력치를 분리하고 자기 체력 기준 한계를 남겼다. 중갑 둔화와 탑승/다음 공격 띄우기 규칙을 추가했다.",
+      "sourceId": "en:body",
+      "quote": "Rell gains (20/40/60/80/100 + (11% Health)) Shield, which lasts until she remounts."
+    },
+    {
+      "path": "rules.1.effects.2;rules.3.conditions",
+      "issue": "중갑전환효과가대상전환사건의전제에만있음",
+      "correction": "붕괴후중갑형태전환을실제효과로보존하고중갑능력치조건을armored로명시했다.",
+      "sourceId": "en:body",
+      "quote": "Rell then enters her armored form, gaining 15% increased Armor and Magic Resist, 20% Attack Speed and 75 Attack Range."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 403,
+      "verdict": "documented_gap",
+      "reason": "체력 11%는 보호막 주인인 렐의 체력을 가리키지만 현재/최대 기준은 공급 원문에 없다. maxHealth 실행을 제거하고 미확정 계수와 범위 한계를 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_variant",
+      "detail": "철마술: 탑승의 이동 속도 증가와 다음 공격 띄우기는 요약 규칙으로 보존했으나 본문이 붕괴 형태만 제공하여 탑승의 수치·지속 시간과 중갑 둔화량은 확정할 수 없다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "보호막의 렐 체력 11%는 원문이 현재/최대 체력을 구별하지 않아 maxHealth 계수로 실행하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

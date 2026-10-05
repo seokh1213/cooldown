@@ -1,0 +1,109 @@
+{
+  "id": "Pantheon.W",
+  "sourceHash": "565a5fd905a810fa536640138236c046c991b6ce8d8c5225653a4cbecb1cc10b",
+  "beforeCandidateHash": "99626e4b5d18f7e72b296518aa93dfd57db3cf0389b62d13dee1865c5c0a7a9b",
+  "candidateHash": "7d8ad926548e012c5213ca2c78beb5e840c3320a5f44ec20842d8eaaed899a53",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "도약·기절·최대 체력 비례 피해와 강화 후 다음 공격의 세 타격을 원문과 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "도약과 1초 기절, 최대 체력의 6/6.5/7/7.5/8% 및 추가 체력 100당 0.4%·주문력 100당 1.5%라는 괄호 식을 확인했다. 분모와 최종 최대 체력 비율을 문장으로 명시했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "강화 W 사용 후 다음 기본 공격이 세 번 타격하며 총 공격력의 120~165% 피해라는 조건과 합계 계수를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언 최소 60·최대 150 제한을 보존하되 일반 기본 공격 피해로 실행되지 않도록 스킬 정보로 표현했다. 어느 W 단계의 제한인지는 원문 위치만으로 단정하지 않았다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "몬스터의 같은 최소 60·최대 150 제한을 대상 유형별로 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.2.text",
+      "issue": "퍼센트 배열의 앞 숫자를 절대 피해량으로 계산하지 않도록 원문의 비율과 분모를 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Pantheon leaps on his target, Stunning for 1 second and dealing (6/6.5/7/7.5/8% + (0.4% per 100 bonus Health) + (1.5% per 100 Ability Power)) max Health physical damage. Mortal Will Bonus: Pantheon's next Attack strikes 3 times, dealing a total of ((120% ~ 165%) Attack Damage) physical damage. Deals a minimum of 60 and a maximum of 150 damage to Minions and Monsters."
+    },
+    {
+      "path": "rules.1.conditions.1",
+      "issue": "강화 상태의 모든 기본 공격으로 확대될 수 있는 조건을 다음 공격으로 제한했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Pantheon leaps on his target, Stunning for 1 second and dealing (6/6.5/7/7.5/8% + (0.4% per 100 bonus Health) + (1.5% per 100 Ability Power)) max Health physical damage. Mortal Will Bonus: Pantheon's next Attack strikes 3 times, dealing a total of ((120% ~ 165%) Attack Damage) physical damage. Deals a minimum of 60 and a maximum of 150 damage to Minions and Monsters."
+    },
+    {
+      "path": "rules.2.trigger.event",
+      "issue": "원문은 W의 min/max를 명시하지만 일반 attack 이벤트로 실행할 근거와 적용 단계는 충분하지 않다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Pantheon leaps on his target, Stunning for 1 second and dealing (6/6.5/7/7.5/8% + (0.4% per 100 bonus Health) + (1.5% per 100 Ability Power)) max Health physical damage. Mortal Will Bonus: Pantheon's next Attack strikes 3 times, dealing a total of ((120% ~ 165%) Attack Damage) physical damage. Deals a minimum of 60 and a maximum of 150 damage to Minions and Monsters."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "note": "W 원문은 최대 체력 비율의 괄호 식과 100당 계수를 명시한다. frozen 숫자표는 6/6.5/7/7.5/8%의 앞 항목에 percent=false를 두므로 lexical 숫자표만으로 단위를 실행하지 말 것. min/max 60~150 문장은 기본 W와 강화 후속 공격 중 적용 단계를 명시하지 않아 일반 기본 공격 제한으로 확정하지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "Pantheon.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

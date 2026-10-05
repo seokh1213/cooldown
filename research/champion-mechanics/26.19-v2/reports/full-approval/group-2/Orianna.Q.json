@@ -1,0 +1,67 @@
+{
+  "id": "Orianna.Q",
+  "sourceHash": "57b9559f862715ec42298bbbd4adc05a4510d6d8ec0943066666e0c33c7f5298",
+  "beforeCandidateHash": "0cfc4ccb9a64f99830b308db2835cd77478645288dfe5d30df618ff67e89874a",
+  "candidateHash": "4a9be5531226f4a1006171ce2088e1ae990a2b7b3121d3eba6a9b897ba553123",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 0,
+  "summaryCheck": "구체지정위치이동/도착후머묾; 처음60~180+55%AP마법/이후모든적30%감소를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq 이번 구체 이동에 처음 적중한 적; target: 구체가 목표 지점으로 이동하며 주변에 있거나 이동 경로에 있는 적에게 마법 피해를 입힌다. [magic]; 수치 amount en:body:n0=60,en:body:n1=90,en:body:n2=120,en:body:n3=150,en:body:n4=180 상수 rank_values / stat_coefficient en:body:n5=55%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.hit_order eq 이번 구체 이동에 첫 적 이후 적중한 모든 적; target: 첫 적 이후 모든 적의 피해는 동일 기본식(60~180+55%AP)에서30% 감소합니다. 기본식×(1-30%)이며30%를 절대 피해로 더하지 않습니다. [magic]; 수치 amount en:body:n0=60,en:body:n1=90,en:body:n2=120,en:body:n3=150,en:body:n4=180 상수 rank_values / stat_coefficient en:body:n5=55%(백분율) caster.abilityPower scalar / other en:body:n6=30%(백분율) 상수 formula_components; flags replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; summon: 구체가 지정 위치로 이동하고 도착한 위치에 남습니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "누락된구체이동·머묾 복원,30%감소를절대량합산하지 않게 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Orianna commands her Ball to move to an area, dealing (60/90/120/150/180 + (55% Ability Power)) magic damage to surrounding enemies and to enemies it passes through. Deals 30% less damage to all enemies after the first."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 370,
+      "verdict": "false_positive",
+      "reason": "rule0 첫적과 rule1 첫적이후 조건이 함께 모든적을 포함한다. 첫적rule을 무조건으로 바꾸면 후속적 일반피해가 중복된다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "id": "Qiyana.Q",
+  "sourceHash": "3af6ec1f2416f27567b6f5d4f42c555788e7d93c741efa5fcfd1bf2db48ac316",
+  "beforeCandidateHash": "beef477e7f47d5f760962f0842f5d0254a551c04064ac0c4ff8612796b31fb55",
+  "candidateHash": "e781489deb57e4945a767910664327cca7a3069ac5d45017e615bf464f67e4de",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 3,
+  "summaryCheck": "기본피해80~200+추가AD90%와강화추가사거리·얼음잠깐속박/이후1초20%둔화·바위대상HP50%미만추가피해·야생흔적투명/MS20%·첫뒤75%·정글160%를검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → nearby_enemies: 베기는80/110/140/170/200 + 자신의추가AD90%물리피해를준다.원소가없으면좁은영역을베고,원소가있으면사거리가증가하며추가효과를얻는다. [physical] / amount=80/110/140/170/200 [rank_values]; stat_coefficient=90% (caster bonusAttackDamage) [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster form eq 얼음의 힘 강화 → nearby_enemies: 적을 잠시 속박합니다. [root] | nearby_enemies: 속박한 뒤 적을 둔화시킵니다. [slow] / amount=20% [scalar]; duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster form eq 바위의 힘 강화; target health_threshold lt 50% → target: 체력이 50% 미만인 유닛에게 추가 물리 피해를 줍니다. [physical] / amount=48/66/84/102/120 [rank_values]; stat_coefficient=54% (caster bonusAttackDamage) [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 secondary_targets hit_order neq first → secondary_targets: 첫대상뒤에맞은적들은물리피해의75%를대신받는다. [physical] / damage_multiplier=75% [scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster form eq 야생의 힘 강화 → caster: 야생의힘이남긴흔적이키아나를투명하게하고이동속도를20%높인다.투명유닛은포탑이나절대시야로만드러난다. / amount=20% [scalar]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 target target_type eq monster; target other eq 정글 몬스터 → target: 정글 몬스터에게 이 스킬의 피해가 160%가 됩니다. 적용되는 피해 구성요소의 범위는 tooltip에서 특정하지 않습니다. [physical] / damage_multiplier=160% [scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions",
+      "issue": "기본피해를무원소에만한정해강화베기피해누락",
+      "correction": "원소보유시추가사거리/효과관계와기본피해유지",
+      "sourceId": "en:body",
+      "quote": "this Ability gains extra range and an additional effect"
+    },
+    {
+      "path": "rules.3.conditions",
+      "issue": "독립첫대상뒤감소문장을야생에만한정",
+      "correction": "원소무관후속대상75%조건",
+      "sourceId": "en:body",
+      "quote": "Enemies beyond the first take 75% physical damage instead."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 382,
+      "verdict": "false_positive",
+      "reason": "현재effect.damageType=physical이고text도물리피해라고명시한다.이번에는75%까지텍스트에명확히보존했다."
+    },
+    {
+      "index": 383,
+      "verdict": "false_positive",
+      "reason": "현재텍스트에야생의힘흔적이키아나를투명하게한다고인과범위를이미보존한다.20%MS를효과텍스트에명확화했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "첫대상뒤75%피해문장은원소별목록뒤독립적으로제시되어야생에만한정하지않았다.스킬피해의어느구성항에적용되는지세부식은명시되지않는다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "정글 몬스터 대상 피해 배율은 기재했지만, 어느 피해 구성요소에 적용되는지는 tooltip만으로 확정할 수 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_number",
+      "detail": "야생의 힘이 남기는 흔적의 지속시간은 제시되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

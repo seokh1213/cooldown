@@ -1,0 +1,110 @@
+{
+  "id": "Akali.W",
+  "sourceHash": "36136980b4b509c1afcadcb1d0485128e106dd71ae733866b735352dc1fcedef",
+  "beforeCandidateHash": "99f5662f250e2f5921ab7103467beed3eecc391c8b1c34dff109ffcf72f28e92",
+  "candidateHash": "084412b3d5a879815cfecf17b976c5fa936bc8cef7a55f59b6a1f7fc2b064e7a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "연막5/5.5/6/6.5/7초,MS30/35/40/45/50%의2초감쇠,연막활성최대기력+100,연막내투명/적타깃불가,공격/스킬의일시자기노출과외부포탑/절대시야노출을양언어본문/요약대조했다. 외부탐지와자기노출은서로다른상황이므로기존충돌gap은정정했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → unknown: 연막을 생성한다. / duration_seconds=5/5.5/6/6.5/7 [rank_values] | caster: 시전 시 이동속도30/35/40/45/50%를 얻고2초 동안 원래대로 감소합니다. / amount=30/35/40/45/50% [rank_values]; duration_seconds=2 [scalar] | caster: 연막이 활성화된 동안 최대 기력이 증가한다. / amount=100 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 enter_area / 조건 caster distance present 연막 안 → caster: 자신의연막안에있는동안투명상태여서적스킬/공격대상으로지정할수없습니다. 외부탐지로는포탑또는절대시야가투명을드러낼수있으며자신의공격/스킬시전시일시노출은별도규칙입니다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster other eq 자신의연막안에서투명상태일때 → caster: 공격하면 잠시 모습이 드러난다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 cast / 조건 caster other eq 자신의연막안에서투명상태일때 → caster: 스킬을 사용하면 잠시 모습이 드러난다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1-3/gaps.0",
+      "issue": "외부탐지제한과자기행동노출을충돌이라고판정하고노출조건/적타깃불가가불완전했다.",
+      "correction": "각상황을분리해모두보존하고연막내투명행동조건/타깃불가를복구했다.정확한노출시간한계로gap을정정했다.",
+      "sourceId": "en:summary",
+      "quote": "Attacking or using abilities will briefly reveal her."
+    },
+    {
+      "path": "rules.0.effects.1/gaps.2",
+      "issue": "모든랭크MS%단위가숫자표에서손실됐다.",
+      "correction": "전체퍼센트단위와숫자표한계를기록했다.",
+      "sourceId": "en:body",
+      "quote": "30/35/40/45/50% Move Speed"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "missing_source",
+      "detail": "요약의공격/스킬사용으로잠시노출되는정확한시간은공급원문에없다. 본문의포탑/절대시야외부탐지설명과자기행동노출은서로다른상황이므로둘다보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "최대 기력 증가량은 원문에 있지만 고정 통계 목록에 Energy에 대응하는 항목이 없어 statTo를 지정하지 않았다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "detail": "MS30/35/40/45/50%는모든랭크%증가인데frozen숫자표는마지막만percent=true이다.효과텍스트에단위를보존한다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

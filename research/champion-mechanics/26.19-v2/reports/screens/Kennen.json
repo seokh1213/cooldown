@@ -1,0 +1,116 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Kennen.E",
+      "sourceHash": "a8b69a0768f964f2be90aa7ab9c48da18045b16ecf30ac293f8737adc3f09e4f",
+      "candidateHash": "ec19595bcd8b96c67ad0d2dc910a02cb6a5fb6165661d81d023a58b8300c549a"
+    },
+    {
+      "id": "Kennen.P",
+      "sourceHash": "27781cb342f886460b80644ebb685ffc835356bc82bdf061de3ca971bec0892c",
+      "candidateHash": "e2a8a6374df2e022aa4e1cb7f956eae8d3a1bc2634c5dc131177b738e2c6713e"
+    },
+    {
+      "id": "Kennen.Q",
+      "sourceHash": "d1b24e9963521a23636d6fc289289ccbbed148e10afc8d3f69e4a2070d1ec7f8",
+      "candidateHash": "780009a36aa2340993fa04942636c7d257f16b43be27ae0c0c5716f97dbd3e37"
+    },
+    {
+      "id": "Kennen.R",
+      "sourceHash": "ae2381bb8b3e748f19c6764516fdf2dc9478aa93ef4719395b003fe494447ddb",
+      "candidateHash": "25cae24b4b5028b9bf33f249597c60027528b18f6e59bf4f2e74c6114506657a"
+    },
+    {
+      "id": "Kennen.W",
+      "sourceHash": "80e403e3bc48d87cb8b065eacab7c5b40ff147879be9680d9451a25e2bb6079b",
+      "candidateHash": "f4b53cc0e158b00cb4cb2ac8fb457877e11ce599bf268e669a702e213b2136b9"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Kennen.E",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If Kennen damages at least one enemy, he gains 40 Energy.",
+      "issue": "조건을 ‘적에게 피해를 입는’ 이벤트(damage_taken)로 기록했습니다. 원문은 케넨이 적에게 피해를 입히는 경우입니다.",
+      "correction": "피해 가해 이벤트로 바꾸고, 한 명 이상의 적에게 피해를 준 조건을 연결합니다."
+    },
+    {
+      "id": "Kennen.E",
+      "path": "rules.6.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals 65% damage to minions and jungle monsters.",
+      "issue": "65% 피해 조건을 미니언에게만 적용했습니다. 정글 몬스터도 같은 감소 대상입니다.",
+      "correction": "미니언과 정글 몬스터 모두에 적용되도록 조건 범위를 수정합니다."
+    },
+    {
+      "id": "Kennen.E",
+      "path": "rules.7.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals 65% damage to minions and jungle monsters.",
+      "issue": "몬스터 조건을 정글 몬스터로 한정하지 않고 전체 monster 유형으로 기록해 적용 범위를 넓혔습니다.",
+      "correction": "조건을 정글 몬스터로 한정합니다."
+    },
+    {
+      "id": "Kennen.P",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "At 3 stacks, enemies are Stunned for 1.25 seconds and Kennen gains 25 Energy.",
+      "issue": "중첩 3회 도달 시 기절과 기력 획득을 일으키는 이벤트가 other로 남아 있습니다.",
+      "correction": "세 번째 표식 중첩에 도달하는 이벤트로 기록합니다."
+    },
+    {
+      "id": "Kennen.Q",
+      "path": "rules.0.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kennen throws a shuriken, dealing (75/125/175/225/275 + (75% Ability Power)) magic damage to the first enemy hit.",
+      "issue": "수리검 투척 효과의 주체를 unknown으로 두어 누가 던지는지 불명확합니다.",
+      "correction": "효과 주체를 케넨으로 기록합니다."
+    },
+    {
+      "id": "Kennen.R",
+      "path": "rules.0.effects.0.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kennen unleashes a magical storm, dealing (40/80/120 + (25% Ability Power)) magic damage to all nearby enemies every 0.5 seconds",
+      "issue": "반복 피해를 시전 시 한 번 발생하는 피해로 표현했습니다. 원문은 0.5초마다 주변 모든 적에게 피해를 줍니다.",
+      "correction": "피해 이벤트를 주기적 적중으로 표현하고 0.5초 간격을 유지합니다."
+    },
+    {
+      "id": "Kennen.R",
+      "path": "rules.2.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Successive hits deal 10% increased damage for each hit the enemy has already suffered.",
+      "issue": "피해 증가 조건을 이전 적중 횟수가 3회 초과인 경우로 기록했습니다. 원문의 3은 증가 조건이 아니라 뒤에 나오는 방어력·마법 저항력 지속시간입니다.",
+      "correction": "잘못 연결된 3회 초과 조건을 제거하고, 이전에 받은 적중 횟수마다 10% 증가한다는 내용만 보존합니다."
+    },
+    {
+      "id": "Kennen.W",
+      "path": "rules.1.conditions.0.value",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Kennen sends out a blast of electricity, dealing (70/95/120/145/170 + (80% Ability Power)) magic damage to nearby enemies affected by Mark of the Storm.",
+      "issue": "표식 보유 조건을 empowered 상태로 한정했습니다. 원문은 폭풍의 표식이 있는 주변 적을 대상으로 하며 강화 상태를 요구하지 않습니다.",
+      "correction": "표식이 있는 주변 적 조건으로 기록하고 empowered 한정값은 제거합니다."
+    },
+    {
+      "id": "Kennen.W",
+      "path": "rules.2.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Attacking structures will stack the passive, but not expend it.",
+      "issue": "구조물 공격 시 표식(mark)을 케넨에게 적용하는 것으로 기록했습니다. 원문은 기본 지속 효과의 공격 중첩을 쌓고 소모하지 않는다고 설명합니다.",
+      "correction": "표식 적용 효과 대신 기본 지속 효과 충전 중첩을 쌓되 소모하지 않는 효과로 기록합니다."
+    }
+  ],
+  "notes": []
+}

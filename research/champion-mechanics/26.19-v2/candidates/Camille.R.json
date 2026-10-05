@@ -1,0 +1,232 @@
+{
+  "summary": "적 챔피언에게 도약해 일정 시간 영역에 가둔다. 시전 중 잠시 대상으로 지정할 수 없으며, 주변의 다른 적은 밀려난다. 대상의 정신 집중을 방해하고, 갇힌 적을 공격하면 대상의 현재 체력에 비례한 마법 피해를 추가로 입힌다. 카밀이 영역을 벗어나면 스킬이 끝난다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "잠시 대상으로 지정할 수 없게 된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "적 챔피언에게 도약한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "주변의 다른 적을 밀쳐낸다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "대상은 정해진 지속시간 동안 어떤 방법으로도 탈출할 수 없는 영역에 갇힌다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Camille briefly becomes Untargetable and leaps onto an enemy champion, interrupting channels and locking them into an area they cannot escape by any means for 2.5/3.25/4 seconds. Other nearby enemies are Knocked Away."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상의 정신 집중을 방해한다.",
+          "damageType": null,
+          "crowdControl": "disrupt",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Camille briefly becomes Untargetable and leaps onto an enemy champion, interrupting channels and locking them into an area they cannot escape by any means for 2.5/3.25/4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 R로 생성한 영역에 갇힌 대상 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "갇힌 적에 대한 공격은 대상의 현재 체력에 비례한 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Her Attacks against the trapped enemy deal an additional 4/6/8% current Health magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "카밀이 이 스킬의 영역을 벗어남"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "카밀이 영역을 벗어나면 이 스킬이 끝난다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability ends if Camille leaves the area."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "피해 기준은 대상의 현재 체력(current Health)이다. 스키마에 현재 체력 통계가 없어 stat을 지정하지 않고 원문 기준을 텍스트로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Her Attacks against the trapped enemy deal an additional 4/6/8% current Health magic damage."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "영역 이탈을 나타내는 전용 이벤트나 조건 필드가 없어 영역 이탈 조건을 텍스트로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability ends if Camille leaves the area."
+        }
+      ]
+    }
+  ]
+}

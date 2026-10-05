@@ -1,0 +1,1787 @@
+{
+  "drafts": {
+    "P": {
+      "summary": "나르는 피해를 주거나 받으면 분노를 생성한다. 분노가 최대치일 때 다음 스킬을 사용하면 메가 나르로 변신한다. 미니 나르와 메가 나르는 각각 명시된 능력치 증가 효과를 얻는다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "damage_taken",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "피해를 받으면 분노를 생성한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gnar generates Rage by dealing and receiving damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "피해를 주면 분노를 생성한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Gnar generates Rage by dealing and receiving damage."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "resource",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "empowered"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "transform",
+              "subject": "caster",
+              "text": "최대 분노일 때 다음 스킬을 사용하면 메가 나르로 변신한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n0"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "At max Rage his next Ability transforms him into Mega Gnar for 15 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 속도가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n3",
+                    "en:body:n4"
+                  ],
+                  "stat": "attackSpeed",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 사거리가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5",
+                    "en:body:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mini Gnar: Gain (0 ~ 20) Move Speed, (5.5% ~ 99.0%) Attack Speed, and (0 ~ 100) Attack Range."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "최대 체력이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "maxHealth",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n7",
+                    "en:body:n8"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "방어력이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "armor",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n9",
+                    "en:body:n10"
+                  ],
+                  "stat": "armor",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "마법 저항력이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "magicResist",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n11",
+                    "en:body:n12"
+                  ],
+                  "stat": "magicResist",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격력이 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "totalAttackDamage",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n13",
+                    "en:body:n14"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "level_range"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mega Gnar: Gain (100 ~ 831) max Health, (4 ~ 55) Armor, (4 ~ 63) Magic Resist, and (6 ~ 49) Attack Damage."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "요약문은 전투 중 분노 생성이라고 하지만 본문은 피해를 주거나 받는 경우라고만 적는다. 전투 판정의 세부 조건은 확정할 수 없다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "While in combat Gnar generates Rage."
+            },
+            {
+              "sourceId": "en:body",
+              "quote": "Gnar generates Rage by dealing and receiving damage."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "공격 사거리 증가량에 원문 표기는 있지만 단위를 툴팁에서 확인할 수 없어 수치 단위를 특정하지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mini Gnar: Gain (0 ~ 20) Move Speed, (5.5% ~ 99.0%) Attack Speed, and (0 ~ 100) Attack Range."
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "summary": "미니 나르는 부메랑으로 적중한 적에게 물리 피해와 둔화를 적용하며, 돌아오는 부메랑은 후속 대상에게 감소한 피해를 준다. 메가 나르는 바위를 던져 첫 적중 대상과 주변 적에게 피해와 둔화를 적용한다. 부메랑을 받거나 바위를 집으면 재사용 대기시간이 감소한다.",
+      "rules": [
+        {
+          "variant": "form:A",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "부메랑이 적에게 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n0",
+                    "form:A:en:n1",
+                    "form:A:en:n2",
+                    "form:A:en:n3",
+                    "form:A:en:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "form:A:en:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n6",
+                    "form:A:en:n7",
+                    "form:A:en:n8",
+                    "form:A:en:n9",
+                    "form:A:en:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "form:A:en:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Mini Gnar: Gnar throws a boomerang that deals (5/45/85/125/165 + (125% Attack Damage)) physical damage and Slows by 15/20/25/30/35% for 2 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "form:A",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "secondary_targets"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            },
+            {
+              "subject": "secondary_targets",
+              "field": "hit_order",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "secondary_targets",
+              "text": "돌아오는 부메랑이 후속 적중 대상에게 감소한 피해를 입히며, 첫 번째 대상 이후의 적은 기본 피해의 절반을 받는다. 각 적은 한 번만 맞는다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "damage_multiplier",
+                  "numberRefs": [
+                    "form:A:en:n13"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "replace_input",
+                "per_target"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "The boomerang returns after hitting an enemy, dealing reduced damage to subsequent targets. Each enemy can only be hit once. Catching the boomerang reduces its Cooldown by 40%. Deals 50% damage to enemies beyond the first."
+            }
+          ]
+        },
+        {
+          "variant": "form:A",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "부메랑을 받으면 재사용 대기시간이 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Catching the boomerang reduces its Cooldown by 40%."
+            }
+          ]
+        },
+        {
+          "variant": "form:B",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            },
+            {
+              "subject": "target",
+              "field": "hit_order",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "바위가 첫 번째 적중 대상에게 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:B:en:n0",
+                    "form:B:en:n1",
+                    "form:B:en:n2",
+                    "form:B:en:n3",
+                    "form:B:en:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "form:B:en:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "첫 번째 적중 대상을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:B:en:n6",
+                    "form:B:en:n7",
+                    "form:B:en:n8",
+                    "form:B:en:n9",
+                    "form:B:en:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "form:B:en:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:B:en",
+              "quote": "Mega Gnar: Gnar hurls a boulder, dealing (45/90/135/180/225 + (140% Attack Damage)) physical damage and Slowing by 30/35/40/45/50% for 2 seconds to the first enemy hit and surrounding enemies."
+            }
+          ]
+        },
+        {
+          "variant": "form:B",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            },
+            {
+              "subject": "nearby_enemies",
+              "field": "hit_order",
+              "operator": "neq",
+              "value": {
+                "kind": "enum",
+                "value": "first"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "바위가 첫 적중 대상 주변의 적에게 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:B:en:n0",
+                    "form:B:en:n1",
+                    "form:B:en:n2",
+                    "form:B:en:n3",
+                    "form:B:en:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "form:B:en:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "첫 적중 대상 주변의 적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:B:en:n6",
+                    "form:B:en:n7",
+                    "form:B:en:n8",
+                    "form:B:en:n9",
+                    "form:B:en:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "form:B:en:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:B:en",
+              "quote": "Mega Gnar: Gnar hurls a boulder, dealing (45/90/135/180/225 + (140% Attack Damage)) physical damage and Slowing by 30/35/40/45/50% for 2 seconds to the first enemy hit and surrounding enemies."
+            }
+          ]
+        },
+        {
+          "variant": "form:B",
+          "trigger": {
+            "event": "recast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "cooldown_change",
+              "subject": "caster",
+              "text": "바위를 집으면 스킬의 재사용 대기시간이 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:B:en:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:B:en",
+              "quote": "Picking up the boulder reduces this Ability's Cooldown by 70%."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_condition",
+          "detail": "부메랑이 돌아오는 과정에서 후속 대상에게 적용되는 감소 피해율은 명시되어 있으나, 본문은 그 감소 피해의 정확한 판정 범위를 더 설명하지 않는다.",
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "The boomerang returns after hitting an enemy, dealing reduced damage to subsequent targets. Each enemy can only be hit once. Catching the boomerang reduces its Cooldown by 40%. Deals 50% damage to enemies beyond the first."
+            }
+          ]
+        },
+        {
+          "reason": "scope_ambiguous",
+          "detail": "메가 Q의 피해와 둔화는 첫 적중 대상 및 주변 적 모두에 적용된다고 적혀 있다. 주변 적이 첫 적중 대상과 중복될 수 있는 세부 판정은 명시되지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "form:B:en",
+              "quote": "Mega Gnar: Gnar hurls a boulder, dealing (45/90/135/180/225 + (140% Attack Damage)) physical damage and Slowing by 30/35/40/45/50% for 2 seconds to the first enemy hit and surrounding enemies."
+            }
+          ]
+        }
+      ]
+    },
+    "W": {
+      "summary": "미니 나르는 같은 적에게 세 번째 기본 공격 또는 스킬을 적중시키면 추가 마법 피해와 감소하는 이동 속도 증가를 얻는다. 메가 나르는 범위에 물리 피해를 주고 기절시킨다.",
+      "rules": [
+        {
+          "variant": "form:A",
+          "trigger": {
+            "event": "attack_or_ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "hit_count",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "same enemy, third Attack or Ability"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "같은 적에게 세 번째 기본 공격 또는 스킬을 적중시키면 추가 마법 피해를 입힌다.",
+              "damageType": "magic",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n0",
+                    "form:A:en:n1",
+                    "form:A:en:n2",
+                    "form:A:en:n3",
+                    "form:A:en:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "form:A:en:n5"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n6",
+                    "form:A:en:n7",
+                    "form:A:en:n8",
+                    "form:A:en:n9",
+                    "form:A:en:n10"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "target",
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "이동 속도가 증가하고 해당 증가량은 명시된 시간에 걸쳐 감소한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n11",
+                    "form:A:en:n12",
+                    "form:A:en:n13",
+                    "form:A:en:n14"
+                  ],
+                  "stat": "moveSpeed",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "form:A:en:n15"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": [
+                "decays"
+              ]
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Mini Gnar Passive: Every third Attack or Ability on the same enemy deals an additional (0/10/20/30/40 + (100% Ability Power)) plus 6/8/10/12/14% max Health magic damage and grants 20/40/60/80% Move Speed decaying over 3 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "form:A",
+          "trigger": {
+            "event": "transform",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "leaves Mega Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "메가 나르 형태를 벗어날 때 이동 속도를 얻는다. 증가량은 이 문장에서 특정되지 않았다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Gnar also gains the Move Speed when he leaves Mega Gnar form."
+            }
+          ]
+        },
+        {
+          "variant": "form:B",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "범위의 적에게 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:B:en:n0",
+                    "form:B:en:n1",
+                    "form:B:en:n2",
+                    "form:B:en:n3",
+                    "form:B:en:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "form:B:en:n5"
+                  ],
+                  "stat": "totalAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "범위의 적을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "form:B:en:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:B:en",
+              "quote": "Mega Gnar: Gnar smashes an area, dealing (45/75/105/135/165 + (100% Attack Damage)) physical damage and Stunning for 1.25 seconds."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "미니 W의 최대 체력 비율 피해는 대상의 최대 체력으로 읽히지만 툴팁은 소유자를 명시적으로 표시하지 않는다.",
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Every third Attack or Ability on the same enemy deals an additional (0/10/20/30/40 + (100% Ability Power)) plus 6/8/10/12/14% max Health magic damage"
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_condition",
+          "detail": "정글 몬스터 상대 최대 피해 제한이 있으나 어떤 피해 성분에 적용되는지 명시되지 않아 별도 피해 효과로 구조화하지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Deals a max of 300 magic damage against jungle monsters."
+            }
+          ]
+        },
+        {
+          "reason": "missing_source",
+          "detail": "메가 W 요약에는 적을 기절시키는 효과가 있지만 영문 본문에는 기절 대상 범위가 적혀 있지 않다. 본문 규칙에는 피해 범위만 근거로 반영했다.",
+          "evidence": [
+            {
+              "sourceId": "en:summary",
+              "quote": "Mega Gnar is too enraged to be hyper and instead can rear up on his hind legs and smash down on the area in front of him, stunning enemies in an area."
+            },
+            {
+              "sourceId": "form:B:en",
+              "quote": "Mega Gnar: Gnar smashes an area, dealing (45/75/105/135/165 + (100% Attack Damage)) physical damage and Stunning for 1.25 seconds."
+            }
+          ]
+        }
+      ]
+    },
+    "E": {
+      "summary": "미니 나르는 도약하며 공격 속도를 얻고, 유닛 위에 착지하면 튕겨 더 멀리 이동한다. 적에게 튕기면 물리 피해와 둔화를 적용한다. 메가 나르는 착지 지점 주변 적에게 물리 피해를 주고, 바로 아래의 적을 둔화시킨다.",
+      "rules": [
+        {
+          "variant": "form:A",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "도약한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "공격 속도가 증가한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "attackSpeed",
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n0",
+                    "form:A:en:n1",
+                    "form:A:en:n2",
+                    "form:A:en:n3",
+                    "form:A:en:n4"
+                  ],
+                  "stat": "attackSpeed",
+                  "statSubject": "caster",
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "form:A:en:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Mini Gnar: Gnar leaps, gaining 40/45/50/55/60% Attack Speed for 6 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "form:A",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "any"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "caster",
+              "text": "유닛 위에 착지하면 그 유닛에서 튕겨 더 멀리 이동한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "If Gnar lands on a unit he will bounce off it, traveling further."
+            }
+          ]
+        },
+        {
+          "variant": "form:A",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "target_type",
+              "operator": "eq",
+              "value": {
+                "kind": "enum",
+                "value": "champion"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "적에게 착지해 튕기면 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n6",
+                    "form:A:en:n7",
+                    "form:A:en:n8",
+                    "form:A:en:n9",
+                    "form:A:en:n10"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "form:A:en:n11"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "unknown",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "적을 잠시 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:A:en:n12"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Bouncing off an enemy deals (50/85/120/155/190 + (6% Health)) physical damage and briefly Slows by 80%."
+            }
+          ]
+        },
+        {
+          "variant": "form:B",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "nearby_enemies"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "착지할 때 주변 적에게 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:B:en:n0",
+                    "form:B:en:n1",
+                    "form:B:en:n2",
+                    "form:B:en:n3",
+                    "form:B:en:n4"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "form:B:en:n5"
+                  ],
+                  "stat": "maxHealth",
+                  "statSubject": "unknown",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:B:en",
+              "quote": "Mega Gnar: Gnar leaps, dealing (80/115/150/185/220 + (6% Health)) physical damage to nearby enemies on landing."
+            }
+          ]
+        },
+        {
+          "variant": "form:B",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "enemy"
+          },
+          "conditions": [
+            {
+              "subject": "enemy",
+              "field": "distance",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "directly underneath"
+              }
+            },
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "crowd_control",
+              "subject": "enemy",
+              "text": "착지 지점 바로 아래의 적을 잠시 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "form:B:en:n6"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "form:B:en",
+              "quote": "Enemies directly underneath are also briefly Slowed by 80%."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "unresolved_number",
+          "detail": "미니 E의 피해에 쓰이는 체력 비율 계수는 원문 수치가 있으나 어느 대상의 체력인지 영어 툴팁에 명시되지 않아 statSubject를 unknown으로 남겼다.",
+          "evidence": [
+            {
+              "sourceId": "form:A:en",
+              "quote": "Bouncing off an enemy deals (50/85/120/155/190 + (6% Health)) physical damage"
+            }
+          ]
+        },
+        {
+          "reason": "unresolved_number",
+          "detail": "메가 E의 피해에 쓰이는 체력 비율 계수의 소유자가 명시되지 않아 statSubject를 unknown으로 남겼다.",
+          "evidence": [
+            {
+              "sourceId": "form:B:en",
+              "quote": "Mega Gnar: Gnar leaps, dealing (80/115/150/185/220 + (6% Health)) physical damage to nearby enemies on landing."
+            }
+          ]
+        }
+      ]
+    },
+    "R": {
+      "summary": "메가 나르는 주변 적을 던져 물리 피해와 밀쳐내기, 둔화를 적용한다. 벽에 부딪힌 적은 별도의 물리 피해를 받고 기절한다. 미니 나르의 기본 지속 효과는 슝슝의 이동 속도를 증가시키며, 메가 나르에서 미니 나르로 변신한 뒤에는 일정 시간 분노를 얻지 못한다.",
+      "rules": [
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "nearby_enemies",
+              "text": "근처 적에게 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n0",
+                    "en:body:n1",
+                    "en:body:n2"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n3"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n4"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mega Gnar: Gnar tosses nearby enemies, dealing (200/300/400 + (100% Ability Power) + (50% bonus Attack Damage)) physical damage, Knocking Back, and Slowing them by 45% for 1.25/1.5/1.75 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "cast",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mega Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "movement",
+              "subject": "nearby_enemies",
+              "text": "적을 던져 뒤로 밀쳐낸다.",
+              "damageType": null,
+              "crowdControl": "knockback",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "nearby_enemies",
+              "text": "적을 둔화시킨다.",
+              "damageType": null,
+              "crowdControl": "slow",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n5"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                },
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n6",
+                    "en:body:n7",
+                    "en:body:n8"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mega Gnar: Gnar tosses nearby enemies, dealing (200/300/400 + (100% Ability Power) + (50% bonus Attack Damage)) physical damage, Knocking Back, and Slowing them by 45% for 1.25/1.5/1.75 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "ability_hit",
+            "subject": "target"
+          },
+          "conditions": [
+            {
+              "subject": "target",
+              "field": "other",
+              "operator": "present",
+              "value": {
+                "kind": "text",
+                "value": "hits a wall"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "damage",
+              "subject": "target",
+              "text": "벽에 부딪힌 적에게 별도의 물리 피해를 입힌다.",
+              "damageType": "physical",
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "amount",
+                  "numberRefs": [
+                    "en:body:n9",
+                    "en:body:n10",
+                    "en:body:n11"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "rank_values"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n12"
+                  ],
+                  "stat": "abilityPower",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                },
+                {
+                  "role": "stat_coefficient",
+                  "numberRefs": [
+                    "en:body:n13"
+                  ],
+                  "stat": "bonusAttackDamage",
+                  "statSubject": "caster",
+                  "shape": "formula_components"
+                }
+              ],
+              "flags": [
+                "replaces_base"
+              ]
+            },
+            {
+              "kind": "crowd_control",
+              "subject": "target",
+              "text": "벽에 부딪힌 적을 기절시킨다.",
+              "damageType": null,
+              "crowdControl": "stun",
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Enemies that hit a wall instead take (300/450/600 + (150% Ability Power) + (75% bonus Attack Damage)) physical damage and are Stunned."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "transform",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "transforms to Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "resource_change",
+              "subject": "caster",
+              "text": "미니 나르로 변신한 뒤 일정 시간 동안 분노를 얻지 못한다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": null,
+              "parameters": [
+                {
+                  "role": "duration_seconds",
+                  "numberRefs": [
+                    "en:body:n14"
+                  ],
+                  "stat": null,
+                  "statSubject": null,
+                  "shape": "scalar"
+                }
+              ],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "After transforming to Mini Gnar, Gnar cannot gain Rage for 15 seconds."
+            }
+          ]
+        },
+        {
+          "variant": "base",
+          "trigger": {
+            "event": "passive",
+            "subject": "caster"
+          },
+          "conditions": [
+            {
+              "subject": "caster",
+              "field": "form",
+              "operator": "eq",
+              "value": {
+                "kind": "text",
+                "value": "Mini Gnar"
+              }
+            }
+          ],
+          "effects": [
+            {
+              "kind": "stat_modifier",
+              "subject": "caster",
+              "text": "슝슝의 이동 속도가 증가한다. 증가량은 이 툴팁에 수치로 명시되지 않았다.",
+              "damageType": null,
+              "crowdControl": null,
+              "statFrom": null,
+              "statTo": "moveSpeed",
+              "parameters": [],
+              "flags": []
+            }
+          ],
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mini Gnar Passive: Increase Hyper's Move Speed."
+            }
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "reason": "scope_ambiguous",
+          "detail": "벽 충돌 피해는 기본 피해와 별도로 표기되어 있으나, 벽에 부딪힌 대상에게 기본 피해도 함께 적용되는지 본문만으로 확정할 수 없다. 충돌 피해만 별도 효과로 기록했다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mega Gnar: Gnar tosses nearby enemies, dealing (200/300/400 + (100% Ability Power) + (50% bonus Attack Damage)) physical damage, Knocking Back, and Slowing them by 45% for 1.25/1.5/1.75 seconds. Enemies that hit a wall instead take (300/450/600 + (150% Ability Power) + (75% bonus Attack Damage)) physical damage and are Stunned."
+            }
+          ]
+        },
+        {
+          "reason": "missing_source",
+          "detail": "미니 나르 기본 지속 효과가 슝슝의 이동 속도를 증가시킨다고만 적혀 있어, 어느 시점 또는 조건에서 증가하는지와 수치는 주어지지 않았다.",
+          "evidence": [
+            {
+              "sourceId": "en:body",
+              "quote": "Mini Gnar Passive: Increase Hyper's Move Speed."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "failures": [
+    {
+      "id": "Gnar.R",
+      "errors": [
+        {
+          "code": "crowd_control",
+          "path": "rules.1",
+          "detail": "CC type belongs only on a CC effect"
+        }
+      ]
+    }
+  ]
+}

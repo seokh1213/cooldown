@@ -1,0 +1,289 @@
+{
+  "summary": "술통은 시간이 지나면 자동 폭발하거나 재사용으로 일찍 폭발시킬 수 있습니다. 폭발 피해와 둔화 효과는 술통이 폭발 전 유지된 시간에 따라 증가하며, 미니언에게는 피해가 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "unknown",
+          "text": "술통을 굴립니다. 술통은 일정 시간이 지나면 폭발합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas rolls a cask that explodes after 4 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas rolls a cask that explodes after 4 seconds, dealing between (80/120/160/200/240 + (80% Ability Power)) magic damage and (120/180/240/300/360 + (120% Ability Power)) magic damage and Slowing for between 40/45/50/55/60 and 60/67.5/75/82.5/90% for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "술통 폭발에 맞은 적에게 마법 피해를 입힙니다. 피해량은 술통이 폭발 전 유지된 시간에 따라 증가합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The damage and Slow increase with time the cask spent before exploding."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas rolls a cask that explodes after 4 seconds, dealing between (80/120/160/200/240 + (80% Ability Power)) magic damage and (120/180/240/300/360 + (120% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas rolls a cask that explodes after 4 seconds, dealing between (80/120/160/200/240 + (80% Ability Power)) magic damage and (120/180/240/300/360 + (120% Ability Power)) magic damage and Slowing for between 40/45/50/55/60 and 60/67.5/75/82.5/90% for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "술통 폭발에 맞은 적을 둔화시킵니다. 둔화 효과는 술통이 폭발 전 유지된 시간에 따라 증가합니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The damage and Slow increase with time the cask spent before exploding."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Slowing for between 40/45/50/55/60 and 60/67.5/75/82.5/90% for 2 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas rolls a cask that explodes after 4 seconds, dealing between (80/120/160/200/240 + (80% Ability Power)) magic damage and (120/180/240/300/360 + (120% Ability Power)) magic damage and Slowing for between 40/45/50/55/60 and 60/67.5/75/82.5/90% for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "재사용하면 술통을 일찍 폭발시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas can Recast to detonate the cask early."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "미니언에게 입히는 폭발 피해에 감소 배율이 적용됩니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals 70% damage to minions."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문은 자동 폭발과 조기 재사용 폭발을 모두 설명하지만, fixed trigger enum에 폭발 이벤트가 없어 두 폭발 경로를 정확히 지정할 수 없습니다. 피해·둔화·미니언 피해 규칙은 두 경로 모두의 폭발 결과를 설명합니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas rolls a cask that explodes after 4 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas can Recast to detonate the cask early."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "id": "Zeri.E",
+  "sourceHash": "1a31e900b5406ea245f8f6980599d20c764ffd71d513301b8c1311ecdcc1c81c",
+  "beforeCandidateHash": "0af5745addec30b3439acdcd4f20370d8b5a37d77b501b5532782c1616537f29",
+  "candidateHash": "81091c934dfc30984b636eb98a5daa30f3e7bfefcd577abc413075c118d30b22",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "지형 연장 돌진,5초 BurstFire 관통과 첫 대상 마법온힛, 실제 공격 적중0.5초/치명타1.5초대체 쿨감, 치명 온힛효율과 관통 치명타/온힛 불가를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster movement: 짧은 거리를 돌진하며 접촉한 지형을 뛰어넘습니다. 지형을 뛰어넘으면 돌진 거리가 크게 늘어납니다. []"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster other: 정해진 시간 동안 집중 사격의 탄환이 첫 대상 이후의 적에게 관통 피해를 입힙니다. [duration_seconds n0=5 scalar; damage_multiplier n1=80%/n2=85%/n3=90%/n4=95%/n5=100% rank_values]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.hit_order eq first; caster.other eq 스파크 돌진 후5초 동안 집중 사격 탄환 적중. target damage magic: 첫 적중 대상에게 적중 시 마법 피해를 추가로 입힙니다. [amount n6=22/n7=24/n8=26/n9=28/n10=30 rank_values; stat_coefficient n11=20% scalar caster.abilityPower]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 기본 공격으로 적 적중. caster cooldown_change: 적을 기본 공격으로 맞히면 재사용 대기시간이 감소합니다. [cooldown_seconds n12=0.5 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 caster.other eq 적에게 치명타 적중. caster cooldown_change: 치명타 적중 시 재사용 대기시간이 대신 더 감소합니다. [cooldown_seconds n13=1.5 scalar] flags=replaces_base"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.hit_order eq first; caster.other eq 스파크 돌진 후5초 동안 집중 사격 탄환 적중. target other: 첫 대상 추가 마법온힛 피해는 caster 치명타 확률과 치명타 피해량을 100% 효율로 반영해 증가한다. 정확한 합성식은 원문에 명시되지 않았다. [ratio_output n14=100% formula_components caster.critChance; ratio_output n14=100% formula_components caster.critDamage]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.attack_or_ability_hit; 조건 target.hit_order neq first; caster.other eq 스파크 돌진 후5초 동안 집중 사격 탄환 적중. target attack_modifier: 관통 피해는 치명타가 적용될 수 있지만 적중 시 효과는 적용되지 않습니다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2/3/4/5/6",
+      "issue": "온힛스킬/시간 범위 누락·치명타가 empowered로 오표현·적중없는 쿨감·증가효율을별도피해로 표현",
+      "correction": "BurstFire5초 조건 및 caster적중, 치명타 텍스트와 replaces_base, 효율other로 보존",
+      "sourceId": "en:body",
+      "quote": "Critical strikes reduce the cooldown by 1.5 seconds instead."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 710,
+      "verdict": "repaired",
+      "reason": "원문 효과는5초 동안 BurstFire사격이다. 해당 스킬/시간 조건을 온힛 규칙에 추가했다."
+    },
+    {
+      "index": 711,
+      "verdict": "false_positive",
+      "reason": "바로 앞 문장의 onhit는 첫 대상에게 추가한 마법온힛이다. first 조건은 맞지만 BurstFire/시간 조건 누락은 보완했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "치명타 적중으로 재사용 대기시간이 감소하는 문장에는 기본 공격이라는 제한이 명시되어 있지 않아, 발동 가능한 적중 종류를 확정할 수 없습니다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "온힛 피해의 치명타 확률/치명타피해100% 효율 증가는 정확한 합성식을 명시하지 않는다. 두100%를 별도 추가피해로 실행하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

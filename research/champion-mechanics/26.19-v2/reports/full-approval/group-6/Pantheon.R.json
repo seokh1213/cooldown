@@ -1,0 +1,101 @@
+{
+  "id": "Pantheon.R",
+  "sourceHash": "8bf76fa370e6d0e35e787f113f1e7f031fbdbd0c1b96aa4e4f2086e1d371bec5",
+  "beforeCandidateHash": "e2fc2d53f2f2a188e99ea89e49ae642195526fd13df141d39bdb8987f17c2d91",
+  "candidateHash": "a479186fe3409343a2394d1356032f46dd1918c1bbf898cdee2444623bb432e8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "방어구 관통력, 도약 후 창·유성의 두 피해 단계와 즉시 강화 준비를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "방어구 관통력은 10/20/30% 비율 증가이며 앞 숫자의 lexical percent 값으로 절대 관통력을 계산하지 않도록 명시했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공중 도약 후 좁은 영역의 창 피해 70/100/130/160/190 + 추가 공격력 115% + 주문력 50%, 둔화 50% 2초를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "일직선 유성 피해의 최대치는 300/500/700 + 주문력 100%다. 모든 대상에게 50%를 곱하지 않고 가장자리로 갈수록 최대 50% 감소한다는 정보와 분포 한계를 보존했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "시전 시 필멸자의 의지를 즉시 준비하는 효과를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.0.text",
+      "issue": "슬래시 배열 앞 항목의 lexical percent=false를 절대 관통력으로 실행하지 않도록 퍼센트를 명시했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Pantheon gains 10/20/30% Armor Penetration. Active: Pantheon gathers his strength to leap high into the air. He throws his spear from above which in a small area deals (70/100/130/160/190 + (115% bonus Attack Damage) + (50% Ability Power)) physical damage and Slows by 50% for 2 seconds. Pantheon then crashes down as a meteor at the target area. Deals up to (300/500/700 + (100% Ability Power)) magic damage to enemies in a line (decreased by up to 50% at the edges of the area). This Ability instantly readies Mortal Will."
+    },
+    {
+      "path": "rules.1.effects.0.kind",
+      "issue": "높이 도약하는 핵심 이동 효과를 other 대신 movement로 표현했다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Pantheon gains 10/20/30% Armor Penetration. Active: Pantheon gathers his strength to leap high into the air. He throws his spear from above which in a small area deals (70/100/130/160/190 + (115% bonus Attack Damage) + (50% Ability Power)) physical damage and Slows by 50% for 2 seconds. Pantheon then crashes down as a meteor at the target area. Deals up to (300/500/700 + (100% Ability Power)) magic damage to enemies in a line (decreased by up to 50% at the edges of the area). This Ability instantly readies Mortal Will."
+    },
+    {
+      "path": "rules.2.conditions",
+      "issue": "피해 감쇠는 적중 순서 any와 관계없는 범위 내 위치 조건이다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Pantheon gains 10/20/30% Armor Penetration. Active: Pantheon gathers his strength to leap high into the air. He throws his spear from above which in a small area deals (70/100/130/160/190 + (115% bonus Attack Damage) + (50% Ability Power)) physical damage and Slows by 50% for 2 seconds. Pantheon then crashes down as a meteor at the target area. Deals up to (300/500/700 + (100% Ability Power)) magic damage to enemies in a line (decreased by up to 50% at the edges of the area). This Ability instantly readies Mortal Will."
+    },
+    {
+      "path": "rules.2.effects.0.parameters.2.role",
+      "issue": "최대 50% 가장자리 감소 수치를 무조건 피해 배율로 실행하면 중심 피해까지 절반으로 줄어든다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Passive: Pantheon gains 10/20/30% Armor Penetration. Active: Pantheon gathers his strength to leap high into the air. He throws his spear from above which in a small area deals (70/100/130/160/190 + (115% bonus Attack Damage) + (50% Ability Power)) physical damage and Slows by 50% for 2 seconds. Pantheon then crashes down as a meteor at the target area. Deals up to (300/500/700 + (100% Ability Power)) magic damage to enemies in a line (decreased by up to 50% at the edges of the area). This Ability instantly readies Mortal Will."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "note": "유성 충돌 피해가 범위 내에서 대상별로 어떻게 정해지는지, 특히 가장자리 외의 정확한 피해 분포는 원문에 구체화되어 있지 않다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "note": "10/20/30% 방어구 관통력 배열의 앞 항목에 lexical percent=false가 남아 있다. 효과 문장의 퍼센트 단위를 기준으로 해석하며 lexical 숫자표만으로 단위를 실행하지 말 것."
+    }
+  ],
+  "validation": {
+    "id": "Pantheon.R",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

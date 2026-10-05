@@ -1,0 +1,244 @@
+{
+  "id": "Viego.Q",
+  "sourceHash": "a3792addda3dc6c0b664668d368667ea7171081aa00f49f40715aed3838f4c74",
+  "beforeCandidateHash": "706a356e4d1b26164778f6b86f898744e8bd105a0822c52c2f86101aac16f4d3",
+  "candidateHash": "d6d0597c4eb7bd3150890d314e6e47f288eae17f9e15bce5e8d28fb7c6ac9883",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 14,
+  "checkedGapCount": 2,
+  "summaryCheck": "현재 HP 추가 물리 피해, 최근 스킬 피해 후 첫 공격의 두 번째 타격과 회복, 지배 유지, 능동 전방 찌르기, 비지배 후속 공격 치명타·on-hit, 적중 피해 최소/몬스터 상한 및 시전 속도·치명타 효율을 전체 본문과 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "기본 공격 추가 피해는 대상 현재 HP의 랭크별 2/3/4/5/6% 물리 피해다. maxHealth로 오해하지 않는다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "최근 비에고 스킬로 피해를 받은 같은 적을 처음 공격할 때 후속 공격 발생. 최근의 초 수는 원문 미제공."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "해당 표식 후속 공격만 AD 20%+AP 15% 물리 피해. 소유자는 비에고이다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "해당 후속 공격으로 입힌 피해의 150%를 비에고가 회복한다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "위 패시브 추가 효과는 지배 중에도 유지된다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "능동 시전 전방 찌르기는 25/40/55/70/85+70% 총 AD의 물리 피해다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "두 번째 공격 사건이며 지배 중이 아닐 때 치명타와 on-hit 허용. base가 아닌 형태라는 반대 조건을 수정했다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "후속 타격의 정글 몬스터 회복은 입힌 피해의 125%로 150%를 대체한다."
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "미니언 후속 타격 회복은 피해의 100%로 감소한 대체 비율이다. 유일한 회복 문맥상 지적의 불확실성은 성립하지 않는다."
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "추가 on-hit가 치명타일 때 대상 현재 HP에 적용하는 0.6~1.8%+치명타 피해 계수 1.4~4.2%의 괄호식. 일반 추가 피해와 구분하고 구성요소로 보존한다."
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "추가 on-hit 물리 피해의 최소값은 랭크별 10/15/20/25/30이다."
+    },
+    {
+      "index": 11,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "정글 몬스터 추가 on-hit의 최대 피해는 80이다."
+    },
+    {
+      "index": 12,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "스킬 시전 시간이 공격 속도에 의해 줄어든다. 미제공 감소량을 추정하지 않는다."
+    },
+    {
+      "index": 13,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "치명타 확률 및 피해에 60% 효율로 스케일한다. 일반 피해 배수 60%로 실행하지 않고 other 역할로 보존한다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1/2/3.conditions",
+      "issue": "출처 없는 일반 mark만 존재",
+      "correction": "최근 비에고 스킬 피해 조건 명시",
+      "sourceId": "en:body",
+      "quote": "His first Attack against an enemy he has recently damaged with an Ability"
+    },
+    {
+      "path": "rules.6",
+      "issue": "비지배 조건 반전 및 시전 사건/두 번째 찌르기 오기",
+      "correction": "비지배 후속 공격으로 수정",
+      "sourceId": "en:body",
+      "quote": "The second strike can Critically Strike and applies On-Hit effects while not Possessing an enemy."
+    },
+    {
+      "path": "rules.9",
+      "issue": "치명타식이 일반 피해처럼 추가될 가능성",
+      "correction": "치명타 조건과 replaces_base, 구성요소 shape 명시",
+      "sourceId": "en:body",
+      "quote": "The bonus On-Hit damage can critically strike for (0.6/0.9/1.2/1.5/1.8% + (1.4/2.1/2.8/3.5/4.2% Critical Strike Damage)) current Health"
+    },
+    {
+      "path": "rules.13.effects.0.parameters.0.role",
+      "issue": "치명타 스케일 효율을 일반 피해 배수로 분류",
+      "correction": "other 역할로 효율 보존",
+      "sourceId": "en:body",
+      "quote": "Its damage scales with Critical Strike Chance and Damage at 60% effectiveness."
+    },
+    {
+      "path": "gaps.1",
+      "issue": "유일한 회복 문맥에도 회복 대상 불명확으로 기록",
+      "correction": "부당한 gap 삭제",
+      "sourceId": "en:body",
+      "quote": "Its healing is decreased to 125% vs. jungle monsters and 100% vs. minions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 617,
+      "verdict": "repaired",
+      "reason": "최근 비에고의 스킬 피해를 세 표식 조건에 모두 명시했다."
+    },
+    {
+      "index": 618,
+      "verdict": "repaired",
+      "reason": "while not Possessing은 비지배 상태이므로 neq base를 absent 지배로 수정했다."
+    },
+    {
+      "index": 619,
+      "verdict": "false_positive",
+      "reason": "본문은 유일한 후속 타격 회복 150%를 제시한 뒤 decreased to 125%/100%라고 한다. 피해 대비 대체 회복 비율로 읽는 것이 두 언어 문맥에 부합한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "note": "최근 스킬 피해의 유효 시간은 원문에 특정되지 않는다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "note": "치명타 관련 문장의 'Its damage'가 어느 피해를 가리키는지 원문에서 명확히 특정되지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "Viego.Q",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.10",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.11",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.12",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.13",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

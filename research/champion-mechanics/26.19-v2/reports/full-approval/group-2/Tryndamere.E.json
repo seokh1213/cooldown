@@ -1,0 +1,113 @@
+{
+  "id": "Tryndamere.E",
+  "sourceHash": "491712a9d8f61f61cfefae230692877e1c420ec2b94fcfed414579d9538ca362",
+  "beforeCandidateHash": "32887561ef71f9737fab7b64fbf86f8838ced3b97f4d21cb83fe8c21ab540bdf",
+  "candidateHash": "fafccf84c477c267fee9ce360200eb83b2284e237e879e32916003d348548d29",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 1,
+  "summaryCheck": "회전 이동경로80~240+100%추가AD+80%AP물리; 적당분노2/챔피언5; 치명타E쿨감0.75초/챔피언1.5초를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.distance eq 회전 이동 경로의 적; enemy: 경로의 적에게 물리 피해를 입힙니다. [physical]; 수치 amount en:body:n0=80,en:body:n1=120,en:body:n2=160,en:body:n3=200,en:body:n4=240 상수 rank_values / stat_coefficient en:body:n5=100%(백분율) caster.bonusAttackDamage scalar / stat_coefficient en:body:n6=80%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type neq champion; caster: 적 하나를 적중할 때마다 분노를 얻습니다.; 수치 amount en:body:n7=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq champion; caster: 챔피언 하나를 적중할 때마다 분노를 얻습니다.; 수치 amount en:body:n8=5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 caster.activation eq 치명타 공격 적중 / target.target_type neq champion; caster: 비챔피언에게 치명타를 입히면 E쿨타임이 0.75초 감소합니다.; 수치 cooldown_seconds en:body:n9=0.75 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack 사건의 행위자 caster; 조건 target.target_type eq champion / caster.activation eq 치명타 공격 적중; caster: 챔피언에게 치명타를 입히면 E쿨타임이 1.5초 감소합니다.; 수치 cooldown_seconds en:body:n10=1.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 검을 들고 회전하며 목표 방향으로 이동합니다.; 수치 없음; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "이동누락·치명타 boolean오조건·쿨감중복적용·초단위 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Tryndamere spins through his enemies, dealing (80/120/160/200/240 + (100% bonus Attack Damage) + (80% Ability Power)) physical damage and generating 2 Fury per enemy hit, increased to 5 Fury against enemy champions. This Ability's Cooldown is reduced by 0.75 seconds when Tryndamere critically strikes, and reduced by 1.5 seconds when critically striking a champion."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 553,
+      "verdict": "repaired",
+      "reason": "caster의 치명타 적중 텍스트조건으로 교정; 비챔피언 분기 명시."
+    },
+    {
+      "index": 554,
+      "verdict": "repaired",
+      "reason": "챔피언 target_type와 caster의 치명타 적중 조건을 함께 보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문 일반 치명타와 챔피언 치명타 감소량은 각각0.75/1.5초로 보존했다. 세부 치명타 공격 판정은 tooltip에 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

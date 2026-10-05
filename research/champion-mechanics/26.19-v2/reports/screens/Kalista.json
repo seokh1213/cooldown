@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Kalista.E",
+      "sourceHash": "8f9197729434923a51c2bad7fb1d7561f7a03a170263e0370fb7b3140a6dbce7",
+      "candidateHash": "cfd250c89dd91147b6dddb6fbd57845a1764fc05092a6a453b31ef5e7bb17671"
+    },
+    {
+      "id": "Kalista.P",
+      "sourceHash": "30749fd814a6c7a1d2d5033ebc6cd4da9065709b5a2b39cb71c8640ee8782b9e",
+      "candidateHash": "0fe1ffcbe24eb754903e1f85843172ddf2a636321fbc0b64582ef8280fe0fdd3"
+    },
+    {
+      "id": "Kalista.Q",
+      "sourceHash": "c0be72c5b096e0083f56acaef6dd254247786fcb899ebf98b5795a4ac18ac98f",
+      "candidateHash": "04363e9bc47b45a35edce9df2a60b3a656560b55772a8aa94616d0a719bf0850"
+    },
+    {
+      "id": "Kalista.R",
+      "sourceHash": "5870315aa405dc443225a39e5d4ae7e1b294246e7d2e92d83fa2cfae7d450d84",
+      "candidateHash": "c255cb6470661897d38d3836e9282c2760a0ba449369f2432bb404d071bd27a5"
+    },
+    {
+      "id": "Kalista.W",
+      "sourceHash": "1cb90785dbde343dd7a6f1e4837acf6c1990475448b1314e298bd833674f4c90",
+      "candidateHash": "61f4bd381393912dfbf2e91df788f212d46ae5c96b2e04be7a843096ac89172e"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Kalista.P",
+      "path": "rules.1.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Miss if her target leaves vision;",
+      "issue": "빗나가는 대상을 `caster`로 지정해 효과 주체가 잘못됐습니다.",
+      "correction": "효과 주체를 공격 대상(target)으로 지정하거나, 대상의 공격이 빗나간다는 점을 텍스트로 보존하세요."
+    },
+    {
+      "id": "Kalista.Q",
+      "path": "rules.1.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "If this kills the target, the spear continues onward, carrying any Rend stacks to the next target hit.",
+      "issue": "창이 이어지는 조건을 `hit_order = first`로 표현해, 처치 여부가 아니라 첫 적중 대상을 조건으로 삼았습니다.",
+      "correction": "처치 시 이어진다는 조건을 텍스트와 gap으로 보존하세요. 처치 여부를 첫 적중 조건으로 바꾸지 마세요."
+    },
+    {
+      "id": "Kalista.R",
+      "path": "rules.0.effects.0.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kalista puts her Oathsworn into Stasis and draws them to herself for up to 4 seconds.",
+      "issue": "최대 4초는 계약자를 끌어오는 효과의 지속 시간이 아니라, 경직 상태 지속 시간입니다. 현재 두 효과 모두에 지속 시간을 연결했습니다.",
+      "correction": "4초 지속 시간을 경직 효과에만 연결하고, 끌어오기 효과의 지속 시간은 별도로 명시되지 않았다고 보존하세요."
+    },
+    {
+      "id": "Kalista.R",
+      "path": "rules.1.effects.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The Oathsworn can click to launch themselves, stopping at the first champion hit and Knocking Back all nearby enemies.",
+      "issue": "밀쳐내는 대상 조건이 `nearby_enemies` 대신 챔피언 적중에만 한정됐습니다. 원문은 주변의 모든 적을 대상으로 합니다.",
+      "correction": "효과 주체를 주변 적으로 두되 챔피언 조건을 추가하지 마세요."
+    },
+    {
+      "id": "Kalista.W",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When Kalista and her Oathsworn both Attack the same target, she deals 10/12/14/16/18% max Health magic damage.",
+      "issue": "`mark = same_target`은 원문에 없는 표식 조건을 만들어, 두 공격자가 같은 대상을 공격해야 한다는 조건을 표식 상태로 바꿉니다.",
+      "correction": "표식 조건을 제거하고, 칼리스타와 계약자가 같은 대상을 공격해야 한다는 조건을 텍스트로 보존하세요."
+    },
+    {
+      "id": "Kalista.W",
+      "path": "rules.0.effects.0.parameters.0.numbers.4.raw",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "10/12/14/16/18% max Health magic damage.",
+      "issue": "마지막 피해 비율 값이 `18`로 저장돼 `%` 단위가 누락됐습니다. 해당 단계의 값이 다른 단위로 읽힐 수 있습니다.",
+      "correction": "마지막 값도 `18%`로 보존하세요."
+    },
+    {
+      "id": "Kalista.W",
+      "path": "rules.2.effects.0.parameters.0.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Kalista sends a ghost to patrol an area for three laps.",
+      "issue": "혼의 순찰 횟수인 세 바퀴를 일반 `count`로 분류했습니다. 횟수는 순찰 경로의 laps에 해당합니다.",
+      "correction": "세 바퀴가 순찰 횟수임을 역할과 텍스트에서 명시하세요."
+    },
+    {
+      "id": "Kalista.W",
+      "path": "rules.4.effects.0.parameters.1.role",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "This ability has 2 charges (90/80/70/60/50 second refresh).",
+      "issue": "충전 회복 시간이 충전 효과의 `cooldown_seconds`로 분류됐습니다. 원문은 일반 재사용 대기시간이 아니라 충전량 회복 시간을 말합니다.",
+      "correction": "해당 수치를 충전 회복 시간으로 표시하거나, 적절한 역할이 없으면 텍스트로 보존하세요."
+    }
+  ],
+  "notes": []
+}

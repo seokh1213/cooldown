@@ -1,0 +1,157 @@
+{
+  "id": "Renekton.P",
+  "sourceHash": "1cbd67258fb902de7352f08a9db4d9172166c9e81f18b2de5c3731abf7b213e6",
+  "beforeCandidateHash": "cd4457156033c84613dd6ad69ebe4be3198ed34f5e635c7beca7bbe0e516860d",
+  "candidateHash": "a5b32069720d65476822f02b81de0e086b1ae7f6cc0eeef109f087271cb26858",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "공격당 분노5,비전투 감소,다음스킬 강화/분노소모,체력50% 미만 분노 획득50%증가를 대조했다. 강화 경계가 en>50/ko≥50로 충돌해 기록했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "공격 주체 레넥톤이 공격당5 Fury 획득.",
+      "verifiedConditions": [],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "amount",
+          "numberRefs": [
+            "en:body:n0"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n0",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비전투 자기분노 감소이며감소율 미제공.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "전투에서 벗어남"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "en기준>50인 다음스킬에서 분노소모/강화;50을 소모량으로 재사용하지 않음.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        }
+      ],
+      "verifiedParameters": []
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "체력<50%에서 모든 분노획득50%증가;피해 배율/공격만의 증가가 아님.",
+      "verifiedConditions": [
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n2"
+          }
+        }
+      ],
+      "verifiedParameters": [
+        {
+          "effectIndex": 0,
+          "role": "other",
+          "numberRefs": [
+            "en:body:n3"
+          ],
+          "stat": null,
+          "statSubject": null,
+          "shape": "scalar",
+          "numbers": [
+            {
+              "id": "en:body:n3",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.effects.0.parameters/rules.3/gaps",
+      "issue": "임계50을 소모량으로 재사용하고 분노획득 증가를 피해배율/공격사건으로 한정했다. 경계 충돌도 누락.",
+      "correction": "소모량 매개변수 제거,전체 획득 증가 passive/other,언어 경계 gap추가.",
+      "sourceId": "en:body",
+      "quote": "While below 50% Health, Renekton gains 50% increased Fury."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 405,
+      "verdict": "false_positive",
+      "reason": "현 요약은 이미 다음 스킬 사용 시 분노를 소모해 강화된다고 명시한다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "en body는 above50 Fury(>50),ko body는50이상(≥50)으로 경계가 다르다. 규칙은 en body를 따르며 소모량의 독립 숫자는 제공하지 않는다.",
+      "review": "공급 원문을 대조하여 이 부족/충돌을 확인했다. 확정 규칙으로 보충하지 않는다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

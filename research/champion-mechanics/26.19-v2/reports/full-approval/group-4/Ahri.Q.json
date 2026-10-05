@@ -1,0 +1,54 @@
+{
+  "id": "Ahri.Q",
+  "sourceHash": "f59c556125e7cad6c30aa624affec969f3c69c736d60a1a44aa8ae42cdceedbe",
+  "beforeCandidateHash": "59c773528434927cfa98f3a37a531fa86bb3886fe2946f485f5cbcc8d5e702f1",
+  "candidateHash": "4e8f3df962b7a28468f2dffaa89daf6656daf862e829f2667ca5a9244bdd8e1b",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 0,
+  "summaryCheck": "나가는구슬은35/60/85/110/135+50%아리주문력마법피해,돌아오는구슬은같은수식의고정피해인두적중방향을본문과대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 구슬이 나가는 중 적중 적용. target: 구슬이 나가는 중 마법 피해를 입힙니다. (magic); amount=35/60/85/110/135  rank_values, stat_coefficient=50% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.other eq 구슬이 돌아오는 중 적중 적용. target: 구슬이 돌아오는 중 고정 피해를 입힙니다. (true); amount=35/60/85/110/135  rank_values, stat_coefficient=50% caster의 abilityPower scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.trigger.subject",
+      "issue": "스킬적중행위자가target",
+      "correction": "caster로정정",
+      "sourceId": "en:body",
+      "quote": "Ahri throws then pulls back her orb"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      }
+    ]
+  }
+}

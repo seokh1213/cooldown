@@ -1,0 +1,148 @@
+{
+  "summary": "밀리오의 스킬이 아군 챔피언에게 닿으면 그 아군의 다음 기본 공격 또는 스킬에 추가 마법 피해가 붙고, 대상은 일정 시간 동안 불타 피해를 입는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "ally",
+          "text": "밀리오의 스킬이 닿은 아군 챔피언에게 다음 기본 공격 또는 스킬에 적용될 타오르는 힘 효과를 부여한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Milio's Abilities touch ally champions, their next Attack or Ability deals (7% ~ 15%) ally Attack Damage as additional magic damage, plus ((10 ~ 50) + (20% Ability Power)) magic damage over 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "activation",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "밀리오의 스킬이 닿은 아군 챔피언의 다음 기본 공격 또는 스킬"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "해당 공격 또는 스킬의 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "공격 또는 스킬의 대상에게 아군 공격력에 비례한 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "ally",
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "공격 또는 스킬의 대상에게 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Milio's Abilities touch ally champions, their next Attack or Ability deals (7% ~ 15%) ally Attack Damage as additional magic damage, plus ((10 ~ 50) + (20% Ability Power)) magic damage over 1.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

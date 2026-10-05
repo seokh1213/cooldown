@@ -1,0 +1,372 @@
+{
+  "summary": "전방으로 찔러 일직선상의 적에게 물리 피해를 입힌다. 적중하면 중첩을 얻으며, 중첩이 충분하면 돌진과 돌풍으로 적을 띄우고 피해를 입힌다. 공격처럼 치명타, 적중 시 효과, 생명력 흡수가 적용되며 군중 제어기에 끊길 수 있다. 공격 속도는 재사용 대기시간과 시전 시간을 줄인다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "전방으로 찔러 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yone thrusts forward, dealing (25/50/75/100/125 + (110% Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "caster",
+          "text": "적중 시 중첩을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:summary:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On hit, grants a stack for 6 seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "At 2 stacks, Mortal Steel dashes Yone forward with a gust of wind knocking enemies Airborne."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:summary:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "돌풍과 함께 전방으로 돌진한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "돌풍에 맞은 적을 공중으로 띄운다.",
+          "damageType": null,
+          "crowdControl": "knockup",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "돌풍으로 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At 2 stacks, this ability causes Yone to dash forward with a wave of wind that Knocks Up for 0.75 seconds and deals (25/50/75/100/125 + (110% Attack Damage)) physical damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "At 2 stacks, Mortal Steel dashes Yone forward with a gust of wind knocking enemies Airborne."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "이 스킬은 공격처럼 치명타를 낼 수 있으며, 치명타 피해량은 별도로 정해져 있다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability acts like an Attack: it can critically strike for (25/50/75/100/125 + (0% Attack Damage)) physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability acts like an Attack: it can critically strike for (25/50/75/100/125 + (0% Attack Damage)) physical damage, it applies On-hit effects and lifesteal to the first enemy struck, is interruptible by crowd control, and its cooldown and cast time are reduced with Attack Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "처음 맞힌 적에게 적중 시 효과와 생명력 흡수를 적용한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "it applies On-hit effects and lifesteal to the first enemy struck"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_cancelled",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "군중 제어기에 의해 중단될 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "is interruptible by crowd control"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "공격 속도에 따라 재사용 대기시간과 시전 시간이 줄어든다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "its cooldown and cast time are reduced with Attack Speed."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "중첩을 얻는 기본 적중 횟수와 강화 발동이 요구하는 중첩 상태를 각각 어떻게 구분하는지 원문 툴팁만으로는 명확하지 않다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On hit, grants a stack for 6 seconds. At 2 stacks, this ability causes Yone to dash forward"
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "At 2 stacks, Mortal Steel dashes Yone forward"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "치명타 가능 피해 항목의 본문 수치가 별도 피해인지 치명타 때 적용되는 피해 계산인지 표현이 불명확하다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "it can critically strike for (25/50/75/100/125 + (0% Attack Damage)) physical damage"
+        }
+      ]
+    }
+  ]
+}

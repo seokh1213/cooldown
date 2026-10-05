@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Talon.E",
+      "sourceHash": "d7253f0283bfe0db43c7a8c063343858065ef705a26b4165ccaeaceb358ac713",
+      "candidateHash": "c390ef63941580e0f03aa08b732d25a0686e01285b094996c6ddce464c24a62c"
+    },
+    {
+      "id": "Talon.Q",
+      "sourceHash": "23a81462405d2ff7d4d9801ffe67258000762c0150eb3347e55d943ee8844331",
+      "candidateHash": "07f4755ccf27f371f9d02562d5570b0f93f12bf249d20380b97537f2220653d5"
+    },
+    {
+      "id": "Talon.P",
+      "sourceHash": "4511d6b3efbe30407942dfad3ab1e26eb46e89533949254d92654ee1a55a478e",
+      "candidateHash": "1a9938454527e6dc62c7d6b03210912b22bfd9eefad7de6f099214c97fa25566"
+    },
+    {
+      "id": "Talon.R",
+      "sourceHash": "0cee25fce0808166fe6fa5edfca80264e076c6ce50d611a2e4b7dbb9405686fa",
+      "candidateHash": "37589d1103af59380104d05bf1399455ceb1232d04e534da40c5759d7162ce6f"
+    },
+    {
+      "id": "Talon.W",
+      "sourceHash": "3d0dcdb9470f6a71e8e71b29c95718f3df89d2bd49fe557a7f6f9bfe51f43f5e",
+      "candidateHash": "87ca2d1bbb7531b3d93ae59aef96af42e627524a582c48a140d57a412fec7a38"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Talon.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Talon's Abilities apply a stack to champions and large jungle monsters they damage for 6 seconds (max 3 stacks).",
+      "issue": "챔피언 대상 조건만 있어, 상처를 적용하는 유효 대상 범위가 대형 정글 몬스터에서 누락됐습니다.",
+      "correction": "대형 정글 몬스터 대상 규칙도 포함하세요."
+    },
+    {
+      "id": "Talon.P",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Talon's Abilities apply a stack to champions and large jungle monsters they damage for 6 seconds (max 3 stacks).",
+      "issue": "대형 몬스터 조건의 `other` 텍스트가 출처 문장의 대상 범위를 나타내지만, `target_type = monster`만으로는 다른 몬스터까지 포함될 수 있어 조건이 출처보다 넓습니다.",
+      "correction": "대형 정글 몬스터만 대상으로 한정하세요."
+    },
+    {
+      "id": "Talon.R",
+      "path": "rules.0.effects.0.subject",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage",
+      "issue": "첫 칼날 피해의 주체가 `enemy`로 되어 있어 피해를 입는 대상을 적으로 한정합니다. 출처는 칼날이 입히는 피해만 명시합니다.",
+      "correction": "피해 주체를 `target`으로 표현하거나 대상 범위를 미상으로 두세요."
+    },
+    {
+      "id": "Talon.R",
+      "path": "rules.0.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Talon disperses a ring of blades that deal (90/135/180 + (100% bonus Attack Damage)) physical damage",
+      "issue": "시전 시 피해 규칙에 칼날에 맞았다는 조건이 없습니다. 출처는 칼날이 실제로 맞힌 대상에게 피해를 준다고 설명합니다.",
+      "correction": "칼날에 맞은 대상에게만 적용된다는 조건을 표현하세요."
+    },
+    {
+      "id": "Talon.R",
+      "path": "rules.1.effects.1.parameters.0.numbers",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "gains 40/55/70% Move Speed, and becomes Invisible for 2.5 seconds.",
+      "issue": "이동 속도 증가의 세 번째 값에만 퍼센트 표기가 있으며, 앞의 40과 55는 퍼센트로 표시되지 않았습니다.",
+      "correction": "세 값 모두를 백분율로 표시하세요."
+    },
+    {
+      "id": "Talon.R",
+      "path": "rules.2.effects.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "When the Invisibility ends, the blades return to Talon, dealing (90/135/180 + (100% bonus Attack Damage)) physical damage again.",
+      "issue": "투명 상태 만료 규칙에서 돌아오는 칼날에 맞은 대상 조건이 누락돼, 피해 대상이 출처보다 넓게 표현됐습니다.",
+      "correction": "돌아오는 칼날에 맞은 대상에게만 피해를 주도록 조건을 추가하세요."
+    }
+  ],
+  "notes": []
+}

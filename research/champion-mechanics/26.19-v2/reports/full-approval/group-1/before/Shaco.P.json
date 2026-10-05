@@ -1,0 +1,230 @@
+{
+  "summary": "뒤에서 적을 공격하면 기본 공격과 양날 독이 추가 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "대상이 샤코를 등지고 있음"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 공격이 추가 물리 피해를 입히며 치명타가 적용될 수 있습니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When striking enemies that are facing away from him:Shaco's Attacks deal an additional ((20 ~ 35) + (20% bonus Attack Damage)) physical damage that can critically strike."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "When striking enemies that are facing away from him:Shaco's Attacks deal an additional ((20 ~ 35) + (20% bonus Attack Damage)) physical damage that can critically strike.Two-Shiv Poison deals an additional ((15 ~ 50) + (10% Ability Power)) magic damage, increased to ((23 ~ 75) + (15% Ability Power)) magic damage if the target is below 30% Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "대상이 샤코를 등지고 있음"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "양날 독 적중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n10"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "양날 독이 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When striking enemies that are facing away from him:Shaco's Attacks deal an additional ((20 ~ 35) + (20% bonus Attack Damage)) physical damage that can critically strike.Two-Shiv Poison deals an additional ((15 ~ 50) + (10% Ability Power)) magic damage, increased to ((23 ~ 75) + (15% Ability Power)) magic damage if the target is below 30% Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "대상이 샤코를 등지고 있음"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "양날 독 적중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n10"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상 체력이 기준 미만이면 양날 독의 추가 마법 피해가 증가합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Two-Shiv Poison deals an additional ((15 ~ 50) + (10% Ability Power)) magic damage, increased to ((23 ~ 75) + (15% Ability Power)) magic damage if the target is below 30% Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "When striking enemies that are facing away from him:Shaco's Attacks deal an additional ((20 ~ 35) + (20% bonus Attack Damage)) physical damage that can critically strike.Two-Shiv Poison deals an additional ((15 ~ 50) + (10% Ability Power)) magic damage, increased to ((23 ~ 75) + (15% Ability Power)) magic damage if the target is below 30% Health."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

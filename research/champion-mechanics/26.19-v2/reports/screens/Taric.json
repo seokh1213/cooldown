@@ -1,0 +1,89 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Taric.E",
+      "sourceHash": "496a444b069b465eb7dedf67616a638bedc3b82ee7f84bbfc26c8e9afaa6d662",
+      "candidateHash": "02161f8a074255f3f6aaf047887f7c411b99ba5560239533e83fbc2abbe66385"
+    },
+    {
+      "id": "Taric.P",
+      "sourceHash": "94f879ee83d90d6dbffb4c61952730cac03d07906b3bbf18a1cf4afac878bdbe",
+      "candidateHash": "0fe1e53ac7e73adbaf371788509de1993ba13e77e4ef639ee6483d7f92377d5e"
+    },
+    {
+      "id": "Taric.R",
+      "sourceHash": "d460c30cab375f3fdebbadfc2ac194d592e039a3c22973deb6635ec0d273594d",
+      "candidateHash": "1aea49d9ac8abe0a866a8c7701626a6b17ec974eaafb0213e24855ad9b3d898d"
+    },
+    {
+      "id": "Taric.Q",
+      "sourceHash": "2c77853aa303911bb4264cc32f4ba2d79671ef8b7ebc85675749fa159f0a79f5",
+      "candidateHash": "3500fef9ed6cf8109be17c9aeb8e13421e9116b108cd20e7109f53e3042e9ced"
+    },
+    {
+      "id": "Taric.W",
+      "sourceHash": "428d282a3a4da17777d82d77a68c822a22ff265e2aa2aa10ddfa323833ddb737",
+      "candidateHash": "774764eee304c5591aa0064f00ab0ce238d5aa56ead8d3cf6230f9213d722992"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Taric.Q",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Consume all stacks to restore (25 + (15% Ability Power) + (1% Health)) Health per stack to nearby ally champions ((25/50/75/100/125 + (15/30/45/60/75% Ability Power) + (1/2/3/4/5% Health)) at 1/2/3/4/5 stacks).",
+      "issue": "조건이 충전 1개 초과일 때만 시전을 허용한다고 기록되어 있습니다. 원문은 보유 중인 모든 충전을 소모한다고만 하며, 1개 보유 시 시전 가능 여부를 제한하지 않습니다.",
+      "correction": "충전 수 > 1 조건을 제거하고, 확인되지 않은 최소 충전 조건은 추가하지 마세요."
+    },
+    {
+      "id": "Taric.Q",
+      "path": "rules.2.effects.1.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Consume all stacks to restore (25 + (15% Ability Power) + (1% Health)) Health per stack to nearby ally champions ((25/50/75/100/125 + (15/30/45/60/75% Ability Power) + (1/2/3/4/5% Health)) at 1/2/3/4/5 stacks).",
+      "issue": "기본 회복량의 25와 스킬 단계별 회복량 25/50/75/100/125를 하나의 rank_values 매개변수로 합쳤습니다. 원문상 기본식은 충전당 값이고, 괄호 안 값은 1~5충전 보유 시 총 회복량입니다.",
+      "correction": "기본 충전당 회복식과 충전 수별 총 회복량을 구분해 기록하세요."
+    },
+    {
+      "id": "Taric.Q",
+      "path": "rules.2.effects.1.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(25 + (15% Ability Power) + (1% Health)) Health per stack",
+      "issue": "15% 주문력 계수의 rank_values에 해당하지 않는 첫 번째 15% 기본 계수까지 단계별 값으로 묶었습니다. 이는 스킬 단계별 변동값으로 오해될 수 있습니다.",
+      "correction": "기본 충전당 15% 계수와 괄호 안 충전 수별 계수 배열을 별도 값으로 기록하세요."
+    },
+    {
+      "id": "Taric.Q",
+      "path": "rules.2.effects.1.parameters.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "(25 + (15% Ability Power) + (1% Health)) Health per stack",
+      "issue": "1% 체력 계수에 stat과 statSubject가 null로 남아 있습니다. 원문은 체력에 대한 계수라고 명시하므로 stat 종류 자체가 불명인 것은 아닙니다.",
+      "correction": "stat을 health로 기록하고 소유자만 불명으로 유지하세요."
+    },
+    {
+      "id": "Taric.W",
+      "path": "rules.0.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Passive: Taric gains (6/7/8/9/10% Armor) Armor and forms a tether between him and the ally bound by this Ability.",
+      "issue": "방어력 증가 계수가 현재 방어력에 적용되는 비율인지, 방어력 수치를 더하는 값인지는 원문만으로 확정되지 않습니다. stat_coefficient로 단정하면 변환 방식을 과도하게 특정할 수 있습니다.",
+      "correction": "계수의 구체적 작동 방식은 텍스트 또는 불명으로 남기고, 방어력 관련 수치와 단계별 값만 보존하세요."
+    },
+    {
+      "id": "Taric.W",
+      "path": "rules.3.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Taric binds to an ally champion, granting a 7/8/9/10/11% max Health Shield for 2.5 seconds.",
+      "issue": "보호막 계수의 소유자를 ally로 지정했지만 원문은 최대 체력의 소유자를 명시하지 않습니다.",
+      "correction": "statSubject를 unknown으로 바꾸세요."
+    }
+  ],
+  "notes": []
+}

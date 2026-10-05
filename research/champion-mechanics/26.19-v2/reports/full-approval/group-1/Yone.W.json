@@ -1,0 +1,103 @@
+{
+  "id": "Yone.W",
+  "sourceHash": "c32d210c7b4d905c9f85967c804a8961a9b96d3ffa9f62950073e7d2096c8876",
+  "beforeCandidateHash": "fe761576254f104e9dff7fecd9669bb7d5459ae34b3ea334fd7a7800c33191c1",
+  "candidateHash": "ee78aba40e2b0f6574093830941e329adea42c800096af21bd7332f3915cb6af",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "원뿔모든적의물리/마법각5~25+maxHP4~6%,적중shield40~90+추가AD65%1.5초,첫챔피언100%/이후각50%증가,미니언총최저40~410/AS시간감소를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 전방 원뿔 범위 안 적. target damage physical: 전방을 베어 물리 피해를 입힌다. [amount n0=5/n1=10/n2=15/n3=20/n4=25 rank_values; stat_coefficient n5=4%/n6=4.5%/n7=5%/n8=5.5%/n9=6% rank_values unknown.maxHealth]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.other eq 전방 원뿔 범위 안 적. target damage magic: 전방을 베어 마법 피해를 입힌다. [amount n10=5/n11=10/n12=15/n13=20/n14=25 rank_values; stat_coefficient n15=4%/n16=4.5%/n17=5%/n18=5.5%/n19=6% rank_values unknown.maxHealth]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 없음. caster shield: 적중하면 보호막을 얻으며, 적중한 챔피언 수와 순서에 따라 보호막량이 증가한다. [amount n20=40/n21=90 level_range; stat_coefficient n22=65% formula_components caster.bonusAttackDamage; duration_seconds n23=1.5 scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; target.other eq 이 시전에 맞은 첫 챔피언. caster other: 처음 맞힌 챔피언에 대해 보호막 흡수량이 증가한다. [ratio_output n24=100% formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.ability_hit; 조건 target.target_type eq champion; target.other eq 이 시전에 맞은 첫 챔피언 이후의 다른 챔피언. caster other: 이후 맞힌 챔피언마다 보호막 흡수량이 증가한다. [ratio_output n25=50% formula_components]"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq minion. target other: 미니언에게 주는 총 피해량에는 최솟값이 적용된다. [min_amount n26=40/n27=410 level_range]"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster cooldown_change: 공격 속도에 따라 재사용 대기시간과 시전 시간이 줄어든다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0/1/2/3/4/5/gaps",
+      "issue": "gap과체력주인충돌·범위min/max·첫챔피언순서·shield증가를별도HP로",
+      "correction": "unknown체력계수,amount/min범위,챔피언내순서텍스트및증가율other",
+      "sourceId": "en:body",
+      "quote": "Shield increased by 100% for the first champion hit and 50% for all subsequent champions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 670,
+      "verdict": "documented_gap",
+      "reason": "본문은maxHealth를명시하지만주인명시가없고기존gap과target단정이충돌한다.unknown주인으로정렬했다."
+    },
+    {
+      "index": 671,
+      "verdict": "documented_gap",
+      "reason": "같은maxHealth주인한계가마법에도적용되어unknown으로보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "maxHealth는최대체력이라는종류를명시한다.그러나툴팁은체력스탯주인을직접명시하지않아unknown으로보존하며caster/target을추정하지않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "미니언 총 피해 최솟값의 레벨 범위 중간 수치와 적용 방식은 원문에 명시되어 있지 않다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

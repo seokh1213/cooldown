@@ -1,0 +1,36 @@
+{
+  "id": "Camille.P",
+  "sourceHash": "c9420663fe6858efa28823b555081de0f5bb6a7b629197a521c7354331bbeb4c",
+  "beforeCandidateHash": "6090ce5f52331e486ad78efcfdb29e6ced6f84ec2d1fdfc7cf905d564fbc7d9d",
+  "candidateHash": "bcd5091b823ef88927a0e500329d45ab297ccc673b5c5af5eb8407394193750a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "기본공격으로챔프때그대상physical/magic유형shield,자기maxHP10~20%2초/CD14~8초 대조했다. maxHP주인은summary가직접보완한다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.attack; 조건 target.target_type eq champion. caster shield: 대상의 피해 유형에 맞는 보호막을 얻는다. [stat_coefficient n0=10%/n1=20% level_range caster.maxHealth; duration_seconds n2=2 scalar; cooldown_seconds n3=14/n4=8 level_range]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.parameters/evidence",
+      "issue": "체력계수role 및최대체력summary인용누락",
+      "correction": "castermaxHealth stat_coefficient/해당summary원문근거추가",
+      "sourceId": "en:summary",
+      "quote": "a percentage of Camille's maximum health"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -1,0 +1,517 @@
+{
+  "scope": "Darius/Draven/Caitlyn candidate semantic repairs",
+  "reviewReport": "semantic-review-wave3.json",
+  "reviewedIds": [
+    "Darius.P",
+    "Darius.Q",
+    "Darius.W",
+    "Darius.E",
+    "Darius.R",
+    "Draven.P",
+    "Draven.Q",
+    "Draven.W",
+    "Draven.E",
+    "Draven.R",
+    "Caitlyn.P",
+    "Caitlyn.Q",
+    "Caitlyn.W",
+    "Caitlyn.E",
+    "Caitlyn.R"
+  ],
+  "findingCount": 28,
+  "resolvedCount": 28,
+  "declinedCount": 0,
+  "findings": [
+    {
+      "findingId": "Darius.P#1:1",
+      "id": "Darius.P",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The buff threshold is target.hit_count >= five. The source requires the target to reach maximum Hemorrhage stacks, which is a current mark state rather than a lifetime or recent hit count. Repeated hits and current stacks can differ after expiry or an empowered application.",
+      "resolution": "Gate this branch on the target's Hemorrhage maximum-stack state. Use a named mark/resource or an explicit text condition if the schema cannot express a counted mark, retaining the supplied stack-cap ref. Do not call the mark count hit_count. Keep the separate Noxian Guillotine kill branch.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When an enemy reaches max stacks or is killed by Noxian Guillotine"
+        }
+      ],
+      "candidateHash": "eba2e24b7e214d44ab28f8ad3c60915c7fd5f134e6eb2c3b9aa06d791aeb1efa"
+    },
+    {
+      "findingId": "Darius.P#1:2",
+      "id": "Darius.P",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "In both buff branches (rules 1 and 2), duration_seconds uses en:body:n7, the five in 'applies 5 Hemorrhage stacks'; the actual buff duration is en:body:n8. The attack/ability-hit mark application is also embedded in a caster stat_modifier with storage_cap taken from the ordinary stack cap instead of a distinct application effect.",
+      "resolution": "Use en:body:n8 for buff duration and en:body:n7 for stacks applied. Preserve the caster AD buff separately from a buff-gated attack_or_ability_hit rule that applies the target's Hemorrhage mark. A text condition can name the active buff; exact hidden refresh behavior need not be invented.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "applies 5 Hemorrhage stacks on all Attack or damaging Ability hits for 5 seconds."
+        }
+      ],
+      "candidateHash": "eba2e24b7e214d44ab28f8ad3c60915c7fd5f134e6eb2c3b9aa06d791aeb1efa"
+    },
+    {
+      "findingId": "Darius.Q#0:3",
+      "id": "Darius.Q",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Rules 0 and 1 are unconditional cast damage rules for the same target, so the distinct blade and handle formulas are not mutually scoped. Rules 2 and 3 likewise omit structured handle/edge and heal-eligible target conditions. These known qualitative predicates are available even though exact geometry is not.",
+      "resolution": "Add explicit text conditions for edge versus handle hit to the separate hit rules. Apply the no-Hemorrhage effect only on handle hit. Apply healing only when the edge hits an enemy champion or large jungle monster, preserving that disjunction as text if needed. Retain the geometry gap without making the formulas unconditional.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "physical damage with the edge and (17.5/28/38.5/49/59.5 + (35/38.5/42/45.5/49% Attack Damage)) damage with the handle."
+        }
+      ],
+      "candidateHash": "66cb37b3921c598efbb2077af4693bc2157a5fc20a51b46b1ad326df6d3dd579"
+    },
+    {
+      "findingId": "Darius.Q#3:4",
+      "id": "Darius.Q",
+      "ruleIndex": 3,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Both heal percentage parameters reference caster.maxHealth, contradicting the source's missing Health. The existing scope_ambiguous gap correctly recognizes the missing statistic, but it does not make substituting maxHealth accurate.",
+      "resolution": "Remove the maxHealth stat and statSubject from these percentage refs. Keep the missing-health basis, eligible-hit count, and cap explicit in text and retain an unsupported_formula/scope gap. Do not present the percentages as percentages of maximum health.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Darius restores 17% missing Health per enemy champion and large jungle monster hit with the edge, up to a max of 51%."
+        }
+      ],
+      "candidateHash": "66cb37b3921c598efbb2077af4693bc2157a5fc20a51b46b1ad326df6d3dd579"
+    },
+    {
+      "findingId": "Darius.W#2:5",
+      "id": "Darius.W",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The mana refund and cooldown reduction trigger on an unrestricted target kill. The rule does not say the empowered W attack must deliver the killing blow; the effect text also says only 'on a kill'. This would grant the refund for unrelated kills.",
+      "resolution": "Add an explicit condition that this W empowered attack kills the target and state that qualifier in the effect text. Preserve the refund of this ability's spent mana and its cooldown reduction.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability refunds its Mana cost and reduces its Cooldown by 50% if it kills the target."
+        }
+      ],
+      "candidateHash": "0d4f5495250ed06d1663348f182e4c8b5a45f3f94c996b2602801ab4863c7c5c"
+    },
+    {
+      "findingId": "Darius.R#0:6",
+      "id": "Darius.R",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The ordinary damage effect has both the base 75% bonus-AD coefficient and the maximum-damage 150% bonus-AD coefficient under the same stat_coefficient role. Only the flat maximum has max_amount, so the second coefficient is not associated with the cap and can be mistaken for another ordinary damage term.",
+      "resolution": "Separate the ordinary formula from the maximum formula, or retain the cap's complete relationship in text with a formula gap. Make clear that en:body:n8 belongs to the maximum damage formula and is not added to en:body:n3 as another base coefficient.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "up to a max of (250/500/750 + (150% bonus Attack Damage)) damage."
+        }
+      ],
+      "candidateHash": "6b2d0eb98a68c0ec76bcc37624b934401d2f855af6ad50cfcb79724b9e7c439c"
+    },
+    {
+      "findingId": "Darius.R#2:7",
+      "id": "Darius.R",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The duration ref en:body:n9 (20 seconds) is reused as count, which encodes twenty recasts although the source permits one recast.",
+      "resolution": "Keep en:body:n9 only as duration_seconds. Preserve 'once' in the effect text because this input has no number ref for it; do not borrow another numeric token or invent a count ref.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Darius may Recast this Ability once within 20 seconds."
+        }
+      ],
+      "candidateHash": "6b2d0eb98a68c0ec76bcc37624b934401d2f855af6ad50cfcb79724b9e7c439c"
+    },
+    {
+      "findingId": "Darius.R#2:8",
+      "id": "Darius.R",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The kill-triggered recast window is unqualified, and the rank-specific cooldown refresh in rule 4 also lacks a this-ability killing-blow condition. The source's preceding conditional is explicitly that R kills the target, while the candidate permits unrelated kills.",
+      "resolution": "Add a named condition that Noxian Guillotine kills the target for the kill-dependent behavior. State the ability-specific kill in both effect texts. If the final rank sentence is considered ambiguous about kill scope, retain that ambiguity as a source/scope gap instead of silently asserting a generic kill reset.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this kills the target, Darius may Recast this Ability once within 20 seconds."
+        }
+      ],
+      "candidateHash": "6b2d0eb98a68c0ec76bcc37624b934401d2f855af6ad50cfcb79724b9e7c439c"
+    },
+    {
+      "findingId": "Darius.R#3:9",
+      "id": "Darius.R",
+      "ruleIndex": 3,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "Rules 3 and 4 encode caster.other == the bare number three, and their texts say '3레벨'. Nothing identifies that this is the ability's rank, so it can be read as champion level rather than R rank.",
+      "resolution": "Identify the dimension as Noxian Guillotine's ability rank in the condition and text. Use an explicit text predicate plus the existing rank ref if necessary; do not introduce champion-level semantics.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At rank 3, this Ability has no Mana cost and kills refresh the Cooldown completely."
+        }
+      ],
+      "candidateHash": "6b2d0eb98a68c0ec76bcc37624b934401d2f855af6ad50cfcb79724b9e7c439c"
+    },
+    {
+      "findingId": "Draven.P#0:10",
+      "id": "Draven.P",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The stack-gain rule has a generic other event and target_type == any. Its structured predicate fails to exclude champion kills or to identify catching an axe, even though the effect prose contains the correct alternatives.",
+      "resolution": "Split a kill rule restricted to non-champion units/turrets from an other rule with an explicit 'catches a Spinning Axe' condition. Keep the stack amount on each branch. Do not leave an any-target predicate in place of the non-champion kill scope.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Draven gains 1 stack whenever he kills a non-champion unit or turret, catches a Spinning Axe."
+        }
+      ],
+      "candidateHash": "7911cc14a25ec2ed593ef3a6bb49fc326b93c69b08bdd2fd776aec9780c1f168"
+    },
+    {
+      "findingId": "Draven.Q#0:11",
+      "id": "Draven.Q",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The target != structure condition restricts the bonus damage as well as the ricochet. In the supplied source, the structure exception applies only to whether the axe ricochets; the bonus-damage sentence has no such restriction.",
+      "resolution": "Remove the structure exclusion from the bonus-damage rule. Keep it on the separate ricochet rule and preserve the empowered-next-attack condition. Do not infer a structure damage exclusion from the ricochet exception.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacking a turret or structure will not cause Draven's Spinning Axes to richochet."
+        }
+      ],
+      "candidateHash": "10c7b08e40c17feb81222951009b257cdee2d2d53fd7f18100d1570905c77968"
+    },
+    {
+      "findingId": "Draven.Q#2:12",
+      "id": "Draven.Q",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Preparing another axe is triggered by attack_or_ability_hit, rather than catching the airborne axe, and a target != structure condition is copied onto this separate event. Hitting an enemy is not the catch event.",
+      "resolution": "Use event other with an explicit caster catch condition, as the W candidate already does. Remove the target-type restriction from catching; the separate ricochet rule controls which attacks produce an airborne axe.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Draven catches it, he readies another Spinning Axe."
+        }
+      ],
+      "candidateHash": "10c7b08e40c17feb81222951009b257cdee2d2d53fd7f18100d1570905c77968"
+    },
+    {
+      "findingId": "Draven.Q#3:13",
+      "id": "Draven.Q",
+      "ruleIndex": 3,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "Dropping axes requires followup_status == cancelled. The source requires no attacks during the interval, which includes simply remaining idle without cancelling any attack. Cancellation is an unsupported additional requirement.",
+      "resolution": "Replace the cancellation predicate with a text condition that no attack occurred for the referenced interval, or elapsed time since the last attack. Keep the expiry/drop effect and the six-second ref.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Draven will drop any Spinning Axes if he does not attack for 6 seconds."
+        }
+      ],
+      "candidateHash": "10c7b08e40c17feb81222951009b257cdee2d2d53fd7f18100d1570905c77968"
+    },
+    {
+      "findingId": "Draven.Q#0:14",
+      "id": "Draven.Q",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The simultaneous two-axe capacity is absent from the summary, rules, and gaps. The frozen input provides an unambiguous capacity and a dedicated number ref en:body:n10.",
+      "resolution": "Preserve the simultaneous holding limit as storage_cap using en:body:n10, with text naming held Spinning Axes. A cast/preparation rule can also name the initial readiness action; do not turn the capacity into damage or axes spawned per hit.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Draven can hold two Spinning Axes at once."
+        }
+      ],
+      "candidateHash": "10c7b08e40c17feb81222951009b257cdee2d2d53fd7f18100d1570905c77968"
+    },
+    {
+      "findingId": "Draven.R#4:15",
+      "id": "Draven.R",
+      "ruleIndex": 4,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "health_threshold <= en:body:n9 encodes an unqualified 100% health threshold instead of remaining health after R damage compared to Draven's current Adoration stack count. It also selects <= despite the preferred English tooltip saying strictly less than; the Korean tooltip says 이하, and no source_conflict is recorded.",
+      "resolution": "Use a text threshold predicate naming post-damage target health and caster-owned current stacks, with strict < from the English tooltip. Preserve the 100% relationship as text/ratio data without asserting a percentage of target health. Keep the live displayed '(1)' ambiguity as a gap rather than a fixed stack threshold, and add source_conflict for the English < versus Korean <= wording.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Whirling Death would leave an enemy champion with less health than 100% of Draven's current League of Draven stacks (1), he will execute them."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "적 챔피언이 죽음의 소용돌이에 피해를 입어 체력이 드레이븐의 현재 드레이븐의 리그 중첩(1)의 100% 이하가 되면 드레이븐이 해당 챔피언을 처치합니다."
+        }
+      ],
+      "candidateHash": "c6be545aac4ffdcd919e68044c16e37fbf3d6935497dca703c285470282190db"
+    },
+    {
+      "findingId": "Draven.R#1:16",
+      "id": "Draven.R",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "Rules 1 and 2 describe returning axes as movement of caster, and rule 3 represents the reversal as transform of caster. The source changes the projectile trajectory; it does not move or transform Draven.",
+      "resolution": "Retain the axes as the affected object in text and use unknown subject with a scope gap if the contract cannot name projectiles. Represent trajectory reversal with other/recast/hit conditions rather than a caster transformation, and attach the damage-falloff reset to that reversal.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Upon hitting a champion or Recasting, they reverse direction and return to Draven."
+        }
+      ],
+      "candidateHash": "c6be545aac4ffdcd919e68044c16e37fbf3d6935497dca703c285470282190db"
+    },
+    {
+      "findingId": "Caitlyn.P#0:17",
+      "id": "Caitlyn.P",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The count-two parameter is on an unconditional attack rule. Although the prose mentions brush, the structured rule makes every attack contribute the brush bonus.",
+      "resolution": "Gate the count-two contribution on an explicit caster-in-brush condition. Preserve ordinary attack accumulation separately without inventing an unavailable numeric ref.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks while in brush count as 2 for building towards a Headshot."
+        }
+      ],
+      "candidateHash": "bb5ca183418d3e4288724b29429f9e2dc706a298c4e59b10fba420c01bdb8928"
+    },
+    {
+      "findingId": "Caitlyn.P#2:18",
+      "id": "Caitlyn.P",
+      "ruleIndex": 2,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The doubled Headshot range is encoded as damage_multiplier using the two from the brush accumulation sentence. Its condition is a generic immobilized mark, which does not identify the trap/net marks and does not cover a merely slowed net target. It is also not restricted to a Headshot.",
+      "resolution": "Require a Headshot and name the Yordle Snap Trap or 90 Caliber Net target mark. Preserve doubled attack range in text; the schema lacks an attack-range statistic and the number inventory has no ref for 'double' in this sentence. Remove damage_multiplier and the borrowed brush count. The summary's explicit 'trapped or netted' supports the disjunction.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "They have double range against enemies affected by 90 Caliber Net and Yordle Snap Trap."
+        }
+      ],
+      "candidateHash": "bb5ca183418d3e4288724b29429f9e2dc706a298c4e59b10fba420c01bdb8928"
+    },
+    {
+      "findingId": "Caitlyn.P#3:19",
+      "id": "Caitlyn.P",
+      "ruleIndex": 3,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The trap bonus is on any attack against the marked target. The source restricts this additional physical damage to Headshots, and the candidate lacks an activation/Headshot condition.",
+      "resolution": "Add a named Headshot/empowered-attack condition while retaining the specific trap mark. Keep it as additional damage with caster bonus AD; using a damage effect with physical damageType makes the damage explicit.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Headshots against enemies hit by Yordle Snap Trap deal a further (35/80/125/170/215 + (30% bonus Attack Damage)) physical damage."
+        }
+      ],
+      "candidateHash": "bb5ca183418d3e4288724b29429f9e2dc706a298c4e59b10fba420c01bdb8928"
+    },
+    {
+      "findingId": "Caitlyn.P#1:20",
+      "id": "Caitlyn.P",
+      "ruleIndex": 1,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The only rule that provides the ordinary Headshot damage is gated on the accumulated hit count. No rule preserves the independent Headshot activation against trapped or netted targets, and the candidate summary omits it. The existing gap about exact counts does not preserve the known alternative trigger as a rule.",
+      "resolution": "Preserve the attack-against-trap/net alternative as an attack rule with named mark conditions, and apply the ordinary Headshot bonus to Headshots from either route. Keep the exact per-mark availability/count relationship unresolved if absent; do not require the normal attack counter for this alternative.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every few basic attacks, or against a target she has trapped or netted, Caitlyn will fire a headshot"
+        }
+      ],
+      "candidateHash": "bb5ca183418d3e4288724b29429f9e2dc706a298c4e59b10fba420c01bdb8928"
+    },
+    {
+      "findingId": "Caitlyn.P#1:21",
+      "id": "Caitlyn.P",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The source summary states that Headshot bonus damage scales with Caitlyn's critical strike chance. The candidate omits this material dependency from its summary, effects, and gaps. The body supplies the AD portion but does not contradict the critical-strike dependency.",
+      "resolution": "Retain caster-owned critChance scaling in the Headshot text and add unsupported_formula for the absent exact critical-strike formula. Keep the supplied AD coefficient range without inventing a crit coefficient.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Caitlyn will fire a headshot dealing bonus damage that scales with her critical strike chance."
+        }
+      ],
+      "candidateHash": "bb5ca183418d3e4288724b29429f9e2dc706a298c4e59b10fba420c01bdb8928"
+    },
+    {
+      "findingId": "Caitlyn.Q#0:22",
+      "id": "Caitlyn.Q",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The shot's one-second windup is entirely absent even though both language summaries supply it and en:summary:n0 is available. The candidate says only that she aims before firing.",
+      "resolution": "Preserve a cast/windup effect before the shot with duration_seconds referencing en:summary:n0. Keep the subsequent damage formulas and trap full-damage override separate.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Caitlyn revs up her rifle for 1 second to unleash a penetrating shot"
+        }
+      ],
+      "candidateHash": "cf2bd5677991b4a73d3ccdf6b78dbf8a9c0fc7b18699145baaa0af161ba36383"
+    },
+    {
+      "findingId": "Caitlyn.W#2:23",
+      "id": "Caitlyn.W",
+      "ruleIndex": 2,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The maximum simultaneously active traps are attached as count to the summon-on-cast effect. This conflates the active cap with traps created by one cast; the tooltip does not say a cast creates that many traps.",
+      "resolution": "Keep the cast effect as setting a trap and preserve the rank-varying active limit as storage_cap with text naming concurrently active traps. Keep the separate charge capacity and recharge interval refs distinct.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "3/3/4/4/5 traps may be active at once."
+        }
+      ],
+      "candidateHash": "c670e0660615d7e3912f854ce91377341461e3378430cd809363d25cdad31555"
+    },
+    {
+      "findingId": "Caitlyn.W#4:24",
+      "id": "Caitlyn.W",
+      "ruleIndex": 4,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The bonus damage rule requires only a generic immobilized mark and triggers on any attack. The source requires a target rooted by this ability and damage from Headshot, so unrelated immobilization and ordinary attacks are incorrectly eligible.",
+      "resolution": "Require the target's Yordle Snap Trap mark/root from this ability and the caster's Headshot activation. Preserve physical additional damage and caster bonus AD without applying it to all immobilized targets.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Targets rooted by this Ability take an additional (35/80/125/170/215 + (30% bonus Attack Damage)) physical damage from Headshot."
+        }
+      ],
+      "candidateHash": "c670e0660615d7e3912f854ce91377341461e3378430cd809363d25cdad31555"
+    },
+    {
+      "findingId": "Caitlyn.R#1:25",
+      "id": "Caitlyn.R",
+      "ruleIndex": 1,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The visibility rule uses time > the text '정신 집중 중'. This is an ordering comparison against a state label; the source says the vision exists during the channel, rather than after or greater than that state.",
+      "resolution": "Represent the caster channeling state with an eq/present text predicate or another explicit 'during this channel' condition. Keep the duration unknown; the missing exact duration does not require an invalid ordering comparison.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability grants True Sight of the target during the channel."
+        }
+      ],
+      "candidateHash": "8db6e8ec48e67dd28abcf0b13618385c1703a0c65b20f6f5a87ee4d5936a33f0"
+    },
+    {
+      "findingId": "final3-1",
+      "id": "Darius.P",
+      "ruleIndex": 3,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The shared Noxian Might Attack Damage buff and five-stack hit rule covered only the maximum Hemorrhage-stack activation route, omitting the Noxian Guillotine kill route.",
+      "resolution": "The named active buff condition and effect text now state that the same enhancement can be gained either by reaching maximum Hemorrhage stacks or by a Noxian Guillotine kill; the hit rule retains the sourced five-stack application and duration.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When an enemy reaches max stacks or is killed by Noxian Guillotine, Darius gains an additional (30 ~ 230) Attack Damage and applies 5 Hemorrhage stacks on all Attack or damaging Ability hits for 5 seconds."
+        }
+      ],
+      "candidateHash": "eba2e24b7e214d44ab28f8ad3c60915c7fd5f134e6eb2c3b9aa06d791aeb1efa"
+    },
+    {
+      "findingId": "final3-2",
+      "id": "Darius.R",
+      "ruleIndex": 0,
+      "severity": "high",
+      "status": "resolved",
+      "issue": "The maximum 150% bonus Attack Damage coefficient was typed as part of ordinary damage alongside the 75% base coefficient.",
+      "resolution": "Ordinary damage now contains only the base 75% coefficient. The maximum formula is retained in a separate cap annotation with its sourced base values and 150% bonus Attack Damage coefficient; the unspecified cap relationship remains in a gap.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "up to a max of (250/500/750 + (150% bonus Attack Damage)) damage."
+        }
+      ],
+      "candidateHash": "6b2d0eb98a68c0ec76bcc37624b934401d2f855af6ad50cfcb79724b9e7c439c"
+    },
+    {
+      "findingId": "final3-3",
+      "id": "Darius.R",
+      "ruleIndex": 0,
+      "severity": "medium",
+      "status": "resolved",
+      "issue": "The same maximum-damage amount refs were duplicated in the damage effect.",
+      "resolution": "The separate cap annotation retains a single max_amount series n5–n7, without duplicate typed amounts.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "up to a max of (250/500/750 + (150% bonus Attack Damage)) damage."
+        }
+      ],
+      "candidateHash": "6b2d0eb98a68c0ec76bcc37624b934401d2f855af6ad50cfcb79724b9e7c439c"
+    }
+  ],
+  "followupAdjustments": [
+    {
+      "id": "Draven.R",
+      "status": "resolved",
+      "detail": "summary wording now states strictly below the current-stack threshold, consistent with the English strict < rule and source-conflict gap."
+    },
+    {
+      "id": "Caitlyn.P",
+      "status": "resolved",
+      "detail": "Headshot readiness uses a named recurring preparation-counter condition rather than target hit_count; the condition preserves the five-attack cycle and brush attacks counting twice."
+    },
+    {
+      "id": "Caitlyn.P",
+      "status": "resolved",
+      "detail": "The trap/net alternative is an attack_modifier activation only; shared Headshot damage is represented once in the common empowered-Headshot damage rule."
+    },
+    {
+      "id": "Caitlyn.P",
+      "status": "resolved",
+      "detail": "Removed duplicate ratio_output endpoints; kept the matching total-AD stat_coefficient as the one Headshot damage ratio."
+    },
+    {
+      "id": "Darius.Q",
+      "status": "resolved",
+      "detail": "Represented 17% missing-Health recovery per eligible target separately from its 51% maximum cap; both refs have null stat ownership because missing Health is not an available stat."
+    },
+    {
+      "id": "Darius.P",
+      "status": "resolved",
+      "detail": "Final review: the five-stack-hit rule now names the shared Noxian Might buff and both sourced activation routes."
+    },
+    {
+      "id": "Darius.R",
+      "status": "resolved",
+      "detail": "Final review: ordinary damage keeps only the 75% coefficient; cap values and 150% coefficient occur once in a separate cap annotation, with arithmetic relation left in a gap."
+    }
+  ],
+  "finalReviewReport": "semantic-final-wave3.json",
+  "hashAlgorithm": "SHA-256 of JSON.stringify(parsed candidate), consistent with sources.digest"
+}

@@ -1,0 +1,80 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Velkoz.E",
+      "sourceHash": "66d744c84489d29eb17c04b5611b29039216036e9473a5593a89031a21739b68",
+      "candidateHash": "e3a444a233dcf9aa8e6a8e621a35cd314e6c2441d9b60b44c166a70063e325e8"
+    },
+    {
+      "id": "Velkoz.P",
+      "sourceHash": "33444e7ef9065cb9c706006952cb120430b72925662689e324ee25d5d37ccdb7",
+      "candidateHash": "9ca07ba17944b42652614008db75d20d1589894d3cfec2ad0a8801a980c33a41"
+    },
+    {
+      "id": "Velkoz.Q",
+      "sourceHash": "a0f9d187afbc98b98247d6a0abae92a95829f72b552501758c39ed9e8fbaf588",
+      "candidateHash": "498cd086d9c4493069ec86c8f46d1716c7e99ac4dac9dc71c1e1aa4e6130f43f"
+    },
+    {
+      "id": "Velkoz.R",
+      "sourceHash": "9ba4c163d1f6e87f5cbd9f2adda3bd5664b9cbe68b0f638989b7bb6a3e4debf8",
+      "candidateHash": "821f42a1551b29ce60ca0460182b27f1b2152b8999b3845aa019ff4445479da0"
+    },
+    {
+      "id": "Velkoz.W",
+      "sourceHash": "d44691ae144e4c20276cd5d06a3018be62ba9a9b56e703687f157db078f31f58",
+      "candidateHash": "b896739c3e7633e677ef95c5500fef6eeb0a35317ca0f3d3c3cd64332fee9da6"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Velkoz.P",
+      "path": "rules.1.conditions.0.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies with 3 stacks consume them and take ((35 ~ 180) + (60% Ability Power)) true damage.",
+      "issue": "조건이 분해 중첩 3회가 아니라 적중 횟수 3회로 기록되어 있습니다.",
+      "correction": "조건 필드를 중첩 수로 바꾸거나, 중첩 조건임을 텍스트로만 표현하세요."
+    },
+    {
+      "id": "Velkoz.R",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals true damage instead to enemies recently damaged by Organic Deconstruction.",
+      "issue": "최근 분해 피해를 받은 적을 조건으로 삼으면서 `mark absent`로 기록해, 해당 조건의 대상에게 마법 피해를 적용합니다. 원문은 그 대상에게 고정 피해를 적용합니다.",
+      "correction": "마법 피해 규칙의 조건을 최근 분해 피해 상태가 없는 경우로 명확히 하고, 상태가 있는 경우는 별도 고정 피해 규칙에 연결하세요."
+    },
+    {
+      "id": "Velkoz.R",
+      "path": "rules.2.effects.0.parameters.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Vel'Koz channels a ray of energy that follows the cursor, dealing a total of (450/700/925 + (125% Ability Power)) magic damage over 2.5 seconds and Slowing by 20%.",
+      "issue": "둔화 수치에는 지속시간이 제시되지 않았는데, 피해 총량의 2.5초를 둔화 지속시간으로 연결했습니다.",
+      "correction": "둔화 효과에서 `duration_seconds` 매개변수를 제거하세요."
+    },
+    {
+      "id": "Velkoz.R",
+      "path": "rules.2.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Vel'Koz channels a ray of energy that follows the cursor, dealing a total of (450/700/925 + (125% Ability Power)) magic damage over 2.5 seconds and Slowing by 20%.",
+      "issue": "고정 20% 둔화를 요약하고 있지만 `flags`에 둔화가 광선에 걸린 동안 감소하거나 지속된다는 정보가 없습니다.",
+      "correction": "효과 텍스트나 플래그에 둔화가 광선 적중 적에게 적용됨을 보존하세요. 둔화 지속시간은 원문에 없으므로 추정하지 마세요."
+    },
+    {
+      "id": "Velkoz.R",
+      "path": "rules.3.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Enemies gain stacks of Deconstruction periodically while in the beam.",
+      "issue": "광선에 있는 동안 주기적으로 중첩을 얻는 효과에 2.5초를 초과하는 `hit_count` 조건을 붙였지만, 원문은 그 조건을 제시하지 않습니다.",
+      "correction": "해당 조건을 제거하고 광선 안에 있는 동안 주기적으로 중첩을 얻는다고 기록하세요."
+    }
+  ],
+  "notes": []
+}

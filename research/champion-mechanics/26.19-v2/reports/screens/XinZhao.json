@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "XinZhao.E",
+      "sourceHash": "536c30b4d3a066a442e8113b851396e8336b9d5cfb73b5f75f4b61734967339e",
+      "candidateHash": "084f0b859c32346eac4f7e115d02a9fcef97045412fa34e4a9aa52c64ed718e6"
+    },
+    {
+      "id": "XinZhao.P",
+      "sourceHash": "947a64f324a9738607e895124353388dbbad2adec6224aec18ac27b57cdf68e9",
+      "candidateHash": "225d65a1e4e803c351ceaa017ab5b66b8d208d110b93b60b608fa97b1c6059ac"
+    },
+    {
+      "id": "XinZhao.Q",
+      "sourceHash": "f95bd7a90558eb96e287e2b2ebabde8e32ec40e4c62303b788c13b92413594cc",
+      "candidateHash": "fd5f664e74e0f974a1b3373677b5c9eee8696ed71ae6784ef8c82722fb08dca8"
+    },
+    {
+      "id": "XinZhao.R",
+      "sourceHash": "41005f6a3f1eec7717b28676b60da1e02857f18f553de7cb9e902cf90b6f332b",
+      "candidateHash": "7fb2b6aca206a596594a81ead1d2b937bbb1c961440eb696935c744456569c6a"
+    },
+    {
+      "id": "XinZhao.W",
+      "sourceHash": "99ba5332a49bed00f0c64916ad48fe808a8219a5f89d337c78977cf814fbb3a0",
+      "candidateHash": "52f0b6fda6482b27117149b4fec8864cce150f8292d1d6d766f0459f28f810f6"
+    }
+  ],
+  "findings": [
+    {
+      "id": "XinZhao.P",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every third Attack or strike with Wind Becomes Lightning",
+      "issue": "조건이 세 번째 적중을 `hit_count`로 표현해, 일반 공격과 풍전참뢰 공격 각각의 적중 횟수 누적으로 읽힙니다. 원문은 두 공격 유형 중 하나가 세 번째일 때 발동한다는 뜻입니다.",
+      "correction": "일반 공격 또는 풍전참뢰 공격의 세 번째 발동으로 표현하세요."
+    },
+    {
+      "id": "XinZhao.R",
+      "path": "rules.1.effects.0.parameters.3.stat",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "plus 15% current Health physical damage",
+      "issue": "`current Health`를 `maxHealth` 계수로 저장해 현재 체력 비례 피해가 최대 체력 비례 피해로 바뀌었습니다. gap에는 소유자가 불명이라고 적었지만, 체력 종류는 원문에 명시돼 있습니다.",
+      "correction": "`maxHealth` 통계를 제거하고 현재 체력 비례임을 텍스트/미해결 정보로 보존하세요."
+    },
+    {
+      "id": "XinZhao.R",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Knocks Back all non-Challenged enemies.",
+      "issue": "조건의 `subject`가 `target`으로 지정되어 있지만, 효과는 도전 받지 않은 모든 적을 밀쳐냅니다. 조건이 개별 대상에만 적용된다는 뜻으로 좁힐 수 있습니다.",
+      "correction": "조건 주체를 주변 적 전체를 나타내도록 맞추거나, 효과에 각 대상별 조건이 적용됨을 명확히 하세요."
+    },
+    {
+      "id": "XinZhao.R",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals a max of 600 damage to jungle monsters and minions.",
+      "issue": "상한 적용 조건이 `minion`만 포함해 정글 몬스터가 빠졌습니다.",
+      "correction": "조건에 정글 몬스터도 포함하세요."
+    },
+    {
+      "id": "XinZhao.W",
+      "path": "rules.1.effects.0.parameters.4",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The thrust's damage is increased by up to 33.3% based on Xin Zhao's Critical Strike Chance.",
+      "issue": "33.3% 상한은 치명타 확률에 따른 피해 증가량의 상한인데, 이를 피해량에 곱하는 `max_amount`로 기록했습니다. 이 표현은 해당 수치를 피해량 상한으로 오해하게 합니다.",
+      "correction": "피해 증가량의 최대 비율로 기록하거나, 역할을 확정할 수 없다면 설명 텍스트와 gap으로 보존하세요."
+    },
+    {
+      "id": "XinZhao.W",
+      "path": "rules.2.effects.1.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Champions and Large Monsters hit by the thrust are marked as Challenged for 3 seconds and revealed unless Stealthed.",
+      "issue": "3초 지속 시간은 도전 표시에만 붙습니다. 가시성 효과에도 같은 지속 시간을 부여해 드러남 효과가 3초라고 단정합니다.",
+      "correction": "3초를 도전 표시에만 연결하고, 드러남 효과의 지속 시간은 원문에 없으므로 미지정으로 남기세요."
+    },
+    {
+      "id": "XinZhao.W",
+      "path": "rules.4.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals (50 ~ 100)% damage to minions.",
+      "issue": "`50 ~ 100`은 비율 범위인데 `percent`가 false여서 수치가 피해 퍼센트가 아닌 절대량처럼 표현됩니다.",
+      "correction": "두 값 모두 비율로 표시하고 범위 해석이 불명확하다면 gap을 유지하세요."
+    }
+  ],
+  "notes": []
+}

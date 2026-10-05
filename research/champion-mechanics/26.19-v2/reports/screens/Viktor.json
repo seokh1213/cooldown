@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Viktor.E",
+      "sourceHash": "a906cc7720141af7d35d17fac5f480dc10a10a79cc3c3ff227364595b1797728",
+      "candidateHash": "7ea11f363e3a9c2fcdde25f69f3749f44445e860dbf5b44815339216d2a69471"
+    },
+    {
+      "id": "Viktor.P",
+      "sourceHash": "542e50b0ad2cbe8f9dce0617931b2b1c305253a6953a44ecae1c2d44fd797d04",
+      "candidateHash": "4d386c63af779ae93a35ded9c709bce855b5e91d108aeb85e6b5b47c31e1055d"
+    },
+    {
+      "id": "Viktor.Q",
+      "sourceHash": "d3c4695a2415452643ffad285120fd702d22f5c882cec4dfab94140f042d68bf",
+      "candidateHash": "cf5140642c5da7fd66715a2084f5894bb74d5a0ec33d1e5785a98cdde880b9a3"
+    },
+    {
+      "id": "Viktor.R",
+      "sourceHash": "b4eebdac847b5ab8ad548f75ab87a00287496bc7f2de66b929891f32a1bc5b0e",
+      "candidateHash": "bbc5e61b25ebd6d577701de2765f60db90560be582f5d4175bb4dda4b9634d08"
+    },
+    {
+      "id": "Viktor.W",
+      "sourceHash": "26d1bf2b36cf9853f81b0eadb95f096958c99f4d98c42a5ca191b617f1957fc9",
+      "candidateHash": "b312d8ed53ce82a4d9afaceb3a87fe7ba9a0968f2a2205ec9934974132be18a3"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Viktor.P",
+      "path": "rules.2.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Killing cannon minions grants 10 Hex Fragments.",
+      "issue": "공성 미니언 처치 규칙에 대상 유형을 일반 미니언으로만 제한해, 공성 미니언 조건이 빠졌습니다.",
+      "correction": "대상 유형 조건을 공성 미니언으로 구체화하거나, 해당 유형 제한을 표현할 수 없다면 조건을 미지정으로 두세요."
+    },
+    {
+      "id": "Viktor.P",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Every 100 Hex Fragments Viktor obtains will permanently upgrade an active Ability.",
+      "issue": "보유 파편이 100 이상일 때마다 발동하는 것으로 적혀 있어, 새로 파편 100개를 획득할 때마다 증강된다는 사건 조건과 다릅니다.",
+      "correction": "조건을 파편 획득량이 100개 단위에 도달하는 사건으로 표현하세요."
+    },
+    {
+      "id": "Viktor.P",
+      "path": "rules.5.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:summary",
+      "quote": "After upgrading all of his basic abilities, he can gather 100 Hex Fragments to augment his ultimate ability.",
+      "issue": "궁극기 증강 규칙의 효과에 100개가 기록됐지만, 조건에는 100개 획득이 없습니다. 수치가 효과에만 있어 요구량이 적용되는지 불분명합니다.",
+      "correction": "100개 획득 조건을 조건으로 옮기고, 효과의 수치는 실제 획득량을 뜻하는 경우에만 유지하세요."
+    },
+    {
+      "id": "Viktor.Q",
+      "path": "rules.1.trigger",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Viktor blasts an enemy, dealing (60/75/90/105/120 + (40% Ability Power)) magic damage and granting Viktor ((40 ~ 140) + (25% Ability Power)) Shield for 2.5 seconds.",
+      "issue": "보호막 발동이 ability_hit에 연결돼 적중을 요구하지만, 원문은 적을 공격하는 스킬을 사용해 보호막을 얻는다고만 합니다.",
+      "correction": "발동 사건을 cast로 기록하고, 별도로 명시된 적중 조건이 없다면 추가하지 마세요."
+    },
+    {
+      "id": "Viktor.Q",
+      "path": "rules.2.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Upgraded: Grants ((64 ~ 224) + (40% Ability Power)) Shield and Viktor additionally gains 30% Move Speed for 2.5 seconds.",
+      "issue": "증강 보호막 효과에 이동 속도 증가와 같은 2.5초 지속시간까지 함께 기록돼, 이동 속도 지속시간을 보호막에도 적용하는 것으로 읽힙니다. 원문은 보호막 지속시간을 별도로 명시하지 않습니다.",
+      "correction": "증강 보호막에서 지속시간을 제거하고, 이동 속도 효과에만 2.5초를 연결하세요."
+    },
+    {
+      "id": "Viktor.W",
+      "path": "rules.1.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Slowing enemies inside it by 33/36/39/42/45%.",
+      "issue": "일반 장판 둔화에 증강 상태가 아닐 조건을 추가했지만, 원문은 이 둔화를 증강 여부와 무관하게 설명합니다.",
+      "correction": "증강 상태가 아닐 조건을 제거하세요."
+    },
+    {
+      "id": "Viktor.W",
+      "path": "rules.3.effects.0.parameters",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Upgraded Passive: Viktor's Abilities Slow by 20% for 1 second.",
+      "issue": "증강 둔화 효과에 주체의 능력 적중이 아닌 시전 사건을 근거로 둘 여지가 있지만, 현재 ability_hit은 빅토르가 맞았을 때로 읽힙니다. 설명문도 빅토르의 스킬이 적을 둔화한다고 명시합니다.",
+      "correction": "발동 주체를 적중당하는 caster가 아닌 스킬로 적중하는 enemy로 맞추고, 증강 기본 지속 효과 조건은 유지하세요."
+    }
+  ],
+  "notes": []
+}

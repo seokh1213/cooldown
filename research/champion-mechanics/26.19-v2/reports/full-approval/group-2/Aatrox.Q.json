@@ -1,0 +1,150 @@
+{
+  "id": "Aatrox.Q",
+  "sourceHash": "47e9010e548843c4025cd9c4024796786da4bf5626ceef8c640214a00d471a4c",
+  "beforeCandidateHash": "44651be99804449451283889c4c772e7a56b880bd5a0ece963f0d976e8b83f6e",
+  "candidateHash": "2cbd553ce1d8166117c6f4643986ae2d7af3d15cbe9ed71d5e18d84b60a5ed5f",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 6,
+  "checkedGapCount": 4,
+  "summaryCheck": "첫타 기본물리/끝부분 대체물리·짧은 띄움, 두번재사용·직전보다25%증가·모양변경,미니언55~70%,몬스터띄움시간2배/추가25를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq 첫 시전 타격의 기본 피해; 재사용 배율과 끝부분 대체 피해는 별도 적용; target: 대검을 내리쳐 물리 피해를 준다. [physical]; 수치 amount en:body:n0=10,en:body:n1=25,en:body:n2=40,en:body:n3=55,en:body:n4=70 상수 rank_values / stat_coefficient en:body:n5=60(백분율),en:body:n6=67.5(백분율),en:body:n7=75(백분율),en:body:n8=82.5(백분율),en:body:n9=90%(백분율) caster.totalAttackDamage rank_values; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.other present 공격 범위의 끝부분에 적중; target: 끝부분 적중 시 잠깐 공중으로 띄웁니다. 구체 지속시간은 미명시입니다. [knockup]; 수치 없음; flags 없음 | target: 공격 범위의 끝부분에 적중하면 기본 피해 대신 더 큰 물리 피해를 준다. [physical]; 수치 amount en:body:n10=17.5,en:body:n11=43.75,en:body:n12=70,en:body:n13=96.25,en:body:n14=122.5 상수 rank_values / stat_coefficient en:body:n15=105(백분율),en:body:n16=118.125(백분율),en:body:n17=131.25(백분율),en:body:n18=144.375(백분율),en:body:n19=157.5%(백분율) caster.totalAttackDamage rank_values; flags replaces_base"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: recast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 최대 두 번 재사용하며 각 재사용은 범위 모양을 바꿉니다.; 수치 없음; flags 없음 | target: 각 재사용 타격은 직전 타격 피해보다 25% 증가합니다. 기본 피해에 별도 독립 타격을 더하는 효과가 아닙니다. [physical]; 수치 other en:body:n21=25%(백분율) 상수 formula_components; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq minion; target: 미니언에게는 명시된 비율의 피해를 준다. [physical]; 수치 min_amount en:body:n23=55%(백분율) 상수 level_range / max_amount en:body:n24=70%(백분율) 상수 level_range; flags replaces_base"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq monster / target.other present 공중으로 띄움; target: 몬스터를 공중으로 띄우는 지속시간이 두 배가 된다. [knockup]; 수치 없음; flags 없음"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 target.target_type eq monster; target: 몬스터에게 원문상 25 추가 피해가 있습니다. 공중띄우기 발생이 필수인지는 특정되지 않습니다. [physical]; 수치 amount en:body:n25=25 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "첫타/재사용 피해관계, briefly 누락, 재사용25%숫자누락, 범위형태 및 몬스터추가피해의 띄움 전제 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Aatrox slams his greatsword, dealing (10/25/40/55/70 + (60/67.5/75/82.5/90% Attack Damage)) physical damage. If they are hit on the edge, they are briefly Knocked Up and they take (17.5/43.75/70/96.25/122.5 + (105/118.125/131.25/144.375/157.5% Attack Damage)) instead. This Ability can be Recast twice, each one changing shape and dealing 25% more damage than the previous one. Deals (55% ~ 70%) damage to minions. Knock Up duration against monsters is doubled and it deals 25 bonus damage."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 0,
+      "verdict": "repaired",
+      "reason": "첫 시전 기본 피해와 재사용의 직전 대비25%를 명시하여 중복 독립 피해 방지."
+    },
+    {
+      "index": 1,
+      "verdict": "repaired",
+      "reason": "잠깐 공중으로 띄운다는 원문 정성시간을 텍스트로 복원."
+    },
+    {
+      "index": 2,
+      "verdict": "repaired",
+      "reason": "추가25피해와 몬스터띄움2배를 분리; 전자의 띄움필수 여부는 한계 보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "재사용 가능 횟수가 원문에 명시되어 있으나 numbers 목록에 대응하는 숫자 ID가 없다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "재사용할 때마다 직전 타격보다 피해가 25% 증가한다고 명시되어 있지만, 해당 증가가 반복 재사용에서 누적되는 계산 방식은 구조화하지 않았다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "미니언 피해 비율이 끝부분 적중 시 적용되는 대체 피해에도 적용되는지 원문에서 구분하지 않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 3,
+      "reason": "unresolved_condition",
+      "detail": "몬스터 대상 추가 피해의 정확한 적용 조건은 원문 문장만으로 확정하기 어렵다. 공중 띄우기 지속시간 효과와 함께 명시된 조건부 효과로 보존했다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "4 unresolved source gaps"
+      }
+    ]
+  }
+}

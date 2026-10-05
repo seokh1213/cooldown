@@ -23,7 +23,7 @@ export function AdvisorComposer({ draft, onDraftChange, busy, restoringHistory, 
   const { t } = useTranslation();
   const copy = t.advisor;
   return (
-    <footer className="flex flex-col gap-1.5 border-t p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+    <footer className="flex shrink-0 flex-col gap-1.5 border-t bg-background p-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:pb-3">
       {restoringHistory && <p role="status" className="px-1 text-xs text-muted-foreground">{copy.history.loading}</p>}
       {showBusyHint && (
         <p className="px-1 text-[11px] leading-4 text-muted-foreground">{copy.busyHint}</p>

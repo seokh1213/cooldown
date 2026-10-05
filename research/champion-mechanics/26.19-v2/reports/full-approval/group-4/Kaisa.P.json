@@ -1,0 +1,93 @@
+{
+  "id": "Kaisa.P",
+  "sourceHash": "42e807c28bef13a07aee24209f32a525e16fdb079ad544f2dc86b0256d25bfbb",
+  "beforeCandidateHash": "1c76174a0dec77e4c3556594004658a52a292bc61e3723c9ff2ce29a4ea638e3",
+  "candidateHash": "6814a334dc3180dcdd91b06a92a36f31c4d70d14db6266c231d96503ee0958d4",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 2,
+  "summaryCheck": "자기 기본 공격 플라즈마4초와 기본/중첩당 마법 피해,공격 전4중첩 소모·잃은 체력 비례 피해,주변 아군 이동불가로 챔피언1중첩,세 능력치 진화 기준 표시를 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 별도 조건 없이 적용. target: 기본 공격으로 대상에게4초 지속 플라즈마 중첩을 적용한다.; duration_seconds=4  scalar / target: 기본 공격 시 마법 피해를 추가로 입힌다. 피해는 기본 피해와 중첩당 추가 피해로 구성된다. (magic); min_amount=4  formula_components, max_amount=30  formula_components, stat_coefficient=12% caster의 abilityPower formula_components, min_amount=1  formula_components, max_amount=8  formula_components, stat_coefficient=3% caster의 abilityPower formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.mark eq 공격 전에 플라즈마가4중첩 쌓인 대상 적용. target: 플라즈마를 소모한다.;  / target: 대상의 잃은 체력에 기본 비율 + 카이사 주문력100당 비율을 곱한 마법 피해를 입힌다. 잃은 체력 수식은 구성요소로만 보존한다. (magic); ratio_output=15%  formula_components, stat_coefficient=6% caster의 abilityPower formula_components, ratio_input=100  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "ally의 other 사건에서 target.target_type eq champion, ally.distance eq 카이사 주변의 아군, target.other eq 해당 아군이 이동불가 효과를 적용한 적 챔피언 적용. target: 플라즈마를 1중첩 적용한다.; count=1  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 별도 조건 없이 적용. caster: 기본 스킬은 능력치에 따라 진화한다. 표시된 요구량은 이케시아 폭우의 추가 공격력100,공허추적자의 주문력100,고속 충전의 추가 공격 속도100%다. 물음표는 현재 진행값을 확정하지 않는다.; other=100 caster의 bonusAttackDamage scalar, other=100 caster의 abilityPower scalar, other=100% caster의 bonusAttackSpeed scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2",
+      "issue": "공격 행위자와 아군 이동불가 행위자 오류 및4중첩의 의미 소실",
+      "correction": "caster공격·ally이동불가·공격 전 플라즈마4중첩 조건으로 정정",
+      "sourceId": "en:body",
+      "quote": "Nearby allies apply 1 stack to champions they Immobilize."
+    },
+    {
+      "path": "rules.3,gaps.0",
+      "issue": "현재값 물음표를 진화 기준 전체 미상으로 처리",
+      "correction": "표시된 요구량과미상현재값을 구별",
+      "sourceId": "en:body",
+      "quote": "Icathian Rain: ?/100 Bonus Attack Damage Void Seeker: ?/100 Ability Power Supercharge: ?%/100% Bonus Attack Speed"
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "진화 진행 표시 ?/100,?%/100%의 현재 능력치 값은 공급 원문에서 물음표로 미해결이다.분모에 표시된 요구량100/100/100%는 보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "플라즈마 추가 피해는 기본식과중첩당식의 합,소모 피해는 (15%+주문력100당6%)×잃은 체력이다.스탯/중첩 시점과잃은 체력은 계약으로 직접 계산하지 않고 복합 구성요소와 원문 관계를 보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

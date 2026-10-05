@@ -1,0 +1,79 @@
+{
+  "id": "KogMaw.W",
+  "sourceHash": "7ef01cf915b2b86ccfc187d89f7f880560e9475d12d0a25b65ff3698c0add956",
+  "beforeCandidateHash": "2c0a0bbff5b5726409ad92bfe6417c4ad42f0bf6b5ce481b9f78bd91ce65c97f",
+  "candidateHash": "4e639f2415961d7747713f79b3863c0d6a1907947ca5ce6e4a0f044ac87ef56c",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "8초사거리130~210강화와그상태의평타적중(기본최대체력비율+시전자AP100당1.5%)마법피해,몬스터추가피해100상한을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 cast 사건에서 별도 조건 없이 적용. caster: 공격 사거리가 증가합니다.; distance_units=130/150/170/190/210  rank_values, duration_seconds=8  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.activation eq 이 스킬의8초 공격 강화 효과가 활성 중 적용. target: 강화평타적중시(랭크별최대체력비율+코그모주문력100당1.5%)×대상최대체력의추가마법피해를입힌다. (magic); ratio_output=3/3.75/4.5/5.25/6% target의 maxHealth formula_components, stat_coefficient=1.5% caster의 abilityPower formula_components, ratio_input=100  formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 target.target_type eq monster, caster.activation eq 이 스킬의8초 공격 강화 효과가 활성 중 적용. target: 몬스터에게 입히는 추가 마법 피해에 상한이 적용됩니다. (magic); max_amount=100  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1,2",
+      "issue": "일반평타에도W피해적용가능,AP계수소유자누락,8초를피해지속시간으로표시",
+      "correction": "W강화상태조건·시전자AP계수·복합체력식보존",
+      "sourceId": "en:body",
+      "quote": "his Attacks deal an additional (3/3.75/4.5/5.25/6% + (1.5% per 100 Ability Power)) max Health magic damage On-Hit for 8 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "스키마의 허용 통계 목록에는 공격 사거리가 없어 수치를 stat으로 지정할 수 없습니다. 원문상 이 수치는 코그모의 Attack Range 증가량입니다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "추가피해는(랭크별비율+AP100당1.5%)×대상최대체력인중첩식이다.구성요소를일반고정피해/AP선형합으로실행하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

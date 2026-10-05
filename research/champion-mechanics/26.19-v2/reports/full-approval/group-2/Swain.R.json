@@ -1,0 +1,189 @@
+{
+  "id": "Swain.R",
+  "sourceHash": "6fc46444038da5a450da13621de7b82c2814471064da925fed8544392de2b020",
+  "beforeCandidateHash": "1abd22518d086c2e28118521baecd2be27f2b1dbb45ad5202abfd65c7dda59c9",
+  "candidateHash": "9282b0a745bfc7f24bca18925c09fced0a61a6e6d1f824d41b6ebde7f17e2efe",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 10,
+  "checkedGapCount": 3,
+  "summaryCheck": "악마변신주변마법/초당흡수회복,변신중비챔피언회복10%,기운10초당소모·5초후15대체/흡수챔피언20초당충전·챔피언처치관여완충,2초후및이후8초 악의불길마법/50%1.5초감소둔화 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 스웨인이 악마를 해방해 변신합니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.form eq 악마변신중 / target.other eq 주변 적에게서 체력 흡수 중; caster: 스웨인이 매초 주변 적의 체력을 흡수합니다.; 수치 amount en:body:n4=15,en:body:n5=30,en:body:n6=45 상수 rank_values / stat_coefficient en:body:n7=5%(백분율) caster.abilityPower formula_components / stat_coefficient en:body:n8=1.5%(백분율) caster.bonusHealth formula_components; flags per_target"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.target_type neq champion / caster.form eq 악마변신중; caster: 스웨인이 비챔피언에게서 흡수할 때 회복량이 감소합니다.; 수치 damage_multiplier en:body:n17=10%(백분율) 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.form eq 악마변신중; caster: 악마의 기운이 초당 소진됩니다.; 수치 amount en:body:n18=10 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.time gte en:body:n19=5 / caster.form eq 악마변신중; caster: 5초 후 악마의 기운 소진량이 초당 15로 증가합니다.; 수치 amount en:body:n20=15 상수 scalar; flags replaces_base"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 target.target_type eq champion / caster.form eq 악마변신중 / caster.activation eq 주변 적 챔피언으로부터 체력 흡수 중; caster: 챔피언에게서 흡수하는 동안 악마의 기운을 초당 회복합니다.; 수치 amount en:body:n21=20 상수 scalar; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: takedown 사건의 행위자 caster; 조건 caster.form eq 악마변신중 / target.target_type eq champion; caster: 챔피언 처치 관여 시 악마의 기운이 완전히 회복됩니다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.form eq transformed / caster.time gte en:body:n9=2 / caster.activation eq 변신2초후첫 악의불길 또는 이후8초간격으로 허용된 악의불길 사용; nearby_enemies: 변신 중 악의 불길을 사용하면 주변 적에게 마법 피해를 줍니다. [magic]; 수치 amount en:body:n11=150,en:body:n12=250,en:body:n13=350 상수 rank_values / stat_coefficient en:body:n14=40%(백분율) caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.form eq transformed / caster.time gte en:body:n9=2 / caster.activation eq 변신2초후첫 악의불길 또는 이후8초간격으로 허용된 악의불길 사용; nearby_enemies: 악의 불길이 적을 둔화시키며, 둔화 효과는 시간이 지나며 사라집니다. [slow]; 수치 amount en:body:n15=50%(백분율) 상수 scalar / duration_seconds en:body:n16=1.5 상수 scalar; flags decays"
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 caster.form eq 악마변신중 / target.other eq 스웨인주변적; nearby_enemies: 악마 변신 중 주변 적에게 명시된 마법 피해를 줍니다. 원문은 피해의 반복 간격을 별도로 특정하지 않습니다. [magic]; 수치 amount en:body:n0=15,en:body:n1=25,en:body:n2=35 상수 rank_values / stat_coefficient en:body:n3=4%(백분율) caster.abilityPower formula_components; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "변신밖영구회복/자원효과전제누락,초당15중복소모,챔피언처치조건 및 악의불길8초간격누락 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Swain frees the demon, which deals (15/25/35 + (4% Ability Power)) magic damage and drains (15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health per second from nearby enemies. His Demonic Energy depletes over time but can be recharged indefinitely by draining enemy Champions and is fully restored on Champion takedowns. After 2 seconds and every 8 seconds thereafter, Swain can cast Demonflare while transformed, which deals (150/250/350 + (40% Ability Power)) magic damage and Slows enemies by 50%, decaying over 1.5s. Healing is reduced to 10% against non-champions. Depletes 10 Demonic Energy per second. After 5 seconds, this increases to 15. Regenerates 20 Demonic Energy per second while draining from champions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 498,
+      "verdict": "false_positive",
+      "reason": "같은본문Healing is reduced...가흡수의자가회복효과를확인;대상주변적은텍스트와조건에보존하고피해유형미명시는gap유지."
+    },
+    {
+      "index": 499,
+      "verdict": "false_positive",
+      "reason": "against non-champions는흡수대상비챔피언상대회복감소를직접말하므로target_type neq champion정확."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "체력 흡수 문구는 피해를 입힌다고 명시하지 않으므로 피해 효과로 단정하지 않았습니다. 흡수 피해 유형은 확인할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "비챔피언을 상대로 회복량이 10%로 감소한다고 명시되어 있으나, 감소 전 회복량의 산정 방식은 별도로 설명되지 않습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_condition",
+      "detail": "악의 불길은 변신 후 처음 사용할 수 있는 시점과 이후의 간격이 명시되어 있으나, 이후 간격의 기준 시점은 명시되지 않았습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

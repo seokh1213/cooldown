@@ -1,0 +1,107 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Janna.E",
+      "sourceHash": "4b47d02bcea0151fb2b41ceddc5450a9bf3a1b2eb7b4774b30d5792337255c20",
+      "candidateHash": "a90deb9177ed766fa03c805c284ca3e8bcce844eca80e7e21e08e03c16ed96f3"
+    },
+    {
+      "id": "Janna.P",
+      "sourceHash": "3e4a890ba986151e561758a1e911bef96e9054cd5ec55d91af08e29a96e4bf01",
+      "candidateHash": "e5546206becfa8ba80e48721a9236f5ff0ea06bf105929dd650f4365c031acae"
+    },
+    {
+      "id": "Janna.Q",
+      "sourceHash": "000a105cf1850642a2b0f327dddab1e5acd782560a992e12c5e5a1bf17891353",
+      "candidateHash": "bfd207486e7e9fcf725622d2cbd7088a348334ecacd8b0facd4617367d622a5d"
+    },
+    {
+      "id": "Janna.R",
+      "sourceHash": "8cc551fc8512088a8d72b03acbd776d032580bb07977aaa847686f17766b28e4",
+      "candidateHash": "8cf9d20282d66cb8751fff502b3198fae18f23525e9755ee6f28bf80301ace29"
+    },
+    {
+      "id": "Janna.W",
+      "sourceHash": "946e56980af62e84779aba19f768103bf4784963d6a09473a3644a8c89bd2558",
+      "candidateHash": "89510f3d27dc0486fb1aae943a691c21a8de72af809604e28837e1784dc27498"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Janna.E",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Janna grants an ally champion or turret",
+      "issue": "조건이 `target_type=any`로 기록되어 대상이 아군 챔피언 또는 포탑이라는 범위를 잃었습니다.",
+      "correction": "아군 챔피언 또는 포탑 대상임을 보존하고, 스키마가 구분하지 못하면 조건을 임의로 `any`로 바꾸지 말고 gap으로 남깁니다."
+    },
+    {
+      "id": "Janna.E",
+      "path": "rules.1.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "While shielded, they gain (10/15/20/25/30 + (10% Ability Power)) Attack Damage.",
+      "issue": "공격력 증가 조건이 `target_type=any`라서 보호막을 받은 아군 챔피언 또는 포탑이라는 대상 범위가 표현되지 않았습니다.",
+      "correction": "해당 아군 챔피언 또는 포탑의 보호막 지속 중 공격력이 증가한다고 보존하고, 스키마 한계는 gap으로 기록합니다."
+    },
+    {
+      "id": "Janna.E",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Janna refunds 20% of the cooldown whenever she impairs an enemy champion's movement with an Ability.",
+      "issue": "`ability_hit`은 적중을 요구하지만 원문 조건은 스킬로 적 챔피언의 이동을 방해하는 것입니다. 적중 자체를 별도 필수 사건으로 두지 않습니다.",
+      "correction": "이동 방해를 일으킨 스킬 사건으로 기록하고, 전용 이벤트가 없으면 설명과 gap에 원문 조건을 보존합니다."
+    },
+    {
+      "id": "Janna.P",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Janna deals (30% bonus Movement Speed) bonus magic damage On-Hit and with Zephyr.",
+      "issue": "계수가 참조하는 것은 추가 이동 속도인데 `moveSpeed`는 이를 구분하지 않아 전체 이동 속도 계수처럼 해석될 수 있습니다.",
+      "correction": "`bonusMovementSpeed`처럼 추가 이동 속도를 식별하는 stat을 사용하거나, 해당 구분을 표현할 수 없으면 원문 텍스트와 gap에 남깁니다."
+    },
+    {
+      "id": "Janna.R",
+      "path": "rules.1.effects.0.subject",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "then healing nearby allies for (300/450/600 + (150% Ability Power)) Health over 3 seconds.",
+      "issue": "치유 대상이 `nearby_enemies`로 기록되어 원문과 반대입니다. gap 설명도 이 오류를 인정하면서 값을 보존했다고 잘못 주장합니다.",
+      "correction": "대상을 nearby allies로 기록합니다. 스키마가 이를 지원하지 않으면 잘못된 대상을 쓰지 말고 unresolved gap으로 남깁니다."
+    },
+    {
+      "id": "Janna.W",
+      "path": "rules.0.effects.0.parameters.0.numbers.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted.",
+      "issue": "랭크 값 첫 네 개의 raw 값에 `%`가 빠져 있어 `percent=true`와 원문 간 값 표현이 일치하지 않습니다.",
+      "correction": "`6%`, `7%`, `8%`, `9%`로 보존합니다."
+    },
+    {
+      "id": "Janna.W",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage.",
+      "issue": "능력 사용은 기록했지만 원소가 적을 공격해야 피해가 발생한다는 타격 사건이 빠졌습니다.",
+      "correction": "피해 효과를 원소의 적중 사건에 연결하고, 활성화 시전과 타격을 분리합니다."
+    },
+    {
+      "id": "Janna.W",
+      "path": "rules.2.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage.",
+      "issue": "둔화 효과도 `cast`에만 연결되어, 적을 공격해 둔화시키는 타격 조건이 누락됐습니다.",
+      "correction": "둔화를 원소의 적중 사건에 연결합니다."
+    }
+  ],
+  "notes": []
+}

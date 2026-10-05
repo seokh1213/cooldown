@@ -1,0 +1,223 @@
+{
+  "id": "Kled.P",
+  "sourceHash": "e040d6cca8069b3185213761c051158e6582fbe03a658aa39f1acc8dfcc96aa1",
+  "beforeCandidateHash": "ae18e7390e66ce4e0c16fd9e03c6f49d9f65544fd2485a38df9f90bb17ecca43",
+  "candidateHash": "b06a75f665dd2420da62e422b9646795801f34d67c98bdd36cdc22350b03ba66",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 11,
+  "checkedGapCount": 1,
+  "summaryCheck": "탑승 피해 대행·스칼 체력 소진·미탑승 이동/방어/챔피언 공격 감소·대상별 용기·최대 용기 재탑승을 영문 및 한국어 본문과 대조했다. 최대 체력 여부는 원문 한계로 남겼다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 damage_taken 사건에서 caster.form eq 탑승 적용. caster: 클레드 대신 스칼이 피해를 입는다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "summon의 resource_depleted 사건에서 summon.resource eq 스칼의 체력 소진 적용. caster: 클레드가 스칼에게서 내린다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.form eq 미탑승 적용. caster: 적 챔피언을 향해 이동할 때 이동 속도가 증가한다.; min_amount=70  level_range, max_amount=155  level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.form eq 미탑승 적용. caster: 추가 방어력과 추가 마법 저항력을 얻는다. 주변 적 챔피언 수에 따라 해당 추가 능력치가 증가하며, 상한이 적용된다.; amount=4  formula_components, stat_coefficient=1% caster의 bonusHealth formula_components, ratio_output=30%  formula_components, max_amount=10  formula_components, stat_coefficient=2.5% caster의 bonusHealth formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.form eq 미탑승, target.target_type eq champion 적용. target: 클레드의 기본 공격이 감소한 피해를 입힌다.; min_amount=0%  level_range, max_amount=15%  level_range 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.form eq 미탑승, target.target_type eq champion 적용. caster: 용기를 얻는다.; amount=15  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.form eq 미탑승, target.target_type eq monster, target.other eq 에픽 몬스터 적용. caster: 용기를 얻는다.; amount=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 7,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 attack 사건에서 caster.form eq 미탑승, target.target_type eq structure 적용. caster: 용기를 얻는다.; amount=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 8,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 kill 사건에서 caster.form eq 미탑승, target.target_type eq minion 적용. caster: 용기를 얻는다.; amount=5  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 9,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.form eq 미탑승, caster.resource eq 최대 용기 적용. caster: 용기가 최대치에 도달하면 스칼 체력의 해당 비율을 가진 채 다시 탑승한다. 재탑승은 정해진 재사용 간격을 따른다.; min_amount=40%  level_range, max_amount=70%  level_range, cooldown_seconds=30  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 10,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 passive 사건에서 caster.form eq 미탑승 적용. caster: 덫날리기 스킬이 변경된다.;  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1",
+      "issue": "스칼 체력 소진 주체 미상",
+      "correction": "스칼을 summon으로 구별",
+      "sourceId": "en:body",
+      "quote": "When his Health depletes, Kled dismounts."
+    },
+    {
+      "path": "rules.4.effects.0.parameters",
+      "issue": "감소율 최소/최대가 반대",
+      "correction": "최소 0%, 최대 15%로 정정",
+      "sourceId": "en:body",
+      "quote": "While dismounted, Kled's attacks deal (15% ~ 0%) reduced damage to Champions."
+    },
+    {
+      "path": "rules.5-9",
+      "issue": "미탑승 문맥 누락",
+      "correction": "용기와 재탑승에 미탑승 조건 보완",
+      "sourceId": "en:body",
+      "quote": "Dismounted:"
+    },
+    {
+      "path": "rules.9",
+      "issue": "최대 용기를 고갈로 표현하고 스칼 최대 체력을 추정",
+      "correction": "최대 용기 도달 사건으로 바꾸고 최대 체력 추정 제거",
+      "sourceId": "en:body",
+      "quote": "At max Courage Kled remounts with (40% ~ 70%) of Skaarl's Health, once every 30 seconds."
+    },
+    {
+      "path": "rules.10",
+      "issue": "미탑승 덫날리기 변경 효과 누락",
+      "correction": "미탑승 Q 변경 규칙 추가",
+      "sourceId": "en:body",
+      "quote": "Dismounted: Kled replaces Bear Trap on a Rope"
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 224,
+      "verdict": "documented_gap",
+      "reason": "Health가 최대 체력인지 명시되지 않아 해당 stat 추정을 제거하고 체력 비율과 gap을 보존했다."
+    },
+    {
+      "index": 225,
+      "verdict": "repaired",
+      "reason": "At max Courage는 고갈이 아닌 최대치 도달이다. other 사건과 최대 용기 조건으로 수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "재탑승 체력은 Skaarl의 Health 비율로 제시되며 최대 체력 기준인지는 공급 원문에 명시되지 않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.7",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.8",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.9",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.10",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.10",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "id": "Kindred.E",
+  "sourceHash": "7bda0e5f3be3ef55f85d22d7e6a9d5bf3df7ac0802277ee21668fdcefc121199",
+  "beforeCandidateHash": "2899b02908d96906956a278e2f48d64467cbbf7f6252c9bf39a25674dd76970e",
+  "candidateHash": "089c6441b16104cefa569c7e2e618b9d7335d0a4c8991166a38b0bacae21d6a0",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "1초복합둔화·같은적매공격간4초이내세번째공격늑대추가80~200+추가AD100%+잃은HP5.5%·치확/치피50%효율·정글잃은HP항200상한을검수했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → enemy: 적을 둔화시킵니다. [slow] / amount=30 [scalar]; stat_coefficient=5% (caster abilityPower) [scalar]; duration_seconds=1 [scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster hit_order eq 이 대상에 대한 세 번째 기본 공격; target other eq 같은 대상에 대한 선행 두 공격과 각 공격 사이 4초 이내 → target: 늑대가 덮쳐 추가 물리 피해를 입힙니다. [physical] / amount=80/110/140/170/200 [rank_values]; stat_coefficient=100% (caster bonusAttackDamage) [scalar]; stat_coefficient=5.5% [scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster hit_order eq 이 대상에 대한 세 번째 기본 공격; target other eq 같은 대상에 대한 선행 두 공격과 각 공격 사이 4초 이내; target target_type eq monster; target other eq 정글 몬스터 → target: 정글 몬스터에게 입히는 잃은 체력 비례 피해량이 제한됩니다. [physical] / max_amount=200 [scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 대조: caster의 attack / 조건 caster hit_order eq 이 대상에 대한 세 번째 기본 공격; target other eq 같은 대상에 대한 선행 두 공격과 각 공격 사이 4초 이내 → target: 이추가피해는자신의치명타확률과치명타피해로50%효율증가한다.구체대응식은본문에없다. / other=50% [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions",
+      "issue": "세번째공격을hit_count2로오표현",
+      "correction": "같은대상세번째공격및각공격간4초조건",
+      "sourceId": "en:body",
+      "quote": "Kindred's third Attack against the target within 4 seconds of each other"
+    },
+    {
+      "path": "rules.2.conditions",
+      "issue": "임의몬스터공격에상한적용·정글누락",
+      "correction": "E세번째공격동일조건및정글한정",
+      "sourceId": "en:body",
+      "quote": "Missing health damage is capped at 200 against jungle monsters."
+    },
+    {
+      "path": "rules.3",
+      "issue": "치확/치피50%효율효과가gap만있고규칙누락",
+      "correction": "원문수정효과복구",
+      "sourceId": "en:body",
+      "quote": "Damage is increased by Critical Strike Chance and Damage at 50% effectiveness."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 207,
+      "verdict": "repaired",
+      "reason": "두번이라는완료횟수를세번째공격순서와동일대상선행두공격/각간격4초로수정했다."
+    },
+    {
+      "index": 208,
+      "verdict": "repaired",
+      "reason": "정글상한규칙에E세번째공격발동조건을공유시켰다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "원문은 세 번째 공격과 앞선 공격 간 간격을 설명하지만, 스키마의 단일 time 조건으로 각 공격 간 4초 이내 조건을 모두 표현할 수 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "피해량은 치명타 확률과 치명타 피해량에 의해 50% 효율로 증가하지만 구체적인 계산식은 제시되지 않았습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 2,
+      "reason": "scope_ambiguous",
+      "detail": "잃은 체력 비례 피해의 기준 스탯 소유자를 허용된 stat 값으로 특정할 수 없습니다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

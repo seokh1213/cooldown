@@ -1,0 +1,395 @@
+{
+  "champion": "Pyke",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Pyke blinks to and executes low health enemies, allowing him to cast this spell again and granting additional gold to an ally who assists.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Pyke strikes all enemy champions in an X, teleporting to and executing targets below ((250 ~ 550) + (80% bonus Attack Damage) + (150% Lethality)) Health. Champions above the threshold and non-champions instead take physical damage equal to 50% of that amount (((125 ~ 275) + (40% bonus Attack Damage) + (75% Lethality))). When an enemy champion dies inside the X, Pyke can Recast this Ability for free within 20 seconds. If he executed that champion, the last assisting ally will also get kill gold. If he did not, he will still get kill gold as if he did.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "파이크가 체력이 낮은 적에게 순간적으로 이동하여 처형하고 스킬을 다시 사용할 수 있게 됩니다. 또한 처치에 관여한 아군에게 추가 골드를 줍니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "파이크가 X 모양의 영역 내에 있는 모든 적 챔피언에게 피해를 주며, 체력이 ((250 ~ 550) + (80% 추가 공격력) + (150% 물리 관통력)) 미만인 적에게 순간이동하여 처형합니다. 체력이 기준 이상인 챔피언과 챔피언이 아닌 대상의 경우, 해당 수치의 50%(((125 ~ 275) + (40% 추가 공격력) + (75% 물리 관통력)))에 해당하는 물리 피해를 입습니다. 적 챔피언이 X 구역 안에서 처치되면 20초 안에 이 스킬을 재사용할 수 있습니다. 해당 챔피언을 파이크가 처치했다면 마지막으로 처치를 도운 아군에게도 챔피언 처치 골드가 주어집니다. 파이크가 아니라 아군이 처치했어도 파이크에게 챔피언 처치 골드가 주어집니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Death From Below",
+      "ko": "깊은 바다의 처형"
+    },
+    "cooldownSeconds": [
+      100,
+      85,
+      70
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      750,
+      750,
+      750
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "100/85/70"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          290,
+          330,
+          370,
+          400,
+          430,
+          450,
+          470,
+          490,
+          510,
+          530,
+          540,
+          550,
+          560,
+          570
+        ],
+        "digits": 0
+      },
+      {
+        "values": [
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          145,
+          165,
+          185,
+          200,
+          215,
+          225,
+          235,
+          245,
+          255,
+          265,
+          270,
+          275,
+          280,
+          285
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:RDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "RDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByLevel": [
+          250,
+          250,
+          250,
+          250,
+          250,
+          250,
+          290,
+          330,
+          370,
+          400,
+          430,
+          450,
+          470,
+          490,
+          510,
+          530,
+          540,
+          550
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.800000011920929,
+              0.800000011920929,
+              0.800000011920929
+            ]
+          },
+          {
+            "stat": "lethality",
+            "coefficientsByRank": [
+              1.5,
+              1.5,
+              1.5
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": [
+        "f10",
+        "f9"
+      ]
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Pyke.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Pyke.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 87,
+      "end": 90
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "550",
+      "value": 550,
+      "percent": false,
+      "start": 93,
+      "end": 96
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 101,
+      "end": 104
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 129,
+      "end": 133
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 240,
+      "end": 243
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 262,
+      "end": 265
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 268,
+      "end": 271
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 276,
+      "end": 279
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "75%",
+      "value": 75,
+      "percent": true,
+      "start": 304,
+      "end": 307
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 409,
+      "end": 411
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 45,
+      "end": 48
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "550",
+      "value": 550,
+      "percent": false,
+      "start": 51,
+      "end": 54
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 74,
+      "end": 78
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 149,
+      "end": 152
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 155,
+      "end": 158
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 161,
+      "end": 164
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 169,
+      "end": 172
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "75%",
+      "value": 75,
+      "percent": true,
+      "start": 184,
+      "end": 187
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 238,
+      "end": 240
+    }
+  ],
+  "sourceHash": "f44e2d7eff5788e564ada90d1f7d9112b64f11a246d9310d628d6b816f0e9916",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

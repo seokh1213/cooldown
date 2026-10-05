@@ -1,0 +1,69 @@
+{
+  "id": "Milio.P",
+  "sourceHash": "9ebf28792b526adc02d5700af4046f77b62f46dae47a68944cccae5c1d7d641f",
+  "beforeCandidateHash": "bce600d3d9e5f547d055aa52651be12434af277280a721698e424ae07806c8a4",
+  "candidateHash": "778871924409d47e9659e32c111998377b473e9cbe20b9db715be4f9ff317355",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 2,
+  "checkedGapCount": 1,
+  "summaryCheck": "밀리오스킬접촉아군챔피언다음공격OR스킬에아군AD7~15%추가마법+1.5초총10~50+20%밀리오AP화상 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 ally.target_type eq champion / caster.activation eq 밀리오 스킬이 해당 아군챔피언에 닿음; ally: 밀리오의 스킬이 닿은 아군 챔피언에게 다음 기본 공격 또는 스킬에 적용될 타오르는 힘 효과를 부여한다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: attack_or_ability_hit 사건의 행위자 ally; 조건 ally.activation eq 밀리오스킬에 닿아 강화된 그 아군챔피언의 다음 공격 또는 스킬 / target.other present 해당 공격 또는 스킬의 대상; target: 강화된아군의 다음공격/스킬 대상에게 그아군공격력의7~15%를 추가마법피해로 줍니다. [magic]; 수치 stat_coefficient en:body:n0=7%(백분율),en:body:n1=15%(백분율) ally.totalAttackDamage formula_components; flags 없음 | target: 해당대상은1.5초동안 총(10~50+20%밀리오AP) 마법피해로 불탑니다. 이 총식을 초당피해로 반복하지 않습니다. [magic]; 수치 min_amount en:body:n2=10 상수 formula_components / max_amount en:body:n3=50 상수 formula_components / stat_coefficient en:body:n4=20%(백분율) caster.abilityPower formula_components / duration_seconds en:body:n5=1.5 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "버프접촉/아군공격행위자분리·스탯주인·범위레벨단정·화상총계vs초당의위험 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "When Milio's Abilities touch ally champions, their next Attack or Ability deals (7% ~ 15%) ally Attack Damage as additional magic damage, plus ((10 ~ 50) + (20% Ability Power)) magic damage over 1.5 seconds."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "7~15%아군AD/10~50기본피해 범위의 변화기준은없다. 강화된스킬의복수적중/복수대상 적용횟수와강화대기시간도공급본문에없어 추정하지않는다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

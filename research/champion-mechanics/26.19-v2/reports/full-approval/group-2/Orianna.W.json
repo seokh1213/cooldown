@@ -1,0 +1,100 @@
+{
+  "id": "Orianna.W",
+  "sourceHash": "36ff43ba956489b8225afcce7925c7fe55a84da6af0cfdb7da3754ae2f4e1282",
+  "beforeCandidateHash": "79ce71567b4178fe98a3e4b44c8c6ddd209873508d5058bce04c09cf67cd7445",
+  "candidateHash": "e01bb04cf8ce6e411afa28bc6776064390adaa4f226fe22f87ce1988b39dcaec",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "구체주변70~230+80%AP마법,장3초/적20~40%둔화/아군20~40%이속/이속변화2초감소를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 nearby_enemies.distance eq 이 구체 주변; nearby_enemies: 구체 주변 적에게 마법 피해를 입힌다. [magic]; 수치 amount en:body:n0=70,en:body:n1=110,en:body:n2=150,en:body:n3=190,en:body:n4=230 상수 rank_values / stat_coefficient en:body:n5=80%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 enemy.distance eq 이 에너지 장의 영향을 받는 대상; enemy: 에너지 장에 영향받는 적을20~40% 둔화시킵니다. 이속변화 효과는2초에 걸쳐 감소하며 감소 시작 시점은 원문에 특정되지 않습니다. [slow]; 수치 duration_seconds en:body:n17=2 상수 scalar / amount en:body:n7=20(백분율),en:body:n8=25(백분율),en:body:n9=30(백분율),en:body:n10=35(백분율),en:body:n11=40%(백분율) 상수 rank_values; flags decays"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: passive 사건의 행위자 caster; 조건 ally.distance eq 이 에너지 장의 영향을 받는 대상; ally: 에너지 장에 영향받는 아군 이속을20~40% 높입니다. 이속변화 효과는2초에 걸쳐 감소합니다.; 수치 amount en:body:n12=20(백분율),en:body:n13=25(백분율),en:body:n14=30(백분율),en:body:n15=35(백분율),en:body:n16=40%(백분율) 상수 rank_values / duration_seconds en:body:n17=2 상수 scalar; flags decays"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 전기파동 후 에너지 장이3초 남습니다. 장수명3초와 이속변화감소2초를 구별합니다.; 수치 duration_seconds en:body:n6=3 상수 scalar; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "3초장수명과2초감소 구분·영향대상범위·이속stat분류·감소시점한계 명시",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Orianna commands her Ball to release an electric pulse, dealing (70/110/150/190/230 + (80% Ability Power)) magic damage to surrounding enemies. The pulse leaves behind an energy field for 3 seconds, Slowing enemies by 20/25/30/35/40% and granting allies 20/25/30/35/40% Move Speed, decaying over 2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 371,
+      "verdict": "false_positive",
+      "reason": "원본 amount ref en:body:n11 raw40%이고percent=true이다. proposal 경로parameters0는duration3으로 경로도 맞지 않으며 단위누락 없다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "본문 이속변화효과2초 감소를 보존했다. 장을 벗어남/시전직후 중 감소 시작 시점, 감소곡선은 주어지지 않는다.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

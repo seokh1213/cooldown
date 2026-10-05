@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 2,
+  "id": "Heimerdinger.P",
+  "champion": "Heimerdinger",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "f83a89c8cd87356b7db7b9896147218125d6d2af6deac06287ee1d83418b65c2",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Hextech Affinity",
+      "ko": "마법공학 전문가"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Heimerdinger.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Gain Move Speed while near allied towers and turrets deployed by Heimerdinger.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Heimerdinger gains 20% Move Speed near his Turrets and ally towers.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "아군 포탑이나 하이머딩거가 설치한 포탑 주변에서 이동 속도가 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "하이머딩거가 아군 포탑이나 자신의 포탑 주변에서 이동 속도가 20% 증가합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 19,
+      "end": 22
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 34,
+      "end": 37
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "아군 포탑과 자신의 포탑 근처에서 이동 속도가 증가합니다.",
+  "rules": [
+    {
+      "id": "ae61bf0a6f8676d59784",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "아군 포탑 또는 자신의 포탑 근처"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "아군 포탑 또는 하이머딩거의 포탑 근처에서 이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Heimerdinger gains 20% Move Speed near his Turrets and ally towers."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "729418ffe7122bf606ce5932c344b1fbe833688ee72b0c0c5e18dec8820c2cdc"
+}

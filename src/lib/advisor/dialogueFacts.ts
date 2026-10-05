@@ -75,6 +75,7 @@ function resolveTargets(question: string, named: ChampionCard[], memory: Dialogu
   if (memory.matchup && /내\s*[QWER]|내\s*궁|\bmy\b|我的/i.test(question)) return from([memory.matchup.mine]);
   if (memory.compared && (memory.active === "compare" || memory.active === "spell")) return from(memory.compared);
   if (memory.active === "stat" && memory.stat) return from(memory.stat.champions);
+  if (memory.active === "champion" && memory.champion) return from([memory.champion]);
   if (memory.spell && (memory.active === "spell" || RETURN.test(question))) return from([memory.spell.champion]);
   if (memory.pending) return from(memory.pending.candidates);
   if (memory.active === "matchup" && memory.matchup) return from([memory.matchup.mine, memory.matchup.enemy]);

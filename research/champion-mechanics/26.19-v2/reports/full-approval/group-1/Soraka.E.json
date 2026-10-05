@@ -1,0 +1,70 @@
+{
+  "id": "Soraka.E",
+  "sourceHash": "2133782c06197613f494a29ff69143c0db1e96ba12bbabe62109a2d08c93498e",
+  "beforeCandidateHash": "7feb7e21104c2272f338bf26a40effeb686390291459a510278430d46f19ed83",
+  "candidateHash": "16202fb662d8c6a45abcddc02827ad930fe47e401b427713094e640c5eb95232",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "영역 생성 때 챔피언마법 피해,1.5초영역 안의모든 적 침묵,영역 소멸 때안에 남은챔피언만랭크별1~2초속박/별도마법 피해를 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 target.target_type eq champion; target.other eq 별의 영역 생성 지역 안에 있는 적 챔피언. target damage magic: 별의 영역 생성 시 챔피언에게 마법 피해를 입힌다. [amount n0=70/n1=95/n2=120/n3=145/n4=170 rank_values; stat_coefficient n5=40% scalar caster.abilityPower]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 enemy.other eq 이 스킬의1.5초영역이활성인동안그안에있는적. enemy crowd_control silence: 활성 별의 영역 안에 있는 동안 적을 침묵시킨다. 진입한 이후 무조건1.5초 지속하는 개별 침묵으로 실행하지 않는다. []"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, unknown.expiry; 조건 enemy.target_type eq champion; enemy.other eq 영역이 사라질 때 영역 안에 있음; caster.other eq 자신이 생성한 별의 영역이 소멸하는 사건. enemy crowd_control root: 챔피언을 속박한다. [duration_seconds n7=1/n8=1.25/n9=1.5/n10=1.75/n11=2 rank_values] / enemy damage magic: 챔피언에게 마법 피해를 입힌다. [amount n12=70/n13=95/n14=120/n15=145/n16=170 rank_values; stat_coefficient n17=40% scalar caster.abilityPower]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. unknown other: 별의 영역은지정 위치에서1.5초동안유지된다. 그안의적에게만침묵이적용된다. [duration_seconds n6=1.5 scalar]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2;gaps",
+      "issue": "최초 피해챔피언조건 없음,영역수명1.5초를진입후침묵시간으로해석,피해자expiry사건,요약모든적속박과본문챔피언속박범위차이",
+      "correction": "최초피해챔피언/영역조건과영역1.5초수명을분리하고침묵은활성영역안에있는동안적용한다.영역소멸사건 및본문챔피언속박을우선해충돌기록했다.",
+      "sourceId": "en:body",
+      "quote": "The field lingers for 1.5 seconds, Silencing enemies inside."
+    },
+    {
+      "path": "rules.0.effects.1;rules.3",
+      "issue": "영역생성이피해수혜챔피언존재조건에묶임",
+      "correction": "챔피언이없어도영역이생성되고피해만챔피언에한정되도록분리했다.",
+      "sourceId": "en:body",
+      "quote": "The field lingers for 1.5 seconds, Silencing enemies inside."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "source_conflict",
+      "detail": "요약은소멸때모든적이속박된다고하지만양언어본문은챔피언만속박/피해로명시한다.더구체적인본문의챔피언제한을보존한다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

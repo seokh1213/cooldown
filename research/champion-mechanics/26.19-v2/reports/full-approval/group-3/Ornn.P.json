@@ -1,0 +1,48 @@
+{
+  "id": "Ornn.P",
+  "sourceHash": "1359443bc2461065b5d1df13c2003134c453c028f33f783e07c21e0a83a5f7f3",
+  "beforeCandidateHash": "bff5ac59e7aa97fec0abb37eaf11e30ca5b44f5930ecb7fc9c654b961880b7fe",
+  "candidateHash": "b52a4f5d8409af935203aebbb0e8db23007a2d301dae83bbd45c9626794d905a",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 1,
+  "checkedGapCount": 0,
+  "summaryCheck": "어디서든골드제작/소모품제외·13레벨자기전설1개·13이후레벨당근처아군전설업그레이드·추가HP/방어력/MR10%와업그레이드당4%추가증가를대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 passive → caster: 골드를 사용해 어디서든 소모품이 아닌 아이템을 제작할 수 있습니다. | caster: 레벨 13이 되면 자신의 전설급 아이템 하나를 걸작 아이템으로 업그레이드합니다. / other=13 [scalar]; count=one [scalar] | ally: 레벨 13 이후 레벨이 오를 때마다 근처의 아군을 클릭해 그 아군의 전설급 아이템을 업그레이드할 수 있습니다. / other=13 [scalar] | caster: 모든출처의bonusHealth가10%증가하고업그레이드한전설아이템당해당추가스탯4%만큼증가율이더해진다. / amount=10% (caster bonusHealth) [formula_components]; stat_coefficient=4% (caster bonusHealth) [formula_components] | caster: 모든출처의bonusArmor가10%증가하고업그레이드한전설아이템당해당추가스탯4%만큼증가율이더해진다. / amount=10% (caster bonusArmor) [formula_components]; stat_coefficient=4% (caster bonusArmor) [formula_components] | caster: 모든출처의bonusMagicResist가10%증가하고업그레이드한전설아이템당해당추가스탯4%만큼증가율이더해진다. / amount=10% (caster bonusMagicResist) [formula_components]; stat_coefficient=4% (caster bonusMagicResist) [formula_components]"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.effects.3",
+      "issue": "10%+업그레이드당4%세능력치관계미연결",
+      "correction": "추가체력/추가방어력/추가MR각각연결및업그레이드단위보존",
+      "sourceId": "en:body",
+      "quote": "This value increases by 4% of these bonus stats per Legendary item Ornn upgrades."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 372,
+      "verdict": "repaired",
+      "reason": "세추가스탯각각의10%증가와전설업그레이드당4%증가를효과별로명시했다."
+    }
+  ],
+  "limitations": [],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "unresolved_effect",
+        "path": "rules.0",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      }
+    ]
+  }
+}

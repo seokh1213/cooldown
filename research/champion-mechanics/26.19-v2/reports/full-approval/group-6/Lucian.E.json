@@ -1,0 +1,92 @@
+{
+  "id": "Lucian.E",
+  "sourceHash": "70d9d8fc98136a7c5ea79e82d3b9fce661bd2ba90cf85a0e7e621a6c7d464d0c",
+  "beforeCandidateHash": "293e502dd22601044ff1bbc32e8528804c18636f28db386ece4e1c63d1e12532",
+  "candidateHash": "a293948365c4b5a13c2e3743ed4183fbf8fe0ea417e710a63e3624d8728aadb7",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 1,
+  "summaryCheck": "빠른 짧은 돌진, 빛의 사수 적중마다 대상별 쿨다운 감소와 돌진 중 스킬 사용을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "공급 요약의 빠른 짧은 돌진을 확인했으며 거리는 수치화하지 않았다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "비챔피언 적에게 빛의 사수로 적중할 때마다 E 쿨다운 1초 감소다. !=champion은 비챔피언 전체를 포괄한다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "같은 빛의 사수 적중이 챔피언이면 2초 감소한다. 일반 스킬 적중으로 확대되지 않도록 조건을 넣었다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "돌진 중에도 다른 능력을 사용할 수 있다. 둘째 탄환만 계산되는지는 공급 원문에 명시되지 않아 gap을 유지했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.1.conditions.1",
+      "issue": "쿨다운 감소는 모든 공격·능력 적중이 아니라 Lightslinger 적중이다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Lucian dashes. Cooldown is reduced by 1 second whenever Lucian hits an enemy with Lightslinger (2 seconds for champions). Lucian can use other Abilities while dashing."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 267,
+      "verdict": "false_positive",
+      "reason": "target_type != champion은 이미 모든 비챔피언을 포괄한다. 제안은 부정 조건의 의미를 잘못 읽었다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "note": "툴팁은 빛의 사수 적중에 따른 재사용 대기시간 감소를 설명하지만, 강화된 두 번째 탄환만 적중으로 계산되는지는 명시하지 않는다."
+    }
+  ],
+  "validation": {
+    "id": "Lucian.E",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "1 unresolved source gaps"
+      }
+    ]
+  }
+}

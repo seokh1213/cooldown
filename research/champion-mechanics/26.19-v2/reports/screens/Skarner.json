@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Skarner.E",
+      "sourceHash": "ad94086316070f690fe148f128ad28ffe4f98d6a4301de8f4a698f2cf407bb0f",
+      "candidateHash": "a7c1cf578aed0232cfaa2eeeef45af9b8c8d6139e9c9d4e6c19b70dca7be05ab"
+    },
+    {
+      "id": "Skarner.R",
+      "sourceHash": "a3b89633286906b4f9a1c04e7933e97b3674a046156b729cd77910e5e5e40ea0",
+      "candidateHash": "4953d5aebac67ac101dd1799155681ac5a71a41dc10954dfc4e652b507a7db73"
+    },
+    {
+      "id": "Skarner.P",
+      "sourceHash": "17aca9066bc5ee407d5f63599139bc57f4bae2f8caaec4874350e8eb17c2c9d4",
+      "candidateHash": "3f5f049a347f4de6b65cf19211e0896f4be4e4f1e1934bfee010795eb0476a2a"
+    },
+    {
+      "id": "Skarner.Q",
+      "sourceHash": "ba6445955ccaff4c69228d308d8788b696d6ac39223b2f21cf485fb4bf8256dd",
+      "candidateHash": "4eb205bdfed7e38b5ea023824dbf1806abed836db02f79fa68dbe795ede08b2e"
+    },
+    {
+      "id": "Skarner.W",
+      "sourceHash": "bf99266866da367d0e3f109b71b8c55edbc348e9e6f35e7b1ac167cf832ef334",
+      "candidateHash": "d6ea5b7b144b581eb3f4d55b4f3ae8484d3a955b4d17c27183522b525f33e151"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Skarner.Q",
+      "path": "rules.1.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Skarner rips a boulder from the ground, empowering his next 3 Attacks with 20/25/30/35/40% Attack Speed and dealing (10/20/30/40/50 + (90% bonus Attack Damage) + (3% bonus Health)) physical damage to surrounding enemies.",
+      "issue": "주변 적 피해를 시전 시 발생하는 피해로 분류했습니다. 원문은 바위를 뜯어내 다음 3회 공격을 강화하면서 피해를 입힌다고 서술해, 피해가 강화 공격에 연결된 것으로 읽힙니다.",
+      "correction": "피해 규칙을 시전 이벤트가 아니라 강화 기본 공격 이벤트에 연결하세요."
+    },
+    {
+      "id": "Skarner.Q",
+      "path": "rules.2.conditions.1.field",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "empowering his next 3 Attacks",
+      "issue": "마지막 공격 조건에 공격 횟수 3회를 `hit_count`로 표현했습니다. 원문이 세는 것은 적중 횟수가 아니라 다음 기본 공격 중 세 번째 공격입니다.",
+      "correction": "공격 적중 수가 아닌 강화 기본 공격의 순번이 3회째인 조건으로 표현하세요."
+    },
+    {
+      "id": "Skarner.Q",
+      "path": "rules.6.trigger.event",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Percent Health Damage to monsters is capped at 150/200/250/300/350.",
+      "issue": "체력 비례 피해 상한을 재사용 투척 이벤트에만 적용했습니다. 원문은 상한을 스킬의 체력 비례 몬스터 피해에 적용한다고 적어, 마지막 강화 공격의 체력 비례 피해도 포함될 수 있습니다.",
+      "correction": "상한을 재사용 투척에만 한정하지 말고, 스킬의 몬스터 대상 체력 비례 피해 전체에 적용되도록 범위를 표현하세요."
+    }
+  ],
+  "notes": []
+}

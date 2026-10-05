@@ -1,0 +1,162 @@
+{
+  "id": "Senna.E",
+  "sourceHash": "b674c28fd762685cce0e30a0fcb3d11c013e1ac6bad730e6376a5eac6f2597bd",
+  "beforeCandidateHash": "9f15a5cfaec69888c1af36431acf0df9d73f4b1c3a9523b94a3b60d57e402e60",
+  "candidateHash": "db0840fd338effa84bdcfd6d43ecb61c2c037343a6302d61336c3c7a098aefbe",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 2,
+  "summaryCheck": "6~8초망령·안개진입아군위장/퇴장망령·MS20%+AP100당5%·가까운적챔피언없는동안망령정체/대상지정숨김·감지반경위장시야/대상지정불가를확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: caster의 cast → caster: 세나가 검은 안개 구름으로 변해 망령이 된다. / duration_seconds=6/6.5/7/7.5/8 [rank_values]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: ally의 enter_area / 조건 ally target_type eq champion → ally: 안개에 들어간 아군 챔피언은 위장 상태가 된다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: ally의 other / 조건 ally target_type eq champion; ally activation eq 안개 영역에서 나옴 → ally: 안개를 벗어난 아군 챔피언은 망령이 된다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 transform / 조건 unknown form eq Wraith → unknown: 망령은 이동 속도를 얻는다. / amount=20% [formula_components]; stat_coefficient=5% (unknown abilityPower) [formula_components]; ratio_input=100 (unknown abilityPower) [formula_components]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 transform / 조건 unknown form eq Wraith; nearby_enemies other absent 가까운 적 챔피언 → unknown: 망령은 대상으로 지정할 수 없으며, 적 챔피언이 가까이 없으면 정체를 숨긴다. 적은 망령의 위치는 볼 수 있지만 정체는 알 수 없다. 망령은 그 외에는 위장 상태로 취급된다."
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 other / 조건 unknown form eq Camouflaged; enemy distance absent enemy champion inside detection radius → unknown: 적 챔피언이 감지 반경에 없으면 위장 유닛은 보이지 않는다."
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: unknown의 other / 조건 unknown other present 대상 지정 불가 상태 → unknown: 대상 지정 불가 유닛은 대상이 필요한 기본 공격이나 스킬의 대상이 될 수 없다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.2.trigger.event",
+      "issue": "안개퇴장을시야이탈로오분류",
+      "correction": "영역퇴장other조건",
+      "sourceId": "en:body",
+      "quote": "become Wraiths when they leave."
+    },
+    {
+      "path": "rules.4.conditions",
+      "issue": "망령지정불가에근처적챔피언없음조건부재",
+      "correction": "근처적챔피언absent조건",
+      "sourceId": "en:body",
+      "quote": "are Unselectable, and hide their identities as long as no enemy champions are nearby."
+    },
+    {
+      "path": "rules.5",
+      "issue": "감지챔피언존재시비공개조건반전및지정불가와위장조건혼합",
+      "correction": "absent시위장시야와지정불가별도규칙",
+      "sourceId": "en:body",
+      "quote": "Camouflaged units cannot be seen unless an enemy champion is inside their detection radius."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 431,
+      "verdict": "repaired",
+      "reason": "leave_vision은시야이탈이며원문의안개영역퇴장과다르므로other+영역퇴장조건으로수정했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "scope_ambiguous",
+      "detail": "망령 이동 속도에 적용되는 주문력의 소유자가 영문 툴팁에 명시되지 않아 소유자를 unknown으로 보존했다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "detail": "‘가까이’와 감지 범위의 거리 기준은 수치로 명시되지 않았다.",
+      "review": "공급 본문에서 해당 누락·충돌·표현 한계를 확인했으며 명시된 규칙은 유지한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.4",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.5",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.5",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.6",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.6",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

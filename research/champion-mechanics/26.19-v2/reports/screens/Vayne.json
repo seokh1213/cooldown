@@ -1,0 +1,62 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Vayne.E",
+      "sourceHash": "aad167fc903a2397eafb6f413d36f8b02072bddcdd12d7d4f79304e91bce583a",
+      "candidateHash": "2a31792feac8c75c4711103b2375cb303e0f8dad0d6f735861c8fe112c501c72"
+    },
+    {
+      "id": "Vayne.P",
+      "sourceHash": "f23dd875603872cd06b2145c077808dc501087252eb9690f2a2bcf48a7ead9f3",
+      "candidateHash": "a33c4768f200c2b4d5078d776e0ba2442a3fe537e0ce654ff8188b57cc92dcae"
+    },
+    {
+      "id": "Vayne.Q",
+      "sourceHash": "ce142f9cca6b24746af51092e20e2875dd63fb6d30befe6705ea8d76bf93ba90",
+      "candidateHash": "4a4ca73b6a66fe221a455e4b0a2aa6cfc6eb6ac952db45b179afcd7a36fbe658"
+    },
+    {
+      "id": "Vayne.R",
+      "sourceHash": "31d33ee008ed659703fdbacdc57a8fb2031901529e03a6c6e4401d6652c262d8",
+      "candidateHash": "61d85249be96d3e0f050017472d0eca111a0818736900f9a86964ed87da719f9"
+    },
+    {
+      "id": "Vayne.W",
+      "sourceHash": "dbd7dd6fc56b45ae1c0ad3795e3e86adebc83a05eafcf6553e3a5d2882bebc15",
+      "candidateHash": "74ed63e3b7db713261c0f9156cb4d4cde6ecf6ec42009a62ea042a1d34e1751b"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Vayne.Q",
+      "path": "rules.1.effects.0.parameters.0.numbers.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Vayne rolls a short distance, and deals an additional ((75/85/95/105/115% Attack Damage) + (50% Ability Power)) physical damage on her next Attack.",
+      "issue": "Q의 공격력 계수가 총 공격력(total AD)으로 기록되어 있습니다. 원문은 Attack Damage라고만 하므로 계수 기준을 총 공격력으로 특정하지 않습니다.",
+      "correction": "공격력 계수를 원문 표현인 Attack Damage로 유지하거나, 총 공격력 여부를 미확정으로 기록하세요."
+    },
+    {
+      "id": "Vayne.W",
+      "path": "rules.0.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Passive: Every third consecutive Attack or Ability against an enemy deals an additional 4/5.5/7/8.5/10% max Health true damage.",
+      "issue": "세 번째 연속 공격/스킬 조건이 `hit_count = empowered`로 표현되어 횟수 조건이 아닙니다. 원문은 같은 적을 상대로 한 세 번째 연속 Attack 또는 Ability입니다.",
+      "correction": "세 번째 연속 적중 조건을 횟수/연속성으로 표현하세요. `hit_count`를 쓴다면 실제 세 번째 적중을 뜻하도록 기록하세요."
+    },
+    {
+      "id": "Vayne.W",
+      "path": "rules.1.effects.0.parameters.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Deals 140/155/170/185/200 damage against jungle monsters.",
+      "issue": "정글 몬스터 피해량이 기본 최대 체력 비례 피해의 대체값으로 기록되어 있습니다(`replaces_base`). 원문은 몬스터 상대로 해당 피해를 입힌다고만 하며, 앞서 설명한 추가 고정 피해와의 대체 관계를 명시하지 않습니다.",
+      "correction": "대체 관계를 확정하지 말고, 정글 몬스터 대상 피해량을 별도 효과로 기록하거나 관계를 미확정으로 두세요."
+    }
+  ],
+  "notes": []
+}

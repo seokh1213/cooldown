@@ -1,0 +1,98 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Locke.E",
+      "sourceHash": "8b191f55503dd31f591bdce49615dd1f68a3ab5581bba6339a0b811fcab0e256",
+      "candidateHash": "4a6d38f92eeaa26634b223822e024dad90cd2f305222a6ff347d4f66a1d00962"
+    },
+    {
+      "id": "Locke.P",
+      "sourceHash": "30151ab440f43832fe81d45366b6bb3c17cceb980aec598597c383a6d3d075cb",
+      "candidateHash": "98b1f0286d07efd07270ee99bd6ffd7acaae051a4daf16da29a109634eda9d3c"
+    },
+    {
+      "id": "Locke.Q",
+      "sourceHash": "565deda9b6d249c7b36686e3e77b1957c74a29342943ddcfb066f4768b2d4812",
+      "candidateHash": "77b1a422ae0c4dbc19cc82b713f1fcd164e5dca0b6f9eef3c86b80210566ec55"
+    },
+    {
+      "id": "Locke.R",
+      "sourceHash": "d052be2ca30d89e9dacae65a373a6ef3bd88a6817614fd9c42977c56b364b40c",
+      "candidateHash": "46e8631941c3bb581ac476d614113a097969980e5f399bdbdbe9e061fd2976a5"
+    },
+    {
+      "id": "Locke.W",
+      "sourceHash": "282f1849ffb2862af2a5f39456c48d1d827ecc3820fec9b0e857ec7679dbdc6a",
+      "candidateHash": "1426be288c289edc290fd5abae287ffd3d589637fb42ea4c92b02ad0293e5f75"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Locke.Q",
+      "path": "rules.1.conditions.0",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Nails apply a 25/25/60% Slow for 1/1/2 seconds, stacking with the amount of nails hit.",
+      "issue": "둔화 조건의 기준으로 첫 피해 수치 40을 hit_count 문턱으로 사용했습니다. 원문은 적중한 대못 수에 따라 둔화가 중첩된다고 할 뿐, 피해량 40을 적중 횟수로 요구하지 않습니다.",
+      "correction": "이 조건을 제거하고, 적중한 대못 수에 따른 중첩은 텍스트나 별도 count 표현으로 보존하세요."
+    },
+    {
+      "id": "Locke.Q",
+      "path": "rules.1.effects.0.parameters.0.numbers.2",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Nails apply a 25/25/60% Slow for 1/1/2 seconds, stacking with the amount of nails hit.",
+      "issue": "세 번째 둔화 수치가 60%가 아니라 60으로 저장되어 percentage 표기가 빠졌습니다. 이는 수치 단위의 의미를 바꿉니다.",
+      "correction": "세 번째 값을 60%로 보존하세요."
+    },
+    {
+      "id": "Locke.R",
+      "path": "rules.3.conditions.2",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "sealing away marked enemy champions brought below 10.5/11.5/12.5%",
+      "issue": "처형 조건은 체력이 단계별 기준치 아래로 내려가는 것이지만, 조건의 number_ref는 첫 단계 10.5%로 고정되어 있습니다. 따라서 다른 스킬 랭크의 기준치가 조건에 반영되지 않습니다.",
+      "correction": "조건이 단계별 10.5/11.5/12.5% 기준치를 사용하도록 표현하세요."
+    },
+    {
+      "id": "Locke.R",
+      "path": "rules.6.conditions.1",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Locke can pick up the artifact to permanently increase its execution threshold by 0.5%, and refund 20% of his total Cooldown, for each champion sealed.",
+      "issue": "획득 효과의 조건은 봉인된 챔피언 수가 1명 이상이라고 적혀 있지만, 두 효과가 각각 봉인한 챔피언마다 적용된다는 연결이 효과 텍스트에서 명확하지 않습니다.",
+      "correction": "처형 기준치 증가와 재사용 대기시간 환급 모두 봉인한 챔피언마다 적용된다는 원문 범위를 텍스트로 보존하세요."
+    },
+    {
+      "id": "Locke.R",
+      "path": "rules.6.effects.1.parameters.0.stat",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "refund 20% of his total Cooldown",
+      "issue": "재사용 대기시간 환급의 stat을 totalAttackDamage로 지정해 원문과 무관한 공격력 통계를 연결했습니다.",
+      "correction": "이 매개변수의 stat을 제거하고 재사용 대기시간 환급으로만 표현하세요."
+    },
+    {
+      "id": "Locke.R",
+      "path": "rules.7.effects.0.parameters.0.numberRefs",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "The artifact will linger on the ground for this Ability's current Cooldown at the time of sealing.",
+      "issue": "유물이 지면에 남는 시간에 둔화 지속시간 수치 2초를 연결했습니다. 원문은 봉인 시점의 현재 재사용 대기시간을 가리키며, 이 입력에는 그 수치가 없습니다.",
+      "correction": "이 수치 연결을 제거하고 현재 재사용 대기시간 기준임을 텍스트로 보존하세요."
+    },
+    {
+      "id": "Locke.W",
+      "path": "rules.1.effects.0.parameters.0.stat",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "he suffers 2% current Health true damage per second",
+      "issue": "현재 체력 비례 피해를 maxHealth 기준으로 지정해 체력 기준이 달라졌습니다.",
+      "correction": "maxHealth 지정은 제거하고 현재 체력 기준임을 텍스트 또는 unknown으로 보존하세요."
+    }
+  ],
+  "notes": []
+}

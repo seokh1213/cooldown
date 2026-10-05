@@ -1,0 +1,133 @@
+{
+  "id": "Vladimir.Q",
+  "sourceHash": "4d73df576b508f5fdda779e84a182bc7eeed57f7bed3f829c1e95c7f53a269a4",
+  "beforeCandidateHash": "c5d9075bcf29d18dfbf0db9d11a01867cd49052f8258251b680d1fe0a7f1d432",
+  "candidateHash": "8aa74f9fee64ea94ee63cfd7c887d6b476eeec5189e86659b8e82d815fe6edf9",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 7,
+  "checkedGapCount": 3,
+  "summaryCheck": "기본 마법 피해/회복, 두 번 사용 직후 이속 및 2.5초 다음 사용 강화, 대신 주는 강화 피해, 기본 회복에 추가되는 잃은 체력 회복과 미니언 30%를 확인.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation neq empowered; target: 대상에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n0=80,en:body:n1=100,en:body:n2=120,en:body:n3=140,en:body:n4=160 상수 rank_values / stat_coefficient en:body:n5=60%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 대상에게 입힌 수혈의 피해와 함께 체력을 회복합니다.; 수치 amount en:body:n6=20,en:body:n7=25,en:body:n8=30,en:body:n9=35,en:body:n10=40 상수 rank_values / stat_coefficient en:body:n11=35%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq 수혈을 두 번 사용한 직후; caster: 수혈을 두 번 사용하면 0.5초 동안 이동 속도가 10~40% 증가합니다.; 수치 min_amount en:body:n12=10 상수 level_range / max_amount en:body:n13=40 상수 level_range / duration_seconds en:body:n14=0.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq 수혈을 두 번 사용한 직후; caster: 수혈을 두 번 사용하면 다음 사용이 2.5초 동안 강화됩니다.; 수치 duration_seconds en:body:n15=2.5 상수 scalar; flags 없음"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered; target: 강화된 수혈은 대상에게 마법 피해를 입힙니다. [magic]; 수치 amount en:body:n16=148,en:body:n17=185,en:body:n18=222,en:body:n19=259,en:body:n20=296 상수 rank_values / stat_coefficient en:body:n21=111%(백분율) caster.abilityPower scalar; flags replaces_base"
+    },
+    {
+      "index": 5,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered; caster: 기본 회복에 더해 30~200과 시전자의 잃은 체력 × (5% + 주문력 100당 4%)를 추가 회복합니다.; 수치 min_amount en:body:n22=30 상수 level_range / max_amount en:body:n23=200 상수 level_range / stat_coefficient en:body:n24=5%(백분율) 상수 formula_components / stat_coefficient en:body:n25=4%(백분율) caster.abilityPower formula_components / ratio_input en:body:n26=100 caster.abilityPower formula_components; flags 없음"
+    },
+    {
+      "index": 6,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq empowered / target.target_type eq minion; caster: 미니언을 상대로 강화된 회복 효과의 적용 비율이 감소합니다.; 수치 damage_multiplier en:body:n27=30%(백분율) 상수 scalar; flags replaces_base"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "사용 횟수를 피해량 10으로 잘못 참조, 강화 시 중복 피해, 잃은 체력 수식과 퍼센트 단위 실행 위험 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Vladimir drains his target's lifeforce, dealing (80/100/120/140/160 + (60% Ability Power)) magic damage and restoring (20/25/30/35/40 + (35% Ability Power)) Health. After using this Ability twice, Vladimir gains (10 ~ 40)% Move Speed for 0.5 seconds and empowers the next use of this Ability for 2.5 seconds. The empowered version of this Ability deals (148/185/222/259/296 + (111% Ability Power)) magic damage instead and restores an additional (30 ~ 200) plus (5% + (4% per 100 Ability Power)) missing Health. Empowered healing reduced to 30% against minions."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 631,
+      "verdict": "repaired",
+      "reason": "두 번 사용 직후 조건으로 10 적중 참조와 잘못된 강화 전제를 제거."
+    },
+    {
+      "index": 632,
+      "verdict": "documented_gap",
+      "reason": "원문 10~40%는 맞지만 frozen 숫자표 단위가 false; text의 %와 단위 실행 제한 gap으로 보존."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "‘After using this Ability twice’의 사용 횟수 조건은 수혈 사용 횟수로 보존했으나, 횟수 초기화 조건은 원문에 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력은 스키마 통계에 없으므로 (5% + 주문력 100당 4%) × 시전자 잃은 체력을 구성요소/텍스트로 보존하며 선형 AP 회복식으로 합산하지 않음.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "unresolved_number",
+      "detail": "(10 ~ 40)%의 숫자표 percent가 false이므로 실제 퍼센트 단위는 텍스트로 보존; lexical 숫자표만으로 절대 이동 속도 증가량을 실행하지 말 것.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

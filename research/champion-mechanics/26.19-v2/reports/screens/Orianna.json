@@ -1,0 +1,53 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "medium",
+  "status": "screened",
+  "snapshots": [
+    {
+      "id": "Orianna.E",
+      "sourceHash": "77ed6dad6ff7d5a8a54f791efa54bd450d62aed0d9c65c1ee7b3f3b77542cfb6",
+      "candidateHash": "cc4a88f2dfb6bea829bb6dbf64c5d9ca822bac2b99d8591d805557e1928ae1fb"
+    },
+    {
+      "id": "Orianna.P",
+      "sourceHash": "d6659cc79a09b1d43b0b774cab04d329b07aa7cfb988a6da91d4f28d2a0806f1",
+      "candidateHash": "17da65d6e58ba846e2cc4d8ca243ac364d2d5566ce0a9edfe4adf7938f9f1f17"
+    },
+    {
+      "id": "Orianna.R",
+      "sourceHash": "ac394d00766fe53b25f8d6df1b70b9685ce16630471daa7a12cb45c2fe33f0f9",
+      "candidateHash": "5f6e849121b181f9e2c7a6013ca0ac8d55aa650d8b7f3270d78bb1ce7521a363"
+    },
+    {
+      "id": "Orianna.Q",
+      "sourceHash": "57b9559f862715ec42298bbbd4adc05a4510d6d8ec0943066666e0c33c7f5298",
+      "candidateHash": "0cfc4ccb9a64f99830b308db2835cd77478645288dfe5d30df618ff67e89874a"
+    },
+    {
+      "id": "Orianna.W",
+      "sourceHash": "36ff43ba956489b8225afcce7925c7fe55a84da6af0cfdb7da3754ae2f4e1282",
+      "candidateHash": "79ce71567b4178fe98a3e4b44c8c6ddd209873508d5058bce04c09cf67cd7445"
+    }
+  ],
+  "findings": [
+    {
+      "id": "Orianna.Q",
+      "path": "rules.0.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Deals 30% less damage to all enemies after the first.",
+      "issue": "첫 적중 대상에게만 피해를 주는 조건으로 기록되어 있어, 이후 적중 대상에게도 피해를 준다는 원문과 충돌합니다.",
+      "correction": "첫 대상과 이후 대상을 모두 포함하도록 조건을 제거하고, 이후 대상 피해는 별도 감소 규칙으로 표현하세요."
+    },
+    {
+      "id": "Orianna.W",
+      "path": "rules.1.effects.0.parameters.0.numbers.4",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The pulse leaves behind an energy field for 3 seconds, Slowing enemies by 20/25/30/35/40%",
+      "issue": "둔화량의 마지막 단계가 원문 표기 `40%`와 달리 `40`으로 추출되어 백분율 단위가 누락됐습니다.",
+      "correction": "마지막 둔화량 값에 백분율 단위를 포함하세요."
+    }
+  ],
+  "notes": []
+}

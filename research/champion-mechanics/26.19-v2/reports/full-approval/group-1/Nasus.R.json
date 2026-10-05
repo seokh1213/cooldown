@@ -1,0 +1,97 @@
+{
+  "id": "Nasus.R",
+  "sourceHash": "52463dae04865b390ed857ecc9d8df28d819758426bae56fe4b2aed65cbf1aa9",
+  "beforeCandidateHash": "132e6cc7e70e38223e1b0307bb0f7f6e3a6578956f1e0e7c379030d78b841b3b",
+  "candidateHash": "deb96be053ef4e6fdba8110b4652e19551c49167af4fccd427e7b5ef29243066",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "15초 최대 체력300/450/600·방어력/마저40/55/70, 지속 중 자기 공격 범위 증가/Q쿨50%감소, 주변 적 최대 체력 비례 매초 피해 및 초당240상한을 확인했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.cast; 조건 없음. caster stat_modifier: 모래 폭풍 속에서 최대 체력이 증가합니다. [amount n1=300/n2=450/n3=600 rank_values; duration_seconds n0=15 scalar] / caster stat_modifier: 모래 폭풍 속에서 방어력과 마법 저항력이 증가합니다. [amount n4=40/n5=55/n6=70 rank_values; duration_seconds n0=15 scalar] / caster stat_modifier: 모래 폭풍 속에서 방어력과 마법 저항력이 증가합니다. [amount n4=40/n5=55/n6=70 rank_values; duration_seconds n0=15 scalar]"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 15초 모래 폭풍 강화 효과가 활성인 동안. nearby_enemies damage magic: 폭풍이 활성인 동안 주변의 각 적에게 매초 그 적 최대 체력의 (3/4/5% + 주문력100당1%)에 해당하는 마법 피해를 입힌다. 구성요소를 단순 합산 피해로 실행하지 않는다. [ratio_output n7=3%/n8=4%/n9=5% formula_components; stat_coefficient n10=1% formula_components caster.abilityPower; ratio_input n11=100 formula_components caster.abilityPower; duration_seconds n0=15 scalar]"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 15초 모래 폭풍 강화 효과가 활성인 동안. caster cooldown_change: 폭풍이 부는 동안 흡수의 일격 재사용 대기시간이 감소합니다. [amount n12=50% scalar]"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 15초 모래 폭풍 강화 효과가 활성인 동안. nearby_enemies other: 모래 폭풍의 피해는 초당 최대240이다. 별도의240피해를 추가로 입히는 효과가 아니다. [max_amount n13=240 scalar]"
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:summary"
+      ],
+      "note": "원문 대조: base, caster.passive; 조건 caster.other eq 15초 모래 폭풍 강화 효과가 활성인 동안. caster attack_modifier: 폭풍이 부는 동안 기본 공격 사거리가 증가한다. 증가량은 제공되지 않았다. []"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-4;gaps",
+      "issue": "폭풍 종료 후에 효과 발동, AP100 단위 주인 오류, 사거리 효과 누락, 저항 증가 시간 누락, 상한을 별도 피해로 기록",
+      "correction": "15초 폭풍 활성 조건 및 모든 증가 지속시간을 수정하고 AP100단위·적 최대 체력 복합식과 별도 상한 조정을 보존했다. 공격 사거리 증가 규칙도 복구했다.",
+      "sourceId": "en:body",
+      "quote": "While the storm rages, nearby enemies take (3/4/5% + (1% per 100 Ability Power)) of their maximum Health as magic damage each second and Siphoning Strike has a 50% reduced Cooldown."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 327,
+      "verdict": "repaired",
+      "reason": "time>15를 폭풍이 활성인15초 동안 조건으로 고쳤다."
+    },
+    {
+      "index": 328,
+      "verdict": "repaired",
+      "reason": "100은 주문력 단위 기준으로 수정하고 적 최대 체력에 비율을 곱하는 복합식으로 명시했다."
+    },
+    {
+      "index": 329,
+      "verdict": "repaired",
+      "reason": "Q쿨 감소는 폭풍 활성 동안 적용된다."
+    },
+    {
+      "index": 330,
+      "verdict": "repaired",
+      "reason": "초당 피해 상한은 폭풍 활성 피해에 적용되며 종료 후 time>15 조건을 제거했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_number",
+      "detail": "폭풍 중 공격 사거리 증가 규칙은 요약 근거로 보존했지만 증가량은 공급되지 않았다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "비율3/4/5%+주문력100당1%를 더한 후 해당 적 최대 체력에 곱하는 초당 피해식이다. 구성요소를 단순 선형 피해로 합산하지 않는다. 초당240상한이 적별인지 전체인지 원문은 명시하지 않는다.",
+      "note": "공급 원문과 대조했으며 상세 조건 또는 수식을 확정하지 않고 해당 한계를 보존한다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

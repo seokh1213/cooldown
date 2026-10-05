@@ -1,0 +1,115 @@
+{
+  "id": "Samira.Q",
+  "sourceHash": "935ff8c66b83fb739874bf566962408aba2c759e9b8992b25c11927612ece850",
+  "beforeCandidateHash": "7599cac426bff6298eb9fcb6a9da211b842a48e254277f72186d10c06adf0686",
+  "candidateHash": "dede5e824fe6476ad0a4fb89e29526428f7e91ebfd64ca8f6c67bfab9d6845a6",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 5,
+  "checkedGapCount": 2,
+  "summaryCheck": "총의첫적중과근접시대신검물리피해,실제치명타시기본피해×(0.5+50%치명타피해량),둘의100%생명력흡수,질주중시전의완료시경로모든적공격을대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.hit_order eq first, target.distance gt 근접 사거리 적용. target: 총을 발사해 처음 맞은 적에게 물리 피해를 준다. (physical); amount=0/5/10/15/20  rank_values, stat_coefficient=110% caster의 totalAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 target.distance lte 근접 사거리 적용. target: 검으로 베어 물리 피해를 준다. (physical); amount=0/5/10/15/20  rank_values, stat_coefficient=110% caster의 totalAttackDamage scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.activation eq 이 스킬의 총 또는 검 공격이 실제 치명타로 적중함 적용. target: 치명타가 적용되면 피해량은 기본 피해 계산식에 치명타 배율을 적용한 값이 된다. (physical); amount=0/5/10/15/20  formula_components, stat_coefficient=110% caster의 totalAttackDamage formula_components, ratio_output=0.5  formula_components, stat_coefficient=50% caster의 critDamage formula_components 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 other 사건에서 caster.activation eq 거침없는 질주 중 시전, caster.activation eq 거침없는 질주가 완료됨 적용. enemy: 돌진 완료 시 경로에 있는 모든 적을 공격한다. (physical);  원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    },
+    {
+      "index": 4,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "caster의 ability_hit 사건에서 caster.other eq 이 스킬의 총 또는 검 공격으로 피해를 입힘 적용. caster: 생명력 흡수가 100% 효율로 적용된다.; amount=100%  scalar 원문과 대조하여 대상·조건·숫자의 역할 및 인용 범위를 확인했다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0-2,4",
+      "issue": "행위자enemy및무조건치명타피해/생명력흡수조건혼합",
+      "correction": "caster적중과실제치명타피해대체·일반생명력흡수분리",
+      "sourceId": "en:body",
+      "quote": "Either hit can critically strike for (0/5/10/15/20 + (110% Attack Damage)) × (0.5 + 50% Critical Strike Damage) damage and applies Life Steal at 100% effectiveness."
+    },
+    {
+      "path": "rules.3",
+      "issue": "질주중시전순간에경로공격기록",
+      "correction": "질주완료사건조건추가",
+      "sourceId": "en:body",
+      "quote": "If cast during Wild Rush, Samira will strike all enemies in her path upon completion."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unsupported_formula",
+      "detail": "치명타전체피해는기본Q식×(0.5+치명타피해량50%)의중첩곱수식이다.구성요소를단일선형피해로합산하지않는다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    },
+    {
+      "index": 1,
+      "reason": "scope_ambiguous",
+      "detail": "질주중Q의경로공격에는별도수식이나치명타/생명력흡수상호작용이재명시되지않는다.경로전체공격이라는확정효과만보존한다.",
+      "review": "공급 원문에서 이 한계를 확인했다. 확정된 규칙은 보존하고 원문에 없는 수치나 조건을 추가하지 않았다."
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.4",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

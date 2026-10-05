@@ -1,0 +1,161 @@
+{
+  "id": "TwistedFate.W",
+  "sourceHash": "f27792b9f9d74c16780e3b9ddb38b0db01aa00a6a22e53bbb7a41ed38797bbf5",
+  "beforeCandidateHash": "97204525d5403535200c64bd4fabb00dfc2a75a02cbf6fa61d61c44cf34f6c93",
+  "candidateHash": "89a26c0cbaf6f5fa23f1edc2825d3aa755b4316eac39fda50f5ccbc93e2f9ce8",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "덱을 섞은 뒤 재사용해 다음 기본 공격용 카드를 선택하는 구조와 세 카드별 피해·마나·둔화·기절을 대조했다.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "덱을 섞은 뒤 재사용으로 세 가지 중 한 카드를 고르며 다음 기본 공격을 강화한다. count=3은 타격 횟수가 아니다."
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "푸른 카드는 40/60/80/100/120 + 공격력 100% + 주문력 100% + 치명타 확률 2300/3450/4600/5750/6900%의 단일 마법 피해와 마나 70/90/110/130/150 회복이다. 분리되어 있던 치명타 항을 합쳤다."
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "붉은 카드는 주변 적에게 30/45/60/75/90 + 공격력 100% + 주문력 70% + 치명타 확률 1050/1575/2100/2625/3150% 피해와 30/35/40/45/50% 2.5초 둔화다. 중복 피해를 삭제하고 유형 미지정을 보존했다."
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "황금 카드는 15/22.5/30/37.5/45 + 공격력 100% + 주문력 50% + 치명타 확률 375/562.5/750/937.5/1125% 피해와 1/1.25/1.5/1.75/2초 기절이다. 피해 유형은 원문에 없다."
+    }
+  ],
+  "repairs": [
+    {
+      "path": "rules.0.conditions.0",
+      "issue": "재사용은 덱을 섞은 뒤에 가능한 카드 선택 단계다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate begins shuffling his deck, allowing him to Recast to lock in one of three cards and enhance his next Attack. The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+    },
+    {
+      "path": "rules.1.conditions.1.subject",
+      "issue": "Blue/Red/Gold Card 선택은 대상의 속성이 아니라 시전자의 선택이다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate begins shuffling his deck, allowing him to Recast to lock in one of three cards and enhance his next Attack. The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+    },
+    {
+      "path": "rules.1.effects.0.parameters.3",
+      "issue": "동일 푸른 카드 피해의 치명타 항이 별도 damage 규칙으로 분리되어 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate begins shuffling his deck, allowing him to Recast to lock in one of three cards and enhance his next Attack. The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+    },
+    {
+      "path": "rules.3.effects.0.kind",
+      "issue": "붉은 카드 피해 유형은 양 언어 본문 모두 명시하지 않아 magic으로 확정하지 않는다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate begins shuffling his deck, allowing him to Recast to lock in one of three cards and enhance his next Attack. The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+    },
+    {
+      "path": "rules.5.effects.0.kind",
+      "issue": "황금 카드 피해 유형도 원문에 명시되지 않았다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate begins shuffling his deck, allowing him to Recast to lock in one of three cards and enhance his next Attack. The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+    },
+    {
+      "path": "rules.4",
+      "issue": "붉은 카드의 기본 피해와 치명타 항이 rule 3과 중복되어 한 공격에 두 번 피해를 줄 수 있었다.",
+      "correction": "원문에 맞게 최소 수정",
+      "sourceId": "en:body",
+      "quote": "Twisted Fate begins shuffling his deck, allowing him to Recast to lock in one of three cards and enhance his next Attack. The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+    }
+  ],
+  "proposalDecisions": [
+    {
+      "index": 558,
+      "verdict": "repaired",
+      "reason": "붉은 카드 피해를 other / damageType=null로 바꾸고 양 언어의 유형 미지정 gap을 유지했다."
+    },
+    {
+      "index": 559,
+      "verdict": "repaired",
+      "reason": "같은 붉은 카드의 중복 피해 규칙을 삭제했으며 남은 규칙도 유형 미상으로 보존했다."
+    },
+    {
+      "index": 560,
+      "verdict": "repaired",
+      "reason": "황금 카드의 magic 단정을 제거해 other / damageType=null로 보존했다."
+    }
+  ],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "note": "붉은색 카드의 피해 유형이 영어 본문에 명시되어 있지 않습니다."
+    },
+    {
+      "index": 1,
+      "reason": "unresolved_condition",
+      "note": "황금색 카드의 피해 유형이 영어 본문에 명시되어 있지 않습니다."
+    },
+    {
+      "index": 2,
+      "reason": "unsupported_formula",
+      "note": "슬래시로 나열된 치명타 확률 계수와 둔화 수치의 앞 항목은 frozen lexical 숫자표에서 percent=false다. 모든 항목이 실제 퍼센트임을 효과 문장에 명시했으며 lexical 숫자표만으로 단위를 실행하지 말 것."
+    }
+  ],
+  "validation": {
+    "id": "TwistedFate.W",
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.0",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.2",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": "Diana.R",
+  "sourceHash": "bb673dd7faf44a6fda1b2d509ebd41e80d25e90065b3513c01d085f5813318a5",
+  "beforeCandidateHash": "454bf4594d27459400572ffba0085e617f9f3ffc2af2cee2bab7d672c043f509",
+  "candidateHash": "4a901cf9072510c98fd688cb957e69dab742d661c4af2048856908d3a9ea6302",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 3,
+  "checkedGapCount": 2,
+  "summaryCheck": "근처적끌어당김/2초40~60%둔화·시야,챔피언끌어당김하나이상시짧은지연후주변기본마법+추가챔피언별증분/상한식을 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; nearby_enemies: 주위 적들을 끌어당깁니다. [pull]; 수치 없음; flags 없음 | nearby_enemies: 주위 적들을 둔화시킵니다. [slow]; 수치 amount en:body:n0=40(백분율),en:body:n1=50(백분율),en:body:n2=60%(백분율) 상수 rank_values / duration_seconds en:body:n3=2 상수 scalar; flags 없음 | nearby_enemies: 주위 적들을 드러냅니다.; 수치 duration_seconds en:body:n3=2 상수 scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body",
+        "en:summary"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq 이 시전의 끌어당김으로 적 챔피언 하나 이상 적중; nearby_enemies: 끌어당김이적챔피언하나이상적중하면짧은지연후주변지역에마법피해를줍니다. [magic]; 수치 amount en:body:n5=200,en:body:n6=300,en:body:n7=400 상수 rank_values / stat_coefficient en:body:n8=60%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 caster.activation eq 이 시전의 끌어당김으로 적 챔피언 하나 이상 적중 / caster.entity_count eq 끌어당긴첫챔피언을제외한추가챔피언각각; nearby_enemies: 처음 끌어당긴 챔피언 이후, 추가로 끌어당긴 챔피언마다 추가 마법 피해를 입힙니다. 추가 피해에는 상한이 있습니다. [magic]; 수치 amount en:body:n9=35,en:body:n10=60,en:body:n11=85 상수 formula_components / stat_coefficient en:body:n12=15%(백분율) caster.abilityPower formula_components / max_amount en:body:n13=175,en:body:n14=300,en:body:n15=425 상수 formula_components / stat_coefficient en:body:n16=75%(백분율) caster.abilityPower formula_components; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "보유인원으로적중판정/피해대상을한정한조건과증분·상한AP계수합산위험 교정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Diana Pulls In, Slows by 40/50/60%, and reveals nearby enemies for 2 seconds. If Diana hits at least one enemy champion, she calls to the moon, dealing (200/300/400 + (60% Ability Power)) magic damage plus (35/60/85 + (15% Ability Power)) for each champion pulled beyond the first, up to a max of an additional (175/300/425 + (75% Ability Power)) damage."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "시전 단위로 적중한 적 챔피언 수가 한 명 이상인지 나타내는 조건을 스키마의 subject/field 조합으로 완전히 표현할 수 없습니다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "추가피해는첫챔피언제외추가인원×증분식과별도상한식으로구성;15%와75%AP계수독립합산금지.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.2",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "2 unresolved source gaps"
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "findings": [
+    {
+      "id": "Belveth.P",
+      "path": "rules.2.conditions.1",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Bel'veth gains 1 Lavender stack for large minion and monster takedowns and 2 Lavender stacks for champion and epic monster takedowns.",
+      "issue": "몬스터 처치 관여 조건에 ‘에픽이 아닌’ 제한을 추가했지만 원문에는 이 제한이 없습니다.",
+      "correction": "몬스터 처치 관여 조건에서 ‘에픽이 아닌’ 제한을 제거하거나, 원문이 구분하지 않는다고 텍스트로 보존하세요."
+    },
+    {
+      "id": "Belveth.Q",
+      "path": "rules.4.conditions.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "Each 1% Attack Speed is equivalent to 0.2 Ability Haste for this Ability's per-direction Cooldown.",
+      "issue": "방향별 재사용 대기시간 환산에 공격 속도 총합만 적용된다는 조건을 추가했지만 원문은 그런 범위를 지정하지 않습니다.",
+      "correction": "stat_scope 조건을 제거하거나, 총합 여부를 미상으로 보존하세요."
+    },
+    {
+      "id": "Belveth.R",
+      "path": "rules.5.effects.1.parameters.2",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "20% missing-Health true damage.",
+      "issue": "잃은 체력 비례 피해를 대상의 최대 체력 계수(stat=maxHealth)로 구조화해, 피해 기준을 최대 체력으로 잘못 나타냅니다. 원문은 missing Health라고만 하며 소유자를 명시하지 않습니다.",
+      "correction": "maxHealth 계수로 기록하지 말고 잃은 체력 비례라는 텍스트와 미확정 소유자 정보를 유지하세요."
+    },
+    {
+      "id": "Belveth.R",
+      "path": "rules.5.effects.0.parameters.0",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "The applied Slow ramps up to 99% while Bel'Veth consumes Void Coral.",
+      "issue": "둔화의 99%를 min_amount로 기록해 시작 최소치처럼 나타냅니다. 원문에서 99%는 소모 중 증가하는 둔화의 상한입니다.",
+      "correction": "99%를 max_amount로 기록하거나, 상한임을 텍스트로 보존하세요."
+    },
+    {
+      "id": "Belveth.R",
+      "path": "rules.10.trigger.event",
+      "severity": "high",
+      "sourceId": "en:body",
+      "quote": "Passive: Attacks deal an additional (2/4/6 + (3% bonus Attack Damage)) true damage, stacking infinitely. ... The passive deals a maximum of (16/32/48 + (24% bonus Attack Damage)) true damage to epic monsters.",
+      "issue": "에픽 몬스터 대상 기본 지속 피해 상한 규칙의 발동을 ability_hit으로 기록했습니다. 원문은 이 피해가 기본 공격에 추가되는 지속 효과라고 설명합니다.",
+      "correction": "발동을 attack으로 기록하고, 에픽 몬스터 대상 상한 조건은 유지하세요."
+    },
+    {
+      "id": "Belveth.R",
+      "path": "summary",
+      "severity": "medium",
+      "sourceId": "en:body",
+      "quote": "In her true form, Bel'Veth gains (100/250/400 + (150% bonus Attack Damage) + (150% Ability Power)) max Health, 25/75/125 Attack range, 6/13/20% Total Attack Speed, and Void Surge can pass through walls.",
+      "issue": "한국어 요약은 본모습 변신을 언급하지만 본모습에서 얻는 최대 체력·공격 사거리·공격 속도 증가와 공허 쇄도의 벽 통과 효과를 빠뜨려 변신 효과를 불완전하게 전달합니다.",
+      "correction": "요약에 본모습의 추가 능력치와 공허 쇄도의 벽 통과 효과를 포함하세요."
+    }
+  ],
+  "notes": []
+}

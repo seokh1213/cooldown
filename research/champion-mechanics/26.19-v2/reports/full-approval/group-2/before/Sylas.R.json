@@ -1,0 +1,110 @@
+{
+  "summary": "적 챔피언의 궁극기를 강탈해 사일러스의 궁극기 레벨과 능력치를 사용하는 복사본을 시전할 수 있습니다. 강탈당한 적에게 재사용 대기시간이 적용되어 그동안 다시 강탈할 수 없습니다. 순수 공격력 계수를 주문력 계수로 전환합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "적 챔피언의 궁극기 복사본을 강탈해 시전할 수 있습니다. 복사본은 사일러스의 궁극기 레벨과 능력치를 사용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sylas hijacks an enemy champion, allowing him to cast a copy of their ultimate Ability, based on his Ultimate level and using his stats."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "target",
+          "text": "강탈한 대상에게 강탈 재사용 대기시간이 적용됩니다. 대기시간은 대상 궁극기의 재사용 대기시간에 비례하며 사일러스의 스킬 가속에 따라 조정됩니다. 이 시간 동안 사일러스는 해당 적을 다시 강탈할 수 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hijacking an enemy places a Cooldown on them for 200% (modified by Sylas' Ability Haste) of the enemy's ultimate's Cooldown, with a minimum of 40 seconds, during which time Sylas cannot hijack them again."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "재강탈 대기시간이 대상 궁극기 대기시간과 스킬 가속으로 조정된다는 점은 명시되어 있으나, 정확한 계산식은 tooltip에 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "for 200% (modified by Sylas' Ability Haste) of the enemy's ultimate's Cooldown"
+        }
+      ]
+    }
+  ]
+}

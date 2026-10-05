@@ -15,6 +15,7 @@
  * 합쳐 7MB 남짓이다. 모델(570MB)에 비하면 작고, 한 번 받으면 캐시에 남는다.
  */
 import { revisionedDataPath } from "@/pwa/release";
+import { abilityIndex, type Ability, type AbilityBundle } from "./mechanics/types";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { aliasAt } from "@/lib/knowledge/searchAliases";
 import { askedRuleKinds } from "@/lib/knowledge/rules";
@@ -99,6 +100,8 @@ export interface AdvisorData {
   /** 룬·소환사 주문 판정 규칙. 이름으로 찾는다. */
   ruleIndex: RuleIndex;
   mechanics: MechanicsIndex;
+  /** 현재 원문과 승인 해시가 일치하는 구조화 스킬 규칙. 파일이 없으면 기존 조회를 사용한다. */
+  abilityRules?: Map<string, Ability>;
   /** 카드에 실제로 쓰인 효과 태그. 판정 질문을 알아보는 데 쓴다. */
   effectTags: string[];
   items: NormalizedItem[];
@@ -153,7 +156,7 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
     const knowledge = await getJson<KnowledgeBundle>(
       dataUrl(patch, "llm/advisor-knowledge.json"),
     );
-    const [cardFile, itemFile, runeFile, summonerFile, wikiItemFile] =
+    const [cardFile, itemFile, runeFile, summonerFile, wikiItemFile, abilityFile] =
       await Promise.all([
         getJson<ChampionCardFile>(dataUrl(patch, `llm/champion-cards-${locale}.json`)),
         getJson<ItemFile>(dataUrl(patch, `items-normalized-${locale}.json`)),
@@ -162,6 +165,7 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
         getJson<WikiItemFile>(dataUrl(patch, "llm/item-wiki-meta.json")).catch(
           (): WikiItemFile => ({}),
         ),
+        locale === "ko_KR" ? getJson<AbilityBundle>(dataUrl(patch, "llm/champion-mechanics.json")).catch(() => undefined) : undefined,
       ]);
     // 노트 번역도 없어도 된다. 없으면 영어·중국어 답은 지금처럼 도출 문장만으로 짓는다.
     const translations =
@@ -190,6 +194,7 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
       tips: knowledge.tips,
       ruleIndex: indexRules(knowledge.rules ?? []),
       mechanics: knowledge.mechanics ?? [],
+      abilityRules: abilityIndex(abilityFile, patch),
       effectTags: collectEffectTags(cardFile.cards),
       items: itemFile.items,
       runes: runeFile.runes,

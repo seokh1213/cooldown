@@ -1,0 +1,180 @@
+{
+  "summary": "주변 챔피언의 공격력을 낮춥니다. 트린다미어에게서 등을 돌린 적은 둔화됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "트린다미어 주변"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "enemy",
+          "text": "챔피언의 공격력을 감소시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "totalAttackDamage",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Tryndamere hurls insults, reducing champions' Attack Damage by 20/35/50/65/80 for 4 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Tryndamere hurls insults, reducing champions' Attack Damage by 20/35/50/65/80 for 4 seconds and Slowing by 30/35/40/45/50% while cowering from him for 3.25 seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "decreasing surrounding champions' Attack Damage. Enemies with their backs turned to Tryndamere also have their Move Speed reduced."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "트린다미어에게서 등을 돌린 상태"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "트린다미어 주변"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "트린다미어에게서 등을 돌리며 움츠리는 적을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Slowing by 30/35/40/45/50% while cowering from him for 3.25 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Tryndamere hurls insults, reducing champions' Attack Damage by 20/35/50/65/80 for 4 seconds and Slowing by 30/35/40/45/50% while cowering from him for 3.25 seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "decreasing surrounding champions' Attack Damage. Enemies with their backs turned to Tryndamere also have their Move Speed reduced."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "summary는 등을 돌린 상태를 명시한다. body의 cowering/도망침 표현을 이 방향 조건으로 보존하되 수치 각도나 갱신 방식은 공급원문에 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "while cowering from him"
+        }
+      ]
+    }
+  ]
+}

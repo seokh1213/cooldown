@@ -10,29 +10,7 @@ import { Download, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { readModelCache, type ModelCacheInfo } from "@/lib/advisor/storage";
-import { exportFeedback, readFeedback } from "@/lib/advisor/feedback";
 import { ADVISOR_MODEL, ADVISOR_MODEL_LABEL } from "@/lib/advisor/config";
-import { fill } from "@/i18n/fill";
-
-/**
- * 평가 기록 내보내기. "틀렸거나 부족해요" 를 누른 답과 그 앞 맥락이 기기 안에 쌓여 있다. 판정기를 실제 말투로 다시 재는
- * 시험 세트가 된다(`scripts/llm/kev-agent/feedback-to-tests.ts`). 누를 때만 파일로 나간다.
- */
-function FeedbackExport() {
-  const { t } = useTranslation();
-  const copy = t.advisor.storage;
-  const [count, setCount] = useState(() => readFeedback().length);
-  if (!count) return null;
-  return (
-    <div className="flex items-center justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
-      <span>{fill(copy.feedbackCount, { n: count })}</span>
-      <Button variant="outline" size="sm" onClick={() => setCount(exportFeedback() || count)}>
-        <Download className="mr-1 h-3.5 w-3.5" />
-        {copy.feedbackExport}
-      </Button>
-    </div>
-  );
-}
 
 function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
@@ -147,7 +125,6 @@ export function AdvisorStorage({ onDelete, onDownload, unavailable }: AdvisorSto
         </div>
       )}
 
-      <FeedbackExport />
       <p className="border-t pt-3 text-xs leading-relaxed text-muted-foreground">{copy.note}</p>
     </div>
   );

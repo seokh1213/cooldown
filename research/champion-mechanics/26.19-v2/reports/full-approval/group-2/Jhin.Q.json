@@ -1,0 +1,112 @@
+{
+  "id": "Jhin.Q",
+  "sourceHash": "45d5fcf3a814e3b3b6d38aad198f9dd00e49780013e4e7e2157bdef0dc180539",
+  "beforeCandidateHash": "e92a8012a37c26fc7f353c69d9b48b2736665cacc51c668bfabdebc34bd88de1",
+  "candidateHash": "5adc461978588b98c8d0b5d569860cbba628b90bf4ea85e0e597246b6f7a0f7d",
+  "verdict": "accepted",
+  "scope": "supplied tooltip and summary; supervisor semantic review",
+  "checkedRuleCount": 4,
+  "checkedGapCount": 3,
+  "summaryCheck": "물리 기본 피해의 AD랭크/AP계수, 안맞은 근처 적으로 최대4회 튕김, 앞선 피격 적의 곧 사망에 따른 후속피해35%증가를 대조.",
+  "ruleChecks": [
+    {
+      "index": 0,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; target: 탄환이 물리 피해를 입힌다. [physical]; 수치 amount en:body:n0=44,en:body:n1=69,en:body:n2=94,en:body:n3=119,en:body:n4=144 상수 rank_values / stat_coefficient en:body:n5=44(백분율),en:body:n6=51.5(백분율),en:body:n7=59(백분율),en:body:n8=66.5(백분율),en:body:n9=74%(백분율) caster.totalAttackDamage rank_values / stat_coefficient en:body:n10=60%(백분율) caster.abilityPower scalar; flags 없음"
+    },
+    {
+      "index": 1,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: ability_hit 사건의 행위자 caster; 조건 caster.hit_count lt en:body:n11=4 / target.other eq 이 탄환에 아직 맞지 않은 근처 적; unknown: 탄환은 아직 맞지 않은 근처의 적에게 튕긴다.; 수치 없음; flags 없음"
+    },
+    {
+      "index": 2,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: cast 사건의 행위자 caster; 조건 별도 제한 없음; caster: 탄환은 최대 네 번 적중할 수 있다.; 수치 count en:body:n11=4 상수 scalar; flags 없음"
+    },
+    {
+      "index": 3,
+      "sourceIds": [
+        "en:body"
+      ],
+      "note": "원문 인용과 대조: death 사건의 행위자 target; 조건 target.time lte 적중 직후; secondary_targets: 탄환으로 적중한 적이 적중 후 곧 사망하면 이후 적중의 피해량이 증가한다.; 수치 amount en:body:n12=35%(백분율) 상수 formula_components; flags 없음"
+    }
+  ],
+  "repairs": [
+    {
+      "path": "draft",
+      "issue": "탄환 전체 적중횟수를 대상별 횟수로 오표기, 적을 이동시키는 효과 분류, 증가율을 독립 피해로 표현한 오류와 en/ko 차이 수정",
+      "correction": "아래 ruleChecks에 기록된 최종 조건·대상·단위로 최소 수정; before 원본과 candidate 비교 가능",
+      "sourceId": "en:body",
+      "quote": "Jhin launches a cartridge that deals (44/69/94/119/144 + (44/51.5/59/66.5/74% Attack Damage) + (60% Ability Power)) physical damage before bouncing to a nearby enemy that has not been hit yet. The cartridge can hit a maximum of 4 times. Enemies that die shortly after being hit increase the damage of subsequent hits by 35%."
+    }
+  ],
+  "proposalDecisions": [],
+  "limitations": [
+    {
+      "index": 0,
+      "reason": "unresolved_condition",
+      "detail": "‘shortly after’의 시간 기준이 수치로 명시되지 않았다.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 1,
+      "reason": "unsupported_formula",
+      "detail": "후속 피해가 앞선 사망마다 35% 증가함은 명시. 여러 사망의 증가율 합산/복리 결합 방식은 미명시이므로 수식 구성요소로만 보존.",
+      "sourceIds": [
+        "en:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    },
+    {
+      "index": 2,
+      "reason": "source_conflict",
+      "detail": "영문 본문은 적중 후 곧 사망하면 증가하나 한국어와 요약은 탄환 처치로 한정; 영문 본문을 우선.",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ],
+      "review": "공급 본문·요약을 대조하여 해당 부족 또는 충돌의 범위를 확인함"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      {
+        "code": "text_condition",
+        "path": "rules.1",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.1",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "text_condition",
+        "path": "rules.3",
+        "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+      },
+      {
+        "code": "unresolved_effect",
+        "path": "rules.3",
+        "detail": "Effect or stat owner is not completely typed; requires semantic review"
+      },
+      {
+        "code": "source_gaps",
+        "path": "gaps",
+        "detail": "3 unresolved source gaps"
+      }
+    ]
+  }
+}

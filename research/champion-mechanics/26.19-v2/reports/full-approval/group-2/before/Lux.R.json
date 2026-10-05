@@ -1,0 +1,96 @@
+{
+  "summary": "최후의 섬광은 일직선상의 모든 적에게 마법 피해를 줍니다. 요약에는 패시브 발동과 광채 효과 지속시간 갱신도 언급됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "최후의 섬광은 일직선상의 모든 적에게 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lux fires a dazzling ray of light, dealing (300/400/500 + (120% Ability Power)) magic damage to all enemies in a line."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "최후의 섬광은 럭스의 패시브를 발동하고 광채 효과의 지속시간을 갱신합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "In addition, triggers Lux's passive ability and refreshes the Illumination debuff duration."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "영문 summary는 최후의 섬광이 패시브를 발동하고 광채 효과 지속시간을 갱신한다고 설명하지만, 영문 tooltip은 피해 효과만 설명합니다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "In addition, triggers Lux's passive ability and refreshes the Illumination debuff duration."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lux fires a dazzling ray of light, dealing (300/400/500 + (120% Ability Power)) magic damage to all enemies in a line."
+        }
+      ]
+    }
+  ]
+}
