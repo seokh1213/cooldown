@@ -2,6 +2,24 @@
 
 현재 판정기가 기각한 질문만 0.8B에 넘기는 구조는 구현 가능하다. 실제 요청 판정과 대화에 주입해서 시험했다. 운영 코드에는 연결하지 않았다.
 
+## 0.8B 단독과 같은 조건으로 비교
+
+하이브리드의 마지막 설정과 시스템 지시, 전체 후보 11개, 같은 언어의 예시 15개, 모델 digest 및 생성 설정을 그대로 유지하고 모든 요청을 처음부터 0.8B로 판정시켰다. 로지스틱 후보·점수·시험 정답은 모델 입력에 포함하지 않았다. 추가 프롬프트 조정이나 학습은 하지 않았다.
+
+| 방식 | 일반 / 99 | 부정·정정 / 36 | 실제 대화 처리 / 33 |
+| --- | ---: | ---: | ---: |
+| 현재 문자 판정기 및 앱 경로 | 75 | 20 | 27 |
+| 낮은 확신만 0.8B로 보완 | 82 | 28 | 28 |
+| 처음부터 모든 요청을 0.8B로 판정 | 68 | 28 | 15 |
+
+단독은 일반 질문에서 혼합 방식의 오답 3개를 고쳤지만, 맞던 질문 17개를 틀렸다. 예를 들어 “기본 공속 수치가 몇이지”를 전체 능력치, “R 스킬정보 알려줘”를 전체 스킬로 넓혀 잡았다. 한국어·영어·중국어 일반 질문은 각각 23/33, 24/33, 21/33이었다. 부정·정정은 두 방식의 선택이 모두 같았다.
+
+실제 대화도 세 정책을 한 실행에서 다시 비교하고 턴마다 저장·복원을 거쳤다. 단독은 Q/W/E/R 하나를 묻는 15턴 전부를 전체 스킬로 보내 실패했다. 혼합 방식 대비 2턴을 고치고 15턴을 깨뜨렸다. 단독에서는 요청 로지스틱을 호출하지 않으며, 인터페이스의 `confidence: 0`은 확률이 없다는 표시로만 쓴다. 이 값은 계획기의 분기 기준으로 사용되지 않는다. LLM은 현재 질문만 판정하고 대화 기억은 기존 코드가 처리한다.
+
+135개 범위 판정에서는 혼합 방식이 모델을 부른 72개 요청의 입력 해시와 출력이 단독 결과와 모두 일치했다. 실제 대화에서는 혼합 6/33턴, 단독 33/33턴에 LLM을 호출했다. 캐시는 모델 digest와 요청 본문으로 식별하므로 동일 호출은 재사용했다. 캐시를 포함한 이번 실행 시간을 추론 속도로 보고하지 않는다.
+
+이 설정과 시험 자료에서는 단독 교체를 추천하지 않는다. 이전의 불균형 예시 프롬프트로 얻은 55/99와 이번 68/99를 구분한다. 0.8B 자체의 한계를 입증하는 결과는 아니며, 소규모 수작업 질문과 고정 프롬프트의 결과다. LoRA 학습 및 브라우저 Q4·kev 그래프의 성능은 이 시험에서 확인하지 않았다. 결과는 `standalone.json`, 실제 응답은 `flows-standalone.json`에 기록했으며 운영 적용은 하지 않았다.
+
 ## 전달 기준
 
 가장 높은 점수가 0.6 이상이고, 1·2위 점수 차이가 0.2 이상이면 빠른 판정을 사용한다. 둘 중 하나라도 기준에 못 미치면 LLM으로 넘긴다. 기존 운영 기준 그대로이며, 이번 결과로 수치를 조정하지 않았다. 이 점수는 실사용에서 맞을 확률로 보정한 값이 아니다.
@@ -60,6 +78,10 @@ uv run --python 3.13 --with numpy==2.5.3 --with scikit-learn==1.9.1 python scrip
 npx tsx scripts/llm/offline-classifier/evaluate-request-hybrid-flow.ts
 npx tsx scripts/llm/offline-classifier/evaluate-request-hybrid-flow.ts --balanced-examples
 npx tsx scripts/llm/offline-classifier/evaluate-request-hybrid-flow.ts --balanced-examples --all-scopes
+uv run --python 3.13 --with numpy==2.5.3 --with scikit-learn==1.9.1 python scripts/llm/offline-classifier/evaluate-request-standalone.py
+npx tsx scripts/llm/offline-classifier/evaluate-request-hybrid-flow.ts --llm-only
 ```
 
 `report.json`은 기존 프롬프트 및 최근접 후보 예시 정책, `fixed-examples.json`은 정정 예시 12개와 후보 제한, `balanced-examples.json`은 같은 언어 예시 15개와 후보 제한, `balanced-all-examples.json`은 같은 예시와 전체 범위 선택 결과다. `flows*.json`에는 실제 답변과 판정, 모델을 호출했는지를 남겼다. LLM 출력 캐시는 모델 digest와 실제 요청 본문을 해시한 키로 저장하며 Git에서 제외한다.
+
+기존 보고서의 소스 해시는 각 시험 당시 버전을 가리킨다. 하이브리드 결과를 기록한 커밋은 `7e442e16d`이며, 단독 모드를 추가한 흐름 스크립트의 해시는 `flows-standalone.json`에 따로 남겼다.
