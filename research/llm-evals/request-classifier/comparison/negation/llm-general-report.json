@@ -1,0 +1,1228 @@
+{
+  "model": "qwen3.5:0.8b",
+  "prompt": "Classify the user's current request to a League of Legends assistant. Output one JSON object with scope only.\noverview: champion introduction, basic profile and kit together\nstatsAll: complete base stat table\nstats: specific numeric champion attributes\nskills: entire ability kit, passive through ultimate\nability: a named ability's description, effects, cooldown, range or mechanics\ncombo: order or sequence of attacks and spells\ncounterplay: responding to an enemy champion or ability\nadvice: gameplay tips, positioning, builds or using a champion\nchat: greetings and thanks\nidentity: how to use this assistant, its functions or model\nother: game rules, interactions, definitions, unrelated requests\nDetermine what the user wants now. They may mention an earlier topic that they already understand or explicitly reject.\nDo not answer the game question. The symbol ◇ stands for a champion's name.",
+  "examples": [
+    {
+      "role": "user",
+      "content": "◇ 수치는 충분히 봤어. 이제 각 기술의 역할을 설명해"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"skills\"}"
+    },
+    {
+      "role": "user",
+      "content": "◇ 기술은 충분히 봤어. 이제 각 기본 수치를 설명해"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"statsAll\"}"
+    },
+    {
+      "role": "user",
+      "content": "◇ 스킬만 들었는데 챔피언 특징과 기본정보까지 함께 설명해"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"overview\"}"
+    },
+    {
+      "role": "user",
+      "content": "게임 공략 말고 이 챗봇을 이용하는 방법이 궁금해"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"identity\"}"
+    },
+    {
+      "role": "user",
+      "content": "I have seen enough numbers for ◇. Explain what each ability does now"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"skills\"}"
+    },
+    {
+      "role": "user",
+      "content": "I have seen enough spells for ◇. Explain each base attribute now"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"statsAll\"}"
+    },
+    {
+      "role": "user",
+      "content": "I heard only about ◇ spells; include its champion profile as well"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"overview\"}"
+    },
+    {
+      "role": "user",
+      "content": "Not a gameplay guide, I want instructions for using this chatbot"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"identity\"}"
+    },
+    {
+      "role": "user",
+      "content": "◇的数值已经看够了，现在说说每个技能的作用"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"skills\"}"
+    },
+    {
+      "role": "user",
+      "content": "◇的技能已经看够了，现在说说每个基础数值"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"statsAll\"}"
+    },
+    {
+      "role": "user",
+      "content": "刚才只听到◇的技能，也请介绍英雄本身的基本情况"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"overview\"}"
+    },
+    {
+      "role": "user",
+      "content": "不是游戏攻略，我想知道这个聊天助手怎么用"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"scope\": \"identity\"}"
+    }
+  ],
+  "summary": {
+    "correct": 55,
+    "total": 99,
+    "perLanguage": {
+      "ko_KR": {
+        "correct": 20,
+        "total": 33
+      },
+      "en_US": {
+        "correct": 18,
+        "total": 33
+      },
+      "zh_CN": {
+        "correct": 17,
+        "total": 33
+      }
+    }
+  },
+  "rows": [
+    {
+      "text": "◇ 처음 해보려는데 어떤 챔인지 소개해줄래",
+      "expected": "overview",
+      "language": "ko_KR",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 326.57,
+      "loadMs": 1.97,
+      "tokens": 7
+    },
+    {
+      "text": "◇의 기본 정보와 특징을 같이 듣고 싶어",
+      "expected": "overview",
+      "language": "ko_KR",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 268.34,
+      "loadMs": 1.2,
+      "tokens": 7
+    },
+    {
+      "text": "수치 하나보다 ◇라는 캐릭터 전반이 궁금해",
+      "expected": "overview",
+      "language": "ko_KR",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 264.69,
+      "loadMs": 0.91,
+      "tokens": 7
+    },
+    {
+      "text": "◇ 체력뿐 아니라 기본 능력치를 싹 보여줘",
+      "expected": "statsAll",
+      "language": "ko_KR",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 273.58,
+      "loadMs": 1.25,
+      "tokens": 8
+    },
+    {
+      "text": "◇ 1렙 수치표 전체를 볼 수 있을까",
+      "expected": "statsAll",
+      "language": "ko_KR",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 277.7,
+      "loadMs": 1.65,
+      "tokens": 8
+    },
+    {
+      "text": "◇의 모든 기본 스탯을 한번에 정리해줘",
+      "expected": "statsAll",
+      "language": "ko_KR",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 275.97,
+      "loadMs": 1.09,
+      "tokens": 8
+    },
+    {
+      "text": "◇랑 ◇ 1렙 체력하고 체젠 둘다 비교 부탁",
+      "expected": "stats",
+      "language": "ko_KR",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 279.01,
+      "loadMs": 1.27,
+      "tokens": 8
+    },
+    {
+      "text": "◇의 기본 공속 수치가 몇이지",
+      "expected": "stats",
+      "language": "ko_KR",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 274.59,
+      "loadMs": 1.29,
+      "tokens": 8
+    },
+    {
+      "text": "앞에서 본 둘 마저만 다시 비교해줄래",
+      "expected": "stats",
+      "language": "ko_KR",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 275.45,
+      "loadMs": 1.12,
+      "tokens": 8
+    },
+    {
+      "text": "◇가 가진 패시브랑 액티브들을 전부 요약해줘",
+      "expected": "skills",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 268.53,
+      "loadMs": 1.27,
+      "tokens": 7
+    },
+    {
+      "text": "◇의 Q W E R은 각각 뭐하는 기술이야",
+      "expected": "skills",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 265.83,
+      "loadMs": 1.2,
+      "tokens": 7
+    },
+    {
+      "text": "기본 능력치는 알았으니 ◇ 스킬 구성 전체를 듣고 싶어",
+      "expected": "skills",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 267.6,
+      "loadMs": 1.16,
+      "tokens": 7
+    },
+    {
+      "text": "◇로 딜교하려면 스킬을 어떤 순서로 이어 써",
+      "expected": "combo",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.97,
+      "loadMs": 0.95,
+      "tokens": 7
+    },
+    {
+      "text": "◇의 평타 섞는 짧은 콤보를 추천해줄래",
+      "expected": "combo",
+      "language": "ko_KR",
+      "predicted": "combo",
+      "correct": true,
+      "output": "{\"scope\": \"combo\"}",
+      "latencyMs": 266.99,
+      "loadMs": 1.11,
+      "tokens": 7
+    },
+    {
+      "text": "◇ 점멸 연계 콤보 하나만 정리해줘",
+      "expected": "combo",
+      "language": "ko_KR",
+      "predicted": "combo",
+      "correct": true,
+      "output": "{\"scope\": \"combo\"}",
+      "latencyMs": 266.32,
+      "loadMs": 1.02,
+      "tokens": 7
+    },
+    {
+      "text": "◇로 ◇만 만나면 지는데 상대하는 요령 있어",
+      "expected": "counterplay",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.27,
+      "loadMs": 1.31,
+      "tokens": 7
+    },
+    {
+      "text": "◇의 궁을 피하려면 어디로 움직이면 좋아",
+      "expected": "counterplay",
+      "language": "ko_KR",
+      "predicted": "advice",
+      "correct": false,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 273.48,
+      "loadMs": 1.1,
+      "tokens": 8
+    },
+    {
+      "text": "상대 ◇ W를 먼저 쓰게 하고 싶은데 방법이 있을까",
+      "expected": "counterplay",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.08,
+      "loadMs": 1.01,
+      "tokens": 7
+    },
+    {
+      "text": "◇로 초반 라인전을 풀어가는 팁이 필요해",
+      "expected": "advice",
+      "language": "ko_KR",
+      "predicted": "advice",
+      "correct": true,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 275.7,
+      "loadMs": 1.14,
+      "tokens": 8
+    },
+    {
+      "text": "◇ 한타 때 자리를 어떻게 잡는 게 좋아",
+      "expected": "advice",
+      "language": "ko_KR",
+      "predicted": "advice",
+      "correct": true,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 274.2,
+      "loadMs": 1.05,
+      "tokens": 8
+    },
+    {
+      "text": "◇ 하면서 첫 귀환에 뭘 사야 할지 모르겠어",
+      "expected": "advice",
+      "language": "ko_KR",
+      "predicted": "overview",
+      "correct": false,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 267.53,
+      "loadMs": 1.09,
+      "tokens": 7
+    },
+    {
+      "text": "◇ R 스킬정보 알려줘",
+      "expected": "ability",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 262.57,
+      "loadMs": 1.17,
+      "tokens": 7
+    },
+    {
+      "text": "◇의 W를 쓰면 어떤 효과가 발생하는지 설명해줘",
+      "expected": "ability",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 265.17,
+      "loadMs": 1.15,
+      "tokens": 7
+    },
+    {
+      "text": "◇ 패시브에 붙은 효과를 자세히 듣고 싶어",
+      "expected": "ability",
+      "language": "ko_KR",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.15,
+      "loadMs": 1.42,
+      "tokens": 7
+    },
+    {
+      "text": "설명 듣고 이해했어 정말 고마워",
+      "expected": "chat",
+      "language": "ko_KR",
+      "predicted": "chat",
+      "correct": true,
+      "output": "{\"scope\": \"chat\"}",
+      "latencyMs": 263.91,
+      "loadMs": 1.14,
+      "tokens": 7
+    },
+    {
+      "text": "안녕 오늘도 잘 부탁해",
+      "expected": "chat",
+      "language": "ko_KR",
+      "predicted": "chat",
+      "correct": true,
+      "output": "{\"scope\": \"chat\"}",
+      "latencyMs": 266.37,
+      "loadMs": 1.06,
+      "tokens": 7
+    },
+    {
+      "text": "도움 많이 됐어 잘 자",
+      "expected": "chat",
+      "language": "ko_KR",
+      "predicted": "chat",
+      "correct": true,
+      "output": "{\"scope\": \"chat\"}",
+      "latencyMs": 264.05,
+      "loadMs": 1.0,
+      "tokens": 7
+    },
+    {
+      "text": "너한테 질문할 수 있는 내용들이 뭐야",
+      "expected": "identity",
+      "language": "ko_KR",
+      "predicted": "identity",
+      "correct": true,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 265.33,
+      "loadMs": 1.1,
+      "tokens": 7
+    },
+    {
+      "text": "이 도우미를 어떻게 사용하는 건지 알려줘",
+      "expected": "identity",
+      "language": "ko_KR",
+      "predicted": "identity",
+      "correct": true,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 267.86,
+      "loadMs": 2.56,
+      "tokens": 7
+    },
+    {
+      "text": "여기 챗봇은 어떤 모델로 돌아가는 거야",
+      "expected": "identity",
+      "language": "ko_KR",
+      "predicted": "identity",
+      "correct": true,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 265.94,
+      "loadMs": 1.04,
+      "tokens": 7
+    },
+    {
+      "text": "수호천사로 부활 기다릴 때도 강타 눌러져",
+      "expected": "other",
+      "language": "ko_KR",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 275.33,
+      "loadMs": 1.05,
+      "tokens": 8
+    },
+    {
+      "text": "정화가 제압을 지울 수 있는지 궁금해",
+      "expected": "other",
+      "language": "ko_KR",
+      "predicted": "overview",
+      "correct": false,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 267.59,
+      "loadMs": 0.99,
+      "tokens": 7
+    },
+    {
+      "text": "치유 감소 아이템 두 개면 효과가 합쳐져",
+      "expected": "other",
+      "language": "ko_KR",
+      "predicted": "other",
+      "correct": true,
+      "output": "{\"scope\": \"other\"}",
+      "latencyMs": 264.88,
+      "loadMs": 1.45,
+      "tokens": 7
+    },
+    {
+      "text": "I am new to ◇; give me a quick champion introduction",
+      "expected": "overview",
+      "language": "en_US",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 266.16,
+      "loadMs": 1.16,
+      "tokens": 7
+    },
+    {
+      "text": "Could you cover both the basic profile and abilities of ◇",
+      "expected": "overview",
+      "language": "en_US",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 266.31,
+      "loadMs": 1.07,
+      "tokens": 7
+    },
+    {
+      "text": "I'd like to understand ◇ as a character overall",
+      "expected": "overview",
+      "language": "en_US",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 264.04,
+      "loadMs": 0.93,
+      "tokens": 7
+    },
+    {
+      "text": "Can I see all of ◇ starting stats in one table",
+      "expected": "statsAll",
+      "language": "en_US",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 276.8,
+      "loadMs": 1.12,
+      "tokens": 8
+    },
+    {
+      "text": "Please show every base attribute for ◇, not only HP",
+      "expected": "statsAll",
+      "language": "en_US",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 277.63,
+      "loadMs": 1.32,
+      "tokens": 8
+    },
+    {
+      "text": "Give me the complete level-one stats of ◇",
+      "expected": "statsAll",
+      "language": "en_US",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 273.65,
+      "loadMs": 1.18,
+      "tokens": 8
+    },
+    {
+      "text": "Compare ◇ and ◇ for both starting health and health regen",
+      "expected": "stats",
+      "language": "en_US",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 276.79,
+      "loadMs": 1.27,
+      "tokens": 8
+    },
+    {
+      "text": "What is the base attack speed of ◇",
+      "expected": "stats",
+      "language": "en_US",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 282.85,
+      "loadMs": 1.0,
+      "tokens": 8
+    },
+    {
+      "text": "For the two champions above, compare magic resistance only",
+      "expected": "stats",
+      "language": "en_US",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 279.16,
+      "loadMs": 0.91,
+      "tokens": 8
+    },
+    {
+      "text": "Explain the passive and every active ability in ◇ kit",
+      "expected": "skills",
+      "language": "en_US",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 268.28,
+      "loadMs": 1.11,
+      "tokens": 7
+    },
+    {
+      "text": "What do Q W E and R each do for ◇",
+      "expected": "skills",
+      "language": "en_US",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.53,
+      "loadMs": 1.38,
+      "tokens": 7
+    },
+    {
+      "text": "I already know the stats; walk through all ◇ abilities",
+      "expected": "skills",
+      "language": "en_US",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 264.16,
+      "loadMs": 1.27,
+      "tokens": 7
+    },
+    {
+      "text": "How should I sequence ◇ spells during a short trade",
+      "expected": "combo",
+      "language": "en_US",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.37,
+      "loadMs": 1.07,
+      "tokens": 7
+    },
+    {
+      "text": "Suggest a ◇ combo with auto attacks between spells",
+      "expected": "combo",
+      "language": "en_US",
+      "predicted": "combo",
+      "correct": true,
+      "output": "{\"scope\": \"combo\"}",
+      "latencyMs": 267.57,
+      "loadMs": 1.53,
+      "tokens": 7
+    },
+    {
+      "text": "Give me one ◇ combo that uses Flash",
+      "expected": "combo",
+      "language": "en_US",
+      "predicted": "combo",
+      "correct": true,
+      "output": "{\"scope\": \"combo\"}",
+      "latencyMs": 262.63,
+      "loadMs": 1.12,
+      "tokens": 7
+    },
+    {
+      "text": "I play ◇ and keep losing to ◇; how should I face them",
+      "expected": "counterplay",
+      "language": "en_US",
+      "predicted": "advice",
+      "correct": false,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 277.71,
+      "loadMs": 1.12,
+      "tokens": 8
+    },
+    {
+      "text": "Where should I move to avoid ◇ ultimate",
+      "expected": "counterplay",
+      "language": "en_US",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 265.71,
+      "loadMs": 1.18,
+      "tokens": 7
+    },
+    {
+      "text": "How can I bait the enemy ◇ into spending W",
+      "expected": "counterplay",
+      "language": "en_US",
+      "predicted": "advice",
+      "correct": false,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 275.04,
+      "loadMs": 1.05,
+      "tokens": 8
+    },
+    {
+      "text": "I'd like some early laning tips for playing ◇",
+      "expected": "advice",
+      "language": "en_US",
+      "predicted": "advice",
+      "correct": true,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 275.37,
+      "loadMs": 1.84,
+      "tokens": 8
+    },
+    {
+      "text": "What position should I take with ◇ in a team fight",
+      "expected": "advice",
+      "language": "en_US",
+      "predicted": "advice",
+      "correct": true,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 275.99,
+      "loadMs": 1.32,
+      "tokens": 8
+    },
+    {
+      "text": "What should I buy on my first recall as ◇",
+      "expected": "advice",
+      "language": "en_US",
+      "predicted": "other",
+      "correct": false,
+      "output": "{\"scope\": \"other\"}",
+      "latencyMs": 267.36,
+      "loadMs": 1.11,
+      "tokens": 7
+    },
+    {
+      "text": "Please tell me about ◇ R skill information",
+      "expected": "ability",
+      "language": "en_US",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 265.37,
+      "loadMs": 0.92,
+      "tokens": 7
+    },
+    {
+      "text": "Describe what happens when ◇ uses W",
+      "expected": "ability",
+      "language": "en_US",
+      "predicted": "ability",
+      "correct": true,
+      "output": "{\"scope\": \"ability\"}",
+      "latencyMs": 264.28,
+      "loadMs": 0.91,
+      "tokens": 7
+    },
+    {
+      "text": "I'd like a detailed explanation of ◇ passive effects",
+      "expected": "ability",
+      "language": "en_US",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.51,
+      "loadMs": 1.2,
+      "tokens": 7
+    },
+    {
+      "text": "That cleared it up, thank you so much",
+      "expected": "chat",
+      "language": "en_US",
+      "predicted": "identity",
+      "correct": false,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 265.56,
+      "loadMs": 1.01,
+      "tokens": 7
+    },
+    {
+      "text": "Hi, hope you're having a good day",
+      "expected": "chat",
+      "language": "en_US",
+      "predicted": "chat",
+      "correct": true,
+      "output": "{\"scope\": \"chat\"}",
+      "latencyMs": 264.05,
+      "loadMs": 0.91,
+      "tokens": 7
+    },
+    {
+      "text": "You helped a lot, good night",
+      "expected": "chat",
+      "language": "en_US",
+      "predicted": "chat",
+      "correct": true,
+      "output": "{\"scope\": \"chat\"}",
+      "latencyMs": 264.44,
+      "loadMs": 1.15,
+      "tokens": 7
+    },
+    {
+      "text": "What sorts of questions can I ask this chatbot",
+      "expected": "identity",
+      "language": "en_US",
+      "predicted": "overview",
+      "correct": false,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 265.81,
+      "loadMs": 1.48,
+      "tokens": 7
+    },
+    {
+      "text": "How am I supposed to use this assistant",
+      "expected": "identity",
+      "language": "en_US",
+      "predicted": "identity",
+      "correct": true,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 266.78,
+      "loadMs": 1.04,
+      "tokens": 7
+    },
+    {
+      "text": "Which AI model is running this helper",
+      "expected": "identity",
+      "language": "en_US",
+      "predicted": "identity",
+      "correct": true,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 264.92,
+      "loadMs": 1.19,
+      "tokens": 7
+    },
+    {
+      "text": "Can I press Smite while waiting for Guardian Angel to revive me",
+      "expected": "other",
+      "language": "en_US",
+      "predicted": "advice",
+      "correct": false,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 276.92,
+      "loadMs": 1.04,
+      "tokens": 8
+    },
+    {
+      "text": "Does Cleanse actually remove suppression",
+      "expected": "other",
+      "language": "en_US",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 278.01,
+      "loadMs": 1.25,
+      "tokens": 7
+    },
+    {
+      "text": "Do two anti-heal items stack their healing reduction",
+      "expected": "other",
+      "language": "en_US",
+      "predicted": "counterplay",
+      "correct": false,
+      "output": "{\"scope\": \"counterplay\"}",
+      "latencyMs": 278.65,
+      "loadMs": 1.67,
+      "tokens": 8
+    },
+    {
+      "text": "我刚开始玩◇，介绍一下这个英雄的整体特点",
+      "expected": "overview",
+      "language": "zh_CN",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 268.11,
+      "loadMs": 1.07,
+      "tokens": 7
+    },
+    {
+      "text": "想同时了解◇的基本信息和技能概要",
+      "expected": "overview",
+      "language": "zh_CN",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 265.26,
+      "loadMs": 1.17,
+      "tokens": 7
+    },
+    {
+      "text": "不是一个属性，我想认识◇这个角色",
+      "expected": "overview",
+      "language": "zh_CN",
+      "predicted": "overview",
+      "correct": true,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 266.28,
+      "loadMs": 1.01,
+      "tokens": 7
+    },
+    {
+      "text": "◇一级的所有基础属性能一起列出来吗",
+      "expected": "statsAll",
+      "language": "zh_CN",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 276.4,
+      "loadMs": 1.71,
+      "tokens": 8
+    },
+    {
+      "text": "不要只说血量，把◇完整属性表给我看",
+      "expected": "statsAll",
+      "language": "zh_CN",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 275.57,
+      "loadMs": 1.27,
+      "tokens": 8
+    },
+    {
+      "text": "想一次看完◇全部基本数值",
+      "expected": "statsAll",
+      "language": "zh_CN",
+      "predicted": "statsAll",
+      "correct": true,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 275.1,
+      "loadMs": 1.29,
+      "tokens": 8
+    },
+    {
+      "text": "比较◇和◇的初始生命值与生命回复",
+      "expected": "stats",
+      "language": "zh_CN",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 276.14,
+      "loadMs": 1.29,
+      "tokens": 8
+    },
+    {
+      "text": "◇的基础攻速具体是多少",
+      "expected": "stats",
+      "language": "zh_CN",
+      "predicted": "statsAll",
+      "correct": false,
+      "output": "{\"scope\": \"statsAll\"}",
+      "latencyMs": 278.61,
+      "loadMs": 1.32,
+      "tokens": 8
+    },
+    {
+      "text": "刚才那两个英雄只比较魔抗吧",
+      "expected": "stats",
+      "language": "zh_CN",
+      "predicted": "overview",
+      "correct": false,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 267.19,
+      "loadMs": 1.15,
+      "tokens": 7
+    },
+    {
+      "text": "把◇的被动和所有主动技能都讲一下",
+      "expected": "skills",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.54,
+      "loadMs": 1.07,
+      "tokens": 7
+    },
+    {
+      "text": "◇的Q W E R各自有什么作用",
+      "expected": "skills",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.94,
+      "loadMs": 1.06,
+      "tokens": 7
+    },
+    {
+      "text": "属性我知道了，想看◇整套技能说明",
+      "expected": "skills",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": true,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.92,
+      "loadMs": 0.95,
+      "tokens": 7
+    },
+    {
+      "text": "◇短换血时技能应该按什么顺序连起来",
+      "expected": "combo",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 265.72,
+      "loadMs": 1.13,
+      "tokens": 7
+    },
+    {
+      "text": "推荐一个◇穿插普攻的连招",
+      "expected": "combo",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.52,
+      "loadMs": 0.99,
+      "tokens": 7
+    },
+    {
+      "text": "给一个◇配合闪现的连招吧",
+      "expected": "combo",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.77,
+      "loadMs": 1.0,
+      "tokens": 7
+    },
+    {
+      "text": "我玩◇总是打不过◇，该怎么对线",
+      "expected": "counterplay",
+      "language": "zh_CN",
+      "predicted": "advice",
+      "correct": false,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 277.2,
+      "loadMs": 1.78,
+      "tokens": 8
+    },
+    {
+      "text": "躲◇大招应该往哪里走",
+      "expected": "counterplay",
+      "language": "zh_CN",
+      "predicted": "advice",
+      "correct": false,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 274.45,
+      "loadMs": 1.16,
+      "tokens": 8
+    },
+    {
+      "text": "怎么骗对面◇先交出W技能",
+      "expected": "counterplay",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.25,
+      "loadMs": 1.25,
+      "tokens": 7
+    },
+    {
+      "text": "想要一些玩◇前期对线的技巧",
+      "expected": "advice",
+      "language": "zh_CN",
+      "predicted": "advice",
+      "correct": true,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 277.57,
+      "loadMs": 1.04,
+      "tokens": 8
+    },
+    {
+      "text": "用◇打团时我应该怎么站位",
+      "expected": "advice",
+      "language": "zh_CN",
+      "predicted": "advice",
+      "correct": true,
+      "output": "{\"scope\": \"advice\"}",
+      "latencyMs": 275.53,
+      "loadMs": 1.13,
+      "tokens": 8
+    },
+    {
+      "text": "玩◇第一次回城买什么比较合适",
+      "expected": "advice",
+      "language": "zh_CN",
+      "predicted": "overview",
+      "correct": false,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 265.91,
+      "loadMs": 1.01,
+      "tokens": 7
+    },
+    {
+      "text": "想知道◇R技能的详细信息",
+      "expected": "ability",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.66,
+      "loadMs": 1.15,
+      "tokens": 7
+    },
+    {
+      "text": "解释一下◇使用W之后会发生什么",
+      "expected": "ability",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 266.09,
+      "loadMs": 1.05,
+      "tokens": 7
+    },
+    {
+      "text": "◇被动的效果能具体说明一下吗",
+      "expected": "ability",
+      "language": "zh_CN",
+      "predicted": "skills",
+      "correct": false,
+      "output": "{\"scope\": \"skills\"}",
+      "latencyMs": 265.71,
+      "loadMs": 1.55,
+      "tokens": 7
+    },
+    {
+      "text": "现在明白了，非常感谢你",
+      "expected": "chat",
+      "language": "zh_CN",
+      "predicted": "identity",
+      "correct": false,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 266.63,
+      "loadMs": 1.19,
+      "tokens": 7
+    },
+    {
+      "text": "你好，今天也请多关照",
+      "expected": "chat",
+      "language": "zh_CN",
+      "predicted": "chat",
+      "correct": true,
+      "output": "{\"scope\": \"chat\"}",
+      "latencyMs": 264.83,
+      "loadMs": 0.95,
+      "tokens": 7
+    },
+    {
+      "text": "帮了大忙，谢谢，晚安",
+      "expected": "chat",
+      "language": "zh_CN",
+      "predicted": "chat",
+      "correct": true,
+      "output": "{\"scope\": \"chat\"}",
+      "latencyMs": 266.01,
+      "loadMs": 1.08,
+      "tokens": 7
+    },
+    {
+      "text": "这个聊天助手能回答哪些方面的问题",
+      "expected": "identity",
+      "language": "zh_CN",
+      "predicted": "identity",
+      "correct": true,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 265.87,
+      "loadMs": 1.1,
+      "tokens": 7
+    },
+    {
+      "text": "能讲一下这个助手应该怎么使用吗",
+      "expected": "identity",
+      "language": "zh_CN",
+      "predicted": "identity",
+      "correct": true,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 266.61,
+      "loadMs": 1.47,
+      "tokens": 7
+    },
+    {
+      "text": "你运行的是哪一种人工智能模型",
+      "expected": "identity",
+      "language": "zh_CN",
+      "predicted": "identity",
+      "correct": true,
+      "output": "{\"scope\": \"identity\"}",
+      "latencyMs": 263.46,
+      "loadMs": 1.16,
+      "tokens": 7
+    },
+    {
+      "text": "守护天使等待复活时还能用惩戒吗",
+      "expected": "other",
+      "language": "zh_CN",
+      "predicted": "overview",
+      "correct": false,
+      "output": "{\"scope\": \"overview\"}",
+      "latencyMs": 266.02,
+      "loadMs": 1.15,
+      "tokens": 7
+    },
+    {
+      "text": "净化到底能不能移除压制",
+      "expected": "other",
+      "language": "zh_CN",
+      "predicted": "counterplay",
+      "correct": false,
+      "output": "{\"scope\": \"counterplay\"}",
+      "latencyMs": 274.44,
+      "loadMs": 1.03,
+      "tokens": 8
+    },
+    {
+      "text": "两件重伤装备的减疗效果会叠加吗",
+      "expected": "other",
+      "language": "zh_CN",
+      "predicted": "other",
+      "correct": true,
+      "output": "{\"scope\": \"other\"}",
+      "latencyMs": 265.04,
+      "loadMs": 1.0,
+      "tokens": 7
+    }
+  ],
+  "settings": {
+    "think": false,
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 40
+  },
+  "sources": {
+    "evaluate-request-negation-general-llm.py": "1d0abd326a31f37a8aaceef33cbb6e6b91dabe683329e85003b5a41fb9d5ea9b",
+    "evaluate-request-negation-llm.py": "2e1b4d676ce7f0e01e9ef9f7ba75f8483e19a3fd0f3fc5a0ff79f51777aba9df",
+    "request-negation.json": "8fae898624b992545df4cc59fd30602c6d287af2ae12d1e85ba580a4e15c9b09",
+    "request-challenge.json": "7e7502deb9eab3cbd8540c9cae217bf4cbcddd9d61d7fdb117c9f2c67944c265"
+  },
+  "limits": [
+    "few-shot 프롬프트를 고정한 뒤 99개를 모두 평가, 결과로 프롬프트 변경하지 않음",
+    "예시 12개는 4범위만 포함, 전체 범위를 균형 있게 학습한 LLM 비교가 아님",
+    "실제 대화·모바일 WebGPU는 미검증"
+  ]
+}
