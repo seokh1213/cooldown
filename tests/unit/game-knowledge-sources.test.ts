@@ -6,6 +6,18 @@ import path from "node:path";
 import { collectSource, diffSnapshots, getText, officialBody, officialPatches, SITEMAP, wikiGameplay } from "../../scripts/llm/game-knowledge/sources";
 import { watchSources } from "../../scripts/llm/game-knowledge/watch";
 
+test("대기하던 배포는 원천 갱신 뒤의 master를 체크아웃한다", async () => {
+  const workflow = await fs.readFile(new URL("../../.github/workflows/update-static-data.yml", import.meta.url), "utf8");
+  const checkout = workflow.split("- name: Checkout repository")[1]?.split("- name: Setup Node.js")[0];
+  assert.ok(checkout, "배포 자료 체크아웃 단계");
+  assert.match(checkout, /^\s+ref: master$/m, "이벤트 시점의 옛 SHA로 최신 데이터를 되돌리지 않는다");
+});
+
+test("원천 갱신 뒤에도 최신 자료의 전체 회귀를 수동 실행할 수 있다", async () => {
+  const workflow = await fs.readFile(new URL("../../.github/workflows/advisor-quality.yml", import.meta.url), "utf8");
+  assert.match(workflow, /^ {2}workflow_dispatch:$/m);
+});
+
 test("매시 상류 확인만 끝난 경우는 건너뛰고 실제 생성 뒤에 검사한다", async () => {
   const { shouldWatch } = await import(new URL("../../scripts/ci/game-knowledge-trigger.mjs", import.meta.url).href);
   assert.equal(shouldWatch("workflow_run", [{ name: "update-data", conclusion: "skipped" }]), false);

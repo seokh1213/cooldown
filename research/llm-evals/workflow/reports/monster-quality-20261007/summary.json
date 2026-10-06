@@ -80,7 +80,7 @@
     "affectedReviewedNotes": 0
   },
   "ciRegression": {
-    "runId": 37522738357,
+    "runId": 37526560016,
     "measurements": 5775,
     "pass": 5724,
     "fail": 31,
@@ -112,31 +112,32 @@
     "includesDelayedUnsupportedDevice": true
   },
   "ciDeployment": {
-    "commit": "c8eff52c559bf669d4c135dcb8750917bb83f764",
-    "deployRunId": 37522738522,
-    "regressionRunId": 37522738357,
+    "commit": "0b394a597a5864981ab7e239a1b846afc44e9ec0",
+    "deployRunId": 37526559897,
+    "regressionRunId": 37526560016,
     "artifactRelease": {
       "schemaVersion": 1,
-      "appVersion": "d52d0b8c037f1bfe6e538c59f3fd71db",
+      "appVersion": "ef4f2d01b4c1ba0a70389255358bc861",
       "dataVersion": "61aa7bb88c311681eb06880bf361fbfc",
-      "releaseId": "8d88f37e6111c53c960a0672492d2527",
+      "releaseId": "f7fff11974ab12896e99ed6652878dae",
       "patchVersion": "26.19"
     },
     "productionRelease": {
       "schemaVersion": 1,
-      "appVersion": "d52d0b8c037f1bfe6e538c59f3fd71db",
+      "appVersion": "ef4f2d01b4c1ba0a70389255358bc861",
       "dataVersion": "61aa7bb88c311681eb06880bf361fbfc",
-      "releaseId": "8d88f37e6111c53c960a0672492d2527",
+      "releaseId": "f7fff11974ab12896e99ed6652878dae",
       "patchVersion": "26.19"
     },
     "matches": true,
-    "browserReleaseId": "8d88f37e6111c53c960a0672492d2527",
+    "browserReleaseId": "f7fff11974ab12896e99ed6652878dae",
+    "conclusion": "success",
     "browserTests": {
-      "passed": 196,
-      "failed": 0,
-      "flaky": 0
-    },
-    "conclusion": "success"
+      "total": 196,
+      "passedWithoutRetry": 195,
+      "passedAfterRetry": 1,
+      "failed": 0
+    }
   },
   "startupSynchronizationTests": {
     "passed": 38,
@@ -184,7 +185,23 @@
       "answer": "unsupported",
       "releaseId": "8d88f37e6111c53c960a0672492d2527"
     },
-    "deploymentVerification": "verify independently after this fix is deployed",
+    "deploymentVerification": {
+      "runId": 37526559897,
+      "releaseId": "f7fff11974ab12896e99ed6652878dae",
+      "artifactMatchesProduction": true,
+      "productionLanguages": [
+        "ko_KR",
+        "en_US",
+        "zh_CN"
+      ],
+      "zhBaronAD": "350.5–515",
+      "enBaronAD": "350.5–515",
+      "koBaronHP18": 19190,
+      "zhAtakhanRemovedInPatch": "26.1",
+      "koGrubsFirstSpawnMinutes": 8,
+      "koGrubsSpawnOnce": true,
+      "koChemtechADConflictNotAsserted": true
+    },
     "allUnitAndDataPassed": 1322,
     "allUnitAndDataFailed": 0,
     "namedMonsterRequired": true,
@@ -197,5 +214,51 @@
       "failedTest": "이름 없는 질문: 검색 실패면 낱말 길",
       "fix": "Restrict direct approved lookup to explicitly named monsters; preserve existing search and warning assertions."
     }
+  },
+  "remainingStartupRaceTests": {
+    "passed": 12,
+    "failed": 0,
+    "repeatEach": 3,
+    "viewports": [
+      390,
+      1440
+    ],
+    "files": [
+      "e2e/advisor-stat-coverage.spec.ts",
+      "e2e/advisor-matchups.spec.ts"
+    ],
+    "originalProductAssertionsRetained": true
+  },
+  "sourceRecovery": {
+    "runId": 37527428795,
+    "generationStep": "success",
+    "generationCompletedAt": "2026-10-06T20:45:05Z",
+    "samePatch": "16.19",
+    "urlProbes": [
+      {
+        "file": "perkstyles.json",
+        "url": "https://raw.communitydragon.org/16.19/plugins/rcp-be-lol-game-data/global/zh_cn/v1/perkstyles.json",
+        "status": 200,
+        "validJson": true,
+        "entries": 2,
+        "bytes": 17581
+      },
+      {
+        "file": "perks.json",
+        "url": "https://raw.communitydragon.org/16.19/plugins/rcp-be-lol-game-data/global/zh_cn/v1/perks.json",
+        "status": 200,
+        "validJson": true,
+        "entries": 103,
+        "bytes": 102473
+      }
+    ],
+    "fullRunVerification": "verify final workflow result independently"
+  },
+  "queuedDeploymentPolicy": {
+    "checkoutRef": "master",
+    "purpose": "Do not restore stale event-SHA data after a queued upstream update.",
+    "manualLatestDataRegression": true,
+    "sourceFocusedTestsPassed": 10,
+    "sourceFocusedTestsFailed": 0
   }
 }

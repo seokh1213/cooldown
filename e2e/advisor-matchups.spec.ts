@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { waitForModelFreeInput } from "./support/advisor";
 
 for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
   test(`두 상성 카드를 먼저 보여주고 각 VS 화면으로 이동한다 (${viewport.width}px)`, async ({ page }) => {
@@ -13,8 +14,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 
     await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
     const question = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
     const skipModel = page.getByRole("button", { name: "모델 없이 써보기", exact: true });
-    await expect(question.or(skipModel)).toBeVisible();
-    if (await skipModel.isVisible()) await skipModel.click();
+    await waitForModelFreeInput(page, question, skipModel);
     await question.fill("오공으로 럼블, 모데카이저 너무어려운데 방법 없나?");
     await page.getByRole("button", { name: "보내기", exact: true }).click();
     await expect(page.getByRole("button", { name: "중단", exact: true })).toBeVisible();
