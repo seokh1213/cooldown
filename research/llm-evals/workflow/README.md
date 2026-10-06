@@ -145,7 +145,7 @@ pnpm llm:test:ui --out research/.cache/quality/ui
 
 ## 현재 지식 원문 변경
 
-2026-10-06 마지막 원문 점검에서 승인 당시와 달라진 스킬은 Kled Q/E/R, RekSai Q/W/E, Rell W 7개다. 현재 유효한 승인 규칙은 858개이며 이 7개에 기존 승인을 자동 승계하지 않는다. 자료 수정이 병렬로 진행되어 앞선 점검의 860개·변경 5개에서 달라졌다. `pnpm llm:mechanics-drift`의 최신 변경 기록과 검토 절차를 따른다. 테스트는 고정된 과거 개수보다 현재 유효한 승인 목록의 ID·원문 해시가 앱에 빠짐없이 적재되는지 검사한다.
+2026-10-06 후속 검수 `5c53aa957`에서 Kled Q/E/R, RekSai Q/W/E, Rell W 7개를 재검수했다. 최종 통합 시 승인 스킬 규칙은 865개이며 `research/champion-mechanics/reports/drift.json`의 regenerate·removed·metadata는 모두 0개다. 이전 858개·변경 7개는 후속 검수 전의 상태다. `pnpm llm:mechanics-drift`의 최신 변경 기록과 검토 절차를 따르며 원문이 다시 바뀌면 자동 승인하지 않는다. 테스트는 고정된 과거 개수보다 현재 유효한 승인 목록의 ID·원문 해시가 앱에 빠짐없이 적재되는지 검사한다.
 
 ## 코드·기록 정리 정책
 

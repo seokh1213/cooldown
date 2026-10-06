@@ -12,7 +12,7 @@ Automatic contracts are separate from semantic review. Historical answers are ne
 | conversational-advisor/questions / none | 61/74 | 0 |
 | crowd-control/questions / none | 60/60 | 0 |
 | control-audit/questions / none | 115/115 | 0 |
-| champion-mechanics-v2/questions / none | 33/34 | 17 |
+| champion-mechanics-v2/questions / none | 34/34 | 17 |
 | champion-mechanics-v2/full-approval-questions / none | 10/18 | 0 |
 | champion-mechanics-v2/integrated-fresh-questions / none | 17/17 | 0 |
 | champion-mechanics-v2/pyke-akshan-questions / none | 30/32 | 0 |
@@ -44,7 +44,7 @@ Automatic contracts are separate from semantic review. Historical answers are ne
 | conversational-advisor/questions / offline | 63/74 | 0 |
 | crowd-control/questions / offline | 60/60 | 0 |
 | control-audit/questions / offline | 115/115 | 0 |
-| champion-mechanics-v2/questions / offline | 33/34 | 17 |
+| champion-mechanics-v2/questions / offline | 34/34 | 17 |
 | champion-mechanics-v2/full-approval-questions / offline | 10/18 | 0 |
 | champion-mechanics-v2/integrated-fresh-questions / offline | 17/17 | 0 |
 | champion-mechanics-v2/pyke-akshan-questions / offline | 30/32 | 0 |
@@ -81,4 +81,4 @@ A matched baseline is required before deciding a model change.
 
 Detailed rows: results.json. Semantic review: review-packet.json. Failed checks: logs/.
 
-Baseline provenance: complete `push-regression-final` after integrating origin/master d852a92b9. Current data fingerprints differ from c4189e502; every measured verdict and answer is unchanged. 4,036 automatic contracts pass, 1,519 historical contracts fail, 220 manual measurements. Related Node tests: 804. This baseline preserves pending failures and does not approve their semantic quality.
+Baseline provenance: complete `push-integrated-regression` after reviewed skill/Kled update 5c53aa957. 4,038 automatic contracts pass, 1,517 historical contracts fail, 220 manual measurements. Related Node tests: 810. Five changed measurements were reviewed, two mode-specific gains represent one Aurora question, no old passing contract or protected answer regressed. Data and code fingerprints changed; this is a reviewed baseline refresh, not an identical-data model comparison. Pending historical failures are not approved.
