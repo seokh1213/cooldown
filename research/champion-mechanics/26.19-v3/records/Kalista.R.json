@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 2,
+  "id": "Kalista.R",
+  "champion": "Kalista",
+  "slot": "R",
+  "patch": "26.19",
+  "sourceHash": "5870315aa405dc443225a39e5d4ae7e1b294246e7d2e92d83fa2cfae7d450d84",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Fate's Call",
+      "ko": "운명의 부름"
+    },
+    "cooldownSeconds": [
+      160,
+      140,
+      120
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1000,
+      1000,
+      1000
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "160/140/120"
+      },
+      {
+        "label": "Knockup Duration",
+        "values": "1/1.5/2"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockup",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Kalista",
+          "condition": "계약자 발사 후 적중"
+        },
+        {
+          "type": "silence",
+          "target": "ally",
+          "source": "https://wiki.leagueoflegends.com/en-us/Kalista",
+          "condition": "계약자를 끌어온 동안"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Kalista.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Kalista teleports the Oathsworn ally to herself. They gain the ability to dash toward a position, knocking enemy champions back.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Kalista puts her Oathsworn into Stasis and draws them to herself for up to 4 seconds. The Oathsworn can click to launch themselves, stopping at the first champion hit and Knocking Back all nearby enemies. If the Oathsworn hits a champion, they are placed at their maximum attack range from it.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "칼리스타가 계약을 맺은 아군을 자신에게로 순간 이동시킵니다. 계약자는 지정한 위치로 돌진하여 적 챔피언을 뒤로 밀어내는 스킬을 사용할 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "칼리스타가 계약자를 옆으로 끌어와 최대 4초간 경직 상태로 만듭니다. 계약자는 마우스를 클릭하여 지정한 위치로 날아갈 수 있습니다. 챔피언과 부딪치면 멈추며, 주변 적들을 뒤로 밀어냅니다. 계약자는 챔피언과 부딪치면 최대 공격 사거리만큼 밀려납니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 75,
+      "end": 76
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 22,
+      "end": 23
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "칼리스타가 계약자를 자신에게 끌어와 최대4초 동안 경직 상태로 둡니다. 계약자는 위치를 클릭해 발사되어 첫 챔피언 충돌에 멈추고 주변 모든 적을 밀어냅니다. 계약자는 적중 챔피언으로부터 자신의 최대 공격 사거리 위치에 놓입니다.",
+  "rules": [
+    {
+      "id": "876b88a8a170a3c55240",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "계약자를 자신에게 끌어옵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "ally",
+          "text": "계약자를 최대4초 동안 경직 상태로 둡니다.",
+          "damageType": null,
+          "crowdControl": "stasis",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kalista puts her Oathsworn into Stasis and draws them to herself for up to 4 seconds."
+        }
+      ]
+    },
+    {
+      "id": "2c9bce35adb70bfe2afd",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이R로 끌려온 계약자가 위치를 클릭하여 발사"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "계약자는 클릭해 자신을 발사할 수 있으며, 처음 적중한 챔피언 앞에서 멈춥니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "nearby_enemies",
+          "text": "계약자는 첫 챔피언 충돌 때 주변 모든 적을 밀어낼 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Oathsworn can click to launch themselves, stopping at the first champion hit and Knocking Back all nearby enemies."
+        }
+      ]
+    },
+    {
+      "id": "ed6476c198b29b25b7ed",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이R에서 발사된 계약자"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "ally",
+          "text": "계약자는 적중한 챔피언으로부터 자신의 최대 공격 사거리만큼 떨어진 위치에 놓입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the Oathsworn hits a champion, they are placed at their maximum attack range from it."
+        }
+      ]
+    },
+    {
+      "id": "11cf8ee392166ba9b66c",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이R에서 발사된 계약자"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "발사된 계약자가 첫 챔피언과 충돌하여 주변 모든 적을 뒤로 밀어냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Oathsworn can click to launch themselves, stopping at the first champion hit and Knocking Back all nearby enemies."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "80f1e266c7ecee521aa5982a42d9f8171454fad395a9e283c82f58213124bc7d"
+}

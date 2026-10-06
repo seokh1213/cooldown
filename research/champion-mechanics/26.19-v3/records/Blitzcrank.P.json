@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 2,
+  "id": "Blitzcrank.P",
+  "champion": "Blitzcrank",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "0e0c06cf22c4e14f05f09395ef564b09667da468cc723eaad1e2f3ce2b78db82",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Mana Barrier",
+      "ko": "마나 보호막"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Blitzcrank.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Blitzcrank gains a shield based on their mana when dropping to low health.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "When Blitzcrank falls below 30% Health, they gain (35% Mana) Shield for 10 seconds.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "체력이 낮아지면 블리츠크랭크가 마나에 비례하여 보호막을 얻습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "블리츠크랭크의 체력이 30% 미만이 되면 10초 동안 (35% 마나)의 피해를 흡수하는 보호막을 얻습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 28,
+      "end": 31
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 51,
+      "end": 54
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 72,
+      "end": 74
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 12,
+      "end": 15
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 23,
+      "end": 25
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 31,
+      "end": 34
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "체력이 기준치 아래로 내려가면 마나에 비례한 보호막을 얻습니다.",
+  "rules": [
+    {
+      "id": "84a7cf3e54202c9fd1ba",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "마나에 비례하는 보호막을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Blitzcrank falls below 30% Health, they gain (35% Mana) Shield for 10 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "보호막 비율의 참조 대상인 Mana가 현재 마나인지 다른 마나 통계인지 툴팁에서 특정되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(35% Mana) Shield"
+        }
+      ]
+    }
+  ],
+  "candidateHash": "f8862ba8ac110fcf91a4cd35c6ed4554de3e7489991ea77b5b2bb2c28d64eac5"
+}

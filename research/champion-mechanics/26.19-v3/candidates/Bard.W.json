@@ -1,0 +1,317 @@
+{
+  "summary": "바드가 체력 회복 성소를 설치한다. 처음 들어온 아군은 이동 속도 증가와 성소가 성장한 정도에 따른 체력 회복을 받고, 성소는 사용 후 사라진다. 적 챔피언이 들어오면 파괴된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 성소에 처음 들어오는 아군"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "성소에 처음 들어온 아군의 이동 속도를 증가시킨다. 기본 증가율은 스킬 랭크에 따르고, 주문력 100당 6%가 더해지며 효과는 1.5초에 걸쳐 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "ally",
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard creates a Health shrine that grants (20/22.5/25/27.5/30% + (6% per 100 Ability Power)) Move Speed decaying over 1.5 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bard creates a Health shrine that grants (20/22.5/25/27.5/30% + (6% per 100 Ability Power)) Move Speed decaying over 1.5 seconds and restores at least (25/50/75/100/125 + (40% Ability Power)) Health to the first ally to enter."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 성소에 처음 들어오는 아군"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "성소에 처음 들어온 아군을 회복시킨다. 회복량은 성소가 성장하는 동안 최소 회복량 이상으로 점차 커지고, 성소가 5초 동안 존재하면 성장 회복량에 도달한다. 성장 중간 단계의 정확한 산식은 원문에 제시되지 않았다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "transform",
+          "subject": "summon",
+          "text": "첫 아군에게 효과를 적용한 뒤 성소가 사라진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "restores at least (25/50/75/100/125 + (40% Ability Power)) Health to the first ally to enter."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bard creates a Health shrine that grants (20/22.5/25/27.5/30% + (6% per 100 Ability Power)) Move Speed decaying over 1.5 seconds and restores at least (25/50/75/100/125 + (40% Ability Power)) Health to the first ally to enter."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The shrine grows to restore (50/87.5/125/162.5/200 + (70% Ability Power)) Health after existing for 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "적 챔피언이 성소에 들어오면 성소가 파괴된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If an enemy champion enters a shrine, it is destroyed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "바드는 한 번에 최대 세 개의 성소를 보유할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bard can have up to 3 shrines at once."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "이 스킬은 충전 횟수를 가진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This ability has 2 charges."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "원문은 체력이 최소량 이상 회복되고 성소가 5초 동안 성장하면 더 큰 회복량에 도달한다고 밝히지만, 성장 중간 단계의 회복 산식은 특정하지 않는다. 최소치는 고정 회복량으로 단정하지 않고 하한으로 기록했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The shrine grows to restore (50/87.5/125/162.5/200 + (70% Ability Power)) Health after existing for 5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "restores at least (25/50/75/100/125 + (40% Ability Power)) Health to the first ally to enter."
+        }
+      ]
+    }
+  ]
+}

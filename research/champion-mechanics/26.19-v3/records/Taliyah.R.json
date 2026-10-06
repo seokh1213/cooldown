@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 2,
+  "id": "Taliyah.R",
+  "champion": "Taliyah",
+  "slot": "R",
+  "patch": "26.19",
+  "sourceHash": "43c821113aa1b1c5c03b42d10e894ac27aa389ae2b6c339a3803e36f9bc1bfcd",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Weaver's Wall",
+      "ko": "바위술사의 벽"
+    },
+    "cooldownSeconds": [
+      180,
+      150,
+      120
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      2500,
+      4500,
+      6500
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Wall length",
+        "values": "2500/4500/6500"
+      },
+      {
+        "label": "Cooldown",
+        "values": "180/150/120"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockback",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Taliyah",
+          "condition": "벽 생성 위치에 겹친 유닛"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Taliyah.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Taliyah creates a very long wall and then surfs it.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Taliyah creates a massive earthen wall for 4 seconds. If she immediately Recasts, she will ride along the wall as it unravels. Moving or being immobilized will end the ride. This ability cannot be cast if Taliyah has taken damage from Champions or structures within the last 3 seconds. Once the wall is fully formed, Taliyah can Recast to destroy it early.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "아주 긴 벽을 세웁니다. 탈리야는 이 벽을 타고 이동할 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "탈리야가 4초 동안 거대한 흙벽을 세웁니다. 즉시 재사용하면 움직이는 벽에 올라타며, 이동하거나 이동 불가 효과에 걸리면 벽에서 내려옵니다. 탈리야가 지난 3초 안에 챔피언 또는 구조물에 의한 피해를 입었으면 이 스킬을 사용할 수 없습니다. 벽이 완전히 생성되면 재사용하여 일찍 파괴할 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 43,
+      "end": 44
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 275,
+      "end": 276
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 5,
+      "end": 6
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 87,
+      "end": 88
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "4초 동안 유지되는 벽을 세운다. 지난 3초 안에 챔피언 또는 구조물에게 피해를 받았으면 시전할 수 없다. 즉시 재사용하면 펼쳐지는 벽에 올라타며 이동하거나 이동 불가 상태가 되면 탑승이 끝난다. 벽이 완성된 뒤 재사용하면 일찍 파괴할 수 있다.",
+  "rules": [
+    {
+      "id": "3a099130494a8ed3d1c7",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "지난 3초 안에 챔피언 또는 구조물에 의한 피해를 받지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "거대한 흙벽을 생성합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Taliyah creates a massive earthen wall for 4 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This ability cannot be cast if Taliyah has taken damage from Champions or structures within the last 3 seconds."
+        }
+      ]
+    },
+    {
+      "id": "940e9068d9fa50745761",
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "벽 생성 직후"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "벽이 펼쳐지는 동안 벽을 따라 이동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If she immediately Recasts, she will ride along the wall as it unravels."
+        }
+      ]
+    },
+    {
+      "id": "5ef8bdde34356f4f598b",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "벽을 타는 중 이동하거나 이동 불가 상태가 됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "벽 타기가 끝납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Moving or being immobilized will end the ride."
+        }
+      ]
+    },
+    {
+      "id": "f3c500e43c47438429a7",
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "벽이 완전히 생성됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "벽을 일찍 파괴합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Once the wall is fully formed, Taliyah can Recast to destroy it early."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "2263aba7c53d12088285b8e16535d13d86ce6bd4d2a32196554752ebdae9c893"
+}

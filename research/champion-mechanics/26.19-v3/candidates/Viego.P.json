@@ -1,0 +1,339 @@
+{
+  "summary": "적 챔피언이 비에고에게 피해를 입은 뒤 짧은 시간 안에 사망하면 영혼이 망령이 된다. 망령을 공격해 지배하면 대상 최대 체력에 비례해 회복하고, 일정 시간 동안 대상의 궁극기 이외의 스킬·공격·아이템을 사용할 수 있다. 지배 중에는 대상의 궁극기 대신 자신의 궁극기를 비용 없이 시전하며, 적 챔피언에게 접근할 때 이동 속도가 증가한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "비에고에게 적중당한 뒤의 경과 시간"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "target",
+          "text": "사망한 적 챔피언의 영혼이 망령이 된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The souls of enemy champions that die within 3 seconds of being hit by Viego become wraiths."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "망령"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "망령을 공격해 지배하면 적의 최대 체력에 기반해 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "unknown",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "unknown",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusAttackSpeed",
+              "statSubject": "unknown",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "unknown",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Viego can Attack wraiths to Possess them, restoring (2 + (2.5% bonus Attack Damage) + (2% Ability Power) + (500% bonus Attack Speed) + (0.4% bonus Health))of enemy's max Health"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Viego can Attack wraiths to Possess them, restoring (2 + (2.5% bonus Attack Damage) + (2% Ability Power) + (500% bonus Attack Speed) + (0.4% bonus Health))of enemy's max Health and gaining access to their non-ultimate Abilities, Attacks, and items for 10 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "망령"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "망령을 공격해 지배하면 제한 시간 동안 대상의 궁극기 이외의 스킬, 공격, 아이템을 사용할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Viego can Attack wraiths to Possess them, restoring (2 + (2.5% bonus Attack Damage) + (2% Ability Power) + (500% bonus Attack Speed) + (0.4% bonus Health))of enemy's max Health and gaining access to their non-ultimate Abilities, Attacks, and items for 10 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "지배 중"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "대상의 궁극기를 대체"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "대상의 궁극기를 자신의 궁극기로 대체해 비용 없이 시전한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "During this time he replaces their Ultimate with a free cast of his own"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "적 챔피언에게 접근하는 이동"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "지배 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "적 챔피언에게 접근할 때 이동 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "gains 10% Move Speed towards enemy champions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Viego can Attack wraiths to Possess them, restoring (2 + (2.5% bonus Attack Damage) + (2% Ability Power) + (500% bonus Attack Speed) + (0.4% bonus Health))of enemy's max Health and gaining access to their non-ultimate Abilities, Attacks, and items for 10 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "During this time he replaces their Ultimate with a free cast of his own and gains 10% Move Speed towards enemy champions."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "망령 공격 시 회복량은 적의 최대 체력에 기반한다고 되어 있지만, 계수의 스탯 주체가 원문에서 특정되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Viego can Attack wraiths to Possess them, restoring (2 + (2.5% bonus Attack Damage) + (2% Ability Power) + (500% bonus Attack Speed) + (0.4% bonus Health))of enemy's max Health"
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "영문 본문은 비에고에게 맞은 뒤 3초 내 사망을 망령 생성 조건으로 명시하나 한국어 본문은 처치한 적 영혼을 3초 안에 공격하는 것으로 다르게 설명한다. 영문 본문을 우선한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The souls of enemy champions that die within 3 seconds of being hit by Viego become wraiths."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "비에고가 처치한 적 챔피언의 영혼을 3초 안에 공격하면 망령이 됩니다."
+        }
+      ]
+    }
+  ]
+}

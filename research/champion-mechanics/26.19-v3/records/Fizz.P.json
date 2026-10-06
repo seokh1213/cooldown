@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 2,
+  "id": "Fizz.P",
+  "champion": "Fizz",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "dff440309a7dba03c5c02262461c362cbd3dfbc24f87a2b5857bd69f0ef4dcfa",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Nimble Fighter",
+      "ko": "영리한 싸움꾼"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Fizz.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Fizz can move through units and takes a flat amount of reduced damage from all sources",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Fizz is Ghosted and takes (4 + (1% Ability Power)) reduced damage from all sources.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "피즈는 유닛을 통과할 수 있으며 모든 공격으로부터 받는 피해가 고정된 수치만큼 감소합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "피즈가 유체화 상태가 되고 모든 공격으로부터 받는 피해가 (4 + (1% 주문력)) 감소합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 27,
+      "end": 28
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "1%",
+      "value": 1,
+      "percent": true,
+      "start": 32,
+      "end": 34
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 33,
+      "end": 34
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "1%",
+      "value": 1,
+      "percent": true,
+      "start": 38,
+      "end": 40
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "피즈는 유체화 상태가 되고 모든 출처의 피해를 주문력에 비례해 감소시킵니다.",
+  "rules": [
+    {
+      "id": "bdf2ad89e35ca3a18844",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "피즈가 유체화되어 다른 유닛을 통과한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "모든 출처로부터 받는 피해가 고정량 (4 + 주문력 1%)만큼 감소한다. 피해량 자체의 퍼센트 감소가 아니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fizz is Ghosted and takes (4 + (1% Ability Power)) reduced damage from all sources."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "23ccb32dbdfd00b44abddd942f54621738802b8b661ece68284c308368af58dd"
+}

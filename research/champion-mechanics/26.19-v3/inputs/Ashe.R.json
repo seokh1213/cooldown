@@ -1,0 +1,263 @@
+{
+  "champion": "Ashe",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Ashe fires a missile of ice in a straight line. If the arrow collides with an enemy Champion, it deals damage and stuns the Champion, stunning for longer the farther arrow has traveled. In addition, surrounding enemy units take damage and are slowed.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Ashe launches a crystal arrow of ice that Stuns the first champion hit and deals (200/400/600 + (120% Ability Power)) magic damage. The Stun duration increases with distance travelled, up to 3.5 seconds. Surrounding enemies are Slowed by Frost Shot. Minimum Stun duration is 1 second.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "애쉬가 얼음으로 된 화살을 발사합니다. 화살이 적 챔피언에 맞을 경우 피해를 입히고 화살 발사 거리에 따라 더 오랜 시간 기절시킵니다. 또한 주변 적 유닛 역시 피해를 받고 속도가 느려집니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "애쉬가 얼음 수정 화살을 발사하여 처음으로 맞힌 챔피언에게 (200/400/600 + (120% 주문력))의 마법 피해를 입히고 기절시킵니다. 기절 지속시간은 화살이 날아가는 거리에 비례하여 3.5초까지 증가합니다. 서리 화살에 맞은 주변 적들은 둔화됩니다. 기절 효과는 최소 1초 지속됩니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Enchanted Crystal Arrow",
+      "ko": "마법의 수정화살"
+    },
+    "cooldownSeconds": [
+      100,
+      80,
+      60
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      25000,
+      25000,
+      25000
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "200/400/600"
+      },
+      {
+        "label": "Cooldown",
+        "values": "100/80/60"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:RMainDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "RMainDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          200,
+          400,
+          600
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Ashe.json",
+          "condition": "폭발 주변 대상"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Ashe.json",
+          "condition": "화살이 처음 맞힌 챔피언"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Ashe.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Ashe.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 82,
+      "end": 85
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 86,
+      "end": 89
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "600",
+      "value": 600,
+      "percent": false,
+      "start": 90,
+      "end": 93
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 97,
+      "end": 101
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "3.5",
+      "value": 3.5,
+      "percent": false,
+      "start": 191,
+      "end": 194
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 275,
+      "end": 276
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 34,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 38,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "600",
+      "value": 600,
+      "percent": false,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 49,
+      "end": 53
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "3.5",
+      "value": 3.5,
+      "percent": false,
+      "start": 107,
+      "end": 110
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 155,
+      "end": 156
+    }
+  ],
+  "sourceHash": "9c1dd55aca5cd90300fb32f6620c6ef82d1c3ca342ab698c367e16cb6fc91e21",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

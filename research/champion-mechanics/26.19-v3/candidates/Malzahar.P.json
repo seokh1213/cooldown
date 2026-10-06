@@ -1,0 +1,292 @@
+{
+  "summary": "최근 피해나 군중 제어를 받지 않은 동안 공허 태세가 피해를 줄이고 방해 및 이동 불가 효과에 면역을 부여합니다. 피해를 받거나 해당 효과를 막은 뒤에도 잠시 지속되며, 재사용 대기시간이 있습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "최근 피해나 군중 제어를 받지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "받는 피해량을 감소시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "방해 및 이동 불가 효과에 면역됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "When he hasn't recently taken damage or been crowd controlled, Malzahar gains massive damage reduction and crowd control immunity, lingering for a short period after taking damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공허 태세의 피해감소/면역 효과가 활성인 상태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "피해 감소 효과가 잠시 더 지속됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "방해 및 이동 불가 효과 면역이 잠시 더 지속됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "lingering for 0.25 seconds after taking damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "방해 또는 이동 불가 효과를 막음"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공허 태세의 피해감소/면역 효과가 활성인 상태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "피해 감소 효과가 잠시 더 지속됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "방해 및 이동 불가 효과 면역이 잠시 더 지속됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "lingering for 0.25 seconds after taking damage or blocking one of those effects"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Malzahar gains 90% damage reduction and immunity from Disabling and Immobilizing effects, lingering for 0.25 seconds after taking damage or blocking one of those effects."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "효과에 재사용 대기시간이 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This effect has a (30 ~ 12) second Cooldown."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "영문은효과가존재하다피해/차단후0.25초잔존하지만한국어본문은피해/CC후0.25초획득처럼반전됨. 영문본문/양언어요약우선;최근성과재활성화세부시점미명시.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "When he hasn't recently taken damage or been crowd controlled"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "lingering for 0.25 seconds after taking damage or blocking one of those effects"
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "피해를 입거나 군중 제어기에 적중당하면 0.25초 동안 받는 피해량이 90% 감소하고, 방해 및 이동 불가에 면역됩니다. 이 효과는 (30 ~ 12)초 후 다시 활성화됩니다."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "재사용 대기시간이 피해를 받은 경우와 효과를 막은 경우 중 언제 시작되는지 본문에서 특정하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This effect has a (30 ~ 12) second Cooldown."
+        }
+      ]
+    }
+  ]
+}

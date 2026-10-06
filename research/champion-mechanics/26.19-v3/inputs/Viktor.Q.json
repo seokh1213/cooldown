@@ -1,0 +1,643 @@
+{
+  "champion": "Viktor",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Viktor blasts an enemy unit with magic damage, which grants him a shield and empowers his next basic attack. Augment: Siphon Power's shield is increased by 60% and Viktor gains bonus move speed after casting the Ability.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Viktor blasts an enemy, dealing (60/75/90/105/120 + (40% Ability Power)) magic damage and granting Viktor ((40 ~ 140) + (25% Ability Power)) Shield for 2.5 seconds. Viktor's next Attack within 4 seconds deals (20/45/70/95/120 + (50% Ability Power) + (100% Attack Damage)) magic damage. Upgraded: Grants ((64 ~ 224) + (40% Ability Power)) Shield and Viktor additionally gains 30% Move Speed for 2.5 seconds.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "빅토르가 적 유닛에 폭발을 일으켜 마법 피해를 입히며 보호막을 얻고 다음번 기본 공격이 강화됩니다. 증강: 스킬 사용 시 빅토르의 이동 속도가 빨라지고 힘의 흡수 보호막 흡수량이 60% 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "빅토르가 적에게 폭발을 일으켜 (60/75/90/105/120 + (40% 주문력))의 마법 피해를 입히며 2.5초 동안 ((40 ~ 140) + (25% 주문력))의 피해를 흡수하는 보호막을 얻습니다. 4초 안에 기본 공격 시 (20/45/70/95/120 + (50% 주문력) + (100% 공격력))의 마법 피해를 입힙니다. 업그레이드 시: 2.5초 동안 ((64 ~ 224) + (40% 주문력))의 피해를 흡수하는 보호막을 얻고 이동 속도가 30% 증가합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Siphon Power",
+      "ko": "힘의 흡수"
+    },
+    "cooldownSeconds": [
+      9,
+      8,
+      7,
+      6,
+      5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      600,
+      600,
+      600,
+      600,
+      600
+    ],
+    "cost": {
+      "values": [
+        45,
+        50,
+        55,
+        60,
+        65
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "9/8/7/6/5"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "45/50/55/60/65"
+      },
+      {
+        "label": "Damage (Missile)",
+        "values": "60/75/90/105/120"
+      },
+      {
+        "label": "Damage (Attack)",
+        "values": "20/45/70/95/120"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          40,
+          45.88235,
+          51.76471,
+          57.64706,
+          63.52941,
+          69.41176,
+          75.29412,
+          81.17647,
+          87.05882,
+          92.94118,
+          98.82353,
+          104.7059,
+          110.5882,
+          116.4706,
+          122.3529,
+          128.2353,
+          134.1176,
+          140,
+          140,
+          140
+        ],
+        "digits": 0
+      },
+      {
+        "values": [
+          64,
+          73.41177,
+          82.82353,
+          92.2353,
+          101.6471,
+          111.0588,
+          120.4706,
+          129.8824,
+          139.2941,
+          148.7059,
+          158.1176,
+          167.5294,
+          176.9412,
+          186.3529,
+          195.7647,
+          205.1765,
+          214.5882,
+          224,
+          224,
+          224
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:TotalMissileDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalMissileDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          60,
+          75,
+          90,
+          105,
+          120
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Viktor.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Viktor.Q",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 156,
+      "end": 159
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 33,
+      "end": 35
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 36,
+      "end": 38
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 39,
+      "end": 41
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 46,
+      "end": 49
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 53,
+      "end": 56
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 108,
+      "end": 110
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 113,
+      "end": 116
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 121,
+      "end": 124
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 152,
+      "end": 155
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 193,
+      "end": 194
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 210,
+      "end": 212
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 213,
+      "end": 215
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 216,
+      "end": 218
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 219,
+      "end": 221
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 222,
+      "end": 225
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 229,
+      "end": 232
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 251,
+      "end": 255
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "64",
+      "value": 64,
+      "percent": false,
+      "start": 305,
+      "end": 307
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "224",
+      "value": 224,
+      "percent": false,
+      "start": 310,
+      "end": 313
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 318,
+      "end": 321
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 375,
+      "end": 378
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 394,
+      "end": 397
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 100,
+      "end": 103
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 18,
+      "end": 20
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 21,
+      "end": 23
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 24,
+      "end": 26
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 27,
+      "end": 30
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 31,
+      "end": 34
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 38,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 60,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 70,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 75,
+      "end": 78
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 83,
+      "end": 86
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 114,
+      "end": 115
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 129,
+      "end": 131
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 132,
+      "end": 134
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 135,
+      "end": 137
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 138,
+      "end": 140
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 141,
+      "end": 144
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 148,
+      "end": 151
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 160,
+      "end": 164
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 194,
+      "end": 197
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "64",
+      "value": 64,
+      "percent": false,
+      "start": 204,
+      "end": 206
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "224",
+      "value": 224,
+      "percent": false,
+      "start": 209,
+      "end": 212
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 217,
+      "end": 220
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 252,
+      "end": 255
+    }
+  ],
+  "sourceHash": "d3c4695a2415452643ffad285120fd702d22f5c882cec4dfab94140f042d68bf",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

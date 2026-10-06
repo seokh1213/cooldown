@@ -1,0 +1,466 @@
+{
+  "champion": "KSante",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "K'Sante strikes, damaging and slowing enemies in a short line. On hit, grants a stack of Ntofo Strikes. At 2 stacks, K'Sante fires a shockwave that pulls enemies in. When All Out, cooldown is reduced.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "K'Sante slams his weapon, dealing (70/100/130/160/190 + (40% bonus Armor) + (40% bonus Magic Resist)) physical damage and Slowing enemies by 80% for 0.5s. If he hits, he gains a stack of Ntofo Strikes for 6 seconds. At 2 stacks, he instead fires a shockwave that Stuns and Pulls enemies for 1 second. All Out: Cooldown is reduced by 33%. Cooldown & cast time reduced by Bonus Armor and Magic Resist: ? / 120.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "크산테가 타격해 짧은 일직선상에 있는 적에게 피해를 입히고 둔화시킵니다. 적중 시 엔토포 타격 중첩을 1회 얻습니다. 2회 중첩되면 크산테가 적들을 끌어당기는 충격파를 발사합니다. 총공세 시 재사용 대기시간이 감소합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "크산테가 무기를 내리쳐 (70/100/130/160/190 + (40% 추가 방어력) + (40% 추가 마법 저항력))의 물리 피해를 입히고 0.5초 동안 적에게 80%의 둔화 효과를 적용합니다. 적중 시 6초 동안 엔토포 타격 중첩을 1회 얻습니다. 2회 중첩되면 1초 동안 적들을 기절시키고 끌어당기는 충격파를 발사합니다. 총공세: 재사용 대기시간이 33% 감소합니다. 추가 방어력 및 마법 저항력만큼 재사용 대기시간 및 시전 시간 감소: ? / 120.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Ntofo Strikes",
+      "ko": "엔토포 타격"
+    },
+    "cooldownSeconds": [
+      3.5,
+      3.5,
+      3.5,
+      3.5,
+      3.5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      450,
+      450,
+      450,
+      450,
+      450
+    ],
+    "cost": {
+      "values": [
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "70/100/130/160/190"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:BaseDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "BaseDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          70,
+          100,
+          130,
+          160,
+          190
+        ],
+        "terms": [
+          {
+            "stat": "bonusArmor",
+            "coefficientsByRank": [
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645
+            ]
+          },
+          {
+            "stat": "bonusMagicResist",
+            "coefficientsByRank": [
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645,
+              0.4000000059604645
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/KSante.json"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/KSante.json",
+          "condition": "Q 2중첩 후 강화 Q"
+        },
+        {
+          "type": "pull",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/KSante.json",
+          "condition": "Q 2중첩 후 강화 Q"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": [
+        "f2"
+      ]
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/KSante.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "KSante.Q",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 107,
+      "end": 108
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 35,
+      "end": 37
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 38,
+      "end": 41
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 46,
+      "end": 49
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 50,
+      "end": 53
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 77,
+      "end": 80
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 141,
+      "end": 144
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 149,
+      "end": 152
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 205,
+      "end": 206
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 219,
+      "end": 220
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 291,
+      "end": 292
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "33%",
+      "value": 33,
+      "percent": true,
+      "start": 333,
+      "end": 336
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 404,
+      "end": 407
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 57,
+      "end": 58
+    },
+    {
+      "id": "ko:summary:n1",
+      "sourceId": "ko:summary",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 66,
+      "end": 67
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 14,
+      "end": 16
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 17,
+      "end": 20
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 21,
+      "end": 24
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 25,
+      "end": 28
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 29,
+      "end": 32
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 36,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 51,
+      "end": 54
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 79,
+      "end": 82
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 91,
+      "end": 94
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 115,
+      "end": 116
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 132,
+      "end": 133
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 141,
+      "end": 142
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 149,
+      "end": 150
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "33%",
+      "value": 33,
+      "percent": true,
+      "start": 198,
+      "end": 201
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 252,
+      "end": 255
+    }
+  ],
+  "sourceHash": "be3fc9a87838eee09f683b5f657b8922822944ee32ff037fa3904cdd09c2fa89",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

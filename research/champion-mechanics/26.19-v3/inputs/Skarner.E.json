@@ -1,0 +1,341 @@
+{
+  "champion": "Skarner",
+  "slot": "E",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Skarner charges forward and passes through terrain. If he collides with a champion or large monster, he'll slam them into the next wall he hits to damage and stun them.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Skarner charges forward, steering toward the chosen direction and ignoring terrain. If he runs into a champion or large monster, Skarner drags them along for the rest of his charge. Colliding into a wall with an enemy in tow deals (30/60/90/120/150 + (120% bonus Attack Damage) + (6% Health)) physical damage to the enemy and Stuns them for 1.1s. Skarner can Recast this Ability to end his charge early. Successful wall collisions reduce this Ability's cooldown to 65%.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "스카너가 앞으로 돌진하며 지형을 통과합니다. 챔피언이나 대형 몬스터와 충돌하면 다음에 부딪치는 벽에 내동댕이쳐 피해를 입히고 기절시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "스카너가 앞으로 돌진하며 지형을 무시하고 지정한 방향으로 움직입니다. 챔피언이나 대형 몬스터와 마주치면 돌진이 끝날 때까지 끌고 다닙니다. 끌고 온 적과 함께 벽에 부딪치면 해당 적은 (30/60/90/120/150 + (120% 추가 공격력) + (6% 체력))의 물리 피해를 입고 1.1초 동안 기절합니다. 스킬을 재사용하면 돌진을 일찍 끝낼 수 있습니다. 벽과 충돌하면 이 스킬의 재사용 대기시간이 65%로 감소합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Ixtal's Impact",
+      "ko": "이쉬탈의 격돌"
+    },
+    "cooldownSeconds": [
+      22,
+      21,
+      20,
+      19,
+      18
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1700,
+      1700,
+      1700,
+      1700,
+      1700
+    ],
+    "cost": {
+      "values": [
+        50,
+        55,
+        60,
+        65,
+        70
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "30/60/90/120/150"
+      },
+      {
+        "label": "Cooldown",
+        "values": "22/21/20/19/18"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "50/55/60/65/70"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:PinDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "PinDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          30,
+          60,
+          90,
+          120,
+          150
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158
+            ]
+          },
+          {
+            "stat": "maxHealth",
+            "coefficientsByRank": [
+              0.05999999865889549,
+              0.05999999865889549,
+              0.05999999865889549,
+              0.05999999865889549,
+              0.05999999865889549
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "suppression",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Skarner",
+          "condition": "적 챔피언을 붙잡은 동안"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Skarner",
+          "condition": "잡은 적과 함께 벽에 충돌"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Skarner.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Skarner.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 232,
+      "end": 234
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 235,
+      "end": 237
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 238,
+      "end": 240
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 241,
+      "end": 244
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 245,
+      "end": 248
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 252,
+      "end": 256
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 281,
+      "end": 283
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "1.1",
+      "value": 1.1,
+      "percent": false,
+      "start": 341,
+      "end": 344
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "65%",
+      "value": 65,
+      "percent": true,
+      "start": 465,
+      "end": 468
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 104,
+      "end": 106
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 107,
+      "end": 109
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 110,
+      "end": 112
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 113,
+      "end": 116
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 117,
+      "end": 120
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 124,
+      "end": 128
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 140,
+      "end": 142
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "1.1",
+      "value": 1.1,
+      "percent": false,
+      "start": 159,
+      "end": 162
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "65%",
+      "value": 65,
+      "percent": true,
+      "start": 226,
+      "end": 229
+    }
+  ],
+  "sourceHash": "ad94086316070f690fe148f128ad28ffe4f98d6a4301de8f4a698f2cf407bb0f",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

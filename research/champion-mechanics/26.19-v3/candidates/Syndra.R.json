@@ -1,0 +1,256 @@
+{
+  "summary": "기본 지속 효과로 풀려난 힘의 레벨마다 어둠 구체의 스킬 가속이 10 증가합니다. 시전하면 신드라 주위를 도는 어둠 구체 3개와 주변의 추가 어둠 구체를 적 챔피언에게 날립니다. 각 구체는 마법 피해를 입히며 피해량에는 최대치가 있습니다. 분노의 조각 100개를 모으면 체력이 15% 미만인 적을 처형합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "풀려난힘의스킬랭크하나당어둠구체(Q)스킬에추가스킬가속10이적용된다.구체유닛의능력치가아니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "abilityHaste",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Dark Sphere gains an additional 10 Ability Haste for each rank of Unleashed Power."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "각 어둠 구체가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "launching the 3 Dark Spheres orbiting her plus up to 4 more nearby at an enemy champion. Each Dark Sphere deals (80/120/160 + (20% Ability Power)) magic damage (max (560/840/1120 + (140% Ability Power)) magic damage)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Syndra draws on her full cataclysmic power, launching the 3 Dark Spheres orbiting her plus up to 4 more nearby at an enemy champion."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "분노의 조각100개 이상을 보유함"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n12"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "처형합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "100 Splinters of Wrath: This Ability executes enemies below 15% Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "launching the 3 Dark Spheres orbiting her plus up to 4 more nearby at an enemy champion. Each Dark Sphere deals (80/120/160 + (20% Ability Power)) magic damage (max (560/840/1120 + (140% Ability Power)) magic damage)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Syndra draws on her full cataclysmic power, launching the 3 Dark Spheres orbiting her plus up to 4 more nearby at an enemy champion."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "신드라 주위를 도는 어둠 구체 3개와 주변의 최대 4개 추가 어둠 구체를 적 챔피언에게 날립니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "ui_information",
+          "subject": "target",
+          "text": "표시된최대7개구체의전체합계마법피해다.구체1개피해에더해지는추가피해가아니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "launching the 3 Dark Spheres orbiting her plus up to 4 more nearby at an enemy champion. Each Dark Sphere deals (80/120/160 + (20% Ability Power)) magic damage (max (560/840/1120 + (140% Ability Power)) magic damage)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Syndra draws on her full cataclysmic power, launching the 3 Dark Spheres orbiting her plus up to 4 more nearby at an enemy champion."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

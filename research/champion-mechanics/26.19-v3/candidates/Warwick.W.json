@@ -1,0 +1,377 @@
+{
+  "summary": "체력이 낮은 챔피언을 감지해 그쪽으로 이동할 때 이동 속도가 증가하고, 낮은 체력의 적을 공격할 때 공격 속도가 증가한다. 사용하면 잠시 모든 적을 감지하고 가장 가까운 챔피언에게 기본 지속 효과를 적용한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아군에 의해 체력50%미만이 된 챔피언"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "해당 챔피언을 향해 이동"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "해당 챔피언을 향해 이동할 때 이동 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "target",
+          "text": "아군에 의해 체력50%미만이 된 챔피언을 수동적으로 감지합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Warwick can sense champions below 50% Health, gaining 35/42.5/50/57.5/65% Move Speed towards them."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick can only passively sense enemies who were brought below 50% Health by allies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n6"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "해당 적을 대상으로 스킬이나 공격을 사용할 때 공격 속도가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Spells and attacks against enemies below 50% Health grant 70/80/90/100/110% Attack Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n13"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "해당 적에 대한 위 이동 속도 및 공격 속도 효과가 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "These effects are increased by 200% against enemies below 25% Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "nearby_enemies",
+          "text": "잠시 동안 모든 적을 감지한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "체력과 관계없이 가장 가까운 챔피언에게 이 스킬의 기본 지속 효과를 적용한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Warwick can briefly sense all enemies, and gains this Ability's passive effect against the closest champion for 8 seconds, regardless of Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬로 발견된 챔피언이 없음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "발견된 챔피언이 없으면 이 스킬의 재사용 대기시간이 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If no champions are found, this Ability's cooldown is reduced by 30%."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Warwick can briefly sense all enemies, and gains this Ability's passive effect against the closest champion for 8 seconds, regardless of Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n16"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "기본 지속 효과로 감지할 수 있는 적은 아군에 의해 체력이 해당 기준 아래로 내려간 적이다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick can only passively sense enemies who were brought below 50% Health by allies."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "영문 tooltip은 체력이 25% 미만인 적에 대한 기존 효과가 200% 증가한다고만 하며, 증가분 적용의 세부 산식은 설명하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "These effects are increased by 200% against enemies below 25% Health."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "영문 tooltip은 발동 시 챔피언이 발견되지 않은 경우라고 적지만, 함께 감지하는 모든 적 중 챔피언이 없다는 뜻인지 판정 범위는 추가로 설명하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If no champions are found, this Ability's cooldown is reduced by 30%."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "25%기준은 영문 below(미만)와 한국어 이하가 충돌하며 영문 본문 미만 우선. 공격속도 대상은 영문 enemies와 한국어 해당챔피언 범위가 다르며 영문 우선.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "These effects are increased by 200% against enemies below 25% Health."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "적의 체력이 25% 이하일 경우 이 효과들은 200% 증가합니다."
+        }
+      ]
+    }
+  ]
+}

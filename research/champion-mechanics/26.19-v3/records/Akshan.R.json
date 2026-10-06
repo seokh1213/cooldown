@@ -1,0 +1,793 @@
+{
+  "schemaVersion": 2,
+  "id": "Akshan.R",
+  "champion": "Akshan",
+  "slot": "R",
+  "patch": "26.19",
+  "sourceHash": "820cedfc9e2b6231467a5349b1f3d384dedf3fa9363afa308f6922ee7eb5a1ba",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Comeuppance",
+      "ko": "인과응보"
+    },
+    "cooldownSeconds": [
+      100,
+      85,
+      70
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      2500,
+      2500,
+      2500
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "100/85/70"
+      },
+      {
+        "label": "Maximum Bullets",
+        "values": "5/6/7"
+      },
+      {
+        "label": "Damage",
+        "values": "25/35/45"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:MaxDamagePerBullet"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "expression",
+      "expression": {
+        "id": "DamagePerBulletWithCrit",
+        "kind": "damage",
+        "damageType": "physical",
+        "root": {
+          "kind": "product",
+          "parts": [
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      25,
+                      35,
+                      45
+                    ]
+                  }
+                },
+                {
+                  "kind": "stat",
+                  "stat": "totalAttackDamage",
+                  "coefficient": {
+                    "byRank": [
+                      0.15000000596046448,
+                      0.15000000596046448,
+                      0.15000000596046448
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      1,
+                      1,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "kind": "product",
+                  "parts": [
+                    {
+                      "kind": "stat",
+                      "stat": "critChance",
+                      "coefficient": {
+                        "byRank": [
+                          0.30000001192092896,
+                          0.30000001192092896,
+                          0.30000001192092896
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "sum",
+                      "parts": [
+                        {
+                          "kind": "stat",
+                          "stat": "critDamage",
+                          "coefficient": {
+                            "byRank": [
+                              1,
+                              1,
+                              1
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "value",
+                          "value": {
+                            "byRank": [
+                              -1,
+                              -1,
+                              -1
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "requiresBuffStacks": false
+      },
+      "unsupportedPartTypes": [
+        "nonlinear-product"
+      ]
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Akshan.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Akshan locks onto an enemy champion and starts storing bullets. When released, he fires all stored bullets, dealing damage based on missing health to the first champion, minion, or structure hit.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Akshan locks onto a champion and begins overcharging his gun for up to 2.5 seconds, storing up to 5/6/7 bullets. Recast: Akshan unleashes the stored bullets, each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health. Bullets execute minions and apply Lifesteal. Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "아크샨이 적 챔피언을 조준하고 탄환을 저장합니다. 사격을 개시하면 저장한 탄환을 모두 발사해 처음으로 적중하는 챔피언이나 미니언이나 구조물에 잃은 체력에 비례하는 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "아크샨이 챔피언을 조준하고 최대 2.5초간 총을 과충전해 탄환을 5/6/7개까지 저장합니다. 재사용 시: 아크샨이 저장한 탄환을 발사합니다. 각 탄환은 처음으로 적중한 적이나 구조물에 최소 (25/35/45 + (15% 공격력))의 물리 피해를 입힙니다. 피해량은 대상이 잃은 체력에 비례해 최대 (75/105/135 + (45% 공격력))의 물리 피해를 입힙니다. 탄환은 미니언을 즉시 처형하며, 생명력 흡수 효과가 적용됩니다. 탄환의 피해량은 치명타 확률과 치명타 피해량에 따라 30%만큼 증가합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 71,
+      "end": 74
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 98,
+      "end": 99
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 100,
+      "end": 101
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 102,
+      "end": 103
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 181,
+      "end": 183
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 184,
+      "end": 186
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 187,
+      "end": 189
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 193,
+      "end": 196
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 283,
+      "end": 285
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 286,
+      "end": 289
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 290,
+      "end": 293
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 297,
+      "end": 300
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 482,
+      "end": 485
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 18,
+      "end": 21
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 36,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 38,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 40,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 107,
+      "end": 109
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 110,
+      "end": 112
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 113,
+      "end": 115
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 119,
+      "end": 122
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 167,
+      "end": 169
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 170,
+      "end": 173
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 174,
+      "end": 177
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 181,
+      "end": 184
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 270,
+      "end": 273
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "아크샨은 챔피언을 조준해 제한 시간 동안 총을 과충전하고 탄환을 저장합니다. 재사용하면 저장한 탄환을 발사하며, 각 탄환은 처음 적중한 적 또는 구조물에게 최소 피해를 주고 대상의 잃은 체력에 따라 피해가 증가해 최대치에 도달합니다. 탄환은 미니언을 처형하고 생명력 흡수가 적용되며, 치명타 확률과 치명타 피해량의 영향을 받습니다.",
+  "rules": [
+    {
+      "id": "148558144e91795bbd26",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "아크샨이 챔피언을 조준하고 최대 2.5초 동안 총을 과충전해 탄환을 최대 5/6/7개 저장합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akshan locks onto a champion and begins overcharging his gun for up to 2.5 seconds, storing up to 5/6/7 bullets."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Akshan unleashes the stored bullets, each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bullets execute minions and apply Lifesteal."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ]
+    },
+    {
+      "id": "e587ae3d12d13de5b1c5",
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "아크샨이 저장한 탄환을 발사합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Akshan unleashes the stored bullets, each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        }
+      ]
+    },
+    {
+      "id": "4d981451ca3179270264",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨 R 탄환이 처음 적중한 적 또는 구조물"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "아크샨 R 탄환 하나가 처음 적중한 적 또는 구조물에게 최소 물리 피해를 입힙니다. 최소 피해의 Attack Damage 계수는 15%입니다. 대상의 잃은 체력에 따라 피해 결과가 최대치까지 증가하며 최대 피해 공식은 별도 상한 정보로 보존합니다. 치명타 확률과 치명타 피해량은 원문에 명시된 30% 효율로 피해량에 영향을 주지만, 정확한 계산식은 주어지지 않았습니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "대상의 잃은 체력에 따라 피해가 증가하는 최대 피해 상한은 별도 공식입니다. 상한의 Attack Damage 계수는 45%이며 기본 최소 피해에 더하는 별도 피해가 아닙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "탄환 피해는 치명타 확률과 치명타 피해량의 영향을 원문상 30% 효율로 받습니다. 이 계수를 적용하는 정확한 계산식은 주어지지 않았습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Akshan unleashes the stored bullets, each dealing at least (25/35/45 + (15% Attack Damage)) physical damage to the first enemy or structure hit, increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ]
+    },
+    {
+      "id": "7350c662cf2b776708ae",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "아크샨 R 탄환은 처음 적중한 미니언을 처형합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullets execute minions and apply Lifesteal."
+        }
+      ]
+    },
+    {
+      "id": "acba0307a1df69a95e40",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨 R 탄환의 첫 적중 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "아크샨 R 탄환 피해에 생명력 흡수가 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullets execute minions and apply Lifesteal."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "탄환 피해의 치명타 확률 및 치명타 피해량 반영 공식은 주어지지 않아 계산식으로 구조화하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "탄환 피해는 실제 적중 대상의 잃은 체력에 따라 증가하지만 잃은 체력 보간식은 제시되지 않아 최소·최대 사이의 계산식을 확정하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "increased up to (75/105/135 + (45% Attack Damage)) physical damage based on missing Health."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "치명타 확률 및 치명타 피해량이 각각 30% 효율로 피해에 반영된다는 문장은 보존했지만, 30% 효율의 계산식이나 각 항의 결합 방식은 입력에 없어 damage_multiplier로 해석하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Bullet damage scales with Critical Strike Chance and Critical Strike Damage at 30% effectiveness."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "00b922a55e9e7db9d02e2b3315ed15d60a544273d853a9bed9e39f3a1cf29669"
+}

@@ -1,0 +1,448 @@
+{
+  "summary": "도약해 핏빛 광분 상태에 진입하며 가장 가까운 적에게 도발되고 챔피언을 우선합니다. 광분 중 공격 속도와 이동 속도가 증가하고 기본 공격은 대상 주변 적에게 피해를 입힙니다. 재사용하면 다음 기본 공격을 강화합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "도약하고 핏빛 광분 상태에 진입합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "caster",
+          "text": "5초 동안 가장 가까운 적에게 자신을 도발시키며 챔피언을 우선한다.",
+          "damageType": null,
+          "crowdControl": "taunt",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "핏빛 광분 중 공격 속도와 이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": "moveSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Briar leaps and enters a Blood Frenzy, self-taunting to the nearest enemy for 5 seconds, prioritizing Champions. While in Blood Frenzy she gains 55/65/75/85/95% Attack Speed and 24/33/42/51/60% Move Speed"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "While in Blood Frenzy she gains 55/65/75/85/95% Attack Speed and 24/33/42/51/60% Move Speed, and her Attacks deal (60/70/80/90/100% Attack Damage) physical damage to enemies surrounding her target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Blood Frenzy"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "광분 중 기본 공격은 대상 주변 적에게 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and her Attacks deal (60/70/80/90/100% Attack Damage) physical damage to enemies surrounding her target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "While in Blood Frenzy she gains 55/65/75/85/95% Attack Speed and 24/33/42/51/60% Move Speed, and her Attacks deal (60/70/80/90/100% Attack Damage) physical damage to enemies surrounding her target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_followup",
+          "subject": "caster",
+          "text": "다음 기본 공격을 강화합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Briar can Recast this Ability to empower her next Attack."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "베어 먹기는 (5/20/35/50/65 + 공격력 105%) + (9 + 추가 공격력 2.5%) × 대상이 잃은 체력의 물리 피해를 준다. 잃은 체력 항의 비율 표기는 원문대로 보존한다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "자신의 체력(종류 미명시) 5%와 실제 피해의24/28/32/36/40%를 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n25",
+                "en:body:n26",
+                "en:body:n27",
+                "en:body:n28",
+                "en:body:n29"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "minion or monster"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "미니언 또는 몬스터에게 베어 먹기 피해가10% 증가하며 잃은 체력 비례 피해만 최대400으로 제한된다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n30"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n31"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The bite deals 10% increased damage to minions and monsters (Max 400 missing health damage)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "이 스킬은 불가항력적 죽음의 강화된 핏빛 광분을 제거하거나 대체하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This ability does not remove or replace Certain Death's empowered Blood Frenzy."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "강화 공격 피해와 회복의 잃은 체력 및 회복에 사용되는 체력 값의 종류는 원문만으로 확정되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력 항 (9 + (2.5% bonus Attack Damage))missing Health에서9의 백분율 단위 및 곱셈 정규화는 명시되지 않았다. 복합 구성요소를 단순 AD 추가 피해로 실행하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "피해 상한 문구는 missing health damage에 적용되지만, 상한의 정확한 계산 범위는 명시되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The bite deals 10% increased damage to minions and monsters (Max 400 missing health damage)."
+        }
+      ]
+    }
+  ]
+}

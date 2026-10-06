@@ -1,0 +1,407 @@
+{
+  "champion": "Teemo",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Teemo throws an explosive poisonous trap using one of the mushrooms stored in his pack. If an enemy steps on the trap, it will release a poisonous cloud, slowing enemies and damaging them over time. If Teemo throws a mushroom onto another mushroom it will bounce, gaining additional range.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Teemo tosses a mushroom trap that detonates when stepped on. The traps Slow by 30/40/50% and deal (200/325/450 + (50% Ability Power)) magic damage over 4 seconds. Enemies are revealed for the same duration. Traps last 5 minutes and are stealthed. A mushroom tossed onto another mushroom bounces before landing at its position. This Ability has 3 charges (35/30/25 second refresh).",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "티모가 가방에 있던 버섯을 사용하여 폭발성 독 함정을 던집니다. 적이 함정을 밟으면 독 구름이 퍼져 나와 몇 초에 걸쳐 적의 이동 속도를 늦추고 피해를 입힙니다. 버섯 위에 새 버섯을 던져서 튕기면 더 멀리까지 함정을 설치할 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "티모가 밟으면 폭발하는 버섯 함정을 던집니다. 함정은 4초 동안 30/40/50% 둔화시키고 (200/325/450 + (50% 주문력))의 마법 피해를 입히며 적의 모습을 드러냅니다. 함정은 5분 동안 은신 상태로 유지됩니다. 버섯 위에 또 버섯을 던지면 튕긴 후 자리에 떨어집니다. 이 스킬은 3회까지 충전됩니다. (35/30/25초마다 충전)",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Noxious Trap",
+      "ko": "유독성 함정"
+    },
+    "cooldownSeconds": [
+      0.25,
+      0.25,
+      0.25
+    ],
+    "rechargeSeconds": [
+      35,
+      30,
+      25
+    ],
+    "maxCharges": 3,
+    "range": [
+      600,
+      750,
+      900
+    ],
+    "cost": {
+      "values": [
+        75,
+        55,
+        35
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "200/325/450"
+      },
+      {
+        "label": "Slow",
+        "values": "30%/40%/50%"
+      },
+      {
+        "label": "Maximum Bounce Distance",
+        "values": "360/440/550"
+      },
+      {
+        "label": "Maximum Traps",
+        "values": "3"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "75/55/35"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          200,
+          325,
+          450
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.5,
+              0.5,
+              0.5
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Teemo.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Teemo.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Teemo.R",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "one",
+      "value": 1,
+      "percent": false,
+      "start": 47,
+      "end": 50
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 79,
+      "end": 81
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 82,
+      "end": 84
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 85,
+      "end": 88
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 99,
+      "end": 102
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "325",
+      "value": 325,
+      "percent": false,
+      "start": 103,
+      "end": 106
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "450",
+      "value": 450,
+      "percent": false,
+      "start": 107,
+      "end": 110
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 114,
+      "end": 117
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 152,
+      "end": 153
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 218,
+      "end": 219
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 344,
+      "end": 345
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 355,
+      "end": 357
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 358,
+      "end": 360
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 361,
+      "end": 363
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 30,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 36,
+      "end": 38
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 39,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 53,
+      "end": 56
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "325",
+      "value": 325,
+      "percent": false,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "450",
+      "value": 450,
+      "percent": false,
+      "start": 61,
+      "end": 64
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 68,
+      "end": 71
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 108,
+      "end": 109
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 166,
+      "end": 167
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 179,
+      "end": 181
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 182,
+      "end": 184
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 185,
+      "end": 187
+    }
+  ],
+  "sourceHash": "4407b89de74fc2c80174c1a28150a33dbf954e532edd1c8b3e6d415e7795cd66",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

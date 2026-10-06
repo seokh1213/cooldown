@@ -2,7 +2,7 @@
 
 ## 현재 범위
 
-활성 기준 자료는 [current.json](current.json)이 가리키는 `26.19-v2`다. 173개 공통 정보와 감독자가 원문 검수·수정한 865개 승인 스킬을 보존한다. 현재 승인 대기는 0개다. 새 패치에서 변경된 슬롯은 다시 작성·검수하며 자동 승인하지 않는다. [전수 검수 결과](26.19-v2/reports/final-review.md)에 각 슬롯의 수정·검수·해시 기록을 남겼다.
+활성 기준 자료는 [current.json](current.json)이 가리키는 `26.19-v3`다. 173개 공통 정보와 승인 스킬 865개를 실제 앱의 자료·대화 계획기에 연결한다. 이전 `26.19-v2`의 승인 858개는 원문·후보 해시가 같은 상태로 재사용했고, 클레드 Q/E/R·렉사이 Q/W/E·렐 W의 7개는 현재 원문으로 재작성한 뒤 [독립 검수](26.19-v3/reports/changed-slots-independent-review.json)를 거쳐 승인했다. 현재 승인 대기는 0개이며 이후 변경 슬롯도 자동 승인하지 않는다. [이전 전수 검수 결과](26.19-v2/reports/final-review.md)와 v2 자료는 역사 기록으로 보존한다.
 
 CI가 변경 감지, 다음 입력 준비, 기존 자료 재사용, 답변 회귀 검사를 맡는다. CI에는 Codex 인증이 없어 변경된 스킬의 Luna 작성과 최종 사실 검수는 로컬에서 수행한다. 새 자료를 준비해도 활성 포인터나 앱 답변 경로는 자동으로 바꾸지 않는다.
 
@@ -15,7 +15,15 @@ CI가 변경 감지, 다음 입력 준비, 기존 자료 재사용, 답변 회�
 
 기존 정적 데이터 워크플로는 매시 17분에 상류 표식을 확인한다. DDragon 패치나 CommunityDragon 빌드가 바뀌면 갱신하며, 표식이 그대로여도 하루 한 번 원문을 다시 수집한다. master 푸시와 수동 실행도 갱신을 거친다. 단순 PR 검사는 저장소의 원문을 비교하며 외부 데이터를 다시 받지 않는다.
 
-변경 보고서는 Actions 작업 요약과 `champion-mechanics-drift` 또는 `champion-mechanics-update` artifact에 남는다. 갱신 artifact에는 `mechanics-next` 입력도 포함되며 14일 보관한다. 이번 구현은 로컬에서 검증했고 원격 Actions 실행은 아직 확인하지 않았다. GitHub의 [작업 요약](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-job-summary)과 [artifact](https://docs.github.com/en/actions/tutorials/store-and-share-data)를 사용한다.
+변경 보고서는 Actions 작업 요약과 `champion-mechanics-drift` 또는 `champion-mechanics-update` artifact에 남는다. 갱신 artifact에는 `mechanics-next` 입력도 포함되며 14일 보관한다. 원격 `Update Static Data` 실행 [37404456577](https://github.com/seokh1213/cooldown/actions/runs/37404456577)과 [37430174120](https://github.com/seokh1213/cooldown/actions/runs/37430174120)은 모두 성공했고, 두 실행에서 같은 Kled 본문 변경을 [이슈 39](https://github.com/seokh1213/cooldown/issues/39)에 보고했다. 데이터 갱신 성공만으로 지식 검수가 완료된 것으로 취급하지 않는다. GitHub의 [작업 요약](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-job-summary)과 [artifact](https://docs.github.com/en/actions/tutorials/store-and-share-data)를 사용한다.
+
+## Kled 재발 원인과 번역 검수 범위
+
+이슈 39는 E/R에 탑승 전용 문장을 추가한 뒤 챔피언 지식 지문을 갱신하지 않아 재발했다. 앞선 수정은 콤보 2개만 재검수했으며 플레이북 22개 항목은 남았다. 이번에는 플레이북 22개와 콤보 2개를 모두 읽고 W 자동 발동, E2 동일 대상 재돌진, 용기 획득·재탑승 조건과 16레벨 기본 공격 피해 감소 0%를 정정했다. 26.17 통계가 들어간 노트 4개는 당시 출처와 검수 패치를 유지한다.
+
+Kled의 E/R 본문 변경은 군중 제어 출처 지문도 무효화했다. 현재 본문 지문을 다시 검수하고, E의 미니언·작은 몬스터 끌어당김을 챔피언 군중 제어로 세지 않게 했다. 탈출 노트는 탑승/미탑승 조건을 보존하는 수동 노트로 전환했고 같은 분류의 생성 노트가 다시 붙지 않게 했다.
+
+영어·중국어 노트에는 번역 원자를 잇는 `basis` 비교만 있어 한국어 본문 변경을 놓칠 수 있었다. 현재 Kled의 수동 노트 21개와 원자 68개, 두 언어의 다듬은 번역 각 21개를 대조했으며 `sourceDigests`에 노트별 한국어 본문 SHA-256을 기록했다. 본문 변경·삭제 시 해당 번역은 발행에서 제외된다. 이 보호의 전수 검수 범위는 Kled 21개뿐이다. 다른 챔피언의 기존 번역에 지문을 자동 부여하거나 이번 검수로 승인하지 않는다.
 
 ## 무엇을 다시 작성하는가
 
@@ -54,7 +62,7 @@ node --import tsx scripts/llm/champion-mechanics/export.ts research/champion-mec
 새 디렉터리와 검수 결과를 확인한 뒤 `current.json`의 `directory`를 변경한다. 그 다음 비교 평가를 실행한다.
 
 ```sh
-npm run llm:mechanics-eval -- research/champion-mechanics/reports/answer-quality.json --check
+npm run llm:mechanics-eval -- /tmp/cooldown-mechanics-eval.json --check
 ```
 
 ## 답변 회귀 기준
@@ -65,11 +73,12 @@ npm run llm:mechanics-eval -- research/champion-mechanics/reports/answer-quality
 
 질문 파일을 유리하게 바꾸거나 평가 결과에서 성공 기준을 자동 재작성하지 않는다. [답변 비교 보고서](../llm-evals/champion-mechanics-v2/README.md)에 고정 질문, 결과, 제한을 기록했다.
 
-## 검증 결과
+## 현재 확인과 보존된 초기 검증
 
 - 현재 26.19 원문: 865개 재사용, 재작성 0개, 승인 유지 가능 865개, 공통 정보 변경 0개.
 - 격리된 가짜 패치에서 Q 하나만 변경: 1개 재작성, 4개 재사용, 기존 승인 P 유지. 이전 파일 보존과 불완전한 내보내기 거절 확인.
 - 같은 패치에서 공통 스탯만 변경: 변경 감지, 스킬 재작성 0개.
 - 이전 스키마의 정상 자료: 손상으로 오인하지 않고 새 계약으로 모든 슬롯 재작성.
-- 추출·변경 감지·답변 관련 시험 42건과 스크립트 타입 검사·대상 파일 ESLint 통과.
-- 전체 승인 후 기존 51턴 비교 26→50, 별도 신규 18턴 비교 2→7. 질문 기준을 변경하지 않았고 현행 대비 퇴보는 없었다. 신규 질문셋은 아직 CI 성공 기준에 합치지 않은 보완 평가다.
+- 초기 갱신 도구의 추출·변경 감지·답변 관련 시험 42건과 스크립트 타입 검사·대상 파일 ESLint가 통과했다. 당시 검증 기록을 보존한다.
+- 2026-10-06 현재 v3 고정 51턴 비교는 기존 어휘 경로와 오프라인 판정기 경로 모두 26→51, 개선 25턴·퇴보 0턴이다. 질문 해시는 변경하지 않았고 성공 보호 기준은 Aurora 1턴을 포함한 34개다. [답변 비교 문서](../llm-evals/champion-mechanics-v2/README.md)에 범위와 제한을 기록했다.
+- 이전 v2의 고정 51턴 비교 26→50과 별도 신규 18턴 비교 2→7은 역사적 측정으로 보존한다. 신규 18턴 질문셋은 아직 CI 성공 기준에 합치지 않은 보완 평가다.

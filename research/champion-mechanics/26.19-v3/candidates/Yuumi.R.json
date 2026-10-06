@@ -1,0 +1,452 @@
+{
+  "summary": "유미가 정신을 집중해 양 팀에 영향을 주는 마법 파동을 발사합니다. 적은 피해를 입고 파동 적중에 따라 둔화가 증가하며, 아군 챔피언은 파동마다 회복하고 초과 회복량은 보호막이 됩니다. 단짝의 회복량은 증가합니다. 밀착 상태에서 처음 시전하면 파동을 조종할 수 있고, 정신 집중 중 이동 및 슈우우웅! 시전이 가능합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "유미가 정신을 집중해 여러 마법 파동을 발사합니다. 밀착 상태에서 처음 시전하면 파동을 마우스로 조종할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yuumi channels for 3.5 seconds, launching 5 magical waves affecting both teams. If initially cast while Attached, Yuumi can steer the waves to follow her mouse."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "첫 번째 미사일이 적 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "첫 번째 미사일은 적중한 적에게 일반 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yuumi channels for 3.5 seconds, launching 5 magical waves affecting both teams. If initially cast while Attached, Yuumi can steer the waves to follow her mouse. Enemies struck are dealt (75/125/175 + (25% Ability Power)) magic damage and Slowed by 10% for 1.25 seconds, increased by 10% per wave hit. Ally champions are healed for (30/50/70 + (12% Ability Power)) health per wave. Excess healing is converted to a Shield instead. Best Friend Bonus: For her Best Friend, the heal is increased to (30/50/70 + (12% Ability Power)) × (1.3 ~ 1.6) health. Casting You and Me! will locks the waves in the current direction. Yuumi can move and cast Zoomies while channeling. Missiles after the first deal (18.75/31.25/43.75 + (6.25% Ability Power)) magic damage. Max possible damage to a single enemy is (150/250/350 + (50% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "적중한 적을 둔화시킵니다. 둔화량은 적중한 파동 수에 따라 증가합니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies struck are dealt (75/125/175 + (25% Ability Power)) magic damage and Slowed by 10% for 1.25 seconds, increased by 10% per wave hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "아군 챔피언은 파동마다 체력을 회복합니다. 초과 회복량은 보호막으로 전환됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "파동 회복의 초과분은 대신 보호막으로 전환된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ally champions are healed for (30/50/70 + (12% Ability Power)) health per wave. Excess healing is converted to a Shield instead."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "단짝"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "ally",
+          "text": "단짝은 파동마다 증가한 체력을 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n17",
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Best Friend Bonus: For her Best Friend, the heal is increased to (30/50/70 + (12% Ability Power)) × (1.3 ~ 1.6) health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "정신 집중 중 이동하거나 E 슈우우웅!을 시전할 수 있다. W 너랑 유미랑!을 시전하면 파동이 현재 방향으로 고정된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Casting You and Me! will locks the waves in the current direction. Yuumi can move and cast Zoomies while channeling."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "첫 번째 이후 미사일이 적 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "첫 번째 이후 미사일은 감소된 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yuumi channels for 3.5 seconds, launching 5 magical waves affecting both teams. If initially cast while Attached, Yuumi can steer the waves to follow her mouse. Enemies struck are dealt (75/125/175 + (25% Ability Power)) magic damage and Slowed by 10% for 1.25 seconds, increased by 10% per wave hit. Ally champions are healed for (30/50/70 + (12% Ability Power)) health per wave. Excess healing is converted to a Shield instead. Best Friend Bonus: For her Best Friend, the heal is increased to (30/50/70 + (12% Ability Power)) × (1.3 ~ 1.6) health. Casting You and Me! will locks the waves in the current direction. Yuumi can move and cast Zoomies while channeling. Missiles after the first deal (18.75/31.25/43.75 + (6.25% Ability Power)) magic damage. Max possible damage to a single enemy is (150/250/350 + (50% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "enemy",
+          "text": "단일 적에게 입힐 수 있는 총 최대 마법 피해는150/250/350+50% 유미AP다. 별도 추가타가 아니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n23",
+                "en:body:n24",
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n26"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yuumi channels for 3.5 seconds, launching 5 magical waves affecting both teams. If initially cast while Attached, Yuumi can steer the waves to follow her mouse. Enemies struck are dealt (75/125/175 + (25% Ability Power)) magic damage and Slowed by 10% for 1.25 seconds, increased by 10% per wave hit. Ally champions are healed for (30/50/70 + (12% Ability Power)) health per wave. Excess healing is converted to a Shield instead. Best Friend Bonus: For her Best Friend, the heal is increased to (30/50/70 + (12% Ability Power)) × (1.3 ~ 1.6) health. Casting You and Me! will locks the waves in the current direction. Yuumi can move and cast Zoomies while channeling. Missiles after the first deal (18.75/31.25/43.75 + (6.25% Ability Power)) magic damage. Max possible damage to a single enemy is (150/250/350 + (50% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "summary는단짝밀착만마우스조종이라하나 en/ko본문은처음밀착상태시전이면조종가능하다. 본문을우선한다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "While on her Best Friend, this spell also follows her mouse."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If initially cast while Attached, Yuumi can steer the waves to follow her mouse."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,737 @@
+{
+  "champion": "Gnar",
+  "slot": "W",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Gnar's attacks and spells hype him up, dealing bonus damage and granting him Move Speed. Mega Gnar is too enraged to be hyper and instead can rear up on his hind legs and smash down on the area in front of him, stunning enemies in an area.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Mini Gnar Passive: Every third Attack or Ability on the same enemy deals an additional (0/10/20/30/40 + (100% Ability Power)) plus 6/8/10/12/14% max Health magic damage and grants 20/40/60/80% Move Speed decaying over 3 seconds. Gnar also gains the Move Speed when he leaves Mega Gnar form. Deals a max of 300 magic damage against jungle monsters.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "나르는 기본 공격과 스킬 공격을 하면 신이 나서 추가 피해를 입히며 이동 속도가 상승합니다. 메가 나르는 너무 분노해 있어서, 뒷발로 일어나서 전방을 꽝 내리치며 일정 범위 안의 적들을 기절시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "미니 나르 기본 지속 효과: 같은 적에게 세 번째 기본 공격이나 스킬을 가할 때마다 (0/10/20/30/40 + (100% 주문력)) + 최대 체력의 6/8/10/12/14%에 해당하는 마법 피해를 추가로 입히며 이동 속도가 20/40/60/80% 증가한 뒤 3초에 걸쳐 원래대로 돌아옵니다. 나르가 메가 나르 형태에서 돌아올 때는 이동 속도 역시 증가합니다. 정글 몬스터를 상대로는 최대 300의 마법 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "form:A:en",
+      "text": "Mini Gnar Passive: Every third Attack or Ability on the same enemy deals an additional (0/10/20/30/40 + (100% Ability Power)) plus 6/8/10/12/14% max Health magic damage and grants 20/40/60/80% Move Speed decaying over 3 seconds. Gnar also gains the Move Speed when he leaves Mega Gnar form. Deals a max of 300 magic damage against jungle monsters.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:A"
+    },
+    {
+      "id": "form:B:en",
+      "text": "Mega Gnar: Gnar smashes an area, dealing (45/75/105/135/165 + (100% Attack Damage)) physical damage and Stunning for 1.25 seconds.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:B"
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    },
+    {
+      "id": "form:A",
+      "label": "Mini",
+      "sourceIds": [
+        "form:A:en"
+      ]
+    },
+    {
+      "id": "form:B",
+      "label": "Mega",
+      "sourceIds": [
+        "form:B:en"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Hyper / Wallop",
+      "ko": "슝슝 / 쿵쾅"
+    },
+    "cooldownSeconds": [
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Hyper Damage",
+        "values": "0/10/20/30/40"
+      },
+      {
+        "label": "Hyper % Health Damage",
+        "values": "6%/8%/10%/12%/14%"
+      },
+      {
+        "label": "Wallop Damage",
+        "values": "45/75/105/135/165"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:MiniTotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "MiniTotalDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          0,
+          10,
+          20,
+          30,
+          40
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Gnar",
+          "condition": "메가 나르 형태"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [
+      {
+        "key": "A",
+        "label": "Mini",
+        "id": "GnarW",
+        "name": "Hyper",
+        "iconPath": "assets/characters/gnar/hud/icons2d/gnar_w.png",
+        "iconVersion": "16.19",
+        "cooldownSeconds": [],
+        "tooltipRankSource": "W",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      {
+        "key": "B",
+        "label": "Mega",
+        "id": "GnarBigW",
+        "name": "Wallop",
+        "iconPath": "assets/characters/gnar/hud/icons2d/gnarbig_w.png",
+        "iconVersion": "16.19",
+        "cooldownSeconds": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "tooltipRankSource": "W",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    ],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Gnar.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Gnar.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "0",
+      "value": 0,
+      "percent": false,
+      "start": 88,
+      "end": 89
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 90,
+      "end": 92
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 93,
+      "end": 95
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 96,
+      "end": 98
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 99,
+      "end": 101
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 105,
+      "end": 109
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 131,
+      "end": 132
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": true,
+      "start": 133,
+      "end": 134
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 135,
+      "end": 137
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "12",
+      "value": 12,
+      "percent": true,
+      "start": 138,
+      "end": 140
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "14%",
+      "value": 14,
+      "percent": true,
+      "start": 141,
+      "end": 144
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 180,
+      "end": 182
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 183,
+      "end": 185
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": true,
+      "start": 186,
+      "end": 188
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 189,
+      "end": 192
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 218,
+      "end": 219
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 306,
+      "end": 309
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "0",
+      "value": 0,
+      "percent": false,
+      "start": 48,
+      "end": 49
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 50,
+      "end": 52
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 53,
+      "end": 55
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 56,
+      "end": 58
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 59,
+      "end": 61
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 65,
+      "end": 69
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 85,
+      "end": 86
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": true,
+      "start": 87,
+      "end": 88
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 89,
+      "end": 91
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "12",
+      "value": 12,
+      "percent": true,
+      "start": 92,
+      "end": 94
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "14%",
+      "value": 14,
+      "percent": true,
+      "start": 95,
+      "end": 98
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 127,
+      "end": 129
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 130,
+      "end": 132
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": true,
+      "start": 133,
+      "end": 135
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 136,
+      "end": 139
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 146,
+      "end": 147
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 219,
+      "end": 222
+    },
+    {
+      "id": "form:A:en:n0",
+      "sourceId": "form:A:en",
+      "raw": "0",
+      "value": 0,
+      "percent": false,
+      "start": 88,
+      "end": 89
+    },
+    {
+      "id": "form:A:en:n1",
+      "sourceId": "form:A:en",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 90,
+      "end": 92
+    },
+    {
+      "id": "form:A:en:n2",
+      "sourceId": "form:A:en",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 93,
+      "end": 95
+    },
+    {
+      "id": "form:A:en:n3",
+      "sourceId": "form:A:en",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 96,
+      "end": 98
+    },
+    {
+      "id": "form:A:en:n4",
+      "sourceId": "form:A:en",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 99,
+      "end": 101
+    },
+    {
+      "id": "form:A:en:n5",
+      "sourceId": "form:A:en",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 105,
+      "end": 109
+    },
+    {
+      "id": "form:A:en:n6",
+      "sourceId": "form:A:en",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 131,
+      "end": 132
+    },
+    {
+      "id": "form:A:en:n7",
+      "sourceId": "form:A:en",
+      "raw": "8",
+      "value": 8,
+      "percent": true,
+      "start": 133,
+      "end": 134
+    },
+    {
+      "id": "form:A:en:n8",
+      "sourceId": "form:A:en",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 135,
+      "end": 137
+    },
+    {
+      "id": "form:A:en:n9",
+      "sourceId": "form:A:en",
+      "raw": "12",
+      "value": 12,
+      "percent": true,
+      "start": 138,
+      "end": 140
+    },
+    {
+      "id": "form:A:en:n10",
+      "sourceId": "form:A:en",
+      "raw": "14%",
+      "value": 14,
+      "percent": true,
+      "start": 141,
+      "end": 144
+    },
+    {
+      "id": "form:A:en:n11",
+      "sourceId": "form:A:en",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 180,
+      "end": 182
+    },
+    {
+      "id": "form:A:en:n12",
+      "sourceId": "form:A:en",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 183,
+      "end": 185
+    },
+    {
+      "id": "form:A:en:n13",
+      "sourceId": "form:A:en",
+      "raw": "60",
+      "value": 60,
+      "percent": true,
+      "start": 186,
+      "end": 188
+    },
+    {
+      "id": "form:A:en:n14",
+      "sourceId": "form:A:en",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 189,
+      "end": 192
+    },
+    {
+      "id": "form:A:en:n15",
+      "sourceId": "form:A:en",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 218,
+      "end": 219
+    },
+    {
+      "id": "form:A:en:n16",
+      "sourceId": "form:A:en",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 306,
+      "end": 309
+    },
+    {
+      "id": "form:B:en:n0",
+      "sourceId": "form:B:en",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 42,
+      "end": 44
+    },
+    {
+      "id": "form:B:en:n1",
+      "sourceId": "form:B:en",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    },
+    {
+      "id": "form:B:en:n2",
+      "sourceId": "form:B:en",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "form:B:en:n3",
+      "sourceId": "form:B:en",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 52,
+      "end": 55
+    },
+    {
+      "id": "form:B:en:n4",
+      "sourceId": "form:B:en",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 56,
+      "end": 59
+    },
+    {
+      "id": "form:B:en:n5",
+      "sourceId": "form:B:en",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 63,
+      "end": 67
+    },
+    {
+      "id": "form:B:en:n6",
+      "sourceId": "form:B:en",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 117,
+      "end": 121
+    }
+  ],
+  "sourceHash": "45414e76d629663a551e3f26031b6351a10cecc205bc5ae428ae65e99c21cfdb",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

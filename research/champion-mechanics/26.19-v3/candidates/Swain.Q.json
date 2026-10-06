@@ -1,0 +1,138 @@
+{
+  "summary": "스웨인은 여러 갈래의 번개를 발사해 마법 피해를 입힌다. 같은 대상이 첫 번개 이후 추가 번개에 맞으면 번개마다 추가 피해를 받으며, 총 피해에는 최대치가 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "번개5개는 적을 관통하며 첫 적중 기본식 + 같은대상 첫번개이후번개수×추가식으로 마법피해를 줍니다. 총피해는 별도최대식(랭크120~360+90%AP)으로 제한됩니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Swain unleashes 5 eldritch bolts, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage plus (15/22.5/30/37.5/45 + (11.25% Ability Power)) magic damage per bolt past the first (max (120/180/240/300/360 + (90% Ability Power)) magic damage)."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Swain unleashes several bolts of eldritch power that pierce through enemies. Enemies hit take more damage for each bolt they are struck by."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "기본식+추가번개수×증분식과최대식은서로다른구성요소로보존; 세 AP계수를독립피해로합산하지않음.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Swain unleashes 5 eldritch bolts, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage plus (15/22.5/30/37.5/45 + (11.25% Ability Power)) magic damage per bolt past the first (max (120/180/240/300/360 + (90% Ability Power)) magic damage)."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "영문요약은적관통,한국어요약은적이죽으면관통으로다름;영문관통우선.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Swain unleashes several bolts of eldritch power that pierce through enemies. Enemies hit take more damage for each bolt they are struck by."
+        },
+        {
+          "sourceId": "ko:summary",
+          "quote": "스웨인이 섬뜩한 힘을 지닌 번개를 여러 갈래 방출합니다. 적중당한 적이 죽으면 번개가 해당 유닛을 관통합니다. 적중한 번개의 수에 따라 피해량도 증가합니다."
+        }
+      ]
+    }
+  ]
+}

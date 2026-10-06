@@ -1,0 +1,349 @@
+{
+  "champion": "Fiora",
+  "slot": "W",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Fiora parries all incoming damage and disables for a short time, then stabs in a direction. This stab slows the first enemy champion hit, or stuns them if Fiora blocked an immobilizing effect with this ability.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Fiora parries all incoming damage, disables, and negative effects for 0.75 seconds, then stabs. The stab deals (110/150/190/230/270 + (100% Ability Power)) magic damage to the first champion hit and Slows Move Speed by 50% and Attack Speed by 25% for 2 seconds. If Fiora parries an Immobilizing effect, the stabbed enemy is Stunned rather than Slowed.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "피오라가 잠시 동안 받는 모든 공격과 이동 불가 효과를 막아낸 다음 대상이 있는 방향으로 검을 찌릅니다. 이 공격은 처음 맞은 적 챔피언을 둔화시키고, 피오라가 이동 불가 효과를 막아낼 경우 공격한 상대를 기절시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "피오라가 0.75초 동안 받는 모든 공격과 이동 불가 효과, 해로운 효과를 막아낸 다음 검을 찌릅니다. 검은 처음 적중한 챔피언에게 (110/150/190/230/270 + (100% 주문력))의 마법 피해를 입히고, 2초 동안 이동 속도를 50%, 공격 속도를 25% 둔화시킵니다. 피오라가 이동 불가 효과를 막아낼 경우, 찔린 적은 둔화하는 대신 기절합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Riposte",
+      "ko": "응수"
+    },
+    "cooldownSeconds": [
+      24,
+      22,
+      20,
+      18,
+      16
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      750,
+      750,
+      750,
+      750,
+      750
+    ],
+    "cost": {
+      "values": [
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "110/150/190/230/270"
+      },
+      {
+        "label": "Cooldown",
+        "values": "24/22/20/18/16"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:StabDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "StabDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          110,
+          150,
+          190,
+          230,
+          270
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Fiora"
+        },
+        {
+          "type": "cripple",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Fiora"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Fiora",
+          "condition": "이동 불가 효과를 막은 후 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Fiora.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Fiora.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 70,
+      "end": 74
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 112,
+      "end": 115
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 116,
+      "end": 119
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 120,
+      "end": 123
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "230",
+      "value": 230,
+      "percent": false,
+      "start": 124,
+      "end": 127
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "270",
+      "value": 270,
+      "percent": false,
+      "start": 128,
+      "end": 131
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 135,
+      "end": 139
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 219,
+      "end": 222
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 243,
+      "end": 246
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 251,
+      "end": 252
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 5,
+      "end": 9
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 75,
+      "end": 78
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 79,
+      "end": 82
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 83,
+      "end": 86
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "230",
+      "value": 230,
+      "percent": false,
+      "start": 87,
+      "end": 90
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "270",
+      "value": 270,
+      "percent": false,
+      "start": 91,
+      "end": 94
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 98,
+      "end": 102
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 122,
+      "end": 123
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 135,
+      "end": 138
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 147,
+      "end": 150
+    }
+  ],
+  "sourceHash": "c7b42b711a5a5aea04d6dc5e7f20a2b4884b73943a628d9174431fb2e51f4257",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

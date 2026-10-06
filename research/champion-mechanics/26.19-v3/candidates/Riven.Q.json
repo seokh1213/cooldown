@@ -1,0 +1,344 @@
+{
+  "summary": "처음 사용과첫 재사용은 전방 돌진과 물리 피해를 줍니다. 두 번째 재사용은 전방 도약 후 물리 피해와주변0.75초공중 띄우기를 적용합니다. 총세번 중 마지막만 지형을 넘을 수 있습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "전방으로 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상에게 물리 피해를 입힙니다. 피해량은 리븐의 추가 공격력에 비례합니다. 피해 계수는 시전자 추가 공격력의60/65/70/75/80%입니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Riven dashes forward, dealing (45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "첫 번째 재사용"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "전방으로 돌진합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상에게 물리 피해를 입힙니다. 피해량은 리븐의 추가 공격력에 비례합니다. 피해 계수는 시전자 추가 공격력의60/65/70/75/80%입니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The first Recast is the same as the original, but the second has a different effect:"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Riven dashes forward, dealing (45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "두 번째 재사용"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "앞으로 뛰어오른 뒤 땅을 내려찍습니다. 이 스킬의 마지막 사용에서만 지형을 넘을 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "물리 피해를 입힙니다. 원문은 피해가 주변 적에게 적용되는지 여부를 특정하지 않습니다. 피해 계수는 시전자 추가 공격력의60/65/70/75/80%입니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Riven leaps forward and slams, dealing (45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Only the last use of this Ability can cross terrain."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The first Recast is the same as the original, but the second has a different effect: Recast: Riven leaps forward and slams, dealing (45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage and Knocks Up nearby enemies for 0.75 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "두 번째 재사용"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "주변 적을 공중으로 띄웁니다.",
+          "damageType": null,
+          "crowdControl": "knockup",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Knocks Up nearby enemies for 0.75 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The first Recast is the same as the original, but the second has a different effect: Recast: Riven leaps forward and slams, dealing (45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage and Knocks Up nearby enemies for 0.75 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "Q는 커서가 가리키는 유닛을 대상으로 하며, 대상이 없으면 전방으로 돌진합니다. 총2회 재사용할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Riven targets the unit your cursor is on, or dashes forward if there is no target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "She can Recast this Ability twice."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "두 번째 재사용의 피해 적용 대상이 원문에서 특정되지 않습니다. 피해 대상을 확정하지 않고 구조화된 표현으로 남겼습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Riven leaps forward and slams, dealing (45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage and Knocks Up nearby enemies for 0.75 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "요약은third hitknockback/밀쳐냄이라고하지만본문은마지막knockup0.75초라고명시한다. 본문CC를따른다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "with the third hit knocking back nearby enemies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Knocks Up nearby enemies for 0.75 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The first Recast is the same as the original, but the second has a different effect: Recast: Riven leaps forward and slams, dealing (45/75/105/135/165 + (60/65/70/75/80% bonus Attack Damage)) physical damage and Knocks Up nearby enemies for 0.75 seconds."
+        }
+      ]
+    }
+  ]
+}

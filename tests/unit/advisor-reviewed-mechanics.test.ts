@@ -84,6 +84,26 @@ test("루시안은 아군 보호막을 받은 조건, 베이가는 처치 관여
   assert.match((await ask(ctx, "루시안 P 아군한테 힐 받으면 평타 어떻게 바뀌어?")).text, /마법 피해/);
   assert.match((await ask(ctx, "베이가 패시브 처치 관여하면 스택 몇 개?")).text, /5/);
 });
+test("오로라 정령 생성은 챔피언 대상과 3회 적중 조건을 구분하고 복원 뒤에도 유지한다", async () => {
+  const ctx = context();
+  const minion = await ask(ctx, "오로라 패시브 정령은 미니언 때려도 나오나?");
+  assert.equal(minion.answer?.kind, "spell");
+  if (minion.answer?.kind === "spell") assert.equal(minion.answer.championId, "Aurora");
+  assert.match(minion.text, /정령/);
+  assert.match(minion.text, /미니언은.*챔피언 대상 조건에 해당하지/);
+  assert.match(minion.text, /3회 이상 적중/);
+  assert.doesNotMatch(minion.text, /회복 · 최대 체력 비례 피해|추가 마법 피해를 입힙니다/);
+  assert.equal(minion.memory.mechanic?.topic, "summon");
+  const champion = await ask(ctx, "그럼 챔피언 세 대 때리면?");
+  assert.match(champion.text, /3회 이상 적중.*챔피언/);
+  assert.match(champion.text, /영혼이 오로라를 따라다닙니다/);
+  assert.match(champion.text, /4초/);
+  assert.doesNotMatch(champion.text, /미니언|조건에 해당하지/);
+  assert.match((await ask(ctx, "그럼 몬스터 세 대 때리면?")).text, /몬스터는.*챔피언 대상 조건에 해당하지/);
+  const first = await ask(ctx, "챔피언 한 대만 때리면?");
+  assert.match(first.text, /1회 적중.*3회 적중 조건에 해당하지/);
+  assert.doesNotMatch(first.text, /영혼이 오로라를 따라다닙니다/);
+});
 test("분수 개수와 계산식은 템 한 개로 추정하지 않는다", async () => {
   for (const question of ["파이크 체력 70짜리 템 1.5개면?", "파이크 체력 50+90이면?"]) {
     assert.match((await ask(context(), question)).text, /수치를 하나로/);

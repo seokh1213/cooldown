@@ -122,7 +122,7 @@ function control(value: unknown): boolean {
 
 function mechanic(value: unknown): boolean {
   if (!record(value) || !string(value.abilityId) || !string(value.sourceHash) || !array(value.ruleIndices, integer)) return false;
-  return optional(value.topic, entry => oneOf(entry, ["control_resistance", "conversion", "shield", "movement", "control", "heal", "stats", "stack"]))
+  return optional(value.topic, entry => oneOf(entry, ["control_resistance", "conversion", "shield", "movement", "control", "heal", "stats", "stack", "summon"]))
     && optional(value.amount, amount => record(amount) && nonNegative(amount.value)
       && oneOf(amount.stat, ["bonusHealth", "abilityPower"]) && integer(amount.count) && amount.count > 0)
     && optional(value.targetType, entry => oneOf(entry, ["champion", "minion", "monster", "structure"]))

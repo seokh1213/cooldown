@@ -1,0 +1,431 @@
+{
+  "summary": "기본 지속 효과로 방어구 관통력을 얻고, 스킬이 입힌 피해에 따라 체력을 회복한다. 사용 시 저지 불가 상태가 되어 선택한 일직선상에서 가장 먼 적 챔피언에게 순간 이동해 제압한 뒤, 지면에 내리쳐 물리 피해를 주고 기절시킨다. 미니언과 몬스터에게 입힌 피해에 대한 회복 효율은 감소한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "방어구 관통력10/20/30%를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armorPenetration",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": "armorPenetration",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Ambessa gains 10/20/30% Armor Penetration"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Ambessa gains 10/20/30% Armor Penetration and her Abilities heal her for (15/17.5/20% + (50% Lifesteal)) of the damage she dealt."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "암베사의 스킬이 실제 피해를 입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "암베사의 스킬이 입힌 피해×(15/17.5/20%+자기 생명력 흡수의50%)만큼 자신을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "lifeSteal",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "her Abilities heal her for (15/17.5/20% + (50% Lifesteal)) of the damage she dealt."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Ambessa gains 10/20/30% Armor Penetration and her Abilities heal her for (15/17.5/20% + (50% Lifesteal)) of the damage she dealt."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "사용 시 저지 불가 상태가 되어 선택한 일직선상에서 가장 먼 적 챔피언에게 순간 이동한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Ambessa becomes Unstoppable and blinks to the farthest enemy champion in a line"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "선택한 일직선에서 가장 먼 적 챔피언으로 이 스킬이 순간이동한 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "도착 후 대상을 제압한다.",
+          "damageType": null,
+          "crowdControl": "suppression",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Suppressing the target for 0.75 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Ambessa becomes Unstoppable and blinks to the farthest enemy champion in a line, Suppressing the target for 0.75 seconds and then slamming them into the ground, dealing (150/250/350 + (80% bonus Attack Damage)) physical damage and Stunning them for 0.4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "선택한 일직선에서 가장 먼 적 챔피언으로 이 스킬이 순간이동한 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "0.75초 제압 후 해당 적을 지면에 내리쳐 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (150/250/350 + (80% bonus Attack Damage)) physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Ambessa becomes Unstoppable and blinks to the farthest enemy champion in a line, Suppressing the target for 0.75 seconds and then slamming them into the ground, dealing (150/250/350 + (80% bonus Attack Damage)) physical damage and Stunning them for 0.4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "선택한 일직선에서 가장 먼 적 챔피언으로 이 스킬이 순간이동한 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "내리친 대상을 기절시킨다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Stunning them for 0.4 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Ambessa becomes Unstoppable and blinks to the farthest enemy champion in a line, Suppressing the target for 0.75 seconds and then slamming them into the ground, dealing (150/250/350 + (80% bonus Attack Damage)) physical damage and Stunning them for 0.4 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "미니언에게 입힌 피해에 대한 회복 효율은 25%다. 이 패시브 회복의 효율 변경이며 추가 회복이나 피해 배율이 아니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Healing is 25% effective against minions"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Healing is 25% effective against minions and 25% effective against monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "몬스터에게 입힌 피해에 대한 회복 효율은 25%다. 이 패시브 회복의 효율 변경이며 추가 회복이나 피해 배율이 아니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "25% effective against monsters."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Healing is 25% effective against minions and 25% effective against monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

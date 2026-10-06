@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 2,
+  "id": "Cassiopeia.P",
+  "champion": "Cassiopeia",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "3a19ff1e5f460b5245a01bc1c67215e8b29de8cb334cb23e161916de882a4311",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Serpentine Grace",
+      "ko": "독사의 품격"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          5,
+          6.8,
+          8.6,
+          10.4,
+          12.2,
+          14,
+          15.8,
+          17.6,
+          19.4,
+          21.2,
+          23,
+          24.8,
+          26.6,
+          28.4,
+          30.2,
+          32,
+          33.8,
+          35.6,
+          37.4,
+          39.2
+        ],
+        "digits": 0,
+        "percent": true
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Cassiopeia.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "All Move Speed bonuses are more effective on Cassiopeia.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Cassiopeia increases the effectiveness of all Move Speed bonuses by (5% ~ 36%).",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "카시오페아의 모든 이동 속도 추가 효과가 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "카시오페아의 모든 이동 속도 추가 효과가 (5% ~ 36%) 증가합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 69,
+      "end": 71
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "36%",
+      "value": 36,
+      "percent": true,
+      "start": 74,
+      "end": 77
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 24,
+      "end": 26
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "36%",
+      "value": 36,
+      "percent": true,
+      "start": 29,
+      "end": 32
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "모든 이동 속도 추가 효과가 강화됩니다.",
+  "rules": [
+    {
+      "id": "499783aa5f45cdab34e6",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "카시오페아에게적용되는모든이동속도추가효과의효율이레벨별5%~36%증가합니다. 전체이동속도의직접5~36%증가가아닙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cassiopeia increases the effectiveness of all Move Speed bonuses by (5% ~ 36%)."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "스키마에는이동속도추가효과효율/증폭전용스탯이없다. 전체moveSpeed변환대신해당효율증가의의미를텍스트와레벨범위로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "effectiveness of all Move Speed bonuses by (5% ~ 36%)."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "805282e376ebb2018540e31acdc286eab7801eaa279af31d16cbba051416c8cf"
+}

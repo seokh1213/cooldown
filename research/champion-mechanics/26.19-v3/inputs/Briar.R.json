@@ -1,0 +1,378 @@
+{
+  "champion": "Briar",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Briar kicks her pillory's hemolith gemstone, marking the first champion it hits as her prey. She then beelines straight to them, fearing other surrounding enemies upon arriving at her target, and enters a state of complete hemomania. She will pursue her prey until death, gaining the benefits of Blood Frenzy as well as additional Armor, Magic Resistance, Life Steal, and Move Speed.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Briar kicks her pillory's hemolith gemstone and flies to the location of the first champion it hits, marking them as her prey. On landing, she deals (150/250/350 + (130% Ability Power)) magic damage to everything nearby and causes enemies who are not her prey to Flee for 1.5 seconds. She then enters an empowered Blood Frenzy and will pursue her prey until death. During this time, she gains (20% Attack Damage) Armor and Magic Resist, 10/15/20% Lifesteal, and an additional 10/20/30% Move Speed. When the hemolith hits it interrupts channeled Abilities. Briar has True Sight of her prey.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "브라이어가 족쇄의 혈석을 발로 찬 다음, 혈석이 첫 번째로 적중한 챔피언을 먹잇감으로 지정하고 대상을 향해 날아갑니다. 착지 시 다른 주변 적을 공포에 빠트리고 피의 갈증에 완전히 사로잡힙니다. 이후 먹잇감을 죽을 때까지 쫓으며, 핏빛 광분 효과와 방어력, 마법 저항력, 생명력 흡수, 이동 속도를 추가로 얻습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "브라이어가 족쇄의 혈석을 발로 찬 다음, 혈석이 첫 번째로 적중한 챔피언을 먹잇감으로 지정하고 대상을 향해 날아갑니다. 착지 시 모든 주변 적에게 (150/250/350 + (130% 주문력))의 마법 피해를 입히고 먹잇감을 제외한 적을 1.5초간 공포에 빠트립니다. 이후 강화된 핏빛 광분 상태에 들어가 죽을 때까지 먹잇감을 쫓습니다. 지속시간 동안 방어력 및 마법 저항력 (20% 공격력), 생명력 흡수 10/15/20%, 이동 속도 10/20/30%를 얻습니다. 혈석은 적중 시 대상의 정신 집중을 방해합니다. 브라이어는 먹잇감에 대한 절대 시야를 얻습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Certain Death",
+      "ko": "불가항력적 죽음"
+    },
+    "cooldownSeconds": [
+      120,
+      100,
+      80
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      12000,
+      12000,
+      12000
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "150/250/350"
+      },
+      {
+        "label": "Life Steal",
+        "values": "10%/15%/20%"
+      },
+      {
+        "label": "Move Speed",
+        "values": "10%/20%/30%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "120/100/80"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:Damage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "Damage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          150,
+          250,
+          350
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1.2999999523162842,
+              1.2999999523162842,
+              1.2999999523162842
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "fear",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Briar",
+          "condition": "착지 시 먹잇감 제외"
+        },
+        {
+          "type": "taunt",
+          "target": "self",
+          "source": "https://wiki.leagueoflegends.com/en-us/Briar",
+          "condition": "강화된 핏빛 광분"
+        },
+        {
+          "type": "disrupt",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Briar",
+          "condition": "혈석 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Briar.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Briar.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 150,
+      "end": 153
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 154,
+      "end": 157
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 158,
+      "end": 161
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "130%",
+      "value": 130,
+      "percent": true,
+      "start": 165,
+      "end": 169
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 272,
+      "end": 275
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 394,
+      "end": 397
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 437,
+      "end": 439
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 440,
+      "end": 442
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 443,
+      "end": 446
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 476,
+      "end": 478
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 479,
+      "end": 481
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 482,
+      "end": 485
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 83,
+      "end": 86
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 87,
+      "end": 90
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 91,
+      "end": 94
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "130%",
+      "value": 130,
+      "percent": true,
+      "start": 98,
+      "end": 102
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 133,
+      "end": 136
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 211,
+      "end": 214
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 228,
+      "end": 230
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 231,
+      "end": 233
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 234,
+      "end": 237
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 245,
+      "end": 247
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 248,
+      "end": 250
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 251,
+      "end": 254
+    }
+  ],
+  "sourceHash": "ed51d9970cff44abe388ec98fc8eeeb505ed2f7741c717689191f0a33688854c",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

@@ -1,0 +1,299 @@
+{
+  "summary": "징크스가 로켓을 발사합니다. 로켓은 처음 맞은 적 챔피언과 충돌하면 폭발해 해당 챔피언과 주변 적에게 물리 피해를 입힙니다. 비행 첫 1초 동안 피해가 증가합니다. 몬스터를 상대로 한 잃은 체력 비례 피해에는 상한이 있습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "로켓에 처음 맞은 적 챔피언"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "최초 적 챔피언 충돌로 폭발하여, 첫1초의 비행시간에 따른 기본피해 범위와 맞은 대상 자신의 잃은 체력25/30/35%를 합한 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Jinx fires a rocket that explodes on the first enemy champion hit, dealing (20/35/50 + (12% bonus Attack Damage)) to (200/350/500 + (120% bonus Attack Damage)) + 25/30/35% missing Health physical damage, gaining damage over the first second of travel time."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "로켓이 처음 적 챔피언에 충돌해 폭발"
+          }
+        },
+        {
+          "subject": "secondary_targets",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭발 주변 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "주변 적은 같은 로켓 피해 구성의80%를 받으며, 잃은 체력 부분은 각각 맞은 적 자신의 잃은 체력을 기준으로 한다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nearby enemies take 80% Damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Jinx fires a rocket that explodes on the first enemy champion hit, dealing (20/35/50 + (12% bonus Attack Damage)) to (200/350/500 + (120% bonus Attack Damage)) + 25/30/35% missing Health physical damage, gaining damage over the first second of travel time."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "dealing damage to it and surrounding enemies based on their missing Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "몬스터를 상대로 한 잃은 체력 비례 피해에는 상한이 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Missing Health damage cannot exceed 1200 against Monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "원문은 기본 피해의 최소·최대값, 잃은 체력 비례 피해, 비행 시간에 따른 증가를 제시하지만 이 요소들을 결합하는 정확한 계산식은 설명하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (20/35/50 + (12% bonus Attack Damage)) to (200/350/500 + (120% bonus Attack Damage)) + 25/30/35% missing Health physical damage, gaining damage over the first second of travel time."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "missingHealth는각피해대상의잃은체력을뜻하나스키마에는missingHealth가없어원문과구성요소로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "25/30/35% missing Health"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "몬스터 대상 잃은 체력 피해 상한 문구가 적 챔피언 충돌 조건과 어떤 관계인지 원문에서 명확히 설명되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Missing Health damage cannot exceed 1200 against Monsters."
+        }
+      ]
+    }
+  ]
+}

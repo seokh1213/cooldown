@@ -1,0 +1,305 @@
+{
+  "summary": "헤카림이 일정 시간 동안 주변 적에게 마법 피해를 입히고 방어력과 마법 저항력을 얻습니다. 주변 적이 헤카림 또는 아군에게서 받은 피해량에 따라 헤카림이 회복하며, 미니언이나 정글 몬스터에게서 회복하는 양에는 상한이 있습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "4초에 걸쳐 주변 적에게 총80/120/160/200/240+주문력80%의 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim deals (80/120/160/200/240 + (80% Ability Power)) magic damage over 4 seconds to nearby enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "방어력과 마법 저항력을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": "armor",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": "magicResist",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim gains 5/10/15/20/25 Armor and Magic Resist"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim gains 5/10/15/20/25 Armor and Magic Resist and heals for 25% of damage nearby enemies take from Hecarim and 12.5% of damage taken from his allies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "nearby_enemies"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "피해를 받은 대상이 주변 적이고, 그 피해를 헤카림이 입힘"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 회복 효과가 활성화된 동안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "주변 적이 헤카림에게서 받은 피해량의 일정 비율만큼 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "heals for 25% of damage nearby enemies take from Hecarim"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim gains 5/10/15/20/25 Armor and Magic Resist and heals for 25% of damage nearby enemies take from Hecarim and 12.5% of damage taken from his allies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "nearby_enemies"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 회복 효과가 활성화된 동안"
+          }
+        },
+        {
+          "subject": "nearby_enemies",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "헤카림의 아군으로부터 피해를 받을 때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "스킬 활성 중 주변 적이 헤카림의 아군에게 받은 피해의12.5%만큼 헤카림이 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "12.5% of damage taken from his allies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim gains 5/10/15/20/25 Armor and Magic Resist and heals for 25% of damage nearby enemies take from Hecarim and 12.5% of damage taken from his allies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "nearby_enemies"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "회복을 유발한 주변 적이 미니언 또는 정글 몬스터이고 이 스킬의 회복 효과가 활성화된 동안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "미니언 또는 정글 몬스터의 피해로 유발되는 이 스킬의 회복량은120/150/180/210/240을 초과할 수 없습니다. 상한이 대상별인지 시전 총량인지 본문은 명시하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim cannot heal more than 120/150/180/210/240 Health from minions or jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "미니언 및 정글 몬스터 대상 회복 상한이 각각의 대상별인지, 해당 시전 중 총 회복량인지 원문만으로는 명확하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim cannot heal more than 120/150/180/210/240 Health from minions or jungle monsters."
+        }
+      ]
+    }
+  ]
+}

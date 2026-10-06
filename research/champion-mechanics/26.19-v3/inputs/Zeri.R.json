@@ -1,0 +1,415 @@
+{
+  "champion": "Zeri",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Zeri discharges a nova of electricity and overcharges herself, gaining increased damage and stacking Move Speed that refreshes and gets stronger every time she hits an enemy champion. While overcharged, Burst fire becomes a faster triple shot that chains lightning between enemies.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Zeri discharges a nova of electricity, dealing (150/250/350 + (110% Ability Power) + (60% bonus Attack Damage)) magic damage to nearby enemies. If she hits an enemy champion, Zeri gains 30% Attack Speed and 15% Move Speed for 5 seconds. Hitting an enemy champion with an Attack or Ability extends this ability's duration and adds a stack of Overcharge for 2.5 seconds. Critical strikes add 2 additional stacks. Each stack grants 1.5% Move Speed. During this time, Burst Fire becomes a faster triple shot that chains (40% Attack Damage) physical damage to nearby enemies. The Attack Speed also increases Zeri's max Attack Speed. The chain lightning can critically strike but does not apply On-Hit effects. Uncharged Attacks do not stack or refresh this ability. This ability's duration extension cannot exceed its original duration of 5 seconds.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "제리가 전류를 방출하고 자신을 과충전해, 피해량과 이동 속도가 증가합니다. 제리가 적 챔피언을 맞힐 때마다 이동 속도 증가 효과가 중첩되고 지속시간이 회복됩니다. 과충전된 동안 집중 사격이 더욱 빠른 3연발 사격으로 바뀌며, 대상 주변 적에게 번개가 연쇄적으로 튑니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "제리가 전류를 방출해 근처 적에게 (150/250/350 + (110% 주문력) + (60% 추가 공격력))의 마법 피해를 입힙니다. 적 챔피언에게 적중하면 제리가 5초 동안 공격 속도 30%와 이동 속도15%를 얻습니다. 기본 공격이나 스킬로 적 챔피언을 맞히면 스킬 지속시간이 증가하고 2.5초 동안 과충전 중첩이 1 쌓입니다. 치명타 적중 시 추가 중첩이 2 쌓입니다. 중첩 하나당 이동 속도가 1.5% 증가합니다. 이 동안 집중 사격이 더욱 빠른 3연발 사격으로 바뀌어 대상 주변 적에게 추가 (40% 공격력)의 물리 피해를 연쇄적으로 입힙니다. 공격 속도 증가 효과는 제리의 최대 공격 속도도 증가시킵니다. 연쇄 번개에는 치명타가 적용될 수 있지만 적중 시 효과는 적용하지 않습니다. 충전되지 않은 기본 공격은 이 스킬의 중첩을 쌓거나 지속시간을 초기화시키지 않습니다. 스킬 지속시간은 기존 지속시간인 5초를 초과할 수 없습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Lightning Crash",
+      "ko": "번개 방출"
+    },
+    "cooldownSeconds": [
+      80,
+      75,
+      70
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      800,
+      800,
+      800
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "150/250/350"
+      },
+      {
+        "label": "Move Speed",
+        "values": "1.5%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "80/75/70"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:TotalBonusDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalActiveDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          150,
+          250,
+          350
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1.100000023841858,
+              1.100000023841858,
+              1.100000023841858
+            ]
+          },
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Zeri.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Zeri.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 52,
+      "end": 55
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 56,
+      "end": 59
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "110%",
+      "value": 110,
+      "percent": true,
+      "start": 63,
+      "end": 67
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 86,
+      "end": 89
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 186,
+      "end": 189
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 207,
+      "end": 210
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 226,
+      "end": 227
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 356,
+      "end": 359
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 390,
+      "end": 391
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 429,
+      "end": 433
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 517,
+      "end": 520
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 834,
+      "end": 835
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 112,
+      "end": 113
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 20,
+      "end": 23
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 24,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 28,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "110%",
+      "value": 110,
+      "percent": true,
+      "start": 35,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 92,
+      "end": 93
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 104,
+      "end": 107
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 114,
+      "end": 117
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 162,
+      "end": 165
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 178,
+      "end": 179
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 202,
+      "end": 203
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 224,
+      "end": 228
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 254,
+      "end": 255
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 281,
+      "end": 284
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 454,
+      "end": 455
+    }
+  ],
+  "sourceHash": "aaddb214cfe2b7074acff408e103d28d54815183e619cd3c3193771fccecdd5d",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

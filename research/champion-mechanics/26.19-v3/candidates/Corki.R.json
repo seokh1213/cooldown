@@ -1,0 +1,260 @@
+{
+  "summary": "코르키가 미사일을 발사해 처음 적중한 적에게서 폭발시키고 주변 적에게 물리 피해를 입힙니다. 세 번째 미사일은 별도의 물리 피해를 입힙니다. 미사일은 최대치까지 충전되며, 챔피언에게 기본 공격이 적중하면 충전 간격이 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번발사미사일이매3번째발사가아닌경우"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "이일반미사일이처음맞힌적에게폭발하면그주변적들에게90/170/250+추가공격력85%물리피해를입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Corki fires a missile that explodes on the first enemy hit, dealing (90/170/250 + (85% bonus Attack Damage)) physical damage to surrounding enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "발사순서매3번째미사일이첫적을맞혀폭발했을때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "발사순서매3번째미사일은같은첫적중폭발주변범위에일반피해대신180/340/500+추가공격력170%물리피해를입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every third missile instead deals (180/340/500 + (170% bonus Attack Damage)) physical damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Every 3rd missile fired will be a Big One, dealing extra damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Corki fires a missile that explodes on the first enemy hit, dealing (90/170/250 + (85% bonus Attack Damage)) physical damage to surrounding enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "시간이지나면미사일이충전되어최대4충전을보유합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability has up to 4 charges."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Corki stores missiles over time, up to a maximum."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언대상기본공격이실제로적중했을때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "챔피언대상기본공격적중은다음미사일충전까지의시간을(2+자신의치명타확률400%)초줄입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "critChance",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Basic attacks against champions reduce the time between charges by (2 + (400% Critical Strike Chance)) seconds on hit."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "missing_source",
+      "detail": "최대4미사일충전과시간충전은제공되지만기본충전주기는공급본문에없다.큰미사일은동일미사일의매3번째발사대체피해이므로첫적중폭발/주변범위는공통문맥으로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability has up to 4 charges."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Corki stores missiles over time, up to a maximum."
+        }
+      ]
+    }
+  ]
+}

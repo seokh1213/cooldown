@@ -1,0 +1,308 @@
+{
+  "champion": "Nautilus",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Nautilus hurls his anchor forward. Colliding with an enemy pulls them and Nautilus together, dealing magic damage. Colliding with terrain pulls Nautilus towards it.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Nautilus hurls his anchor forward. If it hits an enemy, Nautilus drags himself and the target together, dealing (85/125/165/205/245 + (90% Ability Power)) magic damage and Stunning them briefly. If the anchor hits terrain, Nautilus will drag himself towards it. If Nautilus's hook hits terrain, this Ability's Cooldown is reduced by 50%, and 50% of the Mana cost is refunded.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "노틸러스가 전방으로 닻을 던집니다. 닻이 적을 맞히면 노틸러스와 대상이 가까이 당겨지며 대상에게 마법 피해를 입힙니다. 닻이 지형을 맞히면 노틸러스가 지형 쪽으로 끌려갑니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "노틸러스가 전방으로 닻을 던집니다. 닻이 적을 맞히면 노틸러스와 대상이 가까이 당겨지며 대상에게 (85/125/165/205/245 + (90% 주문력))의 마법 피해를 입히고 잠시 기절시킵니다. 닻이 지형을 맞히면 노틸러스가 지형 쪽으로 끌려갑니다. 닻이 지형을 맞히면 이 스킬의 재사용 대기시간이 50% 감소하고, 소모한 마나의 50%가 회복됩니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Dredge Line",
+      "ko": "닻줄 견인"
+    },
+    "cooldownSeconds": [
+      14,
+      13,
+      12,
+      11,
+      10
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1150,
+      1150,
+      1150,
+      1150,
+      1150
+    ],
+    "cost": {
+      "values": [
+        60,
+        60,
+        60,
+        60,
+        60
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "14/13/12/11/10"
+      },
+      {
+        "label": "Damage",
+        "values": "85/125/165/205/245"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:QDamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "QDamageCalc",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          85,
+          125,
+          165,
+          205,
+          245
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.8999999761581421,
+              0.8999999761581421,
+              0.8999999761581421,
+              0.8999999761581421,
+              0.8999999761581421
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Nautilus.json"
+        },
+        {
+          "type": "pull",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Nautilus",
+          "condition": "적에게 닻 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Nautilus.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Nautilus.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 113,
+      "end": 115
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 116,
+      "end": 119
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 120,
+      "end": 123
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "205",
+      "value": 205,
+      "percent": false,
+      "start": 124,
+      "end": 127
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "245",
+      "value": 245,
+      "percent": false,
+      "start": 128,
+      "end": 131
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 135,
+      "end": 138
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 333,
+      "end": 336
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 342,
+      "end": 345
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 55,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 58,
+      "end": 61
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 62,
+      "end": 65
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "205",
+      "value": 205,
+      "percent": false,
+      "start": 66,
+      "end": 69
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "245",
+      "value": 245,
+      "percent": false,
+      "start": 70,
+      "end": 73
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 77,
+      "end": 80
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 168,
+      "end": 171
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 186,
+      "end": 189
+    }
+  ],
+  "sourceHash": "6731e7430496a05f0e10586581efc332ecb713c510dc35438eb17f659447a1da",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

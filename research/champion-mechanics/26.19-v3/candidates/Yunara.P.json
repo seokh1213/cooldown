@@ -1,0 +1,73 @@
+{
+  "summary": "유나라의 치명타는 추가 마법 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "유나라의 치명타 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "치명타는(10%+0.1%AP)의 추가 마법 피해를 줍니다. 이 백분율이 적용될 기준 피해는 공급본문에 명시되어 있지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yunara's Critical Strikes deal an additional (10% + (0.1% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "10%+0.1%AP는 퍼센트 구성요소이며 기준피해/정확한연산식이 없다.10을절대마법피해로 합산하지 않고 공급표현만 보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yunara's Critical Strikes deal an additional (10% + (0.1% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 2,
+  "id": "Rammus.P",
+  "champion": "Rammus",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "7495838883190987f1c9c7a7b8755863ea78a0faab0e12900f0a71f8ba32c354",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Spiked Shell",
+      "ko": "가시박힌 껍질"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Rammus.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Rammus gains bonus Attack Damage scaling with his Armor and Magic Resistance.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Rammus gains ((15% Armor) + (15% Magic Resist)) Attack Damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "람머스가 방어력 및 마법 저항력에 비례해 추가 공격력을 얻습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "람머스의 공격력이 ((15% 방어력) + (15% 마법 저항력)) 증가합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 15,
+      "end": 18
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 29,
+      "end": 32
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 12,
+      "end": 15
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 24,
+      "end": 27
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "람머스는 방어력과 마법 저항력에 비례해 추가 공격력을 얻습니다.",
+  "rules": [
+    {
+      "id": "8062c6e2d0534e230c0a",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "자신의 방어력15%+마법저항력15%만큼 추가공격력을 얻습니다. 기존방어력/마저를 소비하거나 대체하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "bonusAttackDamage",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "armor",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "magicResist",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rammus gains ((15% Armor) + (15% Magic Resist)) Attack Damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "300e5cc81ae916dd3709b5411174b1328b2b99713dd5a660e270162de0e6e696"
+}

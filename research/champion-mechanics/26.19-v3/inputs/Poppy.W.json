@@ -1,0 +1,405 @@
+{
+  "champion": "Poppy",
+  "slot": "W",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Poppy passively gains Armor and Magic Resist. This bonus increases when she is low on Health. Poppy can activate Steadfast Presence to gain Move Speed and stop enemy dashes around her. If a dash is stopped, the enemy is slowed and grounded.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive: Poppy gains (16% Armor) Armor and (16% Magic Resist) Magic Resist. This bonus is doubled if Poppy is below 40% Health. Active: Poppy gains 40% Move Speed and projects a field around her for 2 seconds that stops enemy dashes. Enemies who are stopped by the field are Grounded and Slowed by 25% for 2 seconds and take (70/110/150/190/230 + (70% Ability Power)) magic damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "기본 지속 효과로 뽀삐가 추가 방어력과 마법 저항력을 얻습니다. 뽀삐의 체력이 낮아지면 이 효과가 더 커집니다. 사용 시에는 뽀삐의 이동 속도가 증가하며 주변에서 돌진하는 적을 막습니다. 뽀삐에게 막힌 적은 느려지고 이동 스킬을 사용할 수 없습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과: 뽀삐가 (16% 방어력)의 방어력과 (16% 마법 저항력)의 마법 저항력을 추가로 얻습니다. 뽀삐의 체력이 40% 미만일 때는 효과가 두 배로 늘어납니다. 사용 시: 뽀삐의 이동 속도가 40% 증가하고 역장을 둘러 2초 동안 주변에서 돌진하는 적을 막습니다. 가로막힌 적은 2초 동안 이동 스킬을 사용할 수 없고 25% 둔화되며 (70/110/150/190/230 + (70% 주문력))의 마법 피해를 입습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Steadfast Presence",
+      "ko": "굳건한 태세"
+    },
+    "cooldownSeconds": [
+      20,
+      18,
+      16,
+      14,
+      12
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      400,
+      400,
+      400,
+      400,
+      400
+    ],
+    "cost": {
+      "values": [
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "20/18/16/14/12"
+      },
+      {
+        "label": "Damage",
+        "values": "70/110/150/190/230"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:BonusArmor"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "InterruptDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          70,
+          110,
+          150,
+          190,
+          230
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.699999988079071,
+              0.699999988079071,
+              0.699999988079071,
+              0.699999988079071,
+              0.699999988079071
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockup",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Poppy",
+          "condition": "돌진 차단"
+        },
+        {
+          "type": "ground",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Poppy",
+          "condition": "돌진 차단 후"
+        },
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Poppy",
+          "condition": "돌진 차단 후"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Poppy.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Poppy.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "16%",
+      "value": 16,
+      "percent": true,
+      "start": 22,
+      "end": 25
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "16%",
+      "value": 16,
+      "percent": true,
+      "start": 44,
+      "end": 47
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 116,
+      "end": 119
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 148,
+      "end": 151
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 199,
+      "end": 200
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 298,
+      "end": 301
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 306,
+      "end": 307
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 326,
+      "end": 328
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 329,
+      "end": 332
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 333,
+      "end": 336
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 337,
+      "end": 340
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "230",
+      "value": 230,
+      "percent": false,
+      "start": 341,
+      "end": 344
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 348,
+      "end": 351
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "16%",
+      "value": 16,
+      "percent": true,
+      "start": 15,
+      "end": 18
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "16%",
+      "value": 16,
+      "percent": true,
+      "start": 31,
+      "end": 34
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 70,
+      "end": 73
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 114,
+      "end": 117
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 130,
+      "end": 131
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 163,
+      "end": 164
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 185,
+      "end": 188
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 195,
+      "end": 197
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 198,
+      "end": 201
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 202,
+      "end": 205
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 206,
+      "end": 209
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "230",
+      "value": 230,
+      "percent": false,
+      "start": 210,
+      "end": 213
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 217,
+      "end": 220
+    }
+  ],
+  "sourceHash": "e196ff0b282f21df75a35d0bcd457669bb99fc2984b9c78b2d9d29c2148d0c7b",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

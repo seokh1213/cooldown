@@ -128,21 +128,12 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
-      # 실패 알림은 워크플로가 멈출 때만 온다. 여기서 다루는 것은 멈출 일은 아닌데
-      # 사람이 봐야 하는 것들이라, 이슈로 남겨 알림을 받는다. 열려 있는 이슈가 있으면
-      # 댓글만 달아 같은 이슈가 쌓이지 않게 한다.
+      # 같은 보고서로 알림을 반복하지 않으며 새 본문 지문은 다시 알린다.
       - name: Open or update knowledge drift issue
         if: steps.drift.outputs.has_report == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          title="지식 계층 점검 필요"
-          existing="$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number')"
-          if [[ -n "$existing" ]]; then
-            gh issue comment "$existing" --body-file knowledge-drift-report.md
-          else
-            gh issue create --title "$title" --body-file knowledge-drift-report.md
-          fi
+        run: node --import tsx scripts/ci/knowledge-drift-issue.ts
 
       - name: Type-check and lint
         run: |

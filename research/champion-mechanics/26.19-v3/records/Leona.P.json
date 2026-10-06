@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 2,
+  "id": "Leona.P",
+  "champion": "Leona",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "e82ec7696f53033a60ffa343be1fd00ac4418f44582bbc1acf29c22b48a978e6",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Sunlight",
+      "ko": "햇빛"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          32,
+          39,
+          46,
+          53,
+          60,
+          67,
+          74,
+          81,
+          88,
+          95,
+          102,
+          109,
+          116,
+          123,
+          130,
+          137,
+          144,
+          151,
+          158,
+          165
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Leona.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Damaging spells afflict enemies with Sunlight for 1.5 seconds. When allied Champions deal damage to those targets, they consume the Sunlight to deal additional magic damage.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Leona's abilities mark enemies for 2.5 seconds. Other allied champions consume the mark when they damage the marked enemy, dealing an additional (32 ~ 151) magic damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "공격 스킬은 대상에게 1.5초 동안 햇빛 효과를 부여합니다. 아군 챔피언이 햇빛에 걸린 적을 공격하면 햇빛 효과가 사라지며 추가 마법 피해를 줍니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "레오나의 스킬은 적에게 2.5초 동안 표식을 남깁니다. 아군 챔피언이 공격할 경우 표식을 터트리면서 적에게 (32 ~ 151)의 마법 피해를 추가로 입힙니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 50,
+      "end": 53
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 35,
+      "end": 38
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "32",
+      "value": 32,
+      "percent": false,
+      "start": 146,
+      "end": 148
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "151",
+      "value": 151,
+      "percent": false,
+      "start": 151,
+      "end": 154
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 12,
+      "end": 15
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 13,
+      "end": 16
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "32",
+      "value": 32,
+      "percent": false,
+      "start": 61,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "151",
+      "value": 151,
+      "percent": false,
+      "start": 66,
+      "end": 69
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "레오나의 스킬은 적에게 표식을 남긴다. 다른 아군 챔피언이 표식 대상에게 피해를 주면 표식을 소모해 추가 마법 피해를 입힌다.",
+  "rules": [
+    {
+      "id": "3fc199149b53173233e3",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "레오나의 스킬에 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "레오나의 스킬이 적에게 표식을 남긴다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Leona's abilities mark enemies for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "id": "f146e615ce98ccdc15a9",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "레오나가 아닌 아군 챔피언이 표식 대상에게 피해를 준 경우"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "다른 아군 챔피언이 표식 대상에게 피해를 주면 표식을 소모해 추가 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "다른 아군 챔피언이 피해를 주면 이 대상의 레오나 표식을 소모합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Other allied champions consume the mark when they damage the marked enemy, dealing an additional (32 ~ 151) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "표식 지속시간이 영문 summary에는 1.5초, tooltip에는 2.5초로 다르게 적혀 있어 tooltip 수치를 사용했다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Damaging spells afflict enemies with Sunlight for 1.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Leona's abilities mark enemies for 2.5 seconds."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "7ef0faebcc342f952606681936e7300813c980d0cfe0c52185d763740461c95c"
+}

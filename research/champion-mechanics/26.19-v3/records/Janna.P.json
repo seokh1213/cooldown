@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 2,
+  "id": "Janna.P",
+  "champion": "Janna",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "3e4a890ba986151e561758a1e911bef96e9054cd5ec55d91af08e29a96e4bf01",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Tailwind",
+      "ko": "순풍"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Janna.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Janna's allies gain Move Speed moving towards her. Janna deals a portion of bonus Move Speed as bonus magic damage on hit and with Zephyr.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Ally champions gain 6% Move Speed moving towards Janna. Janna deals (30% bonus Movement Speed) bonus magic damage On-Hit and with Zephyr.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "아군이 잔나를 향해 움직일 때 이동 속도가 증가합니다. 잔나가 적중 시 및 서풍으로 추가 이동 속도의 일정 비율만큼 추가 마법 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "아군 챔피언이 잔나를 향해 움직일 때 이동 속도가 6% 증가합니다. 잔나가 서풍으로 (30% 추가 이동 속도)의 추가 마법 피해(적중 시)를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 20,
+      "end": 22
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 69,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 28,
+      "end": 30
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 48,
+      "end": 51
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "아군 챔피언이 잔나를 향해 움직이면 이동 속도가 증가합니다. 잔나는 추가 이동 속도에 비례한 추가 마법 피해를 적중 시 및 서풍으로 입힙니다.",
+  "rules": [
+    {
+      "id": "0fc6db697d48427909c9",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "잔나를 향해 이동"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ally champions gain 6% Move Speed moving towards Janna."
+        }
+      ]
+    },
+    {
+      "id": "d7235d1c47914b44193e",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적중 시(on-hit) 효과 또는 서풍(Zephyr) 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "잔나의 적중 시 효과와 서풍은 잔나의 추가 이동 속도 30%만큼 추가 마법 피해를 입힌다. 기본 이동 속도를 포함하지 않는다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Janna deals (30% bonus Movement Speed) bonus magic damage On-Hit and with Zephyr."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "허용 stat에는 bonusMovementSpeed가 없어 전체 moveSpeed로 대체하지 않았다. 계수 30%는 잔나의 추가 이동 속도에만 적용한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Janna deals (30% bonus Movement Speed) bonus magic damage On-Hit and with Zephyr."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "f69fac58a598f7f9793a241a648633fb8aac90e2a2f1443679196b62aee09aef"
+}

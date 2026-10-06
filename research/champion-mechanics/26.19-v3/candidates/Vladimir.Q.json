@@ -1,0 +1,486 @@
+{
+  "summary": "대상 적에게 피해를 주고 체력을 회복합니다. 스킬을 두 번 사용한 뒤 잠시 이동 속도가 증가하고, 제한 시간 안에 다시 사용하면 다음 수혈이 강화됩니다. 강화된 수혈은 미니언 상대로 회복량이 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing (80/100/120/140/160 + (60% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Vladimir drains his target's lifeforce, dealing (80/100/120/140/160 + (60% Ability Power)) magic damage and restoring (20/25/30/35/40 + (35% Ability Power)) Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "대상에게 입힌 수혈의 피해와 함께 체력을 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "restoring (20/25/30/35/40 + (35% Ability Power)) Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Vladimir drains his target's lifeforce, dealing (80/100/120/140/160 + (60% Ability Power)) magic damage and restoring (20/25/30/35/40 + (35% Ability Power)) Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "수혈을 두 번 사용한 직후"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "수혈을 두 번 사용하면 0.5초 동안 이동 속도가 10~40% 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using this Ability twice, Vladimir gains (10 ~ 40)% Move Speed for 0.5 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "After using this Ability twice, Vladimir gains (10 ~ 40)% Move Speed for 0.5 seconds and empowers the next use of this Ability for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "수혈을 두 번 사용한 직후"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "수혈을 두 번 사용하면 다음 사용이 2.5초 동안 강화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using this Ability twice, Vladimir gains (10 ~ 40)% Move Speed for 0.5 seconds and empowers the next use of this Ability for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "강화된 수혈은 대상에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The empowered version of this Ability deals (148/185/222/259/296 + (111% Ability Power)) magic damage instead"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The empowered version of this Ability deals (148/185/222/259/296 + (111% Ability Power)) magic damage instead and restores an additional (30 ~ 200) plus (5% + (4% per 100 Ability Power)) missing Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "기본 회복에 더해 30~200과 시전자의 잃은 체력 × (5% + 주문력 100당 4%)를 추가 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n26"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "restores an additional (30 ~ 200) plus (5% + (4% per 100 Ability Power)) missing Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The empowered version of this Ability deals (148/185/222/259/296 + (111% Ability Power)) magic damage instead and restores an additional (30 ~ 200) plus (5% + (4% per 100 Ability Power)) missing Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "미니언을 상대로 강화된 회복 효과의 적용 비율이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n27"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Empowered healing reduced to 30% against minions."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "‘After using this Ability twice’의 사용 횟수 조건은 수혈 사용 횟수로 보존했으나, 횟수 초기화 조건은 원문에 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using this Ability twice"
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력은 스키마 통계에 없으므로 (5% + 주문력 100당 4%) × 시전자 잃은 체력을 구성요소/텍스트로 보존하며 선형 AP 회복식으로 합산하지 않음.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(5% + (4% per 100 Ability Power)) missing Health."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "(10 ~ 40)%의 숫자표 percent가 false이므로 실제 퍼센트 단위는 텍스트로 보존; lexical 숫자표만으로 절대 이동 속도 증가량을 실행하지 말 것.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using this Ability twice, Vladimir gains (10 ~ 40)% Move Speed for 0.5 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "After using this Ability twice, Vladimir gains (10 ~ 40)% Move Speed for 0.5 seconds and empowers the next use of this Ability for 2.5 seconds."
+        }
+      ]
+    }
+  ]
+}

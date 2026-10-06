@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 2,
+  "id": "Nasus.P",
+  "champion": "Nasus",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "ddbb17e87cb903a574216bfcff539de5ead2c03b3bce6ec08419a1d72ef5ce68",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Soul Eater",
+      "ko": "영혼의 포식자"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Nasus.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Nasus drains his foe's spiritual energy, giving him bonus Life Steal.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Nasus has an additional (10 ~ 20)% Life Steal.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "나서스는 적의 영혼을 흡수하여 추가 생명력 흡수 효과를 얻습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "나서스가 (10 ~ 20)%의 추가 생명력 흡수 효과를 얻습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 30,
+      "end": 32
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 6,
+      "end": 8
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 11,
+      "end": 13
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "나서스는 생명력 흡수를 얻습니다.",
+  "rules": [
+    {
+      "id": "f89896ee33b608f885be",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "추가 생명력 흡수를10~20% 얻는다. 수치 범위는 퍼센트 단위이다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "lifeSteal",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nasus has an additional (10 ~ 20)% Life Steal."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "(10 ~ 20)%의%는 닫는 괄호 뒤에 있어서 lexical 숫자표는 각 숫자의 percent를 false로 제공한다. 이 효과는10~20%이며 숫자표만으로 절대 생명력 흡수량을 실행하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nasus has an additional (10 ~ 20)% Life Steal."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "d68126f063674154260ab25706b7bb3035677c13c1225b6f37b41d9c7c8f5299"
+}

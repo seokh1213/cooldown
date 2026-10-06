@@ -1,0 +1,639 @@
+{
+  "schemaVersion": 1,
+  "patch": "26.19",
+  "baseline": "research/champion-mechanics/26.19-v2",
+  "candidate": "research/champion-mechanics/26.19-v3",
+  "author": "Codex source-grounded revision",
+  "approval": "Accepted after independent semantic review; see review-ledger.json for final root decisions.",
+  "scope": [
+    "Kled.Q",
+    "Kled.E",
+    "Kled.R",
+    "RekSai.Q",
+    "RekSai.W",
+    "RekSai.E",
+    "Rell.W"
+  ],
+  "method": "현재 buildInventory 입력의 두 언어 본문·형태별 본문·수치 위치를 직접 대조했다. 기존 승인을 새 해시에 자동 이식하지 않았으며 승인/ledger/current/export는 수정하지 않았다.",
+  "counts": {
+    "slots": 7,
+    "previousRules": 41,
+    "rules": 50,
+    "valid": 7,
+    "errors": 0,
+    "missingVariantWarnings": 0
+  },
+  "limits": [
+    "인용·수치·스키마 검증의 통과는 게임 내 숨은 상호작용이나 완전한 실행 가능 조건을 인증하지 않는다.",
+    "계약이 표현하지 못하는 조건은 text로 보존하며 실제 게임 동작을 새로 추측하지 않는다."
+  ],
+  "slots": [
+    {
+      "id": "Kled.Q",
+      "previousSourceHash": "f028be419aafd9acb8f02b6f1d419494e7cb854a12d3fd3e158ab0114bcc7692",
+      "sourceHash": "d6d91efc124e50b55b559f0ad72097c43efcc5349f29075580fbcdb218dce59e",
+      "previousCandidateHash": "6c1bade4bbc7a23eb7a7df2930a85d37ea387881352379e2be94d9b70c5accea",
+      "candidateHash": "f5bf37d35f5480a3755f42728fff546f27132dccf93a8f185400018e7d7cb0b1",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "promptChanged": false,
+      "changedSourceFields": [
+        "sources",
+        "variants",
+        "facts",
+        "numbers",
+        "sourceHash"
+      ],
+      "changedFactFields": [
+        "forms"
+      ],
+      "previousVariants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        },
+        {
+          "id": "form:A",
+          "label": "Mounted",
+          "sourceIds": [
+            "form:A:en"
+          ]
+        },
+        {
+          "id": "form:B",
+          "label": "Dismounted",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        }
+      ],
+      "previousRuleCount": 9,
+      "ruleCount": 15,
+      "previousGapCount": 0,
+      "gapCount": 2,
+      "changes": [
+        "기존 탑승 덫 규칙을 form:A 원문과 수치 참조로 분리했다.",
+        "form:B 산탄 피해·추가 적중 배율·반동·챔피언/에픽 몬스터별 용기·탄약 비용/충전을 새로 작성했다."
+      ],
+      "checks": [
+        "첫 챔피언/대형 정글 몬스터만 붙잡는 조건, 사슬 근거리·시간 유지, 미니언 대체 배율을 보존한다.",
+        "산탄 피해의 추가 공격력 소유자는 caster이다. 첫/추가 산탄은 해당 대상에게 적중한 산탄 횟수로 구분하며, 첫/다음 적중 대상(hit_order)과 혼동하지 않는다.",
+        "원문의 3s 항목과 총 산탄 수·탄약 최대치는 추측하지 않는다."
+      ],
+      "independentReviewCorrections": [
+        {
+          "code": "pellet_count_not_target_order",
+          "rules": [
+            8,
+            9
+          ],
+          "detail": "first 산탄의 원문이 숫자표에 없으므로 새 숫자를 만들지 않고 해당 대상의 첫/추가 산탄 조건을 텍스트로 보존한다."
+        }
+      ],
+      "evidenceFiles": {
+        "input": "inputs/Kled.Q.json",
+        "candidate": "candidates/Kled.Q.json",
+        "validation": "reports/validation.json"
+      }
+    },
+    {
+      "id": "Kled.E",
+      "previousSourceHash": "770ad53ba5da9bbe7d632e71e76c381cf53c859952c590191f29cfff56aadee1",
+      "sourceHash": "49dc7279caee1c22c3d2ce1a72c475348252b03e7e2a75ea3efa27f19764865b",
+      "previousCandidateHash": "56af2be9341680d891133fe88919a7fcb9168e6dfd10bbaf2d0a184147046ac1",
+      "candidateHash": "021669ce159f90f3e3869b646f1a0873fa7e602e7c98c032d75f099da0331f1b",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "promptChanged": false,
+      "changedSourceFields": [
+        "sources",
+        "sourceHash"
+      ],
+      "changedFactFields": [],
+      "previousVariants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "previousRuleCount": 8,
+      "ruleCount": 8,
+      "previousGapCount": 1,
+      "gapCount": 1,
+      "changes": [
+        "현재 영문·한국어 본문에 추가된 스칼 탑승 중에만 사용 가능 조건을 모든 시전·적중·재시전 규칙에 적용했다."
+      ],
+      "checks": [
+        "챔피언과 대형 정글 몬스터 적중에만 이동 속도 증가/재시전이 허용된다.",
+        "미니언/소형 몬스터 당기기, 같은 최초 대상, 재시전 시간 제한을 서로 다른 조건으로 보존한다.",
+        "재시전 경로의 다른 적 피해는 확정하지 않는다."
+      ],
+      "restage": {
+        "detail": "본문·숫자·variants 동일을 확인하고 crowdControl facts 정정에 따른 최신 frozen sourceHash를 반영했다. 후보 내용은 그대로 유지한다.",
+        "previousStagedSourceHash": "ede2727f73b7a22235df4f9ceb85bf47a436d1bcaac00370358086ed3b2244c3",
+        "currentSourceHash": "49dc7279caee1c22c3d2ce1a72c475348252b03e7e2a75ea3efa27f19764865b",
+        "crowdControl": {
+          "status": "known",
+          "effects": [
+            {
+              "type": "pull",
+              "target": "nonChampion",
+              "source": "https://wiki.leagueoflegends.com/en-us/Kled",
+              "condition": "미니언·작은 몬스터"
+            }
+          ]
+        }
+      },
+      "evidenceFiles": {
+        "input": "inputs/Kled.E.json",
+        "candidate": "candidates/Kled.E.json",
+        "validation": "reports/validation.json"
+      }
+    },
+    {
+      "id": "Kled.R",
+      "previousSourceHash": "221c5ba0a58bb2b788b3e1c7dd0cebc16a6f2cc8c5cc548b9b89ef609611e1e5",
+      "sourceHash": "2555e2bbd7bfb0d29b115c32e22e42119ec2175445467726c6170c2ba1cf26a3",
+      "previousCandidateHash": "28be87d2482a46d935c8a7a7aa440038d9ddf8e2cedf820502cf3772ebb37151",
+      "candidateHash": "7cb67d851d187df48f157ff7107831cab8f323485a231dbc857da355a97250d6",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "promptChanged": false,
+      "changedSourceFields": [
+        "sources",
+        "sourceHash"
+      ],
+      "changedFactFields": [],
+      "previousVariants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "previousRuleCount": 4,
+      "ruleCount": 5,
+      "previousGapCount": 2,
+      "gapCount": 2,
+      "changes": [
+        "모든 규칙에 명시적 Mounted 조건과 최신 원문을 추가했다.",
+        "시전자의 실제 돌진을 별도 규칙으로 추출하고 아군 이동 속도 효과는 돌진 경로 위의 아군으로 한정했다."
+      ],
+      "checks": [
+        "충돌 피해/밀치기는 처음 만나는 적 챔피언에 한정된다.",
+        "피해의 최소/최대 비율, 추가 공격력당 증가, 보호막 종료 후 유지와 최대치 도달 시간은 원문 수치 참조를 보존한다.",
+        "거리별 보간식과 최대 체력 소유자는 원문만으로 확정하지 않는다."
+      ],
+      "restage": {
+        "detail": "본문·숫자·variants 동일을 확인하고 crowdControl facts 정정에 따른 최신 frozen sourceHash를 반영했다. 후보 내용은 그대로 유지한다.",
+        "previousStagedSourceHash": "0966a5cbdbf32f39f4989d68326f6926b014d258dd6abec5f386b71b070cf374",
+        "currentSourceHash": "2555e2bbd7bfb0d29b115c32e22e42119ec2175445467726c6170c2ba1cf26a3",
+        "crowdControl": {
+          "status": "known",
+          "effects": [
+            {
+              "type": "knockback",
+              "target": "enemy",
+              "source": "public/data/26.19/champions/ko_KR/Kled.json"
+            }
+          ]
+        }
+      },
+      "independentReviewCorrections": [
+        {
+          "code": "numbers_as_refs",
+          "rule": 3,
+          "detail": "기존 effect.text의 직접 기준량 서술을 제거하고 이미 보존된 ratio_input 참조를 유지한다. 최대 피해 도달 시간도 기존 n15 참조로 기록했다."
+        }
+      ],
+      "evidenceFiles": {
+        "input": "inputs/Kled.R.json",
+        "candidate": "candidates/Kled.R.json",
+        "validation": "reports/validation.json"
+      }
+    },
+    {
+      "id": "RekSai.Q",
+      "previousSourceHash": "34883f6cc9bd1dea5bcbe12cbe1fa3228cdce9879af3ff8053cc5162246a67c1",
+      "sourceHash": "694a3595dd0c48a272c5007b12b296798846135b445abb8d5656d4580a1b04b9",
+      "previousCandidateHash": "41df594655228a6199f1bfbed6c5f1b64fe4da3629d232aa9bc1158cf31b7c75",
+      "candidateHash": "74cb10623129aca082eca122a6d111b003e1e403973da45c9e38b01b99b6aa6d",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "promptChanged": false,
+      "changedSourceFields": [
+        "sources",
+        "variants",
+        "facts",
+        "numbers",
+        "sourceHash"
+      ],
+      "changedFactFields": [
+        "forms"
+      ],
+      "previousVariants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        },
+        {
+          "id": "form:A",
+          "label": "Unburrowed",
+          "sourceIds": [
+            "form:A:en"
+          ]
+        },
+        {
+          "id": "form:B",
+          "label": "Burrowed",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        }
+      ],
+      "previousRuleCount": 4,
+      "ruleCount": 7,
+      "previousGapCount": 1,
+      "gapCount": 0,
+      "changes": [
+        "돌출 강화 공격과 새 매복 투사체 본문을 form:A/B로 분리했다.",
+        "매복 마법 피해의 고정값·추가 공격력·주문력 계수, 비은신 적 드러내기, 챔피언 적중 분노 수치를 추가했다."
+      ],
+      "checks": [
+        "공격 횟수·시간 제한·공격 속도 증가와 지속시간 초기화를 보존한다.",
+        "추가 물리 피해의 총 공격력 소유자는 caster이며 치명타 허용은 기본 공격 주 대상으로 제한한다.",
+        "매복 투사체 첫 적중 폭발과 비은신 드러내기/챔피언 분노 조건을 분리했다."
+      ],
+      "evidenceFiles": {
+        "input": "inputs/RekSai.Q.json",
+        "candidate": "candidates/RekSai.Q.json",
+        "validation": "reports/validation.json"
+      }
+    },
+    {
+      "id": "RekSai.W",
+      "previousSourceHash": "878ee9c130f35dc16645ca32402df912950afa9b66a18fb5ecd324d4a275b9a9",
+      "sourceHash": "0a90d1cb560c5a0ce6dd7077900174e5b1626907df5ad911ad705c01723ccb97",
+      "previousCandidateHash": "719cc41eb20dc89a7bb8a39b1a1d1877cf56de0990e993e03b7df94650b052fb",
+      "candidateHash": "234339873ec4d5904822c448043a9b0286302fdd931326543e30be3ce945bb0a",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "promptChanged": false,
+      "changedSourceFields": [
+        "sources",
+        "variants",
+        "facts",
+        "numbers",
+        "sourceHash"
+      ],
+      "changedFactFields": [
+        "forms"
+      ],
+      "previousVariants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        },
+        {
+          "id": "form:A",
+          "label": "Unburrowed",
+          "sourceIds": [
+            "form:A:en"
+          ]
+        },
+        {
+          "id": "form:B",
+          "label": "Burrowed",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        }
+      ],
+      "previousRuleCount": 4,
+      "ruleCount": 4,
+      "previousGapCount": 1,
+      "gapCount": 0,
+      "changes": [
+        "매복 진입과 새 돌출 본문을 form:A/B로 분리했다.",
+        "돌출은 근처 모든 적에게 마법 피해를 주며, 공중 띄우기는 주 대상 또는 근처 챔피언 또는 근처 대형 몬스터로 범위를 좁혔다.",
+        "공중 띄우기의 지속시간과 랭크별 대상 재적용 대기시간을 추가했다."
+      ],
+      "checks": [
+        "매복 기본 공격 제한·이동 속도·시야 범위 감소·보이지 않으면서 움직이는 근처 적 조건을 보존한다.",
+        "공중 띄우기의 대상 OR 조건은 단일 text 조건으로 보존하여 AND로 바꾸지 않았다.",
+        "대상별 공중 띄우기 대기시간을 전체 스킬 재사용 대기시간으로 바꾸지 않았다."
+      ],
+      "evidenceFiles": {
+        "input": "inputs/RekSai.W.json",
+        "candidate": "candidates/RekSai.W.json",
+        "validation": "reports/validation.json"
+      }
+    },
+    {
+      "id": "RekSai.E",
+      "previousSourceHash": "2b43ad29c82f741df81ff054522f5bb8784542b7a94123c53bfb7b5f0e3b4bb6",
+      "sourceHash": "b59fbac3617aaaa3b94d48501febd4edeae57941b95d703949590f90d63aaa5f",
+      "previousCandidateHash": "6eaa02a8f62b557237183ffae23904449f21ea3aac1bf1629ef15048fcddbe0f",
+      "candidateHash": "d6fa25a00ec02f761676f9e297e685dba9c7247ed6538aeb6cb3c28f70dc7f41",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "promptChanged": false,
+      "changedSourceFields": [
+        "sources",
+        "variants",
+        "facts",
+        "numbers",
+        "sourceHash"
+      ],
+      "changedFactFields": [
+        "forms"
+      ],
+      "previousVariants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        },
+        {
+          "id": "form:A",
+          "label": "Unburrowed",
+          "sourceIds": [
+            "form:A:en"
+          ]
+        },
+        {
+          "id": "form:B",
+          "label": "Burrowed",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        }
+      ],
+      "previousRuleCount": 4,
+      "ruleCount": 5,
+      "previousGapCount": 1,
+      "gapCount": 2,
+      "changes": [
+        "물리/최대 분노 대체 고정 피해를 form:A로, 땅굴을 form:B로 분리했다.",
+        "새 땅굴 본문에서 연결된 두 입구·분 단위 지속시간·랭크별 개별 땅굴 재사용 대기시간·최대 보유량을 추출했다."
+      ],
+      "checks": [
+        "최대 분노 true 피해는 일반 physical 피해에 더하지 않고 replaces_base로 보존한다.",
+        "두 입구를 두 땅굴로 해석하지 않으며, 분 단위 지속시간을 초로 오인하지 않는다.",
+        "입구 클릭과 적의 입구 파괴는 땅굴이 남아 있는 동안 적용되므로 현재 매복 상태를 불필요하게 강제하지 않는다."
+      ],
+      "evidenceFiles": {
+        "input": "inputs/RekSai.E.json",
+        "candidate": "candidates/RekSai.E.json",
+        "validation": "reports/validation.json"
+      }
+    },
+    {
+      "id": "Rell.W",
+      "previousSourceHash": "9d146b8cb7995b7a75b7b80c8c0993bf2936ab1309db7d7aed68220c456f2397",
+      "sourceHash": "baff4d807116e0a03a7bb2e92a64ce3f4e20df1afa8f1c915bba4e206bc4f9d3",
+      "previousCandidateHash": "ce01eea30dfd94eb98d5d8e91b5c0a422a0a2b3a2cc72c2dc1ee78581d499f7d",
+      "candidateHash": "a858b8e832086db4126db6828a6ddd23f8ad798f652c9a2e05e3ada50ac98281",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "promptChanged": false,
+      "changedSourceFields": [
+        "sources",
+        "variants",
+        "facts",
+        "numbers",
+        "sourceHash"
+      ],
+      "changedFactFields": [
+        "forms"
+      ],
+      "previousVariants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "base",
+          "label": "공통",
+          "sourceIds": [
+            "en:summary",
+            "en:body",
+            "ko:summary",
+            "ko:body"
+          ]
+        },
+        {
+          "id": "form:A",
+          "label": "Mounted",
+          "sourceIds": [
+            "form:A:en"
+          ]
+        },
+        {
+          "id": "form:B",
+          "label": "Dismounted",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        }
+      ],
+      "previousRuleCount": 8,
+      "ruleCount": 6,
+      "previousGapCount": 2,
+      "gapCount": 3,
+      "changes": [
+        "붕괴/탑승을 form:A/B로 분리했다.",
+        "새 탑승 원문에서 감쇠 이동 속도와 다음 공격 제한 시간·추가 마법 피해·띄우기·뒤로 넘기기를 추가했다.",
+        "보행 중 네 능력치 증가는 form:B의 직접적인 지속 효과 원문으로 교체했다."
+      ],
+      "checks": [
+        "붕괴 보호막은 다시 탑승할 때까지 유지되고 현재/최대 체력 구분은 확정하지 않는다.",
+        "다음 공격의 제한 시간을 이동 속도 감쇠 지속시간으로 전용하지 않는다.",
+        "오래된 요약의 보행 둔화는 현행 폼 본문·공식 제거 이력과 충돌하여 현재 규칙에서 배제하고 source_conflict gap으로 남긴다."
+      ],
+      "independentReviewCorrections": [
+        {
+          "code": "removed_dismounted_slow",
+          "previousRule": 4,
+          "detail": "오래된 summary만 근거였던 self slow 규칙을 제거했다. 최신 폼 본문과 공식 제거 이력을 우선한다."
+        }
+      ],
+      "externalPrimaryEvidence": [
+        {
+          "publisher": "Riot Games",
+          "title": "Patch 14.23 Notes",
+          "url": "https://www.leagueoflegends.com/en-au/news/game-updates/patch-14-23-notes/",
+          "publishedAt": "2024-11-19",
+          "section": "Rell, W - Ferromancy: Crash Down",
+          "quote": "Dismounted 10% slow has been removed",
+          "use": "기존 summary의 slow 채택을 거부하는 충돌 검토 근거이며 frozen sources나 새 수치로 추가하지 않는다."
+        }
+      ],
+      "evidenceFiles": {
+        "input": "inputs/Rell.W.json",
+        "candidate": "candidates/Rell.W.json",
+        "validation": "reports/validation.json"
+      }
+    }
+  ],
+  "latestInputRecheck": {
+    "backup": "/tmp/cooldown-followup-v3-pre-cc-review",
+    "unchangedSourcesNumbersVariants": 7,
+    "validation": {
+      "checked": 7,
+      "valid": 7,
+      "errors": 0
+    },
+    "updates": [
+      {
+        "id": "Kled.Q",
+        "sourceHash": "d6d91efc124e50b55b559f0ad72097c43efcc5349f29075580fbcdb218dce59e",
+        "candidateHash": "f5bf37d35f5480a3755f42728fff546f27132dccf93a8f185400018e7d7cb0b1",
+        "metadataUpdated": false
+      },
+      {
+        "id": "Kled.E",
+        "sourceHash": "49dc7279caee1c22c3d2ce1a72c475348252b03e7e2a75ea3efa27f19764865b",
+        "candidateHash": "021669ce159f90f3e3869b646f1a0873fa7e602e7c98c032d75f099da0331f1b",
+        "metadataUpdated": true
+      },
+      {
+        "id": "Kled.R",
+        "sourceHash": "2555e2bbd7bfb0d29b115c32e22e42119ec2175445467726c6170c2ba1cf26a3",
+        "candidateHash": "7cb67d851d187df48f157ff7107831cab8f323485a231dbc857da355a97250d6",
+        "metadataUpdated": true
+      },
+      {
+        "id": "RekSai.Q",
+        "sourceHash": "694a3595dd0c48a272c5007b12b296798846135b445abb8d5656d4580a1b04b9",
+        "candidateHash": "74cb10623129aca082eca122a6d111b003e1e403973da45c9e38b01b99b6aa6d",
+        "metadataUpdated": false
+      },
+      {
+        "id": "RekSai.W",
+        "sourceHash": "0a90d1cb560c5a0ce6dd7077900174e5b1626907df5ad911ad705c01723ccb97",
+        "candidateHash": "234339873ec4d5904822c448043a9b0286302fdd931326543e30be3ce945bb0a",
+        "metadataUpdated": false
+      },
+      {
+        "id": "RekSai.E",
+        "sourceHash": "b59fbac3617aaaa3b94d48501febd4edeae57941b95d703949590f90d63aaa5f",
+        "candidateHash": "d6fa25a00ec02f761676f9e297e685dba9c7247ed6538aeb6cb3c28f70dc7f41",
+        "metadataUpdated": false
+      },
+      {
+        "id": "Rell.W",
+        "sourceHash": "baff4d807116e0a03a7bb2e92a64ce3f4e20df1afa8f1c915bba4e206bc4f9d3",
+        "candidateHash": "a858b8e832086db4126db6828a6ddd23f8ad798f652c9a2e05e3ada50ac98281",
+        "metadataUpdated": false
+      }
+    ]
+  }
+}

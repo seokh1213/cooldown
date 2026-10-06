@@ -1,0 +1,674 @@
+{
+  "champion": "Yuumi",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Yuumi channels five waves that damage enemies and heal allies. Yuumi can move, attach, and cast Zoomies! while channeling. While on her Best Friend, this spell also follows her mouse.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Yuumi channels for 3.5 seconds, launching 5 magical waves affecting both teams. If initially cast while Attached, Yuumi can steer the waves to follow her mouse. Enemies struck are dealt (75/125/175 + (25% Ability Power)) magic damage and Slowed by 10% for 1.25 seconds, increased by 10% per wave hit. Ally champions are healed for (30/50/70 + (12% Ability Power)) health per wave. Excess healing is converted to a Shield instead. Best Friend Bonus: For her Best Friend, the heal is increased to (30/50/70 + (12% Ability Power)) × (1.3 ~ 1.6) health. Casting You and Me! will locks the waves in the current direction. Yuumi can move and cast Zoomies while channeling. Missiles after the first deal (18.75/31.25/43.75 + (6.25% Ability Power)) magic damage. Max possible damage to a single enemy is (150/250/350 + (50% Ability Power)) magic damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "유미가 정신을 집중해 파동을 다섯 번 발사합니다. 파동은 적에게 피해를 입히고 아군의 체력을 회복시킵니다. 정신을 집중하는 동안 이동하거나 밀착할 수 있으며, 슈우우웅! 스킬도 사용할 수 있습니다. 단짝에게 붙어있으면 마우스로 이 스킬을 조종할 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "유미가 3.5초 동안 정신을 집중해 양 팀 모두에 영향을 주는 마법의 파동을 5번 발사합니다. 처음 밀착한 상태에서 시전하면 유미는 마우스를 따라 파동을 조종할 수 있습니다. 적중당한 적에게 (75/125/175 + (25% 주문력))의 마법 피해를 입히고 1.25초 동안 10% 둔화시킵니다. 둔화 효과는 파동에 적중될 때마다 10% 증가합니다. 아군 챔피언은 파동마다 (30/50/70 + (12% 주문력))의 체력을 회복합니다. 체력 회복 초과분은 보호막으로 전환됩니다. 단짝 보너스: 유미의 단짝은 회복량이 증가해 (30/50/70 + (12% 주문력)) × (1.3 ~ 1.6)의 체력을 회복합니다. 너랑 유미랑!을 시전하면 파동을 현재 방향으로 고정합니다. 유미는 정신을 집중하는 동안 이동할 수 있으며 슈우우웅 스킬을 사용할 수 있습니다. 첫 번째 이후의 미사일이 (18.75/31.25/43.75 + (6.25% 주문력))의 마법 피해를 입힙니다. 단일 대상에게 입힐 수 있는 최대 피해량은 (150/250/350 + (50% 주문력))의 마법 피해입니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Final Chapter",
+      "ko": "대단원"
+    },
+    "cooldownSeconds": [
+      120,
+      110,
+      100
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1100,
+      1100,
+      1100
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "120/110/100"
+      },
+      {
+        "label": "Base Damage Per Missile:",
+        "values": "75/125/175"
+      },
+      {
+        "label": "Base Healing Per Wave",
+        "values": "30/50/70"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          1.3,
+          1.3,
+          1.3,
+          1.3,
+          1.3,
+          1.3,
+          1.35,
+          1.4,
+          1.45,
+          1.5,
+          1.55,
+          1.6,
+          1.6,
+          1.6,
+          1.6,
+          1.6,
+          1.6,
+          1.6,
+          1.6,
+          1.6
+        ],
+        "digits": 2,
+        "trimZeros": true
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:TotalMissileDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalMissileDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          75,
+          125,
+          175
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.25,
+              0.25,
+              0.25
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Yuumi.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Yuumi.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Yuumi.R",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "five",
+      "value": 5,
+      "percent": false,
+      "start": 15,
+      "end": 19
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "3.5",
+      "value": 3.5,
+      "percent": false,
+      "start": 19,
+      "end": 22
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 42,
+      "end": 43
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 187,
+      "end": 189
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 190,
+      "end": 193
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 194,
+      "end": 197
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 201,
+      "end": 204
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 248,
+      "end": 251
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 256,
+      "end": 260
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 283,
+      "end": 286
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 332,
+      "end": 334
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 335,
+      "end": 337
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 338,
+      "end": 340
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "12%",
+      "value": 12,
+      "percent": true,
+      "start": 344,
+      "end": 347
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 496,
+      "end": 498
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 499,
+      "end": 501
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 502,
+      "end": 504
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "12%",
+      "value": 12,
+      "percent": true,
+      "start": 508,
+      "end": 511
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "1.3",
+      "value": 1.3,
+      "percent": false,
+      "start": 531,
+      "end": 534
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "1.6",
+      "value": 1.6,
+      "percent": false,
+      "start": 537,
+      "end": 540
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "18.75",
+      "value": 18.75,
+      "percent": false,
+      "start": 698,
+      "end": 703
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "31.25",
+      "value": 31.25,
+      "percent": false,
+      "start": 704,
+      "end": 709
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "43.75",
+      "value": 43.75,
+      "percent": false,
+      "start": 710,
+      "end": 715
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "6.25%",
+      "value": 6.25,
+      "percent": true,
+      "start": 719,
+      "end": 724
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 797,
+      "end": 800
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 801,
+      "end": 804
+    },
+    {
+      "id": "en:body:n25",
+      "sourceId": "en:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 805,
+      "end": 808
+    },
+    {
+      "id": "en:body:n26",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 812,
+      "end": 815
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "3.5",
+      "value": 3.5,
+      "percent": false,
+      "start": 4,
+      "end": 7
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 43,
+      "end": 44
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 108,
+      "end": 110
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 111,
+      "end": 114
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 115,
+      "end": 118
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 122,
+      "end": 125
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 144,
+      "end": 148
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 153,
+      "end": 156
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 184,
+      "end": 187
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 209,
+      "end": 211
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 212,
+      "end": 214
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 215,
+      "end": 217
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "12%",
+      "value": 12,
+      "percent": true,
+      "start": 221,
+      "end": 224
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 293,
+      "end": 295
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 296,
+      "end": 298
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 299,
+      "end": 301
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "12%",
+      "value": 12,
+      "percent": true,
+      "start": 305,
+      "end": 308
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "1.3",
+      "value": 1.3,
+      "percent": false,
+      "start": 318,
+      "end": 321
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "1.6",
+      "value": 1.6,
+      "percent": false,
+      "start": 324,
+      "end": 327
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "18.75",
+      "value": 18.75,
+      "percent": false,
+      "start": 436,
+      "end": 441
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "31.25",
+      "value": 31.25,
+      "percent": false,
+      "start": 442,
+      "end": 447
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "43.75",
+      "value": 43.75,
+      "percent": false,
+      "start": 448,
+      "end": 453
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "6.25%",
+      "value": 6.25,
+      "percent": true,
+      "start": 457,
+      "end": 462
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 508,
+      "end": 511
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 512,
+      "end": 515
+    },
+    {
+      "id": "ko:body:n25",
+      "sourceId": "ko:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 516,
+      "end": 519
+    },
+    {
+      "id": "ko:body:n26",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 523,
+      "end": 526
+    }
+  ],
+  "sourceHash": "338dc50d41610d8c1ebc1037fabe544c911633a51ae79d36254c6ff6662701bc",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

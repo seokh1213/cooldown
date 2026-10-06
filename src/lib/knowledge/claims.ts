@@ -138,7 +138,8 @@ export function deriveItemClaims(card: ChampionCard): ItemClaims {
   if (execute.length) discounts.push({ kind: "처형", slots: execute });
 
   const sustain = slotsWhere(card, (s) => has(s, "회복"));
-  const cc = slotsWhere(card, (s) => s.effects.some((tag) => CC_TAGS.has(tag)));
+  const cc = slotsWhere(card, (s) => s.effects.some((tag) => CC_TAGS.has(tag))
+    && (!s.crowdControl || s.crowdControl.effects.some(effect => effect.target === "enemy" || effect.target === "all")));
   // 온히트 하나만 있어도 평타 챔피언으로 보면 거의 전원이 걸린다. 나미·오리아나
   // 까지 "화력의 축이 기본 공격" 이라는 말이 붙었다. 하위 클래스가 먼저다.
   const dps =

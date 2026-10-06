@@ -30,6 +30,7 @@ import * as path from "path";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
 import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
+import { noteSourceDigest } from "./build-note-translations";
 
 const arg = (name: string): string | undefined => {
   const index = process.argv.indexOf(`--${name}`);
@@ -76,6 +77,7 @@ export interface AtomFile {
   champion: string;
   patch: string;
   atoms: Atom[];
+  sourceDigests?: Record<string, string>;
 }
 
 const patch = resolvePatchVersion();
@@ -235,7 +237,9 @@ async function atomize(id: string, only?: Set<string>): Promise<{ file: AtomFile
     drop("Claude: 출처에 없음");
     return false;
   });
-  return { file: { champion: id, patch, atoms: kept }, dropped };
+  const sourceDigests = Object.fromEntries(kept.filter(atom => atom.source.startsWith("playbook:"))
+    .map(atom => [atom.source.slice("playbook:".length), noteSourceDigest(sourceText(atom.source))]));
+  return { file: { champion: id, patch, atoms: kept, sourceDigests }, dropped };
 }
 
 /** --notes a,b: 고친 노트에서 나온 원자만 바꿔 끼운다. 번역은 빠지므로 translate-atoms 를 다시 돌린다. */
@@ -255,6 +259,7 @@ async function renote(noteIds: string[]): Promise<void> {
     const old = JSON.parse(fs.readFileSync(target, "utf8")) as AtomFile;
     const stale = old.atoms.filter((a) => only.has(a.source.replace(/^playbook:/, ""))).length;
     old.atoms = [...old.atoms.filter((a) => !only.has(a.source.replace(/^playbook:/, ""))), ...fresh.atoms];
+    old.sourceDigests = { ...old.sourceDigests, ...fresh.sourceDigests };
     fs.writeFileSync(target, `${JSON.stringify(old, null, 2)}\n`);
     console.log(`${id}: 노트 ${only.size} · 옛 원자 ${stale} → 새 원자 ${fresh.atoms.length} · 뺀 것 ${JSON.stringify(dropped)}`);
   }

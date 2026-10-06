@@ -1,0 +1,82 @@
+{
+  "summary": "말파이트는 일정 시간 피해를 입지 않으면 최대 체력에 비례하는 보호막을 얻습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "피해를 입지 않은 시간이 레벨에 따른8~6초에 도달했을 때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "8~6초 동안 피해를 입지 않으면 본인최대체력10%의 보호막을 얻습니다.8~6초는 획득 대기시간이며 보호막 지속시간이 아닙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Malphite grants himself (10% Health) Shield after not taking damage for (8 ~ 6) seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "up to 10% of his maximum Health"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "본문의 Health만으로는 최대/현재체력 구분이 없지만 en/ko요약은 본인최대체력10%라고 명시한다. 보호막계수는 해당 요약근거에 의존하며 본문만으로 별도의 최대체력 정의를 추정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Malphite grants himself (10% Health) Shield after not taking damage for (8 ~ 6) seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Malphite is shielded by a layer of rock which absorbs damage up to 10% of his maximum Health."
+        }
+      ]
+    }
+  ]
+}

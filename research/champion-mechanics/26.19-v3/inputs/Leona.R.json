@@ -1,0 +1,263 @@
+{
+  "champion": "Leona",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Leona calls down a beam of solar energy, dealing damage to enemies in an area. Enemies in the center of the area are stunned, while enemies on the outside are slowed.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Leona calls down a radiant beam of solar energy dealing (150/225/300 + (80% Ability Power)) magic damage and Slowing by 80% for 1.75 seconds. Enemies in the center of the flare are Stunned instead of Slowed.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "레오나가 태양 에너지를 소환하여 일정 범위 내 적에게 피해를 줍니다. 이 범위 한가운데 있는 적은 기절하며 외곽에 있는 적은 이동 속도가 느려집니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "태양 에너지를 소환하여 눈부신 광선으로 적에게 (150/225/300 + (80% 주문력))의 마법 피해를 입히고 1.75초 동안 80%만큼 둔화시킵니다. 폭발의 중앙에 있는 적들은 둔화되지 않고 기절합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Solar Flare",
+      "ko": "흑점 폭발"
+    },
+    "cooldownSeconds": [
+      90,
+      75,
+      60
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1200,
+      1200,
+      1200
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "150/225/300"
+      },
+      {
+        "label": "Cooldown",
+        "values": "90/75/60"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:{f4c90e5c}"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "ExplosionCalculatedDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          150,
+          225,
+          300
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.800000011920929,
+              0.800000011920929,
+              0.800000011920929
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Leona.json",
+          "condition": "외곽 적중"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Leona.json",
+          "condition": "중심 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Leona.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Leona.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 61,
+      "end": 64
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 65,
+      "end": 68
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 72,
+      "end": 75
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 120,
+      "end": 123
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 128,
+      "end": 132
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 27,
+      "end": 30
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 31,
+      "end": 34
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 35,
+      "end": 38
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 64,
+      "end": 68
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 73,
+      "end": 76
+    }
+  ],
+  "sourceHash": "eef1adb72e05b5095d6fac22183c2f45a617193f119e3be17d843252f33a9852",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

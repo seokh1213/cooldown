@@ -1,0 +1,77 @@
+{
+  "summary": "잃은 체력에 비례해 공격 속도와 생명력 흡수를 얻는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "잃은 체력에 비례하여 최대50~100%의 공격 속도를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "잃은 체력에 비례하여 최대8~25%의 생명력 흡수를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "lifeSteal",
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Olaf gains up to (50% ~ 100%) Attack Speed and (8% ~ 25%) Life Steal, based on his missing Health."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "두상한범위가변하는기준과잃은체력에따른보간식은미공급이다.50%AS/8%흡혈을무조건최소보너스로실행하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Olaf gains up to (50% ~ 100%) Attack Speed and (8% ~ 25%) Life Steal, based on his missing Health."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,403 @@
+{
+  "summary": "아군을 처치한 적 챔피언은 Scoundrel이 되고, 살아 있는 아크샨은 자신이 피해를 준 Scoundrel 처치 관여 시 보상 및 해당 Scoundrel에게 처치된 아군 부활 효과를 얻습니다. 사용 시 위장하며, 위장 중 Scoundrel을 향해 이동하면 이동 속도와 잃은 마나 재생이 증가합니다. 감지 범위 내 적 챔피언은 위장한 아크샨을 볼 수 있고, 위장 상태 중 Scoundrel 흔적이 보입니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "enemy",
+          "text": "아군 챔피언을 처치한 적 챔피언이 악당 표식을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Enemy champions that kill Akshan's allies become Scoundrels for 60 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "takedown",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Scoundrel"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "지난 3초 안에 아크샨이 이 대상을 피해 입힘"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨이 살아 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "아크샨이 Scoundrel에게 피해를 입힌 뒤 3초 안에 살아 있는 아크샨이 해당 Scoundrel 처치에 관여하면 골드를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "revive",
+          "subject": "ally",
+          "text": "해당 Scoundrel에게 처치된 아군이 부활합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "enemy",
+          "text": "다른 Scoundrel 표식이 제거됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Takedowns on a Scoundrel within 3 seconds of being damaged by Akshan grant him 100 Gold, resurrects the slain allies, and removes all other Scoundrels."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "아크샨이 2초 동안 위장 상태가 됩니다. 벽 근처 또는 수풀 안에서는 위장이 계속 유지됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Akshan becomes Camouflaged for 2 seconds or indefinitely while he is near a wall or in brush. While Camouflaged in this way, Akshan also gains 80/90/100/110/120 Move Speed and 12% missing Mana regen while moving towards Scoundrels."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨이 이 W의 위장 상태임"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "감지 범위 안에 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "적 챔피언이 감지 범위 안에 있으면 이 위장 상태의 아크샨을 볼 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Camouflaged units cannot be seen unless an enemy champion is inside their detection radius."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 W로 위장 중"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Scoundrel 방향으로 이동 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "위장 중 Scoundrel 방향으로 이동할 때 이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "같은 조건에서 잃은 마나 재생량의 12%에 해당하는 추가 재생을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While Camouflaged in this way, Akshan also gains 80/90/100/110/120 Move Speed and 12% missing Mana regen while moving towards Scoundrels."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 W의 위장 상태가 활성화됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "위장 상태가 활성화된 동안 아크샨은 Scoundrel로 향하는 흔적을 봅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While active, Akshan also sees trails leading to Scoundrels."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "두 차례 기재된 영문 툴팁에서 골드 수혜자가 다릅니다. 앞 문장은 아크샨만, 뒤 문장은 아크샨과 동료가 골드를 얻는다고 합니다. 모순된 문구를 근거로 골드 수혜자를 확정하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Takedowns on a Scoundrel within 3 seconds of being damaged by Akshan grant him 100 Gold, resurrects the slain allies, and removes all other Scoundrels."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Takedowns on a Scoundrel within 3 seconds of being damaged by Akshan grant him and his partner 100 Gold and removes all other Scoundrels."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "영문 툴팁에는 악당 처치 관여 시 부활 효과가 적힌 문장과 골드 수혜자가 달라지는 중복 문장이 있습니다. 두 번째 문장에는 부활이 명시되지 않아 해당 문장만으로 부활 여부를 단정하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Takedowns on a Scoundrel within 3 seconds of being damaged by Akshan grant him and his partner 100 Gold and removes all other Scoundrels."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "위장 추적 효과가 잃은 마나 재생을 설명하지만 missing Mana와 mana regeneration은 스탯 목록에 없어 해당 수치는 텍스트로만 보존했습니다. 감지 범위의 수치도 제공되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While Camouflaged in this way, Akshan also gains 80/90/100/110/120 Move Speed and 12% missing Mana regen while moving towards Scoundrels."
+        }
+      ]
+    }
+  ]
+}

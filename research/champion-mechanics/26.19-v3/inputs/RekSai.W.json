@@ -1,0 +1,497 @@
+{
+  "champion": "RekSai",
+  "slot": "W",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Rek'Sai burrows into the ground, gaining new abilities and increased Move Speed. Her vision range is reduced and she cannot use basic attacks. While Burrowed, Rek'Sai may cast Unburrow to knock up and damage nearby enemies.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Unburrowed: Rek'Sai burrows into the ground, gaining access to new Abilities but cannot Attack. She gains 5/10/15/20/25 Move Speed, 65% reduced vision range, and nearby enemies that move and are otherwise unseen will have their positions revealed to Rek'sai and her allies.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "렉사이가 지면을 파고들어가 새로운 스킬을 사용하게 되며 이동 속도가 상승합니다. 시야 범위가 좁아지며 기본 공격을 할 수 없게 됩니다. 매복 상태일 때는 렉사이가 돌출 스킬을 사용하여 튀어 올라, 주위 적들을 공중으로 띄우고 피해를 입힐 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "돌출 상태: 렉사이가 땅속으로 매복해 새로운 스킬을 사용할 수 있게 되지만, 기본 공격은 할 수 없는 상태가 됩니다. 이 상태에서 렉사이는 5/10/15/20/25의 이동 속도를 얻고 시야 범위가 65% 축소됩니다. 그러나 보이지 않지만 이동하고 있는 근처 적들의 위치를 파악해 자신 및 아군에게 표시합니다.",
+      "variant": null
+    },
+    {
+      "id": "form:A:en",
+      "text": "No Cost Unburrowed: Rek'Sai burrows into the ground, gaining access to new Abilities but cannot Attack. She gains 5/10/15/20/25 Move Speed, 65% reduced vision range, and nearby enemies that move and are otherwise unseen will have their positions revealed to Rek'sai and her allies.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:A"
+    },
+    {
+      "id": "form:B:en",
+      "text": "No Cost Burrowed: Rek'Sai unburrows, dealing (30/55/80/105/130 + (80% Ability Power)) magic damage to all nearby enemies, Knocking Up her primary target, nearby Champions, and nearby Large Monsters for 1s. Enemies can only be Knocked Up by this Ability once every 10/9/8/7/6 seconds.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:B"
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    },
+    {
+      "id": "form:A",
+      "label": "Unburrowed",
+      "sourceIds": [
+        "form:A:en"
+      ]
+    },
+    {
+      "id": "form:B",
+      "label": "Burrowed",
+      "sourceIds": [
+        "form:B:en"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Burrow / Un-burrow",
+      "ko": "매복 / 돌출"
+    },
+    "cooldownSeconds": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1650,
+      1650,
+      1650,
+      1650,
+      1650
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Unburrow Damage",
+        "values": "30/55/80/105/130"
+      },
+      {
+        "label": "Knock Up Immunity",
+        "values": "10/9/8/7/6"
+      },
+      {
+        "label": "Burrowed Move Speed",
+        "values": "5/10/15/20/25"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:UnburrowDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "UnburrowDamage",
+        "kind": "damage",
+        "damageType": "unknown",
+        "baseByRank": [
+          30,
+          55,
+          80,
+          105,
+          130
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.800000011920929,
+              0.800000011920929,
+              0.800000011920929,
+              0.800000011920929,
+              0.800000011920929
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockup",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Rek%27Sai",
+          "condition": "매복 상태에서 돌출"
+        },
+        {
+          "type": "nearsight",
+          "target": "self",
+          "source": "https://wiki.leagueoflegends.com/en-us/Rek%27Sai",
+          "condition": "매복 상태"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [
+      {
+        "key": "A",
+        "label": "Unburrowed",
+        "id": "RekSaiW",
+        "name": "Burrow",
+        "iconPath": "assets/characters/reksai/hud/icons2d/reksai_w1.png",
+        "iconVersion": "16.19",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "tooltipRankSource": "W",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      {
+        "key": "B",
+        "label": "Burrowed",
+        "id": "RekSaiWBurrowed",
+        "name": "Un-burrow",
+        "iconPath": "assets/characters/reksai/hud/icons2d/reksai_w2.png",
+        "iconVersion": "16.19",
+        "cooldownSeconds": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "tooltipRankSource": "W",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    ],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/RekSai.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "RekSai.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 106,
+      "end": 107
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 108,
+      "end": 110
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 111,
+      "end": 113
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 114,
+      "end": 116
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 117,
+      "end": 119
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "65%",
+      "value": 65,
+      "percent": true,
+      "start": 132,
+      "end": 135
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 78,
+      "end": 79
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 80,
+      "end": 82
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 83,
+      "end": 85
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 86,
+      "end": 88
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 89,
+      "end": 91
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "65%",
+      "value": 65,
+      "percent": true,
+      "start": 110,
+      "end": 113
+    },
+    {
+      "id": "form:A:en:n0",
+      "sourceId": "form:A:en",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 114,
+      "end": 115
+    },
+    {
+      "id": "form:A:en:n1",
+      "sourceId": "form:A:en",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 116,
+      "end": 118
+    },
+    {
+      "id": "form:A:en:n2",
+      "sourceId": "form:A:en",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 119,
+      "end": 121
+    },
+    {
+      "id": "form:A:en:n3",
+      "sourceId": "form:A:en",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 122,
+      "end": 124
+    },
+    {
+      "id": "form:A:en:n4",
+      "sourceId": "form:A:en",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 125,
+      "end": 127
+    },
+    {
+      "id": "form:A:en:n5",
+      "sourceId": "form:A:en",
+      "raw": "65%",
+      "value": 65,
+      "percent": true,
+      "start": 140,
+      "end": 143
+    },
+    {
+      "id": "form:B:en:n0",
+      "sourceId": "form:B:en",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 46,
+      "end": 48
+    },
+    {
+      "id": "form:B:en:n1",
+      "sourceId": "form:B:en",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 49,
+      "end": 51
+    },
+    {
+      "id": "form:B:en:n2",
+      "sourceId": "form:B:en",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 52,
+      "end": 54
+    },
+    {
+      "id": "form:B:en:n3",
+      "sourceId": "form:B:en",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 55,
+      "end": 58
+    },
+    {
+      "id": "form:B:en:n4",
+      "sourceId": "form:B:en",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "form:B:en:n5",
+      "sourceId": "form:B:en",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 66,
+      "end": 69
+    },
+    {
+      "id": "form:B:en:n6",
+      "sourceId": "form:B:en",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 202,
+      "end": 203
+    },
+    {
+      "id": "form:B:en:n7",
+      "sourceId": "form:B:en",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 264,
+      "end": 266
+    },
+    {
+      "id": "form:B:en:n8",
+      "sourceId": "form:B:en",
+      "raw": "9",
+      "value": 9,
+      "percent": false,
+      "start": 267,
+      "end": 268
+    },
+    {
+      "id": "form:B:en:n9",
+      "sourceId": "form:B:en",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 269,
+      "end": 270
+    },
+    {
+      "id": "form:B:en:n10",
+      "sourceId": "form:B:en",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 271,
+      "end": 272
+    },
+    {
+      "id": "form:B:en:n11",
+      "sourceId": "form:B:en",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 273,
+      "end": 274
+    }
+  ],
+  "sourceHash": "0a90d1cb560c5a0ce6dd7077900174e5b1626907df5ad911ad705c01723ccb97",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}
