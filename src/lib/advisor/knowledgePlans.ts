@@ -29,6 +29,8 @@ export async function answerByVector({ question, ctx, data, ask, recentItem, mat
    */
   if ((refersToContextChampions(question) || Boolean(slot) || ask === "spellStat" || ask === "skills" || ask === "guide" || Boolean(topicFromWords(question)) || (ask === "item" && !buildItemCard(data, question, recentItem))) && (recent.length > 0 || ctx.championIds.length > 0)) return undefined;
   if (!(ctx.canUseModel && ctx.consented && ctx.retrieval && searchesByVector(data, question, recentItem, Boolean(matchup)))) return undefined;
+  // 명시된 게임 메타는 검수한 사실로 답한다. 옛 벡터 목록에 문서가 없다는 이유로 거절하지 않는다.
+  if (lexicalHit(data, question)?.step === "meta") return undefined;
   const top = await deps.search(question, ctx.lang).catch((error: unknown) => {
     console.warn("[advisor] 검색 벡터 실패 — 낱말 검색으로", error);
     return null;

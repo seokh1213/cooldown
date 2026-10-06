@@ -80,6 +80,7 @@ for (const [lang, question] of [
 ] as const) test(`${lang} 분류기가 소개로 오인해도 현재 챔피언으로 몬스터 질문을 대체하지 않는다`, async () => {
   const ctx = qualityContext(lang, "offline");
   ctx.championIds = ["MonkeyKing"];
+  ctx.consented = ctx.canUseModel = ctx.retrieval = true;
   for (const scope of ["overview", "statsAll", "skills"] as const) {
     const deps = { ...evaluationDeps(undefined, lang), classifyRequest: async () => ({ scope, confidence: 1 }) };
     const output = await answerDialogue(question, ctx, deps);
