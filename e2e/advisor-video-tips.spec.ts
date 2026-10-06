@@ -19,6 +19,8 @@ async function openAdvisor(page: Page) {
 
 for (const width of [390, 1280]) {
   test(`영상 팁·후속 질문·화면과 복사의 출처 미노출: ${width}px`, async ({ page, context }) => {
+    // Seventeen turns include text reveal; keep each response's 5-second assertion.
+    test.setTimeout(60_000);
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await page.setViewportSize({ width, height: 900 });
     const ask = await openAdvisor(page);

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "initialRunUrl": "https://github.com/seokh1213/cooldown/actions/runs/37436725799",
+  "initialSourceCommit": "eaabc81ac09c617c6f5db0b15c8762c338d36976",
+  "initialBrowserTests": {
+    "passed": 185,
+    "failed": 2,
+    "deployment": "skipped"
+  },
+  "rootCause": "The shared 30-second budget for a 17-turn conversation expired during the final question, rather than a response hitting its own 5-second assertion.",
+  "traceObservation": {
+    "questionsEntered": 17,
+    "lastQuestion": "고정 마관 효율은 상대 마저가 낮을 때 더 좋아?",
+    "widths": [
+      390,
+      1280
+    ]
+  },
+  "localBefore": {
+    "passed": 1,
+    "failed": 1,
+    "testTimeoutMilliseconds": 30000
+  },
+  "fix": {
+    "path": "e2e/advisor-video-tips.spec.ts",
+    "testTimeoutMilliseconds": 60000,
+    "responseAssertionMilliseconds": 5000,
+    "answerAndSourceAssertions": "unchanged"
+  },
+  "localAfter": {
+    "passed": 4,
+    "failed": 0,
+    "retries": 0,
+    "conversationSeconds": {
+      "390": 30.8,
+      "1280": 31.6
+    },
+    "otherTests": [
+      "Belveth ready ability icon",
+      "Jinx Q A/B form icons"
+    ]
+  }
+}
