@@ -100,7 +100,7 @@ export function docAnswer(data: AdvisorData, lang: Language, id: string, questio
     const cards = all.map((entry) => buildRuleCard(entry, names, lang, all, ruleCooldown(data, entry, question)));
     return cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[all.indexOf(rule)];
   }
-  if (id.startsWith("meta:")) return gameMetaById(id, lang);
+  if (id.startsWith("meta:")) return gameMetaById(id, lang, question);
   if (id.startsWith("mech:")) return buildMechanicsAnswerById(data, id);
   return undefined;
 }

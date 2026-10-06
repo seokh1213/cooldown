@@ -10,6 +10,7 @@ import meta from "../../../knowledge/game-meta.json";
 import prices from "../../../knowledge/champion-prices.json";
 import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
 import { removalNotice, type NoteVersion } from "@/lib/knowledge/noteVersion";
+import { unreviewedMonsterDetail } from "./gameMetaCoverage";
 type Language = string;
 const short = (lang: Language): "ko" | "en" | "zh" => (lang.startsWith("en") ? "en" : lang.startsWith("zh") ? "zh" : "ko");
 
@@ -79,7 +80,7 @@ export function asksPriceTiers(question: string): boolean {
 export function gameMetaAnswer(question: string, lang: Language): string | undefined {
   const l = short(lang);
   const fact = findGameMeta(question);
-  if (fact) return factText(fact, lang);
+  if (fact) return factText(fact, lang, question);
   if (asksPriceTiers(question)) return TIERS_TEXT[l];
   return undefined;
 }
@@ -91,13 +92,14 @@ export function gameMetaDocs(lang: Language): Array<{ id: string; title: string;
 }
 
 /** 문서 id(`meta:surrender`)로 답한다. 검색 벡터가 고른 문서를 보일 때 쓴다. */
-export function gameMetaById(id: string, lang: Language): string | undefined {
+export function gameMetaById(id: string, lang: Language, question?: string): string | undefined {
   const fact = FACTS.find((entry) => `meta:${entry.id}` === id);
   if (!fact) return undefined;
-  return factText(fact, lang);
+  return factText(fact, lang, question);
 }
 
-function factText(fact: GameMetaFact, lang: Language): string {
+function factText(fact: GameMetaFact, lang: Language, question?: string): string {
   const l = short(lang);
-  return removalNotice(fact.keywords[l][0] ?? fact.id, fact.version, lang) ?? fact.text[l];
+  return removalNotice(fact.keywords[l][0] ?? fact.id, fact.version, lang)
+    ?? unreviewedMonsterDetail(fact.id, question, lang) ?? fact.text[l];
 }
