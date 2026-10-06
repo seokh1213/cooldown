@@ -1,5 +1,6 @@
 import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test } from "@playwright/test";
+import { translations } from "../src/i18n/translations";
 
 test("오브젝트 생성·제거와 검수한 상세 수치를 구분한다", async ({ page }) => {
   await page.goto("./");
@@ -34,4 +35,22 @@ test("중국어 아타칸 이름으로 제거 상태를 찾는다", async ({ pag
   await input.fill("厄塔汗现在还在游戏里吗？");
   await page.getByRole("button", { name: "发送", exact: true }).click();
   await expect(page.getByRole("dialog").getByText(/目前已.*移除.*26\.1/).last()).toBeVisible();
+});
+
+for (const [lang, question, title] of [
+  ["en_US", "What is Baron Nashor attack damage?", "Baron Nashor"],
+  ["zh_CN", "纳什男爵的攻击力是多少？", "纳什男爵"],
+] as const) test(`${lang} 화면에 선택한 챔피언이 있어도 몬스터 상세를 답한다`, async ({ page }) => {
+  await page.addInitScript(locale => localStorage.setItem("language", locale), lang);
+  await page.goto("./vs?a=MonkeyKing");
+  const copy = translations[lang].advisor;
+  await page.getByRole("button", { name: copy.open, exact: true }).click();
+  const input = page.getByRole("textbox", { name: copy.questionLabel, exact: true });
+  const skip = page.getByRole("button", { name: copy.consent.skipModel, exact: true });
+  await waitForModelFreeInput(page, input, skip);
+  await input.fill(question);
+  await page.getByRole("button", { name: copy.send, exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("heading", { name: title, exact: true })).toBeVisible();
+  await expect(dialog.getByText(/350\.5–515/)).toBeVisible();
 });

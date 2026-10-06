@@ -5,6 +5,7 @@ import { askedRuleKinds } from "@/lib/knowledge/rules";
 import { asksPrice } from "./gameMeta";
 import itemAliasFile from "../../../knowledge/item-aliases.json";
 import { withParticle, sentenceWith, htmlToText } from "./answerText";
+import { MONSTER_NOTES } from "@/lib/knowledge/monsterNotes";
 
 /**
  * 아이템 질문의 답. 설명문을 통째로 던지지 않고 능력치·효과로 갈라 둔다.
@@ -145,6 +146,8 @@ export function findItems(data: AdvisorData, question: string, limit = 3) {
   const byId = new Map(named.map((item) => [item.id, item]));
   // 챔피언 별명 안에 든 줄임말은 아이템이 아니다. "破败王来反野"(비에고)의 "破败" 가 몰락한 왕의 검으로 잡혔다.
   const championAliases = championNames;
+  const monsterAliases = MONSTER_NOTES.flatMap(note => Object.values(note.aliases).flat())
+    .filter(name => aliasAt(question, name) >= 0);
   for (const { id, alias } of itemAliasList()) {
     const item = byId.get(id);
     if (!item) continue;
@@ -153,7 +156,7 @@ export function findItems(data: AdvisorData, question: string, limit = 3) {
     if (alias === "내셔" && !/공속|적중|아이템|템|구매|가격|골드/.test(question)) continue;
     if (alias.toLowerCase() === "cleaver" && !/armou?r|shred|stacks?|item|buy/i.test(question)) continue;
     if (alias === "정령" && championAliases.length > 0 && !/아이템|\b템\b|구매|사야|정령의 형상/i.test(question)) continue;
-    if (championAliases.some((name) => name !== alias && name.includes(alias))) continue;
+    if ([...championAliases, ...monsterAliases].some((name) => name !== alias && name.includes(alias))) continue;
     take(item, aliasAt(question, alias), alias.length);
     if (found.length >= limit) break;
   }

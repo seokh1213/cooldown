@@ -7,6 +7,7 @@ import { ALL_CHAMPION_STATS, explicitStatLevel, isStatLevel } from "./statQuery"
 import { statPlanForQuery, unsupportedStatLevelPlan } from "./dialogueStats";
 import { asksWholeKit } from "./askWords";
 import { asksSpellNumbers } from "./spellFocus";
+import { findGameMeta } from "./gameMeta";
 
 function targets(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): ChampionCard[] {
   const explicit = resolved.champions.map(card => card.id);
@@ -28,6 +29,8 @@ export function requestIntentPlan(resolved: ResolvedQuestion, memory: DialogueMe
   if (scope === "identity") return { type: "code", answer: ctx.copy.identity };
   if (scope === "overview" && asksWholeKit(resolved.text) && !profile && !/소개/.test(resolved.text)) return undefined;
   if (!["overview", "statsAll", "skills"].includes(scope ?? "") || resolved.matchup) return undefined;
+  // 이름을 명시한 게임 규칙은 화면의 챔피언을 이어 묻는 요청으로 대체하지 않는다.
+  if (!resolved.champions.length && findGameMeta(resolved.text)) return undefined;
   const cards = targets(resolved, memory, ctx);
   if (!cards.length) return undefined;
   if (scope === "statsAll") {

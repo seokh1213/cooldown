@@ -4,6 +4,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { championPriceAnswer, findGameMeta, gameMetaAnswer, gameMetaById } from "../../src/lib/advisor/gameMeta";
+import { answerDialogue } from "../../src/lib/advisor/dialogueFlow";
+import { evaluationDeps, qualityContext } from "../../scripts/llm/quality/dialogue";
+import { detectChampionMentions } from "../../src/lib/advisor/intent";
 
 for (const [q, id] of [
   ["what minute can we ff?", "surrender"],
@@ -40,6 +43,16 @@ test("챔피언 가격 답", () => {
   assert.deepEqual(championPriceAnswer("아리 콤보 알려줘", { id: "Ahri", name: "아리" }, "ko_KR"), undefined, "가격을 묻지 않으면 답하지 않는다");
 });
 
+test("중국어 몬스터 전체 이름 안의 별명은 제외하고 별도 챔피언 언급은 보존한다", () => {
+  const ctx = qualityContext("zh_CN", "offline");
+  assert.deepEqual(detectChampionMentions(ctx.data!, "纳什男爵的攻击力").map(m => m.card.id), []);
+  assert.deepEqual(detectChampionMentions(ctx.data!, "男爵的技能").map(m => m.card.id), ["Renata"]);
+  const question = "纳什男爵附近的烈娜塔怎么打团？";
+  const mentions = detectChampionMentions(ctx.data!, question);
+  assert.deepEqual(mentions.map(m => m.card.id), ["Renata"]);
+  assert.equal(mentions[0].index, question.indexOf("烈娜塔"));
+});
+
 test("게임 메타 답", () => {
   assert.match(gameMetaAnswer("챔피언 가격 얼마야?", "ko_KR") ?? "", /225 · 675 · 1,575 · 2,400 · 3,150/);
   assert.match(gameMetaAnswer("几分钟能投降啊", "zh_CN") ?? "", /15 分钟起可以发起投降/);
@@ -58,4 +71,19 @@ test("생성 시간은 계속 답하고 제거된 오브젝트는 상세 질문�
   assert.match(gameMetaAnswer("바론 몇 분에 나와?", "ko_KR")!, /20분/);
   assert.match(gameMetaAnswer("유충 스킬 알려줘", "ko_KR")!, /12초마다.*4마리/);
   assert.match(gameMetaAnswer("아타칸 공격력 얼마야?", "ko_KR")!, /현재.*제거.*26\.1 패치/);
+});
+
+for (const [lang, question] of [
+  ["ko_KR", "바론 공격력은 현재 얼마야?"],
+  ["en_US", "What is Baron Nashor attack damage?"],
+  ["zh_CN", "纳什男爵的攻击力是多少？"],
+] as const) test(`${lang} 분류기가 소개로 오인해도 현재 챔피언으로 몬스터 질문을 대체하지 않는다`, async () => {
+  const ctx = qualityContext(lang, "offline");
+  ctx.championIds = ["MonkeyKing"];
+  for (const scope of ["overview", "statsAll", "skills"] as const) {
+    const deps = { ...evaluationDeps(undefined, lang), classifyRequest: async () => ({ scope, confidence: 1 }) };
+    const output = await answerDialogue(question, ctx, deps);
+    assert.match(output.reply.text, /350\.5–515/);
+    assert.equal(output.dialogue.parts[0]?.plan.type, "code");
+  }
 });

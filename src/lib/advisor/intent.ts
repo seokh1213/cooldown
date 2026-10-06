@@ -8,6 +8,7 @@ import type { AdvisorData } from "./context";
 import championAliasFile from "../../../knowledge/champion-aliases.json";
 import { findItems } from "./itemAnswer";
 import itemAliases from "../../../knowledge/item-aliases.json";
+import { MONSTER_NOTES } from "@/lib/knowledge/monsterNotes";
 
 export interface ChampionMention {
   card: ChampionCard;
@@ -117,6 +118,9 @@ export function nicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
  * 상성 답으로 가지 못했다. 게임에서 흔히 쓰는 말과 아이템 이름을 가린 뒤에 줄임말을 찾는다.
  */
 const COMMON_WORDS = ["아이템", "템트리", "다이아", "카이팅", "회오리", "밀리", "触发条件"];
+const MONSTER_NAMES = [...new Set(MONSTER_NOTES.flatMap(note => Object.values(note.aliases).flat()))]
+  .filter(name => name.length >= 3)
+  .sort((left, right) => right.length - left.length);
 
 let itemNameCache: { items: unknown; names: string[] } | null = null;
 
@@ -130,6 +134,13 @@ function maskCommonWords(text: string, data: AdvisorData): string {
   for (const word of [...itemNameCache.names, ...recognized, ...COMMON_WORDS]) {
     const pattern = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
     out = out.replace(pattern, match => "□".repeat(match.length));
+  }
+  // 긴 몬스터 이름 안의 챔피언 별명은 언급이 아니다. 낱말 경계와 원문 위치는 유지한다.
+  for (const word of MONSTER_NAMES) {
+    for (let match = locate(out, word); match; match = locate(out, word)) {
+      const [index, length] = match;
+      out = out.slice(0, index) + "□".repeat(length) + out.slice(index + length);
+    }
   }
   return out;
 }
