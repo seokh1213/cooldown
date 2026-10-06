@@ -14,7 +14,7 @@
 
 ## 실제 GitHub 회귀 결과
 
-소스 커밋 `eaabc81ac09c617c6f5db0b15c8762c338d36976`의 [Advisor Regression](https://github.com/seokh1213/cooldown/actions/runs/37436725790)이 성공했다. GitHub의 ubuntu-latest에서 받은 산출물을 로컬 기준과 다시 대조했다. 질문·자료·채점기 해시가 일치하며 5,775건 중 통과 4,038건·기존 계약 실패 1,517건·수동 220건, 관련 Node 810개다. 기준 대비 새 회귀와 개선은 모두 0건이다. 관측값은 [github-regression.json](github-regression.json)에 보존한다.
+소스 커밋 `eaabc81ac`의 [첫 회귀 검사](https://github.com/seokh1213/cooldown/actions/runs/37436725790)와 시간 제한 수정 `5f238dc3737283d89a5260209bcf4a5348e40730`의 [최종 회귀 검사](https://github.com/seokh1213/cooldown/actions/runs/37438312214)가 성공했다. GitHub의 ubuntu-latest에서 받은 최종 산출물을 로컬 기준과 다시 대조했다. 질문·자료·채점기 해시가 일치하며 5,775건 중 통과 4,038건·기존 계약 실패 1,517건·수동 220건이다. 기준 대비 새 회귀와 개선은 모두 0건이고 모든 답변 문자열과 판정도 같다. 관련 Node 검사는 GitHub에서 통과했고, 같은 검사 선택의 로컬 실측 개수는 810개다. 원격 산출물에는 해당 검사 개수 로그가 없어 출처를 구분한다. 관측값은 [github-regression.json](github-regression.json)에 보존한다.
 
 이 CI는 모델 없는 대화·오프라인 대화·어휘 검색의 회귀와 검사 인프라를 확인한다. 실제 WebGPU 가중치 비교는 이전 동결 모델 실측을 따른다. 기존 계약 실패와 의미 검토가 남아 있어 전체 챗봇 품질 승격은 여전히 보류다. master의 회귀 검사와 자동 배포는 독립된 workflow다.
 
@@ -23,3 +23,11 @@
 첫 [배포 실행](https://github.com/seokh1213/cooldown/actions/runs/37436725799)은 브라우저 185건 통과·2건 실패로 배포를 보류했다. 두 화면 폭의 17턴 영상 팁 대화가 마지막 질문에서 전체 30초 제한에 도달했다. 로컬에서도 같은 17번째 질문까지 진행한 뒤 1건이 전체 제한으로 실패하고 1건이 통과하는 경계를 재현했다.
 
 해당 대화 시나리오의 전체 제한만 60초로 늘렸다. 각 질문의 응답 대기 5초, 실제 답변·복사·출처·화면 검사는 유지한다. 재시도 없이 해당 파일 4건이 통과했으며 17턴 대화는 30.8초·31.6초였다. 앱 코드나 모델 성능 한도를 변경하지 않았다. 관측값은 [browser-timeout-recovery.json](browser-timeout-recovery.json)에 보존한다.
+
+## 최종 배포·사이트 확인
+
+소스 `5f238dc3737283d89a5260209bcf4a5348e40730`의 [최종 배포](https://github.com/seokh1213/cooldown/actions/runs/37438311758)는 자료 생성·타입·린트·단위·데이터 검사·빌드·배포 산출물 검증·브라우저 187건·Pages 배포 모두 성공했다. 해당 실행에서는 생성 자료가 바뀌지 않아 추가 자료 커밋은 없었다.
+
+[실제 사이트](https://seokh1213.github.io/cooldown/)와 `release.json`은 HTTP 200이다. HTML과 release.json의 릴리스 ID는 모두 `15ee33ee5e5ff402cb4766386a7c779d`이며 이전 배포의 ID와 다르다. 실제 workflow와 사이트 관측값은 [github-deployment.json](github-deployment.json)에 보존한다.
+
+이후 완료 기록만 추가하는 커밋은 `[skip ci]`를 사용한다. 배포된 앱 소스는 위 `5f238dc37`이며 모델 가중치는 이번 마무리에서 바꾸지 않았다. 기존 계약 실패 1,517건·수동 220건, 실제 WebGPU 수치 회귀 8건·앱 선택 문서 수치 회귀 6건은 계속 보존하고 품질 승격을 보류한다.
