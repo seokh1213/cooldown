@@ -1,0 +1,2163 @@
+{
+  "run": "bases-20261006-011137",
+  "frozenSourceCommit": "4d6267596bb9ee9f9a35877dce09377574ac1084",
+  "scope": "Frozen Korean numeric QA; shared selected evidence; not full live chatbot accuracy",
+  "training": {
+    "counts": {
+      "train": {
+        "rows": 415,
+        "positive": 332,
+        "facts": 83,
+        "documents": 30,
+        "sha256": "f68d194423eb64231122cf951fb55756ec8d1bd5209289dc6b672faf64275c30"
+      },
+      "dev": {
+        "rows": 110,
+        "positive": 88,
+        "facts": 22,
+        "documents": 9,
+        "sha256": "2f8b9da9d71f8549a5adb45abcda1ccfb577cd7e1a3ff9ab1f0f2070f22fdcec"
+      }
+    },
+    "heldoutQuestions": 212,
+    "heldoutSha256": "f5c74aeffedb3ec7aaddad8e1290e8dd2eefcf29e55f24afd39b5f41dfa19bb5",
+    "scope": "Manually annotated semantic facts with four template paraphrases and wrong-document negatives; not user traffic",
+    "contextPolicy": "Question-only 1300-character window; no answer-aware crop"
+  },
+  "inputs": {
+    "models.json": "eda26cedca0f10752a0ac0407c42bcfc9eb215b4c90a027a18cd6261ac441c6c",
+    "natural-train.jsonl": "f68d194423eb64231122cf951fb55756ec8d1bd5209289dc6b672faf64275c30",
+    "natural-dev.jsonl": "2f8b9da9d71f8549a5adb45abcda1ccfb577cd7e1a3ff9ab1f0f2070f22fdcec",
+    "qa-followup.jsonl": "f5c74aeffedb3ec7aaddad8e1290e8dd2eefcf29e55f24afd39b5f41dfa19bb5",
+    "app-evidence.json": "15f88d2a49256eb3b80453d3b349d873eecadc49063db08de27c69539c10dbbd"
+  },
+  "modelManifest": {
+    "qwen35": {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "revision": "2fc06364715b967f1860aea9cf38778875588b17"
+    },
+    "qwen25": {
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+    },
+    "lfm25": {
+      "model": "LiquidAI/LFM2.5-350M",
+      "revision": "9e6c6ccf47cd318696e137d381a7ded8fe4df09f"
+    }
+  },
+  "native": {
+    "qwen35": {
+      "training": {
+        "base": {
+          "model": "Qwen/Qwen3.5-0.8B",
+          "revision": "2fc06364715b967f1860aea9cf38778875588b17"
+        },
+        "trainRows": 415,
+        "devRows": 110,
+        "epochs": 1,
+        "rank": 16,
+        "alpha": 32,
+        "learningRate": 0.0001,
+        "accumulation": 8,
+        "trainableParameters": 10822656,
+        "trainSecondsThisSession": 894.305877323,
+        "resumedFromRow": 0,
+        "devLossBefore": 0.4280300587669692,
+        "devLossAfter": 0.076839256904168,
+        "maxTrainingTokens": 818,
+        "gpuPeakAllocated": 3841702912,
+        "scope": "Natural semantic numeric QA; backbone layers unchanged; fresh LoRA, no held-out training"
+      },
+      "evaluation": {
+        "scores": {
+          "provided": {
+            "base": {
+              "new": {
+                "correct": 94,
+                "total": 176,
+                "positive": {
+                  "correct": 88,
+                  "total": 136
+                },
+                "negative": {
+                  "correct": 6,
+                  "total": 40
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 33,
+                  "total": 68
+                },
+                "errors": {
+                  "unsupported-answer": 34,
+                  "false-abstention": 0,
+                  "unit-or-format": 20,
+                  "wrong-value": 28
+                },
+                "wrongButVerbatim": 21
+              },
+              "regression": {
+                "correct": 14,
+                "total": 36,
+                "positive": {
+                  "correct": 14,
+                  "total": 24
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 12
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 14,
+                  "total": 24
+                },
+                "errors": {
+                  "unsupported-answer": 12,
+                  "false-abstention": 0,
+                  "unit-or-format": 8,
+                  "wrong-value": 2
+                },
+                "wrongButVerbatim": 4
+              }
+            },
+            "trained": {
+              "new": {
+                "correct": 142,
+                "total": 176,
+                "positive": {
+                  "correct": 113,
+                  "total": 136
+                },
+                "negative": {
+                  "correct": 29,
+                  "total": 40
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 51,
+                  "total": 68
+                },
+                "errors": {
+                  "unsupported-answer": 11,
+                  "false-abstention": 0,
+                  "unit-or-format": 14,
+                  "wrong-value": 9
+                },
+                "wrongButVerbatim": 14
+              },
+              "regression": {
+                "correct": 31,
+                "total": 36,
+                "positive": {
+                  "correct": 20,
+                  "total": 24
+                },
+                "negative": {
+                  "correct": 11,
+                  "total": 12
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 20,
+                  "total": 24
+                },
+                "errors": {
+                  "unsupported-answer": 1,
+                  "false-abstention": 0,
+                  "unit-or-format": 2,
+                  "wrong-value": 2
+                },
+                "wrongButVerbatim": 3
+              }
+            }
+          },
+          "app": {
+            "base": {
+              "new": {
+                "correct": 70,
+                "total": 132,
+                "positive": {
+                  "correct": 70,
+                  "total": 132
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 23,
+                  "total": 66
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 9,
+                  "unit-or-format": 18,
+                  "wrong-value": 35
+                },
+                "wrongButVerbatim": 15
+              },
+              "regression": {
+                "correct": 0,
+                "total": 0,
+                "positive": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 0,
+                  "unit-or-format": 0,
+                  "wrong-value": 0
+                },
+                "wrongButVerbatim": 0
+              }
+            },
+            "trained": {
+              "new": {
+                "correct": 97,
+                "total": 132,
+                "positive": {
+                  "correct": 97,
+                  "total": 132
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 39,
+                  "total": 66
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 17,
+                  "unit-or-format": 8,
+                  "wrong-value": 10
+                },
+                "wrongButVerbatim": 9
+              },
+              "regression": {
+                "correct": 0,
+                "total": 0,
+                "positive": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 0,
+                  "unit-or-format": 0,
+                  "wrong-value": 0
+                },
+                "wrongButVerbatim": 0
+              }
+            }
+          }
+        },
+        "scope": "Native FP32 weights with CUDA FP16 autocast; no q4/browser equivalence claim"
+      }
+    },
+    "qwen25": {
+      "training": {
+        "base": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+        },
+        "trainRows": 415,
+        "devRows": 110,
+        "epochs": 1,
+        "rank": 16,
+        "alpha": 32,
+        "learningRate": 0.0001,
+        "accumulation": 8,
+        "trainableParameters": 8798208,
+        "trainSecondsThisSession": 13.416544008000017,
+        "resumedFromRow": 415,
+        "devLossBefore": 0.7746791645545851,
+        "devLossAfter": 0.048969791577044154,
+        "maxTrainingTokens": 1037,
+        "gpuPeakAllocated": 2387689472,
+        "scope": "Natural semantic numeric QA; backbone layers unchanged; fresh LoRA, no held-out training"
+      },
+      "evaluation": {
+        "scores": {
+          "provided": {
+            "base": {
+              "new": {
+                "correct": 67,
+                "total": 176,
+                "positive": {
+                  "correct": 50,
+                  "total": 136
+                },
+                "negative": {
+                  "correct": 17,
+                  "total": 40
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 17,
+                  "total": 68
+                },
+                "errors": {
+                  "unsupported-answer": 23,
+                  "false-abstention": 1,
+                  "unit-or-format": 24,
+                  "wrong-value": 61
+                },
+                "wrongButVerbatim": 24
+              },
+              "regression": {
+                "correct": 20,
+                "total": 36,
+                "positive": {
+                  "correct": 12,
+                  "total": 24
+                },
+                "negative": {
+                  "correct": 8,
+                  "total": 12
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 12,
+                  "total": 24
+                },
+                "errors": {
+                  "unsupported-answer": 4,
+                  "false-abstention": 0,
+                  "unit-or-format": 5,
+                  "wrong-value": 7
+                },
+                "wrongButVerbatim": 1
+              }
+            },
+            "trained": {
+              "new": {
+                "correct": 128,
+                "total": 176,
+                "positive": {
+                  "correct": 101,
+                  "total": 136
+                },
+                "negative": {
+                  "correct": 27,
+                  "total": 40
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 44,
+                  "total": 68
+                },
+                "errors": {
+                  "unsupported-answer": 13,
+                  "false-abstention": 0,
+                  "unit-or-format": 3,
+                  "wrong-value": 32
+                },
+                "wrongButVerbatim": 34
+              },
+              "regression": {
+                "correct": 32,
+                "total": 36,
+                "positive": {
+                  "correct": 22,
+                  "total": 24
+                },
+                "negative": {
+                  "correct": 10,
+                  "total": 12
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 22,
+                  "total": 24
+                },
+                "errors": {
+                  "unsupported-answer": 2,
+                  "false-abstention": 0,
+                  "unit-or-format": 0,
+                  "wrong-value": 2
+                },
+                "wrongButVerbatim": 2
+              }
+            }
+          },
+          "app": {
+            "base": {
+              "new": {
+                "correct": 37,
+                "total": 132,
+                "positive": {
+                  "correct": 37,
+                  "total": 132
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 9,
+                  "total": 66
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 11,
+                  "unit-or-format": 22,
+                  "wrong-value": 62
+                },
+                "wrongButVerbatim": 16
+              },
+              "regression": {
+                "correct": 0,
+                "total": 0,
+                "positive": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 0,
+                  "unit-or-format": 0,
+                  "wrong-value": 0
+                },
+                "wrongButVerbatim": 0
+              }
+            },
+            "trained": {
+              "new": {
+                "correct": 83,
+                "total": 132,
+                "positive": {
+                  "correct": 83,
+                  "total": 132
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 32,
+                  "total": 66
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 16,
+                  "unit-or-format": 2,
+                  "wrong-value": 31
+                },
+                "wrongButVerbatim": 28
+              },
+              "regression": {
+                "correct": 0,
+                "total": 0,
+                "positive": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 0,
+                  "unit-or-format": 0,
+                  "wrong-value": 0
+                },
+                "wrongButVerbatim": 0
+              }
+            }
+          }
+        },
+        "scope": "Native FP32 weights with CUDA FP16 autocast; no q4/browser equivalence claim"
+      }
+    },
+    "lfm25": {
+      "training": {
+        "base": {
+          "model": "LiquidAI/LFM2.5-350M",
+          "revision": "9e6c6ccf47cd318696e137d381a7ded8fe4df09f"
+        },
+        "trainRows": 415,
+        "devRows": 110,
+        "epochs": 1,
+        "rank": 16,
+        "alpha": 32,
+        "learningRate": 0.0001,
+        "accumulation": 8,
+        "trainableParameters": 5996544,
+        "trainSeconds": 146.23797713,
+        "devLossBefore": 3.092181073286867,
+        "devLossAfter": 0.24304844551823573,
+        "maxTrainingTokens": 1063,
+        "gpuPeakAllocated": 1921119744,
+        "scope": "Natural semantic numeric QA; backbone layers unchanged; fresh LoRA, no held-out training"
+      },
+      "evaluation": {
+        "scores": {
+          "provided": {
+            "base": {
+              "new": {
+                "correct": 47,
+                "total": 176,
+                "positive": {
+                  "correct": 11,
+                  "total": 136
+                },
+                "negative": {
+                  "correct": 36,
+                  "total": 40
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 2,
+                  "total": 68
+                },
+                "errors": {
+                  "unsupported-answer": 4,
+                  "false-abstention": 70,
+                  "unit-or-format": 15,
+                  "wrong-value": 40
+                },
+                "wrongButVerbatim": 14
+              },
+              "regression": {
+                "correct": 11,
+                "total": 36,
+                "positive": {
+                  "correct": 1,
+                  "total": 24
+                },
+                "negative": {
+                  "correct": 10,
+                  "total": 12
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 1,
+                  "total": 24
+                },
+                "errors": {
+                  "unsupported-answer": 2,
+                  "false-abstention": 14,
+                  "unit-or-format": 4,
+                  "wrong-value": 5
+                },
+                "wrongButVerbatim": 0
+              }
+            },
+            "trained": {
+              "new": {
+                "correct": 125,
+                "total": 176,
+                "positive": {
+                  "correct": 93,
+                  "total": 136
+                },
+                "negative": {
+                  "correct": 32,
+                  "total": 40
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 39,
+                  "total": 68
+                },
+                "errors": {
+                  "unsupported-answer": 8,
+                  "false-abstention": 1,
+                  "unit-or-format": 11,
+                  "wrong-value": 31
+                },
+                "wrongButVerbatim": 35
+              },
+              "regression": {
+                "correct": 34,
+                "total": 36,
+                "positive": {
+                  "correct": 23,
+                  "total": 24
+                },
+                "negative": {
+                  "correct": 11,
+                  "total": 12
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 23,
+                  "total": 24
+                },
+                "errors": {
+                  "unsupported-answer": 1,
+                  "false-abstention": 0,
+                  "unit-or-format": 0,
+                  "wrong-value": 1
+                },
+                "wrongButVerbatim": 2
+              }
+            }
+          },
+          "app": {
+            "base": {
+              "new": {
+                "correct": 9,
+                "total": 132,
+                "positive": {
+                  "correct": 9,
+                  "total": 132
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 2,
+                  "total": 66
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 72,
+                  "unit-or-format": 14,
+                  "wrong-value": 37
+                },
+                "wrongButVerbatim": 12
+              },
+              "regression": {
+                "correct": 0,
+                "total": 0,
+                "positive": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 0,
+                  "unit-or-format": 0,
+                  "wrong-value": 0
+                },
+                "wrongButVerbatim": 0
+              }
+            },
+            "trained": {
+              "new": {
+                "correct": 77,
+                "total": 132,
+                "positive": {
+                  "correct": 77,
+                  "total": 132
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 28,
+                  "total": 66
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 16,
+                  "unit-or-format": 7,
+                  "wrong-value": 32
+                },
+                "wrongButVerbatim": 30
+              },
+              "regression": {
+                "correct": 0,
+                "total": 0,
+                "positive": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "negative": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "factGroupsAllCorrect": {
+                  "correct": 0,
+                  "total": 0
+                },
+                "errors": {
+                  "unsupported-answer": 0,
+                  "false-abstention": 0,
+                  "unit-or-format": 0,
+                  "wrong-value": 0
+                },
+                "wrongButVerbatim": 0
+              }
+            }
+          }
+        },
+        "scope": "Native FP32 weights with CUDA FP16 autocast; no q4/browser equivalence claim"
+      }
+    }
+  },
+  "browser": {
+    "qwen35-trained-q4": {
+      "scores": {
+        "provided": {
+          "base": {
+            "new": {
+              "correct": 98,
+              "total": 176,
+              "positive": {
+                "correct": 82,
+                "total": 136
+              },
+              "negative": {
+                "correct": 16,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 33,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 24,
+                "false-abstention": 1,
+                "unit-or-format": 22,
+                "wrong-value": 31
+              },
+              "wrongButVerbatim": 30
+            },
+            "regression": {
+              "correct": 20,
+              "total": 36,
+              "positive": {
+                "correct": 14,
+                "total": 24
+              },
+              "negative": {
+                "correct": 6,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 14,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 6,
+                "false-abstention": 1,
+                "unit-or-format": 6,
+                "wrong-value": 3
+              },
+              "wrongButVerbatim": 2
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 137,
+              "total": 176,
+              "positive": {
+                "correct": 107,
+                "total": 136
+              },
+              "negative": {
+                "correct": 30,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 47,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 10,
+                "false-abstention": 0,
+                "unit-or-format": 12,
+                "wrong-value": 17
+              },
+              "wrongButVerbatim": 22
+            },
+            "regression": {
+              "correct": 34,
+              "total": 36,
+              "positive": {
+                "correct": 22,
+                "total": 24
+              },
+              "negative": {
+                "correct": 12,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 22,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 2,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          }
+        },
+        "app": {
+          "base": {
+            "new": {
+              "correct": 67,
+              "total": 132,
+              "positive": {
+                "correct": 67,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 23,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 10,
+                "unit-or-format": 18,
+                "wrong-value": 37
+              },
+              "wrongButVerbatim": 23
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 92,
+              "total": 132,
+              "positive": {
+                "correct": 92,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 35,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 16,
+                "unit-or-format": 7,
+                "wrong-value": 17
+              },
+              "wrongButVerbatim": 15
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          }
+        }
+      },
+      "environment": {
+        "secureContext": true,
+        "webgpu": true,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "adapter": {
+          "vendor": "apple",
+          "architecture": "metal-3",
+          "device": "",
+          "description": ""
+        },
+        "ready": true,
+        "models": [
+          "qwen35",
+          "qwen35-trained-q4",
+          "qwen25",
+          "qwen25-trained-q4",
+          "lfm25",
+          "lfm25-f32",
+          "lfm25-trained-q4",
+          "lfm25-trained-q4f32"
+        ],
+        "loaded": true,
+        "variant": "qwen35-trained-q4",
+        "scope": "full",
+        "questions": 344,
+        "loadSeconds": 2.2978700000047683,
+        "lastResult": {
+          "id": "ca07d4a45c93044aef9b",
+          "phase": "app",
+          "gate": 0,
+          "gold": "15분",
+          "answer": "NOT_FOUND",
+          "correct": false,
+          "seconds": 0.5929599999785423,
+          "variant": "qwen35-trained-q4"
+        }
+      },
+      "inputs": {
+        "graph": "01343cfb9ff914899a0cbdf2195d7cd24f0b121d7847374b66b1f386b6a3bc0d",
+        "dataset": "f5c74aeffedb3ec7aaddad8e1290e8dd2eefcf29e55f24afd39b5f41dfa19bb5",
+        "evidence": "15f88d2a49256eb3b80453d3b349d873eecadc49063db08de27c69539c10dbbd"
+      },
+      "scope": "Actual WebGPU browser q4, paired gate=0/1; baseline timing includes adapter computation overhead",
+      "groundedExact": 92,
+      "refusalWithCorrectSource": 0
+    },
+    "qwen25-trained-q4": {
+      "scores": {
+        "provided": {
+          "base": {
+            "new": {
+              "correct": 47,
+              "total": 176,
+              "positive": {
+                "correct": 44,
+                "total": 136
+              },
+              "negative": {
+                "correct": 3,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 11,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 37,
+                "false-abstention": 0,
+                "unit-or-format": 31,
+                "wrong-value": 61
+              },
+              "wrongButVerbatim": 30
+            },
+            "regression": {
+              "correct": 13,
+              "total": 36,
+              "positive": {
+                "correct": 9,
+                "total": 24
+              },
+              "negative": {
+                "correct": 4,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 9,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 8,
+                "false-abstention": 0,
+                "unit-or-format": 7,
+                "wrong-value": 8
+              },
+              "wrongButVerbatim": 0
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 109,
+              "total": 176,
+              "positive": {
+                "correct": 88,
+                "total": 136
+              },
+              "negative": {
+                "correct": 21,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 34,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 19,
+                "false-abstention": 0,
+                "unit-or-format": 2,
+                "wrong-value": 46
+              },
+              "wrongButVerbatim": 53
+            },
+            "regression": {
+              "correct": 31,
+              "total": 36,
+              "positive": {
+                "correct": 22,
+                "total": 24
+              },
+              "negative": {
+                "correct": 9,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 22,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 3,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 2
+              },
+              "wrongButVerbatim": 4
+            }
+          }
+        },
+        "app": {
+          "base": {
+            "new": {
+              "correct": 34,
+              "total": 132,
+              "positive": {
+                "correct": 34,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 7,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 8,
+                "unit-or-format": 27,
+                "wrong-value": 63
+              },
+              "wrongButVerbatim": 22
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 72,
+              "total": 132,
+              "positive": {
+                "correct": 72,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 24,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 14,
+                "unit-or-format": 2,
+                "wrong-value": 44
+              },
+              "wrongButVerbatim": 39
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          }
+        }
+      },
+      "environment": {
+        "secureContext": true,
+        "webgpu": true,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "adapter": {
+          "vendor": "apple",
+          "architecture": "metal-3",
+          "device": "",
+          "description": ""
+        },
+        "ready": true,
+        "models": [
+          "qwen25",
+          "qwen25-trained-q4",
+          "lfm25",
+          "lfm25-f32",
+          "lfm25-trained-q4",
+          "lfm25-trained-q4f32"
+        ],
+        "loaded": true,
+        "variant": "qwen25-trained-q4",
+        "scope": "full",
+        "questions": 344,
+        "loadSeconds": 2.772759999990463,
+        "lastResult": {
+          "id": "ca07d4a45c93044aef9b",
+          "phase": "app",
+          "gate": 0,
+          "gold": "15분",
+          "answer": "1분",
+          "correct": false,
+          "seconds": 0.45952999997138977,
+          "variant": "qwen25-trained-q4"
+        }
+      },
+      "inputs": {
+        "graph": "713a93d4ffdf581a3b271b4fd260d41ca3dc1f6274a8933b02601ca1de744f5d",
+        "dataset": "f5c74aeffedb3ec7aaddad8e1290e8dd2eefcf29e55f24afd39b5f41dfa19bb5",
+        "evidence": "15f88d2a49256eb3b80453d3b349d873eecadc49063db08de27c69539c10dbbd"
+      },
+      "scope": "Actual WebGPU browser q4, paired gate=0/1; baseline timing includes adapter computation overhead",
+      "groundedExact": 72,
+      "refusalWithCorrectSource": 0
+    },
+    "lfm25-trained-q4f32": {
+      "scores": {
+        "provided": {
+          "base": {
+            "new": {
+              "correct": 45,
+              "total": 176,
+              "positive": {
+                "correct": 8,
+                "total": 136
+              },
+              "negative": {
+                "correct": 37,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 3,
+                "false-abstention": 98,
+                "unit-or-format": 6,
+                "wrong-value": 24
+              },
+              "wrongButVerbatim": 9
+            },
+            "regression": {
+              "correct": 11,
+              "total": 36,
+              "positive": {
+                "correct": 1,
+                "total": 24
+              },
+              "negative": {
+                "correct": 10,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 1,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 2,
+                "false-abstention": 22,
+                "unit-or-format": 1,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 116,
+              "total": 176,
+              "positive": {
+                "correct": 90,
+                "total": 136
+              },
+              "negative": {
+                "correct": 26,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 36,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 14,
+                "false-abstention": 1,
+                "unit-or-format": 5,
+                "wrong-value": 40
+              },
+              "wrongButVerbatim": 50
+            },
+            "regression": {
+              "correct": 35,
+              "total": 36,
+              "positive": {
+                "correct": 24,
+                "total": 24
+              },
+              "negative": {
+                "correct": 11,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 24,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 1,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 1
+            }
+          }
+        },
+        "app": {
+          "base": {
+            "new": {
+              "correct": 7,
+              "total": 132,
+              "positive": {
+                "correct": 7,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 101,
+                "unit-or-format": 5,
+                "wrong-value": 19
+              },
+              "wrongButVerbatim": 7
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 76,
+              "total": 132,
+              "positive": {
+                "correct": 76,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 28,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 17,
+                "unit-or-format": 4,
+                "wrong-value": 35
+              },
+              "wrongButVerbatim": 33
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          }
+        }
+      },
+      "environment": {
+        "secureContext": true,
+        "webgpu": true,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+        "adapter": {
+          "vendor": "apple",
+          "architecture": "metal-3",
+          "device": "",
+          "description": ""
+        },
+        "ready": true,
+        "models": [
+          "qwen35",
+          "qwen35-trained-q4",
+          "qwen25",
+          "qwen25-trained-q4",
+          "lfm25",
+          "lfm25-f32",
+          "lfm25-trained-q4",
+          "lfm25-trained-q4f32"
+        ],
+        "loaded": true,
+        "variant": "lfm25-trained-q4f32",
+        "scope": "full",
+        "questions": 344,
+        "loadSeconds": 1.792875,
+        "lastResult": {
+          "id": "ca07d4a45c93044aef9b",
+          "phase": "app",
+          "gate": 0,
+          "gold": "15분",
+          "answer": "NOT_FOUND",
+          "correct": false,
+          "seconds": 0.3055199999809265,
+          "promptTokens": 251,
+          "newTokens": 4,
+          "variant": "lfm25-trained-q4f32"
+        }
+      },
+      "inputs": {
+        "graph": "e08a8160ba2036fbf9d25fa11980cc597d54efe78fd5b688a9de65e00a9db265",
+        "dataset": "f5c74aeffedb3ec7aaddad8e1290e8dd2eefcf29e55f24afd39b5f41dfa19bb5",
+        "evidence": "15f88d2a49256eb3b80453d3b349d873eecadc49063db08de27c69539c10dbbd"
+      },
+      "scope": "Actual WebGPU browser q4, paired gate=0/1; baseline timing includes adapter computation overhead",
+      "groundedExact": 76,
+      "refusalWithCorrectSource": 0
+    }
+  },
+  "cpu": {
+    "lfm25-q4": {
+      "requests": 688,
+      "complete": true,
+      "scores": {
+        "provided": {
+          "base": {
+            "new": {
+              "correct": 35,
+              "total": 176,
+              "positive": {
+                "correct": 5,
+                "total": 136
+              },
+              "negative": {
+                "correct": 30,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 1,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 10,
+                "false-abstention": 61,
+                "unit-or-format": 27,
+                "wrong-value": 43
+              },
+              "wrongButVerbatim": 9
+            },
+            "regression": {
+              "correct": 9,
+              "total": 36,
+              "positive": {
+                "correct": 0,
+                "total": 24
+              },
+              "negative": {
+                "correct": 9,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 3,
+                "false-abstention": 15,
+                "unit-or-format": 4,
+                "wrong-value": 5
+              },
+              "wrongButVerbatim": 0
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 116,
+              "total": 176,
+              "positive": {
+                "correct": 87,
+                "total": 136
+              },
+              "negative": {
+                "correct": 29,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 35,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 11,
+                "false-abstention": 1,
+                "unit-or-format": 9,
+                "wrong-value": 39
+              },
+              "wrongButVerbatim": 44
+            },
+            "regression": {
+              "correct": 32,
+              "total": 36,
+              "positive": {
+                "correct": 22,
+                "total": 24
+              },
+              "negative": {
+                "correct": 10,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 22,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 2,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 2
+              },
+              "wrongButVerbatim": 4
+            }
+          }
+        },
+        "app": {
+          "base": {
+            "new": {
+              "correct": 5,
+              "total": 132,
+              "positive": {
+                "correct": 5,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 1,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 65,
+                "unit-or-format": 22,
+                "wrong-value": 40
+              },
+              "wrongButVerbatim": 5
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 71,
+              "total": 132,
+              "positive": {
+                "correct": 71,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 25,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 18,
+                "unit-or-format": 7,
+                "wrong-value": 36
+              },
+              "wrongButVerbatim": 33
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          }
+        }
+      }
+    },
+    "lfm25-q4f32": {
+      "requests": 688,
+      "complete": true,
+      "scores": {
+        "provided": {
+          "base": {
+            "new": {
+              "correct": 43,
+              "total": 176,
+              "positive": {
+                "correct": 6,
+                "total": 136
+              },
+              "negative": {
+                "correct": 37,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 3,
+                "false-abstention": 98,
+                "unit-or-format": 6,
+                "wrong-value": 26
+              },
+              "wrongButVerbatim": 6
+            },
+            "regression": {
+              "correct": 10,
+              "total": 36,
+              "positive": {
+                "correct": 0,
+                "total": 24
+              },
+              "negative": {
+                "correct": 10,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 2,
+                "false-abstention": 22,
+                "unit-or-format": 1,
+                "wrong-value": 1
+              },
+              "wrongButVerbatim": 1
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 116,
+              "total": 176,
+              "positive": {
+                "correct": 90,
+                "total": 136
+              },
+              "negative": {
+                "correct": 26,
+                "total": 40
+              },
+              "factGroupsAllCorrect": {
+                "correct": 36,
+                "total": 68
+              },
+              "errors": {
+                "unsupported-answer": 14,
+                "false-abstention": 1,
+                "unit-or-format": 5,
+                "wrong-value": 40
+              },
+              "wrongButVerbatim": 50
+            },
+            "regression": {
+              "correct": 34,
+              "total": 36,
+              "positive": {
+                "correct": 23,
+                "total": 24
+              },
+              "negative": {
+                "correct": 11,
+                "total": 12
+              },
+              "factGroupsAllCorrect": {
+                "correct": 23,
+                "total": 24
+              },
+              "errors": {
+                "unsupported-answer": 1,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 1
+              },
+              "wrongButVerbatim": 2
+            }
+          }
+        },
+        "app": {
+          "base": {
+            "new": {
+              "correct": 5,
+              "total": 132,
+              "positive": {
+                "correct": 5,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 100,
+                "unit-or-format": 6,
+                "wrong-value": 21
+              },
+              "wrongButVerbatim": 5
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          },
+          "trained": {
+            "new": {
+              "correct": 75,
+              "total": 132,
+              "positive": {
+                "correct": 75,
+                "total": 132
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 28,
+                "total": 66
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 16,
+                "unit-or-format": 4,
+                "wrong-value": 37
+              },
+              "wrongButVerbatim": 34
+            },
+            "regression": {
+              "correct": 0,
+              "total": 0,
+              "positive": {
+                "correct": 0,
+                "total": 0
+              },
+              "negative": {
+                "correct": 0,
+                "total": 0
+              },
+              "factGroupsAllCorrect": {
+                "correct": 0,
+                "total": 0
+              },
+              "errors": {
+                "unsupported-answer": 0,
+                "false-abstention": 0,
+                "unit-or-format": 0,
+                "wrong-value": 0
+              },
+              "wrongButVerbatim": 0
+            }
+          }
+        }
+      }
+    },
+    "qwen25-q4": {
+      "requests": 152,
+      "complete": false
+    },
+    "qwen35-q4": {
+      "requests": 328,
+      "complete": false
+    }
+  },
+  "exports": {
+    "qwen35": {
+      "modelBytes": 595026034,
+      "files": {
+        "model_q4.onnx_data": {
+          "bytes": 550764544,
+          "sha256": "ac65b1f1220314ef2debc02545f5aa5702ec201e723ca45dce2bfefc85921859"
+        },
+        "model_q4.onnx": {
+          "bytes": 44261490,
+          "sha256": "f2713e76dd9d2ea14e177fb027923c0392c00f18a134f7222ee99d2ab0490f40"
+        }
+      },
+      "tokenizerJsonBytes": 19990450
+    },
+    "qwen35-trained-q4": {
+      "modelBytes": 616911108,
+      "files": {
+        "model_q4.onnx_data": {
+          "bytes": 550764544,
+          "sha256": "ac65b1f1220314ef2debc02545f5aa5702ec201e723ca45dce2bfefc85921859"
+        },
+        "model_q4.onnx": {
+          "bytes": 66146564,
+          "sha256": "01343cfb9ff914899a0cbdf2195d7cd24f0b121d7847374b66b1f386b6a3bc0d"
+        }
+      },
+      "tokenizerJsonBytes": 19990450
+    },
+    "qwen25-trained-q4": {
+      "modelBytes": 821507674,
+      "files": {
+        "model_q4.onnx": {
+          "bytes": 821507674,
+          "sha256": "713a93d4ffdf581a3b271b4fd260d41ca3dc1f6274a8933b02601ca1de744f5d"
+        }
+      },
+      "tokenizerJsonBytes": 11422586
+    },
+    "lfm25-trained-q4": {
+      "modelBytes": 317885353,
+      "files": {
+        "model_q4.onnx_data": {
+          "bytes": 293629952,
+          "sha256": "71ec6ad38a4c463dcb3dba671d06a1d9861be3a23e51290d818b95c0b7d2a5db"
+        },
+        "model_q4.onnx": {
+          "bytes": 24255401,
+          "sha256": "2a59d26609c82cf08ef8032d86da3d2bbf6dfd25e928840a1585606c34cbd2ad"
+        }
+      },
+      "tokenizerJsonBytes": 4733977
+    },
+    "lfm25-trained-q4f32": {
+      "modelBytes": 505276174,
+      "files": {
+        "model_q4f32.onnx_data": {
+          "bytes": 481030144,
+          "sha256": "ef0cabf96634abb92c4d1bf87207e5cb3dfd301717229a392e4ccd253ba67a68"
+        },
+        "model_q4f32.onnx": {
+          "bytes": 24246030,
+          "sha256": "e08a8160ba2036fbf9d25fa11980cc597d54efe78fd5b688a9de65e00a9db265"
+        }
+      },
+      "tokenizerJsonBytes": 4733977
+    }
+  },
+  "timing": {
+    "models": {
+      "qwen35": {
+        "requests": 24,
+        "medianSeconds": 0.6692049999833107,
+        "p95Seconds": 0.9454472499996424,
+        "loadSeconds": 1.9457300000190736
+      },
+      "qwen35-trained-q4": {
+        "requests": 24,
+        "medianSeconds": 0.7667425000071526,
+        "p95Seconds": 1.1000062499940395,
+        "loadSeconds": 1.689074999988079
+      },
+      "qwen25-trained-q4": {
+        "requests": 24,
+        "medianSeconds": 0.558142500013113,
+        "p95Seconds": 0.8177662499904633,
+        "loadSeconds": 3.8858050000071525
+      },
+      "lfm25-trained-q4f32": {
+        "requests": 24,
+        "medianSeconds": 0.31775000002980236,
+        "p95Seconds": 0.436424499976635,
+        "loadSeconds": 1.1966349999904633
+      }
+    },
+    "questions": 12,
+    "repetitions": 2,
+    "warmupRequestsPerModel": 1,
+    "scope": "Serial Mac WebGPU generation, preencoded prompts, max 24 tokens; excludes network download, routing/retrieval and startup compilation; localhost warm asset loading"
+  },
+  "browserLibraries": {
+    "transformersJs": "4.3.0",
+    "onnxruntimeWeb": "1.31.0-dev.20260914-8d85527a0"
+  },
+  "preservation": {
+    "lfm25-q4": {
+      "preservedInitializers": 354
+    },
+    "lfm25-q4f32": {
+      "preservedInitializers": 253
+    },
+    "qwen25-q4": {
+      "preservedInitializers": 2261
+    },
+    "qwen35-q4": {
+      "preservedInitializers": 1460,
+      "features": [
+        {
+          "gate": null,
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "lora_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "embed_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": null,
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "lora_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "embed_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": null,
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "lora_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "embed_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": null,
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "lora_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "embed_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": null,
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "lora_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "embed_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": null,
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "lora_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        },
+        {
+          "gate": "embed_scale",
+          "exact": true,
+          "maxAbsDifference": 0.0
+        }
+      ]
+    },
+    "scope": "Original serialized tensor equality for four graphs; 18 real Qwen feature probes with QA disabled"
+  },
+  "baselineOriginalAnswerAgreement": {
+    "exact": 344,
+    "total": 344
+  },
+  "backup": {
+    "sft-qwen35-results": {
+      "step": 415,
+      "bytes": 44896044,
+      "sha256": "333004a31de49675396b04d539a7aece2d65053ed2cdcae570a78a94d281e1c6",
+      "verified": true
+    },
+    "sft-qwen25-results": {
+      "step": 415,
+      "bytes": 35267460,
+      "sha256": "70c01f81be18941fcdd8a0f76bc4d526bb5d4c3f0710651e20efcfd4eb85d1c3",
+      "verified": true
+    },
+    "sft-qwen25": {
+      "step": 415,
+      "bytes": 97821780,
+      "sha256": "daa45931071df24a2197dcc0d99f5b582b76d0f456a1e655d7a552eca9c9da69",
+      "verified": true
+    },
+    "sft-qwen35": {
+      "step": 415,
+      "bytes": 120340800,
+      "sha256": "448eb14bbc5a068e44c51581b7bc0e418405c5b3675307d6d490a82ae076ef19",
+      "verified": true
+    },
+    "sft-lfm25-results": {
+      "step": 415,
+      "bytes": 23356049,
+      "sha256": "b3386b54527629c2d83539288aef6632f55725691b5bc2b9f2771372ee7175b0",
+      "verified": true
+    },
+    "sft-lfm25": {
+      "step": 415,
+      "bytes": 66610421,
+      "sha256": "8c88cfef3f9b4d002d73c869d2cf0a8fb00072654ade9566a94a27dbfeab6dbb",
+      "verified": true
+    }
+  },
+  "resume": {
+    "freshRuntime": true,
+    "restored": [
+      {
+        "stage": "sft-lfm25-results",
+        "step": 415
+      },
+      {
+        "stage": "sft-qwen25",
+        "step": 415
+      }
+    ]
+  },
+  "gpuCleanup": {
+    "ownedRuntimeStopped": true,
+    "reason": "All final GPU artifacts were verified on Mac before stop"
+  },
+  "verification": {
+    "focusedPythonTests": 63,
+    "allThreeNativeRequests": 2064,
+    "allThreeWebgpuRequests": 2064
+  },
+  "adoption": {
+    "priority": "qwen35-trained-q4",
+    "productionEnabled": false,
+    "remainingWrongButVerbatim": 15,
+    "reason": "Best tested accuracy/size balance; question-field semantic validation and live questions remain necessary"
+  },
+  "localCleanup": {
+    "ownedJobs": {
+      "browserServerPid": "stopped",
+      "collectorPid": "already stopped",
+      "q4EvaluationPid": "already stopped",
+      "qwen25EvaluationPid": "already stopped",
+      "qwen35EvaluationPid": "already stopped"
+    },
+    "modelsResultsCheckpointsRetained": true
+  }
+}

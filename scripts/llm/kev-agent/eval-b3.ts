@@ -7,7 +7,7 @@
  *   act     손으로 쓴 대화 흐름 60문항(`act-test.jsonl`, 시험 챔피언만). 판정기만의 흐름 정답률과,
  *           앞 상성을 대화에 두고 앱이 어느 쌍으로 답하는가(판정기 있을 때 / 모델 없을 때)
  *
- * 검색 벡터(`model.retrieval`)는 Node 에서 돌리지 못해 끈 채로 잰다 — 상성 대화 중 벡터가 새 질문을 빼내는 길은 빠진다.
+ * RETRIEVAL_EVAL=1이면 실제 앱 검색과 q4 임베딩을 함께 잰다. 기본값은 검색을 끈 분류 평가다.
  *
  * 판정기: app(앱 판정기 서버 + public 의 헤드) 또는 kev 서버. JUDGE=offline 이면 서버 없이 오프라인 판정기(모델 없는 기기의 판정기)로 잰다.
  *   npx tsx scripts/llm/kev-agent/eval-b3.ts --judges app,b3=http://127.0.0.1:8013
@@ -21,6 +21,7 @@ import { detectChampions } from "../../../src/lib/advisor/intent";
 import { actFromProbs, actQuestion, actState } from "../../../src/lib/advisor/conversation";
 import { ACT_HEAD, planAnswer, understand, type AnswerPlan, type PlanContext, type PlanDeps, type PlanTurn } from "../../../src/lib/advisor/plan";
 import { JUDGE_TIER_LABELS, ROOT, appJudge, judgeTierOf, kevJudge, loadData, planFlags, readJsonl, saveJudgeCache, type Judge, type Lang } from "./lib";
+import { evaluationSearch } from "./retrieval_eval";
 
 const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -53,7 +54,7 @@ async function main() {
     // kev 서버: "이름=url". 헤드 이름은 무시하고 서버 하나가 모든 질문을 받는다
     const [name, url] = spec === "app" ? ["app", undefined] : spec.split("=");
     const judge: Judge = url ? kevJudge(url) : appJudge;
-    const deps: PlanDeps = { judge, search: () => Promise.reject(new Error("Node 에는 검색 벡터가 없다")) };
+    const deps: PlanDeps = { judge, search: evaluationSearch(ROOT) };
     const score: Record<string, [number, number]> = {};
     const add = (key: string, ok: boolean) => {
       const c = (score[key] ??= [0, 0]);

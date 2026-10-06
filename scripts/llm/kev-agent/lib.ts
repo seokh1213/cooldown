@@ -14,6 +14,7 @@ import { encodeJudgeRow, JUDGE_SPECIAL, readJudgeHead, scoreJudge, type JudgeHea
 import { AutoTokenizer, type PreTrainedTokenizer } from "@huggingface/transformers";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { offlineJudge } from "../../../src/lib/advisor/offlineJudge";
+import { evaluationPaths } from "./evaluation_config";
 import type { JudgeTier, PlanContext } from "../../../src/lib/advisor/plan";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
@@ -65,11 +66,13 @@ export function loadData(lang: Lang): AdvisorData {
 }
 
 const heads = new Map<string, JudgeHead>();
+const evaluation = evaluationPaths(ROOT);
 function head(name: string): JudgeHead {
   const hit = heads.get(name);
   if (hit) return hit;
   // 실험 헤드는 research 쪽에 둔다. 앱에 싣기 전까지 public 에 넣지 않는다.
-  const dir = [path.join(ROOT, "public/models/judge"), path.join(ROOT, "research/llm-evals/kev-agent/heads")].find((d) => fs.existsSync(path.join(d, `${name}.json`)))!;
+  const dir = evaluation.heads.find((d) => fs.existsSync(path.join(d, `${name}.json`)));
+  if (!dir) throw new Error(`Evaluation head unavailable: ${name}`);
   const meta = read<JudgeHeadMeta>(path.join(dir, `${name}.json`));
   const buf = fs.readFileSync(path.join(dir, `${name}.bin`));
   const h = readJudgeHead(meta, buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer);
@@ -79,9 +82,10 @@ function head(name: string): JudgeHead {
 
 const APP_JUDGE = process.env.APP_JUDGE ?? "http://127.0.0.1:8010";
 const judgeCache = new Map<string, number[][]>();
-const cacheFile = path.join(ROOT, "research/llm-evals/kev-agent/.app-judge-cache.json");
+const cacheFile = evaluation.cache;
 if (fs.existsSync(cacheFile)) for (const [k, v] of Object.entries(read<Record<string, number[][]>>(cacheFile))) judgeCache.set(k, v);
 export function saveJudgeCache() {
+  fs.mkdirSync(path.dirname(cacheFile), { recursive: true });
   fs.writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(judgeCache)));
 }
 
@@ -94,7 +98,7 @@ export type Judge = (headName: string, state: string, questions: JudgeQuestion[]
 let judgeTokenizer: Promise<PreTrainedTokenizer> | undefined;
 export function hiddenJudge(url: string): Judge {
   return async (headName, state, questions) => {
-    const key = JSON.stringify(["hidden", headName, state, questions]);
+    const key = JSON.stringify([evaluation.namespace, "hidden", headName, state, questions]);
     const hit = judgeCache.get(key);
     if (hit) return hit;
     const tokenizer = await (judgeTokenizer ??= AutoTokenizer.from_pretrained(ADVISOR_MODEL.id));
@@ -164,14 +168,14 @@ const judgeOverride =
  *
  * `model` 이 false 면(`--no-model`, "모델 없음" 행) 판정기 없이 낱말 규칙만 — 기준선이다. true 면 `JUDGE=offline` 일 때 모델 없는
  * 기기의 오프라인 판정기(동의 전·모델 없음 그대로: `consented`·`canUseModel` false), 그 밖은 모델을 받아 동의한 기기의 모델 판정기.
- * 검색 벡터는 Node 에서 돌리지 못해 늘 끈다.
+ * RETRIEVAL_EVAL=1이면 q4 임베딩 서버로 실제 앱 검색을 함께 평가한다.
  */
 export function judgeTierOf(model: boolean): JudgeTier {
   return !model ? "none" : process.env.JUDGE === "offline" ? "offline" : "model";
 }
 export function planFlags(model: boolean): Pick<PlanContext, "judge" | "consented" | "canUseModel" | "retrieval"> {
   const judge = judgeTierOf(model);
-  return { judge, consented: judge === "model", canUseModel: judge === "model", retrieval: false };
+  return { judge, consented: judge === "model", canUseModel: judge === "model", retrieval: judge === "model" && process.env.RETRIEVAL_EVAL === "1" };
 }
 /** 결과 표·파일 이름에 적는 판정기 단계 이름 */
 export const JUDGE_TIER_LABELS: Record<JudgeTier, string> = { model: "판정기", offline: "오프라인 판정기", none: "모델 없음" };
@@ -179,7 +183,7 @@ export const JUDGE_TIER_LABELS: Record<JudgeTier, string> = { model: "판정기"
 export const appJudge: Judge = async (headName, state, questions) => {
   headName = process.env.JUDGE_HEAD ?? headName;
   if (judgeOverride) return judgeOverride(headName, state, questions);
-  const key = JSON.stringify([headName, state, questions]);
+  const key = JSON.stringify([evaluation.namespace, headName, state, questions]);
   const hit = judgeCache.get(key);
   if (hit) return hit;
   const res = await fetch(`${APP_JUDGE}/features`, { method: "POST", body: JSON.stringify({ state, questions }) });

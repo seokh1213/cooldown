@@ -16,6 +16,8 @@ export interface ChatOptions {
   temperature?: number;
   numCtx?: number;
   numPredict?: number;
+  signal?: AbortSignal;
+  keepAlive?: number | string;
   onToken?: (token: string) => void;
   onThinking?: (token: string) => void;
 }
@@ -64,6 +66,7 @@ export async function ollamaChat(opts: ChatOptions): Promise<ChatResult> {
     messages: opts.messages,
     stream: true,
     think: opts.think ?? false,
+    ...(opts.keepAlive !== undefined ? { keep_alive: opts.keepAlive } : {}),
     options: {
       temperature: opts.temperature ?? 0.3,
       num_ctx: opts.numCtx ?? 16384,
@@ -78,6 +81,7 @@ export async function ollamaChat(opts: ChatOptions): Promise<ChatResult> {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
+    signal: opts.signal,
   });
   if (!res.ok || !res.body) {
     const text = await res.text().catch(() => "");

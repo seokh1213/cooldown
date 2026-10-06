@@ -1,0 +1,42 @@
+name: Advisor Regression
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: advisor-regression-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Compare advisor regression baseline
+        run: npm run llm:test -- --profile regression --baseline research/llm-evals/workflow/reports/regression/baseline.json --out research/.cache/quality/ci
+
+      - name: Upload regression and semantic review packet
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: advisor-regression
+          path: research/.cache/quality/ci
+          retention-days: 14
+          if-no-files-found: ignore

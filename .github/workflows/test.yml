@@ -13,7 +13,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  advisor-quality:
+    uses: ./.github/workflows/advisor-quality.yml
+
   test:
+    needs: advisor-quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

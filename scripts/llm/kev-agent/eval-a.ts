@@ -3,7 +3,7 @@
  * 정답과 견준다. 흐름은 앱 코드(`planAnswer`)를 그대로 부르고, 앞 턴의 답을 대화에 쌓아 다음 턴에 넘긴다.
  *
  * 예전 판(2026-09-27 삭제)은 AdvisorPanel 의 판단을 옮겨 적은 복사본이라 앱과 어긋났다. 이 판의 점수가 앞으로의 기준이다.
- * 검색 벡터는 Node 에서 돌리지 못해 끈 채로 잰다.
+ * RETRIEVAL_EVAL=1이면 q4 임베딩 서버로 실제 앱 검색을 함께 평가한다.
  *
  *   HIDDEN_JUDGE=http://127.0.0.1:8014 npx tsx scripts/llm/kev-agent/eval-a.ts   (판정기: hidden_judge_serve.py)
  *   JUDGE=offline npx tsx scripts/llm/kev-agent/eval-a.ts                          (모델 없는 기기: 오프라인 판정기, 서버 없이)
@@ -17,6 +17,7 @@ import { buildCompareAnswer } from "../../../src/lib/advisor/answer";
 import { matchupNotes } from "../../../src/lib/advisor/playbookNotes";
 import { planAnswer, type AnswerPlan, type PlanContext, type PlanDeps, type PlanTurn } from "../../../src/lib/advisor/plan";
 import { JUDGE_TIER_LABELS, ROOT, appJudge, judgeTierOf, loadData, planFlags, readJsonl, saveJudgeCache, type Lang } from "./lib";
+import { evaluationSearch } from "./retrieval_eval";
 
 interface Gold { kind: string; champions: string[]; mine?: string; enemy?: string; topic?: string }
 interface Turn { type: "T1" | "F" | "R" | "P"; text: string; gold: Gold }
@@ -26,7 +27,7 @@ interface Resolved { kind: string; champs: string[]; mine?: string; enemy?: stri
 const model = !process.argv.includes("--no-model");
 /** 판정기 단계: 모델 판정기 / 오프라인 판정기(JUDGE=offline) / 없음(--no-model) */
 const tier = judgeTierOf(model);
-const deps: PlanDeps = { judge: appJudge, search: () => Promise.reject(new Error("Node 에는 검색 벡터가 없다")) };
+const deps: PlanDeps = { judge: appJudge, search: evaluationSearch(ROOT) };
 
 /** 앱이 대화에 남기는 답. 상성은 `useAskAdvisor` matchupAnswer 의 카드 부분(미리 쓴 답은 뺀다 — 다음 턴 판단에 쓰지 않는다). */
 function answerOf(plan: AnswerPlan, lang: Lang, question: string): AdvisorAnswer | undefined {

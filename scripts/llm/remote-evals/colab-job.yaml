@@ -1,0 +1,89 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: colab-smoke-__RUN__
+  namespace: app-cooldown-evals
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      labels:
+        app: cooldown-colab-controller
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 90
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: initialize-auth
+          image: cooldown-evals:__RUN__-controller
+          imagePullPolicy: Never
+          workingDir: /home/node
+          command:
+            - python
+            - -c
+            - |
+              from pathlib import Path
+              import shutil
+              directory = Path('/home/node/.config/colab-cli')
+              directory.mkdir(parents=True, exist_ok=True)
+              directory.chmod(0o700)
+              token = directory / 'token.json'
+              if not token.exists():
+                  shutil.copyfile('/run/colab-auth/token.json', token)
+              token.chmod(0o600)
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: state
+              mountPath: /home/node/.config
+            - name: auth
+              mountPath: /run/colab-auth
+              readOnly: true
+      containers:
+        - name: controller
+          image: cooldown-evals:__RUN__-controller
+          imagePullPolicy: Never
+          command: [python, /workspace/repo/scripts/llm/remote-evals/colab_controller.py, --run, __RUN__]
+          workingDir: /home/node
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          volumeMounts:
+            - name: data
+              mountPath: /workspace
+            - name: state
+              mountPath: /home/node/.config
+            - name: auth
+              mountPath: /run/colab-auth
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: evaluation-data
+        - name: state
+          persistentVolumeClaim:
+            claimName: colab-state
+        - name: auth
+          secret:
+            secretName: colab-oauth
+            defaultMode: 0440

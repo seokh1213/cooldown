@@ -53,7 +53,7 @@ export function checksFor(id: string, turn: number): ContentCheck[] {
   return checks[key] ?? [];
 }
 
-function memoryChecks(record: Result): Array<{ label: string; pass: boolean }> {
+export function memoryChecks(record: Result): Array<{ label: string; pass: boolean }> {
   const key = `${record.id}:${record.turn}`;
   const memory = record.memory;
   const condition = (slot: string, status: string) => memory?.conditions.some(c => c.owner === "enemy" && c.slot === slot && c.status === status) ?? false;

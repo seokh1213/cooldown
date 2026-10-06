@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<title>Small model browser evaluation</title>
+<body><h1>브라우저 모델 실행 검증</h1><pre id="status">환경 확인 중</pre>
+<script type="importmap">{"imports":{"onnxruntime-web/webgpu":"/ort/ort.webgpu.min.mjs","onnxruntime-common":"/ort/ort.webgpu.min.mjs"}}</script>
+<script type="module">
+import * as ort from "/ort/ort.webgpu.min.mjs";
+import { AutoTokenizer, env } from "/transformers.js";
+
+const status = document.querySelector("#status");
+const show = value => { status.textContent = JSON.stringify(value, null, 2); window.pilotStatus = value; };
+window.pilotResults = [];
+
+async function init() {
+  const adapter = await navigator.gpu?.requestAdapter();
+  show({ secureContext: isSecureContext, webgpu: Boolean(adapter), userAgent: navigator.userAgent,
+    adapter: adapter ? { vendor: adapter.info.vendor, architecture: adapter.info.architecture,
+      device: adapter.info.device, description: adapter.info.description } : null });
+  if (!adapter) return;
+  ort.env.wasm.numThreads = 1;
+  ort.env.wasm.wasmPaths = "/ort/";
+  env.allowRemoteModels = false; env.allowLocalModels = true; env.localModelPath = "/tokenizer/";
+  const specifications = await (await fetch("/browser-specs.json")).json();
+  window.pilotLoad = async (key = "lfm25-trained-q4f32", scope = "probe") => {
+    const started = performance.now();
+    const specification = specifications.models[key];
+    if (window.pilotSession) await window.pilotSession.release();
+    window.pilotTokenizer = await AutoTokenizer.from_pretrained(specification.family);
+    window.pilotTasks = specifications.tasks[specification.family + (scope === "full" ? "-full" : "")];
+    window.pilotSpecification = specification;
+    window.pilotSession = await ort.InferenceSession.create(specification.graph, {
+      executionProviders: ["webgpu"], externalData: specification.externalData,
+    });
+    show({ ...window.pilotStatus, loaded: true, variant: key, scope, questions: window.pilotTasks.length,
+      loadSeconds: (performance.now() - started) / 1000 });
+  };
+  window.pilotRun = async (index = 0, gate = 1) => {
+    const row = window.pilotTasks[index], session = window.pilotSession;
+    let state = {}; let ids = row.ids; let length = ids.length; const generated = [];
+    for (const { name, dims } of window.pilotSpecification.caches) {
+      state[name] = new ort.Tensor("float32", new Float32Array(dims.reduce((size, dimension) => size * dimension, 1)), dims);
+    }
+    const started = performance.now();
+    for (let step = 0; ids.length && step < 24; step++) {
+      const feeds = { ...state, input_ids: new ort.Tensor("int64", BigInt64Array.from(ids, BigInt), [1, ids.length]),
+        attention_mask: new ort.Tensor("int64", new BigInt64Array(length).fill(1n), [1, length]) };
+      for (const name of ["lora_scale", "embed_scale", "qa_scale"]) {
+        if (session.inputNames.includes(name)) {
+          feeds[name] = new ort.Tensor("float32", new Float32Array([name === "qa_scale" ? gate : 0]), []);
+        }
+      }
+      if (session.inputNames.includes("num_logits_to_keep")) {
+        feeds.num_logits_to_keep = new ort.Tensor("int64", new BigInt64Array([1n]), []);
+      }
+      if (session.inputNames.includes("position_ids")) {
+        feeds.position_ids = new ort.Tensor("int64",
+          BigInt64Array.from(ids, (_, index) => BigInt(length - ids.length + index)), [1, ids.length]);
+      }
+      const outputs = await session.run(feeds);
+      const logits = outputs.logits.data, vocabulary = outputs.logits.dims.at(-1);
+      const offset = logits.length - vocabulary; let token = 0;
+      for (let i = 1; i < vocabulary; i++) if (logits[offset + i] > logits[offset + token]) token = i;
+      if (token === row.eos) break;
+      generated.push(token); ids = [token]; length++;
+      state = {};
+      for (const [name, tensor] of Object.entries(outputs)) {
+        if (name.startsWith("present_conv.")) state[name.replace("present_conv.", "past_conv.")] = tensor;
+        if (name.startsWith("present_recurrent.")) state[name.replace("present_recurrent.", "past_recurrent.")] = tensor;
+        if (name.startsWith("present.")) state[name.replace("present.", "past_key_values.")] = tensor;
+      }
+    }
+    const answer = row.ids.length ? window.pilotTokenizer.decode(generated, { skip_special_tokens: true }).trim() : "NOT_FOUND";
+    const result = { id: row.id, phase: row.phase ?? "provided", gate, gold: row.answer, answer, correct: answer === row.answer,
+      seconds: (performance.now() - started) / 1000, promptTokens: row.ids.length, newTokens: generated.length,
+      variant: window.pilotStatus.variant };
+    window.pilotResults.push(result); show({ ...window.pilotStatus, lastResult: result });
+    await fetch("/results", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ environment: window.pilotStatus, results: window.pilotResults }) });
+    return result;
+  };
+  show({ ...window.pilotStatus, ready: true, models: Object.keys(specifications.models) });
+}
+init().catch(error => show({ ...window.pilotStatus, error: String(error) }));
+</script>
+</body></html>

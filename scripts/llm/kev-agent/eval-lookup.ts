@@ -18,6 +18,7 @@ import { ACT_LABELS, actQuestion, actState } from "../../../src/lib/advisor/conv
 import { JUDGE_KIND_INSTRUCTIONS, JUDGE_KIND9_CRITERIA, judgeRouteState } from "../../../src/lib/advisor/routeAsk";
 import { KEV_HEAD, planAnswer, type AnswerPlan, type PlanContext, type PlanDeps, type PlanTurn } from "../../../src/lib/advisor/plan";
 import { JUDGE_TIER_LABELS, ROOT, appJudge, judgeTierOf, loadData, planFlags, readJsonl, saveJudgeCache, type Lang } from "./lib";
+import { evaluationSearch } from "./retrieval_eval";
 
 const arg = (name: string) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -73,7 +74,7 @@ const KIND9 = Object.keys(JUDGE_KIND9_CRITERIA);
 
 async function main() {
   const cases = readJsonl<Case>(path.join(ROOT, "research/llm-evals/kev-agent/lookup-test.jsonl"));
-  const deps: PlanDeps = { judge: appJudge, search: () => Promise.reject(new Error("Node 에는 검색 벡터가 없다")) };
+  const deps: PlanDeps = { judge: appJudge, search: evaluationSearch(ROOT) };
   const score: Record<string, [number, number]> = {};
   const add = (key: string, ok: boolean) => {
     const c = (score[key] ??= [0, 0]);

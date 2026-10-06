@@ -1,0 +1,137 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app-cooldown-evals
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/audit-version: latest
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/warn-version: latest
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: evaluation-data
+  namespace: app-cooldown-evals
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: microk8s-hostpath
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: colab-state
+  namespace: app-cooldown-evals
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: microk8s-hostpath
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evaluation-report
+  namespace: app-cooldown-evals
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cooldown-evaluation-report
+  template:
+    metadata:
+      labels:
+        app: cooldown-evaluation-report
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: report
+          image: cooldown-evals:__RUN__-controller
+          imagePullPolicy: Never
+          command: [python, /opt/eval-runner/serve.py, /workspace/results]
+          workingDir: /home/node
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /workspace
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: evaluation-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: evaluation-report
+  namespace: app-cooldown-evals
+spec:
+  selector:
+    app: cooldown-evaluation-report
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cooldown-evals
+  namespace: app-cooldown-evals
+spec:
+  ingressClassName: tailscale
+  defaultBackend:
+    service:
+      name: evaluation-report
+      port:
+        number: 80
+  tls:
+    - hosts: [cooldown-evals]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: report-from-tailnet
+  namespace: app-cooldown-evals
+spec:
+  podSelector:
+    matchLabels:
+      app: cooldown-evaluation-report
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: tailscale
+      ports:
+        - protocol: TCP
+          port: 8080
