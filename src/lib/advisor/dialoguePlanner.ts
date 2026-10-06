@@ -2,24 +2,17 @@
 import { resolveQuestion } from "./resolvedQuestion";
 import { planAnswer } from "./plan";
 import type { AnswerPlan, PlanContext, PlanDeps } from "./planTypes";
-import { resolveDialogueFact } from "./dialogueFacts";
-import { ruleEllipsis, penetrationCalculation } from "./dialogueRules";
+import { ruleEllipsis } from "./dialogueRules";
 import { matchupPlan } from "./dialogueMatchup";
-import { dialogueStatPlan, statPlanForQuery } from "./dialogueStats";
 import { describeRequest, planMismatch, unsupportedCondition, type RequestContract, type DialogueTrace } from "./requestContract";
 import { requestGuidance } from "./requestGuidance";
 import { conditionHint, prepareDialogueRequest, type DialogueRequest, type DialogueVariant } from "./dialogueRequest";
 import { rememberDialoguePlan, scenarioConditions, type DialogueMemory, type MatchupContext } from "./dialogueState";
 import { priorMatchup, rememberMatchupSelection } from "./dialogueMatchupMemory";
-import { knowledgeFactPlan } from "./knowledgeFactPlan";
-import { passiveMechanicPlan } from "./passiveMechanicPlan";
-import { comboAdvicePlan } from "./comboPlan";
 import { classifyRequestInput } from "./classifyRequestInput";
-import { requestIntentPlan } from "./requestIntentPlan";
-import { answerChampionIds } from "./answer";
-import { statQueryFromAnswer } from "./statQuery";
 import { mechanicsContinuation } from "./mechanicsContinuation";
-import { abilityBoundaryPlan } from "./abilityBoundaryPlan";
+import { abilityDescriptions } from "./abilityDescriptionPlan";
+import { dialogueCandidates } from "./dialogueCandidates";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
@@ -67,33 +60,22 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
       parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: requestGuidance(unsupported, ctx.lang) } } });
       continue;
     }
-    const mechanic = ctx.data.abilityRules?.size
-      ? (await import("./mechanics/plan")).approvedMechanicPlan(resolved, ctx, memory) : undefined;
-    const passive = passiveMechanicPlan(resolved, ctx, memory);
-    const knowledge = knowledgeFactPlan(resolved, ctx, memory);
-    const combo = comboAdvicePlan(resolved, ctx, memory);
-    const learned = requestIntentPlan(resolved, memory, ctx);
-    if (learned?.type === "card") contract = { operation: resolved.requestIntent?.scope === "statsAll" ? "lookup" : "explain",
-      targets: answerChampionIds(learned.answer), stat: statQueryFromAnswer(learned.answer) };
-    // 명확한 챔피언 수치 조회를 일반 규칙 문서의 어휘 겹침보다 먼저 처리한다.
-    const numeric = dialogueStatPlan(resolved, memory, ctx);
-    const preferred = abilityBoundaryPlan(resolved, ctx) ?? penetrationCalculation(question, ctx) ?? (!numeric && knowledge?.type === "code" && knowledge.knowledge ? knowledge : undefined) ?? learned ?? combo
-      ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? (numeric ? undefined : knowledge) ?? passive
-      ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
-    let stat = preferred ? undefined : numeric;
-    if (passive?.type === "card" && passive.answer.kind === "spell" && preferred === passive) {
-      contract = { operation: "explain", targets: [passive.answer.championId] };
-    }
-    if (mechanic && preferred === mechanic.plan) contract = { operation: "explain", targets: [mechanic.memory.abilityId.split(".")[0]] };
-    if (combo?.type === "card" && combo.answer.kind === "champion") contract = { operation: "advice", targets: [combo.answer.card.id] };
-    if (!preferred && !stat && deps.inferStatQuery) {
-      const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);
-      if (query) {
-        stat = statPlanForQuery(query, resolved, ctx);
-        if (stat) contract = { ...contract, operation: "lookup", stat: query, targets: query.champions };
+    const descriptions = abilityDescriptions(resolved, ctx);
+    if (descriptions) {
+      for (const [index, plan] of descriptions.entries()) {
+        const request: RequestContract = { operation: "explain", targets: [resolved.champions[index].id] };
+        trace.parts.push({ question, request, plan: plan.type });
+        parts.push({ question, request, plan });
+        memory = rememberDialoguePlan(memory, plan);
       }
+      memory.active = "compare";
+      memory.compared = resolved.champions.map(card => card.id);
+      memory.mechanic = undefined;
+      continue;
     }
-    const fact = stat || preferred ? undefined : resolveDialogueFact(resolved, memory, ctx);
+    const candidates = await dialogueCandidates(resolved, memory, ctx, deps);
+    contract = candidates.request ?? contract;
+    const { fact, mechanic } = candidates;
     const asksCompare = /비교|둘\s*중|둘|both|compare|比较|两个/i.test(question);
     const shouldAsk = fact?.pending && (!fact.pending.candidates.length || fact.pending.candidates.length > 1 && !asksCompare);
     if (shouldAsk && (request.variant === "clarify" || request.variant === "combined")) {
@@ -104,7 +86,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
       parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: clarification } } });
       continue;
     }
-    let plan = preferred ?? stat ?? fact?.plan ?? ruleEllipsis(resolved, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
+    let plan = candidates.plan ?? fact?.plan ?? ruleEllipsis(resolved, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
     plan ??= await planAnswer(resolved, ctx, deps);
     if (plan.type === "retry") plan = await planAnswer(plan.question, ctx, deps);
     const noEvidence = plan.type === "respond" || plan.type === "code" && typeof plan.answer === "string"
@@ -122,8 +104,10 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
           memory = { ...memory, matchup, conditions };
         }
       }
+      const previousMechanic = memory.mechanic;
       memory = rememberDialoguePlan(memory, plan, fact);
-      memory.mechanic = mechanic && plan === mechanic.plan ? mechanic.memory : undefined;
+      const interruptedByItem = (plan.type === "card" || plan.type === "code") && typeof plan.answer !== "string" && plan.answer.kind === "item";
+      memory.mechanic = mechanic && plan === mechanic.plan ? mechanic.memory : interruptedByItem ? previousMechanic : undefined;
       if (memory.active === "matchup") memory.conditions = scenarioConditions(question, memory.conditions, ctx.turns.length, conditionHint(resolved, memory, ctx));
     }
     const matchup = plan.type === "matchup" && memory.matchup ? { ...memory.matchup, conditions: structuredClone(memory.conditions) } : undefined;

@@ -70,7 +70,7 @@ export interface PlanContext {
 export interface PlanDeps {
   generateNumeric?: NumericGenerator;
   classifyRequest?: (question: ResolvedQuestion) => Promise<RequestIntent | undefined>;
-  /** 실험용 능력치 판정. 명확한 규칙 조회가 실패한 경우에만 호출한다. */
+  /** 명확한 능력치 조회를 보완하는 판정. 원문과 대상 선택을 유지한다. */
   inferStatQuery?: (question: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext) => Promise<ChampionStatQuery | undefined>;
   /** 판정기(`ctx.judge` 단계의 것). 거절하면(모델 없음·파일 못 받음) 부르는 단계가 낱말 규칙으로 간다. */
   judge: (headName: string, state: string, questions: JudgeQuestion[]) => Promise<number[][]>;

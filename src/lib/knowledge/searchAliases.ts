@@ -25,7 +25,8 @@ const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** 문장에서 은어가 처음 나온 자리. 없으면 -1. */
 export function aliasAt(text: string, alias: string): number {
   if (/^[ -~]+$/.test(alias)) {
-    const m = new RegExp(`(?<![a-z0-9])${escape(alias.toLowerCase())}(?![a-z0-9])`).exec(text.toLowerCase());
+    const name = escape(alias.toLowerCase()).replace(/'/g, "['’]?");
+    const m = new RegExp(`(?<![a-z0-9])${name}(?![a-z0-9])`).exec(text.toLowerCase());
     return m ? m.index : -1;
   }
   if (/^[가-힣]{1,2}$/.test(alias)) {

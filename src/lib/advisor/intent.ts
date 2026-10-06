@@ -118,16 +118,20 @@ const COMMON_WORDS = ["아이템", "템트리", "다이아", "카이팅", "회�
 
 let itemNameCache: { items: unknown; names: string[] } | null = null;
 
-function maskCommonWords(text: string, data: AdvisorData): string {
+function maskItemNames(text: string, data: AdvisorData): string {
   if (itemNameCache?.items !== data.items) {
     const names = (data.items ?? []).map((item) => item.name).filter((name): name is string => !!name && name.length >= 3);
     itemNameCache = { items: data.items, names: [...new Set(names)].sort((a, b) => b.length - a.length) };
   }
   let out = text;
-  for (const word of [...itemNameCache.names, ...COMMON_WORDS]) {
+  for (const word of itemNameCache.names) {
     if (out.includes(word)) out = out.split(word).join("□".repeat(word.length));
   }
   return out;
+}
+
+function maskCommonWords(text: string, data: AdvisorData): string {
+  return COMMON_WORDS.reduce((masked, word) => masked.split(word).join("□".repeat(word.length)), maskItemNames(text, data));
 }
 
 /**
@@ -152,17 +156,18 @@ function findMentions(data: AdvisorData, text: string): ChampionMention[] {
   // 1. 화면 언어의 정식 이름. 긴 이름부터 — "미스 포츈" 을 "포츈" 으로 자르지 않게.
   //    "리 신" 을 "리신" 이라 붙여 쓰는 경우가 흔하다. 공백 없는 형태도 정식 이름으로 본다.
   const names = [...data.cards].sort((a, b) => b.name.length - a.name.length);
+  const masked = maskCommonWords(text, data);
+  const officialText = maskItemNames(text, data);
   for (const card of names) {
     const compact = card.name.replace(/\s+/g, "");
     // 두 글자 한글 이름(오른·아리)은 낱말 앞머리에서만. "오른쪽" 이 오른, "메아리" 가 아리로 잡혔다.
     const short = /^[가-힣]{2}$/.test(card.name);
-    take(card, locate(text, card.name, short) ?? (compact !== card.name ? locate(text, compact) : undefined));
+    take(card, locate(officialText, card.name, short) ?? (compact !== card.name ? locate(officialText, compact) : undefined));
   }
 
   // 2. 줄임말. 긴 줄임말이 더 구체적이라 먼저 맞춘다. 낱말 앞머리에서만 찾고, 흔한 말과
   //    아이템 이름은 가린 뒤에 찾는다 — "아이템" 은 앞머리가 "아이"(아이번)라 앞머리 규칙만으로는
   //    못 막는다(`maskCommonWords`). 가려도 글자 수는 그대로라 위치는 원문과 같다.
-  const masked = maskCommonWords(text, data);
   const nickEntries = [...nicknames(data.cards)].sort((a, b) => b[0].length - a[0].length);
   for (const [nick, card] of nickEntries) {
     if (mentions.some((m) => m.card.id === card.id)) continue;

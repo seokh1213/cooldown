@@ -45,3 +45,19 @@ test("분류기 삭제·중복 출처·불완전한 질문 집합은 비교하�
   const partial = fixture(); partial.current.rows = [];
   assert.throws(() => comparePipelineReports(partial.current, partial.baseline, partial.provenance), /coverage mismatch/);
 });
+
+test("능력치 분류기 추가와 교체도 원본 해시와 엄격한 회귀 기준을 보존한다", () => {
+  const input = fixture();
+  input.provenance.current.dataFiles.push(["public/models/offline/stat-v1.json", "new-stat"]);
+  input.current.dataHash = digest(input.provenance.current.dataFiles);
+  const added = comparePipelineReports(input.current, input.baseline, input.provenance);
+  assert.deepEqual(added.changedArtifacts.find(row => row.file.endsWith("stat-v1.json")), {
+    file: "public/models/offline/stat-v1.json", before: undefined, after: "new-stat",
+  });
+  input.provenance.baseline.dataFiles.push(["public/models/offline/stat-v1.json", "old-stat"]);
+  input.baseline.dataHash = digest(input.provenance.baseline.dataFiles);
+  assert.equal(comparePipelineReports(input.current, input.baseline, input.provenance).changedArtifacts.at(-1)?.before, "old-stat");
+  input.provenance.current.dataFiles.pop();
+  input.current.dataHash = digest(input.provenance.current.dataFiles);
+  assert.throws(() => comparePipelineReports(input.current, input.baseline, input.provenance), /only permits/);
+});

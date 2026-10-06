@@ -15,10 +15,11 @@ export function filesUnder(directory: string): string[] {
 }
 export const fileHash = (file: string): string => createHash("sha256").update(fs.readFileSync(path.join(ROOT, file))).digest("hex");
 
-function inputs(value: unknown, pointer = "$", history: string[] = []): Array<{ q: string; history: string[]; pointer: string; lang?: Language }> {
-  if (Array.isArray(value)) return value.flatMap((row, i) => inputs(row, `${pointer}[${i}]`, history));
+export function historicalInputs(value: unknown, pointer = "$", history: string[] = []): Array<{ q: string; history: string[]; pointer: string; lang?: Language }> {
+  if (Array.isArray(value)) return value.flatMap((row, i) => historicalInputs(row, `${pointer}[${i}]`, history));
   if (!value || typeof value !== "object") return [];
   const row = value as Record<string, unknown>;
+  if (typeof row.split === "string" && ["train", "training", "dev", "development", "validation"].includes(row.split)) return [];
   if (Array.isArray(row.turns)) {
     const prior: string[] = [];
     return row.turns.flatMap((turn, i) => {
@@ -30,7 +31,8 @@ function inputs(value: unknown, pointer = "$", history: string[] = []): Array<{ 
   }
   const q = row.q ?? row.question;
   if (typeof q === "string") return [{ q, history, pointer, lang: (row.lang ?? row.language) as Language | undefined }];
-  return Object.entries(row).flatMap(([key, child]) => inputs(child, `${pointer}.${key}`, history));
+  return Object.entries(row).filter(([key]) => !["train", "training", "dev", "development", "validation"].includes(key))
+    .flatMap(([key, child]) => historicalInputs(child, `${pointer}.${key}`, history));
 }
 
 export function archivedInputs(files: string[], canonical: QualityStory[]): QualityStory[] {
@@ -40,7 +42,7 @@ export function archivedInputs(files: string[], canonical: QualityStory[]): Qual
     const text = fs.readFileSync(path.join(ROOT, file), "utf8");
     let data: unknown;
     try { data = file.endsWith(".jsonl") ? text.trim().split("\n").filter(Boolean).map(line => JSON.parse(line)) : JSON.parse(text); } catch { continue; }
-    for (const row of inputs(data)) {
+    for (const row of historicalInputs(data)) {
       const lang = row.lang ?? (/[가-힣]/.test(row.q) ? "ko_KR" : /[一-鿿]/.test(row.q) ? "zh_CN" : "en_US");
       if (seen.has(digest([lang, row.history, row.q]))) continue;
       stories.push({ id: "", suites: ["manual-archive"], lang, split: "archive", manual: true,

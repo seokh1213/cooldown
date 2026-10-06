@@ -1,7 +1,7 @@
 /** 상성의 이어 묻기·관점·새 상대를 해석한다. 기존 판정 순서를 유지한다. */
 import { buildItemCard, buildMechanicsAnswer, type AdvisorData } from "./context";
 import { buildCompareAnswer as buildCompareCard, type AdvisorAnswer } from "./answer";
-import { asksGenericAdvice, asksReason, looksChampionDirected } from "./askWords";
+import { asksGenericAdvice, asksReason, asksScenarioAdvice, looksChampionDirected } from "./askWords";
 import { judgeRouteState } from "./routeAsk";
 import { topicFromJudge, topicFromWords, topicQuestions } from "./topicJudge";
 import { actFromProbs, actFromWords, actQuestion, actState, planTurn, sideOfNewName } from "./conversation";
@@ -109,6 +109,12 @@ export async function continueMatchup(intent: Intent, deps: PlanDeps): Promise<A
   }
   // 새 이름이 내 자리인지 상대 자리인지 문형이 못 박으면 판정기보다 먼저다("오공으로 하면", "야스오 만나면")
   const side = champions.length === 1 ? sideOfNewName(question, [champions[0].name, ...(data.aliases.get(champions[0].id) ?? [])]) : undefined;
+  if (champions.length === 1 && !side && !asksScenarioAdvice(question) && !topicFromWords(question)
+    && !["advice", "counterplay", "combo"].includes(intent.requestIntent?.scope ?? "")
+    && champions[0].id !== state.mine.id && champions[0].id !== state.enemy.id) {
+    const topic = await intent.topic();
+    if (!topic || topic.topic === "general") return undefined;
+  }
   // 새 챔피언 + 스킬 지목("제드 궁 어떻게 피해")은 상대를 바꾼 것이 아니라 그 챔피언의 스킬 질문이다
   const alone = champions.length === 1 && intent.slot ? "skills" : ask;
   const turn = planTurn(state, champions, entity, act, side, alone);

@@ -14,7 +14,7 @@ import { openOllama } from "../../scripts/llm/quality/ollama";
 import { scopeMatches, observedAnswer } from "../../scripts/llm/quality/checks";
 import { graphRoute } from "../../scripts/llm/quality/model";
 import { inventoryChanges, refreshedRecords } from "../../scripts/llm/quality/audit";
-import { retiredFiles } from "../../scripts/llm/quality/archive";
+import { retiredFiles, historicalInputs } from "../../scripts/llm/quality/archive";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
 
 const story = (prefix: string, answer: string, source: string): QualityStory => ({ id: "", suites: [source], lang: "ko_KR",
@@ -22,6 +22,18 @@ const story = (prefix: string, answer: string, source: string): QualityStory => 
 const report = (): QualityReport => ({ schema: 1, profile: "model", caseHash: "cases", dataHash: "data", sourceHash: "source", scorerHash: "scorer",
   graphHash: "graph", created: "fixed", checks: [], rows: [{ id: "one", suite: ["QA"], mode: "model", question: "Q", text: "A",
     seconds: 0, checks: [{ label: "correct", pass: true }], pass: true }] });
+
+test("mixed datasets exclude training and development rows from historical evaluation", () => {
+  const rows = historicalInputs([
+    { split: "train", question: "training question" }, { split: "dev", question: "selection question" },
+    { split: "test", question: "held-out question" },
+    { train: [{ question: "nested training question" }], dev: [{ question: "nested development question" }],
+      test: [{ turns: ["history", "current question"] }] },
+  ]);
+  assert.deepEqual(rows.map(row => [row.q, row.history]), [
+    ["held-out question", []], ["history", []], ["current question", ["history"]],
+  ]);
+});
 
 test("persistent browser caching separates graph contents even when their file path is reused", () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "advisor-graph-cache-"));

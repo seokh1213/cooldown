@@ -2,6 +2,7 @@
 import type { StatName } from "@/lib/knowledge/facts";
 import type { AdvisorAnswer } from "./answer";
 import { excludesMention } from "./selectionWords";
+import { statSpelling } from "./statSpelling";
 
 export type StatLevel = 1 | 6 | 11 | 18;
 export const STAT_QUERY_TERMS: Record<StatName, string> = {
@@ -9,6 +10,11 @@ export const STAT_QUERY_TERMS: Record<StatName, string> = {
   attackDamage: "공격력", attackSpeed: "공격 속도", moveSpeed: "이동 속도",
 };
 export const ALL_CHAMPION_STATS = Object.keys(STAT_QUERY_TERMS) as StatName[];
+
+export function asksAllStats(question: string): boolean {
+  return /전체|전부|모든|모두|싹|한눈|(?:스탯|능력치)들|\b(?:all|every)\b|全部|所有|全部属性/i.test(question)
+    && /능력치|스탯|\b(?:stats?|attributes?)\b|属性/i.test(question);
+}
 export interface ChampionStatQuery {
   kind: "championStat";
   champions: string[];
@@ -19,13 +25,13 @@ export interface ChampionStatQuery {
 }
 
 const STAT_LEXICON: Array<[StatName, RegExp]> = [
-  ["healthRegen", /체[력럭려]\s*(?:재생|회[복븍])|체[젠잰]|(?:health|hp)\s*(?:regen(?:eration)?|regneration|recovery)|\bhp5\b|生命(?:值)?(?:回复|恢复)|回血|가만히.*피가\s*차는\s*양/i],
-  ["magicResist", /마법\s*저[항향]|마저|마방|magic\s*(?:resist(?:ance)?|resitance)|\bmr\b|魔抗|魔法抗性/i],
-  ["attackSpeed", /공[격걱]\s*속[도두]|공속|attack\s*speed|\bas\b|攻(?:击)?速(?:度)?/i],
-  ["moveSpeed", /이동\s*속[도두]|이속|무빙|빨라|빠르|빠른|move(?:ment)?\s*speed|\bms\b|\bfaster\b|移动速度|移速|更快/i],
-  ["attackDamage", /공[격걱][력럭]|깡공|깡뎀|\bad\b|attack\s*damage|攻击力/i],
-  ["armor", /방[어오][력럭]|방어|아머|물리\s*방어|\barmou?r\b|护甲/i],
-  ["health", /체[력럭려]|생명력(?!\s*흡수)|피통|단단|튼튼|탱키|\bhp\b|\bhealth\b|\btank(?:y|ier)\b|生命值|更肉|坦/i],
+  ["healthRegen", /체력\s*(?:재생|회복)|체젠|(?:health|hp)\s*(?:regen(?:eration)?|recovery)|\bhp5\b|生命(?:值)?(?:回复|恢复)|回血/i],
+  ["magicResist", /마법\s*저항|마저|마방|magic\s*(?:resist(?:ance)?)|\bmr\b|魔抗|魔法抗性/i],
+  ["attackSpeed", /공격\s*속도|공속|attack\s*speed|\bas\b|攻(?:击)?速(?:度)?/i],
+  ["moveSpeed", /이동\s*속도|이속|무빙|빨라|빠르|빠른|move(?:ment)?\s*speed|\bms\b|\bfaster\b|移动速度|移速|更快/i],
+  ["attackDamage", /공격력|깡공|깡뎀|\bad\b|attack\s*damage|攻击力/i],
+  ["armor", /방어력|방어|아머|물리\s*방어|\barmou?r\b|护甲/i],
+  ["health", /체력|생명력(?!\s*흡수)|피통|단단|튼튼|탱키|\bhp\b|\bhealth\b|\btank(?:y|ier)\b|生命值|更肉|坦/i],
 ];
 
 export function detectStat(question: string): StatName | undefined {
@@ -43,9 +49,11 @@ function isPerspectiveAs(question: string, index: number, word: string): boolean
 
 /** 긴 어휘가 덮는 짧은 어휘만 제외한다. 별도로 물은 체력은 체젠과 함께 남긴다. */
 function statMentions(question: string) {
-  const matches = STAT_LEXICON.flatMap(([field, pattern]) => [...question.matchAll(new RegExp(pattern.source, "gi"))]
+  const exact = STAT_LEXICON.flatMap(([field, pattern]) => [...question.matchAll(new RegExp(pattern.source, "gi"))]
     .filter(match => !(field === "attackSpeed" && isPerspectiveAs(question, match.index, match[0])))
     .map(match => ({ field, index: match.index, end: match.index + match[0].length })));
+  const matches = [...exact, ...statSpelling(question).filter(fuzzy => !exact.some(match => match.index <= fuzzy.index
+    && match.end >= fuzzy.end && match.field !== fuzzy.field))];
   return matches.filter(match => !matches.some(other => other !== match && other.index <= match.index && other.end >= match.end
       && other.end - other.index > match.end - match.index));
 }

@@ -113,5 +113,10 @@ async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOn
      */
     return { type: "card", answer: { kind: "champion", card, focus }, notice };
   }
+  if (ask === "other" && requestIntent?.scope === "other" && requestIntent.confidence >= 0.6) {
+    const withoutNames = [card.name, ...(data.aliases.get(card.id) ?? [])].reduce((text, name) => text.split(name).join(""), question);
+    if (withoutNames.replace(/[\s?!？!.,은는이가을를도]/g, "")) return { type: "code", answer: ctx.copy.noLiteAnswer };
+    return { type: "card", answer: { kind: "champion", card, view: "overview" }, notice };
+  }
   return { type: "card", answer: { kind: "champion", card, notes: championNotes(data, card, question, undefined, await judgeTopicOnce()) }, notice };
 }

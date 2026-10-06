@@ -18,14 +18,16 @@ export function normalizeMechanicQuestion(question: string): string {
       (_, stat: string, word: string) => `${stat} ${koreanNumber(word)}`);
 }
 export function correctedQuestion(question: string): string {
-  const normalized = normalizeMechanicQuestion(question);
+  const normalized = normalizeMechanicQuestion(question)
+    .replace(/^(?:아까|이전|앞서)\s*.+?(?:돌아가서|돌아와서)\s*[,，:：]?\s*/, "");
   const corrections = [...normalized.matchAll(/말고|아니라(?!면)|대신|(?<=\d\s*)아니(?=\s*\d)/g)];
   const last = corrections[corrections.length - 1];
   return last ? normalized.slice(last.index! + last[0].length).trim() : normalized.trim();
 }
 export function isMechanicFollowup(question: string): boolean {
-  const text = normalizeMechanicQuestion(question).trim();
+  const text = correctedQuestion(question);
   return /^(?:그럼|아니|그거|그건|그때|아\s*\d)/.test(text)
+    || /^(?:한|두|세|네|\d+)\s*(?:대|번|발)/.test(text)
     || /^\d+(?:\.\d+)?\s*(?:짜리|체력)?\s*(?:은|는|이면|면|일 때|로|으로)[?？\s가-힣]*$/.test(text)
     || /^(?:쿨|재사용\s*대기시간|두\s*번째|추가\s*공격|미니언|몬스터|챔피언)/.test(text);
 }
@@ -42,7 +44,7 @@ export function conversionAmount(question: string): number | undefined {
 export function cooldownRemaining(question: string): boolean | undefined {
   const text = correctedQuestion(question);
   if (!/쿨|재사용\s*대기/.test(text)) return undefined;
-  if (/끝.*(?:아니|않)|안\s*돌|돌지\s*않|남|아직.*쿨/.test(text)
+  if (/끝.*(?:아니|않)|안\s*돌|돌지\s*않|남|아직.*쿨|(?:쿨(?:타임)?|재사용\s*대기(?:시간)?)\s*(?:중|동안)/.test(text)
     && !/안\s*남|남지\s*않|남.*없/.test(text)) return true;
   if (/안\s*남|남지\s*않|남.*없|(?:다|이미)\s*돌|끝|없/.test(text)) return false;
   return undefined;
@@ -74,7 +76,7 @@ export function questionState(question: string, previous?: MechanicMemory): Ques
     state.invalidAmount = true;
   }
   if (/안\s*보이|보이지\s*않|시야.*(?:없|밖)/.test(text)) state.visibility = "unseen";
-  else if (/보이는\s*상태|보일\s*때|보이는데/.test(text)) state.visibility = "visible";
+  else if (/보이는\s*(?:상태|동안)|보일\s*때|보이는데/.test(text)) state.visibility = "visible";
   const target = /미니언|몬스터|챔피언|구조물/.exec(text)?.[0];
   if (target) state.targetType = ({ 미니언: "minion", 몬스터: "monster", 챔피언: "champion", 구조물: "structure" } as const)[target as "미니언"];
   const extra = /두\s*번째|추가\s*공격|후속|두\s*(?:발|대)|둘\s*다/.test(text);

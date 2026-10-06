@@ -14,13 +14,4 @@ export interface Example {
   label: Label;
   expected: ChampionStatQuery | null;
 }
-export interface Channel { kind: "char" | "jamo" | "context"; vocabulary: Record<string, number>; idf?: number[] }
-export interface LinearModel {
-  name: string;
-  labels: Label[];
-  channels: Channel[];
-  weights: number[][];
-  bias: number[];
-  confidence: number;
-  margin: number;
-}
+export type { Channel, LinearModel } from "../../../src/lib/advisor/statClassifierTypes";

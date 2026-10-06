@@ -1,26 +1,9 @@
-/**
- * 브라우저 질의 컨텍스트 조립
- *
- * CLI 와 **같은 코드로** 자료를 만든다. `src/lib/knowledge/` 의 조립 로직은 파일을 읽지 않으므로
- * 그대로 가져다 쓸 수 있고, 여기서는 파일 대신 `fetch` 로 재료를 모아 넘기기만 한다.
- *
- * 여기서 바로 짓는 답은 효과 태그 예/아니오, 아이템, 게임 규칙 조회다.
- * 상성 서술과 통계는 다루지 않는다.
- *
- * 받아 오는 재료
- * - 사실 카드: `llm/champion-cards-<locale>.json` (`npm run llm:build` 산출물)
- * - 지식 카드: `llm/advisor-knowledge.json` (`npm run llm:bundle` 산출물)
- * - 아이템·룬·주문·아이템 위키 분류: 앱이 이미 쓰는 정규화 데이터
- *
- * 합쳐 7MB 남짓이다. 모델(570MB)에 비하면 작고, 한 번 받으면 캐시에 남는다.
- */
+/** 브라우저와 평가기가 같은 지식 카드를 조립한다. 패치가 어긋나면 현재 수치를 단정하지 않는다. */
 import { revisionedDataPath } from "@/pwa/release";
 import { abilityIndex, type Ability, type AbilityBundle } from "./mechanics/types";
 import type { ChampionCard } from "@/lib/knowledge/facts";
-import { aliasAt } from "@/lib/knowledge/searchAliases";
-import { askedRuleKinds } from "@/lib/knowledge/rules";
 import { asksPrice } from "./gameMeta";
-import itemAliasFile from "../../../knowledge/item-aliases.json";
+import { findItems } from "./itemMatching";
 import type { CuratedTip } from "@/lib/knowledge/knowledgeCore";
 import {
   indexRules,
@@ -215,12 +198,12 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
  * 영어 낱말 속 알파벳에 걸리지 않도록 슬롯 문자는 앞뒤가 한글이거나 경계일 때만 센다.
  */
 export function detectSlot(question: string): string | undefined {
-  if (/패시브|기본\s?지속/.test(question)) return "P";
+  if (/패시브|기본\s?지속|\bpassive\b|被动/i.test(question)) return "P";
   // 한글에는 \b 가 듣지 않는다. "가렌 궁 뭐야" 를 놓쳤다.
   // 영어 "ult·ulti·ultimate" 와 중국어 "大招" 도 궁이다. 상성 대화 중 "give me the ult cooldowns for both",
   // "两人大招CD各是多少" 가 슬롯 없이 네 스킬 표로 나갔다. 영어는 낱말 경계로 잰다("result", "ultra" 에 걸리면 안 된다).
-  if (/궁극기|궁(?=[\s을은이의로에만도]|$)|\bult(?:i|imate)?\b|大招/i.test(question)) return "R";
-  const match = /(^|[^A-Za-z])([QWERqwer])($|[^A-Za-z])/.exec(question);
+  if (/궁극기|궁(?=[\s을은이의으로에만도]|$)|\bult(?:i|imate)?\b|大招/i.test(question)) return "R";
+  const match = /(^|[^A-Za-z])([PQWERpqwer])($|[^A-Za-z])/.exec(question);
   return match ? match[2].toUpperCase() : undefined;
 }
 
@@ -408,64 +391,4 @@ function htmlToText(html: string): string {
     .replace(/<[^>]+>/g, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
-}
-
-/**
- * 질문에서 아이템 이름을 찾는다.
- * 챔피언과 같은 이유로 긴 이름을 먼저 맞춘다. "판금 장화" 를 "장화" 로 자르면 안 된다.
- */
-function findItems(data: AdvisorData, question: string, limit = 3) {
-  const named = data.items
-    .filter((item) => item.name && item.name.length >= 2 && item.description)
-    .sort((a, b) => b.name.length - a.name.length);
-  const found: typeof named = [];
-  const taken: Array<[number, number]> = [];
-  const take = (item: (typeof named)[number], index: number, length: number) => {
-    if (index < 0 || found.includes(item)) return;
-    if (taken.some(([start, end]) => index < end && index + length > start)) return;
-    taken.push([index, index + length]);
-    found.push(item);
-  };
-  for (const item of named) {
-    take(item, question.indexOf(item.name), item.name.length);
-    if (found.length >= limit) return found;
-  }
-  /*
-   * 줄임말("쇼진 몇 골드야?", "botrk passive", "中亚能挡什么"). knowledge/item-aliases.json — 협곡 기본 아이템 id 마다 세 언어.
-   * 공식 이름을 먼저 찾고, 남은 자리에서 긴 줄임말부터. 짧은 한글·영문은 낱말 경계로(`aliasAt`).
-   */
-  // 다른 언어 공식 이름("Blade of the Ruined King" 을 한국어 화면에서). 긴 이름부터, 영문은 낱말 경계로.
-  if (data.itemNames) {
-    const byIdAll = new Map(named.map((item) => [item.id, item]));
-    const other = [...data.itemNames]
-      .flatMap(([id, list]) => list.map((name) => ({ id, name })))
-      .filter(({ id, name }) => byIdAll.get(id)?.name !== name)
-      .sort((a, b) => b.name.length - a.name.length);
-    for (const { id, name } of other) {
-      const item = byIdAll.get(id);
-      if (item) take(item, aliasAt(question, name), name.length);
-      if (found.length >= limit) return found;
-    }
-  }
-  // 룬·소환사 주문을 묻는다고 밝힌 질문에서는 줄임말로만 걸린 아이템을 보지 않는다. "리안드리 화상으로 영혼 거두는 룬 발동돼?" 는 룬 질문이다.
-  if (askedRuleKinds(question).size > 0) return found;
-  const byId = new Map(named.map((item) => [item.id, item]));
-  // 챔피언 별명 안에 든 줄임말은 아이템이 아니다. "破败王来反野"(비에고)의 "破败" 가 몰락한 왕의 검으로 잡혔다.
-  const championAliases = [...(data.aliases?.values() ?? [])].flat().filter((alias) => alias.length >= 2 && question.includes(alias));
-  for (const { id, alias } of itemAliasList()) {
-    const item = byId.get(id);
-    if (!item) continue;
-    if (championAliases.some((name) => name !== alias && name.includes(alias))) continue;
-    take(item, aliasAt(question, alias), alias.length);
-    if (found.length >= limit) break;
-  }
-  return found;
-}
-
-let itemAliasCache: Array<{ id: string; alias: string }> | null = null;
-function itemAliasList(): Array<{ id: string; alias: string }> {
-  itemAliasCache ??= Object.entries((itemAliasFile as { aliases: Record<string, Record<string, string[]>> }).aliases)
-    .flatMap(([id, byLang]) => Object.values(byLang).flat().map((alias) => ({ id, alias })))
-    .sort((a, b) => b.alias.length - a.alias.length);
-  return itemAliasCache;
 }

@@ -52,7 +52,7 @@ export function matchupSidesDetailed<T extends { name: string }>(question: strin
     const after = question.slice(at + card.name.length);
     const before = question.slice(0, at);
     let value = 0;
-    if (PLAYS.test(after.slice(0, 4))) value += 2;
+    if (PLAYS.test(after.slice(0, 4)) || /^\s*(?:하는|하고\s*있는)\s*(?:나|저)/.test(after)) value += 2;
     if (PLAYED_BEFORE.test(before) && /^\s*(?:인데|입니다|이면|면)/.test(after)) value += 2;
     if (FACES.test(after)) value -= 2;
     if (FACED_BEFORE.test(before)) value -= 2;
@@ -115,7 +115,7 @@ export function matchupSidesByPhrase<T>(question: string, found: [T, T], names: 
     const mine = [
       new RegExp(`\\b(?:play|playing|plays|as|main|maining|on|i'?m|i am)\\s+(?:a\\s+|an\\s+)?${name}`, "i"),
       new RegExp(`${name}\\s+(?:into|vs\\.?|versus|against)\\s`, "i"),
-      new RegExp(`我(?:用|玩|拿|是|选)\\s*${name}`),
+      new RegExp(`我(?:(?:这把|这局|本局|这一把)(?:用|玩|拿|是|选)?|用|玩|拿|是|选)\\s*${name}`),
       new RegExp(`${name}\\s*(?:打|对线|对上|对)`),
     ];
     const enemy = [

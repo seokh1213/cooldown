@@ -23,8 +23,8 @@ test("같은 회복량 질문도 활성 문맥에 따라 다른 특징을 갖는
   const stat = inputFeatures("회복량", memory);
   const spell = inputFeatures("회복량", { ...memory, active: "spell" });
   assert.equal(stat.text, spell.text);
-  assert.equal(stat.features["active=stat:gram=회복"], 1);
-  assert.equal(spell.features["active=spell:gram=회복"], 1);
+  assert.equal(stat.features["active=stat"], 1);
+  assert.equal(spell.features["active=spell"], 1);
 });
 
 test("모델이 정한 항목을 사용하면서 코드가 대상과 레벨을 유지한다", () => {

@@ -31,7 +31,11 @@ export function dialogueAnswerText(answer: AdvisorAnswer, lang: Language): strin
   if (answer.kind === "rule") return (answer.highlighted.length ? answer.highlighted : ruleLines(answer.rule, lang)).join("\n");
   const prose = answerProse(answer, lang);
   if (answer.kind === "compare" && !prose) return answer.rows.map(row => `${row.label}: ${answer.cards.map((card, i) => `${card.name} ${row.values[i] || "—"}`).join(" · ")}`).join("\n");
-  if (answer.kind === "item" && !answer.askedPrice && answer.effects.length) return `${prose}\n${answer.effects.map(e => e.text).filter(Boolean).join("\n")}`;
+  if (answer.kind === "item") {
+    const facts = answer.stats.map(stat => `${stat.label}: ${stat.value}`).join(" · ");
+    const effects = answer.askedPrice ? "" : answer.effects.map(effect => effect.text).filter(Boolean).join("\n");
+    return [prose || answer.itemName, facts, effects].filter(Boolean).join("\n");
+  }
   return prose;
 }
 
@@ -62,7 +66,8 @@ async function partReply(part: DialoguePlan["parts"][number], options: { data: A
   }
   const answer = plan.answer;
   if (typeof answer === "string") return { text: answer, notice: plan.notice, related: plan.type === "code" ? plan.related : undefined };
-  return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice };
+  const text = dialogueAnswerText(answer, lang);
+  return text.trim() ? { answer, text, notice: plan.notice } : { text: requestGuidance("evidence", lang), notice: plan.notice };
 }
 
 export async function assembleDialogueReply(dialogue: DialoguePlan, data: AdvisorData | null, lang: Language, deps: ReplyDependencies = { matchup: buildMatchupReply }): Promise<DialogueReply> {

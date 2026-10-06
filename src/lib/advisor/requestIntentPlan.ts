@@ -4,7 +4,7 @@ import type { PlanContext, AnswerPlan } from "./planTypes";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { DialogueMemory } from "./dialogueState";
 import { ALL_CHAMPION_STATS, explicitStatLevel, isStatLevel } from "./statQuery";
-import { statPlanForQuery, unsupportedStatLevelPlan } from "./dialogueStats";
+import { isBaseStatQuestion, statPlanForQuery, unsupportedStatLevelPlan } from "./dialogueStats";
 
 function targets(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): ChampionCard[] {
   const explicit = resolved.champions.map(card => card.id);
@@ -19,6 +19,8 @@ export function requestIntentPlan(resolved: ResolvedQuestion, memory: DialogueMe
   if (scope === "chat") return { type: "code", answer: ctx.copy.smallTalk };
   if (scope === "identity") return { type: "code", answer: ctx.copy.identity };
   if (!["overview", "statsAll", "skills"].includes(scope ?? "") || resolved.matchup) return undefined;
+  if (scope === "overview" && resolved.slot) return undefined;
+  if (scope === "statsAll" && (resolved.slot || !isBaseStatQuestion(resolved))) return undefined;
   const cards = targets(resolved, memory, ctx);
   if (!cards.length) return undefined;
   if (scope === "statsAll") {
