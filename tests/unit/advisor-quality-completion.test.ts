@@ -23,6 +23,14 @@ import { dehydrateTurn, reviveTurn } from "../../src/lib/advisor/history";
 const restore = localFetch();
 after(restore);
 
+test("가격만 물으면 가격만 답하고 아이템 전체 질문에는 능력치도 답한다", async () => {
+  const deps = evaluationDeps();
+  const price = await answerDialogue("도란검 가격은?", qualityContext("ko_KR", "none"), deps);
+  assert.equal(price.reply.text, "도란의 검 가격은 450 골드입니다.");
+  const item = await answerDialogue("도란검 설명해줘", qualityContext("ko_KR", "none"), deps);
+  assert.match(item.reply.text, /공격력/);
+});
+
 test("모든 승인 규칙 주제를 저장 후 복원할 수 있다", () => {
   for (const topic of MECHANIC_TOPICS) {
     const memory = { ...emptyDialogue("fixture"), mechanic: { abilityId: "Example.P", sourceHash: "s", ruleIndices: [0], topic } };

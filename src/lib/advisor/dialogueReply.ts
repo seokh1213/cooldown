@@ -32,8 +32,9 @@ export function dialogueAnswerText(answer: AdvisorAnswer, lang: Language): strin
   const prose = answerProse(answer, lang);
   if (answer.kind === "compare" && !prose) return answer.rows.map(row => `${row.label}: ${answer.cards.map((card, i) => `${card.name} ${row.values[i] || "—"}`).join(" · ")}`).join("\n");
   if (answer.kind === "item") {
+    if (answer.askedPrice) return prose || answer.itemName;
     const facts = answer.stats.map(stat => `${stat.label}: ${stat.value}`).join(" · ");
-    const effects = answer.askedPrice ? "" : answer.effects.map(effect => effect.text).filter(Boolean).join("\n");
+    const effects = answer.effects.map(effect => effect.text).filter(Boolean).join("\n");
     return [prose || answer.itemName, facts, effects].filter(Boolean).join("\n");
   }
   return prose;
