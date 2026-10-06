@@ -82,6 +82,7 @@ try {
     const tests = [...filesUnder("tests/unit"), ...filesUnder("tests/data")].filter(file => /(?:advisor|request|generation|lora|retrieval|evaluation|sft|llm-script|quality|knowledge|mechanic|claim|passive|stat-ranking|rule).*\.test\.ts$/.test(path.basename(file)));
     await check("node-regression", process.execPath, ["--import", "tsx", "--test", ...tests]);
     await check("types", "npx", ["tsc", "-p", "tsconfig.scripts.json", "--pretty", "false"]);
+    await check("mechanics-answer", "npx", ["tsx", "scripts/llm/champion-mechanics/evaluate.ts", path.join(output, "mechanics-answer.json"), "--check"]);
   }
   if (profile === "infrastructure" || profile === "quality") {
     await check("generation-recovery", "python3", ["-m", "unittest", "discover", "-s", "scripts/llm/quality", "-p", "test_*.py"]);

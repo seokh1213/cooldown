@@ -13,11 +13,12 @@ import { reviewedAbilities } from "./retrieval";
 import { ROOT } from "./prepare";
 import { digest } from "./sources";
 import { qualityFailures, type QualityReference } from "./qualityGate";
+import { reviewedRubric, MECHANICS_QUESTIONS, type MechanicsStory } from "./reviewedRubric";
+import type { ReviewedContract } from "../quality/reviewedContracts";
 
-export interface ExpectedTurn { q: string; require?: string[]; forbid?: string[]; sameAsBaseline?: boolean; lang?: Language }
-interface Story { id: string; area: string; turns: ExpectedTurn[] }
+export interface ExpectedTurn { q: string; require?: string[]; must?: string[]; forbid?: string[]; sameAsBaseline?: boolean; lang?: Language }
 export function gradeAnswer(expected: ExpectedTurn, text: string): string[] {
-  return [...(expected.require ?? []).filter(pattern => !new RegExp(pattern, "i").test(text)).map(pattern => `missing:${pattern}`),
+  return [...[...new Set([...(expected.require ?? []), ...(expected.must ?? [])])].filter(pattern => !new RegExp(pattern, "i").test(text)).map(pattern => `missing:${pattern}`),
     ...(expected.forbid ?? []).filter(pattern => new RegExp(pattern, "i").test(text)).map(pattern => `forbidden:${pattern}`), ...(!text.trim() ? ["empty"] : [])];
 }
 const lexicalDeps: PlanDeps = { judge: async () => { throw new Error("This experiment uses the existing lexical app route, without a model judge"); }, search: async () => [] };
@@ -37,8 +38,10 @@ function storeReply(ctx: PlanContext, question: string, reply: Awaited<ReturnTyp
 export async function evaluateAnswers(options: { output: string; mode?: "baseline" | "comparison"; judge?: "none" | "offline" }) {
   const output = options.output, baselineOnly = options.mode === "baseline", judge = options.judge ?? "none";
   const deps = judge === "offline" ? { ...lexicalDeps, judge: offlineFileJudge() } : lexicalDeps;
-  const file = path.join(ROOT, "research/llm-evals/champion-mechanics-v2/questions.json");
-  const stories = JSON.parse(await readFile(file, "utf8")) as Story[];
+  const file = path.join(ROOT, MECHANICS_QUESTIONS);
+  const contracts = (await readFile(path.join(ROOT, "research/llm-evals/workflow/datasets/regression/reviewed-contracts.jsonl"), "utf8"))
+    .trim().split("\n").filter(Boolean).map(line => JSON.parse(line) as ReviewedContract);
+  const stories = reviewedRubric(JSON.parse(await readFile(file, "utf8")) as MechanicsStory[], contracts);
   const index = await reviewedAbilities();
   const rows = [];
   for (const story of stories) {
