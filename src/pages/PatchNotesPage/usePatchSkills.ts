@@ -16,7 +16,9 @@ export function usePatchSkills(report: PatchNotesReport | undefined, locale: Dat
   useEffect(() => {
     if (!patchVersion || !ddragon || !cdragon) return;
     let active = true;
-    client.getJson(`patch-notes/skills/${patchVersion}.${locale}.json`).then(value => {
+    client.getJson(`patch-notes/skills/${patchVersion}.${locale}.json`, value => {
+      decodePatchSkillArchive(value, { patchVersion, sources: { ddragon, cdragon }, locale });
+    }).then(value => {
       const archive = decodePatchSkillArchive(value, { patchVersion, sources: { ddragon, cdragon }, locale });
       if (active) setLoaded({ key, archive });
     }).catch(() => { if (active) setLoaded({ key, failed: true }); });

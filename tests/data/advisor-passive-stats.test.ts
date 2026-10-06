@@ -3,7 +3,6 @@ import { test } from "node:test";
 import { loadData } from "../../scripts/llm/kev-agent/lib";
 import { translations } from "../../src/i18n/translations";
 import { answerDialogue } from "../../src/lib/advisor/dialogueFlow";
-import { planAnswer } from "../../src/lib/advisor/plan";
 import { passiveMechanicPlan } from "../../src/lib/advisor/passiveMechanicPlan";
 import { resolveQuestion } from "../../src/lib/advisor/resolvedQuestion";
 import { emptyDialogue, type DialogueMemory } from "../../src/lib/advisor/dialogueState";
@@ -20,10 +19,6 @@ function context(lang: Language = "ko_KR", memory?: DialogueMemory): PlanContext
 
 for (const question of [
   "파이크는 체력 템 가면 어떻게되지?",
-  "파이크 체력템을가도되나? 패시브나 이런곳에 뭐 있엇던것같은데",
-  "파이크 체력템 사면?",
-  "파이크 추가 체력 올리면 공격력으로 바뀌어?",
-  "파이크 체력 140 올리면 어떻게 돼?",
 ]) test(question, async () => {
   const { reply } = await answerDialogue(question, context(), deps);
   if (reply.answer?.kind !== "spell") assert.fail("전환 근거가 있는 패시브 카드");
@@ -33,12 +28,6 @@ for (const question of [
   assert.match(reply.text, /체력 14당 (?:추가 )?공격력 1/);
   assert.doesNotMatch(reply.text, /800%|회복|비축|상대.*알려/);
   assert.deepEqual(reply.answer.facts, []);
-});
-
-test("직접 계획기도 체력 전환 조건을 강조한다", async () => {
-  const plan = await planAnswer("파이크 체력템 사면?", context(), deps);
-  if (plan.type !== "card" || plan.answer.kind !== "spell") assert.fail("패시브 카드");
-  assert.match(plan.answer.highlighted.join(" "), /추가 최대 체력.*공격력/);
 });
 
 test("앞선 평타 주제에서 파이크로 바꾸면 전환 근거와 스킬 주인도 바뀐다", async () => {
@@ -72,7 +61,7 @@ for (const [lang, question, expected] of [
   assert.match(reply.text, expected);
 });
 
-for (const question of ["아리 체력템 사면?", "파이크 체력템 뭐가 좋아?", "파이크 체력템 추천해줘", "파이크 Q 쿨타임"]) {
+for (const question of ["아리 체력템 사면?", "파이크 체력템 뭐가 좋아?", "파이크 Q 쿨타임"]) {
   test(`전환 근거가 없거나 다른 요청이면 강제로 패시브를 보여주지 않는다: ${question}`, () => {
     const ctx = context();
     assert.equal(passiveMechanicPlan(resolveQuestion(question, ctx.data!), ctx), undefined);

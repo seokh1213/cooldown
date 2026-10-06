@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import Sidebar from "./Sidebar";
 import { LegalFooter } from "./LegalFooter";
-import { AdvisorWidget } from "@/components/features/advisor/AdvisorWidget";
+import { DeferredAdvisorWidget } from "@/components/features/advisor/DeferredAdvisorWidget";
 import { SidebarRail, SidebarInset } from "@/components/ui/sidebar";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { ADVISOR_DRAWER_WIDTH } from "@/hooks/useWideViewport";
@@ -89,7 +89,7 @@ function Layout({ children, nav, patch, ddragonVersion }: LayoutProps) {
 
       {/* 오른쪽 드로어로 열리는 지식 도우미. 동의 전에는 모델을 받지 않는다. */}
       {patch && ddragonVersion && (
-        <AdvisorWidget patch={patch} ddragonVersion={ddragonVersion} onOpenChange={setAdvisorOpen} onWidthChange={setAdvisorWidth} />
+        <DeferredAdvisorWidget patch={patch} ddragonVersion={ddragonVersion} onOpenChange={setAdvisorOpen} onWidthChange={setAdvisorWidth} />
       )}
     </div>
   );

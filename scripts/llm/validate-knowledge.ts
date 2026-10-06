@@ -3,7 +3,7 @@
  *
  * 1) 팁/플레이북이 참조하는 챔피언 id 가 실제 존재하는지
  * 2) `refs` 에 적은 아이템/룬/소환사 주문 이름이 현재 패치 데이터에 존재하는지 (오타·삭제·개명 탐지)
- * 3) `refs` 에 적은 이름이 본문에도 실제로 등장하는지 (참조와 본문 불일치 탐지)
+ * 3) `refs`/`avoid` 이름이 생성 후 최종 본문에도 등장하는지; `reviewRefs`는 작성용 이름의 유효성만 검사
  * 4) 조건(`when`)의 효과 태그가 facts.ts 가 만들어내는 태그 집합에 있는지
  * 5) `refs` 의 아이템이 그 챔피언의 계수와 맞는지 (AP 챔피언에게 공격력 아이템을 권하지 않았는지)
  *
@@ -11,21 +11,27 @@
  *
  * 사용: npm run llm:validate
  */
-import { loadStaticData } from "./lib/data";
-import { createChampionCardBuilder } from "../../src/lib/knowledge/facts";
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "node:url";
+import { loadStaticData, PUBLIC_DATA_ROOT, type StaticDataBundle } from "./lib/data";
+import type { ChampionCard } from "../../src/lib/knowledge/facts";
+import type { CuratedTip } from "../../src/lib/knowledge/knowledgeCore";
 import { loadCuratedTips } from "./lib/knowledge";
-import { loadPlaybooks, type PlaybookRefs } from "./lib/playbook";
+import { fillGenerated, loadPlaybooks, type Playbook, type PlaybookRefs } from "./lib/playbook";
 
 interface Finding {
   where: string;
   message: string;
 }
 
-function main() {
-  const data = loadStaticData("ko_KR");
-  const builder = createChampionCardBuilder(data.champions, data.riotMeta, data.wikiMeta);
-  const cards = builder.buildAll();
-
+export function validateKnowledge(
+  data: StaticDataBundle,
+  cards: ChampionCard[],
+  playbooks: Map<string, Playbook>,
+  tips: CuratedTip[],
+): { findings: Finding[]; entryCount: number } {
+  const cardsById = new Map(cards.map((card) => [card.id, card]));
   // 소환사의 협곡에서 실제로 구매 가능한 아이템만 유효로 본다.
   // (아레나 등 다른 모드 전용 아이템은 협곡 조언에 등장하면 안 된다)
   const riftItemNames = new Set(
@@ -58,7 +64,7 @@ function main() {
    * 툴팁 집계는 계수 없는 스킬 때문에 틀릴 때가 있다(나서스가 AP 로 잡히던 문제).
    */
   const scalingOf = (championId: string): "AD" | "AP" | undefined => {
-    const card = cards.find((c) => c.id === championId);
+    const card = cardsById.get(championId);
     if (!card) return undefined;
     if (card.riot?.damageType === "물리") return "AD";
     if (card.riot?.damageType === "마법") return "AP";
@@ -69,7 +75,7 @@ function main() {
 
   const findings: Finding[] = [];
 
-  const checkRefs = (where: string, refs: PlaybookRefs | undefined, text: string, label0 = "refs") => {
+  const checkRefs = (where: string, refs: PlaybookRefs | undefined, text: string, label0: "refs" | "avoid" | "reviewRefs" = "refs") => {
     if (!refs) return;
     const groups: Array<[keyof PlaybookRefs, Set<string>, string]> = [
       ["items", riftItemNames, "아이템"],
@@ -86,14 +92,14 @@ function main() {
           findings.push({ where, message: hint });
           continue;
         }
-        if (!text.includes(name)) {
+        if (label0 !== "reviewRefs" && !text.includes(name)) {
           findings.push({ where, message: `${label0} 에 적었으나 본문에 없는 ${label}: "${name}"` });
         }
       }
     }
   };
 
-  for (const tip of loadCuratedTips()) {
+  for (const tip of tips) {
     const where = `tips/${tip.champion}.json [${tip.id}]`;
     if (!championIds.has(tip.champion)) findings.push({ where, message: `없는 챔피언 id: ${tip.champion}` });
     if (tip.vs && !championIds.has(tip.vs)) findings.push({ where, message: `없는 상대 id: ${tip.vs}` });
@@ -102,7 +108,7 @@ function main() {
   }
 
   let entryCount = 0;
-  for (const [champion, book] of loadPlaybooks()) {
+  for (const [champion, book] of playbooks) {
     if (!championIds.has(champion)) {
       findings.push({ where: `playbooks/${champion}.json`, message: `없는 챔피언 id: ${champion}` });
     }
@@ -110,9 +116,15 @@ function main() {
       ["playing", book.playing],
       ["against", book.against],
     ] as const) {
-      entries.forEach((entry, index) => {
+      entries.forEach((sourceEntry, index) => {
         entryCount += 1;
+        const card = cardsById.get(champion);
+        const entry = fillGenerated(sourceEntry, card);
         const where = `playbooks/${champion}.json [${entry.id ?? `${scope}#${index + 1}`}]`;
+        if (sourceEntry.generated && !card) {
+          findings.push({ where, message: "생성 노트에 필요한 챔피언 사실 카드가 없음" });
+        }
+        checkRefs(where, sourceEntry.reviewRefs, "", "reviewRefs");
         checkRefs(where, entry.refs, entry.text);
         checkRefs(where, entry.avoid, entry.text, "avoid");
         // playing 쪽 추천만 본다. against 는 상대가 살 아이템을 말하는 자리다.
@@ -165,7 +177,16 @@ function main() {
     }
   }
 
+  return { findings, entryCount };
+}
+
+function main() {
+  const data = loadStaticData("ko_KR");
+  const file = path.join(PUBLIC_DATA_ROOT, data.patch, "llm", "champion-cards-ko_KR.json");
+  const cardFile = JSON.parse(fs.readFileSync(file, "utf8")) as { patch: string; cards: ChampionCard[] };
+  if (cardFile.patch !== data.patch) throw new Error(`사실 카드 패치 불일치: ${cardFile.patch} / ${data.patch}`);
   const tips = loadCuratedTips();
+  const { findings, entryCount } = validateKnowledge(data, cardFile.cards, loadPlaybooks(), tips);
   console.log(`검사 대상: 팁 ${tips.length}건, 플레이북 항목 ${entryCount}건 (패치 ${data.patch})`);
 
   if (findings.length === 0) {
@@ -177,4 +198,4 @@ function main() {
   process.exitCode = 1;
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

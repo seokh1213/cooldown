@@ -99,9 +99,6 @@ export function precomputedDigest(pair: PrecomputedPair, focus: string | undefin
 export function precomputedMore(pair: PrecomputedPair, focus: string | undefined, cards: ChampionCard[], lang: Language = "ko_KR"): string | undefined {
   return selectPrecomputed(pair, { focus, mode: "advance", shownTopics: digestKeys(focus) }, cards, lang).text;
 }
-export function precomputedFocus(pair: PrecomputedPair, request: { focus?: string; reason?: boolean; conditions?: ScenarioCondition[] }, cards: ChampionCard[], lang: Language = "ko_KR"): string | undefined {
-  return selectPrecomputed(pair, { ...request, mode: request.reason ? "explain" : "topic" }, cards, lang).text;
-}
 
 const files = new Map<string, Promise<PrecomputedFile | undefined>>();
 
@@ -116,8 +113,15 @@ export function loadPrecomputed(patch: string, championId: string, lang: Languag
     // 한국어가 원본(<id>.json), 영어·중국어는 옮긴 것(<id>.<lang>.json). 없으면 노트 조립으로 간다.
     const file = lang === "ko_KR" ? `${championId}.json` : `${championId}.${lang}.json`;
     hit = fetch(dataUrl(patch, `llm/matchups/${file}`))
-      .then((res) => (res.ok ? (res.json() as Promise<PrecomputedFile>) : undefined))
-      .catch(() => undefined);
+      .then((res) => {
+        if (res.ok) return res.json() as Promise<PrecomputedFile>;
+        if (res.status !== 404 && res.status !== 410) files.delete(key);
+        return undefined;
+      })
+      .catch(() => {
+        files.delete(key);
+        return undefined;
+      });
     files.set(key, hit);
   }
   return hit;

@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { pathToFileURL } from "node:url";
 import { DATA_LOCALES } from "../src/data/contracts/staticData";
 import { resolveStaticDataRelease } from "../src/lib/staticDataRelease";
 import {
@@ -17,37 +18,52 @@ import { fetchJson, writeJson } from "./data-pipeline/io/json";
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const DATA_DIR = path.join(process.cwd(), "public", "data");
 
-/**
- * 도우미 자료(`<패치>/llm`)는 이 생성기가 만들지 않는다. 위키에서 받은 것(대시·위키 메타·규칙
- * 노트)과 그로부터 지은 것(카드·지식 묶음·번역·미리 쓴 상성 답)이 섞여 있다. 옛 패치 폴더를 통째로
- * 지우면 새 패치에는 도우미 자료가 하나도 없게 된다 — 26.19 가 나온 날 CI 가 그 자리에서 멈췄다
- * (지식 점검이 새 패치의 카드를 못 찾았다). 지우기 전에 새 패치 폴더로 옮겨 두고, 새 자료로 다시
- * 짓는 일은 `npm run llm:carry` 가 한다.
- */
-function carryAdvisorData(fromDir: string, currentPatchVersion: string, fromPatch: string): void {
+// Advisor inputs survive patch changes; llm:carry rebuilds derived outputs after publication.
+function carryAdvisorData(fromDir: string, target: string, fromPatch: string): void {
   const source = path.join(fromDir, "llm");
-  const target = path.join(DATA_DIR, currentPatchVersion, "llm");
   if (!fs.existsSync(source) || fs.existsSync(target)) return;
   fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.renameSync(source, target);
+  fs.cpSync(source, target, { recursive: true });
   fs.writeFileSync(path.join(target, ".carried-from"), fromPatch);
-  console.log(`📦 Carried advisor data ${fromPatch} → ${currentPatchVersion} (npm run llm:carry rebuilds it)`);
+  console.log(`📦 Copied advisor data from ${fromPatch} (npm run llm:carry rebuilds it)`);
 }
 
-function removeOldReleaseDirectories(currentPatchVersion: string): void {
-  if (!fs.existsSync(DATA_DIR)) return;
-  for (const entry of fs.readdirSync(DATA_DIR, { withFileTypes: true })) {
-    if (!entry.isDirectory() || entry.name === currentPatchVersion) continue;
-    if (/^\d+\.\d+$/.test(entry.name)) carryAdvisorData(path.join(DATA_DIR, entry.name), currentPatchVersion, entry.name);
-    console.log(`🗑️ Removing old patch data: ${entry.name}`);
-    fs.rmSync(path.join(DATA_DIR, entry.name), {
+function oldPatchDirectories(dataDirectory: string, currentPatchVersion: string): string[] {
+  return fs.readdirSync(dataDirectory, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && entry.name !== currentPatchVersion && /^\d+\.\d+$/.test(entry.name))
+    .map((entry) => entry.name)
+    .sort((left, right) => right.localeCompare(left, "en", { numeric: true }));
+}
+
+function removeOldReleaseDirectories(dataDirectory: string, currentPatchVersion: string): void {
+  for (const name of oldPatchDirectories(dataDirectory, currentPatchVersion)) {
+    console.log(`🗑️ Removing old patch data: ${name}`);
+    fs.rmSync(path.join(dataDirectory, name), {
       recursive: true,
       force: true,
     });
   }
 }
 
-async function generateStaticData(): Promise<void> {
+function publishGeneratedData(dataDirectory: string, stagingDirectory: string, patchVersion: string): void {
+  const target = path.join(dataDirectory, patchVersion);
+  const previous = path.join(stagingDirectory, "previous-patch");
+  const hadPrevious = fs.existsSync(target);
+  if (hadPrevious) fs.renameSync(target, previous);
+  let installed = false;
+  try {
+    fs.renameSync(path.join(stagingDirectory, patchVersion), target);
+    installed = true;
+    // Replace the manifest last so failed publication keeps the previous release usable.
+    fs.renameSync(path.join(stagingDirectory, "version.json"), path.join(dataDirectory, "version.json"));
+  } catch (error) {
+    if (installed) fs.rmSync(target, { recursive: true, force: true });
+    if (hadPrevious) fs.renameSync(previous, target);
+    throw error;
+  }
+}
+
+export async function generateStaticData(dataDirectory = DATA_DIR): Promise<void> {
   console.log("🚀 Starting static data generation");
   const versions = await fetchJson<string[]>(VERSION_URL);
   const release = resolveStaticDataRelease(versions[0]);
@@ -56,20 +72,36 @@ async function generateStaticData(): Promise<void> {
     `✅ Source identity: patch ${patchVersion}, ` +
       `DDragon ${sources.ddragon}, CDragon ${sources.cdragon}`,
   );
-  removeOldReleaseDirectories(patchVersion);
-  const versionDir = path.join(DATA_DIR, patchVersion);
-
   const catalogs = await fetchCatalogSources(release, DATA_LOCALES);
   const champions = await fetchChampionSources(release, DATA_LOCALES);
-  writeChampionData(versionDir, release, DATA_LOCALES, champions);
-  await writeCatalogData(versionDir, release, DATA_LOCALES, catalogs);
-  await validateGeneratedData(versionDir, release, champions);
-  // 다음 회차가 "바뀐 게 없다" 를 판단할 근거. 패치 버전만으로는 CDragon 재추출을 놓친다.
-  const cdragonBuild = await fetchCdragonBuild(sources.cdragon);
-  await writeJson(
-    { schemaVersion: 2, patchVersion, sources, cdragonBuild },
-    path.join(DATA_DIR, "version.json"),
-  );
+  fs.mkdirSync(dataDirectory, { recursive: true });
+  const stagingDirectory = fs.mkdtempSync(path.join(dataDirectory, ".generation-"));
+  let published = false;
+  try {
+    const versionDir = path.join(stagingDirectory, patchVersion);
+    const existing = path.join(dataDirectory, patchVersion);
+    if (fs.existsSync(existing)) fs.cpSync(existing, versionDir, { recursive: true });
+    for (const oldPatch of oldPatchDirectories(dataDirectory, patchVersion)) {
+      carryAdvisorData(path.join(dataDirectory, oldPatch), path.join(versionDir, "llm"), oldPatch);
+    }
+    writeChampionData(versionDir, release, DATA_LOCALES, champions);
+    await writeCatalogData(versionDir, release, DATA_LOCALES, catalogs);
+    await validateGeneratedData(versionDir, release, champions);
+    // Same-patch CDragon rebuilds also change this marker.
+    const cdragonBuild = await fetchCdragonBuild(sources.cdragon);
+    await writeJson(
+      { schemaVersion: 2, patchVersion, sources, cdragonBuild },
+      path.join(stagingDirectory, "version.json"),
+    );
+    publishGeneratedData(dataDirectory, stagingDirectory, patchVersion);
+    published = true;
+    removeOldReleaseDirectories(dataDirectory, patchVersion);
+  } finally {
+    // Keep the previous files available if filesystem errors also prevent rollback.
+    if (published || !fs.existsSync(path.join(stagingDirectory, "previous-patch"))) {
+      fs.rmSync(stagingDirectory, { recursive: true, force: true });
+    }
+  }
 
   console.log(
     `🎉 Generated patch ${patchVersion}: ${champions.championIds.length} champions, ` +
@@ -77,7 +109,9 @@ async function generateStaticData(): Promise<void> {
   );
 }
 
-generateStaticData().catch((error: unknown) => {
-  console.error("❌ Static data generation failed", error);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  generateStaticData().catch((error: unknown) => {
+    console.error("❌ Static data generation failed", error);
+    process.exitCode = 1;
+  });
+}

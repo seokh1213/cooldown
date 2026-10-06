@@ -3,7 +3,6 @@ import { test } from "node:test";
 import { loadData } from "../../scripts/llm/kev-agent/lib";
 import { translations } from "../../src/i18n/translations";
 import { answerDialogue } from "../../src/lib/advisor/dialogueFlow";
-import { planAnswer } from "../../src/lib/advisor/plan";
 import { emptyDialogue, type DialogueMemory } from "../../src/lib/advisor/dialogueState";
 import { dehydrateTurn, reviveTurn } from "../../src/lib/advisor/history";
 import type { Language } from "../../src/i18n";
@@ -25,11 +24,8 @@ function context(lang: Language = "ko_KR", memory?: DialogueMemory): PlanContext
 
 for (const question of [
   "아크샨은 평타 한대 치면 어떻게되지?",
-  "아크샨은 평타 한대 치면 어떻게되지? (내가 할 때)",
-  "아크샨 평타 한 대만 치면?",
   "아크샨 평타 1대 치고 움직이면 뭐가 달라져?",
   "아크샨 두 번째 공격 취소하면?",
-  "아크샨 평타 한대만 치면 이속 빨라져?",
 ]) test(question, async () => {
   const { reply } = await answerDialogue(question, context(), deps);
   assert.equal(reply.answer?.kind, "spell");
@@ -37,12 +33,6 @@ for (const question of [
   assert.equal(reply.answer.spell.slot, "P");
   assert.match(reply.text, /(?:두 번째|추가) 공격.*취소하면.*이동 속도/);
   assert.doesNotMatch(reply.text, /플레이할 때|상대할 때|악당|부활|세 번째/);
-});
-
-test("직접 계획기와 앱의 대화 계획기는 같은 평타 근거를 쓴다", async () => {
-  const plan = await planAnswer("아크샨 평타 한대만 치면?", context(), deps);
-  if (plan.type !== "card" || plan.answer.kind !== "spell") assert.fail("패시브 카드");
-  assert.match(plan.answer.highlighted.join(" "), /취소하면 이동 속도/);
 });
 
 test("세 번째 적중 질문은 이동 속도 대신 추가 피해와 보호막을 답한다", async () => {

@@ -17,10 +17,11 @@ import { AbilityIcon } from "@/components/ui/ability-icon";
 import { ruleVerdict, type AdvisorAnswer } from "@/lib/advisor/answer";
 import { ruleName } from "@/lib/knowledge/rules";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
-import { Disclosure, Frame, KvTable, PatchLinkFooter, SlotBadge } from "./AnswerCardFrame";
+import { Disclosure, Frame, KvTable, PatchLabel, PatchLinkFooter, SlotBadge } from "./AnswerCardFrame";
 import { ChampionAnswerCard } from "./ChampionAnswerCard";
 import { CompareAnswerCard } from "./CompareAnswerCard";
 import { championReferenceOf } from "@/lib/advisor/championReference";
+import { useHistoryReference } from "./HistoryReference";
 
 interface AdvisorAnswerCardProps {
   answer: AdvisorAnswer;
@@ -32,7 +33,10 @@ interface AdvisorAnswerCardProps {
   onNavigate?: () => void;
 }
 
-export function AdvisorAnswerCard({ answer, ddragonVersion, patch, onPickChampion, onNavigate }: AdvisorAnswerCardProps) {
+export function AdvisorAnswerCard({ answer, ddragonVersion: currentDdragonVersion, patch: currentPatch, onPickChampion, onNavigate }: AdvisorAnswerCardProps) {
+  const turn = useHistoryReference();
+  const patch = turn?.source?.patch ?? currentPatch;
+  const ddragonVersion = turn?.source?.ddragonVersion ?? currentDdragonVersion;
   const reference = championReferenceOf(answer);
   if (reference) return <ChampionAnswerCard answer={reference} selectedSpell={answer.kind === "spell" ? answer : undefined}
     ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} />;
@@ -198,6 +202,7 @@ function SpellAnswerCard({
 /** M6-A 규칙: 예/아니오 배지 + 근거 문장 하나. 배지는 극성이 분명할 때만 */
 function RuleAnswerCard({ answer, patch }: { answer: Extract<AdvisorAnswer, { kind: "rule" }>; patch: string }) {
   const { t, lang } = useTranslation();
+  const turn = useHistoryReference();
   const copy = t.advisor.card;
   const single = answer.highlighted.length === 1 ? answer.highlighted[0] : undefined;
   const verdict = single ? ruleVerdict(single) : undefined;
@@ -205,11 +210,11 @@ function RuleAnswerCard({ answer, patch }: { answer: Extract<AdvisorAnswer, { ki
   return (
     <Frame
       icon={<SlotBadge slot="§" />}
-      title={ruleName(answer.rule, lang)}
+      title={ruleName(answer.rule, turn?.source?.locale ?? lang)}
       tool={copy.rule}
       footer={
         <>
-          <span>{fill(copy.patch, { patch })}</span>
+          <PatchLabel patch={patch} />
         </>
       }
     >

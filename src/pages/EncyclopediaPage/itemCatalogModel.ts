@@ -96,7 +96,7 @@ export function getItemStatLines(item: Item, locale: string): string[] {
 }
 
 function normalizeSearchText(value: string): string {
-  return value.toLowerCase().replace(/[^0-9a-z\uac00-\ud7a3ㄱ-ㅎ]/g, "");
+  return value.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 }
 
 function koreanInitials(value: string): string {

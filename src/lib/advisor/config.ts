@@ -23,6 +23,8 @@ export interface AdvisorModel {
    * 그래프만 바꿔 끼운다(앱 기준 상대 주소). 가중치는 `id` 저장소에서 그대로 받는다. kev LoRA 를 덧붙인 그래프다.
    */
   graph?: string;
+  /** 판정 gate의 웨이트를 보존했음을 검증한 원래 그래프. */
+  judgeGraph?: string;
   /**
    * 이름 없는 질문의 자료 찾기를 검색 LoRA 벡터로 한다(그래프에 `embed_scale` 가지가 있어야 한다).
    * `vectors` 는 문서 벡터 파일(앱 기준 상대, `.json`·`.bin`), 코사인이 `threshold` 밑이면 "자료 없음".
@@ -32,23 +34,24 @@ export interface AdvisorModel {
 }
 
 /**
- * 쓰는 모델은 하나다 — Qwen3.5 0.8B 에 kev LoRA 두 가지(판정·검색)를 덧붙인 그래프.
+ * Qwen3.5 0.8B 하나에 판정·검색·수치 QA LoRA를 각각 켜는 그래프를 쓴다.
  *
  * 한때 Qwen3 4B(2,764MB, 해설을 모델이 씀)를 기본으로 두고 이것을 16비트 셰이더가 없는 기기의 대체로 두었다.
  * 판정은 kev 헤드가 4B 의 글 판정보다 나았고(갈래 374문항: 4B 글 310, kev 331), 해설은 코드 조립과 미리 쓴 답이
  * 기기에서 모델이 쓴 글보다 나았다(맹검 3.20 대 3.90, 2026-09-23). 모델마다 길이 갈리는 것도 없애려고
  * 2026-09-27 4B 와 고르기 화면을 걷어냈다.
  *
- * 가중치는 onnx-community 에서 그대로 받고, LoRA 를 덧붙인 그래프(44MB)만 우리 사이트에서 받는다
- * (`scripts/llm/kev-agent/b3/lora_onnx.py`). 판정 LoRA 는 b3-v2, 검색 LoRA 는 eol-ep3 이다.
- * GTX 10xx(Pascal) 에서도 동작을 확인했다. q4 라 f16 이 없어도 돈다.
+ * 본판 가중치는 onnx-community에서 받고 약 66MB 그래프만 우리 사이트에서 받는다.
+ * 판정 b3-v2와 검색 eol-ep3는 보존하고 bases-20261006-011137 QA LoRA를 추가했다.
+ * 기존 판정·검색 그래프는 GTX 10xx(Pascal)에서 확인했다. 새 QA 그래프의 실측 환경은 Mac WebGPU다.
  */
 export const ADVISOR_MODEL: AdvisorModel = {
   id: "onnx-community/Qwen3.5-0.8B-Text-ONNX",
   dtype: "q4",
-  downloadMb: 570,
+  downloadMb: 610,
   needsF16: false,
-  graph: "models/kev/b3e/model_q4.onnx",
+  graph: "models/kev/b3eqa-20261006/model_q4.onnx",
+  judgeGraph: "models/kev/b3e/model_q4.onnx",
   /*
    * 이름 없는 질문("스마 충전 몇 초마다 차?")은 검색 LoRA 벡터로 문서 100건(언어마다) 중에서 찾는다. 판정 LoRA(b3-v2)와 같은
    * 그래프에 두 번째 가지로 실었다(22 → 44MB). 시험 절반 355문항에서 낱말·은어 212 · 틀린 자료 31 → 벡터 288 · 31.

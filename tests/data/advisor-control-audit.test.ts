@@ -22,7 +22,21 @@ async function ask(ctx: PlanContext, q: string) {
 }
 
 interface Story { id: string; turns: Array<{ q: string; contains?: string[]; avoid?: string[] }> }
-const stories: Story[] = JSON.parse(fs.readFileSync("research/llm-evals/control-audit/questions.json", "utf8"));
+const corpus: Story[] = JSON.parse(fs.readFileSync("research/llm-evals/control-audit/questions.json", "utf8"));
+const representatives = [
+  "nami-followups", "zoe-followups", "malzahar-followups", "morgana-followups", "leesin-sequence-memory",
+  "조이-sleep-sequence", "노틸러스-unknown-order", "모데카이저-수은", "나미-numeric-switch",
+  "new-topic-no-stale", "two-champions-ambiguous", "duration-question", "multi-techniques", "borrowed-no-guarantee",
+  "self-cc", "no-cc", "advice-kept", "룰루-cc-cooldown", "nami-q-vs-r", "malz-e-no-r-leak", "leesin-e-no-r-leak",
+  "graves-area-remains", "nocturne-only-self", "removal-method-missing", "numeric-after-property",
+  "generic-control-followup", "generic-root-followup", "same-champion-whole-kit",
+  "new-guardian-angel-topic", "new-suppression-topic", "new-ignite-topic",
+];
+const stories = representatives.map(id => {
+  const story = corpus.find(entry => entry.id === id);
+  assert.ok(story, `누락된 대표 CC 대화: ${id}`);
+  return story;
+});
 for (const story of stories) test(`CC 전반 점검: ${story.id}`, async () => {
   const ctx = context();
   for (const turn of story.turns) {

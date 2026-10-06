@@ -252,6 +252,7 @@ function formatStatPart(
  */
 function formatStatMultiplier(
   multiplierResult: CalcResult["statMultiplier"],
+  lang: TooltipLocale,
   report?: LevelValuesReporter,
 ): string | null {
   if (!multiplierResult) return null;
@@ -281,6 +282,11 @@ function formatStatMultiplier(
       ? formatLevelRange(scaled, "%", detailDigits(multiplierResult.precision), report)
       : `${valueToTooltipString(scaled)}%`;
     terms.push(part.name ? `${statIconToken(part.icon)}${value} ${part.name}` : value);
+  }
+
+  for (const part of multiplierResult.groupedParts ?? []) {
+    const formatted = formatCalculationResult(part, lang, report);
+    if (formatted) terms.push(formatted);
   }
 
   if (terms.length === 0) return null;
@@ -324,14 +330,19 @@ export function formatCalculationResult(
     formatBase(result, base, reportLevelValues),
     ...(result.extraRanges ?? []).map(formatExtraRange),
     ...statParts.map((part) => formatStatPart(part, lang, detailDigits(result.precision), reportLevelValues)),
+    ...(result.groupedParts ?? []).map((part) => formatCalculationResult(
+      result.isPercent ? { ...part, isPercent: true } : part,
+      lang,
+      reportLevelValues,
+    )),
   ].filter((part): part is string => part !== null);
 
   // 배율이 여럿이면 차례로 곱한다 (아크샨 E 치명타: … × (1 + 30% 추가 공격 속도) × 100% 치명타 피해량)
   const multipliers = [result.statMultiplier, ...(result.extraMultipliers ?? [])]
-    .map((entry) => formatStatMultiplier(entry, reportLevelValues))
+    .map((entry) => formatStatMultiplier(entry, lang, reportLevelValues))
     .filter((entry): entry is string => entry !== null);
   const multiplier = multipliers.length > 0 ? multipliers.join(" × ") : null;
-  if (parts.length === 0) return multiplier;
+  if (parts.length === 0) return result.showZero ? (result.isPercent ? "0%" : "0") : multiplier;
 
   const output = parts.join(" + ");
   const joined = parts.length === 1 ? output : `(${output})`;

@@ -173,53 +173,6 @@ function renderNote(note: string): string[] {
 }
 
 /**
- * 프롬프트에 실을 문단. 규칙이 없으면 undefined.
- *
- * **자르지 않는다.** 정복자·점화 질문에서 6건으로 잘랐더니 정작 답이 되는 문장
- * ("점화는 정복자 2중첩을 준다") 이 잘려 나가 "자료에 없습니다" 라고 답했다.
- * 규칙은 한 종당 스무 줄을 넘지 않으므로 전부 싣는 편이 낫다.
- *
- * 질문에 다른 룬이 함께 나오면 서로를 언급한 줄이 답인 경우가 많다.
- * 그래서 함께 언급된 이름이 들어간 줄을 앞으로 올린다.
- */
-export function rulesToText(rules: RuleNotes[]): string | undefined {
-  if (!rules.length) return undefined;
-  const englishNames = rules.map((r) => r.page);
-  const crossed = crossReferences(rules);
-  const koreanNames = rules.map((r) => r.name);
-  const blocks = rules.map((rule) => {
-    const others = englishNames.filter((n) => n !== rule.page);
-    const otherKorean = koreanNames.filter((n) => n !== rule.name);
-    // 번역이 있으면 그것을 싣는다. 소형 모델은 영어 규칙을 한국어 질문에 대응시키지 못한다.
-    const lines = rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
-    const sorted = [...lines].sort((a, b) => {
-      const score = (n: string) =>
-        others.some((o) => n.includes(o)) || otherKorean.some((o) => n.includes(o)) ? 0 : 1;
-      return score(a) - score(b);
-    });
-    // 하위 항목을 괄호로 이어 붙이면 앞 문장의 부정과 멀어진다.
-    // "…중첩되지 않습니다. (펫의 기본 공격 피해)" 를 보고 모델이 "펫으로 중첩된다" 고 뒤집었다.
-    // 들여쓴 줄로 내려 부정 바로 아래에 붙인다.
-    const notes = sorted.flatMap((n) => renderNote(n));
-    // 이름 대응을 헤더에 못 박는다. 규칙 원문이 영어라 "점화 = Ignite" 를 모델이 이어 주지 못하면
-    // 답이 눈앞에 있어도 "자료에 없습니다" 라고 답한다. 실제로 그랬다.
-    return `[${rule.name} = ${rule.page}]\n${notes.join("\n")}`;
-  });
-  const allTranslated = rules.every((r) => r.notesKo?.length === r.notes.length);
-  const glossary = rules.map((r) => `${r.name} = ${r.page}`).join(", ");
-  const head = allTranslated
-    ? "[판정 규칙 — 툴팁에 없는 내용입니다. 여기 적힌 것만 근거로 삼으십시오]"
-    : "[판정 규칙 — 툴팁에 없는 내용입니다. 여기 적힌 것만 근거로 삼으십시오]\n" +
-      `규칙 원문은 영어입니다. 이름 대응: ${glossary}.\n` +
-      "영어 문장 안의 이름을 위 대응표로 바꿔 읽고 한국어로 답하십시오.";
-  // 서로를 언급한 줄이 대개 답이다. 맨 앞에 따로 세운다.
-  const crossBlock = crossed.length
-    ? `\n\n[질문에 직접 답하는 줄]\n${crossed.map((n) => `  - ${n}`).join("\n")}`
-    : "";
-  return `${head}${crossBlock}\n\n${blocks.join("\n\n")}`;
-}
-
-/**
  * 화면에 그대로 낼 규칙 답변. **모델을 거치지 않는다.**
  *
  * e2b 는 부정문을 뒤집는다. "정복자는 이러한 효과로 중첩되지 않습니다 · 펫의 기본 공격 피해"

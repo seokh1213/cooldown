@@ -32,15 +32,15 @@ function VsActions(props: {
 }) {
   const { t } = useTranslation();
   return (
-    <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
-      <Button variant="ghost" size="icon" className="size-8" aria-label={t.comparison.swap} title={t.comparison.swap} onClick={props.onSwap}>
+    <div className="flex shrink-0 items-center gap-1">
+      <Button variant="ghost" size="icon" className="size-11 md:size-8" aria-label={t.comparison.swap} title={t.comparison.swap} onClick={props.onSwap}>
         <ArrowLeftRight aria-hidden="true" className="size-4" />
       </Button>
-      <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2" aria-label={t.comparison.share} title={t.comparison.share} onClick={props.onShare}>
+      <Button variant="ghost" size="sm" className="h-11 min-w-11 gap-1.5 px-2 md:h-8 md:min-w-0" aria-label={t.comparison.share} title={t.comparison.share} onClick={props.onShare}>
         {props.copied ? <Check aria-hidden="true" className="size-4" /> : <Share aria-hidden="true" className="size-4" />}
         <span className="hidden sm:inline">{t.comparison.share}</span>
       </Button>
-      <Button variant="ghost" size="icon" className="size-8" aria-label={t.encyclopedia.reset} title={t.encyclopedia.reset} onClick={props.onReset}>
+      <Button variant="ghost" size="icon" className="size-11 md:size-8" aria-label={t.encyclopedia.reset} title={t.encyclopedia.reset} onClick={props.onReset}>
         <RotateCcw aria-hidden="true" className="size-4" />
       </Button>
     </div>

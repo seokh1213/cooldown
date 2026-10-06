@@ -10,14 +10,13 @@
  * 따라가 영어로 물어도 한국어로 답한다. 실제로 en_US·zh_CN 에서 8문항 모두
  * 한국어 답이 나왔다.
  */
-import { DAMAGE, GRADE, RANGE, RATIO_STATS, SCALING, STATS, TAGS, pick } from "@/lib/knowledge/cardWords";
+import { DAMAGE, RANGE, RATIO_STATS, SCALING, STATS, TAGS, pick } from "@/lib/knowledge/cardWords";
 import { josa } from "@/lib/knowledge/text";
 import type { Language } from "@/i18n";
 
 export const translateTag = (tag: string, lang: Language): string => pick(TAGS, tag, lang);
 export const translateDamage = (value: string, lang: Language): string => pick(DAMAGE, value, lang);
 export const translateScaling = (value: string, lang: Language): string => pick(SCALING, value, lang);
-export const translateGrade = (value: string, lang: Language): string => pick(GRADE, value, lang);
 export const translateRange = (value: string, lang: Language): string => pick(RANGE, value, lang);
 export const translateRatioStat = (value: string, lang: Language): string => pick(RATIO_STATS, value, lang);
 export function translateStat(stat: string, lang: Language): string {

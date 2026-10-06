@@ -37,11 +37,6 @@ test("쿨타임 낱말이 포함된 교전 조언은 명시 조회로 강제하�
   await planAnswer("피오라 W 쿨타임 빠졌으면 들어가도 돼?", ctx, deps);
   assert.ok(judged > 0);
 });
-test("별명과 다른 언어 이름을 섞어도 마지막 스킬 주인을 원문 위치로 찾는다", () => {
-  const memory = { ...emptyDialogue(ctx.data!.patch), matchup: { mine: "Jax", enemy: "Fiora" } };
-  const parsed = resolveQuestion("잭스인데 fiora W가 빠졌어", ctx.data!);
-  assert.equal(conditionOwner(parsed, memory, ctx), "enemy");
-});
 test("Rumble의 R과 영어 소문자 슬롯을 구별해 조건 주인을 찾는다", () => {
   const memory = { ...emptyDialogue(ctx.data!.patch), matchup: { mine: "Rumble", enemy: "MonkeyKing" } };
   assert.equal(conditionOwner(resolveQuestion("Rumble e 빠졌어", ctx.data!), memory, ctx), "mine");

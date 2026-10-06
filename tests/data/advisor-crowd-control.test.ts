@@ -11,7 +11,18 @@ const data = loadData("ko_KR");
 const deps: PlanDeps = { judge: async () => { assert.fail("검증된 CC/판정 조회는 모델을 부르지 않는다"); }, search: async () => [] };
 const context = (): PlanContext => ({ data, lang: "ko_KR", copy: translations.ko_KR.advisor, turns: [], championIds: [], consented: false, canUseModel: false, retrieval: false, judge: "none" });
 interface Story { id: string; turns: Array<{ q: string; contains?: string[]; avoid?: string[] }> }
-const stories: Story[] = JSON.parse(fs.readFileSync("research/llm-evals/crowd-control/questions.json", "utf8"));
+const corpus: Story[] = JSON.parse(fs.readFileSync("research/llm-evals/crowd-control/questions.json", "utf8"));
+const representatives = [
+  "ga-smite", "stun-smite", "suppression-smite", "stasis-smite", "cc-none", "cc-multi", "qss-stasis",
+  "root-attack", "silence-attack", "ground-walk", "drowsy-slow", "sleep-dot", "blind-vs-nearsight",
+  "gw-stack", "gw-shield", "gw-regen", "untargetable-ignite", "champion-skills-regression", "cc-followup",
+  "smite-borrowed", "leesin-cleanse-1", "leesin-cleanse-3", "leesin-cleanse-4", "leesin-cleanse-5", "leesin-reverse-sequence",
+];
+const stories = representatives.map(id => {
+  const story = corpus.find(entry => entry.id === id);
+  assert.ok(story, `누락된 대표 CC 사례: ${id}`);
+  return story;
+});
 for (const story of stories) test(`실제 대화 흐름: ${story.id}`, async () => {
   const ctx = context();
   for (const [index, turn] of story.turns.entries()) {

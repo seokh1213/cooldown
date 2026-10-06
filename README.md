@@ -22,7 +22,7 @@ Pick your champion and the opponent. Every rank's cooldown in one table, base st
 
 ## Also included
 
-- Runes, items and summoner spells encyclopedia
+- Champion biographies and skins, runes, items and summoner spells encyclopedia
 - Korean, English and Simplified Chinese
 - Installable PWA that works offline
 - Optional LoL knowledge helper. The model runs inside the browser and nothing is sent to a server. See `docs/advisor-answer-pipeline.md`.
@@ -61,9 +61,9 @@ Regenerate the current patch's data locally with `npm run generate-static-data`.
 ## More
 
 - `docs/product-roadmap.md`: priorities and done criteria
-- `docs/pwa-updates.md`: PWA release and update rules
-- `docs/versioning.md`: patch and source version rules
-- `docs/local-llm-advisor.md`, `knowledge/README.md`: the knowledge helper
+- [Data versions and PWA updates](docs/data-and-updates.md)
+- [Knowledge helper design](docs/advisor-answer-pipeline.md) and [knowledge authoring](knowledge/README.md)
+- [Patch change reports](docs/patch-notes.md)
 
 ## License
 

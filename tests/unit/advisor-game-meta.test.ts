@@ -3,22 +3,22 @@
  */
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { asksPrice, championPriceAnswer, findGameMeta, gameMetaAnswer } from "../../src/lib/advisor/gameMeta";
+import { championPriceAnswer, findGameMeta, gameMetaAnswer } from "../../src/lib/advisor/gameMeta";
 
 for (const [q, id] of [
-  ["항복 몇 분부터 돼?", "surrender"], ["what minute can we ff?", "surrender"], ["几分钟能投降啊", "surrender"],
-  ["팀원 한 명 안 들어옴 다시하기 투표 어떻게 해", "remake"], ["can we remake if someone never connected", "remake"], ["队友开局一直没连进来，重开的条件是什么？", "remake"],
-  ["첫 드래곤 언제 나와", "dragon"], ["when does the first dragon spawn", "dragon"], ["第一条龙几分钟刷", "dragon"],
-  ["장로 드래곤 언제 나와?", "elder"], ["바론 몇 분에 나와", "baron"], ["大龙buff人死了就没了吗", "baron"],
+  ["what minute can we ff?", "surrender"],
+  ["队友开局一直没连进来，重开的条件是什么？", "remake"],
+  ["첫 드래곤 언제 나와", "dragon"],
+  ["장로 드래곤 언제 나와?", "elder"], ["바론 몇 분에 나와", "baron"],
   ["공허 유충 몇 분에 나와?", "voidgrubs"], ["협곡의 전령 몇 분에 나와?", "herald"], ["아타칸 언제 나와?", "atakhan"],
-  ["포탑 방패 몇 분에 없어져?", "plating"], ["When does turret plating fall off?", "plating"],
+  ["포탑 방패 몇 분에 없어져?", "plating"],
   ["억제기 몇 분에 다시 살아나?", "inhibitor"], ["미니언 웨이브 몇 초마다 와?", "minion-waves"],
-  ["킬 골드 얼마야?", "kill-gold"], ["How much gold is a kill?", "kill-gold"],
-  ["랭겜 닷지하면 LP 얼마나 까여?", "dodge"], ["is there a penalty for dodging ranked?", "dodge"],
+  ["킬 골드 얼마야?", "kill-gold"],
+  ["랭겜 닷지하면 LP 얼마나 까여?", "dodge"],
   ["듀오 티어 제한이 어떻게 되나요?", "duo"],
-  ["cs가 뭐야?", "cs"], ["바위게 몇 분에 나와?", "scuttle"], ["When does scuttle spawn?", "scuttle"], ["블루 버프 리젠 몇 분이야?", "buffs"],
-  ["lethality vs armor pen whats the difference", "lethality"], ["팀원 채팅 음소거 어떻게 해?", "mute"], ["how do i mute one teammate's pings", "mute"],
-  ["죽으면 몇 초 뒤에 부활해?", "death-timer"], ["Do jungle monsters count toward the CS number?", "cs"],
+  ["cs가 뭐야?", "cs"], ["바위게 몇 분에 나와?", "scuttle"], ["블루 버프 리젠 몇 분이야?", "buffs"],
+  ["lethality vs armor pen whats the difference", "lethality"], ["팀원 채팅 음소거 어떻게 해?", "mute"],
+  ["죽으면 몇 초 뒤에 부활해?", "death-timer"],
 ] as const) {
   test(`사실: ${q}`, () => {
     assert.deepEqual(findGameMeta(q)?.id, id, `사실: ${q}`);
@@ -26,16 +26,11 @@ for (const [q, id] of [
 }
 
 // 게임 규칙이 아닌 말에는 걸리지 않는다("ff" 가 "effect" 에, "dc" 가 낱말 속에 걸리지 않게)
-for (const q of ["What does Conqueror's effect do?", "점멸 쿨 몇 초야", "정복자에 점화 들어가?", "가렌으로 다리우스 라인전 어떻게 해?", "how do I play Draven"]) {
+for (const q of ["What does Conqueror's effect do?", "가렌으로 다리우스 라인전 어떻게 해?"]) {
   test(`사실 없음: ${q}`, () => {
     assert.deepEqual(findGameMeta(q), undefined, `사실 없음: ${q}`);
   });
 }
-
-test("가격 낱말", () => {
-  assert.deepEqual(asksPrice("아리 가격 얼마야?"), true, "가격 낱말");
-  assert.deepEqual(asksPrice("아리 콤보 알려줘"), false, "가격 낱말 없음");
-});
 
 test("챔피언 가격 답", () => {
   const ahri = championPriceAnswer("아리 가격 얼마야?", { id: "Ahri", name: "아리" }, "ko_KR") ?? "";

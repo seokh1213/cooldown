@@ -14,7 +14,7 @@ function assertUniqueSections(sections: ReviewSection[]): void {
 }
 
 /** The model must read every full source/candidate pair; the parser only validates its report. */
-export function buildSemanticReviewPrompt(sections: ReviewSection[], glossary: string): string {
+export function buildSemanticReviewPrompt(sections: ReviewSection[], glossary: string, patch?: string): string {
   assertUniqueSections(sections);
   const sourceIds = new Map<string, string>();
   const sources: Record<string, string> = {};
@@ -41,7 +41,7 @@ export function buildSemanticReviewPrompt(sections: ReviewSection[], glossary: s
     "Correct only clear translation errors. Preserve the Korean source's game facts and advice even if you disagree with them.",
     "Hold genuinely ambiguous Korean passages with a concise Korean reason; never invent advice or silently resolve ambiguous owners.",
     "An initial 'then', '이어서', '이어', or '이때' alone is not grounds for holding a row. Approve a faithful translation that preserves the connector without inventing an antecedent.",
-    "The supplied official-name glossary is authoritative for current patch 26.19. Use it for names and reworked skills.",
+    `The supplied official-name glossary is authoritative${patch ? ` for current patch ${patch}` : ""}. Use it for names and reworked skills.`,
     "Reference summaries supplied in the glossary are authoritative for patch reworks. Never correct an official name absent from the glossary using memory alone.",
     "Distinguish cooldown returning from a champion returning, short-cooldown dashes from short-range dashes, and aging barrels from practicing.",
     "When the Korean source says to deny Mundo's healing AND passive cooldown reduction, preserve BOTH denial scopes. Never rewrite contradictory Korean game facts from game knowledge; hold only if genuinely ambiguous. Preserve skill owners and Hwei subskill slots.",

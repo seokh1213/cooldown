@@ -10,7 +10,7 @@ import type { StringTable } from "./data-pipeline/localization";
 import { fetchJson, writeJson } from "./data-pipeline/io/json";
 import { fetchCDragonChampion } from "./data-pipeline/sources/cdragon-champion";
 import { extractActiveSpells } from "./data-pipeline/cdragon-active-spells";
-import { ABILITY_FORM_DEFINITIONS, buildAbilityForms } from "./data-pipeline/ability-forms";
+import { ABILITY_FORM_DEFINITIONS, buildAbilityForms, withAbilityUsageCondition } from "./data-pipeline/ability-forms";
 
 async function generateForms() {
   const release = decodeDataManifest(JSON.parse(await readFile("public/data/version.json", "utf8")));
@@ -30,6 +30,7 @@ async function generateForms() {
         const spell = champion.spells?.[index];
         if (!spell) throw new Error(`Missing ${id} ${slot}`);
         detail.champion.abilities[slot].forms = buildAbilityForms({ champion, spell, slot, locale, table, aliases, cdragonVersion: release.sources.cdragon });
+        detail.champion.abilities[slot].bodyHtml = withAbilityUsageCondition(id, slot, detail.champion.abilities[slot].bodyHtml, locale);
       }
       decodeChampionDetail(detail);
       assertStaticDataIdentity(detail, release, locale);

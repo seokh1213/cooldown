@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import type { DataLocale, StaticDataSources } from "@/data/contracts/staticData";
 import { getNormalizedItems } from "@/data/queries/gameDataQueries";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -12,6 +13,7 @@ import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
 import type { ItemTier } from "@/lib/itemTierUtils";
 import { ItemCell, ItemDetail } from "./ItemDetail";
+import { useEncyclopediaData } from "./useEncyclopediaData";
 import {
   groupItemsByTier,
   shouldShowInStore,
@@ -45,6 +47,7 @@ function ItemSearch(props: {
     <div className={`relative group ${mobile ? "" : "w-full sm:w-52 md:w-64"}`}>
       <Search className={`absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none group-focus-within:text-primary ${mobile ? "h-3.5 w-3.5" : "h-4 w-4"}`} />
       <Input
+        aria-label={placeholder}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
@@ -65,7 +68,7 @@ function ItemGrid(props: {
   ddragonVersion: string;
   selectedId: string | undefined;
   tierLabel: (tier: ItemTier) => string;
-  onSelect: (item: Item) => void;
+  onSelect: (item: Item, trigger: HTMLButtonElement) => void;
 }) {
   const { itemsByTier, ddragonVersion, selectedId, tierLabel, onSelect } = props;
   return (
@@ -83,7 +86,7 @@ function ItemGrid(props: {
                   item={item}
                   ddragonVersion={ddragonVersion}
                   isSelected={selectedId === item.id}
-                  onSelect={() => onSelect(item)}
+                  onSelect={(trigger) => onSelect(item, trigger)}
                 />
               ))}
             </div>
@@ -97,33 +100,20 @@ function ItemGrid(props: {
 export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsTabProps) {
   const { t } = useTranslation();
   const isMobile = useDeviceType() === "mobile";
-  const [items, setItems] = useState<Item[] | null>(null);
-  const [storeItems, setStoreItems] = useState<Item[] | null>(null);
   const [search, setSearch] = useState("");
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  const detailTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedItemId = searchParams.get("item");
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    getNormalizedItems({ patchVersion, sources }, lang)
-      .then((data) => {
-        if (cancelled) return;
-        const store = uniqueStoreItems(data);
-        setItems(data);
-        setStoreItems(store);
-        setSelectedItem((current) => current ?? store[0] ?? null);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [patchVersion, sources, lang]);
+  const loadItems = useCallback(
+    () => getNormalizedItems({ patchVersion, sources }, lang),
+    [patchVersion, sources, lang],
+  );
+  const { data: items, error, retry } = useEncyclopediaData(loadItems);
+  const storeItems = useMemo(() => items ? uniqueStoreItems(items) : null, [items]);
+  const selectedItem = items?.find((item) => item.id === selectedItemId) ?? storeItems?.[0] ?? null;
 
   /*
    * 고른 아이템을 주소에 적는다.
@@ -136,7 +126,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
    * 일이 된다. 사용자가 바라는 것은 백과를 떠나는 쪽이다.
    */
   const selectItem = (item: Item) => {
-    setSelectedItem(item);
+    setSelectedItemId(item.id);
     const next = new URLSearchParams(searchParams);
     next.set("item", item.id);
     setSearchParams(next, { replace: true });
@@ -147,7 +137,7 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
     if (!items || !requestedItemId) return;
     const requested = items.find((item) => item.id === requestedItemId);
     if (!requested) return;
-    setSelectedItem(requested);
+    setSelectedItemId(requested.id);
     if (isMobile) setMobileDetailOpen(true);
   }, [items, requestedItemId, isMobile]);
 
@@ -161,15 +151,19 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
     [storeItems, debouncedSearch],
   );
   const tierLabel = (tier: ItemTier) => t.encyclopedia.items.tiers[tier];
-  const selectMobileItem = (item: Item) => {
+  const selectMobileItem = (item: Item, trigger: HTMLButtonElement) => {
+    detailTriggerRef.current = trigger;
     selectItem(item);
     setMobileDetailOpen(true);
   };
 
-  if (loading && !storeItems) {
-    return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
+  if (error) {
+    return <div role="alert" className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">{t.app.loadError}<Button onClick={retry} variant="outline" className="h-11">{t.app.retry}</Button></div>;
   }
-  if (!storeItems || storeItems.length === 0) {
+  if (!storeItems) {
+    return <div role="status" className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
+  }
+  if (storeItems.length === 0) {
     return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.emptyList}</div>;
   }
   const detail = selectedItem && (
@@ -190,7 +184,15 @@ export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsT
           <ItemGrid itemsByTier={itemsByTier} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={selectMobileItem} />
         </div>
         <Dialog open={mobileDetailOpen && selectedItem !== null} onOpenChange={setMobileDetailOpen}>
-          <DialogContent className="w-[calc(100vw-32px)] max-w-lg h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col">
+          <DialogContent
+            className="w-[calc(100vw-32px)] max-w-lg h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              const trigger = detailTriggerRef.current;
+              if (trigger?.isConnected) trigger.focus();
+              else document.getElementById("main-content")?.focus();
+            }}
+          >
             <VisuallyHidden>
               <DialogTitle>{selectedItem?.name ?? "Item"}</DialogTitle>
               <DialogDescription>{selectedItem?.name ?? "Item"}</DialogDescription>

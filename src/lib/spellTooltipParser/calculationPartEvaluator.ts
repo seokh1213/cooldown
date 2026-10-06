@@ -353,6 +353,9 @@ export function evaluatePart(
   if (typeof referenceKey === "string" && referenceKey.length > 0) {
     try {
       const inner = ctx.evaluateCalculation(referenceKey, new Set(visited));
+      if (inner.extraRanges?.length || inner.statMultiplier || inner.extraMultipliers?.length || inner.groupedParts?.length) {
+        return { base: 0, statParts: [], groupedParts: [inner] };
+      }
       return {
         base: inner.base,
         statParts: inner.statParts,
@@ -500,6 +503,7 @@ export function evaluatePart(
       return {
         base,
         statParts: results.flatMap((result) => result.statParts),
+        groupedParts: results.flatMap((result) => result.groupedParts ?? []),
         ...(isLevelRange ? { isLevelRange: true } : {}),
       };
     } catch (error) {
@@ -523,6 +527,10 @@ export function evaluatePart(
     for (const sub of clamp.mSubparts ?? []) {
       const result = evaluatePart(sub, ctx, visited);
       if (!result) return null;
+      if (result.groupedParts?.length) {
+        ctx.reportDrop?.({ reason: "unsupported-part", detail: type });
+        return null;
+      }
       // 스탯 비율은 런타임 스탯 없이 clamp 할 수 없어 버린다
       if (result.statParts.length > 0) {
         logger.debug("ClampSubPartsCalculationPart: 스탯 항 제외 (clamp 불가)", sub);
@@ -558,6 +566,10 @@ export function evaluatePart(
     const statSubPart = part as StatBySubPartCalculationPart;
     const inner = evaluatePart(statSubPart.mSubpart, ctx, visited);
     if (!inner) return null;
+    if (inner.groupedParts?.length) {
+      ctx.reportDrop?.({ reason: "unsupported-part", detail: type });
+      return null;
+    }
     if (inner.statParts.length > 0) {
       logger.debug("StatBySubPartCalculationPart: 내부 스탯 비율은 표기 불가", part);
       ctx.reportDrop?.({ reason: "stat-subpart-dropped" });

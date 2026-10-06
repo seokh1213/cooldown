@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
-import type { Rune, RuneStatShard, RuneStatShardStaticData, RuneTree } from "@/types";
+import { useCallback, useMemo, useState } from "react";
+import type { RuneStatShard, RuneStatShardStaticData } from "@/types";
 import type { DataLocale, StaticDataSources } from "@/data/contracts/staticData";
 import { getRunePageData } from "@/data/queries/gameDataQueries";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
+import { Button } from "@/components/ui/button";
 import { RuneCatalog, type StatShardRow } from "./RuneCatalog";
+import { useEncyclopediaData } from "./useEncyclopediaData";
 
 interface RunesTabProps {
   patchVersion: string;
@@ -50,27 +52,16 @@ function buildStatShardRows(
 export function RunesTab({ patchVersion, sources, lang }: RunesTabProps) {
   const { t } = useTranslation();
   const isMobile = useDeviceType() === "mobile";
-  const [trees, setTrees] = useState<RuneTree[] | null>(null);
-  const [statShards, setStatShards] = useState<RuneStatShardStaticData | null>(null);
-  const [selectedRune, setSelectedRune] = useState<Rune | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    getRunePageData({ patchVersion, sources }, lang)
-      .then((data) => {
-        if (cancelled) return;
-        setTrees(data.trees);
-        setStatShards(data.statShards);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [patchVersion, sources, lang]);
+  const [selectedRuneId, setSelectedRuneId] = useState<number | null>(null);
+  const loadRunes = useCallback(
+    () => getRunePageData({ patchVersion, sources }, lang),
+    [patchVersion, sources, lang],
+  );
+  const { data, error, retry } = useEncyclopediaData(loadRunes);
+  const trees = data?.trees;
+  const statShards = data?.statShards ?? null;
+  const selectedRune = trees?.flatMap((tree) => tree.slots.flatMap((slot) => slot.runes))
+    .find((rune) => rune.id === selectedRuneId) ?? null;
 
   const sortedTrees = useMemo(
     () => [...(trees ?? [])].sort(
@@ -85,8 +76,11 @@ export function RunesTab({ patchVersion, sources, lang }: RunesTabProps) {
     [statShards],
   );
 
-  if (loading && !trees) {
-    return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
+  if (error) {
+    return <div role="alert" className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">{t.app.loadError}<Button onClick={retry} variant="outline" className="h-11">{t.app.retry}</Button></div>;
+  }
+  if (!trees) {
+    return <div role="status" className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
   }
   if (sortedTrees.length === 0) {
     return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.emptyList}</div>;
@@ -99,7 +93,7 @@ export function RunesTab({ patchVersion, sources, lang }: RunesTabProps) {
       isMobile={isMobile}
       warning={t.encyclopedia.runes.warning}
       statShardsTitle={t.encyclopedia.runes.statShardsTitle}
-      onSelectRune={setSelectedRune}
+      onSelectRune={(rune) => setSelectedRuneId(rune?.id ?? null)}
     />
   );
 }

@@ -42,7 +42,7 @@ for (const width of [1440, 360]) {
 
 for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
   for (const width of [1440, 360]) {
-    test(`champion encyclopedia: dense default list, skin/story, return flow ${locale} ${width}`, async ({ page }, testInfo) => {
+    test(`champion encyclopedia: dense default list, skin/story, return flow ${locale} ${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.addInitScript((language) => localStorage.setItem("language", language), locale);
       const errors: string[] = [];
@@ -55,6 +55,19 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       await expect(page.getByRole("button", { name: t.championProfile.tab, exact: true })).toHaveAttribute("aria-pressed", "true");
       const grid = page.locator("[data-champion-grid]");
       await expect(grid.getByRole("button")).toHaveCount(173);
+      if (locale === "ko_KR" && width === 1440) {
+        await expect(page).toHaveURL(/\/cooldown\/encyclopedia$/);
+        await expect(page.getByRole("heading", { name: "백과사전" })).toBeVisible();
+        await expect(grid).toBeVisible();
+        await page.getByRole("button", { name: "룬 백과", exact: true }).click();
+        await expect(page.getByText("집중 공격", { exact: true }).first()).toBeVisible();
+        await page.getByRole("button", { name: "아이템 백과" }).click();
+        await expect(page.getByRole("img", { name: "롱소드" }).first()).toBeVisible();
+        await expect(page.locator("#root")).not.toBeEmpty();
+        await page.getByRole("button", { name: t.championProfile.tab, exact: true }).click();
+        await expect(page.getByRole("button", { name: t.championProfile.tab, exact: true })).toHaveAttribute("aria-pressed", "true");
+        await expect(grid).toBeVisible();
+      }
       /*
         열 수는 화면이 정한다. 예전에는 끊는 점마다 5·8·10·12·16 으로 못 박았는데,
         그 사이 폭에서 칸이 빠듯해져 이름이 서너 줄로 접혔다. 지금은 칸의 최소 폭만
@@ -104,7 +117,6 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       await expect(page.getByRole("combobox", { name: t.championProfile.skins, exact: true })).toHaveValue("0");
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       expect(errors).toEqual([]);
-      await page.screenshot({ path: testInfo.outputPath("champion-profile.png"), animations: "disabled" });
     });
   }
 }

@@ -11,6 +11,7 @@
  */
 import * as fs from "fs";
 import * as path from "path";
+import { createHash, randomUUID } from "node:crypto";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./data";
 
 export interface AbilityFallback {
@@ -37,6 +38,7 @@ export interface ChampionPatchGaps {
 }
 
 interface FallbackFileShape {
+  patchVersion: string;
   searchedPatches?: string[];
   entries?: Array<{
     championId: string;
@@ -49,6 +51,7 @@ interface FallbackFileShape {
 }
 
 interface LostFileShape {
+  patchVersion: string;
   entries?: Array<{
     championId: string;
     slot: string;
@@ -57,10 +60,59 @@ interface LostFileShape {
   }>;
 }
 
-function readJson<T>(patch: string, fileName: string): T | undefined {
-  const file = path.join(PUBLIC_DATA_ROOT, patch, "llm", fileName);
+export function patchGapChampions(patch: string, requested: string): string[] {
+  const ids = [...new Set(requested.split(",").map((id) => id.trim()))].sort();
+  const available = new Set(fs.readdirSync(path.join(PUBLIC_DATA_ROOT, patch, "champions", "ko_KR"))
+    .filter((name) => name.endsWith(".json") && name !== "index.json")
+    .map((name) => name.slice(0, -5)));
+  const invalid = ids.filter((id) => !/^[A-Za-z0-9]+$/.test(id) || !available.has(id));
+  if (invalid.length) throw new Error(`조사 챔피언 ID가 유효하지 않음: ${invalid.join(", ") || "빈 값"}`);
+  return ids;
+}
+
+export function patchGapsFile(patch: string, fileName: string, champions?: string[]): string {
+  const directory = path.join(process.cwd(), "data", "ability-research", patch);
+  if (!champions) return path.join(directory, fileName);
+  const ids = patchGapChampions(patch, champions.join(","));
+  const digest = createHash("sha256").update(ids.join(",")).digest("hex").slice(0, 16);
+  const scope = ids.length === 1 ? ids[0] : `${ids[0]}-${ids.at(-1)}-${ids.length}-${digest}`;
+  return path.join(directory, "partial", scope, fileName);
+}
+
+export function writePatchGaps(patch: string, fileName: string, contents: string, champions?: string[]): string {
+  const value = JSON.parse(contents) as { patchVersion?: unknown } | null;
+  if (value?.patchVersion !== patch) throw new Error(`소급 조사 저장 패치 불일치: ${patch}`);
+  const out = patchGapsFile(patch, fileName, champions);
+  const temporary = `${out}.${randomUUID()}.tmp`;
+  let historyTemporary: string | undefined;
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  try {
+    fs.writeFileSync(temporary, contents, { encoding: "utf8", flag: "wx" });
+    if (fs.existsSync(out)) {
+      const history = path.join(path.dirname(out), "history", path.basename(fileName, ".json"),
+        `${new Date().toISOString().replace(/[:.]/g, "-")}-${randomUUID()}.json`);
+      historyTemporary = `${history}.tmp`;
+      fs.mkdirSync(path.dirname(history), { recursive: true });
+      // Preserve exact prior bytes before replacing the current investigation.
+      fs.copyFileSync(out, historyTemporary, fs.constants.COPYFILE_EXCL);
+      fs.renameSync(historyTemporary, history);
+    }
+    fs.renameSync(temporary, out);
+  } finally {
+    fs.rmSync(temporary, { force: true });
+    if (historyTemporary) fs.rmSync(historyTemporary, { force: true });
+  }
+  return out;
+}
+
+function readJson<T extends { patchVersion: string }>(patch: string, fileName: string): T | undefined {
+  const file = patchGapsFile(patch, fileName);
   if (!fs.existsSync(file)) return undefined;
-  return JSON.parse(fs.readFileSync(file, "utf8")) as T;
+  const parsed = JSON.parse(fs.readFileSync(file, "utf8")) as T;
+  if (parsed?.patchVersion !== patch) {
+    throw new Error(`소급 조사 패치 불일치: ${file} (기대 ${patch}, 실제 ${parsed?.patchVersion ?? "없음"})`);
+  }
+  return parsed;
 }
 
 function toPlain(html: string | undefined): string {

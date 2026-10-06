@@ -32,9 +32,6 @@ export const spellIconUrl = (ddragonVersion: string, spellId: string) =>
 export const itemIconUrl = (ddragonVersion: string, itemId: string) =>
   local(ddragonVersion, "item", itemId);
 
-export const summonerSpellIconUrl = (ddragonVersion: string, fileName: string) =>
-  local(ddragonVersion, "summoner", fileName.replace(/\.png$/, ""));
-
 /**
  * 변신 스킬 아이콘(엘리스·니달리·제이스·그웬 스물일곱 장).
  *

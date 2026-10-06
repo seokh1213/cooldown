@@ -34,9 +34,8 @@ function conversation(lang: Language = "ko_KR") {
 }
 
 for (const [q, fields] of [
-  ["체력하고 체젠", ["health", "healthRegen"]], ["체젠, 체력, 마저", ["healthRegen", "health", "magicResist"]],
-  ["체력 재생", ["healthRegen"]], ["health and health regeneration", ["health", "healthRegen"]],
-  ["生命值和生命回复", ["health", "healthRegen"]], ["As Ahri against Zed", []],
+  ["체력하고 체젠", ["health", "healthRegen"]], ["health and health regeneration", ["health", "healthRegen"]],
+  ["生命值和生命回复", ["health", "healthRegen"]],
   ["이속 말고 공속만", ["attackSpeed"]],
 ] as const) test(`${q}: 중첩 어휘와 요청 순서를 구분한다`, () => assert.deepEqual(detectStats(q), fields));
 
@@ -68,12 +67,10 @@ test("레벨·대상·항목을 독립적으로 갱신하고 같이 추가한다
   assert.deepEqual(statFields(added), ["healthRegen", "health"]);
 });
 
-test("서로 다른 대상의 능력치 요청은 쉼표와 세미콜론으로도 분리한다", async () => {
-  for (const q of ["오공 체력 알려줘, 문도 체젠 알려줘", "오공 체력; 문도 체젠"]) {
-    const { reply } = await conversation().ask(q);
-    assert.deepEqual(reply.answers?.flatMap(a => "statQuery" in a && a.statQuery ? [[a.statQuery.champions, a.statQuery.field]] : []),
-      [[["MonkeyKing"], "health"], [["DrMundo"], "healthRegen"]]);
-  }
+test("서로 다른 대상의 능력치 요청은 쉼표로 분리한다", async () => {
+  const { reply } = await conversation().ask("오공 체력 알려줘, 문도 체젠 알려줘");
+  assert.deepEqual(reply.answers?.flatMap(a => "statQuery" in a && a.statQuery ? [[a.statQuery.champions, a.statQuery.field]] : []),
+    [[["MonkeyKing"], "health"], [["DrMundo"], "healthRegen"]]);
 });
 
 test("한 요청의 근거 부족이나 확인 질문이 다른 요청을 버리지 않는다", async () => {

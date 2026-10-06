@@ -126,7 +126,17 @@ test("manifest 동시 요청을 하나로 합친다", async () => {
     manifestRepository.get(),
   ]);
   assert.equal(firstManifest, secondManifest);
+  assert.equal(firstManifest.patchVersion, "26.17");
+  assert.equal(firstManifest.sources.ddragon, "16.17.1");
+  assert.equal(firstManifest.sources.cdragon, "16.17");
   assert.equal(manifestRequests, 1);
+});
+
+test("옛 manifest 는 저장소 요청 경로에서도 거부한다", async () => {
+  const repository = new ManifestRepository({
+    async getJson() { return { version: "26.17" }; },
+  });
+  await assert.rejects(repository.get(), /Unsupported static data manifest/);
 });
 
 test("manifest 실패 뒤 다시 요청한다", async () => {

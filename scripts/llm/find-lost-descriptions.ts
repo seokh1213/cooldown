@@ -24,6 +24,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
+import { patchGapChampions, writePatchGaps } from "./lib/patchGaps";
 import {
   fetchDDragonVersions,
   fetchPatchChampions,
@@ -61,6 +62,7 @@ export interface LostEntry {
 export interface LostFile {
   patchVersion: string;
   generatedAt: string;
+  selectedChampions?: string[];
   searchedPatches: string[];
   entryCount: number;
   sentenceCount: number;
@@ -87,11 +89,9 @@ async function main(): Promise<void> {
   };
   const depth = Number(get("--depth") ?? DEFAULT_DEPTH);
   const minSentences = Number(get("--min") ?? 1);
-  const only = get("--champ")
-    ? new Set(get("--champ")!.split(",").map((s) => s.trim()))
-    : undefined;
-
   const patch = resolvePatchVersion();
+  const selectedChampions = argv.includes("--champ") ? patchGapChampions(patch, get("--champ") ?? "") : undefined;
+  const only = selectedChampions ? new Set(selectedChampions) : undefined;
   const versions = await fetchDDragonVersions();
   const currentIndex = versions.findIndex((v) => toOfficialPatchVersion(v) === patch);
   if (currentIndex < 0) throw new Error(`DDragon 버전 목록에서 ${patch} 를 찾지 못했다`);
@@ -179,14 +179,13 @@ async function main(): Promise<void> {
   const file: LostFile = {
     patchVersion: patch,
     generatedAt: new Date().toISOString(),
+    ...(selectedChampions ? { selectedChampions } : {}),
     searchedPatches,
     entryCount: entries.length,
     sentenceCount: entries.reduce((n, e) => n + e.sentences.length, 0),
     entries,
   };
-  const out = path.join(PUBLIC_DATA_ROOT, patch, "llm", LOST_FILE);
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, JSON.stringify(file, null, 2), "utf8");
+  const out = writePatchGaps(patch, LOST_FILE, JSON.stringify(file, null, 2), selectedChampions);
 
   console.log(`\n스킬 ${file.entryCount}개에서 문장 ${file.sentenceCount}건이 사라졌다`);
   console.log(`저장: ${path.relative(process.cwd(), out)}`);

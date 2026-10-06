@@ -32,9 +32,12 @@ export function useRevealText(write: (id: number, content: string) => void) {
     finishReveal();
     if (!full) return;
     const step = Math.max(2, Math.ceil(full.length / 90));
+    const startedAt = performance.now();
     let shown = 0;
     const timer = window.setInterval(() => {
-      shown = Math.min(full.length, shown + step);
+      // 느린 프레임에서도 2초 표시 시간을 타이머 호출 횟수로 늘리지 않는다.
+      const elapsedSteps = Math.floor((performance.now() - startedAt) / 20);
+      shown = Math.min(full.length, Math.max(shown + step, elapsedSteps * step));
       // 이모지 같은 두 칸 글자를 반으로 자르지 않는다
       if (shown < full.length && /[\uD800-\uDBFF]/.test(full[shown - 1])) shown += 1;
       const text = shown >= full.length ? full : unfinishedMarkup(full.slice(0, shown));

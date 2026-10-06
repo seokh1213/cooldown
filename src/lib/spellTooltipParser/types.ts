@@ -152,6 +152,10 @@ export interface CalcResult {
    * "50/80/110 + (250 ~ 550)" 처럼 길이가 다른 두 값은 하나로 합칠 수 없어 따로 들고 있다가 옆에 붙여 적는다.
    */
   extraRanges?: Value[];
+  /** 다른 계산식의 합·배율은 한 항으로 묶어야 원래 연산 순서가 유지된다. */
+  groupedParts?: CalcResult[];
+  /** 템플릿 연산이 만든 0도 해결된 값으로 표시한다. */
+  showZero?: boolean;
   /**
    * 스탯에 비례하는 배율 (치명타 확률, 추가 공격 속도 등)
    *
@@ -162,6 +166,7 @@ export interface CalcResult {
   statMultiplier?: {
     base: Value;
     statParts: StatPart[];
+    groupedParts?: CalcResult[];
     /** base 를 퍼센트로 적어야 하는지 여부 */
     isPercent?: boolean;
     /** base 가 1~20레벨 값인 레벨 범위인지 여부 */

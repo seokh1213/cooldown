@@ -1,14 +1,24 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { type AdvisorAnswer } from "@/lib/advisor/answer";
 import { dialogueAnswerText, type AnswerDelivery } from "@/lib/advisor/dialogueReply";
 import type { DialogueMemory } from "@/lib/advisor/dialogueState";
 import type { DialogueTrace } from "@/lib/advisor/requestContract";
 import type { Language } from "@/i18n";
 import type { AdvisorChatMessage, AdvisorResponse } from "@/lib/advisor/protocol";
+import type { HistorySource } from "@/lib/advisor/historySnapshot";
+import type { StoredTurn } from "@/lib/advisor/history";
+import type { ChampionDetailV2 } from "@/data/contracts/championData";
+import { decodeChampionDetail } from "@/data/contracts/championDataDecoder";
+import { matchesDetailSource } from "@/lib/advisor/championDetail";
+import { advisorReferenceChampionIds } from "./useAdvisorHistoryDetails";
 import { useRevealText } from "./useRevealText";
 
 export interface AdvisorTurn extends AdvisorChatMessage {
   id: number;
+  source?: HistorySource;
+  details?: Record<string, ChampionDetailV2>;
+  historical?: StoredTurn;
+  referenceUnavailable?: boolean;
   /** 생성이 끝난 뒤 붙는 실측치 */
   /** ttft 는 프롬프트를 읽는 데 쓴 시간이다. 나머지가 글을 쓰는 시간이다. */
   stats?: { tokens: number; seconds: number; ttft?: number; promptTokens?: number };
@@ -53,11 +63,16 @@ export interface AdvisorTurn extends AdvisorChatMessage {
 
 type DoneMessage = Extract<AdvisorResponse, { type: "done" }>;
 
-export function useAdvisorTurns(lang: Language, setError: (error: string | null) => void) {
+export function useAdvisorTurns(lang: Language, setError: (error: string | null) => void, source?: HistorySource) {
   const [turns, setTurns] = useState<AdvisorTurn[]>([]);
   const nextId = useRef(1);
+  const patch = source?.patch;
+  const locale = source?.locale;
+  const ddragonVersion = source?.ddragonVersion;
+  const currentSource = useMemo(() => patch === undefined || locale === undefined || ddragonVersion === undefined
+    ? undefined : { patch, locale, ddragonVersion }, [patch, locale, ddragonVersion]);
   /** `begin` 이 띄운 자리. 답이 채우면 비운다. */
-  const pendingRef = useRef<{ userId: number; replyId: number } | null>(null);
+  const pendingRef = useRef<{ userId: number; replyId: number; source?: HistorySource } | null>(null);
   const [thinking, setThinking] = useState(false);
   const writeContent = useCallback((id: number, content: string) => {
     setTurns((prev) => prev.map((turn) => (turn.id === id ? { ...turn, content } : turn)));
@@ -71,33 +86,55 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
     if (!trimmed || pendingRef.current) return;
     const userId = nextId.current++;
     const replyId = nextId.current++;
-    pendingRef.current = { userId, replyId };
+    const startedSource = currentSource ? structuredClone(currentSource) : undefined;
+    pendingRef.current = { userId, replyId, source: startedSource };
     setError(null);
     setThinking(true);
     setTurns((prev) => [
       ...prev,
-      { id: userId, role: "user", content: trimmed },
-      { id: replyId, role: "assistant", content: "", activity: label },
+      { id: userId, role: "user", content: trimmed, source: startedSource },
+      { id: replyId, role: "assistant", content: "", activity: label, source: startedSource },
     ]);
-  }, [setError]);
+  }, [setError, currentSource]);
 
   /** 답 자리를 연다. `begin` 이 띄운 자리가 있으면 그것을 채우고, 없으면 새로 붙인다. 답의 id 를 돌려준다. */
   const place = useCallback((question: string, reply: Omit<AdvisorTurn, "id">): number => {
     const pending = pendingRef.current;
+    const startedSource = pending ? pending.source : currentSource ? structuredClone(currentSource) : undefined;
+    const assistant = { ...reply, source: startedSource };
     pendingRef.current = null;
     setThinking(false);
     if (pending) {
       setTurns((prev) =>
         prev.map((turn) =>
-          turn.id === pending.userId ? { ...turn, content: question } : turn.id === pending.replyId ? { id: pending.replyId, ...reply } : turn,
+          turn.id === pending.userId ? { ...turn, content: question } : turn.id === pending.replyId ? { id: pending.replyId, ...assistant } : turn,
         ),
       );
       return pending.replyId;
     }
     const userId = nextId.current++;
     const replyId = nextId.current++;
-    setTurns((prev) => [...prev, { id: userId, role: "user", content: question }, { id: replyId, ...reply }]);
+    setTurns((prev) => [...prev, { id: userId, role: "user", content: question, source: startedSource }, { id: replyId, ...assistant }]);
     return replyId;
+  }, [currentSource]);
+
+  const attachReferenceDetail = useCallback((turnId: number, raw: ChampionDetailV2) => {
+    let detail: ChampionDetailV2;
+    try {
+      detail = decodeChampionDetail(raw);
+    } catch {
+      return;
+    }
+    const id = detail.champion.id;
+    setTurns(prev => {
+      const index = prev.findIndex(turn => turn.id === turnId);
+      const turn = prev[index];
+      if (!turn || turn.role !== "assistant" || turn.historical || !turn.source || turn.details?.[id]
+        || !advisorReferenceChampionIds(turn).includes(id) || !matchesDetailSource(detail, turn.source, id)) return prev;
+      const next = [...prev];
+      next[index] = { ...turn, details: { ...turn.details, [id]: structuredClone(detail) } };
+      return next;
+    });
   }, []);
 
   const settle = useCallback(() => {
@@ -207,5 +244,6 @@ export function useAdvisorTurns(lang: Language, setError: (error: string | null)
     remember,
     reset,
     replaceTurns,
+    attachReferenceDetail,
   };
 }

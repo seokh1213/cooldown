@@ -53,7 +53,6 @@ test("모바일의 AI 버튼·바깥 스크롤·입력창 아래 노출을 없�
     expect(layout.padding).toBeGreaterThanOrEqual(24);
     expect(layout.background).toBe(layout.panelBackground);
   }
-  await page.screenshot({ path: "research/champion-combos/screenshots/mobile-layout.png" });
   await page.getByRole("button", { name: "닫기", exact: true }).click();
   expect(await page.evaluate(() => document.body.style.position)).toBe("");
 });

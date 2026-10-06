@@ -9,6 +9,7 @@
  */
 import * as fs from "fs";
 import * as path from "path";
+import { createHash } from "node:crypto";
 
 /**
  * Transformers.js 4.x 가 참조하는 런타임은 두 벌뿐이다.
@@ -24,6 +25,10 @@ const FILES = [
 const SOURCE_DIR = path.resolve(process.cwd(), "node_modules", "onnxruntime-web", "dist");
 const TARGET_DIR = path.resolve(process.cwd(), "public", "ort");
 
+function digest(file: string): string {
+  return createHash("sha256").update(fs.readFileSync(file)).digest("hex");
+}
+
 function main() {
   if (!fs.existsSync(SOURCE_DIR)) {
     throw new Error(`onnxruntime-web 이 설치되어 있지 않다: ${SOURCE_DIR}`);
@@ -34,8 +39,8 @@ function main() {
     const from = path.join(SOURCE_DIR, file);
     const to = path.join(TARGET_DIR, file);
     if (!fs.existsSync(from)) throw new Error(`원본이 없다: ${from}`);
-    // 크기가 같으면 다시 쓰지 않는다. 26MB 를 매번 복사할 이유가 없다.
-    if (fs.existsSync(to) && fs.statSync(to).size === fs.statSync(from).size) {
+    // SDK upgrades can change runtime contents without changing filenames or sizes.
+    if (fs.existsSync(to) && fs.statSync(to).size === fs.statSync(from).size && digest(to) === digest(from)) {
       console.log(`유지: public/ort/${file}`);
       continue;
     }

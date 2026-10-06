@@ -1,9 +1,11 @@
-# knowledge/ — 사람이 검증한 지식 계층
+# 지식 원본과 작성 지침
 
 LLM 상성 코치가 참고한다. 데이터에서 자동 계산되는 사실(스탯 등급, 계수, 스킬 효과 태그)은
 `src/lib/knowledge/facts.ts` 가 만든다. 여기에는 **데이터만으로 알 수 없는 "왜 / 언제"** 만 적는다.
 
-설계 배경과 측정 결과는 `docs/local-llm-advisor.md` 참고.
+현재 답변 구조와 검증 경계는 [도우미 설계](../docs/advisor-answer-pipeline.md)를 따른다.
+Ollama 초기 설계와 당시 측정은 [역사 기록](../docs/local-llm-advisor.md)으로 보존한다.
+남은 작업은 [제품 로드맵](../docs/product-roadmap.md)에서 관리한다.
 
 ## 지식 자료
 
@@ -16,6 +18,10 @@ LLM 상성 코치가 참고한다. 데이터에서 자동 계산되는 사실(�
 
 `ChampionId` 는 DDragon id (`Aatrox`, `Fiora`, `MonkeyKing`).
 상성 조합은 수만 가지이므로 **플레이북을 먼저 쓰고, 팁은 자주 나오는 상성에만** 쓴다.
+
+원본 파일은 검토·부분 수정을 위해 챔피언별로 유지한다. 배포할 때는
+`npm run llm:bundle`이 `public/data/<patch>/llm/advisor-knowledge.json`으로 필요한 지식을 묶는다.
+원본과 배포 번들은 용도가 다르며, 번들이 있다고 원본을 삭제하지 않는다.
 
 ### CC와 세부 판정 갱신
 
@@ -82,13 +88,18 @@ npm run llm:bundle
 |---|---|
 | `playing` | 이 챔피언을 플레이할 때의 지식 |
 | `against` | 이 챔피언을 **상대할 때**의 지식. 상대편 조언에 자동으로 실린다 |
-| `category` | `combo` `phase` `skill` `laning` `teamfight` `situational-item` (레거시: `rune` `summoner` `start-item` `first-item` `core-item` — 통계가 대신하므로 새로 쓰지 않는다) |
-| `text` | 한 문단. **근거를 함께 적는다.** 모델이 이유를 설명할 때 이 표현을 그대로 쓴다 |
+| `category` | `combo` `phase` `skill` `laning` `teamfight` `situational-item`. 레거시 카테고리 `rune` `summoner` `start-item` `first-item` `core-item`은 새로 작성하지 않는다 |
+| `text` | 한 문단에 근거를 함께 적는다. 도우미가 조건에 맞는 노트를 조립할 때 사용한다 |
 | `when` | 적용 조건. 아래 표 참고. 생략하면 항상 적용 |
 | `refs` | 본문이 **권장하는** 아이템·룬·소환사 주문 이름 |
 | `avoid` | 본문이 비교 대상으로만 언급하거나 **피하라고 한** 이름. 권장안에서 제외된다 |
+| `reviewRefs` | 작성 단계에서 대조할 이름. 실행 번들에는 포함하지 않으며 본문의 추천으로 취급하지 않는다 |
 | `source` | 출처. 커뮤니티 글, 위키, 통계 사이트 등 |
-| `verifiedPatch` | 마지막으로 확인한 패치. 현재와 다르면 프롬프트에 "변동 가능" 표기 |
+| `verifiedPatch` | 작성자가 마지막으로 확인한 패치. 번호만 최신으로 바꿔 검토 완료로 취급하지 않는다 |
+
+`generated` 노트도 실제 생성된 최종 본문에서 `refs`·`avoid` 이름과 충돌을 검사한다.
+`reviewRefs`는 본문에 없는 검토용 이름을 보존할 때만 사용한다. 데이터에 존재하는 이름인지와
+협곡 구매 가능 여부를 검사하며, 본문의 실제 추천을 이 필드로 옮겨 검증을 피하지 않는다.
 
 ### `when` 조건
 
@@ -146,13 +157,19 @@ npm run llm:bundle
 ```bash
 npm run llm:source-pack -- --champ Nasus
 npm run llm:source-pack -- --champ 아이번 --lane jungle
-npm run llm:source-pack -- --todo          # 아직 안 쓴 챔피언 (표본 많은 순)
+npm run llm:source-pack -- --todo          # 아직 안 쓴 챔피언 목록
 ```
 
-묶음의 5장에는 **과거 패치 소급 결과**가 실린다. 현재 툴팁이 `?` 로 비어 있는 자리를 과거 패치
+묶음의 4장에는 **과거 패치 소급 결과**가 실린다. 현재 툴팁이 `?` 로 비어 있는 자리를 과거 패치
 본문으로 메운 것, 예전에는 있었고 지금은 사라진 문장, 소급해도 못 채운 자리 세 가지다.
 마지막 항목에 걸린 스킬은 본문 서술을 피하고 사실 카드의 계수·쿨타임만 쓴다.
 자세한 내용은 `docs/patch-fallback.md` 참고.
+
+소급 조사는 `data/ability-research/<조사 기준 패치>/`에서 읽고 파일 내부 패치도 검사한다.
+26.19 폴더에 섞였던 26.18 결과는 원본 그대로 26.18 조사 폴더에 보존했다.
+현재 패치의 조사 파일이 없으면 이전 패치 결과를 대신 싣지 않는다. 다시 조사한 결과도 생성일·현재 툴팁을 확인한 뒤 채택한다.
+전체 조사의 재실행은 `history/<파일명 stem>/<UTC시간+UUID>.json`에 이전 원문을 보존한다.
+`--champ` 결과는 `partial/<챔피언 범위>/`에 따로 저장하며 자료 묶음은 전체 조사 파일만 읽는다.
 
 묶음이 읽어 오는 파일은 아래와 같다. 개별로 볼 일이 있을 때만 직접 연다.
 
@@ -162,8 +179,8 @@ npm run llm:source-pack -- --todo          # 아직 안 쓴 챔피언 (표본 �
 | `public/data/<patch>/llm/champion-wiki-meta.json` | 하위 클래스(저거너트·스커미셔 …)와 포지션 |
 | `public/data/<patch>/llm/champion-riot-meta-ko_KR.json` | 라이엇 피해 유형·특성·플레이스타일 지표 |
 | `public/data/<patch>/llm/item-wiki-meta.json` | 아이템 상점 역할군 탭 |
-| `public/data/<patch>/llm/ability-fallbacks.json` | 자리표시자를 과거 패치 본문으로 메운 결과 |
-| `public/data/<patch>/llm/ability-lost-descriptions.json` | 예전에는 있었고 지금은 없는 문장 (확인 대기) |
+| `data/ability-research/<patch>/ability-fallbacks.json` | 해당 기준 패치의 자리표시자를 과거 본문으로 메운 조사 결과 |
+| `data/ability-research/<patch>/ability-lost-descriptions.json` | 해당 기준 패치에서 사라진 문장 (확인 대기) |
 
 위키 팁은 최신 패치 기준이 아닐 수 있다. 구조적 상호작용(스킬 판정, 콤보 순서)은 신뢰도가 높지만
 아이템·룬 이름은 반드시 현재 데이터로 검증한다.

@@ -43,7 +43,6 @@ function ChampionSelector({
   const { t } = useTranslation();
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
-  // Controlled 모드일 때는 controlledOpen을 사용, undefined가 아닌 경우에만 true로 간주
   const isOpen = isControlled ? Boolean(controlledOpen) : internalOpen;
   const setIsOpen: (open: boolean) => void = useCallback((open: boolean) => {
     if (isControlled) {
@@ -56,10 +55,10 @@ function ChampionSelector({
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [favoriteEditing, setFavoriteEditing] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // If onClose is provided, this is a modal-style selector
   const isModal = onClose !== undefined;
 
   const debouncedSearch = useDebouncedValue(searchValue, 200);
@@ -74,7 +73,6 @@ function ChampionSelector({
     return [...sections.favorites, ...sections.others];
   }, [searchedChampions, favoriteChampionIdSet]);
 
-  // 선택된 챔피언 ID Set을 메모이제이션하여 O(1) 체크 가능
   const selectedChampionIds = useMemo(() => {
     return new Set(selectedChampions.map((c) => c.id));
   }, [selectedChampions]);
@@ -128,13 +126,10 @@ function ChampionSelector({
         handleOpenChange(false);
         return;
       }
-      // 모달일 때는 절대 닫지 않고 계속 열어둠
+      // 여러 챔피언을 연속 선택할 수 있도록 모달과 검색어를 유지한다.
       if (onClose !== undefined) {
-        // 모달일 때는 검색어와 포커스만 초기화하지 않음 (계속 선택 가능하도록)
         setFocusedIndex(-1);
-        // 모달 상태는 유지 (setIsOpen이나 onClose 호출하지 않음)
       } else {
-        // 모달이 아닐 때만 닫기
         setIsOpen(false);
         setFocusedIndex(-1);
         setFavoriteEditing(false);
@@ -183,7 +178,6 @@ function ChampionSelector({
     if (isControlled) {
       return;
     }
-    // Uncontrolled 모드일 때만 isModal에 따라 상태 설정
     if (isModal) {
       setIsOpen(true);
     } else {
@@ -191,10 +185,8 @@ function ChampionSelector({
     }
   }, [isModal, isControlled, setIsOpen]);
 
-  // 스크롤 위치 관리
   useScrollPosition(listRef, isModal, isOpen);
 
-  // 모달 열릴 때 input 포커스
   useEffect(() => {
     if (isModal && isOpen) {
       requestAnimationFrame(() => {
@@ -226,7 +218,6 @@ function ChampionSelector({
 
         {isOpen && (
           <>
-            {/* Mobile overlay */}
             <div
               className="fixed inset-0 z-40 bg-black/50 md:hidden"
               onClick={() => {
@@ -238,7 +229,6 @@ function ChampionSelector({
               aria-hidden="true"
             />
             
-            {/* Selector Panel */}
             <div className={cn(
               "fixed inset-0 z-50 md:absolute md:inset-auto md:top-full md:left-0 md:right-0 md:mt-2 md:z-10 md:rounded-lg md:border md:border-border md:shadow-lg bg-card md:max-h-[60vh] flex flex-col",
               isModal && "md:relative md:inset-0 md:mt-0 md:rounded-lg md:border md:shadow-lg"
@@ -279,8 +269,6 @@ function ChampionSelector({
     );
   }
 
-  // Modal style selector using shadcn-ui Dialog
-  // Controlled 모드일 때는 open prop이 false면 아무것도 렌더링하지 않음
   if (isControlled && !isOpen) {
     return null;
   }
@@ -293,11 +281,22 @@ function ChampionSelector({
           ref={containerRef}
           className="fixed inset-0 left-0 top-0 translate-x-0 translate-y-0 md:inset-auto md:left-[50%] md:top-[50%] md:translate-x-[-50%] md:translate-y-[-50%] w-full h-full md:w-[600px] md:h-[500px] lg:w-[800px] lg:h-[600px] p-0 flex flex-col overflow-hidden max-w-none md:max-w-[600px] lg:max-w-[800px] max-h-none md:max-h-[500px] lg:max-h-[600px] rounded-none md:rounded-xl z-50 border bg-background shadow-lg"
           onInteractOutside={() => {
-            // Allow closing when clicking outside (overlay)
             handleOpenChange(false);
           }}
           onEscapeKeyDown={() => {
             handleOpenChange(false);
+          }}
+          onOpenAutoFocus={(event) => {
+            const active = document.activeElement;
+            openerRef.current = active instanceof HTMLElement && active !== document.body ? active : null;
+            event.preventDefault();
+            inputRef.current?.focus();
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            const opener = openerRef.current;
+            if (opener?.isConnected && opener.getClientRects().length > 0) opener.focus();
+            else document.getElementById("main-content")?.focus();
           }}
         >
         <VisuallyHidden>

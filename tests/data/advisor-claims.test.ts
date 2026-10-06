@@ -102,104 +102,112 @@ const generatedEntries = [...playbooks].flatMap(([champion, book]) =>
   [...book.playing, ...book.against].filter((entry) => entry.generated).map((entry) => ({ champion, entry })),
 );
 
-for (const { champion, entry } of generatedEntries) {
-  const where = `${champion} ${entry.id ?? entry.category}`;
-  test(where, () => {
-    // 본문은 빌드가 채운다. 손으로 적어 두면 어느 쪽이 참인지 알 수 없다.
-    assert.equal(entry.text, "", `${where}: generated 항목의 text 는 비어 있어야 합니다`);
-
-    const card = byId.get(champion);
-    assert.ok(card, `${where}: 카드를 찾을 수 없습니다`);
-
-    if (entry.generated === "stack-tempo") {
-      const stack = deriveStackClaims(card);
-      assert.ok(stack.slots.length > 0, `${where}: 성장 스택이 없는데 성장 곡선 노트가 붙었습니다`);
-      for (const slot of stack.slots) {
-        const spell = card.spells.find((s) => s.slot === slot);
-        assert.ok(spell?.effects.includes("성장 스택"), `${where}: ${slot} 에 성장 스택 태그가 없습니다`);
-      }
-      const made = renderStackClaims(card, stack);
-      assert.ok(made.length >= 40, `${where}: 생성된 본문이 너무 짧습니다`);
-      const wrongOne = badParticle(made, card.spells.map((s) => s.name));
-      assert.equal(wrongOne, undefined, `${where}: 조사가 어긋났습니다 — "${wrongOne}"`);
-      checkNuance(entry.nuance ?? "", card, where);
-      return;
-    }
-
-    if (entry.generated === "escape-window") {
-      const escape = deriveEscapeClaims(card);
-      const slots = new Set(card.spells.map((s) => s.slot));
-      for (const move of escape.moves) {
-        assert.ok(slots.has(move.slot as never), `${where}: 없는 슬롯 ${move.slot} 을 짚었습니다`);
-        const spell = card.spells.find((s) => s.slot === move.slot);
-        assert.ok(
-          spell?.effects.includes("이동기") || spell?.effects.includes("돌진"),
-          `${where}: ${move.slot} 은 이동 수단이 아닙니다`,
-        );
-        // 쿨타임은 수치를 그대로 싣는다. 판올림마다 다시 만들어지므로 낡지 않는다.
-        assert.ok(move.cooldown > 0, `${where}: ${move.slot} 쿨타임이 비어 있습니다`);
-      }
-      const madeEscape = renderEscapeClaims(card, escape);
-      assert.ok(madeEscape.length >= 40, `${where}: 생성된 본문이 너무 짧습니다`);
-      // 슬롯 문자 뒤 조사는 읽는 소리로 고른다. "E 을" 이 나오면 안 된다.
-      assert.ok(!/[PQWE]을\s|R를\s/.test(madeEscape), `${where}: 슬롯 뒤 조사가 어긋났습니다`);
-      assert.ok(!madeEscape.includes("|"), `${where}: 스킬 이름에 구분자가 남았습니다`);
-      checkNuance(entry.nuance ?? "", card, where);
-      return;
-    }
-
-    const claims = deriveItemClaims(card);
-    const slots = new Set(card.spells.map((s) => s.slot));
-
-    // 주장이 짚은 슬롯은 전부 실재해야 한다.
-    for (const list of [
-      ...Object.values(claims.profile.byType),
-      claims.profile.exceptions,
-      claims.sustain,
-      claims.cc,
-      ...claims.discounts.map((d) => d.slots),
-    ]) {
-      for (const slot of list ?? []) {
-        assert.ok(slots.has(slot as never), `${where}: 없는 슬롯 ${slot} 을 짚었습니다`);
-      }
-    }
-
-    // 예외로 짚은 슬롯은 주된 유형과 달라야 한다. 같으면 "다만 …만" 이 거짓말이 된다.
-    for (const slot of claims.profile.exceptions) {
-      const spell = card.spells.find((s) => s.slot === slot);
-      assert.ok(
-        spell && !spell.damageTypes.includes(claims.profile.mix as never),
-        `${where}: ${slot} 은 예외가 아닙니다`,
-      );
-    }
-
-    // 회복·군중 제어로 짚은 슬롯은 실제로 그 태그를 가져야 한다.
-    for (const slot of claims.sustain) {
-      const spell = card.spells.find((s) => s.slot === slot);
-      assert.ok(spell?.effects.includes("회복"), `${where}: ${slot} 에 회복 태그가 없습니다`);
-    }
-
-    const rendered = renderItemClaims(card, claims);
-    assert.ok(rendered.length >= 40, `${where}: 생성된 본문이 너무 짧습니다 (${rendered.length}자)`);
-    // 스킬 이름에는 숫자가 들어간다("E 90구경 투망"). 막으려는 것은 판올림마다
-    // 바뀌는 수치이므로 이름을 지우고 본다.
-    const bare = [card.name, ...card.spells.map((s) => s.name)].reduce(
-      (acc, name) => acc.split(name).join(" "),
-      rendered,
-    );
-    assert.ok(!/\d/.test(bare), `${where}: 생성된 본문에 수치가 있습니다`);
-    assert.ok(!ITEM_WORDS.test(rendered), `${where}: 생성된 본문에 아이템 이름이 있습니다`);
-    // 조사가 어긋나면 "장송곡가", "물리이라" 처럼 읽힌다. 스킬 이름이 문장에 그대로
-    // 들어가므로 이름 하나만 바뀌어도 어긋난다. 받침을 보고 되짚는다.
-    const wrong = badParticle(rendered, card.spells.map((s) => s.name));
-    assert.equal(wrong, undefined, `${where}: 조사가 어긋났습니다 — "${wrong}"`);
-
-    checkNuance(entry.nuance ?? "", card, where);
-  });
+function checkStack(card: ChampionCard, where: string): void {
+  const stack = deriveStackClaims(card);
+  assert.ok(stack.slots.length > 0, `${where}: 성장 스택이 없는데 성장 곡선 노트가 붙었습니다`);
+  for (const slot of stack.slots) {
+    const spell = card.spells.find((s) => s.slot === slot);
+    assert.ok(spell?.effects.includes("성장 스택"), `${where}: ${slot} 에 성장 스택 태그가 없습니다`);
+  }
+  const made = renderStackClaims(card, stack);
+  assert.ok(made.length >= 40, `${where}: 생성된 본문이 너무 짧습니다`);
+  const wrongOne = badParticle(made, card.spells.map((s) => s.name));
+  assert.equal(wrongOne, undefined, `${where}: 조사가 어긋났습니다 — "${wrongOne}"`);
 }
 
-test("도출 항목 수", () => {
-  assert.ok(generatedEntries.length >= 360, `도출 항목이 ${generatedEntries.length}건뿐입니다`);
+function checkEscape(card: ChampionCard, where: string): void {
+  const escape = deriveEscapeClaims(card);
+  const slots = new Set(card.spells.map((s) => s.slot));
+  for (const move of escape.moves) {
+    assert.ok(slots.has(move.slot as never), `${where}: 없는 슬롯 ${move.slot} 을 짚었습니다`);
+    const spell = card.spells.find((s) => s.slot === move.slot);
+    assert.ok(
+      spell?.effects.includes("이동기") || spell?.effects.includes("돌진"),
+      `${where}: ${move.slot} 은 이동 수단이 아닙니다`,
+    );
+    // 쿨타임은 수치를 그대로 싣는다. 판올림마다 다시 만들어지므로 낡지 않는다.
+    assert.ok(move.cooldown > 0, `${where}: ${move.slot} 쿨타임이 비어 있습니다`);
+  }
+  const madeEscape = renderEscapeClaims(card, escape);
+  assert.ok(madeEscape.length >= 40, `${where}: 생성된 본문이 너무 짧습니다`);
+  // 슬롯 문자 뒤 조사는 읽는 소리로 고른다. "E 을" 이 나오면 안 된다.
+  assert.ok(!/[PQWE]을\s|R를\s/.test(madeEscape), `${where}: 슬롯 뒤 조사가 어긋났습니다`);
+  assert.ok(!madeEscape.includes("|"), `${where}: 스킬 이름에 구분자가 남았습니다`);
+}
+
+function checkItems(card: ChampionCard, where: string): void {
+  const claims = deriveItemClaims(card);
+  const slots = new Set(card.spells.map((s) => s.slot));
+
+  // 주장이 짚은 슬롯은 전부 실재해야 한다.
+  for (const list of [
+    ...Object.values(claims.profile.byType),
+    claims.profile.exceptions,
+    claims.sustain,
+    claims.cc,
+    ...claims.discounts.map((d) => d.slots),
+  ]) {
+    for (const slot of list ?? []) {
+      assert.ok(slots.has(slot as never), `${where}: 없는 슬롯 ${slot} 을 짚었습니다`);
+    }
+  }
+
+  // 예외로 짚은 슬롯은 주된 유형과 달라야 한다. 같으면 "다만 …만" 이 거짓말이 된다.
+  for (const slot of claims.profile.exceptions) {
+    const spell = card.spells.find((s) => s.slot === slot);
+    assert.ok(
+      spell && !spell.damageTypes.includes(claims.profile.mix as never),
+      `${where}: ${slot} 은 예외가 아닙니다`,
+    );
+  }
+
+  // 회복·군중 제어로 짚은 슬롯은 실제로 그 태그를 가져야 한다.
+  for (const slot of claims.sustain) {
+    const spell = card.spells.find((s) => s.slot === slot);
+    assert.ok(spell?.effects.includes("회복"), `${where}: ${slot} 에 회복 태그가 없습니다`);
+  }
+
+  const rendered = renderItemClaims(card, claims);
+  assert.ok(rendered.length >= 40, `${where}: 생성된 본문이 너무 짧습니다 (${rendered.length}자)`);
+  // 스킬 이름에는 숫자가 들어간다("E 90구경 투망"). 막으려는 것은 판올림마다
+  // 바뀌는 수치이므로 이름을 지우고 본다.
+  const bare = [card.name, ...card.spells.map((s) => s.name)].reduce(
+    (acc, name) => acc.split(name).join(" "),
+    rendered,
+  );
+  assert.ok(!/\d/.test(bare), `${where}: 생성된 본문에 수치가 있습니다`);
+  assert.ok(!ITEM_WORDS.test(rendered), `${where}: 생성된 본문에 아이템 이름이 있습니다`);
+  // 조사가 어긋나면 "장송곡가", "물리이라" 처럼 읽힌다. 스킬 이름이 문장에 그대로
+  // 들어가므로 이름 하나만 바뀌어도 어긋난다. 받침을 보고 되짚는다.
+  const wrong = badParticle(rendered, card.spells.map((s) => s.name));
+  assert.equal(wrong, undefined, `${where}: 조사가 어긋났습니다 — "${wrong}"`);
+}
+
+const schemas = [
+  { kind: "stack-tempo", check: checkStack },
+  { kind: "escape-window", check: checkEscape },
+  { kind: "situational-item", check: checkItems },
+] as const;
+const groups = schemas.map(schema => ({ ...schema, entries: generatedEntries.filter(({ entry }) => entry.generated === schema.kind) }));
+
+for (const group of groups) test(`${group.kind} 도출 노트의 전체 데이터 정합성`, () => {
+  assert.ok(group.entries.length > 0, `${group.kind}: 검증할 도출 노트가 없습니다`);
+  if (group.kind === "situational-item") {
+    assert.equal(groups.reduce((count, schema) => count + schema.entries.length, 0), generatedEntries.length,
+      "알 수 없는 종류의 도출 노트가 검증에서 빠졌습니다");
+  }
+  const checkedCards = new Set<string>();
+  for (const { champion, entry } of group.entries) {
+    const where = `${champion} ${entry.id ?? entry.category}`;
+    assert.equal(entry.text, "", `${where}: generated 항목의 text 는 비어 있어야 합니다`);
+    const card = byId.get(champion);
+    assert.ok(card, `${where}: 카드를 찾을 수 없습니다`);
+    if (!checkedCards.has(champion)) {
+      group.check(card, where);
+      checkedCards.add(champion);
+    }
+    checkNuance(entry.nuance ?? "", card, where);
+  }
 });
 
 /*

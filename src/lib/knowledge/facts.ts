@@ -52,6 +52,7 @@ export interface StatSnapshot {
 export type DamageType = "물리" | "마법" | "고정";
 
 export interface SpellFact {
+  forms?: SpellFormFact[];
   slot: ChampionSpellSlot;
   name: string;
   /** 한 줄 요약 (있을 때) */
@@ -76,6 +77,12 @@ export interface SpellFact {
   crowdControl?: SpellCrowdControl;
   /** 툴팁에서 뽑은 계수 (스탯 → 최대 % 값). 예: { "주문력": 105, "추가 공격력": 50 } */
   ratios: Record<string, number>;
+}
+
+export interface SpellFormFact extends Omit<SpellFact, "forms"> {
+  key: "A" | "B";
+  label: string;
+  id: string;
 }
 
 export interface ScalingProfile {
@@ -282,6 +289,23 @@ function applyDamageTypeOverride(
   return override.damageTypes;
 }
 
+function buildSpellForms(ability: ChampionAbility): SpellFormFact[] | undefined {
+  if (!ability.forms?.length) return undefined;
+  return ability.forms.map(form => {
+    const text = stripHtml(form.bodyHtml);
+    // 탄환 재충전과 연속 시전 쿨은 원문에서 서로 다른 값이다.
+    const recharge = text.match(/재장전 대기시간\s+([\d./]+)초/)
+      ?? text.match(/([\d./]+)s\s+Ammo Recharge/i)
+      ?? text.match(/([\d./]+)秒充能时间/);
+    return {
+      key: form.key, label: form.label, id: form.id, slot: ability.slot, name: form.name, text,
+      cooldown: formatLevels(form.cooldownSeconds), cooldownRank1: form.cooldownSeconds[0],
+      recharge: recharge?.[1], damageTypes: detectDamageTypes(text), effects: detectEffects(text),
+      ratios: detectRatios(text),
+    };
+  });
+}
+
 export function createChampionCardBuilder(
   champions: ChampionRecord[],
   riotMeta: Map<string, RiotChampionMeta> = new Map(),
@@ -341,6 +365,7 @@ export function createChampionCardBuilder(
       const summary = ability.summary ? stripHtml(ability.summary) : undefined;
       return {
         slot,
+        forms: buildSpellForms(ability),
         name: ability.name,
         summary,
         text,

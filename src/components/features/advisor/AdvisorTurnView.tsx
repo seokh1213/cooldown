@@ -16,13 +16,14 @@ import { AdvisorTurnFooter as TurnFooter } from "./AdvisorTurnFooter";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { AnswerIcons, referenceTitle } from "./AdvisorReference";
 import { referenceKey } from "@/lib/advisor/referenceIdentity";
+import { useHistoryReference } from "./HistoryReference";
 
 interface AdvisorTurnViewProps {
   ref?: React.Ref<HTMLDivElement>;
   turn: AdvisorTurn;
   index: number;
   /** 이 말풍선 앞의 가장 최근 답 */
-  previousAnswer: AdvisorAnswer | undefined;
+  previousTurn: AdvisorTurn | undefined;
   /** 카드를 자료 패널로 보낸 답인가. 그러면 대화에는 짚은 사실과 자료 칩만 남는다. */
   asReference: boolean;
   /** 자료 패널이 지금 이 답을 보이는가 */
@@ -53,21 +54,25 @@ function linkLabel(link: ReturnType<typeof answerLinks>[number], copy: Translati
 }
 
 function useTurnPresentation(props: AdvisorTurnViewProps) {
-  const { turn, index, previousAnswer, onNavigate } = props;
+  const { turn, index, previousTurn, onNavigate } = props;
   const { t } = useTranslation();
   const copy = t.advisor;
   // 같은 챔피언을 이어 물으면 "VS 화면으로 이동" 이 답마다 붙는다. 직전 답에 있던 링크는 뺀다.
-  const previousLinkTargets = new Set(previousAnswer ? answerLinks(previousAnswer).map((link) => link.to) : []);
+  const sameSource = turn.source?.patch === previousTurn?.source?.patch
+    && turn.source?.locale === previousTurn?.source?.locale
+    && turn.source?.ddragonVersion === previousTurn?.source?.ddragonVersion;
+  const previousLinkTargets = new Set(previousTurn?.answer && sameSource ? answerLinks(previousTurn.answer).map((link) => link.to) : []);
   const links = turn.answer ? answerLinks(turn.answer).filter((link) => !previousLinkTargets.has(link.to)) : [];
   // 자료 칩과 같은 줄에 둔다. 따로 두면 버튼이 두 줄로 쌓여 어지럽다.
   const linkButtons = links.map((link) => (
     <Link
       key={link.to}
       to={link.to}
+      title={turn.historical ? copy.history.currentDataLink : undefined}
       onClick={onNavigate}
       className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
     >
-      {linkLabel(link, copy)}
+      {turn.historical ? copy.history.currentDataLink : linkLabel(link, copy)}
       <ArrowRight className="h-3 w-3" />
     </Link>
   ));
@@ -92,7 +97,7 @@ function useTurnPresentation(props: AdvisorTurnViewProps) {
   );
   const perspectiveChips = !canAskSide ? null : <PerspectiveChips index={index} onAskPerspective={props.onAskPerspective} />;
   const pending =
-    !turn.content && !turn.byCode && props.answering ? (
+    !turn.historical && !turn.content && !turn.byCode && props.answering ? (
       <span className="flex items-center gap-2 pl-2.5 text-xs text-muted-foreground">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
         {copy.card.commentaryPending}
@@ -102,7 +107,10 @@ function useTurnPresentation(props: AdvisorTurnViewProps) {
 }
 
 export function AdvisorTurnView(props: AdvisorTurnViewProps) {
-  const { ref, turn, previousAnswer, asReference, busy, ddragonVersion, patch, onNavigate } = props;
+  const { ref, turn, previousTurn, asReference, busy, onNavigate } = props;
+  const { t } = useTranslation();
+  const ddragonVersion = turn.source?.ddragonVersion ?? props.ddragonVersion;
+  const patch = turn.source?.patch ?? props.patch;
   const { linkButtons, commentary, perspectiveChips, pending } = useTurnPresentation(props);
   return (
     <div
@@ -140,7 +148,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
               answer={turn.answer}
               active={props.shownInReference}
               // 직전 답과 같은 자료면 칩만 흐리게. "오공 Q 쿨, W 쿨" 은 카드 두 장이 아니다.
-              sameAsPrevious={Boolean(previousAnswer && referenceKey(turn.answer) === referenceKey(previousAnswer))}
+              sameAsPrevious={Boolean(previousTurn?.answer && referenceKey(turn.answer, turn.source) === referenceKey(previousTurn.answer, previousTurn.source))}
               ddragonVersion={ddragonVersion}
               onClick={() => props.onShowReference(turn.id)}
             />
@@ -174,7 +182,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
           <span className="whitespace-pre-wrap">{turn.content}</span>
         )
       ) : (
-        turn.role === "assistant" && (
+        turn.role === "assistant" && !turn.historical && !turn.referenceUnavailable && (
           // 검색 폴백은 모델을 두 번 부르고 사이에 코드가 찾는다. 그동안 도는 점만
           // 있으면 멈춘 것처럼 보인다. 지금 무엇을 하는지 옆에 적는다.
           <span className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -182,6 +190,9 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
             {turn.activity}
           </span>
         )
+      )}
+      {turn.role === "assistant" && turn.referenceUnavailable && (
+        <p className="mt-2 text-xs text-muted-foreground">{t.advisor.history.missingCard}</p>
       )}
       {/* 카드 없는 답(규칙)의 바로 가기. 카드가 있는 답은 자료 칩 옆에 이미 붙였다. */}
       {turn.role === "assistant" && linkButtons.length > 0 && !asReference && (
@@ -226,7 +237,7 @@ function RelatedDocs({
 */
 function TurnCommentary({ turn }: { turn: AdvisorTurn }) {
   const { t, lang } = useTranslation();
-  const shown = turn.byCode ? turn.content : groundCommentary(turn.content, turn.answer, lang).text;
+  const shown = turn.byCode || turn.historical ? turn.content : groundCommentary(turn.content, turn.answer, lang).text;
   return !shown ? null : turn.byCode ? (
     <div className="text-[13px] leading-relaxed">
       <AdvisorMarkdown text={shown} />
@@ -347,11 +358,13 @@ function ReferenceChip({ answer, active, sameAsPrevious, ddragonVersion, onClick
   const { t } = useTranslation();
   const copy = t.advisor;
   const { title, kind } = referenceTitle(answer, copy);
+  const turn = useHistoryReference();
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={copy.card.openCard}
+      title={turn?.source ? `${title} · ${turn.source.patch} · ${turn.source.locale}` : undefined}
       className={`flex min-w-0 max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted hover:text-foreground ${
         active ? "border-primary bg-primary/5" : "bg-background"
       } ${sameAsPrevious ? "text-muted-foreground" : ""}`}

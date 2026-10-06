@@ -76,10 +76,16 @@ export function SortableNormalTab({
         여기의 `touch-none`(touch-action: none)을 제거합니다.
         드래그는 왼쪽 Grip 아이콘 버튼(드래그 핸들)에서만 처리됩니다.
       */}
-      <div className="flex items-center gap-1.5 flex-1 cursor-pointer select-none">
+      <button
+        type="button"
+        onClick={() => onSelect(tab.id)}
+        aria-label={champion.name}
+        aria-pressed={isActive}
+        className="flex items-center gap-1.5 flex-1 cursor-pointer select-none"
+      >
         <ChampionIcon id={champion.id} ddragonVersion={ddragonVersion} alt={champion.name} className="block w-5 h-5 rounded-full pointer-events-none select-none" />
         <span className="pointer-events-none select-none">{champion.name}</span>
-      </div>
+      </button>
 
       {/* 제거 버튼 */}
       <button

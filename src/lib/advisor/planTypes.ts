@@ -13,6 +13,7 @@ import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { ChampionStatQuery } from "./statQuery";
 import type { CrowdControlType } from "@/lib/knowledge/crowdControl";
 import type { RequestIntent } from "./requestIntent";
+import type { NumericGenerator } from "./groundedNumeric";
 
 /** 자료 조회·상성·확인·생성 중 질문 하나를 답할 계획. 조립 단계가 실행한다. */
 export interface ControlContext { champions: string[]; slot?: string; types?: CrowdControlType[] }
@@ -67,6 +68,7 @@ export interface PlanContext {
 }
 
 export interface PlanDeps {
+  generateNumeric?: NumericGenerator;
   classifyRequest?: (question: ResolvedQuestion) => Promise<RequestIntent | undefined>;
   /** 실험용 능력치 판정. 명확한 규칙 조회가 실패한 경우에만 호출한다. */
   inferStatQuery?: (question: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext) => Promise<ChampionStatQuery | undefined>;

@@ -1,5 +1,5 @@
 import { patchLabel } from "@/lib/staticDataRelease";
-import React, { useCallback, useState, useEffect, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Menu, HelpCircle, AlertTriangle, Globe, Check } from "lucide-react";
@@ -14,6 +14,7 @@ import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { TutorialContent } from "./TutorialContent";
 import { useTranslation } from "@/i18n";
 import { patchNotesLabels } from "@/pages/PatchNotesPage/labels";
+import { useDeviceType } from "@/hooks/useDeviceType";
 
 /**
  * 고를 수 있는 언어. 이름은 그 언어로 적는다.
@@ -66,8 +67,9 @@ function Nav({
   const isVsPage = currentPath === "/vs";
   const isPatchNotesPage = currentPath === "/patch-notes";
   const isChampionCooldownPage = currentPath === "/";
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useDeviceType() === "mobile";
   const [tutorialOpen, setTutorialOpen] = useState(false);
+  const tutorialTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [versionPopoverOpen, setVersionPopoverOpen] = useState(false);
   const [languagePopoverOpen, setLanguagePopoverOpen] = useState(false);
 
@@ -78,15 +80,6 @@ function Nav({
     if (!ddragonMajorMinor || !cdragonMajorMinor) return false;
     return ddragonMajorMinor !== cdragonMajorMinor;
   }, [ddragonVersion, cdragonVersion]);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   const handleLanguageChange = useCallback(
     (newLang: string) => {
@@ -216,7 +209,10 @@ function Nav({
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setTutorialOpen(true)}
+                onClick={(event) => {
+                  tutorialTriggerRef.current = event.currentTarget;
+                  setTutorialOpen(true);
+                }}
                 className={cn(
                   "size-11 transition-colors text-muted-foreground hover:bg-muted hover:text-foreground sm:size-10"
                 )}
@@ -228,6 +224,12 @@ function Nav({
               <Dialog open={tutorialOpen} onOpenChange={setTutorialOpen}>
                 <DialogContent
                   className="w-[calc(100vw-32px)] max-w-lg max-h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
+                  onCloseAutoFocus={(event) => {
+                    event.preventDefault();
+                    const trigger = tutorialTriggerRef.current;
+                    if (trigger?.isConnected && trigger.getClientRects().length > 0) trigger.focus();
+                    else document.getElementById("main-content")?.focus();
+                  }}
                 >
                   <VisuallyHidden>
                     <DialogTitle>{t.nav.tutorial.title}</DialogTitle>

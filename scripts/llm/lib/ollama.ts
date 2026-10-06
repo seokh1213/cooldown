@@ -105,7 +105,7 @@ export async function ollamaChat(opts: ChatOptions): Promise<ChatResult> {
       content += chunk.message.content;
       opts.onToken?.(chunk.message.content);
     }
-    if (chunk.done) final = chunk;
+    if (chunk.done === true) final = chunk;
   };
 
   for (;;) {
@@ -120,6 +120,7 @@ export async function ollamaChat(opts: ChatOptions): Promise<ChatResult> {
     }
   }
   if (buffer.trim()) handleLine(buffer);
+  if (!final) throw new Error("Ollama stream ended before a completion event");
 
   const ns = 1e9;
   const promptTokens = final?.prompt_eval_count ?? 0;

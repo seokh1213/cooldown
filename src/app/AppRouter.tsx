@@ -1,11 +1,12 @@
 import { lazy, Suspense } from "react";
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import SplashScreen from "@/components/layout/SplashScreen";
 import Nav from "@/components/features/Nav";
 import type { Language } from "@/i18n";
 import type { AppRuntimeData } from "./useAppBootstrap";
 import type { AppTheme } from "./useAppPreferences";
+import { RouteErrorBoundary } from "./RouteErrorBoundary";
 
 const ChampionCooldownPage = lazy(() => import("@/pages/ChampionCooldownPage"));
 const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
@@ -23,6 +24,7 @@ interface AppRouterProps {
 
 function AppShell(props: AppRouterProps) {
   const { runtime, language, theme, onLanguageChange, onThemeToggle } = props;
+  const location = useLocation();
   return (
     <Layout
       patch={runtime.patchVersion}
@@ -39,9 +41,11 @@ function AppShell(props: AppRouterProps) {
         />
       }
     >
-      <Suspense fallback={<SplashScreen />}>
-        <Outlet />
-      </Suspense>
+      <RouteErrorBoundary key={location.pathname}>
+        <Suspense fallback={<SplashScreen />}>
+          <Outlet />
+        </Suspense>
+      </RouteErrorBoundary>
     </Layout>
   );
 }

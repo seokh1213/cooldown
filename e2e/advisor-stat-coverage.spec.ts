@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 for (const width of [390, 1440]) {
-  test(`체력과 체젠 결론을 모두 보여주고 저장 후 이어 묻는다 (${width}px)`, async ({ page }, testInfo) => {
+  test(`체력과 체젠 결론을 모두 보여주고 저장 후 이어 묻는다 (${width}px)`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("./");
     await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
@@ -19,7 +19,6 @@ for (const width of [390, 1440]) {
     await expect(page.getByText("문도 박사 7 > 오공 3.5", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("체력 재생 (5초당) (1레벨)", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("체력 (1레벨)는 문도 박사 640 > 오공 610입니다.", { exact: true })).toHaveCount(0);
-    await page.screenshot({ path: testInfo.outputPath("stat-comparison.jpg") });
     await page.reload();
     await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
     await expect(question).toBeVisible();

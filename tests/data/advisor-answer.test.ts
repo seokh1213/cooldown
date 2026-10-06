@@ -8,9 +8,9 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { test } from "node:test";
-import type { ChampionCard, SpellFact } from "../../src/lib/knowledge/facts";
+import { createChampionCardBuilder, type ChampionCard, type SpellFact } from "../../src/lib/knowledge/facts";
 import { indexRules, type RuleNotes } from "../../src/lib/knowledge/rules";
-import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "../../scripts/llm/lib/data";
+import { loadStaticData, PUBLIC_DATA_ROOT, resolvePatchVersion } from "../../scripts/llm/lib/data";
 import {
   answerChampionIds,
   answerKey,
@@ -21,7 +21,6 @@ import {
   buildSpellAnswer,
   detectStat,
   detectLevel,
-  percentileLabel,
   ruleVerdict,
   spellOneLiner,
   splitSentences,
@@ -34,13 +33,12 @@ import {
   asksWholeKit,
   looksChampionDirected,
 } from "../../src/lib/advisor/askWords";
-import { buildCommentaryPrompt } from "../../src/lib/advisor/commentaryPrompt";
 import { asksSpellNumbers, detectSpellFocus } from "../../src/lib/advisor/spellFocus";
 import { editDistance, suggestChampions } from "../../src/lib/advisor/championTypo";
 import { TAGS, DAMAGE, GRADE, RANGE, RATIO_STATS, missingCardWords } from "../../src/lib/knowledge/cardWords";
 import { readPageContext } from "../../src/lib/advisor/pageContext";
 import { isSmallTalk, nicknames } from "../../src/lib/advisor/intent";
-import { dehydrateAnswer, reviveAnswer, reviveTurns, type StoredAnswer, type StoredTurn } from "../../src/lib/advisor/history";
+import { dehydrateAnswer, reviveAnswer, type StoredAnswer } from "../../src/lib/advisor/history";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
 import type { AdvisorData } from "../../src/lib/advisor/context";
 
@@ -164,12 +162,85 @@ test("스킬 답: 효과 수치는 본문 문장으로", () => {
   }
 });
 
-// ── 해설 재료: 순수 조회에는 없고, 효과 질문에는 있다 ──────────────────
-test("해설 재료: 순수 조회에는 없고, 효과 질문에는 있다", () => {
-  const lookup = buildSpellAnswer(card("Malphite"), spellOf("Malphite", "W"), "말파 W 쿨타임");
-  assert.equal(buildCommentaryPrompt(lookup, patch), undefined, "쿨타임 조회에는 해설 재료를 주지 않는다");
-  const effect = buildSpellAnswer(card("Rumble"), spellOf("Rumble", "E"), "럼블 E 마저 몇 깎여?");
-  assert.ok(buildCommentaryPrompt(effect, patch)?.includes("수치를 쓰지 마십시오"), "효과 질문에는 재료를 주고 숫자 금지를 명시한다");
+test("형태를 명시한 스킬은 해당 원문과 쿨만 쓰고 모호한 형태는 기본값으로 추정하지 않는다", () => {
+  const locales = ["ko_KR", "en_US", "zh_CN"] as const;
+  const ids = ["Kled", "RekSai", "Rell", "Elise", "Gnar", "Jayce", "Nidalee"];
+  const questions = {
+    ko_KR: ["클레드 비탑승 Q 쿨타임", "렉사이 매복 Q 쿨타임", "렐 탑승 W 쿨타임"],
+    en_US: ["Kled dismounted Q cooldown", "Rek'Sai burrowed Q cooldown", "Rell mounted W cooldown"],
+    zh_CN: ["克烈非骑乘 Q 冷却", "雷克塞潜地 Q 冷却", "芮尔骑乘 W 冷却"],
+  };
+  const selectors = [["Kled", "Q", "B", "3"], ["RekSai", "Q", "B", "12/11.5/11/10.5/10"], ["Rell", "W", "A", "10"]] as const;
+  for (const locale of locales) {
+    const source = loadStaticData(locale);
+    const builder = createChampionCardBuilder(source.champions, source.riotMeta, source.wikiMeta);
+    const withoutForms = createChampionCardBuilder(source.champions.map(champion => ({ ...champion,
+      abilities: Object.fromEntries(Object.entries(champion.abilities).map(([slot, ability]) => [slot, { ...ability, forms: undefined }])) })), source.riotMeta, source.wikiMeta);
+    for (const [index, [id, slot, key, cooldown]] of selectors.entries()) {
+      const champion = builder.build(id)!;
+      const base = champion.spells.find(spell => spell.slot === slot)!;
+      const expected = base.forms!.find(form => form.key === key)!;
+      const answer = buildSpellAnswer(champion, base, questions[locale][index], locale);
+      assert.equal(answer.kind, "spell", `${locale} ${id}`);
+      if (answer.kind !== "spell") throw new Error("Expected a form spell card");
+      assert.deepEqual(answer.spell, expected);
+      assert.deepEqual(answer.card?.spells.find(spell => spell.slot === slot), expected, "참조 카드도 선택된 형태여야 한다");
+      assert.equal(answer.spell.cooldown, cooldown);
+      assert.ok(answer.headline?.value.includes(expected.recharge ?? cooldown));
+      assert.equal(answer.spell.summary, undefined, "다른 형태의 요약을 상속하지 않는다");
+      assert.equal(answer.spell.range, undefined, "다른 형태의 사거리를 상속하지 않는다");
+      if (id === "Kled") {
+        assert.equal(expected.recharge, "18/16/14/12/10");
+        assert.ok(answer.headline?.value.includes("3"), "재충전과 연속 시전 간격을 함께 보존한다");
+        const aliases = locale === "ko_KR" ? ["미탑승", "스칼에서 내린"] : locale === "en_US" ? ["not mounted", "off Skaarl"] : ["非骑乘"];
+        for (const alias of aliases) {
+          const selected = buildSpellAnswer(champion, base, `${champion.name} ${alias} Q`, locale);
+          assert.equal(selected.kind, "spell");
+          if (selected.kind === "spell") {
+            assert.equal(selected.spell.text, expected.text);
+            assert.deepEqual(selected.highlighted, [expected.text]);
+          }
+        }
+      }
+    }
+    for (const id of ids) {
+      const champion = builder.build(id)!;
+      const original = withoutForms.build(id)!;
+      for (const spell of champion.spells) {
+        const oldSpell = original.spells.find(item => item.slot === spell.slot)!;
+        const unchanged = buildSpellAnswer(champion, spell, `${champion.name} ${spell.slot}`, locale);
+        const prior = buildSpellAnswer(original, oldSpell, `${champion.name} ${spell.slot}`, locale);
+        const stripForms = (value: unknown): unknown => JSON.parse(JSON.stringify(value, (key, field) => key === "forms" ? undefined : field));
+        assert.deepEqual(stripForms(unchanged), stripForms(prior), `${locale} ${id}.${spell.slot} 기본 질문 유지`);
+        if (!spell.forms?.length) continue;
+        for (const form of spell.forms) {
+          const state = locale === "ko_KR" ? "상태" : locale === "en_US" ? "state" : "状态";
+          const chosen = buildSpellAnswer(champion, spell, `${champion.name} ${form.label} ${state} ${spell.slot}`, locale);
+          assert.equal(chosen.kind, "spell", `${locale} ${id}.${spell.slot} ${form.label}`);
+          if (chosen.kind === "spell") assert.equal(chosen.spell.text, form.text);
+          const named = buildSpellAnswer(champion, spell, `${champion.name} ${form.name} ${spell.slot}`, locale);
+          if (spell.forms.some(other => other.key !== form.key && other.label === form.name)) {
+            assert.equal(named.kind, "text", "현재 형태와 스킬 이름이 같으면 확인한다");
+          } else {
+            assert.equal(named.kind, "spell");
+            if (named.kind === "spell") assert.equal(named.spell.text, form.text);
+          }
+          const negation = locale === "ko_KR" ? `${form.label} 말고` : locale === "en_US" ? `not ${form.label}` : `不是${form.label}`;
+          const negative = buildSpellAnswer(champion, spell, `${champion.name} ${negation} ${spell.slot}`, locale);
+          if (negative.kind === "spell") assert.notEqual(negative.spell.text, form.text, "부정된 형태를 선택하지 않는다");
+        }
+        const unknown = locale === "ko_KR" ? "알 수 없는 형태" : locale === "en_US" ? "unknown form" : "未知形态";
+        assert.equal(buildSpellAnswer(champion, spell, `${champion.name} ${unknown} ${spell.slot}`, locale).kind, "text");
+        const conflict = `${champion.name} ${spell.forms.map(form => form.label).join(" / ")} ${spell.slot}`;
+        assert.equal(buildSpellAnswer(champion, spell, conflict, locale).kind, "text");
+      }
+    }
+    const gnar = builder.build("Gnar")!, spell = gnar.spells.find(item => item.slot === "Q")!;
+    const minion = locale === "ko_KR" ? "미니언 피해" : locale === "en_US" ? "minion damage" : "小兵伤害";
+    const noForm = buildSpellAnswer(gnar, spell, `Gnar Q ${minion}`, locale);
+    assert.equal(noForm.kind, "spell");
+    if (noForm.kind === "spell") assert.equal(noForm.spell, spell, "미니언은 미니 형태가 아니다");
+  }
 });
 
 // ── 문장 가르기: 툴팁 평문이 종결어미로 갈려야 한다 ─────────────────────
@@ -297,7 +368,6 @@ test("비교: 코드가 표로 견준다", () => {
     const row = hp.rows.find((r) => r.hit);
     assert.equal(row?.label, "체력");
     assert.equal(row?.winner, 0, "말파이트 열이 굵다");
-    assert.equal(buildCommentaryPrompt(hp, "26.18"), undefined, "사실 하나를 물은 비교에는 해설이 없다");
   }
 
   const late = buildCompareAnswer(pair, "18레벨 마저는 누가 더 높아");
@@ -309,9 +379,6 @@ test("비교: 코드가 표로 견준다", () => {
   const open = buildCompareAnswer(pair, "말파이트랑 럼블 중 누가 더 세?");
   if (open.kind === "compare") {
     assert.equal(open.headline, undefined, "능력치를 짚지 않으면 헤드라인이 없다");
-    const prompt = buildCommentaryPrompt(open, "26.18") ?? "";
-    assert.match(prompt, /말파이트 vs 럼블/, "열린 비교에는 해설 재료가 붙는다");
-    assert.match(prompt, /수치를 쓰지 마십시오/);
   }
 
   const q = buildCompareAnswer(pair, "말파이트 럼블 Q 쿨 누가 더 짧아?", "Q");
@@ -320,7 +387,6 @@ test("비교: 코드가 표로 견준다", () => {
     const row = q.rows.find((r) => r.hit);
     assert.equal(row?.label, "재사용 대기시간");
     assert.equal(row?.winner, undefined, "스킬 행은 크기 비교를 하지 않는다");
-    assert.equal(buildCommentaryPrompt(q, "26.18"), undefined);
   }
 });
 
@@ -372,37 +438,20 @@ test("대화 맥락: 상성·이름 생략", () => {
     assert.equal(matchup.matchup, true);
     assert.equal(matchup.headline, undefined);
     assert.deepEqual(answerChampionIds(matchup), ["Malphite", "Jayce"]);
-    const prompt = buildCommentaryPrompt(matchup, "26.18") ?? "";
-    assert.match(prompt, /말파이트를 잡고 제이스를 상대/, "내 챔피언 시점으로 쓰라고 한다");
   }
 
-  // "스킬 설명해줘" 는 스킬 요약 화면이다. 운용 노트가 재료로 들어가고, 일반론은 금지한다.
+  // 쿨타임 조회와 스킬셋 설명을 구분한다.
   assert.ok(asksSkillsOverview("말아피트 스킬 설명도 해줘"));
   assert.ok(asksSkillsOverview("스킬 뭐 있어"));
   assert.ok(!asksSkillsOverview("말파이트 스킬 쿨타임"), "쿨타임은 사실 조회지 설명이 아니다");
-  const skills: AdvisorAnswer = {
-    kind: "champion",
-    card: card("Malphite"),
-    view: "skills",
-    notes: { playing: ["화강암 방패는 피해를 받지 않는 시간이 쌓여야 다시 생긴다."], against: ["R은 저지 불가라 끊을 수 없다."], perspective: "both" },
-  };
-  const skillsPrompt = buildCommentaryPrompt(skills, "26.18") ?? "";
-  assert.match(skillsPrompt, /화강암 방패는 피해를 받지 않는/, "운용 노트가 재료다");
-  assert.match(skillsPrompt, /R 멈출 수 없는 힘: /, "스킬 요약이 재료다");
-  assert.match(skillsPrompt, /어느 챔피언에나 맞는 말은 쓰지 마십시오/);
-  assert.match(skillsPrompt, /서로 어떻게 맞물리는지/, "스킬셋 질문은 스킬 사이의 관계를 묻는다");
-  assert.match(skillsPrompt, /상대가 파고드는 지점으로/, "약점은 상대가 조심할 것이 아니다");
   assert.ok(asksSkillsOverview("오공은 스킬셋이 어떻게 되어있지?"));
 
-  // 슬롯 없이 사실 하나: 스킬 다섯 개의 그 사실. 해설은 없다.
-  const focused: ReturnType<typeof buildCompareAnswer> = { kind: "champion", card: card("Rumble"), focus: "cooldown" };
-  assert.equal(buildCommentaryPrompt(focused, "26.18"), undefined);
   assert.equal(spellFocusValue(spellOf("Rumble", "E"), "cooldown"), "6초 · 2회 충전 · 연속 시전 0.5초");
   assert.equal(spellFocusValue(spellOf("Malphite", "Q"), "ratio"), "주문력 60%");
 });
 
-// ── 대화 기록: 카드는 id 로 저장하고 자료에서 되살린다 ─────────────────────
-test("대화 기록: 카드는 id 로 저장하고 자료에서 되살린다", () => {
+// ── 대화 기록: 당시 카드 원본을 저장하고 그대로 되살린다 ─────────────────────
+test("대화 기록: 당시 카드 원본을 저장하고 그대로 되살린다", () => {
   const data = { cardById: new Map(cards.map((c) => [c.id, c])), ruleIndex: indexRules(rules) } as unknown as AdvisorData;
   const answers: AdvisorAnswer[] = [
     buildSpellAnswer(card("Rumble"), spellOf("Rumble", "E"), "럼블 E 마저 몇 깎여?"),
@@ -415,20 +464,12 @@ test("대화 기록: 카드는 id 로 저장하고 자료에서 되살린다", (
   for (const answer of answers) {
     const stored = dehydrateAnswer(answer);
     const json = JSON.stringify(stored);
-    assert.ok(!json.includes('"spells"'), `${answer.kind}: 카드 통째로 저장하면 안 된다`);
+    assert.deepEqual(stored.snapshot, answer, `${answer.kind}: 당시 원본을 저장해야 한다`);
     const revived = reviveAnswer(JSON.parse(json) as StoredAnswer, data);
     assert.ok(revived, `${answer.kind}: 되살려야 한다`);
     assert.deepEqual(answerChampionIds(revived!), answerChampionIds(answer), `${answer.kind}: 챔피언이 같아야 한다`);
     assert.equal(revived!.kind, answer.kind);
   }
-  // 자료에서 사라진 챔피언은 답과 그 질문을 함께 버린다.
-  const gone: StoredTurn[] = [
-    { id: 1, role: "user", content: "없는애 설명" },
-    { id: 2, role: "assistant", content: "", answer: { kind: "champion", cardId: "NoSuchChampion" } },
-    { id: 3, role: "user", content: "럼블 설명" },
-    { id: 4, role: "assistant", content: "해설", answer: { kind: "champion", cardId: "Rumble" } },
-  ];
-  assert.deepEqual(reviveTurns(gone, data).map((t) => t.id), [3, 4]);
 });
 
 // ── 예/아니오 배지: 극성이 분명할 때만 ───────────────────────────────────
@@ -445,13 +486,6 @@ test("스킬 한 줄 요약: 데이터에서 조립", () => {
   assert.match(q, /쿨 10\/9\/8\/7\/6/, `럼블 Q 요약에 쿨: ${q}`);
   assert.match(q, /주문력 105%/, `럼블 Q 요약에 최대 계수: ${q}`);
   assert.ok(q.length < 80, "한 줄이어야 한다");
-});
-
-// ── 백분위 표기 ───────────────────────────────────────────────────────────
-test("백분위 표기", () => {
-  assert.deepEqual(percentileLabel(69.5), { side: "top", value: 31 });
-  assert.deepEqual(percentileLabel(5), { side: "bottom", value: 5 });
-  assert.deepEqual(percentileLabel(100), { side: "top", value: 1 }, "최고도 상위 1% 로 보여 0% 를 피한다");
 });
 
 // ── 화면 맥락: 경로·저장소에서 챔피언을 읽는다 ─────────────────────────────

@@ -18,6 +18,8 @@ import { useCooldownViewTab } from "./useCooldownViewTab";
 import { useSelectedCooldownTab } from "./useSelectedCooldownTab";
 import { useCooldownPersistence } from "./useCooldownPersistence";
 import { useChampionDragSensors } from "./useChampionDragSensors";
+import { useTranslation } from "@/i18n";
+import { Button } from "@/components/ui/button";
 
 const {
   selectedChampions: COOLDOWN_STORAGE_KEY,
@@ -47,6 +49,7 @@ export default function ChampionCooldownPage({
   ddragonVersion,
   sources,
 }: ChampionCooldownPageProps) {
+  const { t } = useTranslation();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
   const { activeTab, selectTab } = useCooldownViewTab();
@@ -75,6 +78,8 @@ export default function ChampionCooldownPage({
     setSelectedChampions,
     hasRestored: championsRestored,
     championsWithFullInfo,
+    failedChampions,
+    loadChampionInfo,
     addChampionToList,
     removeChampion,
     resetChampions: resetChampionsData,
@@ -97,11 +102,7 @@ export default function ChampionCooldownPage({
     keys: COOLDOWN_STORAGE_KEYS,
   });
 
-  // 상태가 바뀌면 저장한다. 복원이 끝난 뒤에만 — 그 전에는 빈 목록이라 저장된 것을 지운다.
-  //
-  // 예전에는 선택 모달이 닫힐 때만 저장했다. 그 콜백은 닫히는 순간의 옛 상태를 들고 있어
-  // 방금 추가한 챔피언이 빠졌고, X 로 지우거나 순서를 바꾼 것은 저장되지 않았다.
-  // 배포 페이지에서 새로 고치면 처음 저장된 오공만 남던 원인이다.
+  // 복원 전의 빈 목록으로 저장값을 덮어쓰지 않도록 두 복원이 끝난 뒤 저장한다.
   useEffect(() => {
     if (!championsRestored || !tabsRestored) return;
     persistCooldownState();
@@ -109,14 +110,12 @@ export default function ChampionCooldownPage({
 
   const sensors = useChampionDragSensors();
 
-  // PC 버전 챔피언 순서 변경 핸들러
   const handleReorderChampions = useCallback((oldIndex: number, newIndex: number) => {
     setSelectedChampions((prev) => arrayMove(prev, oldIndex, newIndex));
   }, [setSelectedChampions]);
 
   const handleRemoveChampion = useCallback(
     (championId: string) => {
-      // 챔피언을 사용하는 모든 탭 제거
       tabs.forEach((tab) => {
         if (tab.champions.includes(championId)) {
           removeTab(tab.id);
@@ -163,7 +162,6 @@ export default function ChampionCooldownPage({
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-4 md:pb-5">
-      {/* Champion Selector Modal */}
       {showSelector && (
         <ChampionSelector
           championList={championList}
@@ -184,10 +182,18 @@ export default function ChampionCooldownPage({
         } : undefined}
       />
 
-      {/* Champion comparison */}
+      {failedChampions.map((champion) => (
+        <div key={champion.id} role="alert" className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">
+          <span>{champion.name}: {t.app.loadError}</span>
+          <Button onClick={() => loadChampionInfo(champion.id)} variant="outline" className="h-11 shrink-0">{t.app.retry}</Button>
+        </div>
+      ))}
+      {selectedChampions.some((champion) => champion.isLoading) && (
+        <div role="status" className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>
+      )}
+
       {selectedChampions.length > 0 && championsWithFullInfo.length > 0 && (
         <div className="mt-4 md:mt-6 space-y-4 md:space-y-6">
-          {/* Mobile: Champion Selection Tab */}
           {isMobile && tabs.length > 0 && (
             <MobileChampionTabs
               tabs={tabs}
@@ -202,7 +208,6 @@ export default function ChampionCooldownPage({
             />
           )}
 
-          {/* Comparison Content */}
           <ChampionComparison
             champions={
               isMobile && selectedChampion
@@ -222,7 +227,6 @@ export default function ChampionCooldownPage({
         </div>
       )}
 
-      {/* Empty State */}
       {selectedChampions.length === 0 && (
         <div className="mt-4">
           <EmptyState onAddClick={() => setShowSelector(true)} />

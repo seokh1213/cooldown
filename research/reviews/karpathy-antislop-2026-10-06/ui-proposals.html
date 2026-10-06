@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cooldown 화면 변경안 비교</title>
+  <style>
+    :root{color-scheme:light;--ink:#202028;--muted:#62626b;--line:#dcdce3;--accent:#4747d1;--paper:#f7f7fa}
+    *{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",sans-serif;font-size:15px;line-height:1.6}
+    main{max-width:1240px;margin:auto;padding:36px 28px 64px}h1{margin:6px 0 10px;font-size:clamp(25px,4vw,34px);line-height:1.3}h2{margin:0;font-size:22px;line-height:1.4}p{margin:8px 0 0}.muted{color:var(--muted)}.eyebrow{font-size:13px;color:var(--muted)}
+    header{max-width:790px;padding-bottom:28px}nav{display:flex;gap:12px;flex-wrap:wrap;padding:14px 0;border-block:1px solid var(--line)}a{color:var(--accent);text-underline-offset:4px}nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px}
+    section{padding:32px 0;border-bottom:1px solid var(--line);scroll-margin-top:16px}.heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.choice{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;cursor:pointer;font-weight:600}.choice input{width:20px;height:20px;accent-color:var(--accent)}
+    .controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:20px 0 14px}.controls label{display:flex;align-items:center;gap:8px}select,button{min-height:44px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font:inherit;padding:8px 12px}button{cursor:pointer}button:disabled{cursor:default;color:var(--muted);background:#ededf2}fieldset{display:flex;gap:10px;border:0;padding:0;margin:0}legend{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}fieldset label{min-height:44px;padding:0 8px;cursor:pointer}input[type=radio]{width:18px;height:18px;accent-color:var(--accent)}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:3px}.compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}figure{margin:0;min-width:0}figcaption{font-size:13px;font-weight:600;margin-bottom:7px}.image-frame{position:relative;line-height:0;width:100%;border:1px solid var(--line);background:#eee;overflow:hidden}.image-frame img{display:block;width:100%;height:auto}.compare[data-view=mobile] .image-frame,.compare[data-view=close] .image-frame{max-width:390px;margin:auto}.compare[data-view=mobile] figcaption,.compare[data-view=close] figcaption{max-width:390px;margin-inline:auto}
+    .target{position:absolute;border:2px dashed var(--accent);background:rgb(71 71 209 / .15);pointer-events:none}.target[hidden]{display:none}.before-close{left:87.4359%;top:17.0144%;width:4.1026%;height:1.8957%}.after-close{left:83.8462%;top:15.3556%;width:11.2821%;height:5.2133%}
+    .notes{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:15px;color:var(--muted);font-size:13px}.notes strong{color:var(--ink)}table{border-collapse:collapse;margin:16px 0;font-size:14px}th,td{text-align:left;padding:7px 24px 7px 0;border-bottom:1px solid var(--line)}code{font-size:13px}.selection{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 0}.selection p{margin:0}.selection output{font-weight:600}.hint{font-size:13px;color:var(--muted)}#choice-text{display:block;width:100%;min-height:74px;margin-top:10px;padding:10px;font:inherit;line-height:1.5;border:1px solid var(--line);border-radius:6px;background:white}#choice-text[hidden]{display:none}footer{padding-top:18px;font-size:13px;color:var(--muted)}
+    .mobile-compare-controls{display:none}.mobile-compare-controls button[aria-pressed=true]{color:var(--accent);border-color:var(--accent);font-weight:600}
+    @media(max-width:760px){main{padding:24px 16px 40px}.compare{grid-template-columns:1fr;gap:22px}.mobile-compare-controls{display:flex;gap:8px;margin:12px 0}.compare[data-mobile-side=before]>figure:nth-child(2),.compare[data-mobile-side=after]>figure:first-child{display:none}section{padding:26px 0}.controls{gap:8px}h2{font-size:20px}.heading{gap:8px}table{width:100%}th,td{padding-right:10px}.notes{gap:6px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Cooldown · 로컬 검토 · 2026.10.06</div>
+    <h1>화면 변경안 비교</h1>
+    <p><strong>앱에는 적용하지 않았습니다.</strong> 현재 앱을 직접 촬영한 화면과 브라우저에서만 바꿔 촬영한 초안을 비교하세요.</p>
+    <p class="muted">기존 색, 챔피언 이미지, 표 구성은 이어갑니다. 원하는 안을 고르면 아래에 요청 문구가 나옵니다.</p>
+  </header>
+  <nav aria-label="변경안으로 이동"><a href="#proposal-b">B · 키보드 포커스</a><a href="#proposal-c">C · 모바일 누르는 영역</a><a href="#proposal-d">D · 불러오기 실패 안내</a></nav>
+
+  <section id="proposal-b" aria-labelledby="title-b">
+    <div class="heading"><h2 id="title-b">B. 키보드 포커스를 선명하게</h2><label class="choice"><input type="checkbox" name="proposal" value="B">B 선택</label></div>
+    <p>Tab으로 이동할 때만 나타나는 테두리를 같은 색의 불투명한 선으로 바꿉니다. 버튼 크기와 위치는 같습니다.</p>
+    <table><caption class="hint" style="text-align:left">VS 교체 버튼의 실제 포커스 대비. 목표는 3:1 이상입니다.</caption><thead><tr><th scope="col">테마</th><th scope="col">현재 40%</th><th scope="col">초안 100%</th></tr></thead><tbody><tr><th scope="row">라이트</th><td>1.89:1</td><td><strong>6.19:1</strong></td></tr><tr><th scope="row">다크</th><td>1.69:1</td><td><strong>4.62:1</strong></td></tr></tbody></table>
+    <div class="controls">
+      <label for="focus-view">화면 <select id="focus-view"><option value="detail">표 부분 확대</option><option value="desktop">데스크톱 1440px</option><option value="mobile">모바일 390px</option></select></label>
+      <fieldset><legend>포커스 비교 테마</legend><label><input type="radio" name="focus-theme" value="light" checked>라이트</label><label><input type="radio" name="focus-theme" value="dark">다크</label></fieldset>
+    </div>
+    <div class="mobile-compare-controls" role="group" aria-label="B 비교 화면" data-compare="#focus-compare"><button type="button" data-side="before" aria-pressed="true">현재</button><button type="button" data-side="after" aria-pressed="false">초안</button></div>
+    <div class="compare" id="focus-compare" data-view="detail" data-mobile-side="before">
+      <figure><figcaption>현재 · 연한 포커스</figcaption><div class="image-frame"><img id="focus-before" src="screenshots/ui-focus-detail-light-before.png" alt="현재 라이트 화면. 교체 버튼에 연한 키보드 포커스가 표시됨" width="752" height="333"></div></figure>
+      <figure><figcaption>초안 · 같은 색, 선명한 포커스</figcaption><div class="image-frame"><img id="focus-after" src="screenshots/ui-focus-detail-light-after.png" alt="미적용 라이트 초안. 같은 교체 버튼의 포커스 색만 선명해짐" width="752" height="333"></div></figure>
+    </div>
+    <div class="notes"><span>포커스 두께 <strong>2px 유지</strong></span><span>검증: 라이트·다크, 1440×900·390×844</span></div>
+  </section>
+
+  <section id="proposal-c" aria-labelledby="title-c">
+    <div class="heading"><h2 id="title-c">C. 모바일에서 누르기 쉽게</h2><label class="choice"><input type="checkbox" name="proposal" value="C">C 선택</label></div>
+    <p>VS 교체·공유·초기화는 32px에서 44px로, 팝업 닫기는 16px에서 44px로 넓힙니다. 아이콘은 16px 그대로입니다.</p>
+    <div class="controls">
+      <label for="touch-view">화면 <select id="touch-view"><option value="actions">VS 버튼 3개</option><option value="close">스킬 팝업 닫기</option></select></label>
+      <label id="target-toggle-label" hidden><input type="checkbox" id="show-target">누르는 영역 표시</label>
+    </div>
+    <div class="mobile-compare-controls" role="group" aria-label="C 비교 화면" data-compare="#touch-compare"><button type="button" data-side="before" aria-pressed="true">현재</button><button type="button" data-side="after" aria-pressed="false">초안</button></div>
+    <div class="compare" id="touch-compare" data-view="mobile" data-mobile-side="before">
+      <figure><figcaption id="touch-before-caption">현재 · 32×32px, 간격 2px</figcaption><div class="image-frame"><img id="touch-before" src="screenshots/ui-touch-mobile-before.png" alt="현재 모바일 VS 화면. 교체, 공유, 초기화 버튼의 누르는 영역은 각각 32px" width="390" height="844"><span class="target before-close" hidden></span></div></figure>
+      <figure><figcaption id="touch-after-caption">초안 · 44×44px, 간격 4px</figcaption><div class="image-frame"><img id="touch-after" src="screenshots/ui-touch-mobile-after.png" alt="미적용 모바일 VS 초안. 세 버튼의 누르는 영역을 44px로 넓힘" width="390" height="844"><span class="target after-close" hidden></span></div></figure>
+    </div>
+    <div class="notes"><span id="touch-note">버튼 줄 높이가 <strong>12px 증가</strong>합니다.</span><span>390px에서 가로 넘침 없음</span><span>이 초안의 적용 범위: 768px 미만</span></div>
+  </section>
+
+  <section id="proposal-d" aria-labelledby="title-d">
+    <div class="heading"><h2 id="title-d">D. 실패 이유와 다시 시도 표시</h2><label class="choice"><input type="checkbox" name="proposal" value="D">D 선택</label></div>
+    <p>아이템 데이터 요청이 실패했을 때 빈 챔피언 목록으로 안내하는 대신, 기존 오류 문구와 다시 시도 버튼을 보여줍니다.</p>
+    <div class="mobile-compare-controls" role="group" aria-label="D 비교 화면" data-compare="#error-compare"><button type="button" data-side="before" aria-pressed="true">현재</button><button type="button" data-side="after" aria-pressed="false">초안</button></div>
+    <div class="compare" id="error-compare" data-view="mobile" data-mobile-side="before" style="margin-top:18px">
+      <figure><figcaption>현재 · 요청 실패를 빈 목록으로 표시</figcaption><div class="image-frame"><img src="screenshots/ui-error-mobile-before.png" alt="실패를 재현한 현재 아이템 백과. 챔피언 목록이 비어있습니다라고 표시됨" width="390" height="844"></div></figure>
+      <figure><figcaption>초안 · 실패 안내와 다시 시도</figcaption><div class="image-frame"><img src="screenshots/ui-error-mobile-after.png" alt="미적용 오류 상태 초안. 데이터를 불러오지 못했습니다와 다시 시도 버튼" width="390" height="844"></div></figure>
+    </div>
+    <p class="hint">현재 화면은 검토용 브라우저에서 HTTP 503 실패를 재현해 촬영했습니다. 초안의 버튼은 배치와 문구 미리보기입니다. 실제 재요청 동작은 구현 전입니다.</p>
+  </section>
+
+  <div class="selection" role="group" aria-label="선택한 변경안">
+    <div><p>선택: <output id="selected" aria-live="polite">없음</output></p><p class="hint">선택 결과는 이 비교 페이지 안에서만 바뀝니다.</p></div>
+    <button id="copy-choice" disabled>선택한 안 복사</button>
+  </div>
+  <textarea id="choice-text" aria-label="대화창에 보낼 선택 문구" readonly hidden></textarea>
+  <p id="copy-status" class="hint" role="status"></p>
+  <footer>촬영: 현재 로컬 앱 + 브라우저의 임시 스타일·DOM 초안. 앱 소스와 CSS 파일에는 변경하지 않았습니다.</footer>
+</main>
+<script>
+  document.querySelectorAll('.mobile-compare-controls button').forEach(button => button.addEventListener('click', () => {
+    const group = button.closest('.mobile-compare-controls');
+    document.querySelector(group.dataset.compare).dataset.mobileSide = button.dataset.side;
+    group.querySelectorAll('button').forEach(control => control.setAttribute('aria-pressed', String(control === button)));
+  }));
+  const focusView = document.querySelector('#focus-view');
+  function updateFocus() {
+    const view = focusView.value;
+    const theme = document.querySelector('input[name="focus-theme"]:checked').value;
+    document.querySelector('#focus-compare').dataset.view = view;
+    for (const side of ['before', 'after']) {
+      const image = document.querySelector('#focus-' + side);
+      image.src = 'screenshots/ui-focus-' + view + '-' + theme + '-' + side + '.png';
+      image.width = view === 'mobile' ? 390 : view === 'desktop' ? 1440 : 752;
+      image.height = view === 'mobile' ? 844 : view === 'desktop' ? 900 : 333;
+      image.alt = (side === 'before' ? '현재' : '미적용 초안') + ' ' + (theme === 'light' ? '라이트' : '다크') + ' 키보드 포커스 비교 화면';
+    }
+  }
+  focusView.addEventListener('change', updateFocus);
+  document.querySelectorAll('input[name="focus-theme"]').forEach(input => input.addEventListener('change', updateFocus));
+  function updateTargets() {
+    const close = document.querySelector('#touch-view').value === 'close';
+    document.querySelector('#target-toggle-label').hidden = !close;
+    document.querySelector('#touch-compare').dataset.view = close ? 'close' : 'mobile';
+    for (const side of ['before', 'after']) {
+      document.querySelector('#touch-' + side).src = 'screenshots/ui-' + (close ? 'close' : 'touch') + '-mobile-' + side + '.png';
+      document.querySelector('#touch-' + side).alt = (side === 'before' ? '현재' : '미적용 초안') + ' 모바일 ' + (close ? '스킬 팝업 닫기 영역' : 'VS 버튼 영역');
+    }
+    document.querySelector('#touch-before-caption').textContent = close ? '현재 · 닫기 16×16px' : '현재 · 32×32px, 간격 2px';
+    document.querySelector('#touch-after-caption').textContent = close ? '초안 · 닫기 44×44px, 아이콘 위치 유지' : '초안 · 44×44px, 간격 4px';
+    document.querySelector('#touch-note').textContent = close ? '닫기 아이콘의 크기·좌표와 팝업 크기가 같습니다. 누르는 영역만 넓힙니다.' : '버튼 줄 높이가 12px 증가합니다.';
+    document.querySelectorAll('.target').forEach(target => target.hidden = !close || !document.querySelector('#show-target').checked);
+  }
+  document.querySelector('#touch-view').addEventListener('change', updateTargets);
+  document.querySelector('#show-target').addEventListener('change', updateTargets);
+  const names = {B:'키보드 포커스', C:'모바일 누르는 영역', D:'불러오기 실패 안내'};
+  function updateSelection() {
+    const choices = Array.from(document.querySelectorAll('input[name="proposal"]:checked')).map(input => input.value);
+    document.querySelector('#selected').textContent = choices.length ? choices.map(value => value + ' · ' + names[value]).join(', ') : '없음';
+    document.querySelector('#copy-choice').disabled = !choices.length;
+    document.querySelector('#choice-text').hidden = !choices.length;
+    document.querySelector('#choice-text').value = choices.length ? 'Cooldown 화면 변경안 중 ' + choices.join(', ') + '를 적용해줘. 선택하지 않은 안은 적용하지 마.' : '';
+    document.querySelector('#copy-status').textContent = '';
+  }
+  document.querySelectorAll('input[name="proposal"]').forEach(input => input.addEventListener('change', updateSelection));
+  document.querySelector('#copy-choice').addEventListener('click', async () => {
+    const field = document.querySelector('#choice-text');
+    try {
+      await navigator.clipboard.writeText(field.value);
+      document.querySelector('#copy-status').textContent = '복사했습니다. 대화창에 붙여넣어 주세요.';
+    } catch {
+      field.focus();field.select();
+      document.querySelector('#copy-status').textContent = '자동 복사가 지원되지 않습니다. 선택된 문구를 복사해 주세요.';
+    }
+  });
+</script>
+</body>
+</html>

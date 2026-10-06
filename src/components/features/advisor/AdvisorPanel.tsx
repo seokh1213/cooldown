@@ -5,6 +5,8 @@
  * 모델 적재는 수십 초가 걸리므로 진행률을 파일 합계로 계속 보여 준다.
  */
 import { useEffect, useRef, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import type { AdvisorData } from "@/lib/advisor/context";
@@ -26,11 +28,14 @@ import { useReferencePanelSize } from "./useReferencePanelSize";
 import { useDrawerWheelTrap } from "./useDrawerWheelTrap";
 import { useMobileAdvisorViewport } from "./useMobileAdvisorViewport";
 import { useReferenceSelection } from "./useReferenceSelection";
+import { HistoryReference, HistorySaveFailure } from "./HistoryReference";
 
 interface AdvisorPanelProps {
   advisor: UseAdvisorResult;
   /** 챔피언·규칙 자료. 위젯이 받아 둔다. 아직 없으면 모델만으로 답한다. */
   data: AdvisorData | null;
+  dataError: boolean;
+  onRetryData: () => void;
   history: UseAdvisorHistoryResult;
   patch: string;
   /** 카드의 챔피언 아이콘용 */
@@ -60,7 +65,7 @@ function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
 }
 
-export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, canUseModel, onClose, onWidthChange }: AdvisorPanelProps) {
+export function AdvisorPanel({ advisor, data, dataError, onRetryData, history, patch, ddragonVersion, canUseModel, onClose, onWidthChange }: AdvisorPanelProps) {
   const { t } = useTranslation();
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
@@ -160,7 +165,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   const referenceTabStrip = (
     <ReferenceTabs
       tabs={referenceTabsOf(referenceTurns)}
-      activeKey={refTurn?.answer ? referenceKey(refTurn.answer) : undefined}
+      activeKey={refTurn?.answer ? referenceKey(refTurn.answer, refTurn.source) : undefined}
       onSelect={selectReference}
       ddragonVersion={ddragonVersion}
     />
@@ -188,14 +193,28 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
   useMobileAdvisorViewport(isMobile, drawerRef);
 
   return (
+    <Dialog.Root open modal={isMobile} onOpenChange={(opened) => { if (!opened) onClose(); }}>
+    <Dialog.Portal container={document.body}>
+    <Dialog.Content
+      asChild
+      aria-describedby={undefined}
+      onInteractOutside={(event) => event.preventDefault()}
+      onCloseAutoFocus={(event) => {
+        event.preventDefault();
+        requestAnimationFrame(() => document.querySelector<HTMLButtonElement>("[data-advisor-launcher]")?.focus());
+      }}
+    >
     <div
       ref={drawerRef}
       role="dialog"
       aria-label={copy.title}
+      aria-modal={isMobile || undefined}
       className="fixed inset-x-0 top-[var(--advisor-viewport-top,0px)] z-50 flex h-[var(--advisor-viewport-height,100dvh)] overflow-hidden overscroll-none bg-background shadow-2xl md:inset-y-0 md:left-auto md:right-0 md:h-auto md:w-[var(--drawer-w)] md:border-l"
       style={{ "--drawer-w": `${drawerWidth}px` } as React.CSSProperties}
     >
+      <Dialog.Title className="sr-only">{copy.title}</Dialog.Title>
       {showReferencePanel && (
+        <HistoryReference turn={refTurn}>
         <ReferenceAside
           size={referenceSize}
           tabs={referenceTabStrip}
@@ -205,6 +224,7 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           onPickChampion={pickChampion}
           onNavigate={onNavigate}
         />
+        </HistoryReference>
       )}
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
@@ -248,7 +268,9 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
         <>
         {referenceTabStrip}
         <div className="flex-1 overflow-y-auto overscroll-contain p-4">
+          <HistoryReference turn={refTurn}>
           <ReferenceCard answer={refTurn?.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} onNavigate={onNavigate} />
+          </HistoryReference>
         </div>
         </>
       ) : view === "history" ? (
@@ -316,11 +338,18 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
             onNavigate={onNavigate}
           />
 
+          {dataError && (
+            <div role="alert" className="flex items-center gap-3 border-t px-4 py-3 text-sm text-muted-foreground">
+              {t.app.loadError}
+              <Button onClick={onRetryData} variant="outline" className="h-11">{t.app.retry}</Button>
+            </div>
+          )}
           <AdvisorComposer
             draft={draft}
             onDraftChange={setDraft}
             busy={busy}
             restoringHistory={history.restoring}
+            restoreError={dataError}
             showBusyHint={pressedWhileBusy && busy}
             placeholder={placeholder}
             onSubmit={submit}
@@ -328,8 +357,12 @@ export function AdvisorPanel({ advisor, data, history, patch, ddragonVersion, ca
           />
         </>
       )}
+      <HistorySaveFailure failed={history.saveFailed} onRetry={history.retrySave} />
       </div>
     </div>
+    </Dialog.Content>
+    </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 

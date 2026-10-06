@@ -27,10 +27,6 @@ const SLOTS = ["P", "Q", "W", "E", "R"] as const;
 
 export type AbilitySlot = (typeof SLOTS)[number];
 
-export function isAbilitySlot(slot: string): slot is AbilitySlot {
-  return (SLOTS as readonly string[]).includes(slot);
-}
-
 interface AbilityIconProps {
   championId: string;
   slot: string;

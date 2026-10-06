@@ -118,6 +118,7 @@ export function useAskAdvisor({ advisor, data, patch, championIds, canUseModel }
         notice,
       };
       const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search, inferStatQuery,
+        generateNumeric: advisor.generateNumeric,
         classifyRequest: withRequestModel(classifyRequest, canUseModel ? advisor.inferRequestScope : undefined) };
       const { dialogue, reply } = await answerDialogue(question, ctx, deps);
       if (dialogue.parts.some(p => p.plan.type === "code" && p.plan.pending)) pendingQuestion.current = question;

@@ -1,0 +1,45 @@
+{
+  "legacy_upgrade": {
+    "source_changes": false,
+    "original_full_run": "meta cooldown-release absent; legacy document retained; installation resources were200; exact cause not proven before original trace was removed by rerun",
+    "independent_current_source": "3/3 passed,3.7s/4.1s/4.1s",
+    "latest_full_run": "passed",
+    "conclusion": "No reproduced implementation failure. Initial legacy claim/reload/update scheduling remains a timing candidate, not a proven cause."
+  },
+  "candidate_invalid_identity": {
+    "failure_trace": "/tmp/cooldown-apply-b8py9j/data-candidate-failure.trace.zip",
+    "verified_response": {
+      "locale": "en_US",
+      "champion_id": "Aatrox",
+      "patch": "26.19"
+    },
+    "passed_before_failure": [
+      "page retained releaseA",
+      "page retained original lore"
+    ],
+    "failed_assertion": "canonical caches.match invalid profile must returnfalse",
+    "cause": "Test assumed eviction means permanent absence, contrary to Workbox CacheFirst asynchronous cache write; production retry already uses unique query to bypass late writes",
+    "changed_files": [
+      "e2e/pwa-updates.spec.ts"
+    ],
+    "production_changes": [],
+    "strengthened_assertions": [
+      "active controller release remainsA before repair",
+      "explicit rejected response late cache put",
+      "repaired origin retry must use cooldown-retry UUID query",
+      "canonical payload recovers ko_KR/Aatrox",
+      "releaseB promoted only after recovery; new lore visible"
+    ],
+    "validation": {
+      "command": "npm exec --no -- playwright test --config /tmp/cooldown-apply-b8py9j/playwright-dev.config.ts e2e/pwa-updates.spec.ts --grep 'candidate release invalid' --workers 1 --repeat-each 2 --output /tmp/cooldown-apply-b8py9j/data-candidate-final",
+      "result": "2/2 passed,4.3s/4.5s; total39.6s",
+      "eslint": "passed",
+      "scripts_typecheck": "passed"
+    }
+  },
+  "latest_full_run_before_test_fix": {
+    "passed": 182,
+    "failed": 1,
+    "skipped": 0
+  }
+}

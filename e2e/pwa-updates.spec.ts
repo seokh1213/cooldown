@@ -1,5 +1,6 @@
 import { expect, test as base, type Page } from "@playwright/test";
-import { rmSync } from "node:fs";
+import { readFileSync, rmSync, writeFileSync } from "node:fs";
+import path from "node:path";
 import { buildPwaReleases, startPwaDeployment, type ReleaseBuilds } from "./helpers/pwaDeployment";
 import type { AppRelease } from "../src/pwa/release";
 
@@ -307,4 +308,77 @@ test("legacy installed workers upgrade at the same URL without unregistering", a
     expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).map((registration) => registration.active?.scriptURL)))
       .toEqual([`${server.origin}/cooldown/sw.js`]);
   } finally { await server.close(); }
+});
+
+test("CacheFirst invalid catalog data retries from the repaired origin and remains usable offline", async ({ page, context, builds }) => {
+  const server = await startPwaDeployment(builds);
+  try {
+    await openInstalledProfile(page, server.origin);
+    const catalogUrl = `/cooldown/data/releases/${builds.releaseA.dataVersion}/${builds.releaseA.patchVersion}/items-normalized-ko_KR.json`;
+    await page.evaluate(async (url) => {
+      const cache = await caches.open("cooldown-game-data-releases-v1");
+      await cache.put(url, new Response(JSON.stringify({ schemaVersion: 999 }), { headers: { "Content-Type": "application/json" } }));
+      await cache.put("/keep-offline-data", new Response("safe"));
+    }, catalogUrl);
+    const refreshes: string[] = [];
+    page.on("request", (request) => {
+      if (request.url().includes("items-normalized-ko_KR.json?cooldown-retry=")) refreshes.push(request.url());
+    });
+    await page.goto(`${server.origin}/cooldown/encyclopedia?tab=items`);
+    await expect(page.getByRole("alert")).toContainText("데이터를 불러오지 못했습니다.");
+    await page.getByRole("button", { name: "다시 시도", exact: true }).click();
+    await expect(page.getByRole("img", { name: "롱소드", exact: true }).first()).toBeVisible();
+    expect(refreshes).toHaveLength(1);
+    expect(await page.evaluate(async () => (await caches.match("/keep-offline-data"))?.text())).toBe("safe");
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.getByRole("img", { name: "롱소드", exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("alert")).toHaveCount(0);
+    await expect(appRelease(page)).toHaveAttribute("content", builds.releaseA.releaseId);
+  } finally { await context.setOffline(false); await server.close(); }
+});
+
+test("candidate release invalid identity stays inactive until its data is repaired", async ({ page, builds }) => {
+  const server = await startPwaDeployment(builds);
+  const profileFile = path.join(builds.b, `data/releases/${builds.releaseB.dataVersion}/${builds.releaseB.patchVersion}/champion-profiles/ko_KR/Aatrox.json`);
+  const original = readFileSync(profileFile);
+  try {
+    await openInstalledProfile(page, server.origin);
+    const invalid = JSON.parse(original.toString());
+    invalid.locale = "en_US";
+    writeFileSync(profileFile, JSON.stringify(invalid));
+    server.deploy("b");
+    await pauseEntryDeadline(page);
+    await page.reload();
+    await expect.poll(() => server.requests.some((url) => url.includes(builds.releaseB.dataVersion) && url.endsWith("/Aatrox.json"))).toBe(true);
+    await page.clock.resume();
+    await expect(page.locator("[data-champion-lore]")).toBeVisible();
+    await expect(appRelease(page)).toHaveAttribute("content", builds.releaseA.releaseId);
+    await expect(page.locator("[data-champion-lore]")).not.toHaveText(updatedLore);
+    const activeRelease = await page.evaluate(() => new Promise<string>((resolve) => {
+      const channel = new MessageChannel();
+      channel.port1.onmessage = (event) => { channel.port1.close(); resolve(event.data.releaseId); };
+      navigator.serviceWorker.controller!.postMessage({ type: "COOLDOWN_RELEASE" }, [channel.port2]);
+    }));
+    expect(activeRelease).toBe(builds.releaseA.releaseId);
+    const candidateUrl = `/cooldown/data/releases/${builds.releaseB.dataVersion}/${builds.releaseB.patchVersion}/champion-profiles/ko_KR/Aatrox.json`;
+    // Workbox can write the rejected response after validation removes it.
+    await page.evaluate(async ({ url, value }) => {
+      await (await caches.open("cooldown-game-data-releases-v1")).put(url,
+        new Response(JSON.stringify(value), { headers: { "Content-Type": "application/json" } }));
+    }, { url: candidateUrl, value: invalid });
+    writeFileSync(profileFile, original);
+    const retryRequest = page.waitForRequest((request) => request.url().includes(candidateUrl + "?cooldown-retry="));
+    await wake(page);
+    await retryRequest;
+    await expect.poll(() => page.evaluate(async (url) => {
+      const cached = await caches.match(url);
+      if (!cached) return undefined;
+      const profile = await cached.json();
+      return { locale: profile.locale, id: profile.champion.id };
+    }, candidateUrl)).toEqual({ locale: "ko_KR", id: "Aatrox" });
+    await expectPreparedRelease(page, builds.releaseB);
+    await reloadForRelease(page, builds.releaseB);
+    await expect(page.locator("[data-champion-lore]")).toHaveText(updatedLore);
+  } finally { writeFileSync(profileFile, original); await server.close(); }
 });

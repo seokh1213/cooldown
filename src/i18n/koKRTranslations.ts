@@ -354,6 +354,12 @@ export const koKRTranslations: Translations = {
       },
     },
     history: {
+      missingCard: "당시 카드 원본이 저장되지 않아 복원할 수 없습니다. 대화 내용은 그대로 남아 있습니다.",
+      unknownPatch: "작성 당시 패치 미상",
+      currentDataLink: "현재 자료로 이동",
+      saveFailed: "대화를 저장하지 못했습니다. 저장 공간을 확보한 뒤 다시 시도해 주세요. 페이지를 닫으면 새 답변이 사라질 수 있습니다.",
+      retrySave: "저장 다시 시도",
+
       loading: "이전 대화를 불러오는 중이에요. 질문을 미리 입력할 수 있어요.",
       title: "대화 기록",
       open: "대화 기록",

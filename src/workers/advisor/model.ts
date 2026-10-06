@@ -50,6 +50,7 @@ function onProgress(event: HfProgress) {
 export async function load(spec: AdvisorModelSpec): Promise<void> {
   if (loading) return loading;
   installCache(spec.graph);
+  progressByFile.clear();
   loading = (async () => {
     tokenizer = await AutoTokenizer.from_pretrained(spec.id, {
       progress_callback: onProgress,
@@ -62,7 +63,10 @@ export async function load(spec: AdvisorModelSpec): Promise<void> {
     });
     if (spec.graph) hideLoraInput(model);
     post({ type: "loaded" });
-  })();
+  })().catch((error: unknown) => {
+    releaseModel();
+    throw error;
+  });
   return loading;
 }
 

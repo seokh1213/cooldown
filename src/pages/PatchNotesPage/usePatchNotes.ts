@@ -13,7 +13,7 @@ export function usePatchNotes() {
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let active = true;
-    client.getJson("patch-notes/index.json").then(value => {
+    client.getJson("patch-notes/index.json", decodePatchNotesIndex).then(value => {
       if (active) { setIndex(decodePatchNotesIndex(value)); setError(false); }
     }).catch(() => { if (active) setError(true); });
     return () => { active = false; };
@@ -28,7 +28,7 @@ export function usePatchNotes() {
   useEffect(() => {
     if (!selected || !previous) return;
     let active = true;
-    client.getJson(`patch-notes/${selected}.json`).then(value => {
+    client.getJson(`patch-notes/${selected}.json`, value => { decodePatchNotesReport(value, selected); }).then(value => {
       const report = decodePatchNotesReport(value, selected);
       if (active) setLoaded({ patch: selected, report });
     }).catch(() => { if (active) setLoaded({ patch: selected, failed: true }); });

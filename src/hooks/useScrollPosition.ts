@@ -10,7 +10,6 @@ export function useScrollPosition(
   isModal: boolean,
   isOpen: boolean
 ) {
-  // Restore scroll position when dialog opens
   useEffect(() => {
     if (!isModal || !isOpen) return;
 
@@ -20,13 +19,11 @@ export function useScrollPosition(
         const savedPosition = readSessionStorage(APP_STORAGE_KEYS.championSelectorScroll);
         if (savedPosition) {
           const position = parseInt(savedPosition, 10);
-          // 즉시 설정 (부드러운 스크롤 없이)
           listRef.current.scrollTop = position;
         }
       }
     };
 
-    // 즉시 실행
     restoreScroll();
 
     // requestAnimationFrame으로 한 번 더 (DOM이 완전히 준비된 후)
@@ -40,7 +37,6 @@ export function useScrollPosition(
     }, 200);
   }, [isModal, isOpen, listRef]);
 
-  // Save scroll position when scrolling
   useEffect(() => {
     const listElement = listRef.current;
     if (!listElement || !isModal || !isOpen) return;

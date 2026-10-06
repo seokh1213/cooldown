@@ -43,7 +43,6 @@ for (const width of [390, 1280]) test(`상황별 콤보·대화 기억·하단 �
   expect(clipboard).toContain("자헨 콤보는 상황별로");
   expect(clipboard).toContain("- **짧은 딜교:** `평타 → Q1 → 평타 → Q2 → 평타`");
   expect(clipboard).not.toMatch(/참고 자료|https?:\/\//);
-  await page.screenshot({ path: `research/champion-combos/screenshots/zaahen-${width}.png` });
   const top = await combo.locator("strong").boundingBox();
   expect(top?.x).toBeGreaterThanOrEqual(0);
   expect((top?.x ?? 0) + (top?.width ?? 0)).toBeLessThanOrEqual(width);
@@ -66,7 +65,6 @@ for (const width of [390, 1280]) test(`상황별 콤보·대화 기억·하단 �
   expect(combined).toContain("미니언과 상대를 함께");
   expect(combined).not.toMatch(/참고 자료|https?:\/\//);
   await expect(page.getByRole("dialog").locator('a[href^="http"]')).toHaveCount(0);
-  await page.screenshot({ path: `research/champion-combos/screenshots/viktor-${width}.png` });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(overflow).toBe(false);
 });

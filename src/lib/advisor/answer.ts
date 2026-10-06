@@ -16,18 +16,14 @@ import { translations } from "@/i18n/translations";
 import type { SelectedNotes } from "./noteSelect";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
 import type { ChampionStatQuery } from "./statQuery";
-import { cooldownFact, rangeFact, ratioText } from "./spellAnswer";
+import { ratioText, spellFocusValue } from "./spellAnswer";
 import { splitSentences } from "./answerText";
 export { splitSentences } from "./answerText";
-export { buildSpellAnswer, cooldownFact, rangeFact } from "./spellAnswer";
+export { buildSpellAnswer, cooldownFact, rangeFact, spellFocusValue } from "./spellAnswer";
 import { buildStatComparison } from "./statComparison";
 export { detectStat, detectLevel } from "./statQuery";
 import {
   cardLabels,
-  promptWords,
-  translateDamage,
-  translateGrade,
-  translateStat,
   translateTag,
 } from "./promptLocale";
 
@@ -233,24 +229,6 @@ export function focusLabel(focus: SpellFocus, lang: Language = "ko_KR"): string 
   return { cooldown: w.cooldown, cost: w.cost, ratio: w.ratios, range: w.range, damage: w.damageType, effect: w.effects }[focus];
 }
 
-/** 스킬 하나에서 사실 하나를 글로. 스킬 표(챔피언 카드의 focus)와 비교 표가 같이 쓴다. */
-export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Language = "ko_KR"): string {
-  switch (focus) {
-    case "cooldown":
-      return cooldownFact(spell, lang)?.value ?? "";
-    case "cost":
-      return spell.cost ?? "";
-    case "ratio":
-      return ratioText(Object.entries(spell.ratios ?? {}), lang);
-    case "range":
-      return rangeFact(spell, lang)?.value ?? "";
-    case "damage":
-      return spell.damageTypes.map((type) => translateDamage(type, lang)).join("·");
-    case "effect":
-      return spell.effects.map((tag) => translateTag(tag, lang)).join(", ");
-  }
-}
-
 // ── 비교 ──────────────────────────────────────────────────────────────
 
 /**
@@ -286,16 +264,16 @@ export function buildCompareAnswer(
     push(w.spell, (spell) => spell.name, false);
     push(
       spells.some((spell) => spell?.recharge) ? w.recharge : w.cooldown,
-      (spell) => cooldownFact(spell, lang)?.value,
+      (spell) => spellFocusValue(spell, "cooldown", lang),
       focus === "cooldown",
     );
-    push(w.cost, (spell) => spell.cost, focus === "cost");
-    push(w.range, (spell) => rangeFact(spell, lang)?.value, focus === "range");
-    push(w.damageType, (spell) => spell.damageTypes.map((type) => translateDamage(type, lang)).join("·"), focus === "damage");
-    push(w.effects, (spell) => spell.effects.map((tag) => translateTag(tag, lang)).join(", "), focus === "effect");
+    push(w.cost, (spell) => spellFocusValue(spell, "cost", lang), focus === "cost");
+    push(w.range, (spell) => spellFocusValue(spell, "range", lang), focus === "range");
+    push(w.damageType, (spell) => spellFocusValue(spell, "damage", lang), focus === "damage");
+    push(w.effects, (spell) => spellFocusValue(spell, "effect", lang), focus === "effect");
     push(
       w.ratios,
-      (spell) => ratioText(Object.entries(spell.ratios ?? {}), lang),
+      (spell) => spellFocusValue(spell, "ratio", lang),
       focus === "ratio",
     );
     const hit = rows.find((row) => row.hit);
@@ -308,7 +286,7 @@ export function buildCompareAnswer(
     // 슬롯 없이 "두 챔피언 스킬 쿨타임" 이면 네 스킬의 쿨타임을 한 줄씩. 능력치 표를 내면 물은 것이 없다.
     const rows: CompareRow[] = ["Q", "W", "E", "R"].flatMap((each) => {
       const spells = cards.map((card) => card.spells.find((spell) => spell.slot === each));
-      const values = spells.map((spell) => (spell ? cooldownFact(spell, lang)?.value ?? "" : ""));
+      const values = spells.map((spell) => (spell ? spellFocusValue(spell, "cooldown", lang) : ""));
       const label = `${each} ${spells.some((spell) => spell?.recharge) ? w.recharge : w.cooldown}`;
       return values.some(Boolean) ? [{ label, values, hit: false }] : [];
     });
@@ -316,37 +294,6 @@ export function buildCompareAnswer(
   }
 
   return buildStatComparison(cards, question, { lang, query: options.statQuery, defaultFields: CARD_STATS });
-}
-
-/**
- * 백분위를 "상위 n%" 나 "하위 n%" 로 바꾼다.
- * 카드의 percentile 은 0(최저)~100(최고) 이다. 69.5 는 위에서 31% 자리다.
- */
-export function percentileLabel(percentile: number): { side: "top" | "bottom"; value: number } {
-  return percentile >= 50
-    ? { side: "top", value: Math.max(1, Math.round(100 - percentile)) }
-    : { side: "bottom", value: Math.max(1, Math.round(percentile)) };
-}
-
-/** 매우 높음·매우 낮음처럼 눈에 띄어야 하는 등급인지. 표에서 그 행만 굵게 한다. */
-export function isExtremeGrade(grade: string): boolean {
-  return grade === "매우 높음" || grade === "매우 낮음";
-}
-
-/** 극단 능력치를 한 줄로. 없으면 undefined. 한 줄로 모으는 까닭은 `PromptWords.extremes` 에 적었다. */
-export function extremeStatsLine(card: ChampionCard, lang: Language = "ko_KR"): string | undefined {
-  const high: string[] = [];
-  const low: string[] = [];
-  for (const stat of CARD_STATS) {
-    const snap = card.stats[stat];
-    if (!snap || !isExtremeGrade(snap.gradeLv1)) continue;
-    (percentileLabel(snap.percentileLv1).side === "top" ? high : low).push(translateStat(stat, lang));
-  }
-  if (!high.length && !low.length) return undefined;
-  return promptWords(lang).extremes(high, low, {
-    high: translateGrade("매우 높음", lang),
-    low: translateGrade("매우 낮음", lang),
-  });
 }
 
 /**

@@ -11,6 +11,7 @@ for (const width of [390, 1280]) test(`기본 소개·전체 스탯 정정·스�
   const ask = async (question: string) => {
     await input.fill(question);
     await page.getByRole("button", { name: "보내기", exact: true }).click();
+    await expect(page.getByRole("button", { name: "중단", exact: true })).toBeHidden();
   };
   await ask("오공 설명해줘");
   await expect(page.getByText("기본 능력치 (1레벨)", { exact: true })).toBeVisible();
@@ -39,7 +40,6 @@ for (const width of [390, 1280]) test(`기본 소개·전체 스탯 정정·스�
     const box = await details.boundingBox();
     return Boolean(box && box.x >= 0 && box.y >= 0 && box.x + box.width <= width && box.y + box.height <= 844);
   }).toBe(true);
-  await page.screenshot({ path: `/tmp/cooldown-advisor-skill-detail-${width}.png` });
   await details.getByRole("button", { name: "Close", exact: true }).click();
   await expect(details).toBeHidden();
   await expect(panel).toBeVisible();

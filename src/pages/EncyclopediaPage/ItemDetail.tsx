@@ -18,7 +18,7 @@ export function ItemCell(props: {
   item: Item;
   ddragonVersion: string;
   isSelected: boolean;
-  onSelect: () => void;
+  onSelect: (trigger: HTMLButtonElement) => void;
 }) {
   const { item, ddragonVersion, isSelected, onSelect } = props;
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ export function ItemCell(props: {
   return (
     <button
       type="button"
-      onClick={onSelect}
+      onClick={(event) => onSelect(event.currentTarget)}
       className={`flex flex-col items-center gap-0 rounded-sm px-0.5 w-9 md:w-10 transition-colors ${
         isSelected
           ? "bg-primary/20 border border-primary/60 shadow-xs"

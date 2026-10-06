@@ -6,7 +6,6 @@
  * 상태를 위젯 쪽에 두고, 패널은 보여 주기만 한다.
  */
 import { useEffect, useState } from "react";
-import { MessageCircle } from "lucide-react";
 import { useAdvisor } from "@/hooks/useAdvisor";
 import { useAdvisorHistory } from "@/hooks/useAdvisorHistory";
 import { useDeviceType } from "@/hooks/useDeviceType";
@@ -14,8 +13,9 @@ import { useTranslation } from "@/i18n";
 import { loadAdvisorData, type AdvisorData } from "@/lib/advisor/context";
 import { canOfferModel } from "@/lib/advisor/config";
 import { AdvisorPanel } from "./AdvisorPanel";
+import { AdvisorLauncher } from "./AdvisorLauncher";
 
-interface AdvisorWidgetProps {
+export interface AdvisorWidgetProps {
   patch: string;
   /** 카드의 챔피언 아이콘을 받아 올 DDragon 버전 */
   ddragonVersion: string;
@@ -26,33 +26,34 @@ interface AdvisorWidgetProps {
   onOpenChange?: (open: boolean) => void;
   /** 드로어 폭이 바뀌면(자료 패널 접기/펴기, 화면 폭) 레이아웃이 페이지를 그만큼 민다. */
   onWidthChange?: (px: number) => void;
+  initialOpen?: boolean;
 }
 
-export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChange }: AdvisorWidgetProps) {
-  const { t, lang } = useTranslation();
+export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChange, initialOpen = false }: AdvisorWidgetProps) {
+  const { lang } = useTranslation();
   const device = useDeviceType();
-  const [open, setOpen] = useState(false);
-  const advisor = useAdvisor();
-  // 챔피언·규칙 자료는 모델과 별개로 받는다. 저장된 대화를 되살리는 데도 필요해서
-  // 패널이 아니라 위젯이 든다 — 패널은 닫혀 있을 수 있다.
-  const [data, setData] = useState<AdvisorData | null>(null);
-  const history = useAdvisorHistory(advisor, data);
+  const [open, setOpen] = useState(initialOpen);
+  const advisor = useAdvisor({ patch, ddragonVersion, locale: lang });
+  const [attempt, setAttempt] = useState(0);
+  const [result, setResult] = useState<{ patch: string; lang: string; attempt: number; data?: AdvisorData; error?: boolean }>();
+  const current = result?.patch === patch && result.lang === lang && result.attempt === attempt ? result : undefined;
+  const data = current?.data ?? null;
+  const dataError = current?.error ?? false;
+  const history = useAdvisorHistory(advisor, patch);
 
   useEffect(() => {
     let alive = true;
-    // 로케일을 넘기지 않아 늘 ko_KR 이 실렸다. 영어·중국어 사용자에게 챔피언 이름과
-    // 스킬 이름이 한국어로 나오던 원인이다.
     void loadAdvisorData(patch, lang)
       .then((loaded) => {
-        if (alive) setData(loaded);
+        if (alive) setResult({ patch, lang, attempt, data: loaded });
       })
       .catch(() => {
-        // 자료를 못 받아도 대화는 되게 둔다. 근거 없이 답하지 말라는 지시는 페르소나에 있다.
+        if (alive) setResult({ patch, lang, attempt, error: true });
       });
     return () => {
       alive = false;
     };
-  }, [patch, lang]);
+  }, [patch, lang, attempt]);
 
   useEffect(() => {
     onOpenChange?.(open);
@@ -118,6 +119,8 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
         <AdvisorPanel
           advisor={advisor}
           data={data}
+          dataError={dataError}
+          onRetryData={() => setAttempt((value) => value + 1)}
           history={history}
           patch={patch}
           ddragonVersion={ddragonVersion}
@@ -128,31 +131,7 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
       )}
       {/* 드로어가 열리면 이 버튼은 드로어 하단의 전송 버튼 위에 겹친다. 닫기는 드로어 헤더에 있다. */}
       {!open && (
-        <button
-          type="button"
-          onClick={() => setOpen((prev) => !prev)}
-          aria-label={open ? t.advisor.close : t.advisor.open}
-          aria-expanded={open}
-          className="fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-[background-color,transform,box-shadow] duration-150 hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/20 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:transition-none"
-        >
-          {/* 모델을 올리는 동안은 테두리가 진행률만큼 찬다. 열지 않아도 준비 상태가 보인다. */}
-          {loadingModel && (
-            <span
-              aria-hidden
-              className="absolute -inset-1 rounded-full"
-              style={{
-                background: `conic-gradient(var(--color-primary) ${percent}%, transparent 0)`,
-                mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
-                WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
-                opacity: 0.55,
-              }}
-            />
-          )}
-          <MessageCircle className="h-6 w-6" />
-          {advisor.status === "generating" && (
-            <span className="absolute right-1 top-1 h-3 w-3 animate-pulse rounded-full bg-emerald-400" />
-          )}
-        </button>
+        <AdvisorLauncher onClick={() => setOpen(true)} loadingModel={loadingModel} percent={percent} generating={advisor.status === "generating"} />
       )}
     </>
   );

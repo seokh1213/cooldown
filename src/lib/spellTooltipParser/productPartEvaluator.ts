@@ -1,4 +1,5 @@
 import type {
+  CalcResult,
   DroppedCalculation,
   ProductOfSubPartsCalculationPart,
   StatPart,
@@ -6,11 +7,13 @@ import type {
 } from "./types";
 import { logger } from "@/lib/logger";
 import { isVector, mul } from "./valueUtils";
+import { scaleCalculationResult } from "./calculationOperations";
 
 /** 계산 파트 하나의 평가 결과 */
 export interface PartResult {
   base: Value;
   statParts: StatPart[];
+  groupedParts?: CalcResult[];
   /** base 가 1~20레벨 값인 레벨 범위인지 여부 */
   isLevelRange?: boolean;
   /** base 를 퍼센트로 적어야 하는지 여부 (참조한 계산식의 mDisplayAsPercent) */
@@ -66,6 +69,21 @@ export function evaluateProductPart(
   const left = evaluatePart(part.mPart1);
   const right = evaluatePart(part.mPart2);
   if (!left || !right) return null;
+
+  if (left.groupedParts?.length || right.groupedParts?.length) {
+    const constant = (value: PartResult) =>
+      !value.groupedParts?.length && value.statParts.length === 0 && !isVector(value.base);
+    const asCalculation = (value: PartResult): CalcResult => ({
+      ...value,
+      isBreakpointRange: value.isLevelRange,
+    });
+    const result = constant(right)
+      ? scaleCalculationResult(asCalculation(left), right.base as number)
+      : constant(left)
+        ? scaleCalculationResult(asCalculation(right), left.base as number)
+        : { ...asCalculation(left), statMultiplier: right };
+    return { base: 0, statParts: [], groupedParts: [result] };
+  }
 
   // 스탯 × 스탯은 교차항을 버리면 부호까지 틀어진다. 표기 불가로 둔다.
   if (left.statParts.length > 0 && right.statParts.length > 0) {

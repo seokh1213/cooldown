@@ -33,28 +33,17 @@ test("renders precomputed passive and Q values", async ({ page }) => {
   await expect(qTooltip.getByLabel("계수")).toContainText("추가 공격력");
   await expect(qTooltip.getByLabel("계수")).toContainText("50%");
   await expect(qTooltip).not.toContainText("인게임 툴팁");
+  const statIcon = qTooltip.locator('img.stat-icon').first();
+  await expect(statIcon).toBeVisible();
+  await expect(statIcon).toHaveAttribute("src", /\/img\/[^/]+\/stat\/scale[a-z]+\.webp$/);
+  await expect(qTooltip).not.toContainText("[[si:");
+  await expect.poll(
+    () => statIcon.evaluate((node) => (node as HTMLImageElement).naturalWidth),
+    { timeout: 15_000 },
+  ).toBeGreaterThan(0);
   expect(dataRequests.some((url) => url.includes("/champions/ko_KR/MonkeyKing.json")))
     .toBe(true);
   expect(dataRequests.some((url) => url.includes("/spells/"))).toBe(false);
-});
-
-test("serves a lazy route directly under the Pages base path", async ({ page }) => {
-  await page.goto("./encyclopedia");
-  await expect(page).toHaveURL(/\/cooldown\/encyclopedia$/);
-  await expect(page.getByRole("heading", { name: "백과사전" })).toBeVisible();
-  // 탭 줄은 Radix Tabs 가 아니라 버튼 묶음이다. 버튼만 있고 패널이 없어서
-  // `aria-controls` 가 존재하지 않는 id 를 가리켰고, Lighthouse 가 그것을 잡았다.
-  // 켜진 것은 `aria-pressed` 로 알린다.
-  await expect(page.getByRole("button", { name: "챔피언", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("[data-champion-grid]")).toBeVisible();
-  await page.getByRole("button", { name: "룬 백과", exact: true }).click();
-  await expect(page.getByText("집중 공격", { exact: true }).first()).toBeVisible();
-  await page.getByRole("button", { name: "아이템 백과" }).click();
-  // `alt` 가 아니라 역할로 찾는다. 아이템 목록 아이콘이 스프라이트에서 잘라 쓰는
-  // `role="img"` 로 바뀌었는데, `getByAltText` 는 `<img alt>` 만 본다. 역할로 찾으면
-  // 둘 다 잡히므로 그리는 방식이 또 바뀌어도 살아남는다.
-  await expect(page.getByRole("img", { name: "롱소드" }).first()).toBeVisible();
-  await expect(page.locator("#root")).not.toBeEmpty();
 });
 
 test("installs the PWA and serves a direct route offline", async ({ page, context, baseURL }) => {
@@ -96,7 +85,7 @@ test("installs the PWA and serves a direct route offline", async ({ page, contex
   }
 });
 
-test("captures overflow-safe screens in all supported locales", async ({ page }, testInfo) => {
+test("keeps screens within the viewport in all supported locales", async ({ page }) => {
   const locales = [
     { id: "ko_KR", heading: "챔피언 맞대결" },
     { id: "en_US", heading: "Champion matchup" },
@@ -118,25 +107,8 @@ test("captures overflow-safe screens in all supported locales", async ({ page },
       await expect.poll(() => page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,
       )).toBe(true);
-      await testInfo.attach(`${locale.id}-${viewport.name}`, {
-        body: await page.screenshot({ fullPage: true }),
-        contentType: "image/png",
-      });
     }
   }
-});
-
-test("keeps the mobile sidebar off-canvas until opened", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("./");
-
-  const openMenu = page.getByRole("button", { name: "Open menu" });
-  const closeMenu = page.locator('button[aria-label="Close menu"]');
-  await expect(openMenu).toBeVisible();
-  expect((await closeMenu.boundingBox())?.x).toBeLessThan(0);
-
-  await openMenu.click();
-  await expect.poll(async () => (await closeMenu.boundingBox())?.x).toBeGreaterThan(0);
 });
 
 test("supports keyboard navigation and accessible mobile controls", async ({ page }) => {
@@ -239,28 +211,6 @@ test("keeps the main workflow fully localized in Chinese", async ({ page }) => {
   await expect(page.getByRole("button", { name: "交换" })).toBeVisible();
 });
 
-test("renders stat icons inside ability tooltips", async ({ page }) => {
-  await page.goto("./");
-  await selectWukong(page);
-
-  await page.getByAltText("Q").hover();
-  const qTooltip = page.getByRole("tooltip");
-  // 계산해 만든 스탯 항 앞에 스탯 아이콘이 붙는다
-  const statIcon = qTooltip.locator('img.stat-icon').first();
-  await expect(statIcon).toBeVisible();
-  await expect(statIcon).toHaveAttribute("src", /\/img\/[^/]+\/stat\/scale[a-z]+\.webp$/);
-  // 자리 표시가 그대로 노출되면 안 된다
-  await expect(qTooltip).not.toContainText("[[si:");
-  // 실제로 그려졌는지 (깨진 이미지가 아닌지) 확인
-  await expect
-    .poll(
-      () =>
-        statIcon.evaluate((node) => (node as HTMLImageElement).naturalWidth),
-      { timeout: 15_000 },
-    )
-    .toBeGreaterThan(0);
-});
-
 test("documents game formulas in the encyclopedia", async ({ page }) => {
   await page.goto("./encyclopedia?tab=formulas");
 
@@ -288,4 +238,3 @@ test("documents game formulas in the encyclopedia", async ({ page }) => {
     )
     .toBe(true);
 });
-

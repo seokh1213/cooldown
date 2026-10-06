@@ -27,7 +27,7 @@ export interface PlaybookCondition {
 }
 
 /**
- * 본문에서 언급한 게임 내 고유명사를 구조화해 적는다.
+ * 게임 내 고유명사를 종류별로 구조화해 적는다.
  * 자유 텍스트에서 이름을 추출하는 방식은 오탐이 많아, 작성자가 명시하고 검증기가 데이터와 대조한다.
  */
 export interface PlaybookRefs {
@@ -82,6 +82,8 @@ export interface PlaybookEntry {
   hooks?: PlaybookHook[];
   /** 본문이 권장하는 이름 */
   refs?: PlaybookRefs;
+  /** 작성 당시 검토한 이름. 본문의 추천·비교 참조가 아니며 실행 번들에서 제외한다. */
+  reviewRefs?: PlaybookRefs;
   /** 본문이 비교 대상으로만 언급하거나 피하라고 한 이름 (권장안에서 제외) */
   avoid?: PlaybookRefs;
   source?: string;
@@ -207,42 +209,4 @@ export function withHooks(entry: PlaybookEntry, other: ChampionCard, side: "play
   if (!sentences.length && !inserts.size) return entry;
   const text = [...body.flatMap((sentence, i) => [sentence, ...(inserts.get(i) ?? [])]), ...sentences].join(" ");
   return { ...entry, text };
-}
-
-const CATEGORY_LABEL: Record<string, string> = {
-  rune: "룬",
-  summoner: "소환사 주문",
-  "start-item": "시작 아이템",
-  "first-item": "첫 아이템",
-  "core-item": "코어 아이템",
-  "situational-item": "상황별 아이템",
-  "escape-window": "이동 수단과 공백",
-  combo: "콤보",
-  phase: "힘의 구간",
-  laning: "라인전",
-  teamfight: "한타",
-  skill: "스킬 운용",
-};
-
-export function playbookToText(
-  selected: SelectedPlaybook,
-  meName: string,
-  enemyName: string,
-  currentPatch?: string,
-): string {
-  const fmt = (entries: PlaybookEntry[]) => {
-    if (entries.length === 0) return "  (등록된 항목 없음)";
-    return entries
-      .map((e) => {
-        const label = CATEGORY_LABEL[e.category] ?? e.category;
-        const scope = e.when?.enemyIds ? " · 이 상대 한정" : e.when ? " · 조건 일치" : "";
-        const stale =
-          e.verifiedPatch && currentPatch && e.verifiedPatch !== currentPatch
-            ? ` · ${e.verifiedPatch} 기준이라 변동 가능`
-            : "";
-        return `  - [${label}${scope}${stale}] ${e.text}`;
-      })
-      .join("\n");
-  };
-  return [`${meName} 플레이 지식:`, fmt(selected.mine), `${enemyName} 상대 지식:`, fmt(selected.vsEnemy)].join("\n");
 }

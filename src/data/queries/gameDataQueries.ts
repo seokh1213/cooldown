@@ -4,7 +4,6 @@ import { gameDataRepository } from "@/data/repositories/gameDataRepository";
 import type { RuneStatShardStaticData, RuneTree } from "@/types";
 import type {
   NormalizedItem,
-  NormalizedRune,
   NormalizedSummonerSpell,
 } from "@/types/combatNormalized";
 
@@ -21,13 +20,6 @@ export async function getNormalizedItems(
   locale: DataLocale
 ): Promise<NormalizedItem[]> {
   return (await gameDataRepository.getItems(identity, locale)).items;
-}
-
-export async function getNormalizedRunes(
-  identity: StaticDataIdentity,
-  locale: DataLocale
-): Promise<NormalizedRune[]> {
-  return (await gameDataRepository.getRunes(identity, locale)).runes;
 }
 
 export async function getNormalizedSummonerSpells(

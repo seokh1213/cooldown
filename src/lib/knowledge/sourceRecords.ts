@@ -9,6 +9,7 @@ import type {
   ChampionSpellSlot,
   NormalizedSpellScaling,
 } from "../../types/combatNormalized";
+import type { AbilityForm } from "../../data/contracts/championData";
 
 export interface AbilityCostInfo {
   values: number[];
@@ -35,6 +36,7 @@ export interface AbilitySimulation {
 }
 
 export interface ChampionAbility {
+  forms?: Array<Pick<AbilityForm, "key" | "label" | "id" | "name" | "bodyHtml" | "cooldownSeconds">>;
   slot: ChampionSpellSlot;
   id: string;
   name: string;

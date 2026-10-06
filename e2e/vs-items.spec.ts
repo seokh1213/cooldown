@@ -16,7 +16,7 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
   ]) {
     test(`VS and item details: ${locale} at ${viewport.width}px`, async ({
       page,
-    }, testInfo) => {
+    }) => {
       const errors: string[] = [];
       page.on("pageerror", (error) => errors.push(error.message));
       await page.setViewportSize(viewport);
@@ -62,10 +62,6 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       await expect(page.locator('[data-ability-info][data-side="opponent"][data-slot="Q"]')).toContainText("50%");
       await expect(page.getByRole("combobox")).toHaveCount(0);
       await expectNoHorizontalOverflow(page);
-      await page.screenshot({
-        path: testInfo.outputPath("vs.png"),
-        animations: "disabled",
-      });
       await page.getByTestId("vs-mine-Q").getByRole("button").click();
       await expect(page.getByRole("dialog").locator("[data-ability-body]")).toBeVisible();
       await page.keyboard.press("Escape");
@@ -87,10 +83,6 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
       );
       await expect(detail).toContainText(t.itemDetail.cooldown);
       await expectNoHorizontalOverflow(page);
-      await page.screenshot({
-        path: testInfo.outputPath("item.png"),
-        animations: "disabled",
-      });
       expect(errors).toEqual([]);
     });
   }
@@ -211,7 +203,7 @@ test("rejects unknown champion links without requesting arbitrary data", async (
 
 test("shows six-rank skills and recharge times without controls on mobile", async ({
   page,
-}, testInfo) => {
+}) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("./vs?a=Udyr&t=Teemo");
   await expect(
@@ -237,8 +229,4 @@ test("shows six-rank skills and recharge times without controls on mobile", asyn
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await page.screenshot({
-    path: testInfo.outputPath("vs-six-ranks.png"),
-    animations: "disabled",
-  });
 });

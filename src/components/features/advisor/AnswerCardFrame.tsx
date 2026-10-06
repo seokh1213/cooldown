@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
+import { useHistoryReference } from "./HistoryReference";
 
 /** 카드 틀. 머리(아이콘·이름·종류 칩) / 몸 / 꼬리(패치·화면 링크). */
 export function Frame(props: {
@@ -38,14 +39,23 @@ export function Frame(props: {
 /** 카드 꼬리: 패치와 그 화면으로 가는 링크. */
 export function PatchLinkFooter({ patch, to, label, onNavigate }: { patch: string; to: string; label: string; onNavigate?: () => void }) {
   const { t } = useTranslation();
+  const turn = useHistoryReference();
+  const linkLabel = turn?.historical ? t.advisor.history.currentDataLink : label;
   return (
     <>
-      <span>{fill(t.advisor.card.patch, { patch })}</span>
-      <Link to={to} onClick={onNavigate} className="text-primary hover:underline">
-        {label}
+      <PatchLabel patch={patch} />
+      <Link to={to} title={turn?.historical ? linkLabel : undefined} onClick={onNavigate} className="text-primary hover:underline">
+        {linkLabel}
       </Link>
     </>
   );
+}
+
+export function PatchLabel({ patch }: { patch: string }) {
+  const { t } = useTranslation();
+  const turn = useHistoryReference();
+  const originalPatch = turn?.source?.patch ?? (turn?.historical ? turn.historical.memory?.patch : patch);
+  return <span>{originalPatch ? fill(t.advisor.card.patch, { patch: originalPatch }) : t.advisor.history.unknownPatch}</span>;
 }
 
 /** 슬롯 글자 칩. 스킬 아이콘 id 가 카드 데이터에 없어 글자로 대신한다. */

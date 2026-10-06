@@ -42,6 +42,16 @@ test("현재 모든 챔피언의 콤보·조건·출처와 스킬 본문 검수 
       assert.match(compiled.get(card.id)!.find(entry => entry.id === pattern.id)!.text, /^- \*\*/);
     }
   }
+  const kled = guides.get("Kled")!;
+  assert.ok(kled.reviewedAt && kled.reviewedAt >= file.reviewedAt, "클레드만 최신 원문으로 재검수했다");
+  for (const pattern of kled.patterns) {
+    assert.match(pattern.tip, /스칼에 탑승한 상태/, "E 연계는 탑승 상태를 명시한다");
+    assert.match(pattern.tip, /W가 준비/, "네 번의 빠른 평타는 W 준비 조건을 명시한다");
+  }
+  const chase = kled.patterns.find(pattern => pattern.keys.includes("E2"))!;
+  assert.match(chase.tip, /적 챔피언이나 대형 정글 몬스터에게 적중/);
+  assert.match(chase.tip, /3초 안에 같은 대상에게 E2/);
+  assert.ok(kled.sources.some(source => source.kind === "usage-guide" && source.url.includes("na.leagueoflegends.com")));
 });
 
 test("전 챔피언 콤보 질문이 실제 대화 진입점에서 상황별 순서와 요령으로 답한다", async () => {
@@ -112,7 +122,9 @@ test("콤보 유무와 스킬 상태를 구분하고 다른 스킬의 정정도 
 
 test("출처의 스킬 본문이 바뀌면 새 패치에 같은 콤보를 자동 승인하지 않는다", () => {
   const guides = JSON.parse(readFileSync("knowledge/combo-guides.json", "utf8")) as ComboGuideFile;
-  const cards = structuredClone(data.cards);
-  cards.find(card => card.id === "Zaahen")!.spells[1].text += " 스킬이 변경됨";
-  assert.throws(() => compileComboNotes(guides, cards), /Zaahen.*다시 검수/);
+  for (const [champion, slot] of [["Zaahen", "Q"], ["Kled", "E"]]) {
+    const cards = structuredClone(data.cards);
+    cards.find(card => card.id === champion)!.spells.find(spell => spell.slot === slot)!.text += " 스킬이 변경됨";
+    assert.throws(() => compileComboNotes(guides, cards), new RegExp(`${champion}.*다시 검수`));
+  }
 });

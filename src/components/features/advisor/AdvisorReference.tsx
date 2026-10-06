@@ -15,6 +15,7 @@ import { referenceKey } from "@/lib/advisor/referenceIdentity";
 export { referenceTabsOf } from "@/lib/advisor/referenceIdentity";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
 import type { useReferencePanelSize } from "./useReferencePanelSize";
+import { useHistoryReference } from "./HistoryReference";
 
 export function referenceTitle(answer: AdvisorAnswer, copy: Translations["advisor"]): { title: string; kind: string } {
   switch (answer.kind) {
@@ -68,6 +69,18 @@ interface ReferenceTabsProps {
   ddragonVersion: string;
 }
 
+function tabProvenance(turn: AdvisorTurn, tabs: AdvisorTurn[]): string | undefined {
+  if (!turn.answer || !turn.source) return undefined;
+  const source = turn.source;
+  const cardKey = referenceKey(turn.answer);
+  const sameCard = tabs.filter(entry => entry.answer && referenceKey(entry.answer) === cardKey);
+  if (new Set(sameCard.map(entry => referenceKey(entry.answer!, entry.source))).size <= 1) return undefined;
+  const samePatch = sameCard.filter(entry => entry.source?.patch === source.patch);
+  const showLocale = samePatch.some(entry => entry.source?.locale !== source.locale);
+  const showVersion = samePatch.some(entry => entry.source?.locale === source.locale && entry.source.ddragonVersion !== source.ddragonVersion);
+  return [source.patch, showLocale && source.locale, showVersion && source.ddragonVersion].filter(Boolean).join(" · ");
+}
+
 export function ReferenceTabs({ tabs, activeKey, onSelect, ddragonVersion }: ReferenceTabsProps) {
   const { t } = useTranslation();
   const copy = t.advisor;
@@ -76,23 +89,29 @@ export function ReferenceTabs({ tabs, activeKey, onSelect, ddragonVersion }: Ref
     <div className="flex gap-1 overflow-x-auto border-b px-2 pt-1.5 text-[11px] [scrollbar-width:thin]">
       {tabs.map((turn) => {
         const answer = turn.answer!;
-        const active = referenceKey(answer) === activeKey;
+        const key = referenceKey(answer, turn.source);
+        const active = key === activeKey;
+        const sourceLabel = turn.source ? ` · ${turn.source.patch} · ${turn.source.locale}` : "";
+        const title = `${referenceTitle(answer, copy).title} · ${referenceTitle(answer, copy).kind}${sourceLabel}`;
+        const provenance = tabProvenance(turn, tabs);
         return (
           <button
-            key={referenceKey(answer)}
+            key={key}
             type="button"
             onClick={() => onSelect(turn.id)}
             ref={active ? (node) => node?.scrollIntoView({ block: "nearest", inline: "nearest" }) : undefined}
-            title={`${referenceTitle(answer, copy).title} · ${referenceTitle(answer, copy).kind}`}
+            title={title}
+            aria-label={provenance ? `${tabLabel(answer, copy)} · ${provenance}` : undefined}
             aria-pressed={active}
-            className={`flex shrink-0 items-center gap-1 whitespace-nowrap rounded-t-md border-b-2 px-2 py-1.5 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/40 ${
+            className={`flex shrink-0 items-center gap-1 whitespace-nowrap rounded-t-md border-b-2 px-2 py-1.5 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring ${
               active ? "border-primary font-semibold text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             <span className="flex -space-x-1">
-              <AnswerIcons answer={answer} ddragonVersion={ddragonVersion} className="h-3.5 w-3.5 rounded-sm ring-1 ring-background" />
+              <AnswerIcons answer={answer} ddragonVersion={turn.source?.ddragonVersion ?? ddragonVersion} className="h-3.5 w-3.5 rounded-sm ring-1 ring-background" />
             </span>
             {tabLabel(answer, copy)}
+            {provenance && <span className="text-muted-foreground">· {provenance}</span>}
           </button>
         );
       })}
@@ -138,7 +157,7 @@ export function ReferenceAside({ size, tabs, answer, ddragonVersion, patch, onPi
         aria-valuemax={REFERENCE_MAX_WIDTH}
         tabIndex={0}
         {...size.resizeHandlers}
-        className={`absolute inset-y-0 left-0 z-10 w-1.5 cursor-col-resize touch-none transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/40 ${
+        className={`absolute inset-y-0 left-0 z-10 w-1.5 cursor-col-resize touch-none transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring ${
           size.resizing ? "bg-primary/40" : "hover:bg-primary/20"
         }`}
       />
@@ -164,9 +183,10 @@ export function ReferenceAside({ size, tabs, answer, ddragonVersion, patch, onPi
 /** 자료 패널·카드 화면의 카드. 고른 답이 없으면 비었다고 적는다. */
 export function ReferenceCard({ answer, ddragonVersion, patch, onPickChampion, onNavigate }: ReferenceCardProps) {
   const { t } = useTranslation();
+  const turn = useHistoryReference();
   return answer ? (
-    <AdvisorAnswerCard key={referenceKey(answer)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={onPickChampion} onNavigate={onNavigate} />
+    <AdvisorAnswerCard key={referenceKey(answer, turn?.source)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={onPickChampion} onNavigate={onNavigate} />
   ) : (
-    <p className="text-xs text-muted-foreground">{t.advisor.card.referenceEmpty}</p>
+    <p className="text-xs text-muted-foreground">{turn?.referenceUnavailable ? t.advisor.history.missingCard : t.advisor.card.referenceEmpty}</p>
   );
 }

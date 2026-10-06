@@ -28,17 +28,28 @@ if (env.backends.onnx.wasm) {
  * 겹치면 한쪽이 다른 쪽의 캐시를 지운 채 이어 쓰다 그래프가 멈췄다(2026-09-30 브라우저 시험: 판정 6회 연속 30초 시간 초과).
  */
 let queue: Promise<unknown> = Promise.resolve();
+let generationEpoch = 0;
 const serialized = <T>(run: () => Promise<T>): Promise<T> => {
   const next = queue.then(run, run);
   queue = next.catch(() => undefined);
   return next;
 };
 
+function reportFailure(error: unknown, id?: number) {
+  const message = error instanceof Error ? error.message : String(error);
+  // GPU 오류 뒤에는 모델과 같은 세션에서 만든 판정·검색 캐시도 다시 만든다.
+  if (/OrtRun|buffer|webgpu|device|GPU/i.test(message)) {
+    forgetJudgePrefix();
+    forgetLoraFeatures();
+    forgetLoraSession();
+    releaseModel();
+  }
+  post({ type: "error", id, message });
+}
+
 onRequest((request) => {
   if (request.type === "load") {
-    load(request.model).catch((error: unknown) => {
-      post({ type: "error", message: (error as Error).message });
-    });
+    load(request.model).catch((error: unknown) => reportFailure(error));
     return;
   }
   if (request.type === "judge") {
@@ -46,49 +57,29 @@ onRequest((request) => {
       request.feature === "hidden"
         ? judgeHidden(request.id, request.model, request.state, request.questions)
         : judge(request.id, request.model, request.state, request.questions, request.subset),
-    ).catch((error: unknown) => {
-      const message = (error as Error).message;
-      // 생성과 같다 — GPU 가 한 번 깨지면 쥐고 있던 것을 놓아야 다음 요청이 모델을 다시 올린다
-      if (/OrtRun|buffer|webgpu|device|GPU/i.test(message)) {
-        forgetJudgePrefix();
-        forgetLoraFeatures();
-        forgetLoraSession();
-        releaseModel();
-      }
-      post({ type: "error", id: request.id, message });
-    });
+    ).catch((error: unknown) => reportFailure(error, request.id));
     return;
   }
   if (request.type === "embed") {
-    serialized(() => embedText(request.id, request.model, request.text)).catch((error: unknown) => {
-      post({ type: "error", id: request.id, message: (error as Error).message });
-    });
+    serialized(() => embedText(request.id, request.model, request.text))
+      .catch((error: unknown) => reportFailure(error, request.id));
     return;
   }
   if (request.type === "stop") {
+    generationEpoch += 1;
     stopGeneration();
     return;
   }
   if (request.type === "generate") {
-    serialized(() => generate(request)).catch((error: unknown) => {
-      const message = (error as Error).message;
-      /*
-       * GPU 쪽이 한 번 깨지면 세션이 살아 있어도 못 쓴다.
-       *
-       * WebGPU 버퍼가 무효가 되면 그 뒤 모든 실행이 같은 오류로 떨어진다
-       * ("is invalid due to a previous error"). 그런데 우리는 적재한 모델을 모듈에
-       * 쥐고 있어서, 사용자가 다시 물어도 같은 세션으로 가 똑같이 실패했다. 새로고침
-       * 말고는 길이 없었다.
-       *
-       * 그래서 GPU 오류에서는 쥐고 있던 것을 놓는다. 다음 질문이 모델을 다시 올린다.
-       * 파일은 브라우저 캐시에 있으므로 내려받기를 다시 하지는 않는다.
-       */
-      if (/OrtRun|buffer|webgpu|device|GPU/i.test(message)) {
-        forgetJudgePrefix();
-        releaseModel();
+    const queuedEpoch = generationEpoch;
+    serialized(async () => {
+      if (queuedEpoch !== generationEpoch) {
+        post({ type: "done", id: request.id, text: "", tokens: 0, seconds: 0 });
+        return;
       }
-      post({ type: "error", id: request.id, message });
-    });
+      await generate(request);
+    })
+      .catch((error: unknown) => reportFailure(error, request.id));
   }
 });
 

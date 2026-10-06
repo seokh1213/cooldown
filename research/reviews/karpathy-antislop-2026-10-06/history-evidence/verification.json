@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "scope": "Historical snapshot persistence/rendering, legacy text retention, provenance tabs, saving failure/retry. File necessity audit is read-only.",
+  "unitAndData": {
+    "tests": 2289,
+    "passed": 2289,
+    "failed": 0,
+    "skipped": 0
+  },
+  "fullE2E": {
+    "tests": 188,
+    "passed": 188,
+    "failed": 0,
+    "skipped": 0,
+    "workers": 5,
+    "seconds": 144,
+    "scope": "Full suite copied to temporary tree so screenshots do not overwrite existing research. Last source build unchanged during complete run."
+  },
+  "finalHistoricalNavigation": {
+    "tests": 5,
+    "passed": 5,
+    "scope": "Final E2E file adds actual current-data navigation assertions after full-suite snapshot."
+  },
+  "typeCheck": "PASS app and scripts; final tab-label source also independently typechecked",
+  "lint": "PASS full tree plus subsequent edited files, zero warnings",
+  "build": "PASS production",
+  "visual": {
+    "matrix": 20,
+    "quotaCases": 4,
+    "pageErrors": 0,
+    "widths": [
+      360,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "rootImageInspection": [
+    "history-cards-390-dark.png",
+    "history-cards-1440-light.png",
+    "history-missing-360-light.png",
+    "history-quota-360-dark.png"
+  ],
+  "historicalCurrentDetailRequests": 0,
+  "sourceHashes": {
+    "src/lib/advisor/history.ts": "c64f6fa6a1a308e410b6d8f15ad4db6bddb719e541b9ce8e090bd0ec3afad3d0",
+    "src/lib/advisor/historySnapshot.ts": "97785703d5bc8d7a935d09c850ea2ef469bc92be5edfc51142674f636c059509",
+    "src/lib/advisor/championDetail.ts": "b236559f7a0e6f21fbe405bb99c5baac67b542cff42828aabe9686041bc21e06",
+    "src/hooks/useAdvisorTurns.ts": "864650dfd15a5d467c37a4b965fd364ed88d6dac6cc5882310d1f3eabc99b844",
+    "src/hooks/useAdvisor.ts": "705569871c5fc2964b31e75d5380bc3066f53fed7cca041f14b661d60bfedc2c",
+    "src/hooks/useAdvisorHistory.ts": "d5e798412ddddd8b9f8af0f049bdae1e477a67fa9932bcf46ce14438b969bd17",
+    "src/hooks/useAdvisorHistoryDetails.ts": "3729efd1ef8555ed115028d9dc787964907bc52d1a431870f23f772c9a1dc6df",
+    "src/components/features/advisor/AdvisorWidget.tsx": "896f5d4394de59b997c97f379346cce995ad93aad15a7d68623ab9fce1bfbe69",
+    "src/components/features/advisor/HistoryReference.tsx": "f0c0faca232989bff071757bfa26cb5896095254e3d684964faaeeb14912b51a",
+    "src/components/features/advisor/AdvisorReference.tsx": "db1d0cf06c3bd5362a8331f73ac5ca3c18095b4c1a829447588f1130c4f450e4",
+    "src/components/features/advisor/AdvisorPanel.tsx": "2d78af941958b28818af3a4dad90cd386b668998f70695c85b4bc714fef60c59",
+    "src/components/features/advisor/AdvisorConversation.tsx": "4d5b0b8a376a64b94c1886964ff087b9a9a4069e178e4dcf629f456e5b8c9895",
+    "src/components/features/advisor/AdvisorTurnView.tsx": "cc48412702496fbe3ce8274fb89dfe8f66716f0ec0abf7df915fd5c15e234bdd",
+    "src/components/features/advisor/AdvisorAnswerCard.tsx": "f7f59100b10f8d7d2a78955926d574186e91704e4a76e53c1785fdbf41f85b6d",
+    "src/components/features/advisor/AnswerCardFrame.tsx": "4596735e8849232b9bb7565053540be64065b63d768c1aeb1e02c61be19cc7a8",
+    "src/components/features/advisor/ChampionAnswerCard.tsx": "f4af9a473b2446819f2dfc08d352e901250c403fe1dedad76c92c7a11307ef38",
+    "src/components/features/advisor/MatchupReferenceCard.tsx": "4e7bdd407396d9f2eefec9fd3277c136b48c425338ca83396db12640207bbb13",
+    "src/components/features/advisor/useAdvisorChampionDetail.ts": "35302fff1361b476464ce5004988c94a3b2bd660f61db1eacd5cb26a2d4e0ca8"
+  },
+  "limits": [
+    "Cards not captured by the old storage format cannot be reconstructed exactly.",
+    "Normalized detail snapshot requires successful original detail download. Historical views never fill missing saved detail from current data.",
+    "Historical asset images are referenced by original version, not copied into localStorage.",
+    "Same existing retention bounds: latest20conversations and80turns each. No additional quota eviction.",
+    "Five unused source candidates are listed only; no deletion or movement was performed."
+  ],
+  "resolvedVerificationIssues": [
+    "Ordinary tab names preserved; duplicate sources receive visible patch labels.",
+    "Existing history test now checks immediate archived restoration while a new question awaits current data.",
+    "Keyboard dialog tests wait for actual focus and opening-animation completion.",
+    "PWA source version comparison rerun with source stable between fixture builds."
+  ]
+}

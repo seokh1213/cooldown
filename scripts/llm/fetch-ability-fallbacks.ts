@@ -39,6 +39,7 @@ import { normalizeChampion } from "../data-pipeline/normalization/champion";
 import { fetchCDragonChampion } from "../data-pipeline/sources/cdragon-champion";
 import { extractPassiveSpell } from "../passive-tooltip-data";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
+import { patchGapChampions, writePatchGaps } from "./lib/patchGaps";
 import { stripHtml } from "../../src/lib/knowledge/text";
 
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
@@ -81,6 +82,7 @@ export interface FallbackEntry {
 export interface FallbackFile {
   patchVersion: string;
   generatedAt: string;
+  selectedChampions?: string[];
   /** 거슬러 올라가며 확인한 패치 (오래된 쪽이 뒤) */
   searchedPatches: string[];
   recoveredCount: number;
@@ -323,11 +325,9 @@ async function main(): Promise<void> {
   };
   const depth = Number(get("--depth") ?? DEFAULT_DEPTH);
   const refresh = argv.includes("--refresh");
-  const only = get("--champ")
-    ? new Set(get("--champ")!.split(",").map((s) => s.trim()))
-    : undefined;
-
   const patch = resolvePatchVersion();
+  const selectedChampions = argv.includes("--champ") ? patchGapChampions(patch, get("--champ") ?? "") : undefined;
+  const only = selectedChampions ? new Set(selectedChampions) : undefined;
   const targets = collectGapTargets(patch, only);
 
   console.log(`# ${patch} 스킬 설명 결측 소급\n`);
@@ -348,14 +348,12 @@ async function main(): Promise<void> {
     }
     return;
   }
-  if (!targets.length) return;
-
-  const versions = (await (await fetch(VERSION_URL)).json()) as string[];
+  const versions = targets.length ? (await (await fetch(VERSION_URL)).json()) as string[] : [];
   const currentIndex = versions.findIndex(
     (v) => resolveStaticDataRelease(v).patchVersion === patch,
   );
-  if (currentIndex < 0) throw new Error(`DDragon 버전 목록에서 ${patch} 를 찾지 못했다`);
-  const older = versions.slice(currentIndex + 1, currentIndex + 1 + depth);
+  if (targets.length && currentIndex < 0) throw new Error(`DDragon 버전 목록에서 ${patch} 를 찾지 못했다`);
+  const older = targets.length ? versions.slice(currentIndex + 1, currentIndex + 1 + depth) : [];
   console.log(`\n소급 대상 패치: ${older.map((v) => resolveStaticDataRelease(v).patchVersion).join(" → ")}\n`);
 
   const entries: FallbackEntry[] = targets.map((t) => ({ ...t }));
@@ -406,14 +404,13 @@ async function main(): Promise<void> {
   const file: FallbackFile = {
     patchVersion: patch,
     generatedAt: new Date().toISOString(),
+    ...(selectedChampions ? { selectedChampions } : {}),
     searchedPatches,
     recoveredCount: recovered.length,
     unresolvedCount: entries.length - recovered.length,
     entries,
   };
-  const out = path.join(PUBLIC_DATA_ROOT, patch, "llm", FALLBACK_FILE);
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, JSON.stringify(file, null, 2), "utf8");
+  const out = writePatchGaps(patch, FALLBACK_FILE, JSON.stringify(file, null, 2), selectedChampions);
 
   console.log(`\n소급 완료 ${recovered.length}건 / 미해결 ${file.unresolvedCount}건`);
   console.log(`저장: ${path.relative(process.cwd(), out)}`);

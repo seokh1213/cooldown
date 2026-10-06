@@ -28,5 +28,4 @@ for (const width of [390, 1280]) test(`자료 탭을 챔피언 이름으로 구�
     await expect(stats.getByRole("row").filter({ has: page.getByRole("cell", { name: "체력", exact: true }) })).toContainText(champion === "오공" ? "+99" : "+114");
   }
   await expect(panel.getByRole("button", { name: "챔피언", exact: true })).toHaveCount(0);
-  await page.screenshot({ path: `/tmp/cooldown-reference-tabs-${width}.png` });
 });

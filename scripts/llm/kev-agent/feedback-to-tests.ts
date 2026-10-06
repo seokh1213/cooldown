@@ -8,7 +8,20 @@
  *   npx tsx scripts/llm/kev-agent/feedback-to-tests.ts <내보낸 파일.json...> > research/llm-evals/kev-agent/act-real-draft.jsonl
  */
 import * as fs from "node:fs";
-import type { AdvisorFeedback } from "../../../src/lib/advisor/feedback";
+import type { DialogueMemory } from "../../../src/lib/advisor/dialogueState";
+import type { DialogueTrace } from "../../../src/lib/advisor/requestContract";
+
+interface AdvisorFeedback {
+  question: string;
+  rating: "up" | "down";
+  lang?: string;
+  previousQuestion?: string;
+  previousMatchup?: { mine: string; enemy: string };
+  answerKind?: string;
+  champions?: string[];
+  previousMemory?: DialogueMemory;
+  trace?: DialogueTrace;
+}
 
 const seen = new Set<string>();
 for (const file of process.argv.slice(2)) {

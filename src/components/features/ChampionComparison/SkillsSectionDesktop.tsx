@@ -19,7 +19,7 @@ import ChampionSelector from "../ChampionSelector";
 import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { SkillRankCooldown } from "./SkillRankCooldown";
-import { getCooldownForLevel } from "./utils";
+import { buildSkillRows } from "./utils";
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import {
@@ -83,32 +83,7 @@ export function SkillsSectionDesktop({
     }
   };
 
-  const maxLevel = React.useMemo(() => {
-    return Math.max(
-      ...champions.map((c) =>
-        c.spells ? Math.max(...c.spells.map((s) => s.maxrank)) : 0
-      )
-    );
-  }, [champions]);
-
-  const skillRows = React.useMemo(() => {
-    return Array.from({ length: maxLevel }, (_, levelIdx) => {
-      const level = levelIdx + 1;
-      return {
-        level,
-        skills: champions.map((champion) => {
-          if (!champion.spells) return null;
-          return champion.spells.map((skill) => {
-            const cooldown = getCooldownForLevel(skill, level);
-            return {
-              skill,
-              cooldown,
-            };
-          });
-        }),
-      };
-    });
-  }, [champions, maxLevel]);
+  const skillRows = React.useMemo(() => buildSkillRows(champions), [champions]);
 
   // SortableCell 컴포넌트 (각 행의 셀용)
   const SortableCell = ({ champion, children, className }: { champion: Champion; children: React.ReactNode; className?: string }) => {

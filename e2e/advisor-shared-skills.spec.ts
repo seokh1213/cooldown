@@ -81,7 +81,6 @@ for (const width of [390, 1280]) test(`모든 스킬 상세와 같은 챔피언 
   }
   await expect.poll(() => panel.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
   await skills.locator("[data-highlighted=true]").scrollIntoViewIfNeeded();
-  await page.screenshot({ path: `/tmp/cooldown-shared-skills-${width}.png` });
 
   if (width < 768) await page.getByRole("button", { name: "돌아가기", exact: true }).click();
   await ask("아리 Q 스킬정보 알려줘");

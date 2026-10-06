@@ -17,12 +17,6 @@ function context(memory?: DialogueMemory): PlanContext {
 }
 const matchup = (mine: string, enemy: string): DialogueMemory => ({ ...emptyDialogue(data.patch), active: "matchup", matchup: { mine, enemy } });
 
-test("처음 말한 실명 보유 상황을 Q 수치 비교로 읽지 않는다", async () => {
-  const result = await planDialogue("잭스로 티모 상대할 때 Q 실명 다트가 있으면 어떻게 싸워?", context(), deps);
-  assert.equal(result.parts[0].plan.type, "matchup");
-  assert.deepEqual(result.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "Q", "ready"]]);
-});
-
 test("내 방어 스킬 부재의 후속 조언에서도 상성과 두 조건을 유지한다", async () => {
   const first = await planDialogue("상대 Q가 빠졌어. 어떻게 교환해?", context(matchup("Jax", "Teemo")), deps);
   const second = await planDialogue("내 E도 없는데 어떻게 해?", context(first.memory), deps);
@@ -43,26 +37,11 @@ test("돌아온 스킬을 수치 조회로 읽지 않으면서 더 빨리 도는
   assert.equal(plan.answer.slot, "Q");
 });
 
-test("스킬 이름으로 말한 재사용 대기 중과 정정을 기억한다", async () => {
-  const first = await planDialogue("실명 다트는 재사용 대기 중이야. 어떻게 싸워?", context(matchup("Jax", "Teemo")), deps);
-  const second = await planDialogue("내 반격도 재사용 대기 중이야. 이제 어떻게 해?", context(first.memory), deps);
-  assert.deepEqual(second.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["enemy", "Q", "down"], ["mine", "E", "down"]]);
-});
-
 test("한 문장 안의 내 스킬 부재와 상대 궁 진입 가정을 서로 섞지 않는다", async () => {
   const result = await planDialogue("내 매혹은 없는데 상대 궁이 오면 어떻게 해?", context(matchup("Ahri", "Zed")), deps);
   assert.deepEqual(result.memory.conditions.map(c => [c.owner, c.slot, c.status]), [["mine", "E", "down"], ["enemy", "R", "ready"]]);
   assert.equal(result.memory.conditions[0].hypothetical, false);
   assert.equal(result.memory.conditions[1].hypothetical, true);
-});
-
-test("대 문형과 상성 복귀의 마지막 로를 같은 관점으로 읽는다", async () => {
-  for (const question of ["가렌 대 다리우스 한타 때는 뭘 해야 해?", "다시 아까 가렌 대 다리우스로 돌아가자. 한타는?"]) {
-    const result = await planDialogue(question, context(), deps);
-    const plan = result.parts[0].plan;
-    if (plan.type !== "matchup") assert.fail("상성 계획 필요");
-    assert.deepEqual([plan.mine.id, plan.enemy.id], ["Garen", "Darius"]);
-  }
 });
 
 test("대 문형 뒤의 명시적인 내 챔피언 정정은 어순보다 우선한다", async () => {

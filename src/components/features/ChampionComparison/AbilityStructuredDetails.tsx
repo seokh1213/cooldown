@@ -59,6 +59,7 @@ function formatParts(parts: FormulaPart[], labels: ReturnType<typeof useTranslat
 function simulationStatLabel(
   stat: AbilitySimulationStat,
   labels: ReturnType<typeof useTranslation>["t"]["stats"],
+  bonus: string,
 ): string {
   const names: Record<AbilitySimulationStat, string> = {
     abilityPower: labels.abilityPower,
@@ -72,9 +73,9 @@ function simulationStatLabel(
     magicResist: labels.magicResist,
     bonusMagicResist: labels.bonusMagicResist,
     maxMana: labels.mana,
-    bonusMana: labels.mana,
+    bonusMana: `${bonus} ${labels.mana}`,
     attackSpeed: labels.attackspeed,
-    bonusAttackSpeed: labels.attackspeed,
+    bonusAttackSpeed: `${bonus} ${labels.attackspeed}`,
     moveSpeed: labels.movespeed,
     critChance: labels.crit,
     critDamage: labels.critDamage,
@@ -88,6 +89,7 @@ function simulationStatLabel(
 function simulationScalingRows(
   simulation: AbilitySimulation | undefined,
   labels: ReturnType<typeof useTranslation>["t"]["stats"],
+  bonus: string,
 ) {
   if (simulation?.status !== "complete" || !simulation.primary) return [];
   const coefficientValues = (term: AbilitySimulationTerm): number[] =>
@@ -96,7 +98,7 @@ function simulationScalingRows(
     term.coefficientsByRank ??
     [];
   return simulation.primary.terms.map((term) => ({
-    label: simulationStatLabel(term.stat, labels),
+    label: simulationStatLabel(term.stat, labels, bonus),
     value: Array.from(
       new Set(coefficientValues(term).map(coefficientText)),
     ).join("/"),
@@ -178,7 +180,7 @@ export function AbilityStructuredDetails(props: AbilityStructuredDetailsProps) {
   });
   const scalingRows = normalizedScalingRows.length > 0
     ? normalizedScalingRows
-    : simulationScalingRows(props.simulation, t.stats);
+    : simulationScalingRows(props.simulation, t.stats, t.common.bonus);
   const unresolved = props.diagnostics?.unresolvedTokens ?? [];
   // 선형 계수로 못 나누는 스킬은 공식을 그대로 보여 준다. 숨기면 계수가 없는 스킬과 구분되지 않는다.
   const expression = props.simulation?.status === "expression"
@@ -186,7 +188,7 @@ export function AbilityStructuredDetails(props: AbilityStructuredDetailsProps) {
     : undefined;
   const formulaText = expression
     ? formatExpr(expression.root, {
-        statLabel: (stat) => simulationStatLabel(stat, t.stats),
+        statLabel: (stat) => simulationStatLabel(stat, t.stats, t.common.bonus),
         stacksLabel: stacksLabelFor(t.skillTooltip),
       })
     : null;

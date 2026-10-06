@@ -62,7 +62,7 @@ export async function workPool<T>(jobs: T[], options: { concurrency: number; dea
   return jobs.slice(next);
 }
 
-export async function reviewBatch(job: ReviewJob, options: { model: string; deadline: number }, dependencies: ReviewDependencies): Promise<Artifact> {
+export async function reviewBatch(job: ReviewJob, options: { model: string; deadline: number; patch?: string }, dependencies: ReviewDependencies): Promise<Artifact> {
   const start = dependencies.now();
   const artifact: Artifact = {
     jobId: job.id, status: "failed", model: options.model, reasoningEffort: "medium",
@@ -73,7 +73,7 @@ export async function reviewBatch(job: ReviewJob, options: { model: string; dead
   try {
     dependencies.validate(job.sections);
     stage = "official_glossary_unavailable";
-    const prompt = buildSemanticReviewPrompt(job.sections, dependencies.glossary(job.sections));
+    const prompt = buildSemanticReviewPrompt(job.sections, dependencies.glossary(job.sections), options.patch);
     if (dependencies.now() >= options.deadline) {
       artifact.status = "deadline";
       artifact.reason = "call_start_deadline_reached";
@@ -217,7 +217,7 @@ export async function main(args = process.argv.slice(2)): Promise<void> {
   const deferred = await workPool(jobs, { concurrency: settings.concurrency, deadline: settings.deadline, now: Date.now }, async (job) => {
     processing.add(job.id);
     progress();
-    const artifact = await reviewBatch(job, settings, {
+    const artifact = await reviewBatch(job, { ...settings, patch }, {
       validate: (sections) => validateLiveSections(sections, locations), glossary, now: Date.now,
       call: (prompt, current) => runCodexTranslation(prompt, { model: settings.model, stage: "parallel-semantic-review", lang: "mixed", id: current.id, logPath: settings.runLog }),
     });

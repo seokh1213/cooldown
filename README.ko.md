@@ -22,7 +22,7 @@
 
 ## 그 밖에
 
-- 룬, 아이템, 소환사 주문 백과사전
+- 챔피언 이야기·스킨, 룬, 아이템, 소환사 주문 백과사전
 - 한국어, 영어, 중국어
 - 오프라인에서도 동작하는 설치형 PWA
 - 선택형 롤 지식 도우미. 모델은 브라우저 안에서만 돌고 서버로 보내지 않습니다. `docs/advisor-answer-pipeline.md` 참고.
@@ -61,9 +61,9 @@ npm run test:e2e
 ## 더 보기
 
 - `docs/product-roadmap.md`: 우선순위와 완료 기준
-- `docs/pwa-updates.md`: PWA 릴리스와 갱신 규칙
-- `docs/versioning.md`: 패치·원본 버전 규칙
-- `docs/local-llm-advisor.md`, `knowledge/README.md`: 지식 도우미
+- [데이터 버전과 PWA 갱신](docs/data-and-updates.md)
+- [지식 도우미 설계](docs/advisor-answer-pipeline.md), [지식 작성 지침](knowledge/README.md)
+- [패치 변경 내역](docs/patch-notes.md)
 
 ## 라이선스
 

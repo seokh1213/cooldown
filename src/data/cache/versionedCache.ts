@@ -82,5 +82,9 @@ export class VersionedCache {
 }
 
 export function getSessionCacheStorage(): CacheStorage | undefined {
-  return typeof window === "undefined" ? undefined : window.sessionStorage;
+  try {
+    return typeof window === "undefined" ? undefined : window.sessionStorage;
+  } catch {
+    return undefined;
+  }
 }

@@ -1,137 +1,139 @@
-# 롤 지식 도우미 — 답을 만드는 구조 (2026-09-25, 패치 26.19)
+# 롤 지식 도우미의 현재 설계
 
-`local-llm-advisor.md` 는 Ollama 로 선검증하던 때의 설계다. 이 문서는 그 뒤 브라우저 도우미가 실제로
-답을 만드는 방식, 품질을 지키는 장치, 측정 결과와 하지 않기로 한 것을 적는다. 수치의 원자료는
-`research/llm-evals/` 아래에 있다.
+2026-10-06 소스 기준. 현재 앱의 진입점은 `answerDialogue`이며, 게임 자료로 만든 카드·본문에 요청 분류와 제한적 수치 QA를 더한다. 모델 설정이나 실행 조건이 바뀌면 이 문서도 해당 코드와 함께 갱신한다.
 
-![도우미 전체 구조](images/advisor-architecture.png)
+초기 Ollama 설계는 [local-llm-advisor.md](local-llm-advisor.md), 이 문서의 이전 설계·측정표는 [2026-10-06 정리 전 원본](../research/design-notes/advisor-answer-pipeline-before-2026-10-06.md)에 보존한다. 당시 명령·가격·평가 결과는 과거 기록이며, 현행 동작과 구분한다.
 
-![질문 하나가 답이 되기까지](images/advisor-flow.png)
+## 실행과 모델 다운로드
 
-![도우미 코드 지도](images/advisor-code-map.png)
+[DeferredAdvisorWidget](../src/components/features/advisor/DeferredAdvisorWidget.tsx)은 처음에 실행 버튼만 렌더링한다. 버튼을 누르면 위젯 코드를 동적 import한다. 이전에 모델 다운로드에 동의한 기기에서는 유휴 시간에 코드를 미리 불러온다(`requestIdleCallback`의 timeout 2,000ms, 대체 타이머 1,500ms).
 
-## 1. 흐름
+[AdvisorWidget](../src/components/features/advisor/AdvisorWidget.tsx)이 자료·대화 기록·모델 상태를 연결한다. 창을 닫으면 패널을 숨기고 현재 상태를 유지한다. 위젯 모듈 로드 실패는 새로고침으로, 자료 로드 실패는 자료 요청 재시도로 복구한다.
 
-```
-질문
- → 챔피언 이름 찾기 (intent.ts: 정식 이름 → 별명 사전 → 다른 언어·음역, 흔한 말·아이템 이름은 가림)
- → 질문 갈래 (0.8B kev 판정 헤드 kev-b3e-route — 아홉 칸을 한 번에. 판정마다 헤드가 따로다: 갈래 route · 주제 topic · 대화 흐름 act)
- → 상성이면
-     맞붙는 둘 고르기 (이름이 셋 이상이면 자리 낱말[정글·서폿·jungler·打野]이 붙은 이름을 뺀다)
-     시점(누가 내 챔피언) : 조사가 확실하면 조사 → 아니면 판정기 → 영어·중국어는 문형 보정
-     주제 : 못 박는 낱말(한타·라인전·아이템·후반·"피오라 W"…) → 없으면 판정기(kev-b3e-topic, 확신 0.6 미만이면 일반). 쓰는 단계가 부를 때만 판정
- → 앞 상성을 이어 묻는 말이면 흐름 판정(kev-b3e-act, 일곱 칸): 이어 묻기·더 자세히·상대 바꿈·내 챔피언 바꿈·입장 뒤집기·새 질문·
-     스킬 수치 조회(lookup — 해설 대신 대화의 두 챔피언 표)
-     답   : 미리 쓴 상성 답(matchups/<내 챔피언>.json)이 있으면 그것 → 없으면 노트 조립
- → 그 밖(스킬·아이템·룬 …)은 카드·규칙 답
-```
+[config.ts](../src/lib/advisor/config.ts)의 기본 모델은 다음과 같다.
 
-- **모델은 Qwen3.5 0.8B(q4) 하나다(2026-09-27 Qwen3 4B 제거).** 판정과 이름 없는 질문의 벡터 검색만 한다.
-  글을 쓰게 하면 되풀이·지어내기가 났다. 판정 LoRA(b3-v2)와 검색 LoRA(eol-ep3)를 한 그래프(`public/models/kev/b3e/`)에
-  실어 가중치는 원본을 그대로 받는다. 흐름은 `src/lib/advisor/plan.ts`(understand → 단계 함수, 순서가 곧 우선순위). 프롬프트가 약 2,120토큰을
-  넘으면 WebGPU 실행이 죽어 워커가 1,900토큰에서 자른다.
-- **미리 쓴 답이 있으면 그것을 쓴다.** 큰 모델이 검증된 재료로 쓴 글이 기기에서 새로 쓰는 것보다 낫다.
+- 모델: `onnx-community/Qwen3.5-0.8B-Text-ONNX`, 양자화 `q4`.
+- 사이트 그래프: `models/kev/b3eqa-20261006/model_q4.onnx`. 판정·검색 adapter를 보존하고 수치 QA adapter를 추가한 그래프다.
+- 판정 호환 기준: `models/kev/b3e/model_q4.onnx`. 문서 벡터도 `models/kev/b3e/doc-vectors`를 사용한다.
+- 다운로드 고지용 추정치: 610MB. 실제 파일 전송량을 측정한 값은 아니다.
 
-## 2. 노트 조립 (`src/lib/advisor/prose.ts` digestSections)
+다운로드 제안은 WebGPU를 지원하는 데스크톱에서만 표시한다. 이 모델은 `shader-f16`을 필수로 요구하지 않는다. 모바일·태블릿·WebGPU 미지원 기기와 다운로드 미동의 상태에서도 자료 조회와 작은 오프라인 판정기를 사용한다.
 
-칸은 조심할 것 · 아이템 · 싸우는 법(물은 갈래면 그 이름)이고 물은 칸이 맨 앞이다.
+동의는 `cooldown.advisor.consent.v1`에 저장한다. 모델 그래프는 사이트에서, 기반 가중치·토크나이저는 설정된 Hugging Face 저장소에서 받는다. [modelCache.ts](../src/workers/advisor/modelCache.ts)는 Cache Storage를 사용하고, 큰 파일 저장이 실패하면 [largeFileCache.ts](../src/lib/advisor/largeFileCache.ts)의 OPFS 저장을 시도한다. 브라우저가 저장을 허용하고 필요한 파일이 남아 있어야 오프라인 재사용이 가능하다.
 
-- 맨 앞 칸의 첫 노트는 전문, 다른 노트는 첫 문장 + "언제" 문장 하나(직후·빠진·레벨·쿨타임 …)
-- 질문 낱말(후반, 상대 슬롯)이 든 문장을 앞에 둔다. 일반 질문도 맨 앞 칸 첫 노트를 펼친다(`cue-all-general`)
-- **고리(hooks)**: 노트에 효과 태그와 문형만 적고, 고를 때 상대편 카드에서 그 효과를 가진 스킬을 찾아
-  "잭스라면 E 반격이 여기에 해당합니다" 를 붙인다. 이동 수단 노트 173건(코드), 상대 요령 노트 65건(손),
-  내 노트가 상대 이동기·군중 제어를 가리키는 문장(코드). 지정형을 말하는 노트에는 달지 않는다.
+## 질문에서 답변까지
 
-## 3. 미리 쓴 상성 답 (`scripts/llm/precompute-matchups.ts`, `src/lib/advisor/precomputed.ts`)
-
-- 같은 포지션 쌍 **7,416쌍 전부**, 주제 8칸(watch·build·fight·laning·combo·escape·phase·teamfight) 2~4문장.
-- 재료: 앱과 같은 도출 문장 + 두 챔피언 노트(조건·고리 적용) + 스킬 슬롯·이름·효과. 지금 은행은 Codex(gpt-6-sol)가 썼다.
-- **생성기(2026-09-26~)**: Codex 결제가 끝나 Claude 헤드리스(`claude -p`, 기본 Opus, 사고 켬)로 바꿨다. 설정·메모리 주입과 도구를 끄고,
-  `--batch 8` 로 여러 쌍을 XML 로 묶어 JSON 으로 받는다(지시문을 한 번만 실어 칸당 약 20% 절약). JSON 이 깨진 쌍은 하나씩 다시 부른다.
-  Sonnet·Haiku 는 사고를 켜도 자료를 거꾸로 옮겨 은행보다 낮았다(Opus 9.43 · 은행 9.12 · Sonnet 8.52 · Haiku 7.56, 10점). Opus 쌍당 약 $0.095.
-- **프롬프트 v2**: 은행 전수 조사(`scripts/llm/audit-precomputed.ts`)와 맹검에서 잃은 점수가 방법·타이밍뿐이라 그것만 규칙으로 막는다
-  (첫 문장은 결론, build 는 자료의 아이템 이름, combo 는 → 순서, fight·escape 는 '언제', laning·phase 는 2문장 이상).
-- **괄호 수치 떼기**(`stripNumericAsides`): 코드 규칙은 숫자가 든 문장을 통째로 버린다. "E 회전 베기(1레벨 12초)" 때문에 결론 문장이 사라지고
-  "이것 하나뿐이므로 …" 조각이 남아서, 검사 전에 괄호 속 수치만 뗀다.
-- 검증: 코드 규칙(groundCommentary: 스킬 이름·슬롯이 그 챔피언 것인지, 재료에 없는 수치). 로컬 검증 모델
-  (MiniCheck)은 한국어에서 맞는 문장을 절반 가까이 버려 쓰지 않는다.
-- **재료 지문**(`materials`): 쌍마다 재료 sha1. 노트를 고치면 `npm run llm:precompute -- --all` 이 재료가 바뀐
-  쌍만 다시 쓴다. 전부 다시 쓰면 Opus 로 약 $700 이라 한꺼번에 다시 쓰지 않는다 — 패치마다 바뀐 쌍만 v2 로 쌓는다.
-- 파일은 내 챔피언별(평균 약 115KB, 전체 20MB). 물은 칸이 비었거나 칸이 하나뿐이면 노트 조립으로 간다.
-- 영어·중국어: `<id>.<lang>.json` 이 있으면 쓴다. 번역(`scripts/llm/translate-matchups.ts`, 저장은
-  `knowledge/matchup-translations/`)은 일부만 옮겼다. 2026-09-29 에 옮긴 칸(en 17,319 · zh 14,147)을 `--emit` 으로
-  170명 × en·zh 파일로 지어 앱에 실었다(`npm run llm:translate-matchups -- --lang en_US --emit`).
-- 표시: 칸 첫머리의 이음말("이후", "그때", "이 틈에" …)은 앱이 뗀다(`leadClean`). 은행 칸의 0.7~1.9% 가 이렇게 시작했다.
-- 비용: 쌍당 약 27초(Codex 때). 사용량 한도를 알리거나 연속 실패하면 스스로 멈춘다.
-
-## 4. 지식 자료와 품질 관리
-
-| 자료 | 위치 | 비고 |
-|---|---|---|
-| 노트 원본(한국어, 사람 검증) | `knowledge/playbooks/*.json` | 3,723항목, 고리 포함 |
-| 노트 원자(173명) | `knowledge/atoms/*.json` | 노트를 사실 단위로 나눈 것, 번역·검수에 쓴다 |
-| 노트 번역 | `public/data/<패치>/llm/note-translations-<lang>.json` | 번역이 붙은 노트 en 3,350 · zh 3,353, 그중 원자 둘 이상짜리를 한 편으로 다듬은 것 3,173 · 3,175 |
-| 효과 태그 보정 | `knowledge/spell-effects.json` | 툴팁이 말하지 않거나 잘못 읽힌 것 |
-| 별명 사전 | `knowledge/champion-aliases.json` | 두 글자 별명은 여기서만 |
-
-- **노트 번역 검수**: Codex 번역 → 코드 대조(한국어 잔존, 스킬·챔피언 이름, 길이) → Claude 뜻 대조(한국어 원문 기준).
-  다듬은 글은 원자를 다시 만들어 이어 붙인 글(basis)이 바뀌면 이어 붙인 글로 돌아간다(`polish-note-translations` 로 그 노트만 다시 다듬는다).
-- **노트 사실 검수** (`scripts/llm/audit-note-facts.ts`, `research/llm-evals/fact-audit/`):
-  사실 원자(영어)를 영어 툴팁에 맞대 로컬 Bespoke-MiniCheck-7B 로 거름 → 걸린 것을 에이전트가 툴팁·위키로
-  판정 → **다른 에이전트가 반박하며 재검토**(첫 판정의 24%가 오판이었다) → 틀린 구절을 지우는 쪽으로 고침.
-  22명 14건 + 173명 56노트를 고쳤다. 수정은 새 사실을 지어 넣지 않는다.
-- **효과 태그 검수** (`scripts/llm/audit-effect-tags.ts`): 태그를 붙인 근거 문장을 보여 준다.
-  "시야 차단" 을 투사체 차단으로 읽던 규칙 등을 고쳤다.
-- **도출 문장 규칙** (`src/lib/knowledge/claims.ts`): 저항 "높은 편이라 안 들어간다" 는 1·18레벨 모두 매우 높을
-  때만(61명 → 13명), 1·18레벨 등급이 반대면 말하지 않음, 쿨타임 3초 이하 이동기는 "빠진 직후가 창" 이라 하지 않음.
-
-## 5. 패치가 바뀔 때 (CI)
-
-`generate-static-data` 가 옛 패치 폴더를 지우기 전에 `llm/` 을 새 패치로 옮기고(`.carried-from`),
-`npm run llm:carry` 가 카드(세 언어)·이름 색인·지식 묶음·노트 번역을 새 자료로 다시 짓는다. 미리 쓴 답과
-그 번역은 재료 지문이 그대로인 쌍만 남긴다. 26.19 로 넘어갈 때 4,761쌍 중 4,733쌍이 남았다.
-재료가 바뀐 쌍을 다시 쓰는 것은 Claude 사용량이 들어 **사람이 돌린다**:
-
-```
-npm run llm:precompute -- --all --batch 8 --concurrency 2   # 없는 쌍·재료가 바뀐 쌍만 (Opus 헤드리스, v2)
-npm run llm:precompute -- --all --engine codex --concurrency 4   # Codex(gpt-6-sol)로 쓸 때. --model 로 바꾼다(예: gpt-6-luna)
-npm run llm:carry -- --force --matchups-only      # 옛 패치에서 써 온 쌍을 새 재료로 거르기
+```mermaid
+flowchart TD
+  A[useAskAdvisor: 질문과 자료 준비] --> B[prepareDialogueRequest: 기억 복원과 복합 요청 분리]
+  B --> C[planPreparedDialogue: 요청 범위와 답변 계획]
+  C --> D[assembleDialogueReply: 자료 카드와 근거 본문]
+  D --> E{수치 QA 조건 충족}
+  E -->|예| F[선택 문서로 짧은 후보 생성과 필드 검증]
+  E -->|아니오| G[최종 답변]
+  F --> G
+  G --> H[useAskAdvisor: 화면 전달과 기억 기록]
 ```
 
-## 6. 측정 요약 (10~11점 항목 맹검: 직답·슬롯·방법·타이밍·상성 특화·정확·(근거)·간결)
+[useAskAdvisor](../src/components/features/advisor/useAskAdvisor.ts)는 첫 질문이 자료 로딩보다 빠르면 같은 자료 Promise를 기다린다. 현재 자료·언어·화면에서 선택한 챔피언·이전 발화·동의 상태와 판정/검색 함수를 [answerDialogue](../src/lib/advisor/dialogueFlow.ts)에 전달한다.
 
-| 비교 | 결과 | 기록 |
-|---|---|---|
-| 노트 조립: 첫 문장만 → 첫 노트 전문 → +언제 문장·일반 펼침 | 새 48문항 5.94 → 7.46 → 8.65 | `big48/` |
-| 원자 fullall 대 노트 조립(+일반 펼침) | 7.96 대 8.37 (51문항) | `merge-atoms/` |
-| 고리 | 바뀐 6문항 7.33 → 8.67, 상성 특화 0.67 → 1.00 | `detail/r3/` |
-| 미리 쓴 답 대 노트 조립 | 무작위 40쌍 · 채점자 2: 8.38 → 10.10(11점), 차 95% 1.24~2.20, 선호 68:11, 근거 이탈 0 | `precompute/measure40/` |
-| 영어·중국어 미리 쓴 답(번역) 대 지금 답 (총점 1~10, Claude 1명 × 2회 — 항목 채점 아님) | en 5.2 → 7.7, zh 5.2 → 7.3 (30쌍) | `matchup-translation/` |
-| 주제 판정: 판정기만 → 낱말 먼저 + 확신 0.6 | 상성 24: 14 → 24, 단일 72: 틀림 8 → 1 | `app` 실측 |
-| 미리 쓴 답 v1 대 v2(Claude) · 배포 은행 | 80문항: 은행 9.08 · v1 9.03 · v2 9.22(10점), 홀드아웃 v2 9.45 · v2 대 v1 +0.46 [+0.24, +0.72] | `precompute-v2/` |
-| 괄호 수치 떼기 | 바뀐 v2 11문항 9승 0패, +1.55(11점) | `precompute-v2/strip/` |
-| 생성 모델(헤드리스, 사고 켬) | 16문항: Opus 9.43 · 은행 9.12 · Sonnet 8.52 · Haiku 7.56 | `precompute-engine/` |
+1. [dialogueRequest.ts](../src/lib/advisor/dialogueRequest.ts)는 같은 패치의 코드 기억을 복원하고 `combined` 모드로 복합 요청을 나눈다. 나열한 스킬·능력치와 하나의 상성 조건은 별개 질문으로 무조건 나누지 않는다.
+2. [dialoguePlanner.ts](../src/lib/advisor/dialoguePlanner.ts)는 각 요청의 범위와 대상을 확인한다. 카드 조회·승인된 스킬 규칙·노트·상성 조언을 계획하고, 대상이 모호하면 확인 질문을 만든다. 지원하지 않는 조건과 요청/답변 불일치는 안내문으로 바꾼다.
+3. [dialogueReply.ts](../src/lib/advisor/dialogueReply.ts)는 계획에 따라 카드·근거 문장을 조립한다. 여러 요청의 답은 함께 전달하고 실제로 보여 준 상성 주제를 기억한다.
+4. 화면 어댑터가 답변과 코드 기억을 함께 기록한다. 대화 맥락은 코드가 관리하며, 이전 답변 전체를 모델에게 매번 넘겨 추론시키지 않는다.
 
-채점자는 답을 처음 보는 별도 에이전트다. 채점 자료에는 답의 근거(재료)를 넣어야 한다 — 빠지면 맞는 사실이
-"지어냈다" 로 깎인다(여러 번 겪었다).
+[plan.ts](../src/lib/advisor/plan.ts)의 `planAnswer`는 이 흐름 안에서 사용하는 단일 질문 계획 함수다. 빠른 사실 조회 뒤 지식·상성·개별 대상·노트 순서의 9개 처리기를 실행한다. 앱 전체의 진입점이나 요청 범위 11종과는 다른 구분이다.
 
-## 7. 하지 않기로 한 것
+## 요청 분류와 검색
 
-- **0.8B 에게 글 쓰기**(연결문·XML·사실 번호 고르기·재작성): 모두 코드 조립보다 낮았다.
-- **생성 LoRA · 롤 지식 주입 파인튜닝**: 우리 실험(LoRA 1.87 대 조립 3.90)과 문헌(새 지식 파인튜닝은 환각을 늘림,
-  LoRA 는 수백 개 사실에서 한계)이 같다. 지식은 데이터에 두고 파인튜닝은 판정 같은 행동에만 쓴다.
-- **kev 로 문장 고르기·관련성 거르개**: 채점 잣대와 어긋났다.
-- **판정기에 역할(내 챔피언·맞상대·곁들인 이름) 묻기**: 이름 둘로 배운 헤드라 12문항 중 맞상대 1개. 자리 낱말 규칙은 22/22.
-- **MiniCheck 로 한국어 생성문 거르기**: 맞는 문장을 45개 중 21개 버렸다. 사실 검수(영어 원자)에는 쓴다.
-- **노트를 온톨로지 그래프로**(`ontology-graph/`): 생성 재료로는 효과 없음(인공물 빼면 ±0.03), 조립 순서로는 +0.17(구간 하한 0). 원자로 쪼개면 조건·주어가 떨어진다.
-- **다른 포지션 쌍을 내 챔피언 운용 위주로 조립**(`cross-role/`): 새 30문항에서 −0.40. 내 라인전 노트는 내 라인 상대를 두고 쓴 글이라 겉돈다.
-- **은행 답의 모자란 칸에 원자 한 문장 붙이기**(`precompute-patch/`): −0.20, 간결 0.97 → 0.53. 정규식 약점과 채점자가 보는 약점이 달랐다.
-- **Sonnet·Haiku 로 상성 답 쓰기**: 사고를 켜도 자료를 거꾸로 옮겼다(정확 0.5~0.7).
+[requestIntent.ts](../src/lib/advisor/requestIntent.ts)의 작은 요청 분류기는 문자/단어 특징을 사용하는 로지스틱 회귀다. `models/offline/request-v1.json`과 `.bin`을 읽으며, 0.8B 다운로드 없이 실행한다. 질문에 실제로 적힌 챔피언 이름·별명을 가려 이름에 따른 편향을 줄인다.
 
-## 8. 남은 일
+분류 범위는 `overview`, `statsAll`, `stats`, `skills`, `combo`, `counterplay`, `advice`, `ability`, `chat`, `identity`, `other`의 11종이다. 최고 확률이 0.6 이상이고 2위와 차이가 0.2 이상일 때만 채택한다. 노트 주제도 별도로 분류한다.
 
-- 영어·중국어 미리 쓴 답 번역 재개(en 13% · zh 11%) 후 `--emit` 으로 `<id>.<lang>.json` 생성
-- 미리 쓴 답의 아이템 이름: 재료에 이름이 없는 쌍이 많아(build 칸 29% 이름 없음) 프롬프트로는 못 고친다 — 아이템 자료 보강 후보
-- 번역을 Claude 로 재개할지(Sonnet·Haiku 로 되는지), gpt-6-sol 대 luna 번역 차이 측정
-- 사실 검수 보류 2건(말자하 공허 태세 발동 조건, 아칼리 연막 노출)
-- 파스칼(GTX 10xx) 실기 확인, 카드 부제 조사("오공로")
+작은 분류기가 판단하지 못하면, 동의하고 적재된 0.8B에 [requestScopeModel.ts](../src/lib/advisor/requestScopeModel.ts)의 JSON 범위 판정을 요청할 수 있다. 출력 상한은 80토큰이다. `scope`·`slots`·`breadth`의 정확한 구조와 허용 값·슬롯 중복·범위의 일관성을 검사한다. 출력 슬롯은 검사용이며 기존 대상·대화 기억을 덮어쓰지 않는다. 실패하면 기존 자료 계획을 사용한다.
+
+상성의 갈래·주제·이어 묻기 판정에는 별도의 판정 헤드를 사용한다. 모델 판정이 실패하면 작은 오프라인 판정기로 돌아간다. 이름이 없는 질문의 벡터 검색은 검색 adapter와 문서 벡터를 사용하며, 설정된 채택 기준은 코사인 유사도 0.39다. 검색된 문서는 이후 자료 계획의 근거이며, 모델이 새 게임 사실을 생성하는 근거로 취급하지 않는다.
+
+## 카드·노트·미리 쓴 상성 답
+
+[context.ts](../src/lib/advisor/context.ts)는 패치와 언어별로 다음 자료를 불러와 `AdvisorData`를 만든다.
+
+- `llm/champion-cards-<locale>.json`: 챔피언·능력치·스킬 사실 카드.
+- `llm/advisor-knowledge.json`: 플레이북·팁·게임 규칙·효과 자료.
+- 정규화된 아이템·룬·소환사 주문 자료. 이름 색인·노트 번역·아이템 위키 보조 자료는 없을 때 제한된 조회로 진행한다.
+- 한국어 `llm/champion-mechanics.json`: 승인된 구조화 스킬 규칙 묶음. [abilityIndex](../src/lib/advisor/mechanics/types.ts)는 schemaVersion 2·현재 패치·챔피언/슬롯 ID·출처 해시 존재를 확인해 색인을 만든다.
+
+자료 URL은 [release.ts](../src/pwa/release.ts)의 내용 해시가 붙은 release 경로를 사용한다. 로딩 Promise는 패치·언어별로 공유하며, 필수 자료 요청이 실패하면 제거해 다음 요청이 다시 시도할 수 있게 한다. 앱 패치와 지식 패치가 다르면 `stale`로 표시하고, 이 상태에서는 수치 QA를 시도하지 않는다.
+
+상성 답은 [matchupReply.ts](../src/lib/advisor/matchupReply.ts)가 공통으로 조립한다. [precomputed.ts](../src/lib/advisor/precomputed.ts)에서 내 챔피언의 `llm/matchups/<id>.json`만 불러온다. 영어·중국어는 `<id>.<locale>.json`을 사용한다. 쌍이나 요청한 칸이 없으면 검증 노트와 도출 문장으로 답을 만든다. 이미 모두 보여 준 주제를 더 요청하면 소진 안내를 한다.
+
+미리 쓴 답과 노트 조립 모두 스킬 이름·슬롯·근거를 확인하는 [matchupFactCheck.ts](../src/lib/advisor/matchupFactCheck.ts), 스킬의 사용 가능/불가 조건을 확인하는 [conditionedMatchup.ts](../src/lib/advisor/conditionedMatchup.ts)를 거친다. 실제로 남아 표시된 주제만 코드 기억에 기록한다.
+
+## 제한적 수치 QA
+
+현재 앱은 [groundedNumeric.ts](../src/lib/advisor/groundedNumeric.ts)의 수치 QA를 연결한다. 다음 조건을 모두 만족할 때만 후보를 요청한다.
+
+- 한국어 화면, 모델 다운로드 동의와 사용 가능 상태, 준비된 최신 지식 자료. 실제 생성은 모델 적재가 끝나 있어야 한다.
+- 요청 한 부분만 있으며 확인 질문·일반 생성 응답·관련 자료 선택·상성 스킬 조건이 없음.
+- 질문에 `몇`·`얼마`·`비율`·`퍼센트` 중 하나가 있고, 계획이 고른 근거 문서에서 요청 필드를 하나로 확인할 수 있음.
+
+[numericEvidence.ts](../src/lib/advisor/numericEvidence.ts)는 단위와 질문의 속성 낱말 2개 이상이 같은 문서 줄에 나타나며 해당 단위의 값이 하나뿐일 때만 필드를 인정한다. 현재 인식 단위는 `%`/퍼센트, 초, 분, 시간, 골드다. 문맥은 정답 위치를 사용하지 않고 질문 기반으로 최대 1,300자를 선택한다.
+
+워커는 `purpose: "grounded-numeric"`에만 QA adapter를 켜고 최대 24토큰을 생성한다. 완료 전 조각은 화면에 내보내지 않는다. 숫자·단위가 확인한 필드와 일치하고 그 근거 줄이 전달한 문맥에도 있을 때만 짧은 답과 근거 줄을 원래 본문 앞에 추가한다. 기존 카드와 본문은 유지한다. 모호한 필드·`NOT_FOUND`·검증 불일치·생성 오류는 원래 답변을 유지한다.
+
+문서에 같은 숫자가 있다는 사실만으로 의미 정확성을 보증하지 않는다. 현재 필드 검사는 명시적 한국어 속성과 단위가 있는 질문으로 범위를 좁힌 장치다. 영어·중국어, 회/번 단위, 명시적 속성이 부족한 자연 질문은 이 수치 QA의 지원 범위로 약속하지 않는다.
+
+[groundedSummary.ts](../src/lib/advisor/groundedSummary.ts)의 근거 요약은 명시적으로 주입하는 실험 옵션이며 현재 화면 어댑터는 전달하지 않는다. 별도로, 자료가 없을 때의 `respond` 계획은 동의한 모델에 일반 생성을 요청할 수 있다. 이 경로와 검증된 자료 답변·수치 QA는 조건과 검증 방식이 다르다.
+
+## 워커의 실행 경계
+
+[advisor.worker.ts](../src/workers/advisor.worker.ts)는 판정·검색·생성 요청을 한 번에 하나씩 실행한다. 중단은 현재 생성에 신호를 보내고, 앞서 대기 중이던 생성도 실행하지 않도록 세대를 바꾼다. GPU 오류 뒤에는 모델과 같은 세션의 판정/검색 캐시를 해제한다. 모델 적재 Promise가 실패하면 [model.ts](../src/workers/advisor/model.ts)가 초기화해 다시 적재할 수 있게 한다.
+
+[generationAdapter.ts](../src/workers/advisor/generationAdapter.ts)는 생성에서 판정·검색 gate를 끄고 수치 요청에서 QA gate만 켠다. 성공·실패 뒤 gate를 해제하며, QA gate가 없는 그래프에서 수치 QA 요청을 받으면 거부한다. ONNX Runtime 파일은 `public/ort/`에서 제공하며 `prepare-ort`가 설치된 의존성에서 복사한다.
+
+[generate.ts](../src/workers/advisor/generate.ts)는 인코딩한 프롬프트를 1,900토큰 이내로 제한한다. 오래된 메시지와 시스템 문장을 줄인 뒤에도 최신 사용자 질문 자체가 너무 길면 오류를 반환한다. 사용자 질문을 잘라 다른 질문으로 바꾸지 않는다. 일반 생성 기본 상한은 2,048토큰이고, 요청 범위 판정과 수치 QA는 각각 80·24토큰 상한을 사용한다.
+
+## 대화 저장과 과거 자료
+
+[useAdvisorTurns](../src/hooks/useAdvisorTurns.ts)는 질문 시작 시점의 `patch`·`ddragonVersion`·`locale`을 발화에 복사한다. 생성 중 패치나 화면 언어가 바뀌어도 그 답변의 출처는 바뀌지 않는다.
+
+[history.ts](../src/lib/advisor/history.ts)는 답변 카드 원본 snapshot과 참조 정보를 `cooldown.advisor.conversations.v1`에 저장한다. 최대 20개 대화, 대화마다 최대 80개 발화를 유지한다. 완료된 답변은 바로 저장하고, 진행 중 변경은 [useAdvisorHistory](../src/hooks/useAdvisorHistory.ts)에서 400ms 뒤로 저장을 미룬다.
+
+새 챔피언·스킬·비교·오타 제안 답변의 상세 자료는 [useAdvisorHistoryDetails](../src/hooks/useAdvisorHistoryDetails.ts)가 가져온다. [championDetail.ts](../src/lib/advisor/championDetail.ts)는 요청한 ID·패치·언어·DDragon 버전이 일치하는 상세 자료만 붙인다. 상세 요청에 실패해도 기본 답변 카드는 유지한다.
+
+저장한 대화는 현재 자료 로딩을 기다리지 않고 복원한다. 과거 발화의 카드를 현재 카드로 다시 채우거나 과거 상세 자료를 새로 요청하지 않는다. 손상됐거나 snapshot이 없는 예전 참조는 이용 불가를 표시하면서 질문과 답문을 남긴다. 다른 패치의 코드 기억은 현재 대화에 적용하지 않으며, 과거 발화를 다시 저장할 때 원본 기록을 보존한다.
+
+브라우저 저장 차단·용량 초과 시 저장은 실패를 반환하고 화면에서 재시도할 수 있다. 저장 성공처럼 표시하거나 공간을 얻기 위해 다른 대화를 자동 삭제하지 않는다. 단, 정상 저장 정책의 20개 대화·80개 발화 한도는 적용된다.
+
+단일 스킬 질문에서 형태가 명확하면 해당 형태의 원문·쿨타임·계수로 답하고 참조 카드도 같은 형태를 표시한다.
+형태가 모호하거나 상충하면 확인을 요청한다. 비교표의 자동 형태 선택과 형태를 생략한 후속 질문의 상태 추론까지 지원한다는 뜻은 아니다.
+
+## 개발·자료 갱신 명령
+
+현재 [package.json](../package.json)은 Node 24 이상을 요구한다. 앱 개발과 검증 명령은 다음과 같다.
+
+```sh
+npm run dev
+npm run type-check
+npm run lint
+npm test
+npm run build
+npm run test:e2e
+```
+
+관련 회귀만 확인할 때는 `npm run test:one -- <test 파일...>`을 사용한다. 주요 경계는 [대화 흐름](../tests/data/advisor-dialogue-flow.test.ts), [요청 범위](../tests/unit/request-scope-model.test.ts), [수치 QA](../tests/unit/grounded-numeric.test.ts), [워커 복구](../tests/unit/advisor-worker-recovery.test.ts), [과거 snapshot](../tests/unit/advisor-history-snapshots.test.ts), [브라우저 과거 기록](../e2e/advisor-history-snapshots.spec.ts) 테스트가 보호한다. 코드 테스트 통과는 실제 기기의 모델 품질·속도 측정을 대신하지 않는다.
+
+자료 생성 명령은 `llm:build`(사실 카드), `llm:bundle`(지식·스킬 규칙 묶음), `llm:validate`(지식 검증)다. 패치 CI는 [update-static-data.yml](../.github/workflows/update-static-data.yml)에서 정적 자료 생성 뒤 `llm:carry`를 실행한다. [carry-llm-data.ts](../scripts/llm/carry-llm-data.ts)는 새 자료로 파생 파일을 다시 만들고, 재료 지문이 맞는 상성 답만 이어 쓴다.
+
+수동 평가 CLI [eval-b3.ts](../scripts/llm/kev-agent/eval-b3.ts)는 [평가 로더](../scripts/llm/kev-agent/lib.ts)의 고정 패치 `26.19`를 사용한다.
+최신 매니페스트를 자동 추종하는 검사로 취급하지 않는다. 패치가 바뀌면 평가 자료와 기준을 함께 다시 검토한다.
+
+`llm:precompute`와 번역 명령은 외부 모델을 호출하는 별도 자료 작업이다. 앱 빌드나 도우미 이용에 필요한 실행 단계가 아니다. 비용·모델 선택·실험 결과는 아래 기록의 당시 조건을 확인하며, 예전 가격이나 명령을 최신값으로 재사용하지 않는다.
+
+## 실험 기록과 한계의 출처
+
+- [Ollama 초기 설계](local-llm-advisor.md), [정리 전 pipeline 원본](../research/design-notes/advisor-answer-pipeline-before-2026-10-06.md): 이전 설계와 당시 측정·보류 목록. 제거된 CLI의 명령은 현재 실행 방법이 아니다.
+- [미리 쓴 상성 답](../research/llm-evals/precompute/README.md), [생성 규칙 v2](../research/llm-evals/precompute-v2/README.md), [생성 엔진 비교](../research/llm-evals/precompute-engine/README.md): 당시 표본·채점·가격의 원자료.
+- [노트 사실 검수](../research/llm-evals/fact-audit/README.md), [벡터 검색](../research/llm-evals/vector-search/README.md), [대화 구조](../research/llm-evals/conversational-advisor/README.md), [요청 분류기](../research/llm-evals/request-classifier/README.md): 각 작업의 근거와 남은 제한.
+
+예전 문서의 번역 비율·실험 점수·보류 목록을 현재 TODO로 옮기지 않는다. 새 작업을 정할 때는 현재 산출물과 재현 가능한 실패를 먼저 확인한다. 특히 자료 최신성, 검색이 선택한 문서, 필드 의미, 브라우저의 GPU·저장 제한은 별도로 검증해야 한다.

@@ -53,9 +53,13 @@ function assertSimulationSeries(
     if (!Array.isArray(series) || series.length === 0) {
       throw new Error(`Invalid ability simulation ${label}`);
     }
-    for (const row of series) assertFiniteNumbers(row, label);
+    for (const row of series) {
+      assertFiniteNumbers(row, label);
+      if (row.length === 0) throw new Error(`Invalid ability simulation ${label}`);
+    }
   } else {
     assertFiniteNumbers(series, label);
+    if (series.length === 0) throw new Error(`Invalid ability simulation ${label}`);
   }
 }
 

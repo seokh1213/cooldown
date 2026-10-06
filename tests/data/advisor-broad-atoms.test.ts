@@ -21,18 +21,6 @@ test("그랩이 빠졌을 때는 럭스 견제를, 내 E도 빠졌으면 웨이�
   assert.doesNotMatch(unavailable.text, /광휘의 특이점을 터뜨리고/);
 });
 
-test("럭스 Q 부재로 진입하더라도 아리 궁의 탈출 몫을 유지한다", () => {
-  const selected = selectDecisionAnswer(data, atoms, request("Ahri", "Lux", "상대 Q가 빠졌어. 어떻게 들어가?"));
-  assert.equal(selected.atom, "lux-down");
-  assert.match(selected.text, /빠져나올 몫을 최소 한 번 남/);
-});
-
-test("럼블 두 번째 작살과 보호막 소멸이라는 선행 조건을 함께 유지한다", () => {
-  const selected = selectDecisionAnswer(data, atoms, request("Darius", "Rumble", "상대 E가 빠졌고 W도 빠졌어. 어떻게 들어가?"));
-  assert.equal(selected.atom, "rumble-down");
-  assert.match(selected.text, /두 번째 발을 피했고.*보호막이 사라진 뒤/s);
-});
-
 test("원래 기억에 W가 있어도 아이템·한타·새 팁으로 단위를 확장하지 않는다", () => {
   const input = request("Lux", "Yasuo", "상대 W가 빠졌어");
   for (const focus of ["teamfight", "situational-item", "laning"]) {

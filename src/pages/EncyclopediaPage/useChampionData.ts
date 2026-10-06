@@ -21,6 +21,8 @@ interface UseChampionDataProps {
   storageKey: string;
 }
 
+type SelectedChampionState = ChampionWithInfo & { loadError?: boolean };
+
 export function useChampionData({
   patchVersion,
   sources,
@@ -29,7 +31,7 @@ export function useChampionData({
   tabs,
   storageKey,
 }: UseChampionDataProps) {
-  const [selectedChampions, setSelectedChampions] = useState<ChampionWithInfo[]>([]);
+  const [selectedChampions, setSelectedChampions] = useState<SelectedChampionState[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [hasRestored, setHasRestored] = useState(false);
 
@@ -86,7 +88,7 @@ export function useChampionData({
                     setSelectedChampions((prev) =>
                       prev.map((c) =>
                         c.id === champion.id
-                          ? { ...c, fullInfo, isLoading: false }
+                          ? { ...c, fullInfo, isLoading: false, loadError: false }
                           : c
                       )
                     );
@@ -95,7 +97,7 @@ export function useChampionData({
                     logger.error("Failed to load champion info:", error);
                     setSelectedChampions((prev) =>
                       prev.map((c) =>
-                        c.id === champion.id ? { ...c, isLoading: false } : c
+                        c.id === champion.id ? { ...c, isLoading: false, loadError: true } : c
                       )
                     );
                   });
@@ -150,21 +152,17 @@ export function useChampionData({
   // 탭이 모두 삭제되면 챔피언도 모두 삭제되어야 함
   // 단, 저장 상태를 복원하는 동안에는 실행하지 않는다.
   useEffect(() => {
-    // 초기 로딩 중이면 스킵
     if (isInitialLoad) return;
     
     // 비동기로 처리하여 React Compiler 경고 방지
     setTimeout(() => {
       const usedChampionIds = new Set(tabs.flatMap((tab) => tab.champions));
       setSelectedChampions((prev) => {
-        // 탭이 없으면 모든 챔피언 삭제
         if (tabs.length === 0) {
           return prev.length > 0 ? [] : prev;
         }
         
-        // 사용되지 않는 챔피언 필터링
         const filtered = prev.filter((c) => usedChampionIds.has(c.id));
-        // 실제로 필터링이 발생한 경우에만 업데이트
         if (filtered.length !== prev.length) {
           return filtered;
         }
@@ -178,7 +176,7 @@ export function useChampionData({
       if (!patchVersion) return;
 
       setSelectedChampions((prev) =>
-        prev.map((c) => (c.id === championId ? { ...c, isLoading: true } : c))
+        prev.map((c) => (c.id === championId ? { ...c, isLoading: true, loadError: false } : c))
       );
 
       getChampionInfo({ patchVersion, sources }, lang, championId)
@@ -186,7 +184,7 @@ export function useChampionData({
           setSelectedChampions((current) =>
             current.map((c) =>
               c.id === championId
-                ? { ...c, fullInfo, isLoading: false, skinIndex: 0 }
+                ? { ...c, fullInfo, isLoading: false, loadError: false, skinIndex: 0 }
                 : c
             )
           );
@@ -194,7 +192,7 @@ export function useChampionData({
         .catch((error) => {
           logger.error("Failed to load champion info:", error);
           setSelectedChampions((current) =>
-            current.map((c) => (c.id === championId ? { ...c, isLoading: false } : c))
+            current.map((c) => (c.id === championId ? { ...c, isLoading: false, loadError: true } : c))
           );
         });
     },
@@ -202,7 +200,6 @@ export function useChampionData({
   );
 
   const addChampionToList = useCallback((champion: Champion) => {
-    // 이미 존재하는 챔피언인지 확인
     setSelectedChampions((prev) => {
       const exists = prev.some((c) => c.id === champion.id);
       if (exists) {
@@ -213,7 +210,6 @@ export function useChampionData({
         isLoading: true,
         skinIndex: 0,
       };
-      // 비동기로 챔피언 정보 로드
       loadChampionInfo(champion.id);
       return [...prev, newChampion];
     });
@@ -238,6 +234,7 @@ export function useChampionData({
     /** 저장소 복원이 끝났는가. 그 전에 저장하면 빈 목록으로 덮어쓴다. */
     hasRestored,
     championsWithFullInfo,
+    failedChampions: selectedChampions.filter((champion) => champion.loadError),
     addChampionToList,
     removeChampion,
     resetChampions,

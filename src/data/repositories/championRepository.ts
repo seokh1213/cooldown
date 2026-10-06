@@ -1,6 +1,6 @@
 import { VersionedCache } from "@/data/cache/versionedCache";
 import { createReleaseCache } from "@/data/cache/releaseCache";
-import { trackStaticDataPath } from "@/pwa/staticDataRevision";
+import { StaticDataRepository } from "./staticDataRepository";
 import {
   decodeChampionDetail,
   decodeChampionIndex,
@@ -10,45 +10,33 @@ import type {
   ChampionIndexV2,
 } from "@/data/contracts/championData";
 import type { DataLocale, StaticDataIdentity } from "@/data/contracts/staticData";
-import {
-  assertStaticDataIdentity,
-  staticDataIdentityKey,
-} from "@/data/contracts/staticDataDecoder";
+import { staticDataIdentityKey } from "@/data/contracts/staticDataDecoder";
 import {
   createStaticDataClient,
   type StaticDataClient,
 } from "@/data/http/staticDataClient";
 
 export class ChampionRepository {
-  private readonly inFlight = new Map<string, Promise<unknown>>();
+  private readonly files: StaticDataRepository;
 
   constructor(
-    private readonly client: StaticDataClient,
-    private readonly cache: VersionedCache
-  ) {}
+    client: StaticDataClient,
+    cache: VersionedCache
+  ) {
+    this.files = new StaticDataRepository(client, cache);
+  }
 
   async getIndex(
     identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<ChampionIndexV2> {
-    trackStaticDataPath(`data/${identity.patchVersion}/champions/${locale}/index.json`);
-    const key = `champions:${staticDataIdentityKey(identity)}:${locale}:index`;
-    const cached = this.cache.get(key, decodeChampionIndex);
-    if (cached) {
-      try {
-        assertStaticDataIdentity(cached, identity, locale);
-        return cached;
-      } catch {
-        this.cache.remove(key);
-      }
-    }
-    return this.load(
-      key,
-      `data/${identity.patchVersion}/champions/${locale}/index.json`,
-      decodeChampionIndex,
+    return this.files.get({
+      key: `champions:${staticDataIdentityKey(identity)}:${locale}:index`,
+      path: `data/${identity.patchVersion}/champions/${locale}/index.json`,
+      decode: decodeChampionIndex,
       identity,
-      locale
-    );
+      locale,
+    });
   }
 
   async getDetail(
@@ -56,50 +44,21 @@ export class ChampionRepository {
     locale: DataLocale,
     championId: string
   ): Promise<ChampionDetailV2> {
-    trackStaticDataPath(`data/${identity.patchVersion}/champions/${locale}/${championId}.json`);
-    const key = `champions:forms-v1:${staticDataIdentityKey(identity)}:${locale}:${championId}`;
-    const cached = this.cache.get(key, decodeChampionDetail);
-    if (cached) {
-      try {
-        assertStaticDataIdentity(cached, identity, locale);
-        return cached;
-      } catch {
-        this.cache.remove(key);
-      }
-    }
-    return this.load(
-      key,
-      `data/${identity.patchVersion}/champions/${locale}/${championId}.json`,
-      decodeChampionDetail,
+    return this.files.get({
+      key: `champions:forms-v1:${staticDataIdentityKey(identity)}:${locale}:${championId}`,
+      path: `data/${identity.patchVersion}/champions/${locale}/${championId}.json`,
+      decode: (value) => {
+        const detail = decodeChampionDetail(value);
+        if (detail.champion.id !== championId) throw new Error("Champion detail id mismatch");
+        return detail;
+      },
       identity,
-      locale
-    );
+      locale,
+    });
   }
 
   clearExceptRelease(identity: StaticDataIdentity): void {
-    this.cache.clearExceptIdentity(staticDataIdentityKey(identity));
-  }
-
-  private async load<T extends ChampionIndexV2 | ChampionDetailV2>(
-    key: string,
-    path: string,
-    decode: (value: unknown) => T,
-    identity: StaticDataIdentity,
-    locale: DataLocale
-  ): Promise<T> {
-    const active = this.inFlight.get(key) as Promise<T> | undefined;
-    if (active) return active;
-    const request = this.client.getJson(path).then((value) => {
-      const decoded = decode(value);
-      assertStaticDataIdentity(decoded, identity, locale);
-      return this.cache.set(key, decoded);
-    });
-    this.inFlight.set(key, request);
-    try {
-      return await request;
-    } finally {
-      this.inFlight.delete(key);
-    }
+    this.files.clearExceptRelease(identity);
   }
 }
 

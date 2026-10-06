@@ -1,9 +1,9 @@
 import { getRuntimeBasePath } from "@/lib/staticDataUtils";
 import { revisionedDataPath } from "@/pwa/release";
-import { cacheStaticDataResponse, trackStaticDataPath } from "@/pwa/staticDataRevision";
+import { cacheStaticDataResponse, discardStaticDataResponse, trackStaticDataPath } from "@/pwa/staticDataRevision";
 
 export interface StaticDataClient {
-  getJson(path: string): Promise<unknown>;
+  getJson(path: string, validate?: (value: unknown) => void): Promise<unknown>;
 }
 
 export function createStaticDataClient(
@@ -11,17 +11,30 @@ export function createStaticDataClient(
   basePath: string = getRuntimeBasePath()
 ): StaticDataClient {
   const normalizedBase = basePath.endsWith("/") ? basePath : `${basePath}/`;
+  const refreshPaths = new Set<string>();
   return {
-    async getJson(path: string): Promise<unknown> {
+    async getJson(path: string, validate?: (value: unknown) => void): Promise<unknown> {
       trackStaticDataPath(path);
       const url = `${normalizedBase}${revisionedDataPath(path)}`;
-      const response = await fetchJson(url);
+      // CacheFirst can finish its cache write after returning an invalid response.
+      const requestUrl = refreshPaths.has(path) ? `${url}?cooldown-retry=${crypto.randomUUID()}` : url;
+      const response = await fetchJson(requestUrl);
       if (!response.ok) {
         throw new Error(`Static data request failed (${response.status}): ${path}`);
       }
       const cacheCopy = response.clone();
-      const value = await response.json();
+      let value: unknown;
+      try {
+        value = await response.json();
+        validate?.(value);
+      } catch (error) {
+        refreshPaths.add(path);
+        await discardStaticDataResponse(url);
+        if (requestUrl !== url) await discardStaticDataResponse(requestUrl);
+        throw error;
+      }
       await cacheStaticDataResponse(url, cacheCopy);
+      refreshPaths.delete(path);
       return value;
     },
   };

@@ -3,10 +3,9 @@
  *
  * 발화가 바뀌면 지금 대화를 저장하고(잠깐 모아서), 처음 열 때는 마지막 대화를 되살린다.
  * 새 대화·다른 대화 열기·삭제를 모델 저장 공간을 다루듯 제공한다.
- * 카드는 id 로만 저장하므로 되살리려면 자료(data)가 있어야 한다.
+ * 저장된 카드 원본으로 복원하므로 현재 자료를 기다리지 않는다.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { AdvisorData } from "@/lib/advisor/context";
 import {
   conversationTitle,
   dehydrateTurn,
@@ -26,13 +25,18 @@ export interface UseAdvisorHistoryResult {
   conversations: Conversation[];
   currentId: string;
   restoring: boolean;
+  saveFailed: boolean;
+  retrySave: () => void;
   startNew: () => void;
   open: (id: string) => void;
   remove: (id: string) => void;
 }
 
-export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData | null): UseAdvisorHistoryResult {
+export function useAdvisorHistory(advisor: UseAdvisorResult, currentPatch: string): UseAdvisorHistoryResult {
   const [conversations, setConversations] = useState<Conversation[]>(readConversations);
+  const conversationRef = useRef(conversations);
+  const unsaved = useRef<Conversation[] | undefined>(undefined);
+  const [saveFailed, setSaveFailed] = useState(false);
   const [currentId, setCurrentId] = useState(newConversationId);
   const [restoring, setRestoring] = useState(conversations.length > 0);
   const restored = useRef(false);
@@ -40,25 +44,34 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
   const { turns, replaceTurns, reset } = advisor;
   const busy = advisor.status === "generating" || advisor.working;
 
-  // 처음 자료가 오면 마지막 대화를 이어 붙인다. 새로 고쳐도 대화가 끊기지 않는다.
+  const persist = useCallback((next: Conversation[]) => {
+    const saved = writeConversations(next);
+    unsaved.current = saved ? undefined : next;
+    conversationRef.current = next;
+    setConversations(next);
+    setSaveFailed(!saved);
+  }, []);
+
+  const retrySave = useCallback(() => persist(unsaved.current ?? conversationRef.current), [persist]);
+
   useEffect(() => {
-    if (restored.current || !data) return;
+    if (restored.current) return;
     restored.current = true;
     setRestoring(false);
     const latest = conversations[0];
     if (!latest || turns.length > 0) return;
-    const revived = reviveTurns(latest.turns, data);
+    const revived = reviveTurns(latest.turns, { patch: currentPatch });
     if (revived.length === 0) return;
     setCurrentId(latest.id);
     replaceTurns(revived);
-  }, [data, conversations, turns.length, replaceTurns]);
+  }, [currentPatch, conversations, turns.length, replaceTurns]);
 
   // 완료된 답은 즉시 저장한다. 생성 중에만 모아서 쓰고, 페이지를 떠나면 남은 저장을 처리한다.
   useEffect(() => {
     if (restoring || turns.length === 0) return;
     window.clearTimeout(saveTimer.current);
     const save = () => {
-      const previous = readConversations();
+      const previous = unsaved.current ?? readConversations();
       const existing = previous.find(entry => entry.id === currentId);
       const now = new Date().toISOString();
       const next = upsertConversation(previous, {
@@ -68,8 +81,7 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
         updatedAt: now,
         turns: turns.slice(-TURN_LIMIT).map(dehydrateTurn),
       });
-      writeConversations(next);
-      setConversations(next);
+      persist(next);
     };
     if (busy) saveTimer.current = window.setTimeout(save, SAVE_DELAY_MS);
     else save();
@@ -78,7 +90,7 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
       window.clearTimeout(saveTimer.current);
       window.removeEventListener("pagehide", save);
     };
-  }, [turns, currentId, busy, restoring]);
+  }, [turns, currentId, busy, restoring, persist]);
 
   const startNew = useCallback(() => {
     restored.current = true;
@@ -90,27 +102,22 @@ export function useAdvisorHistory(advisor: UseAdvisorResult, data: AdvisorData |
 
   const open = useCallback(
     (id: string) => {
-      if (!data) return;
       const target = conversations.find((entry) => entry.id === id);
       if (!target) return;
       window.clearTimeout(saveTimer.current);
       setCurrentId(id);
-      replaceTurns(reviveTurns(target.turns, data));
+      replaceTurns(reviveTurns(target.turns, { patch: currentPatch }));
     },
-    [conversations, data, replaceTurns],
+    [conversations, currentPatch, replaceTurns],
   );
 
   const remove = useCallback(
     (id: string) => {
-      setConversations((prev) => {
-        const next = prev.filter((entry) => entry.id !== id);
-        writeConversations(next);
-        return next;
-      });
+      persist(conversationRef.current.filter((entry) => entry.id !== id));
       if (id === currentId) startNew();
     },
-    [currentId, startNew],
+    [currentId, startNew, persist],
   );
 
-  return { conversations, currentId, restoring, startNew, open, remove };
+  return { conversations, currentId, restoring, saveFailed, retrySave, startNew, open, remove };
 }

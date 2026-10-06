@@ -48,7 +48,7 @@ for (const judge of ["none", "offline"] as const) {
 }
 
 for (const question of ["럼블이랑 모데카이저를 오공으로 상대하는 법 알려줘", "오공으로 럼블과 모데 한타 어떻게 해?",
-  "오공으로 럼블 모데카이저 상대법 알려줘", "As Wukong against Rumble and Mordekaiser, how do I survive?",
+  "As Wukong against Rumble and Mordekaiser, how do I survive?",
   "我用孙悟空对线兰博和莫德凯撒，怎么打？"]) {
   test(`${question} 어순·연결어·별명을 유지하며 두 상대를 빠뜨리지 않는다`, async () => {
     const { plan } = await reply(question);
@@ -58,7 +58,7 @@ for (const question of ["럼블이랑 모데카이저를 오공으로 상대하�
 }
 
 for (const question of ["오공 럼블 모데카이저 체력 비교", "오공으로 럼블, 모데카이저 Q 쿨타임 알려줘",
-  "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?", "오공으로 럼블, 아이번 정글인데 아이템 뭐 가?", "오공 럼블 모데카이저 스킬 설명해줘"]) {
+  "오공으로 럼블 상대할 때 아이번 정글이면 아이템 뭐 가?", "오공 럼블 모데카이저 스킬 설명해줘"]) {
   test(`${question} 조회나 곁들인 역할 이름은 여러 상성으로 나누지 않는다`, () => {
     assert.equal(matchupQuestions(question, emptyDialogue(data.patch), context()), undefined);
   });

@@ -8,6 +8,7 @@ import { prepareDialogueRequest } from "./dialogueRequest";
 import { planPreparedDialogue } from "./dialoguePlanner";
 import { summarizeGroundedReply, type SummaryExperiment } from "./groundedSummary";
 import { assembleDialogueReply } from "./dialogueReply";
+import { answerGroundedNumeric } from "./groundedNumeric";
 
 export async function answerDialogue(question: string, ctx: PlanContext, deps: PlanDeps, summary?: SummaryExperiment) {
   const request = prepareDialogueRequest(question, ctx, "combined");
@@ -16,6 +17,9 @@ export async function answerDialogue(question: string, ctx: PlanContext, deps: P
   if (summary && ctx.consented && ctx.canUseModel && ctx.lang === "ko_KR") {
     const result = await summarizeGroundedReply(dialogue, reply, summary);
     return { dialogue, ...result };
+  }
+  if (deps.generateNumeric && ctx.data && ctx.consented && ctx.canUseModel && ctx.lang === "ko_KR") {
+    return { dialogue, ...await answerGroundedNumeric(dialogue, reply, ctx.data, deps.generateNumeric) };
   }
   return { dialogue, reply };
 }

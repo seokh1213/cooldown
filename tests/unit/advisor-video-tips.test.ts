@@ -34,22 +34,30 @@ function check(text: string, fixture: { expected: string[]; forbidden?: string[]
   assert.doesNotMatch(html, /https?:|youtube|mangdasu|wiki\.league|참고 자료|출처/);
 }
 
-for (const fixture of [...fixtures.cases, ...coverage.cases]) test(`영상 팁 실제 대화: ${fixture.lang} ${fixture.question}`, async () => {
-  const { reply } = await answerDialogue(fixture.question, context(fixture.lang as Lang), deps);
-  check(reply.text, fixture);
+test("영상 팁 실제 대화의 원본·검수 질문을 모두 확인한다", async () => {
+  for (const fixture of [...fixtures.cases, ...coverage.cases]) {
+    await assert.doesNotReject(async () => {
+      const { reply } = await answerDialogue(fixture.question, context(fixture.lang as Lang), deps);
+      check(reply.text, fixture);
+    }, `${fixture.lang}: ${fixture.question}`);
+  }
 });
 
-for (const session of [...fixtures.sessions, ...coverage.sessions]) test(`팁 후속 질문과 저장 복원: ${session.id}`, async () => {
-  const ctx = context(session.lang as Lang);
-  for (const turn of session.turns) {
-    const { reply } = await answerDialogue(turn.question, ctx, deps);
-    check(reply.text, turn);
-    const added = [{ id: ctx.turns.length, role: "user" as const, content: turn.question },
-      { id: ctx.turns.length + 1, role: "assistant" as const, content: reply.text, answer: reply.answer, memory: reply.memory }];
-    ctx.turns = [...ctx.turns, ...added.flatMap(turn => {
-      const revived = reviveTurn(JSON.parse(JSON.stringify(dehydrateTurn(turn))), ctx.data!);
-      return revived ? [revived] : [];
-    })];
+test("영상 팁의 모든 후속 대화를 저장하고 복원한다", async () => {
+  for (const session of [...fixtures.sessions, ...coverage.sessions]) {
+    const ctx = context(session.lang as Lang);
+    for (const turn of session.turns) {
+      await assert.doesNotReject(async () => {
+        const { reply } = await answerDialogue(turn.question, ctx, deps);
+        check(reply.text, turn);
+        const added = [{ id: ctx.turns.length, role: "user" as const, content: turn.question },
+          { id: ctx.turns.length + 1, role: "assistant" as const, content: reply.text, answer: reply.answer, memory: reply.memory }];
+        ctx.turns = [...ctx.turns, ...added.flatMap(turn => {
+          const revived = reviveTurn(JSON.parse(JSON.stringify(dehydrateTurn(turn))), ctx.data!);
+          return revived ? [revived] : [];
+        })];
+      }, `${session.id}: ${turn.question}`);
+    }
   }
 });
 

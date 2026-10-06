@@ -11,6 +11,8 @@ export interface ComboPattern {
 export interface ComboGuide {
   champion: string;
   abilityTextHash: string;
+  /** 개별 재검수일. 다른 챔피언의 검수일을 함께 갱신하지 않는다. */
+  reviewedAt?: string;
   sources: Array<{ url: string; kind: "combo-guide" | "usage-guide" }>;
   patterns: ComboPattern[];
   laning?: { text: string; sourceUrl: string };

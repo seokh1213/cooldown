@@ -69,6 +69,7 @@ export default tseslint.config(
       'build/**',
       'node_modules/**',
       '.claude/worktrees/**',
+      'research/.cache/**',
       // 번역 전수 검수 때 보관한 일회성 실행 기록. 유지하는 제품·검수 도구는 검사한다.
       'research/translation-runs/**/parallel-review/probe-*/**',
       // 빌드 때 node_modules 에서 복사해 오는 ONNX Runtime 런타임

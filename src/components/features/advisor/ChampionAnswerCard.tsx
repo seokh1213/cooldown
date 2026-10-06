@@ -14,11 +14,12 @@ import { Frame, NoteList, PatchLinkFooter } from "./AnswerCardFrame";
 import { ChampionReferenceStats } from "./ChampionReferenceStats";
 import { ChampionReferenceSkills } from "./ChampionReferenceSkills";
 import { useAdvisorChampionDetail } from "./useAdvisorChampionDetail";
+import { useHistoryReference } from "./HistoryReference";
 
 export function ChampionAnswerCard({
   answer,
-  ddragonVersion,
-  patch,
+  ddragonVersion: currentDdragonVersion,
+  patch: currentPatch,
   onNavigate,
   selectedSpell,
 }: {
@@ -29,9 +30,12 @@ export function ChampionAnswerCard({
   selectedSpell?: Extract<AdvisorAnswer, { kind: "spell" }>;
 }) {
   const { t, lang } = useTranslation();
+  const turn = useHistoryReference();
+  const patch = turn?.source?.patch ?? currentPatch;
+  const ddragonVersion = turn?.source?.ddragonVersion ?? currentDdragonVersion;
   const copy = t.advisor.card;
   const { card } = answer;
-  const detail = useAdvisorChampionDetail(patch, lang, card.id, ddragonVersion);
+  const detail = useAdvisorChampionDetail(patch, turn?.source?.locale ?? lang, card.id, ddragonVersion);
   const subtitle = [
     ...card.roleTags.map((role) => t.championProfile.roleNames[role.toLowerCase()]),
     translateRange(card.riot?.attackType ?? card.rangeType, lang),

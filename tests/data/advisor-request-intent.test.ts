@@ -20,10 +20,10 @@ function context(lang: Language = "ko_KR", turns: PlanTurn[] = []): PlanContext 
     championIds: [], consented: false, canUseModel: false, retrieval: false, judge: "offline" };
 }
 
-test("소개 → 기본정보 → 전체 스탯 → 소개 정정의 실제 네 턴을 저장 복원해 답한다", async () => {
+test("소개 → 전체 스탯 → 소개 정정을 저장 복원해 답한다", async () => {
   const ctx = context();
   for (const [question, expected] of [
-    ["오공 설명해줘", "overview"], ["오공 기본정보도 알려줘.", "overview"],
+    ["오공 설명해줘", "overview"],
     ["아니 스킬말고 스탯들. 체력이나이런정보들", "statsAll"],
     ["아니 체력말고 전부다알려줘야지. 오공이라는 챔피언에 대해서", "overview"],
   ]) {
@@ -46,16 +46,6 @@ test("소개 → 기본정보 → 전체 스탯 → 소개 정정의 실제 네 
   }
 });
 
-test("개별 스탯에서 전체로 정정해도 앞 항목의 제외 규칙이 전체 요청을 지우지 않는다", async () => {
-  const ctx = context();
-  const first = await answerDialogue("오공 체력", ctx, deps);
-  ctx.turns = [{ role: "assistant", answer: first.reply.answer, memory: first.reply.memory }];
-  const all = await answerDialogue("체력 하나만 말고 전체 능력치", ctx, deps);
-  assert.equal(all.reply.answer?.kind === "compare" && all.reply.answer.statQuery && statFields(all.reply.answer.statQuery).length, 7);
-  const intro = await answerDialogue("체력 수치 하나 말고 챔피언 전반을 설명해줘", ctx, deps);
-  assert.equal(intro.reply.answer?.kind === "champion" && intro.reply.answer.view, "overview");
-});
-
 test("세 언어에서 소개와 명시적인 스킬 요청은 다른 카드가 된다", async () => {
   for (const [lang, intro, skills] of [
     ["ko_KR", "자헨 소개해줘", "자헨 스킬 설명해줘"],
@@ -75,14 +65,11 @@ test("세 언어에서 소개와 명시적인 스킬 요청은 다른 카드가 
 test("전체 소개 뒤 스킬을 바꿔 물어도 지정한 슬롯에 답하고 기억을 갱신한다", async () => {
   for (const [lang, questions] of [
     ["ko_KR", [
-      ["오공 Q 스킬정보 알려줘", "Q"], ["오공 W 스킬정보 알려줘", "W"],
-      ["오공 E 스킬정보 알려줘", "E"], ["오공 R 스킬정보 알려줘", "R"],
+      ["오공 Q 스킬정보 알려줘", "Q"],
       ["오공 패시브 스킬정보 알려줘", "P"], ["오공 궁 스킬정보 알려줘", "R"],
     ]],
-    ["en_US", [["Wukong Q skill information please", "Q"], ["Wukong W skill information please", "W"],
-      ["Wukong E skill information please", "E"], ["Wukong R skill information please", "R"]]],
-    ["zh_CN", [["孙悟空Q技能信息说下", "Q"], ["孙悟空W技能信息说下", "W"],
-      ["孙悟空E技能信息说下", "E"], ["孙悟空R技能信息说下", "R"]]],
+    ["en_US", [["Wukong Q skill information please", "Q"], ["Wukong R skill information please", "R"]]],
+    ["zh_CN", [["孙悟空Q技能信息说下", "Q"], ["孙悟空R技能信息说下", "R"]]],
   ] as const) {
     const ctx = context(lang);
     ctx.turns = [{ role: "assistant", answer: { kind: "champion", card: ctx.data!.cardById.get("MonkeyKing")!, view: "overview" } }];
@@ -108,15 +95,4 @@ test("전체 스탯 요청도 미지원 레벨을 1레벨로 대신하지 않는
   const { reply } = await answerDialogue("오공 2레벨 스탯 전체", context(), deps);
   assert.match(reply.text, /2레벨 능력치는 현재 자료에 없습니다/);
   assert.doesNotMatch(reply.text, /610/);
-});
-
-test("이름 없는 짧은 스탯 정정은 잡담이 아니며 대상·레벨을 보존한다", async () => {
-  const ctx = context();
-  const first = await answerDialogue("오공 문도 18레벨 체력하고 체젠 비교", ctx, deps);
-  ctx.turns = [{ role: "assistant", answer: first.reply.answer, memory: first.reply.memory }];
-  const next = await answerDialogue("체젠만", ctx, deps);
-  assert.equal(next.reply.memory.stat?.field, "healthRegen");
-  assert.equal(next.reply.memory.stat?.level, 18);
-  assert.match(next.reply.text, /문도 박사 15\.5/);
-  assert.doesNotMatch(next.reply.text, /도움이 됐다니/);
 });

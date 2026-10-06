@@ -29,6 +29,10 @@ import { useAdvisorWorker, type AdvisorStatus } from "./useAdvisorWorker";
 import { ACT_HEAD, ROUTE_HEAD, TOPIC_HEAD } from "@/lib/advisor/plan";
 import { readRequestScope, requestScopePrompt } from "@/lib/advisor/requestScopeModel";
 import type { RequestIntent } from "@/lib/advisor/requestIntent";
+import type { HistorySource } from "@/lib/advisor/historySnapshot";
+import { useAdvisorHistoryDetails } from "./useAdvisorHistoryDetails";
+import type { NumericGenerator } from "@/lib/advisor/groundedNumeric";
+import { isJudgeCompatible } from "@/lib/advisor/judgeCompatibility";
 
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */
 export interface RespondPlan {
@@ -71,6 +75,7 @@ export interface UseAdvisorResult {
    */
   search: (question: string, lang: string) => Promise<Array<{ id: string; score: number }>>;
   inferRequestScope: (text: string) => Promise<RequestIntent | undefined>;
+  generateNumeric: NumericGenerator;
   /** 모델 없이 코드가 만든 답을 그대로 보여 준다. 동의 전이나 WebGPU 가 없을 때 쓴다. */
   answerWithoutModel: (question: string, answer: AnswerDelivery, notice?: string, related?: AdvisorTurn["related"]) => void;
   /** 방금 확정한 답의 맥락을 대화 발화와 함께 남긴다. */
@@ -110,9 +115,9 @@ function readConsent(): boolean {
   }
 }
 
-export function useAdvisor(): UseAdvisorResult {
+export function useAdvisor(source?: HistorySource): UseAdvisorResult {
   // 코드가 쓰는 답문도 화면 언어를 따라야 한다.
-  const { lang } = useTranslation();
+  const { lang, t } = useTranslation();
   const [consented, setConsented] = useState(readConsent);
   const [webgpu, setWebgpu] = useState<WebGpuSupport | null>(null);
   const [storage, setStorage] = useState<{ quotaMb?: number; usageMb?: number }>({});
@@ -133,11 +138,14 @@ export function useAdvisor(): UseAdvisorResult {
     remember,
     reset,
     replaceTurns,
-  } = useAdvisorTurns(lang, setError);
+    attachReferenceDetail,
+  } = useAdvisorTurns(lang, setError, source);
+  useAdvisorHistoryDetails(turns, attachReferenceDetail);
   const { status, setStatus, progress, modelReady, post, requestJudge, requestEmbed, requestGenerate, interrupt, hasWorker, shutdown } = useAdvisorWorker({
     onChunk: appendChunk,
     onDone: completeReply,
     setError,
+    failureMessage: t.app.loadError,
   });
 
   /** 문서 벡터(주소마다 한 번만 받는다) */
@@ -160,6 +168,11 @@ export function useAdvisor(): UseAdvisorResult {
       return undefined;
     }
   }, [consented, modelReady, lang, model, requestGenerate, takeId]);
+
+  const generateNumeric = useCallback<NumericGenerator>(async ({ system, prompt, maxTokens, purpose }) => {
+    if (!consented || !modelReady) throw new Error("수치 응답용 모델이 준비되지 않았습니다");
+    return requestGenerate({ type: "generate", id: -takeId(), model, system, messages: [{ role: "user", content: prompt }], maxTokens, purpose, loopGuard: false });
+  }, [consented, modelReady, model, requestGenerate, takeId]);
 
   useEffect(() => {
     void detectWebGpu().then(setWebgpu);
@@ -184,6 +197,7 @@ export function useAdvisor(): UseAdvisorResult {
    */
   const ensureLoaded = useCallback(() => {
     if (!consented || modelReady || hasWorker()) return;
+    setError(null);
     setStatus("downloading");
     post({ type: "load", model });
   }, [consented, modelReady, hasWorker, post, model, setStatus]);
@@ -253,7 +267,7 @@ export function useAdvisor(): UseAdvisorResult {
     async (headName: string, state: string, questions: JudgeQuestion[]): Promise<number[][]> => {
       if (!consented) throw new Error("동의 전에는 모델을 부르지 않습니다");
       const head = await loadJudgeHead(headName);
-      if (head.model.id !== model.id || head.model.dtype !== model.dtype || (head.model.graph ?? "") !== (model.graph ?? "")) {
+      if (!isJudgeCompatible(head.model, model)) {
         throw new Error(`판정 헤드 ${headName} 는 ${head.model.id} 용입니다`);
       }
       const id = takeId();
@@ -349,6 +363,7 @@ export function useAdvisor(): UseAdvisorResult {
     judge,
     search,
     inferRequestScope,
+    generateNumeric,
     answerWithoutModel,
     remember,
     begin,

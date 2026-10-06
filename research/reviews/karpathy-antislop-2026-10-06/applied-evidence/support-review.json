@@ -1,0 +1,4624 @@
+{
+  "agent": "support_audit",
+  "date": "2026-10-06",
+  "scope": "Non-advisor src/lib utilities, src/types, src/i18n, build/configuration, scripts; shared calculation/knowledge/advisor logic belongs to sibling reviews.",
+  "semantics": {
+    "read": "Human inspection of substantive source and boundary handling.",
+    "targeted_read": "Selected source sections and callsites inspected; whole file also scanned.",
+    "scanned": "Inventory, boundary patterns and applicable syntax/function checks only; no claim of complete semantic review."
+  },
+  "summary": {
+    "files": 384,
+    "lines": 34597,
+    "levels": {
+      "read": 82,
+      "targeted_read": 11,
+      "scanned": 291
+    },
+    "baselineSourceFiles": 367,
+    "baselineLines": 33207,
+    "addedSourceModules": 4,
+    "newFocusedTests": 18,
+    "existingThumbnailTests": 13,
+    "testTotal": 31,
+    "testFailures": 0
+  },
+  "files": [
+    {
+      "path": ".github/workflows/test.yml",
+      "review": "read",
+      "lines": 111,
+      "sha256": "74f140e217e9ef4d9ee014417b31b760e6cf936d8c625038cc6a550063e0a05f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "text_boundary_scan"
+      ]
+    },
+    {
+      "path": ".github/workflows/update-static-data.yml",
+      "review": "read",
+      "lines": 289,
+      "sha256": "e74283f8b01aefe2072fb5e7d887a3bfa9b341b6ab63b9fcfc9fe26fa68e86f3",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "text_boundary_scan"
+      ]
+    },
+    {
+      "path": "eslint.config.js",
+      "review": "read",
+      "lines": 81,
+      "sha256": "d84343a42f4d6f4970691c858089e70a79af0e4360451598edf4d1560ad9a897",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "package.json",
+      "review": "read",
+      "lines": 116,
+      "sha256": "72771d34f77dbb1ac916f4feaa3fad008729a2ab5d2fd27ec2e3df4f36b79ba1",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "text_boundary_scan"
+      ]
+    },
+    {
+      "path": "playwright.config.ts",
+      "review": "read",
+      "lines": 31,
+      "sha256": "7e6058a107bfb4b06e47514d63eb1b0ea8280ba9fdbdf11503ff78e1c2ae3ef8",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/audit-ability-level-values.ts",
+      "review": "scanned",
+      "lines": 57,
+      "sha256": "88bd48633fbf024fee8b8e1e5dbe45835282483e46cc3879da358650ee78a73b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/audit-ability-variants.ts",
+      "review": "scanned",
+      "lines": 36,
+      "sha256": "f89e89f2ec329e94397596fafcb54412d7d31e6f0cb127123308d8d9b6aa79be",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/audit-tooltip-defects.ts",
+      "review": "scanned",
+      "lines": 224,
+      "sha256": "8b44d29b2b3656e8d8251d8b2cd62f0a2a2f8e6c388f5039d9f6ee47b3c5697a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/ci/upstream-changed.mjs",
+      "review": "read",
+      "lines": 109,
+      "sha256": "121ecb28ad426350453b7aaf86c617251401fa263cc2c569f429f6b11ef50ef2",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-corroboration.ts",
+      "review": "scanned",
+      "lines": 94,
+      "sha256": "ade030401429d3216f72d2e560cd470aec6f1110299407c6cf8c41b03adf38fe",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-forms.ts",
+      "review": "scanned",
+      "lines": 76,
+      "sha256": "ecc11c98300a892fbc1a4826d006708c9ee975e98a8de0e5f0711289d2fc542a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-level-validation.ts",
+      "review": "scanned",
+      "lines": 31,
+      "sha256": "6baf50dbd26fd81e53b7e61996528ba36cc780965c35fbb209e77a9d34726aca",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-simulation-evaluate.ts",
+      "review": "scanned",
+      "lines": 212,
+      "sha256": "9cc46de28fa1967a9c3ff7f7f788e122546250c63ddf36b7e36ff4c74066b610",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-simulation-expression.ts",
+      "review": "scanned",
+      "lines": 197,
+      "sha256": "253d01e2dbda9c36b2df305433f4c333273429508d36a6b4d90fe6e942467957",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-simulation-formula.ts",
+      "review": "scanned",
+      "lines": 269,
+      "sha256": "c878003bc017104c77e4e83b935c1990ccf4f4c9d44631fd6ae9857a61ddebb4",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-simulation-validation.ts",
+      "review": "scanned",
+      "lines": 96,
+      "sha256": "1e4a37cfdae6cdb63fd1940b2eb9d281bccea768b31bc775b5e531f3123fc8ed",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-simulation.ts",
+      "review": "scanned",
+      "lines": 329,
+      "sha256": "b7d7800651d3ef3d82bd5e0e224a8b4bffef754b909c513f4d7f1af93de6f6ee",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/ability-validation.ts",
+      "review": "scanned",
+      "lines": 207,
+      "sha256": "3390cb17c517e31dc9fef237b02de51fbc3259c6d2fd8a23fa34504e08fef210",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/active-tooltip-data.ts",
+      "review": "scanned",
+      "lines": 193,
+      "sha256": "2586d8ef7369f691eb9dcb63bb935b8b65c0151d293d38ba03134d024c769bd8",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/active-tooltip-validation.ts",
+      "review": "scanned",
+      "lines": 268,
+      "sha256": "f7d3651e1262606c903cd1d9a1ed0f3e862c822af58a38f6fb6a88ed4c1b52d6",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/cdragon-active-spells.ts",
+      "review": "scanned",
+      "lines": 250,
+      "sha256": "70ff3e8dc373d28e79ce8eda7c37789939ba99647c53e3750355c5d10e8bc73d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/champion-data-v2.ts",
+      "review": "read",
+      "lines": 290,
+      "sha256": "dcf2d802a596e9b13fa45cfe5058cd830d9c4c6c7d4a4652c1199c48168de65f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/champion-profile.ts",
+      "review": "read",
+      "lines": 21,
+      "sha256": "f831dafb280736f71149ed079c5b0172dca2b5363e07ed6bd19e0f391f495981",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/champion-source.ts",
+      "review": "read",
+      "lines": 23,
+      "sha256": "f7b07df0d0673fcedd27e223e73df8ca21b3a8ef03d44a0faf07302e0af9705c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/champion-v2-writer.ts",
+      "review": "read",
+      "lines": 95,
+      "sha256": "ec27e814d40c5835703dad308877a60f08b8a2270662a44f7867c2060f1540f2",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/generation/catalog-stage.ts",
+      "review": "read",
+      "lines": 137,
+      "sha256": "21f8b53533a5d53efabec69f48e9a518b222310f8e3bd30720feacf851223574",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/generation/champion-stage.ts",
+      "review": "read",
+      "lines": 265,
+      "sha256": "00639b9c2f4ca820fcd0c967264f9564362199524ba2de54c45dcc0fc8e23adc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/generation/tooltip-localizer.ts",
+      "review": "targeted_read",
+      "lines": 196,
+      "sha256": "963d51de45892c0a964de6deb5cf4a4625ab4c036094a4ce8ae9143cf14d33b8",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/generation/validation-stage.ts",
+      "review": "read",
+      "lines": 155,
+      "sha256": "9405fc0f7518589fd048ea99ac6e66deec23155a76d2ce0e81a49506a66c24d0",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/io/json.ts",
+      "review": "read",
+      "lines": 40,
+      "sha256": "e28bcc9dc2df5b354511273fdb20597d078a77e16240ed5d3040554d251c49a3",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/localization.ts",
+      "review": "read",
+      "lines": 129,
+      "sha256": "b8ea46c7180d6ea768ab029cd558e5ccc3d35a7a50c17fc238135cfadee10853",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/champion-stats.ts",
+      "review": "read",
+      "lines": 80,
+      "sha256": "28ae337ed951c7c2d48a6b973a8ab42b9bf9dc5c98ab028b57be78abae76d64d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/champion.ts",
+      "review": "read",
+      "lines": 114,
+      "sha256": "ddaa111556225534279f6467d40e5c4a82f813d0daee76393d881602ffb7b7ba",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/item-damage-effects.ts",
+      "review": "read",
+      "lines": 105,
+      "sha256": "6523180c1d322e45ea3a515084a4572429ca96d4da9d5b8ff8a3ae2177d0c8c9",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/item-description.ts",
+      "review": "read",
+      "lines": 58,
+      "sha256": "312dd9ac0e8337a7cf1d813b2aa2b6b8f9a9d0ecce84a1da472e5f0f2527295e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/item-effect-details.ts",
+      "review": "read",
+      "lines": 86,
+      "sha256": "925ba87fce3ecf882e1c25dcdb3da608d39467ab97535a99a6526ad2cb2c06ca",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/item.ts",
+      "review": "read",
+      "lines": 148,
+      "sha256": "c6ab948d0e9c6553110cbe57c2df81325e0010ff92283fab11a7c8e0edee509c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/overrides.ts",
+      "review": "read",
+      "lines": 43,
+      "sha256": "5461627415b9561b6b02342c467f40378ed6a7449b5cb40211a1cc48c42f2b14",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/rune.ts",
+      "review": "read",
+      "lines": 215,
+      "sha256": "ef07f38a059203d2ce4530c6e4fe33d9440785e777d780ec2d97ea1b13c39d56",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/normalization/summoner.ts",
+      "review": "read",
+      "lines": 78,
+      "sha256": "c63f6c7d555238279aad8380106b40986ea3b9f43a0a57e58f9fe04284b8086f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/pages-artifact.ts",
+      "review": "read",
+      "lines": 20,
+      "sha256": "b3550e7a059d496c636eea58a7f8b70a673c331b5a6f8e4c75bbc1cfba895c0c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/sources/cdragon-build.ts",
+      "review": "read",
+      "lines": 62,
+      "sha256": "b44e23454f6a0e1b83e1ef46963e442f42f79df4922d78b698b38932138edde6",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/sources/cdragon-champion.ts",
+      "review": "read",
+      "lines": 124,
+      "sha256": "963d8ad8b0ca360e9d766d8b4e41585859dfdb823e09a4329c7107c313f0da2f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/sources/cdragon-items.ts",
+      "review": "read",
+      "lines": 101,
+      "sha256": "998089da5bd25877670fce6fb8fa8820a34080a45706561d433b1ccdfbbbf822",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/sources/cdragon-runes.ts",
+      "review": "read",
+      "lines": 106,
+      "sha256": "367a2845059b172bfd4ce63e9575d5f20d0c85fa528b9686c65cdded92725bc0",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/thumbnailArtifacts.ts",
+      "review": "read",
+      "lines": 246,
+      "sha256": "82355dc3feb7b4212fb366853ebf55e63e28c3254f16a99392fbdc9f9d8151d6",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/thumbnailCatalog.ts",
+      "review": "read",
+      "lines": 181,
+      "sha256": "b328bde9246934428c8f4e3a215ebb5e16fa1f43654f15bcbca0e6a2f9ce2e8b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/thumbnailImages.ts",
+      "review": "read",
+      "lines": 94,
+      "sha256": "65811a1850778e82400a4d73573a82df7dfe96e4dff79ff2565a7da4e9e8a2cf",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/data-pipeline/thumbnailPublication.ts",
+      "review": "read",
+      "lines": 63,
+      "sha256": "d70192dc34cf874d7843e819e9aa68d11e5815a73358147ccb2c5274a561d00c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/find-localization.ts",
+      "review": "targeted_read",
+      "lines": 100,
+      "sha256": "0bd1f558c61a3f2a41e48b85954f85338567b3f4aabf83f1c0d53360c1311883",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/generate-ability-forms.ts",
+      "review": "targeted_read",
+      "lines": 40,
+      "sha256": "14087d44df2b4dd317b7be7782bc8e44141646e81788c2cd1b4d71e5fe820dda",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/generate-champion-profiles.ts",
+      "review": "targeted_read",
+      "lines": 31,
+      "sha256": "2c46e9c1db7b26ec5e197c0e164e12ad47eff3aa5084e264bb902748639fc03d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/generate-item-data.ts",
+      "review": "targeted_read",
+      "lines": 55,
+      "sha256": "99d1d8efaa5357d2ae245db812289a53e8b060117401ab8e672916bd1e0ab7db",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/generate-og-image.ts",
+      "review": "targeted_read",
+      "lines": 132,
+      "sha256": "8fd3350ae5938377a065545a676b289403ee7348fdfdfcb46158badd84fd905d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/generate-patch-notes.ts",
+      "review": "targeted_read",
+      "lines": 80,
+      "sha256": "d36426935773ed9cc8388302f15456052865c486bf390b768540c314bf549d1e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/generate-stat-label-icons.ts",
+      "review": "targeted_read",
+      "lines": 189,
+      "sha256": "755d9bdb5a0f21ce16da8aa83f20b35e7ae9cea0703457ebfb5c3e757c9863fb",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/generate-static-data.ts",
+      "review": "read",
+      "lines": 117,
+      "sha256": "9af59e53b0bfbe84c6e30c25ce3196b4356769cbc35e4915c9ff4ecc358ab0c0",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/generate-thumbnails.ts",
+      "review": "read",
+      "lines": 105,
+      "sha256": "a7dd71a2272a2032746251a0e29c965899807a9faeeed940d831e9f602d6cdb8",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/broad-build.ts",
+      "review": "scanned",
+      "lines": 81,
+      "sha256": "134040ad1b1b4669a346355b975b85b7f72453c21d6cae3973449515b5b6bbde",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/broad-replay.ts",
+      "review": "scanned",
+      "lines": 154,
+      "sha256": "833d5039e6de80ef5eb6583dc911e38e095ba7a1dd05902ffa789559bf87df32",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/build-conditional.ts",
+      "review": "scanned",
+      "lines": 28,
+      "sha256": "0ff605b84262f73cf446772df5d608a22f48f01782fe032cd7fd1c48cfc01b1a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/conditional.ts",
+      "review": "scanned",
+      "lines": 150,
+      "sha256": "d9e416860406c7971469d63a558081fe31d3912026444d67b9cfb92bb5c6b76a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/probe-quality-ollama.ts",
+      "review": "scanned",
+      "lines": 56,
+      "sha256": "6b60e1b8e8264689181adeeb62ef040e16327cf2432cd79fb1c9385bc3723670",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/replay-actions.ts",
+      "review": "scanned",
+      "lines": 140,
+      "sha256": "d03fbbd0deb43e73b70415821a111783f5ea7894ea6f4afa1f2986acbd78423e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/replay-conditional.ts",
+      "review": "scanned",
+      "lines": 57,
+      "sha256": "73ab98047317686f8ee3cf9ac68208beffd8a2596c7a46b0f46b82dc8443a06a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/replay-quality.ts",
+      "review": "scanned",
+      "lines": 77,
+      "sha256": "7beb39566e22173758f4d373522a25dadf5f3b093544776284141b471b0ae75b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/replay.ts",
+      "review": "scanned",
+      "lines": 87,
+      "sha256": "0b66b4e1254a340f3211b6a2e820c09b123c5ccc91f523fad0192dc46aa60afa",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/select.ts",
+      "review": "scanned",
+      "lines": 77,
+      "sha256": "ff612263567a37e747c104e6eb8d95d5706ea7ad764e456b47d7d68a47ae45b9",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/atom-context/target.ts",
+      "review": "scanned",
+      "lines": 20,
+      "sha256": "2fb7eac44f76df19feec25488c18eaa55b9cd642adb4905f309f314b985e043f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/attach-crowd-control.ts",
+      "review": "scanned",
+      "lines": 16,
+      "sha256": "c58d3d4adddd1c00358d30a591b499b82b6cb6afb23d65ada16a73e3ff128531",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/audit-effect-tags.ts",
+      "review": "scanned",
+      "lines": 54,
+      "sha256": "9122337018025f88f2bf44251b754a6773138291b2c99d2b1c057f28af2a4f35",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/audit-matchup-facts.ts",
+      "review": "scanned",
+      "lines": 33,
+      "sha256": "efc682209fba2f022adfc412b26ce70c41a814c95215f154e021e79483d294be",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/audit-note-facts.ts",
+      "review": "scanned",
+      "lines": 89,
+      "sha256": "4e1abcb37493378ae2928f159aa87312fff239553a718c778c373322748e0c04",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/audit-precomputed.ts",
+      "review": "scanned",
+      "lines": 83,
+      "sha256": "1bdf652ff05e2ef484fa94216d5b14086ce7f163f37cb72e038c076827915877",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/build-advisor-bundle.ts",
+      "review": "targeted_read",
+      "lines": 181,
+      "sha256": "fbc25f98dfd0e1be9e7f4cf639fb5b1d627e79b4fe8fc5cf56757a93e8050757",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/build-champion-aliases.ts",
+      "review": "scanned",
+      "lines": 211,
+      "sha256": "b0d7814026c29dfc81fac635ebdde2fd34960200bd1a5d0ff7f430f70e64fca5",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/build-champion-names.ts",
+      "review": "scanned",
+      "lines": 161,
+      "sha256": "0e046004286b8e36fea26e474269b670a897d4b3befa053a54b9158fe88db188",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/build-knowledge.ts",
+      "review": "targeted_read",
+      "lines": 199,
+      "sha256": "d751e32b0b05842a92920ecd2d716cfc4920761d33c6c8b1175ffb0535798b72",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/build-note-atoms.ts",
+      "review": "scanned",
+      "lines": 303,
+      "sha256": "f57609c4a12cfe67ccb078f9176eeb6db7d9870b243d02cde177071531e7dc55",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/build-note-translations.ts",
+      "review": "scanned",
+      "lines": 71,
+      "sha256": "a79b0d70f3138dc3a6718bb0d26976a3db3fcb056d4373bb794b560800c4e899",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/build-topic-train.ts",
+      "review": "scanned",
+      "lines": 176,
+      "sha256": "4efdb6cdad62fd531e91b576f695d5155291f0cbf2832086e23eec7f1f888676",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/carry-llm-data.ts",
+      "review": "read",
+      "lines": 100,
+      "sha256": "b0be9212518bb1c96160d9a1329807365550d45aefe7ac2d76689a151708e45a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/answerReviewed.ts",
+      "review": "scanned",
+      "lines": 16,
+      "sha256": "720e3ba85edc69c8dc04e2c37e3792128ff6ae949f7fbe42e8edeaab6562aafd",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/assign.ts",
+      "review": "scanned",
+      "lines": 33,
+      "sha256": "69cd7f182ba5d86835c06bddbbbcea89562925038a796be34a652cae20804d1c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/author.ts",
+      "review": "scanned",
+      "lines": 116,
+      "sha256": "13ae2ccbfe4f076fb974cd909f8820e262f01ac9ffa2d2e525514ecded5ee7a7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/bundle.ts",
+      "review": "read",
+      "lines": 24,
+      "sha256": "2a153ab3bb5c3bd2b58d3a4ec296a0fcccc9b193f7c3397a3b707636b584dbde",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/check.ts",
+      "review": "scanned",
+      "lines": 34,
+      "sha256": "f58e87b3954d55d02ca0ce6157ec4a16cea575725da9ec970dd58f9df1ec2a22",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/contract.ts",
+      "review": "scanned",
+      "lines": 55,
+      "sha256": "e041a5bec19bd1b0c01b8d771c9faca34ebd73b9f5ee971d1face1d916988f55",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/drift.ts",
+      "review": "scanned",
+      "lines": 121,
+      "sha256": "bfcaca4839aeabb401913c1b6304c50c3862e21038f960ec06ef8da11692017b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/evaluate.ts",
+      "review": "scanned",
+      "lines": 95,
+      "sha256": "bad93ec8fd1e419cec98836995f489ec80b04ae61855b3e559cf4fa1d11afa52",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/evidence.ts",
+      "review": "scanned",
+      "lines": 25,
+      "sha256": "e01085e987243502e0f8f04aaf5c41cc25d42306dc1790b3e7d0eda0c0549267",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/export.ts",
+      "review": "scanned",
+      "lines": 61,
+      "sha256": "9dfde976016e558be4cc9966946fe5000012a68cbe5ecac9f9ac0a436957e170",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/guide.ts",
+      "review": "scanned",
+      "lines": 26,
+      "sha256": "074748f898d822032ff0a071f58933254e0b72cac97c85d2cb316dd4b6a68a38",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/numbers.ts",
+      "review": "scanned",
+      "lines": 19,
+      "sha256": "5a3bae0c323de74faadb0ec1e79afe0f5ac176422e63543526d12d2689e17d53",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/pilot-audit.ts",
+      "review": "scanned",
+      "lines": 63,
+      "sha256": "0cc466244c0213c6b8f421dbbd390d315563957bd409112d8f29a1fd9f389562",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/prepare.ts",
+      "review": "scanned",
+      "lines": 43,
+      "sha256": "f8b37d6253085059f46c2d18e497e1c9354d8aae9bc2880cbf51755bd9989b28",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/qualityGate.ts",
+      "review": "scanned",
+      "lines": 16,
+      "sha256": "b543961d74ec738d32b7c235304a2c32ccc66ad464467e67cdc33947c080363f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/questionDetails.ts",
+      "review": "scanned",
+      "lines": 2,
+      "sha256": "b322930ae4a5c031901b26dc7de0d6706896fe561a12ae9b5b09154a3c4cb348",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/recover.ts",
+      "review": "scanned",
+      "lines": 57,
+      "sha256": "d886c5e0a3e4c94f12c88004ee9592d506ada8984ba22bc9241b561db75238f3",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/refresh.ts",
+      "review": "scanned",
+      "lines": 67,
+      "sha256": "9aed014fd99a2fb13e62f7c2dfc8d22fdbaa4d932186e10fe5f388a9a22d825d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/repair-screen.ts",
+      "review": "scanned",
+      "lines": 48,
+      "sha256": "79783024060aec6b8fd5c17731b60f666f1c5c16af6d443c2a3a29d5579e361a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/retrieval.ts",
+      "review": "scanned",
+      "lines": 24,
+      "sha256": "599371055e54173684fc6ad38abe9972eedd1e1f1ea0bc9ab2156f790d60840b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/review-view.ts",
+      "review": "scanned",
+      "lines": 25,
+      "sha256": "d7ff7e9d4f82514c06d959a2c821ac5ed25fb306b927b8a46db24b879f4301d5",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/ruleAnswer.ts",
+      "review": "scanned",
+      "lines": 2,
+      "sha256": "9ed987bc00dca67d0a78ad01e24a62bc28011706930e069a5175cdcf9cb78b19",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/schema.ts",
+      "review": "scanned",
+      "lines": 31,
+      "sha256": "f01a394058604b5da4c49c0bcec0de15d87f8377b759af2b813f8ad53dd8e69d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/screen.ts",
+      "review": "scanned",
+      "lines": 101,
+      "sha256": "212ce393523cd59ae93366173fb55b931e633b7978aac25db1dd3de1e10e8330",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/sources.ts",
+      "review": "scanned",
+      "lines": 76,
+      "sha256": "f90d6418fabc4c4087358647b9fb1499d0fb28f2558f80d07b83ccb32ab396f7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/validate.ts",
+      "review": "scanned",
+      "lines": 103,
+      "sha256": "aa455c7d9499b8c516e895c6709deee4878964f83fca99c884c99c37b6f3ebea",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/champion-mechanics/variants.ts",
+      "review": "scanned",
+      "lines": 32,
+      "sha256": "22043948ce31b6a06778d6ef36b860e1c2d0863a3c2b7c882eb89f62ba32c64c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/conversational-advisor/browser.ts",
+      "review": "scanned",
+      "lines": 113,
+      "sha256": "e49addb72510b8f3e8d64360dfe6bece822431ace214a4e8dc4b829bd706f01e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/conversational-advisor/runtime.ts",
+      "review": "scanned",
+      "lines": 98,
+      "sha256": "eb0edbc0b82dcb3fbaa84b37e477653a9bcea492a9e9c29b6c444bd3a95befab",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/conversational-advisor/score.ts",
+      "review": "scanned",
+      "lines": 99,
+      "sha256": "70eb26f245171303032c6a810417a5adfb643d9db85efe5036b6c1944ec97d4b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/conversational-advisor/summaryBrowser.ts",
+      "review": "scanned",
+      "lines": 30,
+      "sha256": "029595561ab3416bef23774b7da573f228f21eeef9b59d426755fd78b7f7c70f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/eval-champion-detect-all.sh",
+      "review": "scanned",
+      "lines": 8,
+      "sha256": "5e00f6ce11aa54057228d96a93e3b1241c62477279151510622598322d80fe6f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "bash_syntax"
+      ]
+    },
+    {
+      "path": "scripts/llm/eval-champion-detect.ts",
+      "review": "scanned",
+      "lines": 75,
+      "sha256": "76a661289df673533dd2da18c984046e2f7fc04ad547fb7d3777beabacad09b4",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/eval-dialogue-coverage.ts",
+      "review": "scanned",
+      "lines": 86,
+      "sha256": "b6e4c785fbe84756d4a11d3b37ca02874a080c276149bff239900cd2023b607c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/eval-request-contract.ts",
+      "review": "scanned",
+      "lines": 52,
+      "sha256": "944d2ac3311f9f8e95757e5e5265dc30878eb1508579462e9ef73137800e904d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-ability-fallbacks.ts",
+      "review": "scanned",
+      "lines": 431,
+      "sha256": "1423e78782ca2ac67b3c78ea364b125e9c3d2086bdc428aa472ba210f876787b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-ability-ranges.ts",
+      "review": "scanned",
+      "lines": 93,
+      "sha256": "427cdbec01d68ba5ac7c975b898a7654714e1581976d61d283830b9c8f42c761",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-champion-prices.ts",
+      "review": "scanned",
+      "lines": 45,
+      "sha256": "a06b6ae3796e8c980b22af2392f4a64b9db296e36f618a98c0128459267f55bd",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-riot-meta.ts",
+      "review": "scanned",
+      "lines": 157,
+      "sha256": "4ae92c7d2cf0e6d934566927a322a95baf58791f3ec6c5dd38fcf6f79713401d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-wiki-dashes.ts",
+      "review": "scanned",
+      "lines": 173,
+      "sha256": "c999127e7aaac190b0f5c8bff0f6a00d9cdffd129b6fa34c4bde324822e10ec4",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-wiki-gameplay.ts",
+      "review": "scanned",
+      "lines": 218,
+      "sha256": "fd6a09ccaf1a32939d1e43991b18e5cf4c6d22013bbb30f872dc5ce89c350086",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-wiki-items.ts",
+      "review": "scanned",
+      "lines": 129,
+      "sha256": "b5c62e4a289cead35d0747cfa40e1fa117daa4b179134c570648f65a3409db42",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-wiki-meta.ts",
+      "review": "scanned",
+      "lines": 140,
+      "sha256": "721fe0d9bcf80c1eb9162d6dc60899a9b961eb94f19da0d23c0dc457496b4478",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-wiki-rules.ts",
+      "review": "scanned",
+      "lines": 214,
+      "sha256": "806bb93970a7f61d034f4acfe22d20c8fea67593e71af491be4c927a2874dfe2",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/fetch-wiki-tips.ts",
+      "review": "scanned",
+      "lines": 182,
+      "sha256": "ee901182c15da3cdc9837cd31bb699285b4ef7af8c742230a3a6629370f40ba1",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/find-lost-descriptions.ts",
+      "review": "scanned",
+      "lines": 208,
+      "sha256": "2f7861231fe053c55bec91a249a1ca7ddaf638096036e29481f440efea81c67a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/find-unslotted-notes.ts",
+      "review": "scanned",
+      "lines": 48,
+      "sha256": "74343ba38f6b87130dce32c9c37d90c11bcf6967f94b08f358ded6ca5e045755",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/act_test.py",
+      "review": "scanned",
+      "lines": 74,
+      "sha256": "01c668e34b9cf6b2c55bbea4f7452b0e0aab756644ca67f6d69587cb40994ad5",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/build_b3.py",
+      "review": "scanned",
+      "lines": 244,
+      "sha256": "c817e044d1df499f129cd78aacf7cd2c5f4563dfaac18f9715e2e40894734f7b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/build_lookup.py",
+      "review": "scanned",
+      "lines": 134,
+      "sha256": "674a91dad24068357050960105b1920edde326646685e9a54a8d35d86e715e21",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/export_kev_head.py",
+      "review": "scanned",
+      "lines": 19,
+      "sha256": "e8633f99941684b2ccf16e381c219e54900eddfd231c85f6eeb42a53b58102cf",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/export_kev_tests.ts",
+      "review": "scanned",
+      "lines": 32,
+      "sha256": "ffa8ca64b6ca987c9e7786b2cb78c4543ddb11769541e2b087fe5765edfba24d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/extract_features.py",
+      "review": "scanned",
+      "lines": 79,
+      "sha256": "ad558f4e96dad6b0b60042222c938a31e20960058908741b61ce9b9c398d88cb",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/large_other_labels.py",
+      "review": "scanned",
+      "lines": 10,
+      "sha256": "8db51c071fc396baa27f6a1bca3728d48822fce02254ebd5a7dbd7130247fb2f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/lora_onnx.py",
+      "review": "scanned",
+      "lines": 102,
+      "sha256": "7beaaeb3f78b8a2a000443171d9b5c82df9eb43a2f0c85f369e231a2fba91085",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/other_labels.py",
+      "review": "scanned",
+      "lines": 23,
+      "sha256": "9a72e900917bb7594823b4a44825ef4b73521dacb8dc324915088248c182c98e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/train_head.py",
+      "review": "scanned",
+      "lines": 86,
+      "sha256": "21e412cd05b47f26ae46e8e2f30fad80ec58ba194daf0709b61a69367648f5dc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/b3/verify_onnx.py",
+      "review": "scanned",
+      "lines": 79,
+      "sha256": "117cccbce6946fccabe3e4b888873af1b8ce75dab8bd8901ab20c5e6691f48e1",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/eval-a.ts",
+      "review": "scanned",
+      "lines": 96,
+      "sha256": "1981593be307661da3f9b5576251d12abf2277a95aca55a9046472714c0b67d3",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/eval-b3.ts",
+      "review": "scanned",
+      "lines": 107,
+      "sha256": "31c6372b7e808b629d51e387a370dcf2ab73a2ac0eeec1b10b8f570562e7ddd6",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/eval-kev-browser.ts",
+      "review": "scanned",
+      "lines": 70,
+      "sha256": "6699938ba733be23d824f39b344a617611d900924b02dad268391c6eee55d46c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/eval-lookup.ts",
+      "review": "scanned",
+      "lines": 126,
+      "sha256": "3649080f020ad581a88d95d14f6d94ae9e1208791c777c76d1d0b3add9c586e1",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/evaluation_config.ts",
+      "review": "scanned",
+      "lines": 12,
+      "sha256": "50b2851c2d7fb2745156583634fd5652d9dbe3c022185054e1d1e4d21bf9e3df",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/feedback-to-tests.ts",
+      "review": "scanned",
+      "lines": 40,
+      "sha256": "ad6d4353c92bec676c98c89e2a2b3225f74bc7943f7073a8a9b83d09523a145e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/hidden_judge_serve.py",
+      "review": "scanned",
+      "lines": 49,
+      "sha256": "cfdf487700ec1ef6b9cacc3cdcb34b7a966b0b3f4333e95774d6b8c5e0c17e98",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/lib.ts",
+      "review": "scanned",
+      "lines": 216,
+      "sha256": "dec482b9eb7234325fc38b9aaa57595f2831a71725581ac5051259a414d74cc5",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/kev-agent/retrieval_eval.ts",
+      "review": "scanned",
+      "lines": 30,
+      "sha256": "1e51442fe490e73f6db68abec6a631d16776f910618693cafd1dd4d6538a04ed",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/championFingerprint.ts",
+      "review": "scanned",
+      "lines": 59,
+      "sha256": "44bd638706b98bbd54c4dc313ed3e1f86ef80c407bc2bd1cec6f20d664753129",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/comboNotes.ts",
+      "review": "scanned",
+      "lines": 43,
+      "sha256": "d680c4747ce0521e38d59a36b640104817f8bf5959521be0125023aebe33f082",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/crowdControl.ts",
+      "review": "scanned",
+      "lines": 26,
+      "sha256": "f5cfa57a9c6b044b89c1b8c3023559dd1a319d1041f98c189fa0e907f74444bb",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/data.ts",
+      "review": "read",
+      "lines": 119,
+      "sha256": "9c79a8e7051dba7f701eac7cf78abf1fe292434ff8bbff4a29cbfffdb65d718a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/fandom.ts",
+      "review": "scanned",
+      "lines": 175,
+      "sha256": "705c22d82ea56b720697e5bc663b9ac4d3fa1f6fa5f2f888a2eb3e27c4504a24",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/knowledge.ts",
+      "review": "scanned",
+      "lines": 31,
+      "sha256": "fe26bdb1c47f7c54885164363aca77befc423b889c4c9abb84c76b1f40ab68c9",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/luaTable.ts",
+      "review": "scanned",
+      "lines": 199,
+      "sha256": "7cacaa3841b039a3abe863814e0da7d5fec1f41df4658eef009911958a8c6584",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/matchup-translation-runtime.ts",
+      "review": "scanned",
+      "lines": 106,
+      "sha256": "ab77706e6f28a24671f0f426dad747bf773ece9c0e74dcf317c6fcb3a3bfb9ab",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/mechanicsNotes.ts",
+      "review": "scanned",
+      "lines": 21,
+      "sha256": "6c6d544d0be546b9bc4ba736b4efce09051ad534c47db5667fc1b47142bc7de1",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/ollama.ts",
+      "review": "read",
+      "lines": 150,
+      "sha256": "abcbcece55e461b7b3fb4a2449a4b4e6ca5ae53658c081af1b0d194f6f5665ea",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/parallel-semantic-review.ts",
+      "review": "scanned",
+      "lines": 137,
+      "sha256": "25c0555a94f419ae0e7d6f286513873da328ed8ec9ad63b55da907fa7378cf1c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/patchGaps.ts",
+      "review": "scanned",
+      "lines": 146,
+      "sha256": "11b58710677c1c113d26cff4191fa004fd9e61d5a16790d2310226e495a6d10e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/patchHistory.ts",
+      "review": "scanned",
+      "lines": 253,
+      "sha256": "683127091f1414a58752142e74445f4bd170b7645d6c67e72af07c39e6739aad",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/playbook.ts",
+      "review": "scanned",
+      "lines": 36,
+      "sha256": "59e0b2395eedd2423203d41130f9796cea3f57f4daf0b891ccecdaf50b8a74ad",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/primary-review-monitor.ts",
+      "review": "scanned",
+      "lines": 18,
+      "sha256": "7387e16be1eccc18d8f212e9a30395f6a17c8b3ef70bf839febe710510893d0c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/spellOverrides.ts",
+      "review": "scanned",
+      "lines": 36,
+      "sha256": "0ff46c33b7af40e8509daea7be12ddaab5c82e808f66dafdf79b79c672b60d1b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/tooltipFingerprint.ts",
+      "review": "scanned",
+      "lines": 7,
+      "sha256": "0f2a0105081a76a31814f360ea972ac8478dfc09c4b7f218474ebc12353df44b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/topicCases.ts",
+      "review": "scanned",
+      "lines": 111,
+      "sha256": "a0d555e7e3c31fde986a872fb93eefe973f40276a97b6ca77df349c9ed5e2fa6",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/translation-meaning-check.ts",
+      "review": "scanned",
+      "lines": 40,
+      "sha256": "36858e937c5c27def57238bae852f8928f9d2bddb3060cf8a45c030b4b060364",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/lib/translation-review-queue.ts",
+      "review": "scanned",
+      "lines": 50,
+      "sha256": "15aed2e09d318d5e7c2cc5c1d797ffbb94d31c1517e2e1f0f37ed20287292684",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/adapter.ts",
+      "review": "scanned",
+      "lines": 26,
+      "sha256": "c2a3fa524755e4c856f30332d5ff3dfff7c15170ca2a0196b8c30c32753f1d71",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/audit.ts",
+      "review": "scanned",
+      "lines": 56,
+      "sha256": "e253ed6683f698648b56b07b713d98251ead3af15d65c8813d945d1520882fc0",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/cases.ts",
+      "review": "scanned",
+      "lines": 36,
+      "sha256": "e66b628dec101e441add1c311e73cd46085c32af1303ae3982f2727dbd43bd33",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/engine.ts",
+      "review": "scanned",
+      "lines": 74,
+      "sha256": "a0b68364763b518d4c6156927db5704987cd3e4758ddcf9f35f22f1e47ddf790",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/fixtures.ts",
+      "review": "scanned",
+      "lines": 27,
+      "sha256": "0fd09e1476462dc6e1aaa0c2d45c2b0ad0fabf141c8a99d5fd84dc25a9365dec",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/memory.ts",
+      "review": "scanned",
+      "lines": 20,
+      "sha256": "930e06e65fc58a306cd3a045cf8aea7cb204318eeb42176493ba1b4308e5f8d2",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/ollama.ts",
+      "review": "scanned",
+      "lines": 18,
+      "sha256": "132edcbfb4f897280571812b5b839fb9b232b734d130a547aff8144c63cc840a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/query.ts",
+      "review": "scanned",
+      "lines": 61,
+      "sha256": "2d5910fefae361f5d49485b2b19daf57cf3db9fbf6f9bddffc028c4f96db5041",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/refine.ts",
+      "review": "scanned",
+      "lines": 44,
+      "sha256": "6bf5d9526c7efd8f29b210e827373e84e819134f2772fb2124be94464bac61da",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/run.ts",
+      "review": "scanned",
+      "lines": 84,
+      "sha256": "4a4cba5cbfa46837b93fc8385190d5b9c0a0ba901b8783165148a94c2dd1d885",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/schema.ts",
+      "review": "scanned",
+      "lines": 69,
+      "sha256": "8a72b09ce0909f1cf15248f8225f739347632504470140ad95fe0fc5ea87c9e7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mechanic-schema/types.ts",
+      "review": "scanned",
+      "lines": 43,
+      "sha256": "791adaaff2bb21ea984a08b889e53cf763c6d3c36e3fcce5862d421cea82900b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/mk-blind.py",
+      "review": "scanned",
+      "lines": 25,
+      "sha256": "d8aaab77d92bf2b38ad49a81923ce52f3a1ba83dbe8cb5091791fc6989ea9385",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/monitor-primary-review.ts",
+      "review": "scanned",
+      "lines": 97,
+      "sha256": "a52bbd8f942d1aa4f2ce7f9e3a5585e7f71ee7985d1a750b48685539dbd203ef",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/bench.ts",
+      "review": "scanned",
+      "lines": 120,
+      "sha256": "b22469b72c280f8384c4b4a66eaab55121590644f543eef98d92ed0b13a5b6b7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/compare-request-flow.ts",
+      "review": "scanned",
+      "lines": 139,
+      "sha256": "64f1cd5da18fb32e4fe7d3f37bb4e4fe65345c8136b37fcd188e175a9196c15e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/compare-request-negation.py",
+      "review": "scanned",
+      "lines": 91,
+      "sha256": "39491c6fba8f0a76b5bb9e1bcead7a03920b23c8d7c69e7f2c0b02f412602e62",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/compare-request-small.py",
+      "review": "scanned",
+      "lines": 51,
+      "sha256": "056a64676fd67e8a9f6a9eb554d4c5b4dd43c561180abbd7db235020af075e88",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/compare-request.py",
+      "review": "scanned",
+      "lines": 244,
+      "sha256": "b15f80007bd92056a98db6b1311969337d5f341f922b5be4589f6e4892ab2b38",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/embed-request-negation.ts",
+      "review": "scanned",
+      "lines": 36,
+      "sha256": "6c0c7f0a4d8e8d6a50b8ae22c35ea5a5e40c07d792a2e1e84dbbcb5f77acdd1e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/embed-request-small.ts",
+      "review": "scanned",
+      "lines": 42,
+      "sha256": "45089f01a9b555d38eef3d2006554b411554d79bd571a6a1ad0939653afdb206",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/evaluate-request-hybrid-flow.ts",
+      "review": "scanned",
+      "lines": 180,
+      "sha256": "37105901b604de9226be504ae7f0998ba484640b44a88e3b166ca9c71a24282e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/evaluate-request-hybrid.py",
+      "review": "scanned",
+      "lines": 198,
+      "sha256": "a18311252ad41b81661d1a1ad9ba14446f545dce888ee65a4b7199eec902846f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/evaluate-request-negation-general-llm.py",
+      "review": "scanned",
+      "lines": 36,
+      "sha256": "1d0abd326a31f37a8aaceef33cbb6e6b91dabe683329e85003b5a41fb9d5ea9b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/evaluate-request-negation-llm.py",
+      "review": "scanned",
+      "lines": 83,
+      "sha256": "2e1b4d676ce7f0e01e9ef9f7ba75f8483e19a3fd0f3fc5a0ff79f51777aba9df",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/evaluate-request-review.py",
+      "review": "scanned",
+      "lines": 140,
+      "sha256": "0496aa61ca14673c4ef5fb19a25a10729d1830f32e97c512243e80b9851a3a04",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/evaluate-request-standalone.py",
+      "review": "scanned",
+      "lines": 57,
+      "sha256": "f4278a6c4d9dfae70d5fb6031b2da7870b5457270ccbf4031c7ce5f5350992a3",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/evaluate-request.ts",
+      "review": "scanned",
+      "lines": 79,
+      "sha256": "0b5148face26c686812703940ff2d81383c3911d8bdf45d35dca8f1fb5314bd0",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/route3-shape.ts",
+      "review": "scanned",
+      "lines": 58,
+      "sha256": "309ec22ea30f4619562e33897eef2312a01315cd3852a50ed442d5e6c785c88b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/test_request_review.py",
+      "review": "scanned",
+      "lines": 68,
+      "sha256": "8e746f8d8bee85515bc74c731d182d1f177f8c2b31fcbe9197b716458db07d9b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/train-request.py",
+      "review": "scanned",
+      "lines": 113,
+      "sha256": "c5ce6e30bef142583c8b7b07d70cd3d1b351ecec3a82e23d214763ff322c80a6",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/offline-classifier/train.py",
+      "review": "scanned",
+      "lines": 436,
+      "sha256": "f3c8869f00348f9b3da6982c220251d861a63d989f33151b39441224c02c6abc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/parallel-semantic-review.ts",
+      "review": "scanned",
+      "lines": 248,
+      "sha256": "803df4651e50e900d3f9e901d7d60beaaef9f629f40e79eeb5c6877b816c771b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/passive-rag/browser.html",
+      "review": "scanned",
+      "lines": 15,
+      "sha256": "45b8ee59d6437c49b26198fae5cde950feb30f03b4825eae7236f39bf527e452",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "text_boundary_scan"
+      ]
+    },
+    {
+      "path": "scripts/llm/passive-rag/browser.ts",
+      "review": "scanned",
+      "lines": 68,
+      "sha256": "63d78ae4a983c3ed56a80091b1375d7d78afe2c0a3d3c2c3778629cf125b4e22",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/passive-rag/cases.ts",
+      "review": "scanned",
+      "lines": 35,
+      "sha256": "28da44d77cf1efa3e3e83ab0e64208be9046a693594a9ab94fe3e9f294e07b3a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/passive-rag/evidence.ts",
+      "review": "scanned",
+      "lines": 39,
+      "sha256": "c09cd1e8c85551bc6ce6da458711b2838abe3b199d8822c3ff0bdb3a85df01e7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/passive-rag/prefix.ts",
+      "review": "scanned",
+      "lines": 47,
+      "sha256": "4a2fa9deb3910d60091a9b0af56fe447984919867f4ead1abba394c6303f6529",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/passive-rag/refine.ts",
+      "review": "scanned",
+      "lines": 66,
+      "sha256": "249457f23dc0dccb0c9e5e2f2c9faa5d6d07222a80d7ed5faed5033eca928174",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/passive-rag/run.ts",
+      "review": "scanned",
+      "lines": 96,
+      "sha256": "ed59fc83a8ee00699f75b48fcd4372fda7951662b45b87789fc030c7dabac984",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/passive-rag/short.ts",
+      "review": "scanned",
+      "lines": 46,
+      "sha256": "79bfb80a5a27e6c7c435d7bf7fabf7c3d6fbb46b647308cb73488e65a450db0f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/polish-note-translations.ts",
+      "review": "scanned",
+      "lines": 210,
+      "sha256": "bcb28fbe26b35eb6d784268b144c0ba207fd6c4a36393cf5bfc7360dcbe3ba4e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/precompute-matchups.ts",
+      "review": "scanned",
+      "lines": 402,
+      "sha256": "cb279213ed686a8e11badd283dac3e3fa7615345359ad4a53f9255e1719c7f27",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/refresh-card-growth.ts",
+      "review": "scanned",
+      "lines": 42,
+      "sha256": "2672727ab42f257303fd111ea18d09e77e3c96ac9f620e6d286af8f9d7cdca7d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/remote-evals/colab_controller.py",
+      "review": "scanned",
+      "lines": 129,
+      "sha256": "16b81d6c684514fc3128143f7e9f67b24decdb2a1f4d7bc8dbb0efd3b5eca859",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/remote-evals/colab_smoke.py",
+      "review": "scanned",
+      "lines": 73,
+      "sha256": "0ff987f8ee70dd40582f7f7f7a4970b4dd68195a3ef54189da9a6525faa0ec10",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/remote-evals/pack_snapshot.py",
+      "review": "scanned",
+      "lines": 55,
+      "sha256": "9c0ccaabc0347ef28aef6e1aad0f5897b0bc3c4c7413bd97a685ae0059ed56d4",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/remote-evals/report.py",
+      "review": "scanned",
+      "lines": 78,
+      "sha256": "fd12ee011d9d932d9307fa5bd49a176177d6473e3acfe3f5ae60fcdfe7a89d43",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/remote-evals/run.py",
+      "review": "scanned",
+      "lines": 142,
+      "sha256": "f633f1485d627c0ba0b26401eb1a0294484159ba489ca6c97c2f8e3ac943f817",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/remote-evals/serve.py",
+      "review": "scanned",
+      "lines": 38,
+      "sha256": "0b61958f87213fa165a99e0182b2bf17a65fbfd09f18f07bff7e8ab515cdf18e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/remote-evals/test_colab_controller.py",
+      "review": "scanned",
+      "lines": 52,
+      "sha256": "703d8a861eb9e97bd89efcf9789888751ded6d114b37053307556649bc15e97d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/remote-evals/test_report.py",
+      "review": "scanned",
+      "lines": 27,
+      "sha256": "59fd84085ea5d980998aaeb426c6275a8a988e527c0218c1ccdbd98696e9889e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/report-knowledge-drift.ts",
+      "review": "scanned",
+      "lines": 124,
+      "sha256": "d0163a1a2e6a670cadda4c3489ee08dd4036882663865aa80570058c058402ea",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/reverify-atoms.ts",
+      "review": "scanned",
+      "lines": 99,
+      "sha256": "1cc848b4e033c47b2473abe5361c9bb21bd9e784ef0886eb5908f814b93f94a9",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/run-translation-background.sh",
+      "review": "scanned",
+      "lines": 99,
+      "sha256": "737d4a396438edf6692b3868457d9ac5451d856a9638568fcd10d6dcb1dac591",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "bash_syntax"
+      ]
+    },
+    {
+      "path": "scripts/llm/source-pack.ts",
+      "review": "scanned",
+      "lines": 177,
+      "sha256": "70ae4c898124c59337f584d823979c6a36659b2b64c4a3ff3f82b70543a46fd8",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stamp-champions.ts",
+      "review": "scanned",
+      "lines": 38,
+      "sha256": "f1cb7dbd5c7c3dc8f00e927cbc6c631434fcded909562e3667d67741ad1a4b74",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/adapter.ts",
+      "review": "scanned",
+      "lines": 21,
+      "sha256": "3698b7c5cf4f6cd207f60fbcac8c6899efc702170f1402133e484c64f6237c56",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/appChat.ts",
+      "review": "scanned",
+      "lines": 38,
+      "sha256": "397599ebec221e8740fad5b4e4658848cf73e644ad56ed1c6dfd1055de941538",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/appClassifier.ts",
+      "review": "scanned",
+      "lines": 16,
+      "sha256": "8c8224cfee032c54b844611e6ce619bb531206ed5bd43e091aceb8667d4a055f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/appScenarios.ts",
+      "review": "scanned",
+      "lines": 33,
+      "sha256": "86349262ea142d86d3ef3342a2753a2904da64d0a9f9545a04428b56c8a0c8a9",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/browser.ts",
+      "review": "scanned",
+      "lines": 10,
+      "sha256": "2e9d8afc6d8b3168776bd456bc29654a46b4dc1f24ca8009c1f624a868f71f0c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/build.ts",
+      "review": "scanned",
+      "lines": 70,
+      "sha256": "16807c4ebde57f9e9da033c7e7abe045e4bccac8cfc2d9055be61b8f6166eb0c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/contracts.ts",
+      "review": "scanned",
+      "lines": 26,
+      "sha256": "5fae90c2764b529af4c2433fe08ed65450a6ed5956a4f53e086b0cb190ea5cfa",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/conversations.ts",
+      "review": "scanned",
+      "lines": 61,
+      "sha256": "6bc78a48485fd2afdd402985bd16c826707519992b86955a330838b82b34483f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/core.ts",
+      "review": "scanned",
+      "lines": 111,
+      "sha256": "78640488329d4b8cfb17d85a974b0d197396732227cf7efb114db41487459964",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/evaluate.ts",
+      "review": "scanned",
+      "lines": 57,
+      "sha256": "b8de3de9128a2b971bee7436c58404bc65eb2fcbdc147b8a44261fe1ed838d87",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/fullFlow.ts",
+      "review": "scanned",
+      "lines": 58,
+      "sha256": "01c22c93df0713aaeafeaf389d24ed62860e8820dbb49132a370306aa49148ad",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/replay.ts",
+      "review": "scanned",
+      "lines": 36,
+      "sha256": "845a015af0f9128eab4123fba71d2eac78782d8ec7ff78c9978cfdfb7ba1f5a3",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/runtime.ts",
+      "review": "scanned",
+      "lines": 14,
+      "sha256": "3d3d282b76094c4c44c9d539fc2b1102765fa99b76b805edd4b903def819b3e7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/seeds.ts",
+      "review": "scanned",
+      "lines": 48,
+      "sha256": "c6dd5c75dbc33217ed85b05925b13b804921748aa96092277fb69ee86b15bdcc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/splitAudit.ts",
+      "review": "scanned",
+      "lines": 21,
+      "sha256": "3f9ef3fdbf812ea5e3be5aca9d9a0359ed0c97f17b9b83e9de42165a02b3a32d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/stat-classifier/train.py",
+      "review": "scanned",
+      "lines": 108,
+      "sha256": "ced48c97e63e6da0e08c508262bbe0684833cbc70052bf5a3cb45a4a2cef58bb",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/sum-blind.py",
+      "review": "scanned",
+      "lines": 56,
+      "sha256": "1de21072cf1f66424d1b7804a66f8d6b41dc370058c724530f21cda04c05333f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/translate-atoms.ts",
+      "review": "scanned",
+      "lines": 255,
+      "sha256": "1e3ef52bada633e1e2b8fa2df98f2cbb4c75ee0e9f8f367c236f584a0be4399c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/translate-matchups.ts",
+      "review": "scanned",
+      "lines": 404,
+      "sha256": "a0ccc17fad0cf3ae961914a297390e3958c35049e1d86e785cf40e0e5ce973f4",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/translate-rules-zh.ts",
+      "review": "scanned",
+      "lines": 121,
+      "sha256": "06e6659aec7d82ef52deebb560fe52af61d8d7f09d735bfc90ab7668235adc86",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/translate-rules.ts",
+      "review": "scanned",
+      "lines": 168,
+      "sha256": "7b31d183e70cc095c83e767f4811a9b9f3a534888437b50d96cbe470c95ff2d9",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/translation-review-queue.ts",
+      "review": "scanned",
+      "lines": 98,
+      "sha256": "44b88c55f606b2fa76e067c4d5f9a62121e301379b2e9e5759f39341421bf047",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/app_sft_evidence.ts",
+      "review": "scanned",
+      "lines": 16,
+      "sha256": "5cb887df2dc87bf5a99b45e51bd6e01aaca80ae9beee711e96a8f0d398c43a9d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/artifact_io.py",
+      "review": "read",
+      "lines": 16,
+      "sha256": "395a5c1500b14eb1c824190d1e2237165d0dc1014fa5d2f20f6e858afb8cc986",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/backup_artifacts.py",
+      "review": "read",
+      "lines": 53,
+      "sha256": "62acd77bec6e4df24efde9949c32d1911970aa634a14bae8bbfe1beb176a329a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/base_pilot_model.py",
+      "review": "scanned",
+      "lines": 60,
+      "sha256": "fafd778571fe9c2e48090ba21c6a8da1a5114bf49db25bc4315a287c9054736e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/benchmark_qa.py",
+      "review": "scanned",
+      "lines": 37,
+      "sha256": "993310946e4006c1616f54d7e43f4b0f1d2cf34941826a947d46a3a9dfe24a11",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/benchmark_sft_followup.py",
+      "review": "scanned",
+      "lines": 40,
+      "sha256": "322b9d5b373bd83d5592816fa66f37db4cc9049e81f894a1d2ee896560ae7ce7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/branch_gates.py",
+      "review": "scanned",
+      "lines": 15,
+      "sha256": "5c76e8c380bd5463d9a237d7e9b31593cf525250d0a3fed7d0a5fd74c0153b53",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/checkpoints.py",
+      "review": "read",
+      "lines": 101,
+      "sha256": "b31c639fef7f90cbccafc2f450b9bacab5a03b54c2dd5724d85d8909735479c4",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/colab_client.py",
+      "review": "scanned",
+      "lines": 53,
+      "sha256": "81afc3290c944289b4635a032f96b88b2df08ce12fbe48660141ccbe20f87b96",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/colab_safe_cli.py",
+      "review": "scanned",
+      "lines": 23,
+      "sha256": "e7a591cff878df6a31281edb240e1e8771d3a9af7da9a48544269a2259c7cd25",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/colab_setup.py",
+      "review": "scanned",
+      "lines": 26,
+      "sha256": "ee3ba08dd3b2891b52d747276a9a73c6c4cb47b3891a3dcd1803d2d439a21395",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/colab_transport.py",
+      "review": "scanned",
+      "lines": 91,
+      "sha256": "a855c0d349a097e76ba4189bfa63326e8b9927a26cd5845c2f52503e9453b468",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/collect_checkpoints.py",
+      "review": "scanned",
+      "lines": 119,
+      "sha256": "f3ae1466b1b0639bc632d7557ac2470e1da3b19da2ec470cca8e1fb3cfdc1b70",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/embed_queries.py",
+      "review": "scanned",
+      "lines": 30,
+      "sha256": "46c6e20b1e8c2f416d37171f3b40203823fb532a86dbeb910e52fda46db8529c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/embed_retrieval.py",
+      "review": "scanned",
+      "lines": 42,
+      "sha256": "1f6f4e6c9a4785f4d419e99cad65748a9802d44eb5ba2e91bdc8f75fbb5d1102",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/eval_retrieval.ts",
+      "review": "scanned",
+      "lines": 48,
+      "sha256": "6fdec8dda17fa6b7c7adfbf0e60edecfd4f252306ccc3fa11f9efc473e04c89d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/evaluate_base_pilot.py",
+      "review": "scanned",
+      "lines": 65,
+      "sha256": "ae93cbbb107afd0e9ee04f249e6271b0ff451c4d2a0f2c9e0e9052210be87b15",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/evaluate_qa.py",
+      "review": "scanned",
+      "lines": 69,
+      "sha256": "88dc3ac0eae1150a880638b578a0bbe5fee8d4adcf6d29d432d180049a2fb00f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/evaluate_sft_followup.py",
+      "review": "scanned",
+      "lines": 94,
+      "sha256": "d79e473c554832e471808f1befba5e7235df7d3485a22d19b2c42d248771b851",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/export_adapters.py",
+      "review": "scanned",
+      "lines": 38,
+      "sha256": "5900e637c6cd51ba7e4e5ffb822e430da92aa33a0eac02e878ef16c77baacd3e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/export_generation.py",
+      "review": "scanned",
+      "lines": 74,
+      "sha256": "4f656f7fa7359c425bed24b49564dbc9fb01fdb602e28499b2e438924e4c6aab",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/export_graph.py",
+      "review": "scanned",
+      "lines": 39,
+      "sha256": "805af93513dcb7549fca28a4f9d3ec03095e8f35473950e8e97e978be5689cfa",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/export_inputs.ts",
+      "review": "scanned",
+      "lines": 23,
+      "sha256": "181159264cd2357431c1642242392b1dafc845f040bd27bbf41c71e3eb075959",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/extract_features.py",
+      "review": "scanned",
+      "lines": 58,
+      "sha256": "29b762071b45cc9c03642f597917925a65fa48ab95e03295eb41ae7609575fad",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/followup_questions.py",
+      "review": "scanned",
+      "lines": 97,
+      "sha256": "4d9d0231e4a4350dae2b7c693f8603adc0da7ee9e13060973d52a7d5d2e9e6ba",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/generate_onnx.py",
+      "review": "scanned",
+      "lines": 45,
+      "sha256": "4d2a5f20c56683687f616c94325228546dea0fe06ab8ab6b7a0c5d26aa613c43",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/gpu_pipeline.py",
+      "review": "scanned",
+      "lines": 111,
+      "sha256": "8ed73ed921c2d882cf00493941a4f7aa5f45a77ae7e030a628ed8c07cf69a24d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/gpu_status.py",
+      "review": "scanned",
+      "lines": 39,
+      "sha256": "0687013d99a0111f6917ac5602b324f73ab00f8795c01392fc79b5f1c6b5adfd",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/model_utils.py",
+      "review": "scanned",
+      "lines": 58,
+      "sha256": "4fcc5a4260056d100df7d2706d85e2b62e540402d71c4222f457e922b4cf079b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/natural_questions.py",
+      "review": "scanned",
+      "lines": 60,
+      "sha256": "7ffd03d09f74e3fc3b363d109ca71357c3eb5927f5fd6e5e1dc22a0625237b37",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/natural_training_facts.py",
+      "review": "scanned",
+      "lines": 111,
+      "sha256": "fe92f59c48ecedca781f270d28ab3f4dd71adac80ec491d254f761076d2f1f24",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/node_vectors.ts",
+      "review": "scanned",
+      "lines": 21,
+      "sha256": "124d38545f744fdebb0675e5942b3e92da45b0ccd9ef75272bfb2c3e4dc97721",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/onnx_features.py",
+      "review": "scanned",
+      "lines": 67,
+      "sha256": "cf4ae91dffde8f9626a959fbf9596cae82e07f6bc76a66918a59ca3beacacd82",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/prepare_followup.py",
+      "review": "scanned",
+      "lines": 81,
+      "sha256": "2fd55b98d52e14ecefda2a73fcbc906f3ee6d2f00781b7bc2d774f9cbee31eec",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/prepare_heads.py",
+      "review": "scanned",
+      "lines": 124,
+      "sha256": "6dfa8f4f70da2e7b29cf44391c94e6d2048bd34b37edce87b9bece972e4aed37",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/prepare_natural_training.py",
+      "review": "scanned",
+      "lines": 75,
+      "sha256": "12004d0b7712e8443637fa728ee46871d8be842ecb22a87ab9624af25ebb7bac",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/prepare_qa.py",
+      "review": "scanned",
+      "lines": 73,
+      "sha256": "f8a17968a5e810aca232f6a2da49493f5e645470b9bdd9d5960864998261dab7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/prepare_retrieval.py",
+      "review": "scanned",
+      "lines": 36,
+      "sha256": "d8440b1b914ebc81696f74a715be0079342181a45154421a15b4c76fe2b67bbb",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/qa_context.py",
+      "review": "scanned",
+      "lines": 27,
+      "sha256": "f3db67415f0085985c37ac751d5264858a5ac8130e32bc4ace95d99ad4131b69",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/qa_prompts.py",
+      "review": "scanned",
+      "lines": 28,
+      "sha256": "04b33dab70956dbab5cff27328822ef9d29d9d6adb631b16e4d6610b34f940c6",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/quantized_inputs.py",
+      "review": "scanned",
+      "lines": 12,
+      "sha256": "279789a41d5daecba3f2714a0ec528004e5d3b7773eb1574e63fcd209c127e7a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/quantized_weights.py",
+      "review": "scanned",
+      "lines": 51,
+      "sha256": "0065c4008e262436ff1562797adb82bb9461375cb4747b515c6e50301cc09d07",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/replay_features.py",
+      "review": "scanned",
+      "lines": 22,
+      "sha256": "24abf7ca78c8184cadc2b3232108b37baa5f0b43361fcbd1e07737b364a1368f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/resume_checkpoints.py",
+      "review": "scanned",
+      "lines": 69,
+      "sha256": "658209b3feeeaac7e627a763abd877ed22e001e3f83b42993be6bec8ee3b2fdd",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/retrieval_order.py",
+      "review": "scanned",
+      "lines": 28,
+      "sha256": "f82c8440f5419348de9084a7f5688edebac3e0b393badb062bc3a728ee64441b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/select_sft_evidence.ts",
+      "review": "scanned",
+      "lines": 57,
+      "sha256": "7bcf6bcf654714f2035088d61fa79eb001a4d53e4e2912cced3207e39b73d029",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/serve_features.py",
+      "review": "scanned",
+      "lines": 33,
+      "sha256": "25ffbefbf3defcde4a38395aabc41f567056053dd5ac58502a81d7a5dfa5b648",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/sft_scoring.py",
+      "review": "scanned",
+      "lines": 35,
+      "sha256": "4fc9df92794968344ad52afaa69749dbd28bdb4dc492c7a80e6d7113dea22b3e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_backup_artifacts.py",
+      "review": "scanned",
+      "lines": 28,
+      "sha256": "c76841ecd1fe93f0b476a90fe82aa32566e8f113bf4be0dfcf0aa2c1d9ae449d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_backup_retention.py",
+      "review": "scanned",
+      "lines": 21,
+      "sha256": "5bf99b5b2e049658d5867e25dc26410bf0752235a9705f4d31d010f7b5a1363f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_checkpoints.py",
+      "review": "scanned",
+      "lines": 78,
+      "sha256": "89caf607884d910455bbcc765078f9e4f42fdb4ac9c1ebf5342745467cccfbfa",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_collector_completion.py",
+      "review": "scanned",
+      "lines": 81,
+      "sha256": "b4bdc62e4b5fcbee8cb8450363b26eb043ec9f81c631ebb8df661d448ff0f2dc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_export_generation.py",
+      "review": "scanned",
+      "lines": 84,
+      "sha256": "ca1f6ea2862d29b18b3f2991600d299b34ba09611e2027226afa973031c97f12",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_export_graph.py",
+      "review": "scanned",
+      "lines": 33,
+      "sha256": "2981d214504fe3ee2c5aa009b9b7628dd1e63cdd55125640e58483af319e0320",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_features.py",
+      "review": "scanned",
+      "lines": 25,
+      "sha256": "1833e6bdabdd5f22f86e431961fbe5618d6c0ba7625a242c7b3f16900400dd97",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_followup_data.py",
+      "review": "scanned",
+      "lines": 26,
+      "sha256": "f2ee7b0de50a0ec0fb0446f716507e8c9c73cdb6748b3328680c869e2be5d53c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_followup_summary.py",
+      "review": "scanned",
+      "lines": 35,
+      "sha256": "d53c6ca4e4cad0b481a5068af92ac5987412c23cd18be5e77912945313a4c995",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_generation.py",
+      "review": "scanned",
+      "lines": 22,
+      "sha256": "526a730a1820fa3d44117c232e30e7e1f1fd744bccfb76bd7833c37b5cbff3fc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_head_data.py",
+      "review": "scanned",
+      "lines": 18,
+      "sha256": "74a327d465ceb6aa95e96d003ffd274903cd3c73cb081f1a1c39c5de6728b3e2",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_natural_training.py",
+      "review": "scanned",
+      "lines": 43,
+      "sha256": "a8a5fc1f7213a46cb83cf1e4406438ddc0f2667018b3dd9cc41b0d3e9341afbf",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_pointer.py",
+      "review": "scanned",
+      "lines": 24,
+      "sha256": "ce37954c022c3cae51099f5a934f27b7739e996bf2fdb66475ae06ba5875f91c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_proxy_refresh.py",
+      "review": "scanned",
+      "lines": 27,
+      "sha256": "26134ce3db1026a2c758f8d51291a03007ce180328519b091d9b1b265e0d63b7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_qa_context.py",
+      "review": "scanned",
+      "lines": 37,
+      "sha256": "dd4bbcabcd3da015b618dff7e62dc3006790f84c74542f2e06230ea14ef6a474",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_qa_data.py",
+      "review": "scanned",
+      "lines": 16,
+      "sha256": "c9896c40cd067d4d6db89333cf6f87c928d686fedd6e3274ad8c10f3d53c142d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_quantized_inputs.py",
+      "review": "scanned",
+      "lines": 16,
+      "sha256": "5599aef908e982ae2f6d8347b0a99142996ecd6131de582f6b4c30c1d9472705",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_quantized_weights.py",
+      "review": "scanned",
+      "lines": 27,
+      "sha256": "14b4a8f776261176d2d2f07eb45917c0b81684cb2be9bca12e79a70566aef066",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_resume_transfer.py",
+      "review": "scanned",
+      "lines": 25,
+      "sha256": "3bef17eee0d3b44c953e249b8e3290ce01599ec69feac242116d26a7cffe76b8",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_retrieval_data.py",
+      "review": "scanned",
+      "lines": 19,
+      "sha256": "4c01ad7f736f19fba62b9da3e8b46d82921b05e8f82eee7694436b05bbe325f5",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_retrieval_order.py",
+      "review": "scanned",
+      "lines": 24,
+      "sha256": "463260608dd14913999addb91b7e62dc81d294de79489d9847117ce4bb1661ed",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_sft_scoring.py",
+      "review": "scanned",
+      "lines": 22,
+      "sha256": "e20694010b18969a639db4e8fa3024153815b72b27e0217b41e9ef48deca6a93",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/test_training_budget.py",
+      "review": "scanned",
+      "lines": 25,
+      "sha256": "36bda16d56fe69b8de60e8b2bf3d17fd7b60829bf9639439cf4d74b1de4f2e51",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/train_base_pilot.py",
+      "review": "scanned",
+      "lines": 83,
+      "sha256": "14e9a38bd4278510cc308282bf48b066e42e27e42cd102e3c62974a76716ed29",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/train_heads.py",
+      "review": "scanned",
+      "lines": 108,
+      "sha256": "b19d43e495f4b06e58529f70ff84adc3f6c9719de5962f4357ffd83ef12dd40d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/train_quantized.py",
+      "review": "scanned",
+      "lines": 99,
+      "sha256": "9bcdf1576a3356270d3624398e7605565d5624d57acdab893647a5aee3b977bc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/train_retrieval.py",
+      "review": "scanned",
+      "lines": 120,
+      "sha256": "ef35b34ee163e214522712b65520ec6b26258888cdc5015ba1cccac75ebfb88a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/train_sft.py",
+      "review": "scanned",
+      "lines": 83,
+      "sha256": "2e62063d751539bffe2cff5abb5f6019b9e3e271f69989c91cf5d0a33649412a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/training_budget.py",
+      "review": "scanned",
+      "lines": 12,
+      "sha256": "2847926a392c22970ab378000044359d274922198b9e131938b5a77c6b43d358",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/tuning/verify_generation.py",
+      "review": "scanned",
+      "lines": 61,
+      "sha256": "4cb7b494155dfd4399f8e8a234c9d74f0b06ecf7f1d2165ababc36b2f99b713f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/validate-knowledge.ts",
+      "review": "scanned",
+      "lines": 180,
+      "sha256": "58c3e2e53778b03cbeec0eec5975988edf1b019af1ef72c9806a6d76d72c3072",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/app_flow.ts",
+      "review": "scanned",
+      "lines": 32,
+      "sha256": "bf29386c1e2056ae2c350e4cc86e8396db8b13856970c3aac3380db7b6f51313",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/corpus.ts",
+      "review": "scanned",
+      "lines": 77,
+      "sha256": "5986b7e3e0e6c0c22c9016b3c161d64619b53bb30e40233e70172e59bb58a189",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/dual_graph_check.py",
+      "review": "scanned",
+      "lines": 84,
+      "sha256": "84ec090463312329ae719c9265661bb7b23c4afbac0f3f82378ebf5f06e56c76",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/embed_lora_train.py",
+      "review": "scanned",
+      "lines": 171,
+      "sha256": "5769b4ce937e07982ef3118918c902c403dd923e43a8876cdd1e29b43a892ede",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/embed_questions.py",
+      "review": "scanned",
+      "lines": 28,
+      "sha256": "8bccdfba1ba4a5c9c084c42b62351a19c8818a586bc87cd3a3bbc3e88e5fcf7b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/eval-search-browser.ts",
+      "review": "scanned",
+      "lines": 76,
+      "sha256": "83099c3f819472bab58ebe29e27a710807706d7885900d4edac431723e7f11e8",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/eval_hybrid.ts",
+      "review": "scanned",
+      "lines": 55,
+      "sha256": "b627d7c7f8c9e6c4e31baa4c4a5fe3b929cb6ed787d0038d0599e64aac3c8073",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/hybrid_score.py",
+      "review": "scanned",
+      "lines": 85,
+      "sha256": "a3a6c3a5c335e9c7f5ebde2d5832feac9c029785204ac8bfda2cb0f66fe1c14f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "Python_AST_parse"
+      ]
+    },
+    {
+      "path": "scripts/llm/vector-search/lexical_scores.ts",
+      "review": "scanned",
+      "lines": 43,
+      "sha256": "c0089201bf67ec10f23cb8d8995056cbe75415a87bdcb919b455ab9e76be9e73",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/passive-tooltip-data.ts",
+      "review": "scanned",
+      "lines": 246,
+      "sha256": "9d89954847a929ee0034843d2cba1889e6ff01b96a939e34882fe5779138fe8d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/archive.ts",
+      "review": "read",
+      "lines": 8,
+      "sha256": "de2c8bfb4211cece616ccfc86c3213f92db483a2a937a59074426ac5db6453d9",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/collect.ts",
+      "review": "read",
+      "lines": 185,
+      "sha256": "cf0b2e513a5661e629e906ee56a850c089665b2671a9046aef28e2ffa891dabf",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/diff.ts",
+      "review": "read",
+      "lines": 52,
+      "sha256": "58628c37ad6768d8d7acb453d08d66d626ce793a7f80a17cd9881c84830205fc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/metricLabels.ts",
+      "review": "scanned",
+      "lines": 108,
+      "sha256": "816c91f64a0bc5a66bafee92319e30f731af6fa00e5fc6a274efb8921a7c11b9",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/plan.ts",
+      "review": "read",
+      "lines": 42,
+      "sha256": "bfcdff071bd440780dc52f0180dd6b9bafe2bbe5e872526808c5085f7cbdbfe2",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/review.ts",
+      "review": "read",
+      "lines": 37,
+      "sha256": "7e61f788ca3111756a8bf6113e493e3d355376882912bdb7d0e9b3c3a9ac8ae7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/skillIcons.ts",
+      "review": "read",
+      "lines": 80,
+      "sha256": "ce516709c28aee78120d1d725450dce87a06c3245b0e3e5315726c55c63cad5c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/skills.ts",
+      "review": "read",
+      "lines": 117,
+      "sha256": "12dd0a34ca28e770694aaf8442e4a47d4f1dbe68d3f251a22c64255fca42a8d7",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/sourceTypes.ts",
+      "review": "read",
+      "lines": 30,
+      "sha256": "5384290272cf9aab2dbb7f45b977ac2680a2b927890d9583e49a8d22fd8ba7f1",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/patch-notes/storage.ts",
+      "review": "read",
+      "lines": 31,
+      "sha256": "37ffe250defbc3e0cedf6def8423f27f1632630ef99227bddab16b4efea8ea05",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/prepare-ort.ts",
+      "review": "read",
+      "lines": 52,
+      "sha256": "849862fb24fe75dad6f835304a2601b35ed38a33ffb2aba3c7875cbe9f1c6650",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/prepare-pages.ts",
+      "review": "read",
+      "lines": 11,
+      "sha256": "55829fc4c2720f787d279140a63caf3a3cfacebece24c664a1e844e285d28acd",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/pwa/buildRelease.ts",
+      "review": "read",
+      "lines": 80,
+      "sha256": "affe059b7a7d2e31fa8be96427e759fb7a853a617868ff32eb04a16ad4fb4ceb",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/pwa/workerBridge.ts",
+      "review": "read",
+      "lines": 29,
+      "sha256": "98c85ec1c307d36516e3241fe217dd376365602f505cfe5d596f1320921f7420",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "scripts/skill-cooltime.ts",
+      "review": "targeted_read",
+      "lines": 108,
+      "sha256": "ab9ed9573f40e2d6be4caa4d645fb06c5b03ec35cee62ce0b2d471e85844f269",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/championProfileTranslations.ts",
+      "review": "read",
+      "lines": 78,
+      "sha256": "ac73524633bab61b255490e39859fc61f5ef055e63306dbc7fecb5c83cf6ac52",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/comparisonTranslations.ts",
+      "review": "scanned",
+      "lines": 261,
+      "sha256": "e6c7a66b2538a2e786269d41f6b8ade9de8ce3a2f45d959571de7b4ddd4214d5",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/enUSTranslations.ts",
+      "review": "scanned",
+      "lines": 399,
+      "sha256": "4989ececb122bec21f1c1ff709e4945888c9e8b0ceadeb243ddf3a3dd25c7f7d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/fill.ts",
+      "review": "read",
+      "lines": 4,
+      "sha256": "85b8352600c172e853958643f899459613e197c65485a6a2b37a9408c7c3877b",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/index.tsx",
+      "review": "read",
+      "lines": 52,
+      "sha256": "90c7ebd8063176a1ffd3b3c813ae8e1ee8ea2c9d21cc3f669c262ae8f01cccab",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/koKRTranslations.ts",
+      "review": "scanned",
+      "lines": 401,
+      "sha256": "46cebb28b778970aa32613b239fe2a02153598f4264e63e4304be263531a0c01",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/translationTypes.ts",
+      "review": "scanned",
+      "lines": 436,
+      "sha256": "c6f3c60dae62f5c3831090505541717ebd673a8c3f021955e48d608166d8fb4c",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/translations.ts",
+      "review": "read",
+      "lines": 12,
+      "sha256": "bbcc98ec8e5a3129c34af84323ffa835b0a61e3f729401c55e4d3688a11ce926",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/i18n/zhCNTranslations.ts",
+      "review": "scanned",
+      "lines": 384,
+      "sha256": "4c5a6b07f8fe8941003bd4e10470de61bdbbae4757e827aabe055e94dadca55e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/championLevel.ts",
+      "review": "read",
+      "lines": 100,
+      "sha256": "c666a55c6a5dfca3ec5e28623060f49262475dc065d22cf9b4854260530bbf7e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/championLevelTable.ts",
+      "review": "read",
+      "lines": 129,
+      "sha256": "72a9f1bf8ae2203a3470bcad625ce536da8c549a5c3ffffb3758a1732db33b8f",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/clipboard.ts",
+      "review": "read",
+      "lines": 30,
+      "sha256": "5763227d3083cf22614fe73ce80f116d781538a86fa819794668b06e9074998d",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/htmlText.ts",
+      "review": "read",
+      "lines": 22,
+      "sha256": "5745043faf9f964cf56aaae1520fdde6e7450c53e45c7cab08d74e7e88eef875",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/itemTierUtils.ts",
+      "review": "read",
+      "lines": 91,
+      "sha256": "7d9ef035662caf57e4eecea97d31b9fbc8484e3c707061b8898a0243a21afdec",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/logger.ts",
+      "review": "read",
+      "lines": 56,
+      "sha256": "3004361e7708ccc648975b8d53ad95f092c1e23eb519929dadcfe17fa33c7d55",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/productMetrics.ts",
+      "review": "read",
+      "lines": 34,
+      "sha256": "7554be09a867968cc7e18f28df76e68cbf75cecab085233be5ad5596848b83c4",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/staticDataRelease.ts",
+      "review": "read",
+      "lines": 47,
+      "sha256": "55d2f052e350853273ffe6c89513f9facdc4125cacec1e418da903102fceabdb",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/staticDataUtils.ts",
+      "review": "read",
+      "lines": 3,
+      "sha256": "361a09d40ef09c46479595189987af8a0587f2a24e06d884d4d9640c953dfb93",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/storageSchema.ts",
+      "review": "read",
+      "lines": 37,
+      "sha256": "7a3f73d95ad0a87d046e92e671fc3b01211300ab3d336cac89f175d659ecbbeb",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "review": "read",
+      "lines": 113,
+      "sha256": "07a0e467ce3d08f09e724160d1442977c1570bf0c42814ce34dacd3c85e80f41",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/lib/warmIcons.ts",
+      "review": "read",
+      "lines": 89,
+      "sha256": "3337310c191096da3dce4e403b7e7b4bd1f0873c037067d6b2df4eaf905fcd2e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/types/combatNormalized.ts",
+      "review": "read",
+      "lines": 234,
+      "sha256": "6a3787c577958e9d9e26820174f3ab4ade8b97c931b03d5d887004923f344fba",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/types/combatStats.ts",
+      "review": "read",
+      "lines": 382,
+      "sha256": "f8f76a97f1e0378725e1a3f55166dd61e6882405a405679d846de4636a75a8bc",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "src/types/index.ts",
+      "review": "read",
+      "lines": 178,
+      "sha256": "19a62c01e4c35673888c013b7def252be9eb56eb02ff6c56e91d7d8aacd1959e",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "tests/unit/llm-script-recovery.test.ts",
+      "review": "read",
+      "lines": 64,
+      "sha256": "0053cfd827b6083c1c62a365ed1c9cc6456ab0e7bd8a00a0098a1113e96cde62",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "tests/unit/prepare-ort.test.ts",
+      "review": "read",
+      "lines": 46,
+      "sha256": "dae1749f41d58920a136173b985016b26581fa9dadfe23d4a8c80618aa2e3717",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "tests/unit/static-data-publication.test.ts",
+      "review": "read",
+      "lines": 114,
+      "sha256": "253d90e14970545b6d0c576b8cf6dd3d163104a1a14ffba7c0f8c0316c020871",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "tests/unit/thumbnail-publication.test.ts",
+      "review": "read",
+      "lines": 126,
+      "sha256": "908ec5e261b3fe50ec5bb97e0f5452bda1753691a0fafd1fb43e272a2ac8484a",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    },
+    {
+      "path": "tsconfig.json",
+      "review": "read",
+      "lines": 31,
+      "sha256": "2553a05740b3cc6ff5303032981dab3134c0f6673a0317f072c58163c93983da",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "text_boundary_scan"
+      ]
+    },
+    {
+      "path": "tsconfig.node.json",
+      "review": "read",
+      "lines": 12,
+      "sha256": "268479c7c459959ca306c27263477e69ce23e89efe8caa931453404e1a193b90",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "text_boundary_scan"
+      ]
+    },
+    {
+      "path": "tsconfig.scripts.json",
+      "review": "read",
+      "lines": 10,
+      "sha256": "916a479c24a24e5281d31a681b7c1fd4cf77d9d868b45a89c9b44e547ad89190",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "text_boundary_scan"
+      ]
+    },
+    {
+      "path": "vite.config.ts",
+      "review": "read",
+      "lines": 228,
+      "sha256": "586fefcfb4e48beb33fe09aef0c3bdf0a0a5c68bec9e68ddfd30d474a61d4452",
+      "checks": [
+        "line_count",
+        "boundary_patterns",
+        "TypeScript_AST_parse",
+        "function_span_inventory"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "support-01",
+      "priority": "P1",
+      "status": "fixed",
+      "path": "scripts/generate-static-data.ts",
+      "line": 66,
+      "before": "Deletes old patch files before fetching or validating a new release; same-patch writes overwrite good files before validation.",
+      "reproduction": "/tmp/cooldown-apply-b8py9j/support-generator-failure.json",
+      "change": "Fetch sources first, build/validate in staging, copy advisor inputs, publish manifest last with patch rollback, prune numeric patch folders only after success.",
+      "tests": [
+        "tests/unit/static-data-publication.test.ts"
+      ],
+      "count": 7
+    },
+    {
+      "id": "support-02",
+      "priority": "P1",
+      "status": "fixed",
+      "path": "scripts/generate-thumbnails.ts",
+      "line": 28,
+      "before": "Deletes all old image directories, including unrelated directories, before downloads succeed.",
+      "reproduction": "/tmp/cooldown-apply-b8py9j/support-thumbnail-failure.json",
+      "change": "Stage images and spriteSheets.ts/assetVersion.ts together, reject download/empty-sheet failures, rollback publication failures, prune numeric versions after successful installation. Split collection, image transforms, sheet output and publication by responsibility.",
+      "tests": [
+        "tests/unit/thumbnail-publication.test.ts",
+        "tests/data/thumbnails.test.ts"
+      ],
+      "count": 20,
+      "pixelEvidence": "Sharp fixtures verify literal colors at champion/item cell centers and Q/E slots, 96px champion cells, 320x64 five-slot strips, AVIF width and generated TypeScript ids."
+    },
+    {
+      "id": "support-03",
+      "priority": "P2",
+      "status": "fixed",
+      "path": "scripts/prepare-ort.ts",
+      "line": 44,
+      "before": "Equal file length causes obsolete runtime contents to be reused after an SDK change.",
+      "reproduction": "/tmp/cooldown-apply-b8py9j/support-ort-same-size.json",
+      "change": "Check SHA-256 when sizes match; copy changed contents while avoiding rewriting identical files.",
+      "tests": [
+        "tests/unit/prepare-ort.test.ts"
+      ],
+      "count": 1
+    },
+    {
+      "id": "support-04",
+      "priority": "P2",
+      "status": "fixed",
+      "path": "scripts/llm/lib/data.ts",
+      "line": 53,
+      "before": "Without version.json, patch fallback compares only the minor patch and picks 25.24 over 26.1.",
+      "reproduction": "/tmp/cooldown-apply-b8py9j/support-patch-fallback.json",
+      "change": "Use numeric comparison for complete year.patch strings.",
+      "tests": [
+        "tests/unit/llm-script-recovery.test.ts"
+      ],
+      "count": 1
+    },
+    {
+      "id": "support-05",
+      "priority": "P2",
+      "status": "fixed",
+      "path": "scripts/llm/lib/ollama.ts",
+      "line": 123,
+      "before": "EOF without a done:true completion record returns a partial answer as success.",
+      "reproduction": "/tmp/cooldown-apply-b8py9j/support-ollama-truncated-stream.json",
+      "change": "Reject incomplete streams and preserve complete answer tokens and durations.",
+      "tests": [
+        "tests/unit/llm-script-recovery.test.ts"
+      ],
+      "count": 2
+    }
+  ],
+  "verification": {
+    "TypeScriptAST": "254 initial source files, zero parse errors; four new modules pass scripts typecheck.",
+    "PythonAST": "110 files, zero parse errors; model/training code was not executed.",
+    "ShellSyntax": "Two shell scripts pass bash -n.",
+    "i18n": "393 strings per locale, identical key sets; three placeholder differences were checked at their callsites and are intentional (Korean particles and literal stack placeholders).",
+    "commands": [
+      "node --import tsx --test tests/unit/llm-script-recovery.test.ts tests/unit/prepare-ort.test.ts tests/unit/static-data-publication.test.ts tests/unit/thumbnail-publication.test.ts tests/data/thumbnails.test.ts",
+      "npm run type-check:scripts",
+      "scoped ESLint --max-warnings 0 for modified scripts/new tests"
+    ]
+  },
+  "remaining": [
+    {
+      "priority": "review",
+      "path": "vite.config.ts",
+      "line": 183,
+      "status": "source-boundary observation, not reproduced in an installed PWA upgrade",
+      "issue": "Fixed ort/models URLs use CacheFirst cooldown-advisor-runtime-v1 for 30 days; SDK/runtime cache versioning needs a dedicated upgrade/offline reproduction before any change."
+    }
+  ],
+  "limitations": [
+    "GPU/model training, external Ollama servers, paid evaluators, remote jobs and real upstream downloads were not run.",
+    "Research scripts marked scanned are not a complete semantic line-by-line human audit.",
+    "Tests used isolated temporary directories and mock network streams; real public/data, public/img and generated TypeScript indexes were not generated.",
+    "Staging protects ordinary fetch/validation/publication failures, not an arbitrary process crash across filesystem renames or concurrent independent generation processes.",
+    "One existing buildSheet signature keeps seven related image/layout/cache arguments; it was moved intact rather than widening the refactor scope."
+  ],
+  "deliveryGate": {
+    "hard": "PASS for owned non-UI scope: no product UI or user design assets changed; new outputs occur only after successful generation/validation.",
+    "purpose": "PASS: staging prevents proven data loss; content hash prevents proven stale runtime; each new comment explains a failure or boundary.",
+    "liveliness": "PASS for non-UI scope: existing product imagery, sprite ordering, geometry and compression remain unchanged; no visual design was generated.",
+    "craft": "PASS: 31 focused/real-data checks pass, pixel-level sprite checks pass, scoped lint and scripts typecheck pass; audit coverage explicitly distinguishes read from scanned."
+  }
+}

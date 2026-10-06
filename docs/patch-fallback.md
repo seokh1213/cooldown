@@ -1,5 +1,21 @@
 # 과거 패치 소급
 
+명령과 로더를 확인한 기준일은 2026-10-06이다. 아래 26.17 결과와 도구를 만든 과정은 당시 조사 기록으로 보존한다.
+26.19 폴더에 섞여 있던 두 조사 JSON은 원본 그대로 `data/ability-research/26.18/`로 옮겼다.
+생성기와 로더는 `data/ability-research/<조사 기준 패치>/`를 사용하고 파일 내부 `patchVersion`도 검사한다.
+다른 패치나 패치가 없는 조사 파일은 오류로 거부한다. 현재 패치의 조사 파일이 없으면 소급 자료를 싣지 않는다.
+현행 검증 작업은 [제품 로드맵](product-roadmap.md), 작성 절차는 [지식 작성 지침](../knowledge/README.md)을 따른다.
+
+2026-10-06의 26.19 재조사 결과는 자리표시자 **18개 스킬, 6패치 소급, 복구 0건·미해결 18건**이다.
+문장 소실 조사는 **70패치, 26개 스킬·35문장**이며 두 실행의 다운로드 실패는 0건이었다.
+아래 26.17 수치는 이 결과와 별개인 당시 기록이다.
+
+조사 파일은 완성된 임시 파일을 교체하는 방식으로 발행한다. 이전 원문은 같은 폴더의
+`history/<파일명 stem>/<UTC시간+UUID>.json`에 보존한다. 쓰기·이력 저장·교체 실패 시 기존 최신 파일을 유지한다.
+`--champ`은 실제 게임 ID만 허용하고 `partial/<챔피언 범위>/`에 기록해 전체 결과를 덮어쓰지 않는다.
+하나를 조사하면 ID가 폴더명이 되고, 여러 ID는 정렬된 첫·끝 ID, 개수, 16자리 해시로 범위를 구분한다.
+자료 묶음은 전체 조사만 읽는다. 결측 0건도 빈 최신 결과를 발행하며, `--scan`은 파일을 쓰지 않는다.
+
 > 현재 패치 데이터에 없는 스킬 설명을 직전 패치, 없으면 그 전 패치에서 찾는다.
 > 찾은 것은 **덮어쓰지 않고** 어느 패치에서 왔는지와 함께 별도 파일에 담는다.
 
@@ -30,7 +46,7 @@ npm run llm:fetch-fallbacks -- --depth 12
 npm run llm:fetch-fallbacks -- --champ Kayn,Locke
 ```
 
-출력은 `public/data/<patch>/llm/ability-fallbacks.json`.
+출력은 `data/ability-research/<patch>/ability-fallbacks.json`이다. 폴더의 패치는 조사 당시의 기준 패치이며, 복구한 본문의 패치는 각 `recoveredFrom.patchVersion`에 별도로 기록한다.
 
 ### 26.17 결과
 
@@ -47,7 +63,7 @@ npm run llm:fetch-fallbacks -- --champ Kayn,Locke
 그래도 3건은 실제 수치를 되찾았다. 로크 R 은 `ExecuteTooltipCalc` 때문에 처형 기준치 서술이
 통째로 비어 있었는데, 26.15 본문에서 "체력이 10/11/12% 아래로 떨어지면 봉인" 을 되찾았다.
 
-**남은 60건을 줄이려면 소급이 아니라 파서를 고쳐야 한다.** 소급은 그 판정까지 내려 준다.
+**당시 남은 60건은 소급보다 파서 보완이 필요한 후보였다.** 현재 TODO 수는 새 패치로 다시 조사해야 한다.
 
 ## 3. `npm run llm:find-lost` — 사라진 문장 찾기
 
@@ -55,12 +71,12 @@ npm run llm:fetch-fallbacks -- --champ Kayn,Locke
 패치당 요청 한 번이면 되므로, 70패치를 거슬러 올라가도 부담이 없다.
 
 ```bash
-npm run llm:find-lost                # 24패치
-npm run llm:find-lost -- --depth 70
+npm run llm:find-lost                # 기본 70패치
+npm run llm:find-lost -- --depth 24   # 소급 범위를 줄일 때
 npm run llm:find-lost -- --champ Corki
 ```
 
-출력은 `public/data/<patch>/llm/ability-lost-descriptions.json`.
+출력은 `data/ability-research/<patch>/ability-lost-descriptions.json`이다. 문장이 마지막으로 존재한 패치는 각 `lastSeenIn`으로 구분한다.
 
 ### 비교 기준을 두 번 고쳤다
 
@@ -104,10 +120,11 @@ npm run llm:find-lost -- --champ Corki
 
 ## 5. 지식 카드 작성에 연결
 
-`npm run llm:source-pack -- --champ <챔피언>` 의 **5장 패치 소급**에 두 결과가 함께 실린다.
+`npm run llm:source-pack -- --champ <챔피언>`의 **4장 패치 소급**에 두 결과가 함께 실린다.
+아래는 과거 조사 내용의 출력 형식 예시이며 현재 패치의 사실을 검증한 결과가 아니다.
 
 ```
-## 5. 패치 소급
+## 4. 패치 소급
 
 ### 과거 패치에서 메운 자리 (수치는 그 패치 기준)
 [R] 연옥 — 26.15 본문
@@ -125,9 +142,10 @@ npm run llm:find-lost -- --champ Corki
 
 ## 6. 캐시와 부담
 
-- DDragon `championFull.json` 은 응답이 1.8MB 라 설명만 추려서 캐시한다. 70패치에 약 10MB.
+- 당시 DDragon `championFull.json` 응답은 약 1.8MB였고 설명만 추린 70패치 캐시는 약 10MB였다. 실제 용량은 조사 범위에 따라 달라진다.
 - CommunityDragon 챔피언 파일은 원본 그대로 캐시한다. 챔피언·패치 조합마다 한 번만 받는다.
-- 둘 다 `research/.patch-cache/` 아래이고 git 에서 제외한다. `--refresh` 로 무시할 수 있다.
+- 둘 다 `research/.patch-cache/` 아래이고 git에서 제외한다. `fetch-fallbacks`는 `--refresh`로 디스크 캐시를 무시할 수 있다.
+- `find-lost`에는 `--refresh` 옵션이 없다. 버전 목록 캐시는 6시간 뒤 다시 받고, 패치별 설명 요약 파일은 다시 사용한다.
 
 ## 7. 한계
 

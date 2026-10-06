@@ -27,7 +27,6 @@ for (const width of [390, 1280]) test(`부분 질문은 짧게 답하고 전체 
   await expect(stats.getByRole("row").filter({ hasText: /^마나330/ })).toContainText("1435");
   await expect(stats.locator("[data-highlighted=true]")).toContainText("체력");
   await expect(page.locator("[data-reference-skills]").last().locator("[data-skill-icon]")).toHaveCount(5);
-  await page.screenshot({ path: `/tmp/cooldown-health-reference-${width}.png` });
 
   await ask("Q 스킬정보좀알려줘");
   if (width >= 1280) await page.getByRole("button", { name: "자료 보기", exact: true }).last().click();
@@ -41,7 +40,6 @@ for (const width of [390, 1280]) test(`부분 질문은 짧게 답하고 전체 
   await expect(detail).toContainText("마나");
   await detail.getByRole("button", { name: "Close", exact: true }).click();
   await expect(detail).toHaveCount(0);
-  await page.screenshot({ path: `/tmp/cooldown-complete-reference-${width}.png` });
 
   await page.reload();
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();

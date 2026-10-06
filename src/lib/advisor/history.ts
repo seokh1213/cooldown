@@ -1,10 +1,4 @@
-/**
- * 대화 기록. 이 기기의 localStorage 에만 남는다.
- *
- * 답 카드는 챔피언 카드(수 KB)를 통째로 들고 있어 그대로 저장하면 대화 스무 개에
- * 수백 KB 가 된다. 카드는 id 로만 남기고(dehydrate) 불러올 때 자료에서 다시 채운다(revive).
- * 자료가 바뀌어 id 가 사라진 답은 조용히 버린다 — 낡은 카드를 현재값처럼 보이는 것이 최악이다.
- */
+/** 대화와 카드 원본을 이 기기에 저장한다. 과거 카드를 현재 자료로 다시 채우지 않는다. */
 import type { AdvisorAnswer, CompareRow, Fact, ItemEffect, ItemVerdict } from "./answer";
 import type { SpellFocus } from "./spellFocus";
 import type { AdvisorData } from "./context";
@@ -13,6 +7,10 @@ import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
 import type { DialogueMemory } from "./dialogueState";
 import type { ChampionStatQuery } from "./statQuery";
 import type { DialogueTrace } from "./requestContract";
+import { isStoredAnswer, isStoredTurn, validStoredTurns } from "./historyValidation";
+import { isHistorySource, isSnapshotAnswer, type HistorySource } from "./historySnapshot";
+import { reviveChampionDetails } from "./championDetail";
+import type { ChampionDetailV2 } from "@/data/contracts/championData";
 
 export const CONVERSATIONS_KEY = "cooldown.advisor.conversations.v1";
 /** 남기는 대화 수. 넘으면 오래된 것부터 버린다. */
@@ -21,7 +19,7 @@ export const CONVERSATION_LIMIT = 20;
 export const TURN_LIMIT = 80;
 const TITLE_LENGTH = 40;
 
-export type StoredAnswer =
+type StoredAnswerReference =
   | {
       kind: "spell";
       championId: string;
@@ -71,7 +69,11 @@ export type StoredAnswer =
     }
   | { kind: "text"; text: string };
 
+export type StoredAnswer = StoredAnswerReference & { snapshot?: AdvisorAnswer };
+
 export interface StoredTurn {
+  source?: HistorySource;
+  details?: Record<string, ChampionDetailV2>;
   id: number;
   role: "user" | "assistant";
   content: string;
@@ -99,7 +101,7 @@ export interface Conversation {
   turns: StoredTurn[];
 }
 
-export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
+function answerReference(answer: AdvisorAnswer): StoredAnswerReference {
   switch (answer.kind) {
     case "spell":
       return {
@@ -151,76 +153,43 @@ export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
   }
 }
 
-/** 자료에서 카드를 다시 채운다. 없어진 챔피언·규칙이면 undefined. */
-export function reviveAnswer(stored: StoredAnswer, data: AdvisorData): AdvisorAnswer | undefined {
+export function dehydrateAnswer(answer: AdvisorAnswer): StoredAnswer {
+  return structuredClone({ ...answerReference(answer), snapshot: answer });
+}
+
+function snapshotMatches(stored: StoredAnswer, answer: AdvisorAnswer): boolean {
+  if (stored.kind !== answer.kind) return false;
   switch (stored.kind) {
-    case "spell": {
-      const card = data.cardById.get(stored.championId);
-      const spell = card?.spells.find((entry) => entry.slot === stored.slot);
-      if (!card || !spell) return undefined;
-      return {
-        kind: "spell",
-        championId: card.id,
-        championName: card.name,
-        card,
-        spell,
-        focus: stored.focus,
-        headline: stored.headline,
-        facts: stored.facts,
-        highlighted: stored.highlighted,
-      };
-    }
-    case "champion": {
-      const card = data.cardById.get(stored.cardId);
-      if (!card) return undefined;
-      const notes = stored.notes ? { ...stored.notes, perspective: stored.notes.perspective ?? ("both" as const) } : undefined;
-      return { kind: "champion", card, focus: stored.focus, view: stored.view, notes, statQuery: stored.statQuery, headline: stored.headline };
-    }
-    case "rule": {
-      const rule = data.ruleIndex.get(stored.ruleName);
-      return rule ? { kind: "rule", rule, highlighted: stored.highlighted, rest: stored.rest } : undefined;
-    }
-    case "suggestion": {
-      const candidates = stored.candidateIds
-        .map((id) => data.cardById.get(id))
-        .filter((card): card is NonNullable<typeof card> => Boolean(card));
-      return candidates.length ? { kind: "suggestion", original: stored.original, candidates, reason: stored.reason } : undefined;
-    }
-    case "compare": {
-      const cards = stored.cardIds.map((id) => data.cardById.get(id));
-      if (cards.some((card) => !card)) return undefined;
-      return {
-        kind: "compare",
-        cards: cards as NonNullable<(typeof cards)[number]>[],
-        statQuery: stored.statQuery,
-        level: stored.level,
-        slot: stored.slot,
-        focus: stored.focus,
-        rows: stored.rows,
-        headline: stored.headline,
-        headlines: stored.headlines,
-        matchup: stored.matchup,
-        notes: stored.notes,
-      };
-    }
-    case "item":
-      return {
-        kind: "item",
-        itemId: stored.itemId,
-        itemName: stored.itemName,
-        price: stored.price,
-        stats: stored.stats,
-        effects: stored.effects,
-        verdicts: stored.verdicts,
-      };
-    case "text":
-      return { kind: "text", text: stored.text };
+    case "champion": return answer.kind === "champion" && stored.cardId === answer.card.id;
+    case "spell": return answer.kind === "spell" && stored.championId === answer.championId && stored.slot === answer.spell.slot;
+    case "rule": return answer.kind === "rule" && stored.ruleName === answer.rule.name;
+    case "compare": return answer.kind === "compare" && JSON.stringify(stored.cardIds) === JSON.stringify(answer.cards.map(card => card.id));
+    case "suggestion": return answer.kind === "suggestion" && JSON.stringify(stored.candidateIds) === JSON.stringify(answer.candidates.map(card => card.id));
+    default: return true;
   }
 }
 
+/** 카드 원본이 없는 기존 기록은 현재 카드로 대체하지 않는다. */
+export function reviveAnswer(stored: unknown, _data?: Pick<AdvisorData, "patch">): AdvisorAnswer | undefined {
+  if (!isStoredAnswer(stored)) return undefined;
+  if (isSnapshotAnswer(stored.snapshot) && snapshotMatches(stored, stored.snapshot)) {
+    const answer = structuredClone(stored.snapshot);
+    if (answer.kind === "champion" && answer.notes) answer.notes.perspective ??= "both";
+    return answer;
+  }
+  if (stored.kind === "item" || stored.kind === "text") {
+    const { snapshot: _snapshot, ...answer } = stored;
+    return structuredClone(answer);
+  }
+  return undefined;
+}
+
 export function dehydrateTurn(turn: AdvisorTurn): StoredTurn {
-  // 화면 발화는 사용자·도우미 둘뿐이다. system 은 프롬프트라 대화에 오지 않는다.
+  // 복원 과정에서 못 읽은 카드나 다른 패치의 기억도 저장 원문에 남긴다.
+  if (turn.historical) return structuredClone({ ...turn.historical, rating: turn.rating });
   const stored: StoredTurn = { id: turn.id, role: turn.role === "user" ? "user" : "assistant", content: turn.content };
+  if (turn.source) stored.source = structuredClone(turn.source);
+  if (turn.details) stored.details = structuredClone(turn.details);
   if (turn.stats) stored.stats = turn.stats;
   if (turn.rating) stored.rating = turn.rating;
   if (turn.sources) stored.sources = turn.sources;
@@ -233,45 +202,36 @@ export function dehydrateTurn(turn: AdvisorTurn): StoredTurn {
   return stored;
 }
 
-/**
- * 발화를 되살린다. 카드가 있었는데 못 채우면 그 답은 버린다.
- * 진행 중 표시(activity)는 저장하지 않는다 — 불러온 대화에서 도는 점이 남으면 안 된다.
- */
-export function reviveTurn(stored: StoredTurn, data: AdvisorData): AdvisorTurn | undefined {
-  const turn: AdvisorTurn = { id: stored.id, role: stored.role, content: stored.content };
+/** 카드 복원에 실패해도 당시 질문과 답문은 남긴다. 진행 중 상태는 되살리지 않는다. */
+export function reviveTurn(stored: unknown, data: Pick<AdvisorData, "patch">): AdvisorTurn | undefined {
+  if (!isStoredTurn(stored)) return undefined;
+  const turn: AdvisorTurn = { id: stored.id, role: stored.role, content: stored.content, historical: structuredClone(stored) };
   if (stored.stats) turn.stats = stored.stats;
   if (stored.rating) turn.rating = stored.rating;
   if (stored.sources) turn.sources = stored.sources;
   if (stored.notice) turn.notice = stored.notice;
   if (stored.byCode) turn.byCode = true;
+  if (isHistorySource(stored.source)) {
+    turn.source = structuredClone(stored.source);
+    turn.details = reviveChampionDetails(stored.details, stored.source);
+  }
   if (stored.memory?.patch === data.patch) turn.memory = structuredClone(stored.memory);
   if (stored.trace) turn.trace = structuredClone(stored.trace);
   if (stored.answer) {
-    const answer = reviveAnswer(stored.answer, data);
-    if (!answer) return undefined;
-    turn.answer = answer;
+    turn.answer = reviveAnswer(stored.answer);
+    if (!turn.answer) turn.referenceUnavailable = true;
   }
   if (stored.answers) {
-    const answers = stored.answers.map(answer => reviveAnswer(answer, data));
-    if (answers.some(answer => !answer)) return undefined;
-    turn.answers = answers as AdvisorAnswer[];
+    const answers = stored.answers.map(answer => reviveAnswer(answer));
+    turn.answers = answers.filter((answer): answer is AdvisorAnswer => answer !== undefined);
+    if (turn.answers.length !== answers.length) turn.referenceUnavailable = true;
   }
   return turn;
 }
 
-/** 저장된 대화에서 발화를 되살린다. 답이 사라진 질문은 질문까지 함께 빼서 짝을 맞춘다. */
-export function reviveTurns(stored: StoredTurn[], data: AdvisorData): AdvisorTurn[] {
-  const out: AdvisorTurn[] = [];
-  for (let i = 0; i < stored.length; i += 1) {
-    const turn = reviveTurn(stored[i], data);
-    if (turn) {
-      out.push(turn);
-      continue;
-    }
-    // 답을 버렸으면 바로 앞의 질문도 버린다.
-    if (out.length && out[out.length - 1].role === "user" && stored[i].role === "assistant") out.pop();
-  }
-  return out;
+export function reviveTurns(stored: unknown, data: Pick<AdvisorData, "patch">): AdvisorTurn[] {
+  if (!Array.isArray(stored)) return [];
+  return validStoredTurns(stored).map(entry => reviveTurn(entry, data)).filter((turn): turn is AdvisorTurn => turn !== undefined);
 }
 
 export function conversationTitle(turns: readonly { role: string; content: string }[]): string {
@@ -299,23 +259,29 @@ function browserStorage(): StorageLike | undefined {
 function isConversation(value: unknown): value is Conversation {
   if (typeof value !== "object" || value === null) return false;
   const c = value as Partial<Conversation>;
-  return typeof c.id === "string" && typeof c.title === "string" && Array.isArray(c.turns);
+  return typeof c.id === "string" && typeof c.title === "string" && Array.isArray(c.turns)
+    && (c.createdAt === undefined || typeof c.createdAt === "string")
+    && (c.updatedAt === undefined || typeof c.updatedAt === "string");
 }
 
 export function readConversations(storage: StorageLike | undefined = browserStorage()): Conversation[] {
   try {
     const parsed: unknown = JSON.parse(storage?.getItem(CONVERSATIONS_KEY) ?? "[]");
-    return Array.isArray(parsed) ? parsed.filter(isConversation) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter(isConversation).map(conversation => ({ ...conversation, turns: validStoredTurns(conversation.turns) }))
+      : [];
   } catch {
     return [];
   }
 }
 
-export function writeConversations(list: Conversation[], storage: StorageLike | undefined = browserStorage()): void {
+export function writeConversations(list: Conversation[], storage: StorageLike | undefined = browserStorage()): boolean {
+  if (!storage) return false;
   try {
-    storage?.setItem(CONVERSATIONS_KEY, JSON.stringify(list.slice(0, CONVERSATION_LIMIT)));
+    storage.setItem(CONVERSATIONS_KEY, JSON.stringify(list.slice(0, CONVERSATION_LIMIT)));
+    return true;
   } catch {
-    // 저장 공간이 막혀도 이번 세션의 대화는 화면에 있다.
+    return false;
   }
 }
 

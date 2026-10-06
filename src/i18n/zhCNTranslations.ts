@@ -337,6 +337,12 @@ export const zhCNTranslations: Translations = {
       },
     },
     history: {
+      missingCard: "当时的卡片原始数据未保存，无法恢复。对话内容仍然保留。",
+      unknownPatch: "原始版本未知",
+      currentDataLink: "查看当前资料",
+      saveFailed: "对话保存失败。请释放存储空间后重试。关闭页面可能会丢失新回答。",
+      retrySave: "重新保存",
+
       loading: "正在恢复之前的对话，你可以先输入问题。",
       title: "对话记录",
       open: "对话记录",

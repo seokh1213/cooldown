@@ -1,6 +1,7 @@
 import type { ChampionSpell } from "@/types";
 import { logger } from "@/lib/logger";
 import { binHashKey } from "./binHash";
+import { scaleCalculationResult } from "./calculationOperations";
 import { getDataValueByName } from "./dataValueUtils";
 import type { PartResult } from "./productPartEvaluator";
 import type {
@@ -79,6 +80,7 @@ interface ScaleTarget {
   base: Value;
   statParts: StatPart[];
   extraRanges?: Value[];
+  groupedParts?: CalcResult[];
   /** base 가 1~20레벨 값인 레벨 범위인지 여부 */
   isLevelRange?: boolean;
 }
@@ -93,8 +95,9 @@ interface ScaleTarget {
 function scaleResult(
   target: ScaleTarget,
   multiplier: PartResult,
-): { base: Value; statParts: StatPart[]; extraRanges?: Value[] } | null {
+): Pick<CalcResult, "base" | "statParts" | "extraRanges" | "groupedParts"> | null {
   const scale = multiplier.base;
+  if (multiplier.groupedParts?.length || (target.groupedParts?.length && isVector(scale))) return null;
   if (multiplier.isLevelRange) {
     // 레벨 범위 배율은 레벨 범위 base 나 상수에만 접는다.
     // 스탯 계수에 곱하면 "15.6/19.2% 주문력" 처럼 랭크 값으로 읽힌다.
@@ -111,6 +114,7 @@ function scaleResult(
         ratio: mul(part.ratio, scale),
       })),
       extraRanges: target.extraRanges?.map((range) => mul(range, scale)),
+      groupedParts: target.groupedParts?.map((part) => scaleCalculationResult(part, scale as number)),
     };
   } catch {
     // 길이가 다른 랭크 벡터끼리처럼 접을 수 없으면 호출부가 "× 배율" 로 남긴다
@@ -179,6 +183,7 @@ function evaluateGameCalculation(
   let rankBase: Value = 0;
   let levelBase: Value = 0;
   const statParts: StatPart[] = [];
+  const groupedParts: CalcResult[] = [];
   let hasLevelRange = false;
 
   for (const part of calc.mFormulaParts ?? []) {
@@ -207,6 +212,7 @@ function evaluateGameCalculation(
       continue;
     }
     statParts.push(...evaluated.statParts);
+    groupedParts.push(...(evaluated.groupedParts ?? []));
   }
 
   // 레벨 범위와 랭크 값은 길이가 다르면 못 더한다. 버리지 말고 옆에 붙인다.
@@ -227,6 +233,7 @@ function evaluateGameCalculation(
     isPercent: Boolean(calc.mDisplayAsPercent),
     isBreakpointRange: hasLevelRange || undefined,
     extraRanges: extraRanges.length > 0 ? extraRanges : undefined,
+    groupedParts: groupedParts.length > 0 ? groupedParts : undefined,
     precision,
   }, calc.mMultiplier, ctx, visited);
 }

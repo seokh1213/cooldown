@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { parseSpellTooltip } from "../../src/lib/spellTooltipParser/parser";
 import { evaluateSpellCalculation } from "../../src/lib/spellTooltipParser/spellCalculationEvaluator";
@@ -43,17 +42,13 @@ for (const lang of ["ko_KR", "en_US", "zh_CN"] as const) test(`수정 계산식�
   const html = parseSpellTooltip("{{ ChampionHeal }}", spell, data, lang);
   assert.match(html, /\[\[si:scalehealth]]6%/);
   assert.match(html, /\[\[si:scaleap]]54%/);
-  assert.equal((renderStatIconTokens(html).match(/<img /g) ?? []).length, 2);
+  const rendered = renderStatIconTokens(html);
+  assert.equal((rendered.match(/<img /g) ?? []).length, 2);
+  assert.match(rendered, /class="stat-icon /);
   assert.doesNotMatch(stripStatIconTokens(html), /\[\[si:/);
   const nested = parseSpellTooltip("{{ NestedHeal }}", spell, data, lang);
   assert.match(nested, /\[\[si:scalehealth]]12%/);
   assert.match(nested, /\[\[si:scaleap]]108%/);
-});
-
-test("스탯 아이콘 img 에 stat-icon 클래스와 그림자 제거 스타일", () => {
-  assert.match(renderStatIconTokens("[[si:scaleap]]"), /class="stat-icon /);
-  const css = readFileSync(new URL("../../src/index.css", import.meta.url), "utf8");
-  assert.match(css, /img\.stat-icon\s*\{\s*box-shadow:\s*none;/);
 });
 
 test("레벨 범위는 글리프까지 한 줄로 묶고 레벨 글리프는 level-icon 으로 그린다", () => {

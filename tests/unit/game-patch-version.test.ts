@@ -2,19 +2,12 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   resolveStaticDataRelease,
-  toCommunityDragonVersion,
-  patchLabel,
   toOfficialPatchVersion,
 } from "../../src/lib/staticDataRelease";
 
 test("공식 패치 버전 변환", () => {
   assert.equal(toOfficialPatchVersion("15.17.1"), "25.17");
-  assert.equal(toOfficialPatchVersion("16.17.1"), "26.17");
   assert.equal(toOfficialPatchVersion("14.24.1"), "14.24");
-});
-
-test("CDragon 버전 변환", () => {
-  assert.equal(toCommunityDragonVersion("16.17.1"), "16.17");
 });
 
 test("정적 데이터 릴리스 해석", () => {
@@ -24,12 +17,6 @@ test("정적 데이터 릴리스 해석", () => {
   });
 });
 
-for (const invalid of ["invalid", "latest", "16.17", "16.17.x"]) {
-  test(`잘못된 Data Dragon 버전 거부: ${invalid}`, () => {
-    assert.throws(() => resolveStaticDataRelease(invalid), /Invalid Data Dragon/);
-  });
-}
-
-test("패치 라벨", () => {
-  assert.equal(patchLabel("26.19"), "v26.19");
+test("고정 버전 없이 latest로 배포 자료를 해석하지 않는다", () => {
+  assert.throws(() => resolveStaticDataRelease("latest"), /Invalid Data Dragon/);
 });

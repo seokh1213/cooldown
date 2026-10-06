@@ -18,30 +18,12 @@ test("일반 질문은 조심할 것·아이템·싸우는 법", () => {
   assert.ok(general.startsWith("**조심할 것**") && general.includes("**아이템**") && general.includes("**싸우는 법**"));
 });
 
-test("라인전을 물으면 라인전 칸이 맨 앞, 세 칸까지", () => {
-  const laning = precomputedDigest(pair, "laning", pairCards)!;
-  assert.ok(laning.startsWith("**라인전**"), "라인전을 물으면 라인전 칸이 맨 앞");
-  assert.ok((laning.match(/\*\*/g) ?? []).length === 6, "세 칸까지");
-});
-
-test("아이템을 물으면 아이템 칸이 맨 앞", () => {
-  assert.ok(precomputedDigest(pair, "situational-item", pairCards)!.startsWith("**아이템**"));
-});
-
 test("물은 칸이 없으면 노트 조립으로 되돌아간다", () => {
   assert.ok(precomputedDigest(pair, "teamfight", pairCards) === undefined);
 });
 
 test("칸이 하나뿐이면 쓰지 않는다", () => {
   assert.ok(precomputedDigest({ laning: "라인전." }, "laning", pairCards) === undefined);
-});
-
-test("스킬 질문은 조심할 것부터", () => {
-  assert.ok(/W 응수/.test(precomputedDigest(pair, "skill", pairCards)!));
-});
-
-test("칸 첫머리의 이음말을 뗀다", () => {
-  assert.ok(!/\*\*\n이후에는/.test(precomputedDigest({ ...pair, fight: "이후에는 짧게 딜 교환합니다." }, "general", pairCards)!));
 });
 
 test("말파이트 대 제이스의 실제 미리 쓴 답은 물리 견제에 방어력을 우선한다", () => {

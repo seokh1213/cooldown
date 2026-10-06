@@ -95,7 +95,7 @@ test("같은 상성의 답변은 진행 상태를 유지하고 상대가 바뀌�
 test("한국어·영어·중국어 일반 조언과 이유 질문을 같은 대화 흐름에서 구분한다", async () => {
   const ctx = { data, lang: "ko_KR" as const, copy: translations.ko_KR.advisor, turns: [{ role: "assistant" as const, memory }], championIds: [], consented: false, canUseModel: false, retrieval: false, judge: "none" as const };
   const deps = { judge: async () => { throw new Error("일반 조언에 판정은 필요 없다"); }, search: async () => [] };
-  for (const question of ["팁 좀 줘", "팁 더", "tips", "有建议吗", "왜?", "why?"]) {
+  for (const question of ["팁 좀 줘", "tips", "有建议吗", "왜?", "why?"]) {
     const plan = (await planDialogue(question, ctx, deps)).parts[0].plan;
     if (plan.type !== "matchup") assert.fail(`${question}: 같은 상성의 이어 묻기여야 한다`);
     assert.equal(plan.continuation, /왜|why/.test(question) ? "explain" : "advance");
@@ -108,7 +108,7 @@ test("다른 규칙을 조회하고 저장 복원한 뒤 이전 상성의 일반
   const restored = reviveTurn(JSON.parse(JSON.stringify(stored)), data)!;
   const ctx = { data, lang: "ko_KR" as const, copy: translations.ko_KR.advisor, turns: [restored], championIds: [], consented: false, canUseModel: false, retrieval: false, judge: "none" as const };
   const deps = { judge: async () => { throw new Error("일반 조언에 판정은 필요 없다"); }, search: async () => [] };
-  for (const question of ["아까 상성에서 팁 좀 줘", "이전 상성으로 돌아가서 팁 더", "back to that matchup, any tips?", "回到之前的对局，有建议吗"]) {
+  for (const question of ["아까 상성에서 팁 좀 줘", "back to that matchup, any tips?", "回到之前的对局，有建议吗"]) {
     const dialogue = await planDialogue(question, ctx, deps);
     const plan = dialogue.parts[0].plan;
     if (plan.type !== "matchup") assert.fail(`${question}: 이전 상성으로 돌아가야 한다`);

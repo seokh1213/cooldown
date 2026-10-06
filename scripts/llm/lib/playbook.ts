@@ -7,12 +7,37 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import type { Playbook } from "../../../src/lib/knowledge/playbookCore";
+import type { Playbook, PlaybookEntry } from "../../../src/lib/knowledge/playbookCore";
+import type { ChampionCard } from "../../../src/lib/knowledge/facts";
+import {
+  deriveEscapeClaims,
+  deriveItemClaims,
+  deriveStackClaims,
+  renderEscapeClaims,
+  renderItemClaims,
+  renderStackClaims,
+} from "../../../src/lib/knowledge/claims";
 import { loadComboNotes } from "./comboNotes";
 
 export * from "../../../src/lib/knowledge/playbookCore";
 
 export const PLAYBOOK_ROOT = path.resolve(process.cwd(), "knowledge", "playbooks");
+
+/** 생성기와 검증기가 같은 본문을 쓰며, 작성용 검토 참조는 실행 번들에서 제외한다. */
+export function fillGenerated(entry: PlaybookEntry, card: ChampionCard | undefined): PlaybookEntry {
+  const { reviewRefs: _reviewRefs, ...runtimeEntry } = entry;
+  if (!entry.generated) return runtimeEntry;
+  const made = !card
+    ? ""
+    : entry.generated === "situational-item"
+      ? renderItemClaims(card, deriveItemClaims(card))
+      : entry.generated === "escape-window"
+        ? renderEscapeClaims(card, deriveEscapeClaims(card))
+        : renderStackClaims(card, deriveStackClaims(card));
+  const text = [made, entry.nuance].filter(Boolean).join(" ").trim();
+  const { generated: _generated, nuance: _nuance, ...rest } = runtimeEntry;
+  return { ...rest, text };
+}
 
 export function loadPlaybooks(root = PLAYBOOK_ROOT): Map<string, Playbook> {
   const map = new Map<string, Playbook>();

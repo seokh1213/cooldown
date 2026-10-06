@@ -19,6 +19,7 @@ import type { Champion, ChampionPassive, ChampionSpell } from "../../src/types";
 import type { NormalizedChampion } from "../../src/types/combatNormalized";
 import { compileAbilitySimulation } from "./ability-simulation";
 import stackSourceMap from "./ability-stack-sources.json";
+import { withAbilityUsageCondition } from "./ability-forms";
 
 export interface ChampionDataV2Input {
   patchVersion: string;
@@ -190,7 +191,7 @@ function buildActiveAbility(
     name: spell.name ?? normalized.spells[slot].name,
     maxRank: spell.maxrank,
     summary: spell.summary ?? spell.description ?? "",
-    bodyHtml: buildBodyHtml(spell, source, locale),
+    bodyHtml: withAbilityUsageCondition(normalized.id, slot, buildBodyHtml(spell, source, locale), locale),
     iconFile: spell.image?.full ?? `${spell.id}.png`,
     cooldownSeconds: numericValues(spell.cooldown),
     rechargeSeconds:

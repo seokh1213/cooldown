@@ -2,6 +2,17 @@ import { useMemo } from "react";
 import DOMPurify, { type Config } from "dompurify";
 import { renderStatIconTokens } from "@/lib/spellTooltipParser/statIcons";
 
+const statImageBase = (import.meta.env?.BASE_URL ?? "/").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const statImageUri = new RegExp(`^${statImageBase}img/\\d+\\.\\d+(?:\\.\\d+)?/stat/[a-z]+\\.webp$`);
+const gameHtmlPurifier = DOMPurify();
+
+if (gameHtmlPurifier.isSupported) {
+  // DOMPurify의 img data: 예외도 같은 로컬 경로 규칙으로 제한한다.
+  gameHtmlPurifier.addHook("uponSanitizeAttribute", (_element, attribute) => {
+    if (attribute.attrName === "src" && !statImageUri.test(attribute.attrValue)) attribute.keepAttr = false;
+  });
+}
+
 const GAME_HTML_POLICY: Config = {
   ALLOWED_TAGS: [
     "br",
@@ -27,7 +38,7 @@ const GAME_HTML_POLICY: Config = {
    * DOMPurify 가 `src` 를 통째로 지워 툴팁의 계수 항 아이콘이 빈 칸으로 나갔다.
    * 판본을 넣을 때 또 한 번 같은 일을 겪었다 — 이 줄은 주소를 바꿀 때마다 같이 본다.
    */
-  ALLOWED_URI_REGEXP: /^[^:]*\/img\/[^:]*\/stat\//,
+  ALLOWED_URI_REGEXP: statImageUri,
 };
 
 interface SafeHtmlProps {
@@ -37,7 +48,7 @@ interface SafeHtmlProps {
 
 export function sanitizeGameHtml(html: string): string {
   // 정적 데이터에는 `[[si:scalead]]` 같은 짧은 자리 표시로 저장돼 있다
-  return DOMPurify.sanitize(renderStatIconTokens(html), GAME_HTML_POLICY);
+  return gameHtmlPurifier.sanitize(renderStatIconTokens(html), GAME_HTML_POLICY);
 }
 
 function useSafeHtml(html: string): { __html: string } {

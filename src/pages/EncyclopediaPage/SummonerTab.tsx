@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { getNormalizedSummonerSpells } from "@/data/queries/gameDataQueries";
 import type { DataLocale } from "@/data/contracts/staticData";
 import type { NormalizedSummonerSpell } from "@/types/combatNormalized";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { Search } from "lucide-react";
 import { SpriteIcon, useSpriteSheet } from "@/components/ui/sprite-icon";
 import { SafeBlockHtml } from "@/components/ui/safe-html";
+import { useEncyclopediaData } from "./useEncyclopediaData";
 
 /**
  * 소환사 주문 백과
@@ -46,7 +48,6 @@ function cooldownOf(spell: NormalizedSummonerSpell): number {
 
 export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: SummonerTabProps) {
   const { t } = useTranslation();
-  const [spells, setSpells] = useState<NormalizedSummonerSpell[] | null>(null);
   /**
    * 거르기 전 **전체** 아이콘 이름.
    *
@@ -55,19 +56,16 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
    */
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    let cancelled = false;
-    getNormalizedSummonerSpells({ patchVersion, sources }, lang).then((data) => {
-      if (cancelled) return;
+  const loadSpells = useCallback(
+    () => getNormalizedSummonerSpells({ patchVersion, sources }, lang).then((data) => {
       // 협곡에서 쓰는 것만 둔다. 다른 모드 전용 주문까지 섞으면 견줄 대상이 흐려진다.
       const classic = data.filter((spell) => spell.modes?.includes("CLASSIC"));
       // 대기시간 차례로 세운다. 이 화면에서 가장 먼저 눈에 들어와야 하는 값이다.
-      setSpells([...classic].sort((left, right) => cooldownOf(left) - cooldownOf(right)));
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [patchVersion, sources, lang]);
+      return [...classic].sort((left, right) => cooldownOf(left) - cooldownOf(right));
+    }),
+    [patchVersion, sources, lang],
+  );
+  const { data: spells, error, retry } = useEncyclopediaData(loadSpells);
 
   /*
    * 아이콘은 시트 한 장에서 잘라 쓴다. 백과 네 탭 중 이것만 Data Dragon 을 직접
@@ -88,8 +86,11 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
     );
   }, [spells, term]);
 
+  if (error) {
+    return <div role="alert" className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">{t.app.loadError}<Button onClick={retry} variant="outline" className="h-11">{t.app.retry}</Button></div>;
+  }
   if (!spells) {
-    return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
+    return <div role="status" className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
   }
   if (spells.length === 0) {
     return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.emptyList}</div>;
@@ -102,6 +103,7 @@ export function SummonerTab({ patchVersion, sources, ddragonVersion, lang }: Sum
         <div className="group relative w-full sm:w-64">
           <Search aria-hidden="true" className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
           <Input
+            aria-label={t.encyclopedia.summoner.searchPlaceholder}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder={t.encyclopedia.summoner.searchPlaceholder}

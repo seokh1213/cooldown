@@ -13,7 +13,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import { loadCuratedTips } from "./lib/knowledge";
-import { loadPlaybooks } from "./lib/playbook";
+import { fillGenerated, loadPlaybooks } from "./lib/playbook";
 import type { CuratedTip } from "../../src/lib/knowledge/knowledgeCore";
 import type { Playbook, PlaybookEntry } from "../../src/lib/knowledge/playbookCore";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
@@ -50,26 +50,6 @@ export interface AdvisorKnowledgeBundle {
     rules: number;
     mechanics: number;
   };
-}
-
-/**
- * `generated` 표시가 있는 항목의 본문을 카드에서 지어 넣는다.
- *
- * 자료에서 도출되는 대목은 여기서 만들고, 사람이 적은 `nuance` 한 문장을 뒤에
- * 붙인다. 카드가 없으면(신규 챔피언 등) 만들 수 없으므로 nuance 만 남긴다.
- */
-function fillGenerated(entry: PlaybookEntry, card: ChampionCard | undefined): PlaybookEntry {
-  if (!entry.generated) return entry;
-  const made = !card
-    ? ""
-    : entry.generated === "situational-item"
-      ? renderItemClaims(card, deriveItemClaims(card))
-      : entry.generated === "escape-window"
-        ? renderEscapeClaims(card, deriveEscapeClaims(card))
-        : renderStackClaims(card, deriveStackClaims(card));
-  const text = [made, entry.nuance].filter(Boolean).join(" ").trim();
-  const { generated: _generated, nuance: _nuance, ...rest } = entry;
-  return { ...rest, text };
 }
 
 /**

@@ -15,7 +15,7 @@ import {
 import { SectionProps } from "./types";
 import { SkillTooltip } from "./SkillTooltip";
 import { SkillRankCooldown } from "./SkillRankCooldown";
-import { getCooldownForLevel } from "./utils";
+import { buildSkillRows } from "./utils";
 import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 
@@ -25,32 +25,7 @@ export function SkillsSectionMobile({
   ddragonVersion,
 }: SectionProps) {
   const { t } = useTranslation();
-  const maxLevel = React.useMemo(() => {
-    return Math.max(
-      ...champions.map((c) =>
-        c.spells ? Math.max(...c.spells.map((s) => s.maxrank)) : 0
-      )
-    );
-  }, [champions]);
-
-  const skillRows = React.useMemo(() => {
-    return Array.from({ length: maxLevel }, (_, levelIdx) => {
-      const level = levelIdx + 1;
-      return {
-        level,
-        skills: champions.map((champion) => {
-          if (!champion.spells) return null;
-          return champion.spells.map((skill) => {
-            const cooldown = getCooldownForLevel(skill, level);
-            return {
-              skill,
-              cooldown,
-            };
-          });
-        }),
-      };
-    });
-  }, [champions, maxLevel]);
+  const skillRows = React.useMemo(() => buildSkillRows(champions), [champions]);
 
   return (
     <TooltipProvider delayDuration={0} skipDelayDuration={150}>

@@ -33,11 +33,6 @@ export function formatLevels(values: number[] | undefined): string | undefined {
   return rounded.join("/");
 }
 
-export function truncate(text: string, max: number): string {
-  if (text.length <= max) return text;
-  return `${text.slice(0, max - 1).trimEnd()}…`;
-}
-
 /**
  * 한국어 조사를 앞말의 받침에 맞춰 고른다.
  *

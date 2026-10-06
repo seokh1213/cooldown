@@ -42,7 +42,6 @@ function ChampionThumbnail({
   // 즉시 피드백을 위한 로컬 선택 상태
   const [isLocallySelected, setIsLocallySelected] = useState(selected);
 
-  // prop이 변경되면 로컬 상태 동기화
   useEffect(() => {
     setIsLocallySelected(selected);
   }, [selected]);
@@ -90,7 +89,6 @@ function ChampionThumbnail({
           {!fromSheet && !isLoaded && !hasError && (
             <Skeleton className="absolute inset-0 rounded-full" />
           )}
-          {/* Blur placeholder - 이미지가 로드되기 전까지 */}
           {!fromSheet && !isLoaded && !hasError && (
             <div className="absolute inset-0 rounded-full bg-linear-to-br from-muted via-muted/80 to-muted/60 blur-xs" />
           )}
@@ -109,7 +107,6 @@ function ChampionThumbnail({
           <img
             className={cn(
               "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border transition-[transform,opacity] duration-200 ease-out object-cover",
-              // 선택된 상태가 아닐 때만 hover 효과 적용
               !selected && !isLocallySelected && "hover:scale-105",
               isLoaded ? "opacity-100" : "opacity-0"
             )}

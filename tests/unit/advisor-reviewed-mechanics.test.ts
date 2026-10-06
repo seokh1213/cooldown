@@ -9,6 +9,7 @@ import { translations } from "../../src/i18n/translations";
 import type { PlanContext } from "../../src/lib/advisor/planTypes";
 import { abilityIndex, validMechanicMemory } from "../../src/lib/advisor/mechanics/types";
 import { conversionAmount, questionState } from "../../src/lib/advisor/mechanics/question";
+import { reviewedAbilities } from "../../scripts/llm/champion-mechanics/retrieval";
 
 const deps = { judge: async () => { throw new Error("모델을 부르면 안 됩니다"); }, search: async () => [] };
 function context(): PlanContext {
@@ -25,9 +26,14 @@ async function ask(ctx: PlanContext, question: string) {
   })];
   return result.reply;
 }
-test("865개 승인 규칙이 실제 앱 자료에 있고 다른 패치는 사용하지 않는다", () => {
+test("현재 원문과 승인이 유효한 규칙을 빠짐없이 적재하고 다른 패치는 사용하지 않는다", async () => {
   const data = loadData("ko_KR");
-  assert.equal(data.abilityRules?.size, 865);
+  const approved = await reviewedAbilities();
+  assert.deepEqual([...data.abilityRules!.keys()].sort(), [...approved.keys()].sort());
+  for (const [id, entry] of approved) {
+    assert.equal(data.abilityRules!.get(id)?.job.sourceHash, entry.job.sourceHash);
+    assert.deepEqual(data.abilityRules!.get(id)?.draft, entry.draft);
+  }
   assert.equal(new Set([...data.abilityRules!.values()].map(a => a.job.champion)).size, 173);
   assert.equal(abilityIndex({ schemaVersion: 2, patch: "old", abilities: [...data.abilityRules!.values()] }, data.patch).size, 0);
 });

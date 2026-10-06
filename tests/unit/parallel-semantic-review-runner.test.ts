@@ -120,17 +120,27 @@ test("jobs group both languages of the same Korean row without mutating the mani
 });
 
 
-test("successful explicit decisions retain fingerprints and require primary integration", async () => {
-  const artifact = await reviewBatch({ id: "sample", sections: [section] }, { model: "gpt-6.1-sol", deadline: 10 }, {
-    validate: () => {}, glossary: () => "", now: () => 0,
-    call: async () => JSON.stringify({ reviewedCount: 1, unchanged: [0], corrections: [], held: [] }),
-  });
-  assert.equal(artifact.status, "completed");
-  assert.equal(artifact.sourceFingerprintValidated, true);
-  assert.equal(artifact.decisions[0].sourceSha256, section.sourceSha256);
-  assert.equal(artifact.decisions[0].candidateSha256, section.candidateSha256);
-  assert.equal(artifact.decisions[0].needsPrimaryReview, true);
-  assert.equal(artifact.decisions[0].text, section.text);
+test("successful explicit decisions use supplied patch context and require primary integration", async () => {
+  for (const patch of ["26.20", undefined]) {
+    let prompt = "";
+    const glossary = "Supplied official names and rework summaries";
+    const artifact = await reviewBatch({ id: "sample", sections: [section] }, { model: "gpt-6.1-sol", deadline: 10, patch }, {
+      validate: () => {}, glossary: () => glossary, now: () => 0,
+      call: async (value) => {
+        prompt = value;
+        return JSON.stringify({ reviewedCount: 1, unchanged: [0], corrections: [], held: [] });
+      },
+    });
+    assert.equal(artifact.status, "completed");
+    assert.ok(prompt.includes(glossary));
+    if (patch) assert.ok(prompt.includes(`authoritative for current patch ${patch}.`));
+    else assert.ok(!/current patch \d+\.\d+/.test(prompt));
+    assert.equal(artifact.sourceFingerprintValidated, true);
+    assert.equal(artifact.decisions[0].sourceSha256, section.sourceSha256);
+    assert.equal(artifact.decisions[0].candidateSha256, section.candidateSha256);
+    assert.equal(artifact.decisions[0].needsPrimaryReview, true);
+    assert.equal(artifact.decisions[0].text, section.text);
+  }
 });
 
 test("incomplete model partition yields a failed artifact with no approval", async () => {

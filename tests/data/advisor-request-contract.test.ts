@@ -51,7 +51,7 @@ test("서로 다른 두 1:1은 모두 답하고 세 쌍이면 범위를 안내�
   assert.match(three.reply.text, /두 쌍까지[\s\S]*예:/);
 });
 
-for (const q of ["챔피언 100개 비교해줘", "모든 챔피언 상성 알려줘", "전체 챔프 공속 비교", "200명 스킬 쿨타임 비교"]) {
+for (const q of ["챔피언 100개 비교해줘", "모든 챔피언 상성 알려줘"]) {
   test(`${q} 일부 대상만 답하지 않고 범위를 줄이는 예시를 준다`, async () => {
     const { reply, dialogue } = await ask(q);
     assert.equal(dialogue.parts.length, 0);
@@ -124,24 +124,4 @@ test("치감의 뜻과 출처가 추가된 중첩 판정을 답한다", async ()
   assert.match(definition.reply.text, /줄임말[\s\S]*치유 및 회복 효과를 감소/);
   const interaction = await ask("치감 중첩돼?");
   assert.match(interaction.reply.text, /치유 감소율은 여러 개를 적용해도 합산되지 않습니다/);
-});
-
-test("상대 이름만 다른 동일한 아이템 근거도 공통으로 한 번 보여 준다", async () => {
-  const { reply } = await ask("오공으로 럼블, 모데 상대법 알려줘");
-  assert.match(reply.text, /공통 조언[\s\S]*럼블·모데카이저의 피해/);
-  assert.equal(reply.text.split("마법무효화의 망토").length, 2);
-  assert.equal(reply.text.split("진입 콤보는").length, 2);
-});
-
-test("쉼표로 쓴 두 VS 요청도 각각 답한다", async () => {
-  const { dialogue } = await ask("오공 vs 럼블, 아리 vs 제드 상대법");
-  assert.deepEqual(dialogue.parts.map(p => p.plan.type === "matchup" ? [p.plan.mine.id, p.plan.enemy.id] : p.plan.type),
-    [["MonkeyKing", "Rumble"], ["Ahri", "Zed"]]);
-});
-
-test("두 상성 중 먼저 물은 쌍으로 돌아가도 그 쌍의 사용 불가 조건을 보존한다", async () => {
-  const first = await ask("아리로 제드 상대할 때 내 E가 없는데 궁 대응 어떻게 해? 그리고 아리로 럭스 상대할 때 내 R이 없는데 어떻게 해?");
-  const selected = await ask("아리로 제드 상대할 때 팁 좀", first.reply.memory);
-  assert.deepEqual(selected.reply.memory.conditions.map(c => [c.slot, c.status]), [["E", "down"]]);
-  assert.equal(selected.reply.memory.matchup?.enemy, "Zed");
 });

@@ -31,7 +31,6 @@ for (const width of [390, 1280]) {
     await expect(page.getByText(/군중 제어.*강제 이동/).filter({ visible: true })).toHaveCount(0);
     if (width === 390) {
       await page.getByText(/변이 \(소프트/).filter({ visible: true }).last().scrollIntoViewIfNeeded();
-      await page.screenshot({ path: "research/llm-evals/crowd-control/mobile.png" });
     }
   });
   test(`리신 궁 아이콘과 종류에서 순서로 바뀐 질문: ${width}px`, async ({ page }) => {
@@ -52,7 +51,6 @@ for (const width of [390, 1280]) {
     await ask("리신 궁은 속박먼저하고 날라가나?");
     await expect(page.getByText(/주 대상은 먼저 속박되고, 그다음 발차기로 밀쳐집니다/).last()).toBeVisible();
     await expect(page.getByRole("button", { name: "R 용의 분노", exact: true }).last()).toBeVisible();
-    if (width === 390) await page.screenshot({ path: "research/llm-evals/crowd-control/leesin-mobile.png" });
   });
   test(`CC 해제 후속 질문과 슬롯 변경: ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -64,7 +62,6 @@ for (const width of [390, 1280]) {
     await ask("R은 수은으로 풀려?");
     await expect(page.getByRole("heading", { name: /^나미 R / }).last()).toBeVisible();
     await expect(page.getByText(/에어본 중에는 수은을 사용할 수도 없습니다/).last()).toBeVisible();
-    if (width === 390) await page.screenshot({ path: "research/llm-evals/control-audit/mobile.png" });
     await ask("그럼 강타는?");
     await expect(page.getByText(/강타 사용을 막지 않습니다/).last()).toBeVisible();
     await ask("수호천사 부활 중 강타 써져?");

@@ -1,20 +1,16 @@
 import { VersionedCache } from "@/data/cache/versionedCache";
 import { createReleaseCache } from "@/data/cache/releaseCache";
-import { trackStaticDataPath } from "@/pwa/staticDataRevision";
+import { StaticDataRepository } from "./staticDataRepository";
 import { decodeChampionProfile, type ChampionProfile } from "@/data/contracts/championProfile";
 import {
   decodeNormalizedItems,
   decodeNormalizedRunes,
   decodeNormalizedSummoners,
 } from "@/data/contracts/normalizedDataDecoder";
-import {
-  assertStaticDataIdentity,
-  staticDataIdentityKey,
-} from "@/data/contracts/staticDataDecoder";
+import { staticDataIdentityKey } from "@/data/contracts/staticDataDecoder";
 import type {
   DataLocale,
   StaticDataIdentity,
-  StaticDataMetadata,
 } from "@/data/contracts/staticData";
 import {
   createStaticDataClient,
@@ -27,99 +23,71 @@ import type {
 } from "@/types/combatNormalized";
 
 export class GameDataRepository {
-  private readonly inFlight = new Map<string, Promise<unknown>>();
+  private readonly files: StaticDataRepository;
 
   constructor(
-    private readonly client: StaticDataClient,
-    private readonly cache: VersionedCache
-  ) {}
+    client: StaticDataClient,
+    cache: VersionedCache
+  ) {
+    this.files = new StaticDataRepository(client, cache);
+  }
 
   getItems(
     identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<NormalizedItemDataFile> {
-    return this.getFile(
-      `items:structured-v1:${staticDataIdentityKey(identity)}:${locale}`,
-      `data/${identity.patchVersion}/items-normalized-${locale}.json`,
-      decodeNormalizedItems,
+    return this.files.get({
+      key: `items:structured-v1:${staticDataIdentityKey(identity)}:${locale}`,
+      path: `data/${identity.patchVersion}/items-normalized-${locale}.json`,
+      decode: decodeNormalizedItems,
       identity,
-      locale
-    );
+      locale,
+    });
   }
 
   getChampionProfile(identity: StaticDataIdentity, locale: DataLocale, id: string): Promise<ChampionProfile> {
     if (!/^[A-Za-z0-9]+$/.test(id)) return Promise.reject(new Error("Invalid champion id"));
-    return this.getFile(
-      `profile:skins-v1:${staticDataIdentityKey(identity)}:${locale}:${id}`,
-      `data/${identity.patchVersion}/champion-profiles/${locale}/${id}.json`,
-      (value) => {
+    return this.files.get({
+      key: `profile:skins-v1:${staticDataIdentityKey(identity)}:${locale}:${id}`,
+      path: `data/${identity.patchVersion}/champion-profiles/${locale}/${id}.json`,
+      decode: (value) => {
         const profile = decodeChampionProfile(value);
         if (profile.champion.id !== id) throw new Error("Champion profile id mismatch");
         return profile;
-      }, identity, locale,
-    );
+      },
+      identity,
+      locale,
+    });
   }
 
   getRunes(
     identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<NormalizedRuneDataFile> {
-    return this.getFile(
-      `runes:${staticDataIdentityKey(identity)}:${locale}`,
-      `data/${identity.patchVersion}/runes-normalized-${locale}.json`,
-      decodeNormalizedRunes,
+    return this.files.get({
+      key: `runes:${staticDataIdentityKey(identity)}:${locale}`,
+      path: `data/${identity.patchVersion}/runes-normalized-${locale}.json`,
+      decode: decodeNormalizedRunes,
       identity,
-      locale
-    );
+      locale,
+    });
   }
 
   getSummoners(
     identity: StaticDataIdentity,
     locale: DataLocale
   ): Promise<NormalizedSummonerDataFile> {
-    return this.getFile(
-      `summoners:${staticDataIdentityKey(identity)}:${locale}`,
-      `data/${identity.patchVersion}/summoner-normalized-${locale}.json`,
-      decodeNormalizedSummoners,
+    return this.files.get({
+      key: `summoners:${staticDataIdentityKey(identity)}:${locale}`,
+      path: `data/${identity.patchVersion}/summoner-normalized-${locale}.json`,
+      decode: decodeNormalizedSummoners,
       identity,
-      locale
-    );
+      locale,
+    });
   }
 
   clearExceptRelease(identity: StaticDataIdentity): void {
-    this.cache.clearExceptIdentity(staticDataIdentityKey(identity));
-  }
-
-  private async getFile<T extends StaticDataMetadata>(
-    key: string,
-    path: string,
-    decode: (value: unknown) => T,
-    identity: StaticDataIdentity,
-    locale: DataLocale
-  ): Promise<T> {
-    trackStaticDataPath(path);
-    const cached = this.cache.get(key, decode);
-    if (cached) {
-      try {
-        assertStaticDataIdentity(cached, identity, locale);
-        return cached;
-      } catch {
-        this.cache.remove(key);
-      }
-    }
-    const active = this.inFlight.get(key) as Promise<T> | undefined;
-    if (active) return active;
-    const request = this.client.getJson(path).then((value) => {
-      const decoded = decode(value);
-      assertStaticDataIdentity(decoded, identity, locale);
-      return this.cache.set(key, decoded);
-    });
-    this.inFlight.set(key, request);
-    try {
-      return await request;
-    } finally {
-      this.inFlight.delete(key);
-    }
+    this.files.clearExceptRelease(identity);
   }
 }
 

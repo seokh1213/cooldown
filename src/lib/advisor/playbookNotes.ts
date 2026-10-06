@@ -7,15 +7,6 @@ import type { MatchupNotes } from "./answer";
 import type { AdvisorData } from "./context";
 import { selectComboNotes } from "./comboNotes";
 
-/*
- * 상성 해설 재료를 따로 만들던 `buildMatchupTips` 는 걷어냈다.
- *
- * 상성 프롬프트에 노트가 아예 안 실리던 것을 고치면서 `buildCommentaryPrompt` 안에
- * 노트를 넣었는데, 화면 코드가 이 함수로 같은 노트를 한 번 더 붙이고 있었다. 다섯
- * 줄이 두 번씩 실려 프롬프트가 3,172자까지 부풀었다. 재료를 만드는 자리는 하나면
- * 된다.
- */
-
 /** 상성 카드에 그대로 보일 노트. 해설 재료도 이것을 쓴다. */
 export function matchupNotes(
   data: AdvisorData,

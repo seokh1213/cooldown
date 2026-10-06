@@ -45,9 +45,6 @@ test("오공 Q 원문·랭크 값·시뮬레이션", () => {
 const englishIndex = decodeChampionIndex(JSON.parse(
   await fs.readFile(path.join(versionDir, "champions/en_US/index.json"), "utf8")
 ));
-let activeAbilityCount = 0;
-let precomputedSpellCount = 0;
-let detailedPassiveCount = 0;
 /** 표현식의 모든 곡선이 스킬 최대 레벨과 길이가 맞는지 재귀로 확인한다. */
 function assertExpressionCurves(node: AbilitySimulationExpr, maxRank: number): void {
   if (node.kind === "sum" || node.kind === "product") {
@@ -60,77 +57,87 @@ function assertExpressionCurves(node: AbilitySimulationExpr, maxRank: number): v
   if (curve.byRankAndLevel) assert.equal(curve.byRankAndLevel.length, maxRank);
 }
 
-const simulationCounts = { complete: 0, expression: 0, unsupported: 0, unavailable: 0 };
-
-for (const entry of englishIndex.champions) {
-  test(entry.id, async () => {
-    let passiveLocalized = true;
-    for (const locale of locales) {
-      const detail = decodeChampionDetail(JSON.parse(
-        await fs.readFile(
-          path.join(versionDir, `champions/${locale}/${entry.id}.json`),
-          "utf8"
-        )
-      ));
-      const passive = detail.champion.abilities.P;
-      assert.doesNotMatch(passive.bodyHtml, /@[^@]+@|\{\{[^}]+}}/);
-      if (passive.source !== "communitydragon") passiveLocalized = false;
-    }
-    if (passiveLocalized) detailedPassiveCount += 1;
-    else assert.ok(allowedPassiveFallbacks.has(entry.id), entry.id);
-
-    const detail = decodeChampionDetail(JSON.parse(
-      await fs.readFile(path.join(versionDir, `champions/en_US/${entry.id}.json`), "utf8")
-    ));
-    for (const slot of slots) {
-      const ability = detail.champion.abilities[slot];
-      assert.equal(ability.maxRank > 0, true, `${entry.id} ${slot} maxRank`);
-      activeAbilityCount += 1;
-      if (ability.source === "communitydragon") precomputedSpellCount += 1;
-      simulationCounts[ability.simulation.status] += 1;
-      if (ability.simulation.status === "complete") {
-        const primary = ability.simulation.primary!;
-        if (primary.baseByRank) assert.equal(primary.baseByRank.length, ability.maxRank);
-        if (primary.baseByRankAndLevel) {
-          assert.equal(primary.baseByRankAndLevel.length, ability.maxRank);
-        }
-        for (const term of ability.simulation.primary?.terms ?? []) {
-          if (term.coefficientsByRank) {
-            assert.equal(term.coefficientsByRank.length, ability.maxRank);
-          }
-          if (term.coefficientsByRankAndLevel) {
-            assert.equal(term.coefficientsByRankAndLevel.length, ability.maxRank);
-          }
-        }
-      }
-      if (ability.simulation.status === "expression") {
-        const expression = ability.simulation.expression!;
-        assert.equal(ability.simulation.primary, undefined);
-        assertExpressionCurves(expression.root, ability.maxRank);
-        assert.equal(
-          expression.requiresBuffStacks,
-          JSON.stringify(expression.root).includes('"buffStacks"'),
-        );
-      }
-    }
-  });
+interface SpellCounts {
+  active: number;
+  precomputed: number;
+  detailedPassives: number;
+  simulations: Record<"complete" | "expression" | "unsupported" | "unavailable", number>;
 }
 
-test("스킬 집계가 시뮬레이션 검증 보고서와 맞다", () => {
-  assert.equal(activeAbilityCount, englishIndex.champions.length * 4);
-  // 모든 Q/W/E/R 이 CDragon 원문으로 렌더된다 (allowlist.missingTooltips 가 비어 있음)
-  assert.equal(precomputedSpellCount, activeAbilityCount);
-  assert.equal(detailedPassiveCount, englishIndex.champions.length - allowedPassiveFallbacks.size);
+async function validateChampion(entry: { id: string }, counts: SpellCounts): Promise<void> {
+  const detail = decodeChampionDetail(JSON.parse(
+    await fs.readFile(path.join(versionDir, `champions/en_US/${entry.id}.json`), "utf8")
+  ));
+  let passiveLocalized = true;
+  for (const locale of locales) {
+    const localized = locale === "en_US" ? detail : decodeChampionDetail(JSON.parse(
+      await fs.readFile(
+        path.join(versionDir, `champions/${locale}/${entry.id}.json`),
+        "utf8"
+      )
+    ));
+    const passive = localized.champion.abilities.P;
+    assert.doesNotMatch(passive.bodyHtml, /@[^@]+@|\{\{[^}]+}}/);
+    if (passive.source !== "communitydragon") passiveLocalized = false;
+  }
+  if (passiveLocalized) counts.detailedPassives += 1;
+  else assert.ok(allowedPassiveFallbacks.has(entry.id), entry.id);
+
+  for (const slot of slots) {
+    const ability = detail.champion.abilities[slot];
+    assert.equal(ability.maxRank > 0, true, `${entry.id} ${slot} maxRank`);
+    counts.active += 1;
+    if (ability.source === "communitydragon") counts.precomputed += 1;
+    counts.simulations[ability.simulation.status] += 1;
+    if (ability.simulation.status === "complete") {
+      const primary = ability.simulation.primary!;
+      if (primary.baseByRank) assert.equal(primary.baseByRank.length, ability.maxRank);
+      if (primary.baseByRankAndLevel) {
+        assert.equal(primary.baseByRankAndLevel.length, ability.maxRank);
+      }
+      for (const term of ability.simulation.primary?.terms ?? []) {
+        if (term.coefficientsByRank) {
+          assert.equal(term.coefficientsByRank.length, ability.maxRank);
+        }
+        if (term.coefficientsByRankAndLevel) {
+          assert.equal(term.coefficientsByRankAndLevel.length, ability.maxRank);
+        }
+      }
+    }
+    if (ability.simulation.status === "expression") {
+      const expression = ability.simulation.expression!;
+      assert.equal(ability.simulation.primary, undefined);
+      assertExpressionCurves(expression.root, ability.maxRank);
+      assert.equal(
+        expression.requiresBuffStacks,
+        JSON.stringify(expression.root).includes('"buffStacks"'),
+      );
+    }
+  }
+}
+
+test("모든 챔피언의 세 언어 스킬 데이터와 시뮬레이션 보고서가 일치한다", async () => {
+  const counts: SpellCounts = {
+    active: 0, precomputed: 0, detailedPassives: 0,
+    simulations: { complete: 0, expression: 0, unsupported: 0, unavailable: 0 },
+  };
+  for (const entry of englishIndex.champions) {
+    try {
+      await validateChampion(entry, counts);
+    } catch (cause) {
+      throw new Error(`${entry.id}: 스킬 데이터 검증 실패`, { cause });
+    }
+  }
+  assert.equal(counts.active, englishIndex.champions.length * 4);
+  assert.equal(counts.precomputed, counts.active);
+  assert.equal(counts.detailedPassives, englishIndex.champions.length - allowedPassiveFallbacks.size);
   assert.equal(
-    simulationCounts.complete +
-      simulationCounts.expression +
-      simulationCounts.unsupported +
-      simulationCounts.unavailable,
-    activeAbilityCount
+    Object.values(counts.simulations).reduce((sum, count) => sum + count, 0),
+    counts.active
   );
   assert.deepEqual(simulationReport.summary, {
-    abilities: activeAbilityCount,
-    ...simulationCounts,
+    abilities: counts.active,
+    ...counts.simulations,
   });
 });
 

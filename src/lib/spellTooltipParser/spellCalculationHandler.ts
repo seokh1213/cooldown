@@ -1,6 +1,7 @@
 import type { ChampionSpell } from "@/types";
 import { logger } from "@/lib/logger";
 import { binHashKey } from "./binHash";
+import { applyCalculationFormula } from "./calculationOperations";
 import { resolveCalculationOverride } from "./runtimeTokenAliases";
 import { formatCalculationResult, type LevelValuesReporter } from "./calculationResultFormatter";
 import { evaluateSpellCalculation } from "./spellCalculationEvaluator";
@@ -63,7 +64,8 @@ export function replaceCalculateData(
         });
       }
     }
-    return formatCalculationResult(result, lang, reportLevelValues);
+    const withFormula = applyCalculationFormula(result, parseResult);
+    return withFormula ? formatCalculationResult(withFormula, lang, reportLevelValues) : null;
   } catch (error) {
     logger.error("Failed to evaluate calculation:", error);
     return null;

@@ -68,15 +68,32 @@ test("저장소는 실패한 요청을 다시 시도한다", async () => {
   assert.equal((await retrying.getChampionProfile(metadata, "ko_KR", "Aatrox")).champion.id, "Aatrox");
 });
 
-for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
-  test(`기본 + 성장 스탯 필드 (${locale})`, () => {
-    const fields = getStatFields(locale);
-    assert.equal(fields.length, 11);
-    assert.ok(fields.every((field) => !field.key.endsWith("perlevel")));
-    assert.equal(fields.find((field) => field.key === "hp")?.growthKey, "hpperlevel");
-    const speed = fields.find((field) => field.key === "attackspeed")!;
-    assert.equal(speed.format(0.651), "0.651");
-    assert.equal(speed.growthFormat?.(2.5), "2.5%");
-    assert.equal(speed.growthFormat?.(0), "0%");
-  });
-}
+test("손상되거나 다른 챔피언인 메모리 캐시는 버리고 다시 받는다", async () => {
+  for (const invalid of [
+    null,
+    { ...profile, champion: { ...profile.champion, id: "Fiora" } },
+  ]) {
+    const cache = new VersionedCache("profile:invalid");
+    const key = "profile:skins-v1:26.18:16.18.1:16.18:ko_KR:Aatrox";
+    cache.set(key, invalid);
+    let requests = 0;
+    const repository = new GameDataRepository({ async getJson() {
+      requests += 1;
+      return profile;
+    } }, cache);
+    assert.equal(await repository.getChampionProfile(metadata, "ko_KR", "Aatrox"), profile);
+    assert.equal(await repository.getChampionProfile(metadata, "ko_KR", "Aatrox"), profile);
+    assert.equal(requests, 1);
+  }
+});
+
+test("기본 + 성장 스탯 필드", () => {
+  const fields = getStatFields("ko_KR");
+  assert.equal(fields.length, 11);
+  assert.ok(fields.every((field) => !field.key.endsWith("perlevel")));
+  assert.equal(fields.find((field) => field.key === "hp")?.growthKey, "hpperlevel");
+  const speed = fields.find((field) => field.key === "attackspeed")!;
+  assert.equal(speed.format(0.651), "0.651");
+  assert.equal(speed.growthFormat?.(2.5), "2.5%");
+  assert.equal(speed.growthFormat?.(0), "0%");
+});

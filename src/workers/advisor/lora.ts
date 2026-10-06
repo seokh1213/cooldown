@@ -1,4 +1,5 @@
 import { Tensor, type PreTrainedModel } from "@huggingface/transformers";
+import { ADAPTER_GATES, GenerationAdapter, type GenerationPurpose } from "./generationAdapter";
 
 /** ONNX Runtime 텐서(transformers.js 가 감싸기 전의 것) */
 export type OrtTensor = { type: string; dims: readonly number[]; getData: () => Promise<unknown>; dispose?: () => void };
@@ -11,18 +12,19 @@ export const ortTensor = (): OrtTensorCtor =>
 
 /** LoRA 를 켜는 입력을 받는 원래 세션. 판정(`stepHidden`)·검색(`embedText`)만 이것을 직접 부른다. */
 let loraSession: OrtSession | null = null;
-/** 그래프에 있는 LoRA 켜기 입력. 판정 LoRA(`lora_scale`)와 검색 LoRA(`embed_scale`, 있을 때만). */
+/** 그래프에 있는 분류·검색·생성 adapter의 켜기 입력. */
 let gateInputs: string[] = [];
-const GATES = ["lora_scale", "embed_scale"];
+const generationAdapter = new GenerationAdapter();
 
 /**
  * kev 그래프에는 LoRA 를 켜는 입력(`lora_scale`, 검색 LoRA 까지 실었으면 `embed_scale`)이 있다. transformers.js 는
- * 세션의 입력을 전부 채우려 하므로(없으면 오류) 그 세션에는 이 입력들을 숨기고 0 을 채워 준다 — 생성은 원본 가중치 그대로다.
+ * 세션 입력을 전부 채우려 하므로 이 입력들을 숨긴다. 일반 생성은 0, 명시적인 수치 응답은 qa_scale만 1이다.
  */
 export function hideLoraInput(model: PreTrainedModel) {
   const sessions = (model as unknown as { sessions: Record<string, OrtSession & { inputNames: string[] }> }).sessions;
   const raw = sessions.model;
-  gateInputs = GATES.filter((name) => raw.inputNames.includes(name));
+  gateInputs = ADAPTER_GATES.filter((name) => raw.inputNames.includes(name));
+  generationAdapter.setInputs(gateInputs);
   if (!gateInputs.length) return;
   loraSession = raw;
   const Ort = ortTensor();
@@ -32,7 +34,8 @@ export function hideLoraInput(model: PreTrainedModel) {
       if (prop === "run") {
         return (feeds: OrtFeeds, ...rest: unknown[]) =>
           (target.run as (f: OrtFeeds, ...r: unknown[]) => Promise<Record<string, OrtTensor>>)(
-            { ...Object.fromEntries(gateInputs.map((name) => [name, new Ort("float32", Float32Array.from([0]), [])])), ...feeds },
+            { ...feeds, ...Object.fromEntries(Object.entries(generationAdapter.values())
+              .map(([name, value]) => [name, new Ort("float32", Float32Array.from([value]), [])])) },
             ...rest,
           );
       }
@@ -58,4 +61,10 @@ export function activeGates(): readonly string[] {
 
 export function forgetLoraSession() {
   loraSession = null;
+  gateInputs = [];
+  generationAdapter.setInputs([]);
+}
+
+export function withGenerationAdapter<T>(purpose: GenerationPurpose, operation: () => Promise<T>): Promise<T> {
+  return generationAdapter.run(purpose, operation);
 }

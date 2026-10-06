@@ -1,0 +1,875 @@
+{
+  "scope": "src/pages/** maintained runtime TypeScript only",
+  "reviewedFileCount": 54,
+  "generatedOrExcluded": [],
+  "mode": "during (explicit session override)",
+  "files": [
+    {
+      "path": "src/pages/ChampionCooldownPage.tsx",
+      "sha256": "853ea9d53d279f23b7a3d817df29f15f36b1186bfc278080d2bf8d28220be905",
+      "lineCount": 237,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Traced useChampionData/useTabManagement restore gates into persistence and desktop/mobile comparison. Checked add/remove/reset/reorder/VS navigation callbacks. Failed detail previously suppressed both comparison and empty state; fixed localized per-ID retry/loading without dropping saved selection. 503 new/restored selection regressions at390/1440 passed.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/CooldownPageToolbar.tsx",
+      "sha256": "98db882838b497f819366fa327fabfcf53c44365596addfcc325c4446bc6265f",
+      "lineCount": 52,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked ViewTabs values skills/stats, optional compare callback, reset control names and mobile icon-only labels. No async operations or local state. Existing overflow container is intentional for tab strip.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/ChampionSkinGallery.tsx",
+      "sha256": "e8357aaa5f8ed846ae48952729f2f995e07de2cf556a3d4b230286da9f8ce6b3",
+      "lineCount": 46,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked index bounds via disabled previous/next and native select, per-skin keyed SplashImage loading/error/retry lifecycle, champion/locale remount caller, empty skins fallback and image dimensions. URL builder supplies splash source. Image request outcome handled onLoad/onError.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/ChampionsTab.tsx",
+      "sha256": "333f066cb40ef0594a789f23b84399d480c1a8eee33f9617455ec99128564844",
+      "lineCount": 161,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Traced query champion lookup, role OR filters, search hook and sprite fallback, selected profile hook identity, retry/loading, list empty, selection/back URL writes, modal choice and keyed skin gallery. Bootstrap remount on locale change prevents stale fullInfo assumption. No confirmed extra runtime defect.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/EmptyState.tsx",
+      "sha256": "0f2e8e078bb0116b871f67f66a7e41ce9ccf30594b494fb6646ee8c103ed955e",
+      "lineCount": 39,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked real add callback and translated empty header/body/button in root cooldown page. Static component, no async/effects. Displays only selectedChampions.length===0; failed selections now separately surfaced by parent.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/FormulasTab.tsx",
+      "sha256": "c5e59311c2eeec1c691559b8c04a1d981e69e147aa031899237af578a41bc5dc",
+      "lineCount": 65,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read FORMULA_GROUPS localization, wide card branching, stat token sanitized rendering, optional examples and formula overflow. No async/state or false numeric claims introduced; formula source audit belongs to data owner.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/ItemDetail.tsx",
+      "sha256": "e3eeb7c304c1ed493ff941b639864778652e001950b45c1480564f2c0746ebd1",
+      "lineCount": 154,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked item/build tree recursion rendering, horizontal tree scroll, upgrade navigation, price/tier display, ItemEffects boundary and per-cell selection. ItemCell now forwards actual opener button for close focus without visual change. buildItemTree recursion capped6 by model.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/ItemEffects.tsx",
+      "sha256": "edd3d4c6c1a48889cbb88e2e0ea75a0e8120b73b12c2e8b9861d197884c45145",
+      "lineCount": 177,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read structured stat/effect vs fallback description paths, sanitized HTML, formula damage/health alternatives, cooldown optional handling and native details original text. No fetch/state. EffectFormula null guards ensure health non-null when damage absent.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/ItemsTab.tsx",
+      "sha256": "946d05a3a803228a4693a31f7c5b5afdc1f97cb872f5e195a2defd2e0469939b",
+      "lineCount": 225,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Traced stable load callback and useEncyclopediaData error/retry/loading, shop dedupe by name, requested item query activation, search debounce, tier groups, selected item/map, mobile dialog and desktop detail. Item opener focus loss reproduced at390; fixed trigger ref and main-content fallback for direct links, preserving visual geometry. Empty filtered result lacks explicit feedback but not changed in this scope.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/MobileChampionTabs.tsx",
+      "sha256": "a3bdaf699457b197636fff5d209202e3103bab3948f510e3ec7b227742a583b1",
+      "lineCount": 189,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read DndContext/SortableContext hooks, restored/add/selected scroll effects and fullInfo tab lookup. Initial useRef callback closure candidate investigated; runtime restored8 tabs and selected last remained visible. No confirmed auto-scroll bug reported; cleanup of nested rAF/untracked timeouts remains unexercised, not claimed safe.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/RuneCatalog.tsx",
+      "sha256": "6434615766866530a000f4f0ab9b204e104ce9e661bfc2b25ee9cdffe40a4dcb",
+      "lineCount": 278,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked RuneSprite context fallback, sanitized placeholder descriptions, slot-column mapping, stat shards and selected dialog. Approved current version opens runes on every width and returns focus via opener ref; desktop hover remains. No data load beyond shared sprite hook.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/RunesTab.tsx",
+      "sha256": "2c796bdb32dea7e1ee937ac47b690eb5917e5746dbbdccbea56e972b0637b96e",
+      "lineCount": 99,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked useEncyclopediaData cancellation/retry consumed via memoized load callback, selected ID resolved against current locale data, stable tree ordering and shard merge-by-label/id. Previously fixed rejected loads now error+retry. No additional confirmed defect.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/SortableNormalTab.tsx",
+      "sha256": "7e50a21c2d93c8534ff6fd268384388ad28b4b23b2d1ed68032192c974d3188b",
+      "lineCount": 112,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read sortable attrs/listeners on drag-only handle, outer click guard, native name selection button aria-pressed and separate remove stopPropagation. Approved keyboard change preserves drag/padding behaviors. No fetch/state beyond useSortable.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/SummonerTab.tsx",
+      "sha256": "41d5680f1c347341531400395d315ca86450621273543e533be5fdbd381c855b",
+      "lineCount": 154,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked shared loader outcomes, CLASSIC filtering, cooldown sorting, search with trimmed lowercase, real tooltip unresolved-token fallback, sprite ID handling and no-results. Previously fixed load rejection now error+retry/loading. No extra confirmed runtime defect.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/TabNavigation.tsx",
+      "sha256": "7bded76aceba0e9e394307f4478060ea1aa607e452b4116cc358ebc72550d988",
+      "lineCount": 34,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read five EncyclopediaTab values against index validator and ViewTabs controlled callback; all labels exist. Scroll container intentional. No effects/async.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/index.tsx",
+      "sha256": "f17efe3d64c1c3ca117dcd588710946e2c9cc847c1289eb4f380fac30562c6ec",
+      "lineCount": 69,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked URL tab allowlist/default champion, preserving other query params on replace selection, conditional child mount and release/language props. Switching tabs resets child local state as currently intended; selected item query retained for linking.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/itemCatalogModel.ts",
+      "sha256": "2102055e50631bb4f57f2725716fd3e3f90d96293873f5ffa19c46574b9de63d",
+      "lineCount": 202,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read store/price predicates, stat aggregation/icon matching, Hangul initials/aliases search, tier grouping/sorting, deduped upgrade IDs and bounded recursive build tree. Chinese query bug reproduced: Han-only input stripped to empty and matched all. Fixed Unicode letter/number normalization; deterministic Chinese/ko/en plus real-data aliases7/7 passed.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/itemFormula.ts",
+      "sha256": "b3124c9ae28120ce7f71658626bf0ffda26eeca3f50350416b94a4fc8ce1853a",
+      "lineCount": 27,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked Intl locale conversion, base damage distinct values, scaling stat labels/coefficient percentages and zero fallback. No state/async; damage schema supplies finite values. Formatting output only.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/styles.ts",
+      "sha256": "15ea92e9e5864af147365ee3619af574301fba25c568f441264cc34d487f1bc1",
+      "lineCount": 12,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read tab/drag/remove class exports against SortableNormalTab imports. No executable state/async. Narrow target/contrast expansion beyond approved B/C controls not performed.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/types.ts",
+      "sha256": "58c22510c470e03cd16a99f104bfc5894f7e099155b8a42dd8a803c1545b7093",
+      "lineCount": 25,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read ChampionWithInfo, normal Tab and page release/source/language contracts against hook/page consumers. New loadError kept local in hook to avoid widening unrelated public types.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/useChampionData.ts",
+      "sha256": "c9e6034ccb82429d5aa8b6eba9ca14d1172ad67c4894b664bfb7e63b76b6371e",
+      "lineCount": 243,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Traced stored ID/key restoration, delayed tab cleanup, language name update, async fullInfo outcomes, add/remove/reset and selected ready filter. Failure previously only logged and hid selection; fixed per-ID loadError for initial/restored request and retry clear/success. Loader invoked inside state updater and timer cleanup are inherited design concerns; no unrelated refactor.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/useChampionProfile.ts",
+      "sha256": "3d6f12e919079995083e654d57b8806a2df40954daf6c0b7ed70997f9fcf19d6",
+      "lineCount": 24,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked identity/locale/id result key, cancellation and success/error handlers, retry clears result and increments attempt. ChampionsTab memoizes identity. Missing selected ID skips request and profile suppressed by key.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/useEncyclopediaData.ts",
+      "sha256": "febfeffc6115dc5dd4d2dff20a3dc02bac5a119fb82d92ae7c8972e1005fdf4e",
+      "lineCount": 27,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked load+attempt tagged result, Promise.resolve catching synchronous load throws, success/reject handlers, active flag cleanup and retry identity. Consumers memoize load callback; stale data omitted until new outcome. Already fixed common loader reviewed.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/useTabManagement.ts",
+      "sha256": "fe301913b1988c13450db65c051d9972ba9491b690c1635661404dc9370b87c6",
+      "lineCount": 152,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked decoder restoration, selection validation/default and correction when removed, neighbor-on-remove callback, add/reset and drag index guards. State restore flags consumed by parent persistence. No network. Stored duplicate IDs/malformed normal tab breadth remains decoder owner scope.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/EncyclopediaPage/utils.ts",
+      "sha256": "2bb6d478e475027ed7ab8fcc292a6a51bd7f455b3789af0dca0ee008ce600ea7",
+      "lineCount": 7,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read tab ID generator Date.now+random suffix and caller addTab. IDs are UI state keys, not auth secrets. No async/state. Deprecated substr is style, not a runtime finding.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/OGPreviewPage.tsx",
+      "sha256": "cee15ce76b86a795e721153743792e96d0c98dfe4bc13fafc7693df55aa4c06c",
+      "lineCount": 26,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read static dev-only OG layout and /poro_logo.png asset reference; caller AppRouter gates route on import.meta.env.DEV. No state/effects or interactions. Production basename concern falsified because route is absent in production.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/PatchEntry.tsx",
+      "sha256": "a10c09de37d557acd1a5168d73c045815752fce581b270c952b10fb772275d7d",
+      "lineCount": 61,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read PatchNoteEntry/report/skill archive boundaries, champion/item icon selection, impact classes, grouping and numeric before/after rendering. IDs drive hash targets. No local state or async. Structured data originates in decoded report; HTML only via shared SkillTooltip.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/PatchFilters.tsx",
+      "sha256": "15636935a94ba261192fac81be9edd53c4c52f71f4109ac1d90c4eef111c3816",
+      "lineCount": 36,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked category/direction allowlists, spread-preserving query updates, search accessible label and clear search. Controlled state callbacks align with model ImpactFilter/KindFilter. No effects/async.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/PatchHighlights.tsx",
+      "sha256": "2cc0af1c25a91cc67430ae351b749790df8dee62478a60ea21b7deb8f8961be0",
+      "lineCount": 43,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked expanded mobile state, report impact grouping, real fragment links preserving search and specifying report.patchVersion, resetFilters onJump caller. No data requests. Anchor targets are PatchEntry article IDs.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/PatchHistory.tsx",
+      "sha256": "f2aedb4809f2ed8c398fbee3f6176c9bd429c5173503df253b7820d258a49fd2",
+      "lineCount": 36,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked select and desktop button lists exclude baseline previousPatchVersion:null, current latest labels and selected aria-pressed. Callback writes actual patch URL via usePatchNotes. No async/state.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/PatchSkillIcon.tsx",
+      "sha256": "8d7df76c7eb05fc703a6283a98d738dd816d82dbf41f8309471ccecbcb3cd93a",
+      "lineCount": 14,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked archive icons vs AbilityIcon fallback, static icon URLs using BASE_URL, alt/decorative intent and multiple icon grid. No effects/local state. Decoder path constraints are external contract responsibility.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/PatchSkillTitle.tsx",
+      "sha256": "1d0eb2420fe3bf7a1776abfdb8966e124dc283f588c9f19564e3d175c8ce42ed",
+      "lineCount": 22,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked archived info drives shared SkillTooltip, passive flag and Q/W/E/R slot index; absent info produces static title. patchVersion/source versions passed from report. No async/state.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/index.tsx",
+      "sha256": "6c1d851914c08eb426f40404eee7136334559ba8a9f395e672faba369ae179f2",
+      "lineCount": 76,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Traced decoded index/report hooks, locale archive request, history-key filter reset, selected patch reset, retry controls, loading/error/empty/no-results rendering and per-entry stable keys. Hash scroll readiness waits for skill archive success or failure.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/labels.ts",
+      "sha256": "9f7542bac6655db9f6d583cf41e026aa765f11c069615565df28ae6dd2dcd263",
+      "lineCount": 41,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read all ko/en/zh labels and language Record contract. UI accesses title/category/impact/loading/error/retry keys that exist. Static copy only; no executable state/async.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/model.ts",
+      "sha256": "b740e1cb6c63cd32cf03f19289e23dac04b5583b99b74a623ef735e928e9a844",
+      "lineCount": 44,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked case-insensitive name/id filter, impact change filtering, kind allowlist, numeric formatting and range endpoints, group order and report counts. Helpers preserve original report. No async/state. Performance bounded by report entries/change arrays.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/statGlyph.ts",
+      "sha256": "c5f2bd8e9ee60e634c5e6ee30d6d66aadbe2bd1b07a3664dc3dea2a0a1aa1169",
+      "lineCount": 29,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked champion/item stat-ID path parsing into StatKey and icon lookup. Unknown stat yields undefined. Imports STAT_DEFINITIONS and callers conditionally render glyphs. No async/state.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/usePatchFragment.ts",
+      "sha256": "a9c766f287ce81fe323b8149fe0b287d9d5ab96c775584fcaa1121e044683493",
+      "lineCount": 22,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked history scrollRestoration save/restore, ready/hash prefix guard, rAF cleanup, reduced-motion handling and getElementById null fallback. Called once by patch page with archive readiness.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/usePatchNotes.ts",
+      "sha256": "3f967b43dba922897192f17cf780af56321caf8703dd029df508d5720432b9a8",
+      "lineCount": 44,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked index/report decoders, active cancellation of stale outcomes, selected patch fallback to latest comparable, report keyed to selection, failure flags, attempt-based retry and URL serialization. Current index has comparable releases. Empty comparable index remains an unexercised contract edge, not claimed safe.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/PatchNotesPage/usePatchSkills.ts",
+      "sha256": "896e33199238f24be2d552b80807655dbd5cfb11d547479b4be764bc73f492f4",
+      "lineCount": 30,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked report source/version/locale keyed archive, decoder identity validation, cancellation, failed outcome and attempt retry. Stale archive omitted by key comparison. No independent UI; patch page owns retry/error and readiness.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/VsAbilityRow.tsx",
+      "sha256": "19dc324320b652ccf0c8e8803c97e351d4d12eecade4e2b11262504d1e249150",
+      "lineCount": 122,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read slot-order/grid row mapping, structured form vs ordinary descriptions, SafeBlockHtml, max-rank cooldown/recharge formatting and missing values. No async/state; contracts supply abilities. Existing long comments retained outside scoped behavioral fixes.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/VsChampionColumn.tsx",
+      "sha256": "2e62ac13cb2f59f3cb4a1c515aa1901678de0dbc64d4c1da48b2d83d458d1465",
+      "lineCount": 109,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked champion selector button, detail loading/error/retry control, optional detail stats mapping, peer tone and base/growth undefined handling. No state/effects; result hook and selection callbacks from VsComparison.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/VsComparison.tsx",
+      "sha256": "ba97ac7ba9fc1164d9378bd1fb32742270ddbc3096be38a877417426f48296b3",
+      "lineCount": 58,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Traced identity memo into two useVsChampion calls, side mapping, keyed cooldown matrix remount on IDs/locale, partial-success stats/list rendering and peer lookup. No local async beyond hooks. Matrix key closes old selected skill when champions change.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/VsCooldownMatrix.tsx",
+      "sha256": "340da1c79629d4b0ca1d8b6b3795228bcadfca5b3dc8eabc5bad9b3c8de4ff4c",
+      "lineCount": 174,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Read side-to-slot table mapping, maxRank row count, peer indexing, cooldown/recharge and form logic, optional side detail, col spans, form legend, selected skill dialog and close focus. No fetch; detail result from hooks. Existing coherent large function/long comment recorded as size review trigger.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/VsCooldownValue.tsx",
+      "sha256": "9f17fa0d90c43924960758040a1467ad6cb95ed86bcd06b8c37a125b9e586c53",
+      "lineCount": 31,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked shorter/longer finite nonnegative comparisons, null display, localized shorter title and data attributes. No state/async. Missing placeholders are subdued intentionally; contrast redesign outside scope.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/VsFormCooldown.tsx",
+      "sha256": "21cc789a0d4f9b5268173593ecb3a855e7245f0eda816bde890278c5b22c2abc",
+      "lineCount": 22,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked form values per rank, null-only collapse, A/B peer matching via comparisonCooldownAtRank, unique form keys and grid alignment. No state/async.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/VsMatrixSkill.tsx",
+      "sha256": "8884db36123c2fd64b3dfa433a850bcf0003b9a859987fa8653baa79dcdc0617",
+      "lineCount": 63,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked disabled missing ability, click opens detail on every width, desktop hover/mobile no-tooltip branch, explicit detail trigger ref and shared content mapping. Skill content HTML handled by shared sanitized components. No async operations.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/index.tsx",
+      "sha256": "acc43823b23e63d0d86c55a56a7081c099ccd2999b28c4baa83786c019e2031e",
+      "lineCount": 119,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked parse/serialize state, single champion selection, swap/reset semantics, clipboard async failure/success tied to serialized current state, status feedback and mobile44px action controls. copy result cannot appear on different selection due state tag.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/useVsWorkspace.ts",
+      "sha256": "9ab0f23bdefce2e6bd2d705f5c1850ba35effe0ce1d105bd77b9e8664e55485b",
+      "lineCount": 81,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked persisted pair parse, known ID allowlist, explicit empty reset query preventing saved fallback, canonical write after bootstrap and saved URL replace. Detail loads keyed to release/sources/locale/id, cancelled on input changes, error visible and retry clears result.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/vsCooldownTable.ts",
+      "sha256": "eeca3ef021b7e7dcb4a2d7e0a462e0660dce61373540e2489cfd89d90a8f301e",
+      "lineCount": 51,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked rank expansion singleton and multi-value cases, maxRank clipping, invalid/missing values null, form peer selection and finite shorter comparison. Constants align4 slots. No async/state.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/VsPage/vsState.ts",
+      "sha256": "b175acddc06bab6ad73e4deb8cdb560c3334896d7989d9cf45bc7fe3571000ae",
+      "lineCount": 30,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked a/t URLSearchParams parsing and omission of empty IDs when serializing. Known ID validation lives in useVsState caller. No effects/async; arbitrary search text cannot inject markup.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/useChampionDragSensors.ts",
+      "sha256": "73eb1a8b7b68172b0ff6662dfc3aa979f9003b9379fc18014b884a152fd686d8",
+      "lineCount": 14,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked PointerSensor12px activation threshold and KeyboardSensor sortable coordinate getter consumed by mobile tab DndContext. No data load or persistence. Drag handlers validate active/over in useTabManagement.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/useCooldownPersistence.ts",
+      "sha256": "7eb563a2c8625e3f2bfa792ddcbbd1ff6dea60e51bcddc9e34bc677b8c022d8f",
+      "lineCount": 55,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked stored champions narrowed to id/key, tabs JSON serialization, null selected ID removal, and clear. Storage adapter catches blocked/quota writes; parent waits for both restore flags before persisting.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/useCooldownViewTab.ts",
+      "sha256": "20e632cee41374834d8b4f1e76645425924b2d875768ebc2534afd936cdbd2a4",
+      "lineCount": 28,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked skills/stats allowlist, URL-to-state effect, preserving unrelated params, default-tab deletion and replace navigation. Caller toolbar values align. No async outcomes.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    },
+    {
+      "path": "src/pages/useSelectedCooldownTab.ts",
+      "sha256": "0c668997cb6120868454a2a2343714ab7fdbb9f76bc40849f3d35416cf3fc0f4",
+      "lineCount": 14,
+      "readCoverage": "full source, imports/exports and effective caller boundary reviewed",
+      "reviewDimensions": [
+        "imports/exports/contracts",
+        "state/effects or stateless applicability",
+        "async success/failure/stale/cancellation or no async",
+        "render/interaction caller outcome",
+        "bounded work/performance assumptions"
+      ],
+      "observations": "Checked selected tab first champion ID lookup and fullInfo fallback null, memo dependencies tabs/selection/champions. Caller uses desktop list or mobile selected detail. Missing ID produces null rather than throw.",
+      "runtimeStatus": "runtime evidence detailed in observations; source inspection alone is not a safety guarantee"
+    }
+  ],
+  "fixedFindings": [
+    {
+      "id": "pages-detail-failure",
+      "priority": "P2",
+      "files": [
+        "src/pages/EncyclopediaPage/useChampionData.ts",
+        "src/pages/ChampionCooldownPage.tsx"
+      ],
+      "evidence": "Aborted Ahri detail left main only skills/stats/reset, no alert/status/add/retry; persisted Ahri+tab remained. Regression with actual503 new+restored at390/1440 now4/4 passed."
+    },
+    {
+      "id": "pages-zh-item-search",
+      "priority": "P2",
+      "files": [
+        "src/pages/EncyclopediaPage/itemCatalogModel.ts"
+      ],
+      "evidence": "zh_CN 无尽之刃 kept215 main buttons same as empty. Before regression Chinese test1failed/ko+en2passed; after Unicode normalization all3unit+4data7passed."
+    },
+    {
+      "id": "pages-item-close-focus",
+      "priority": "P2",
+      "files": [
+        "src/pages/EncyclopediaPage/ItemDetail.tsx",
+        "src/pages/EncyclopediaPage/ItemsTab.tsx"
+      ],
+      "evidence": "390px item opener thenEscape leftBODY focused. Added opener capture and main-content fallback;4/4 focused E2E cases pass at360/390/767 and direct-link fallback."
+    }
+  ],
+  "unconfirmedCandidates": [
+    {
+      "file": "src/pages/EncyclopediaPage/MobileChampionTabs.tsx",
+      "candidate": "useRef callback captures initial selectedTabId",
+      "counterevidence": "Runtime8 restored tabs, first restored correctly atscrollLeft0; selectinglast yieldedscrollLeft852 and visible last tab, so no verified finding published."
+    },
+    {
+      "file": "src/pages/EncyclopediaPage/useChampionData.ts",
+      "candidate": "locale changes leave old fullInfo",
+      "counterevidence": "App bootstrap loading removes AppRouter on language change, so hook remounts and restores locale data. Normal language switch assumption falsified."
+    }
+  ],
+  "remainingLimitations": [
+    "Not every control/state/locale/browser combination was clicked by this subagent; root owns aggregate UI/runtime suite.",
+    "Global static data/cache/decoder correctness reviewed only at page boundary; assigned to other agents.",
+    "Inherited >100-line cohesive page functions and verbose source comments were noted without unauthorized broad refactors.",
+    "Items filtered-empty UI has no explicit search-no-results copy; no new design/copy was introduced."
+  ],
+  "verification": {
+    "itemSearchTests": "7/7 pass",
+    "championDetailRetryE2E": "4/4 pass at390/1440, new/restored actual503 thenretry",
+    "targetESLint": "pass",
+    "typeCheck": "npm run type-check pass after all scoped page edits",
+    "diffCheck": "pass",
+    "itemFocusE2E": "4/4 pass: opener360/390/767 plus direct-link main-content fallback",
+    "clickThrough": "390px aborted Annie detail: localized error visible/no overflow; unroute thenRetry restored Annie table. Mobile itemEscape opener return verified by4 E2E cases.",
+    "visualEvidence": "/tmp/cooldown-apply-b8py9j/pages-detail-retry-390.png, rendered then visually inspected",
+    "chineseBrowserResult": "390px zh_CN query无尽之刃 now returns exactly1 store item:3,500无尽之刃, no horizontal overflow; pre-fix215 main buttons persisted for same query."
+  }
+}

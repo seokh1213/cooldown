@@ -34,10 +34,6 @@ export function useViewportWidth(): number {
   return width;
 }
 
-export function useWideViewport(min = WIDE_VIEWPORT_MIN): boolean {
-  return useViewportWidth() >= min;
-}
-
 /** 자료 패널 기본 폭. 화면이 넓을수록 카드에 자리를 더 준다. 사용자가 끌어 바꾸면 그 값이 이긴다. */
 export function referencePanelWidth(viewportWidth: number): number {
   return viewportWidth >= 1440 ? 400 : 320;

@@ -221,3 +221,28 @@ test("모르는 스탯 이름은 막는다", () => {
     /simulation stat/
   );
 });
+
+for (const curve of [{ byRank: [] }, { byLevel: [] }, { byRankAndLevel: [] }, { byRankAndLevel: [[]] }]) {
+  test(`비어 있는 공식 값 곡선을 거부한다: ${JSON.stringify(curve)}`, () => {
+    assert.throws(() => decodeChampionDetail(detailWithExpressionRoot({ kind: "value", value: curve })), /expression value/);
+    assert.throws(() => decodeChampionDetail(detailWithExpressionRoot({ kind: "stat", stat: "abilityPower", coefficient: curve })), /expression coefficient/);
+  });
+}
+
+for (const [baseField, coefficientField, values] of [
+  ["baseByRank", "coefficientsByRank", []],
+  ["baseByLevel", "coefficientsByLevel", []],
+  ["baseByRankAndLevel", "coefficientsByRankAndLevel", [[]]],
+] as const) {
+  test(`비어 있는 선형 피해 곡선을 거부한다: ${baseField}`, () => {
+    const fixture = structuredClone(detail);
+    const primary = { id: "Damage", kind: "damage", damageType: "physical", [baseField]: values, terms: [] };
+    fixture.champion.abilities.Q.simulation = { status: "complete", unsupportedPartTypes: [], primary } as unknown as typeof fixture.champion.abilities.Q.simulation;
+    assert.throws(() => decodeChampionDetail(fixture), /base values/);
+    fixture.champion.abilities.Q.simulation.primary = {
+      id: "Damage", kind: "damage", damageType: "physical", baseByRank: [10],
+      terms: [{ stat: "abilityPower", [coefficientField]: values }],
+    } as unknown as typeof fixture.champion.abilities.Q.simulation.primary;
+    assert.throws(() => decodeChampionDetail(fixture), /coefficients/);
+  });
+}

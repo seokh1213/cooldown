@@ -12,7 +12,7 @@ export class ManifestRepository {
   get(): Promise<DataManifest> {
     if (this.current) return this.current;
     const request = this.client
-      .getJson("data/version.json")
+      .getJson("data/version.json", decodeDataManifest)
       .then(decodeDataManifest)
       .catch((error) => {
         if (this.current === request) this.current = undefined;

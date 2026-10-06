@@ -1,4 +1,4 @@
-import { ChampionSpell } from "@/types";
+import type { Champion, ChampionSpell } from "@/types";
 import type { Language } from "@/i18n";
 import { getTranslations } from "@/i18n";
 
@@ -92,4 +92,28 @@ export function getCooldownForLevel(
 ): string {
   const cooldownValue = skill.recharge?.[level - 1] ?? skill.cooldown[level - 1];
   return cooldownValue !== undefined && cooldownValue !== null ? String(cooldownValue) : "";
+}
+
+export function buildSkillRows(champions: Champion[]) {
+  const maxLevel = Math.max(
+    ...champions.map((c) =>
+      c.spells ? Math.max(...c.spells.map((s) => s.maxrank)) : 0
+    )
+  );
+  return Array.from({ length: maxLevel }, (_, levelIdx) => {
+    const level = levelIdx + 1;
+    return {
+      level,
+      skills: champions.map((champion) => {
+        if (!champion.spells) return null;
+        return champion.spells.map((skill) => {
+          const cooldown = getCooldownForLevel(skill, level);
+          return {
+            skill,
+            cooldown,
+          };
+        });
+      }),
+    };
+  });
 }

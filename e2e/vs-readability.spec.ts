@@ -63,7 +63,7 @@ async function expectHealingIcons(container: Locator) {
 for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
   for (const theme of ["light", "dark"] as const) {
     for (const width of [1440, 360]) {
-      test(`grouped champion columns and Nunu icons: ${locale} ${theme} ${width}`, async ({ page }, testInfo) => {
+      test(`grouped champion columns and Nunu icons: ${locale} ${theme} ${width}`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
         await page.addInitScript((language) => localStorage.setItem("language", language), locale);
@@ -76,7 +76,6 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
         await q.getByRole("button").click();
         await expectHealingIcons(page.getByRole("dialog"));
         await expect(page.getByRole("combobox")).toHaveCount(0);
-        await page.screenshot({ path: testInfo.outputPath("nunu-icons.png"), animations: "disabled" });
         await page.keyboard.press("Escape");
         await expect(page.getByRole("dialog")).toHaveCount(0);
         await expect(q.getByRole("button")).toBeFocused();
@@ -130,7 +129,6 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
         await expect(page.getByRole("region", { name: t.comparison.mine, exact: true })).toBeVisible();
         await expect(page.getByRole("region", { name: t.comparison.opponent, exact: true })).toBeVisible();
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-        await page.screenshot({ path: testInfo.outputPath("vs-sticky.png"), animations: "disabled" });
       });
     }
   }

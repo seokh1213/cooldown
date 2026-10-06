@@ -16,7 +16,7 @@ async function openAdvisor(page: Page) {
 
 test("제외·이름 변경을 저장하고 새로고침 뒤 남은 항목을 이어 묻는다", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
-  let ask = await openAdvisor(page);
+  const ask = await openAdvisor(page);
   await ask("오공 문도 아리 체력 체젠 마저 비교");
   await ask("문도는 빼고 보여줘");
   await expect(page.getByText("아리 590", { exact: false }).last()).toBeVisible();
@@ -29,19 +29,16 @@ test("제외·이름 변경을 저장하고 새로고침 뒤 남은 항목을 �
   });
   await page.reload();
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
-  ask = async text => {
-    await page.getByRole("textbox", { name: "롤 질문 입력", exact: true }).fill(text);
-    await page.getByRole("button", { name: "보내기", exact: true }).click();
-    await expect(page.getByRole("button", { name: "중단", exact: true })).toBeHidden();
-  };
   await page.getByRole("textbox", { name: "롤 질문 입력", exact: true }).fill("그럼 제드는?");
   try {
-    await expect(page.getByText("이전 대화를 불러오는 중이에요. 질문을 미리 입력할 수 있어요.", { exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "보내기", exact: true })).toBeDisabled();
+    await expect(page.getByText("체젠은 빼줘", { exact: true })).toHaveCount(1);
+    await expect(page.getByText("이전 대화를 불러오는 중이에요. 질문을 미리 입력할 수 있어요.", { exact: true })).toHaveCount(0);
+    await page.getByRole("button", { name: "보내기", exact: true }).click();
+    await expect(page.getByRole("button", { name: "중단", exact: true })).toBeVisible();
   } finally {
     releaseHistory();
   }
-  await ask("그럼 제드는?");
+  await expect(page.getByRole("button", { name: "중단", exact: true })).toBeHidden();
   await expect(page.getByText("제드 654", { exact: true }).last()).toBeVisible();
   await expect(page.getByText("제드 29", { exact: true }).last()).toBeVisible();
 });

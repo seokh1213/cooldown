@@ -50,7 +50,7 @@ export function resolvePatchVersion(explicit?: string): string {
   const dirs = fs
     .readdirSync(PUBLIC_DATA_ROOT)
     .filter((d) => /^\d+\.\d+$/.test(d))
-    .sort((a, b) => Number(b.split(".")[1]) - Number(a.split(".")[1]));
+    .sort((a, b) => b.localeCompare(a, "en", { numeric: true }));
   if (dirs.length === 0) throw new Error("public/data 에 패치 디렉터리가 없습니다.");
   return dirs[0];
 }

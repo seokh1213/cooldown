@@ -9,17 +9,19 @@ import { comparisonCooldownAtRank, formCooldownAtRank } from "../../src/pages/Vs
 import { VersionedCache } from "../../src/data/cache/versionedCache";
 import { ChampionRepository } from "../../src/data/repositories/championRepository";
 import { staticDataIdentityKey } from "../../src/data/contracts/staticDataDecoder";
+import { buildChampionDetailV2 } from "../../scripts/data-pipeline/champion-data-v2";
+import type { ChampionSpellSlot } from "../../src/types/combatNormalized";
 
 const release = decodeDataManifest(JSON.parse(readFileSync("public/data/version.json", "utf8")));
 const readChampion = (id: string, locale = "ko_KR") => decodeChampionDetail(JSON.parse(readFileSync(`public/data/${release.patchVersion}/champions/${locale}/${id}.json`, "utf8")));
-const expectedSlots = { Jayce: "QWER", Nidalee: "QWE", Elise: "QWER", Gnar: "QWE" };
-for (const locale of DATA_LOCALES) {
-  for (const [id, slots] of Object.entries(expectedSlots)) {
-    test(`${locale} ${id} 형태별 스킬 구간`, () => {
+const expectedSlots = { Jayce: "QWER", Nidalee: "QWE", Elise: "QWER", Gnar: "QWE", RekSai: "QWE", Rell: "W", Kled: "Q" };
+test("모든 언어·변신 챔피언의 형태별 스킬 구간", () => {
+  for (const locale of DATA_LOCALES) {
+    for (const [id, slots] of Object.entries(expectedSlots)) {
       const detail = readChampion(id, locale);
       assert.equal(toChampion(detail).spells?.[0].forms, detail.champion.abilities.Q.forms);
       for (const [slot, ability] of Object.entries(detail.champion.abilities)) {
-        assert.equal(Boolean(ability.forms), slots.includes(slot), `${id} ${slot} form coverage`);
+        assert.equal(Boolean(ability.forms), slots.includes(slot), `${locale} ${id} ${slot} form coverage`);
         if (!ability.forms) continue;
         assert.deepEqual(ability.forms.map((form) => form.key), ["A", "B"]);
         assert.notEqual(ability.forms[0].bodyHtml, ability.forms[1].bodyHtml);
@@ -31,9 +33,9 @@ for (const locale of DATA_LOCALES) {
           assert.ok(form.bodyHtml.length > 30);
         }
       }
-    });
+    }
   }
-}
+});
 
 const jayce = readChampion("Jayce").champion.abilities;
 
@@ -42,15 +44,15 @@ test("제이스 형태 이름", () => {
   assert.deepEqual(jayce.R.forms?.map((form) => form.name), ["머큐리 캐논", "머큐리 해머"]);
 });
 
-for (const locale of DATA_LOCALES) {
-  test(`${locale} 제이스 궁극기 양쪽 형태의 챔피언 레벨별 수치`, () => {
+test("모든 언어의 제이스 궁극기 양쪽 형태의 챔피언 레벨별 수치", () => {
+  for (const locale of DATA_LOCALES) {
     const forms = readChampion("Jayce", locale).champion.abilities.R.forms!;
     const steps = (values: number[]) => values.flatMap((value) => Array(5).fill(value));
     assert.deepEqual(forms[0].levelValues?.map((entry) => entry.values), [steps([20, 25, 30, 35])]);
     assert.equal(forms[0].levelValues?.[0].percent, true);
     assert.deepEqual(forms[1].levelValues?.map((entry) => entry.values), [steps([5, 12, 19, 26]), steps([25, 60, 95, 130])]);
-  });
-}
+  }
+});
 
 test("제이스 형태별 쿨타임", () => {
   assert.equal(formCooldownAtRank(jayce.Q, jayce.Q.forms![0], 1), 16);
@@ -72,6 +74,51 @@ test("나르 형태별 쿨타임", () => {
   const gnar = readChampion("Gnar").champion.abilities;
   assert.equal(formCooldownAtRank(gnar.W, gnar.W.forms![0], 1), null);
   assert.equal(formCooldownAtRank(gnar.W, gnar.W.forms![1], 1), 7);
+});
+
+test("추가 형태의 랭크별 쿨타임·공유 비용·탄환 재충전·기존 조건부 피해 보존", () => {
+  for (const locale of DATA_LOCALES) {
+    const reksai = readChampion("RekSai", locale).champion.abilities;
+    assert.deepEqual(reksai.Q.forms!.map((form) => form.cooldownSeconds), [[4, 3.5, 3, 2.5, 2], [12, 11.5, 11, 10.5, 10]]);
+    assert.deepEqual(reksai.W.forms!.map((form) => form.cooldownSeconds), [Array(5).fill(4), Array(5).fill(4)]);
+    assert.deepEqual(reksai.E.forms!.map((form) => form.cooldownSeconds), [Array(5).fill(6), [18, 17, 16, 15, 14]]);
+    assert.match(reksai.E.forms![0].bodyHtml, /84\/114\/144\/174\/204/);
+    assert.match(reksai.E.forms![1].bodyHtml, /6\/5\/4\/3\/2/);
+    assert.equal(comparisonCooldownAtRank(reksai.Q, 1, "B"), 12);
+    const rell = readChampion("Rell", locale).champion.abilities;
+    for (const form of rell.W.forms!) {
+      assert.deepEqual(form.cooldownSeconds, Array(5).fill(10));
+      assert.match(form.bodyHtml, /^(?:마나 40|40 Mana|40 法力)/);
+    }
+    const kledDetail = readChampion("Kled", locale);
+    const kled = kledDetail.champion.abilities;
+    assert.deepEqual(kled.Q.forms!.map((form) => form.cooldownSeconds), [[11, 10, 9, 8, 7], Array(5).fill(3)]);
+    assert.match(kled.Q.forms![1].bodyHtml, /^(?:탄환 1발|1 ammo|1层充能)/);
+    assert.match(kled.Q.forms![1].bodyHtml, /18\/16\/14\/12\/10/);
+    assert.match(kled.Q.forms![1].bodyHtml, /35\/50\/65\/80\/95/);
+    const mountedOnly = locale === "ko_KR" ? /스칼에 탑승한 상태에서만/ : locale === "en_US" ? /Only usable while mounted on Skaarl/ : /仅在骑乘斯嘎尔时可用/;
+    for (const slot of ["E", "R"] as const) {
+      assert.match(kled[slot].bodyHtml, mountedOnly);
+      assert.equal(kled[slot].forms, undefined);
+      assert.equal([...kled[slot].bodyHtml.matchAll(new RegExp(mountedOnly.source, "g"))].length, 1);
+    }
+    for (const slot of ["P", "Q", "W"] as const) assert.doesNotMatch(kled[slot].bodyHtml, mountedOnly);
+    const champion = toChampion(kledDetail);
+    for (const index of [2, 3]) champion.spells![index].tooltip = `Original ${index} damage and rank values.`;
+    const normalizedSpell = (slot: ChampionSpellSlot) => ({ slot, key: kled[slot].id, name: kled[slot].name, tooltip: "", scalings: kled[slot].scalings });
+    const regenerated = buildChampionDetailV2({
+      patchVersion: release.patchVersion, sources: release.sources, locale, champion, spellData: {},
+      normalized: {
+        id: champion.id, type: "champion", name: champion.name,
+        baseStats: kledDetail.champion.baseStats, baseStatContributions: kledDetail.champion.baseStatContributions,
+        spells: { P: normalizedSpell("P"), Q: normalizedSpell("Q"), W: normalizedSpell("W"), E: normalizedSpell("E"), R: normalizedSpell("R") },
+      },
+    });
+    for (const slot of ["E", "R"] as const) {
+      assert.match(regenerated.champion.abilities[slot].bodyHtml, mountedOnly);
+      assert.match(regenerated.champion.abilities[slot].bodyHtml, /^Original /);
+    }
+  }
 });
 
 test("디코더의 잘못된 형태 거부", () => {

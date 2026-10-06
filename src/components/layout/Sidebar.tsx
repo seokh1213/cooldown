@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Sidebar as ShadcnSidebar,
@@ -29,10 +29,70 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
+function useMobileSidebarFocus(
+  open: boolean,
+  onClose: () => void,
+  sidebarRef: React.RefObject<HTMLDivElement | null>,
+  overlayRef: React.RefObject<HTMLDivElement | null>,
+) {
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!open || !sidebar) return;
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const background = new Map<HTMLElement, boolean>();
+    let branch: HTMLElement | null = sidebar;
+    while (branch?.parentElement) {
+      for (const sibling of branch.parentElement.children) {
+        if (!(sibling instanceof HTMLElement) || sibling === branch || sibling === overlayRef.current) continue;
+        background.set(sibling, sibling.inert);
+        sibling.setAttribute("inert", "");
+      }
+      branch = branch.parentElement;
+    }
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const controls = () => Array.from(sidebar.querySelectorAll<HTMLElement>(
+      "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]",
+    )).filter((control) => control.tabIndex >= 0 && control.getClientRects().length > 0);
+    controls()[0]?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+      } else if (event.key === "Tab") {
+        const targets = controls();
+        if (targets.length === 0) return;
+        event.preventDefault();
+        const index = targets.indexOf(document.activeElement as HTMLElement);
+        const next = event.shiftKey ? (index <= 0 ? targets.length - 1 : index - 1) : (index + 1) % targets.length;
+        targets[next].focus();
+      }
+    };
+    const handleFocus = (event: FocusEvent) => {
+      if (event.target instanceof Node && !sidebar.contains(event.target)) controls()[0]?.focus();
+    };
+    document.addEventListener("keydown", handleKeyDown, true);
+    document.addEventListener("focusin", handleFocus);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, true);
+      document.removeEventListener("focusin", handleFocus);
+      for (const [element, wasInert] of background) element.toggleAttribute("inert", wasInert);
+      document.body.style.overflow = previousOverflow;
+      if (trigger?.isConnected && trigger.getClientRects().length > 0) trigger.focus();
+      else controls()[0]?.focus();
+    };
+  }, [open, onClose, sidebarRef, overlayRef]);
+}
+
 function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
   const { t, lang } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  useMobileSidebarFocus(isMobile && isOpen, onClose, sidebarRef, overlayRef);
 
   const navItems: NavItem[] = [
     { path: "/", label: t.sidebar.championCooldown, icon: Clock },
@@ -55,6 +115,7 @@ function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
         {/* Mobile overlay */}
         {isOpen && (
           <div
+            ref={overlayRef}
             className="fixed inset-0 bg-black/50 z-40 md:hidden"
             onClick={onClose}
             aria-hidden="true"
@@ -63,10 +124,12 @@ function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
 
         {/* Sidebar */}
         <ShadcnSidebar
+          ref={sidebarRef}
           side="left"
           variant="sidebar"
           collapsible="offcanvas"
-          role="navigation"
+          role={isMobile ? "dialog" : "navigation"}
+          aria-modal={isMobile && isOpen ? true : undefined}
           aria-label="Primary navigation"
           aria-hidden={isMobile && !isOpen ? true : undefined}
           inert={isMobile && !isOpen ? true : undefined}
@@ -112,7 +175,7 @@ function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
 
           <SidebarContent>
             <SidebarGroup>
-              <SidebarGroupContent className="px-1">
+              <SidebarGroupContent className="px-1" role={isMobile ? "navigation" : undefined} aria-label={isMobile ? "Primary navigation" : undefined}>
                 <SidebarMenu>
                   {navItems.map((item) => {
                     const isActive = location.pathname === item.path;

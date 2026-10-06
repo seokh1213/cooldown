@@ -17,9 +17,10 @@ interface WorkerListeners {
   onChunk: (id: number, text: string) => void;
   onDone: (message: Extract<AdvisorResponse, { type: "done" }>) => void;
   setError: (error: string | null) => void;
+  failureMessage?: string;
 }
 
-export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners) {
+export function useAdvisorWorker({ onChunk, onDone, setError, failureMessage = "Advisor worker failed" }: WorkerListeners) {
   const [status, setStatus] = useState<AdvisorStatus>("idle");
   const [progress, setProgress] = useState({ loadedBytes: 0, totalBytes: 0, files: [] as AdvisorFileProgress[] });
   const [modelReady, setModelReady] = useState(false);
@@ -34,6 +35,25 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
     generateWaiters.current.clear();
   }, []);
 
+  const closeWorker = useCallback((error: Error) => {
+    rejectGeneration(error);
+    const worker = workerRef.current;
+    workerRef.current = null;
+    worker?.terminate();
+    for (const waiters of [judgeWaiters.current, embedWaiters.current]) {
+      for (const waiter of waiters.values()) waiter.reject(error);
+      waiters.clear();
+    }
+  }, [rejectGeneration]);
+
+  const failWorker = useCallback((error: Error) => {
+    closeWorker(error);
+    setModelReady(false);
+    setProgress({ loadedBytes: 0, totalBytes: 0, files: [] });
+    setError(error.message);
+    setStatus("error");
+  }, [closeWorker, setError]);
+
   /** 워커는 동의 후에만 만든다 */
   const ensureWorker = useCallback((): Worker => {
     if (workerRef.current) return workerRef.current;
@@ -41,6 +61,7 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
       type: "module",
     });
     worker.addEventListener("message", (event: MessageEvent<AdvisorResponse>) => {
+      if (workerRef.current !== worker) return;
       const message = event.data;
       switch (message.type) {
         case "progress":
@@ -88,7 +109,10 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
           break;
         }
         case "error": {
-          if (message.id === undefined) rejectGeneration(new Error(message.message));
+          if (message.id === undefined) {
+            failWorker(new Error(message.message));
+            break;
+          }
           // 판정 요청이 실패했으면 부르는 쪽에 알린다. 화면 오류로는 띄우지 않는다 — 규칙으로 되돌아간다.
           const waiter = message.id !== undefined ? judgeWaiters.current.get(message.id) ?? embedWaiters.current.get(message.id) ?? generateWaiters.current.get(message.id) : undefined;
           if (waiter) {
@@ -107,21 +131,28 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
           break;
       }
     });
-    worker.addEventListener("error", () => rejectGeneration(new Error("request worker failed")));
-    worker.addEventListener("messageerror", () => rejectGeneration(new Error("request worker failed")));
+    worker.addEventListener("error", (event) => {
+      event.preventDefault();
+      if (workerRef.current === worker) failWorker(new Error(failureMessage));
+    });
+    worker.addEventListener("messageerror", () => {
+      if (workerRef.current === worker) failWorker(new Error(failureMessage));
+    });
     workerRef.current = worker;
     return worker;
-  }, [onChunk, onDone, setError, rejectGeneration]);
+  }, [onChunk, onDone, setError, failWorker, failureMessage]);
 
   useEffect(() => () => {
-    workerRef.current?.terminate();
-    workerRef.current = null;
-    rejectGeneration(new Error("request generation stopped"));
-  }, [rejectGeneration]);
+    closeWorker(new Error("Advisor worker stopped"));
+  }, [closeWorker]);
 
   const post = useCallback((request: AdvisorRequest) => {
-    ensureWorker().postMessage(request);
-  }, [ensureWorker]);
+    try {
+      ensureWorker().postMessage(request);
+    } catch {
+      failWorker(new Error(failureMessage));
+    }
+  }, [ensureWorker, failWorker, failureMessage]);
 
   /*
    * 워커가 답을 안 주면(그래프·WebGPU 오류가 삼켜진 경우) 판정·검색 약속이 영영 안 풀려 도우미가 "생각하는 중" 에 멈춘다.
@@ -187,14 +218,12 @@ export function useAdvisorWorker({ onChunk, onDone, setError }: WorkerListeners)
   const hasWorker = useCallback(() => workerRef.current !== null, []);
 
   const shutdown = useCallback(() => {
-    rejectGeneration(new Error("request generation stopped"));
-    workerRef.current?.terminate();
-    workerRef.current = null;
+    closeWorker(new Error("Advisor worker stopped"));
     setModelReady(false);
     setStatus("idle");
     setProgress({ loadedBytes: 0, totalBytes: 0, files: [] });
     setError(null);
-  }, [setError, rejectGeneration]);
+  }, [closeWorker, setError]);
 
   return { status, setStatus, progress, modelReady, post, requestJudge, requestEmbed, requestGenerate, interrupt, hasWorker, shutdown };
 }

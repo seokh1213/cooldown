@@ -40,7 +40,7 @@ interface ViewTabsProps<T extends string> {
  */
 const TAB_CLASS =
   "shrink-0 whitespace-nowrap px-3 sm:px-4 py-2 text-sm font-medium transition-colors border-b-2 rounded-none shadow-none " +
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 const TAB_ACTIVE = "border-primary text-primary";
 const TAB_IDLE = "border-transparent text-muted-foreground hover:text-foreground";
 

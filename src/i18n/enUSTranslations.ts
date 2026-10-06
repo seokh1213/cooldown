@@ -352,6 +352,12 @@ export const enUSTranslations: Translations = {
       },
     },
     history: {
+      missingCard: "The original card was not saved and cannot be restored. Your conversation is still available.",
+      unknownPatch: "Original patch unknown",
+      currentDataLink: "Open current data",
+      saveFailed: "Your conversation could not be saved. Free some storage and retry. New answers may be lost when this page closes.",
+      retrySave: "Retry saving",
+
       loading: "Loading your previous conversation. You can type your question now.",
       title: "Conversations",
       open: "Conversations",

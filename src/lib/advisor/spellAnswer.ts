@@ -2,13 +2,14 @@
 import type { ChampionCard, SpellFact } from "@/lib/knowledge/facts";
 import type { Language } from "@/i18n";
 import type { AdvisorAnswer, Fact } from "./answer";
-import { detectSpellFocus } from "./spellFocus";
+import { detectSpellFocus, type SpellFocus } from "./spellFocus";
 import { cardLabels, translateDamage, translateRatioStat, translateTag } from "./promptLocale";
 import { sentencesWith } from "./answerText";
 import { controlText, controlHeading } from "@/lib/knowledge/crowdControl";
 import { asksCrowdControl } from "./crowdControlQuestion";
 import { passiveAttackEvidence } from "./basicAttackQuestion";
 import { passiveStatEvidence } from "./passiveStatQuestion";
+import { selectSpellForm } from "./spellForm";
 
 /**
  * 계수 목록을 글로. "주문력 105%" 의 능력치 이름은 툴팁에서 읽어 낸 한국어라 옮긴다.
@@ -45,25 +46,43 @@ export function rangeFact(spell: SpellFact, lang: Language = "ko_KR"): Fact | un
   return { label: cardLabels(lang).range, value };
 }
 
+/** 스킬 하나에서 사실 하나를 글로. 스킬 표(챔피언 카드의 focus)와 비교 표가 같이 쓴다. */
+export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Language = "ko_KR"): string {
+  switch (focus) {
+    case "cooldown":
+      return cooldownFact(spell, lang)?.value ?? "";
+    case "cost":
+      return spell.cost ?? "";
+    case "ratio":
+      return ratioText(Object.entries(spell.ratios ?? {}), lang);
+    case "range":
+      return rangeFact(spell, lang)?.value ?? "";
+    case "damage":
+      return spell.damageTypes.map((type) => translateDamage(type, lang)).join("·");
+    case "effect":
+      return spell.effects.map((tag) => translateTag(tag, lang)).join(", ");
+  }
+}
+
 /** 질문과 독립적인 스킬 전체 정보. 카드의 모든 행과 답변이 같은 사실을 사용한다. */
 export function spellFacts(spell: SpellFact, lang: Language = "ko_KR"): Fact[] {
   const w = cardLabels(lang);
   const facts: Fact[] = [];
   const cooldown = cooldownFact(spell, lang);
   if (cooldown) facts.push(cooldown);
-  if (spell.cost) facts.push({ label: w.cost, value: spell.cost });
+  if (spell.cost) facts.push({ label: w.cost, value: spellFocusValue(spell, "cost", lang) });
   const range = rangeFact(spell, lang);
   if (range) facts.push(range);
   if (spell.damageTypes.length) {
-    facts.push({ label: w.damageType, value: spell.damageTypes.map((type) => translateDamage(type, lang)).join("·") });
+    facts.push({ label: w.damageType, value: spellFocusValue(spell, "damage", lang) });
   }
   if (spell.effects.length) {
-    facts.push({ label: w.effects, value: spell.effects.map((tag) => translateTag(tag, lang)).join(", ") });
+    facts.push({ label: w.effects, value: spellFocusValue(spell, "effect", lang) });
   }
   const control = spell.crowdControl ? { label: controlHeading(lang), value: controlText(spell.crowdControl, lang) } : undefined;
   if (control) facts.push(control);
   const ratios = Object.entries(spell.ratios ?? {});
-  if (ratios.length) facts.push({ label: w.ratios, value: ratioText(ratios, lang) });
+  if (ratios.length) facts.push({ label: w.ratios, value: spellFocusValue(spell, "ratio", lang) });
   return facts;
 }
 
@@ -74,6 +93,10 @@ export function buildSpellAnswer(
   question: string,
   lang: Language = "ko_KR",
 ): AdvisorAnswer {
+  const form = selectSpellForm(card, spell, question, lang);
+  if (form.clarification) return { kind: "text", text: form.clarification };
+  spell = form.spell;
+  if (form.selected) card = { ...card, spells: card.spells.map(item => item.slot === spell.slot ? spell : item) };
   const w = cardLabels(lang);
   const detected = detectSpellFocus(question);
   const facts = spellFacts(spell, lang);
@@ -89,9 +112,9 @@ export function buildSpellAnswer(
   } else if (detected?.focus === "cooldown" && cooldown) {
     headline = cooldown;
   } else if (detected?.focus === "cost" && spell.cost) {
-    headline = { label: w.cost, value: spell.cost };
+    headline = { label: w.cost, value: spellFocusValue(spell, "cost", lang) };
   } else if (detected?.focus === "ratio" && ratios.length) {
-    headline = { label: w.ratios, value: ratioText(ratios, lang) };
+    headline = { label: w.ratios, value: spellFocusValue(spell, "ratio", lang) };
   } else if (detected?.focus === "range" && range) {
     headline = range;
   } else if (detected?.focus === "effect" || detected?.focus === "range") {
@@ -104,6 +127,7 @@ export function buildSpellAnswer(
   if (!headline && attackEvidence.length) highlighted = attackEvidence;
   const statEvidence = passiveStatEvidence(spell, question);
   if (!headline && statEvidence.length) highlighted = statEvidence;
+  if (form.selected && !headline && !highlighted.length) highlighted = [spell.text];
 
   return {
     kind: "spell",

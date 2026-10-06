@@ -112,7 +112,6 @@ export interface Champion {
   image?: { full: string };
 }
 
-// ===== Runes =====
 
 export interface Rune {
   id: number;

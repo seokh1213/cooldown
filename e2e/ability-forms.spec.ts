@@ -29,7 +29,7 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"]) {
 
 for (const locale of ["ko_KR", "en_US", "zh_CN"]) {
   for (const width of [1440, 390]) {
-    test(`Jayce R shows level tables for both forms: ${locale} at ${width}`, async ({ page }) => {
+    test(`form level tables and additional champion details: ${locale} at ${width}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 });
       await page.addInitScript((language) => localStorage.setItem("language", language), locale);
       await page.goto("./vs?a=Jayce&t=Nidalee");
@@ -50,6 +50,26 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"]) {
       await expect(hammer.getByRole("table")).toHaveCount(2);
       await expect(hammer.getByRole("table").nth(0).getByRole("cell")).toHaveText(["5", "12", "19", "26"]);
       await expect(hammer.getByRole("table").nth(1).getByRole("cell")).toHaveText(["25", "60", "95", "130"]);
+      await page.keyboard.press("Escape");
+
+      for (const [id, slots] of [["RekSai", [["Q", "12"], ["W", "4"], ["E", "18"]]], ["Rell", [["W", "10"]]], ["Kled", [["Q", "3"]]]] as const) {
+        await page.goto(`./vs?a=${id}&t=Garen`);
+        for (const [slot, cooldown] of slots) {
+          const skill = page.getByTestId(`vs-mine-${slot}`);
+          await expect(skill.locator("[data-form-half]")).toHaveCount(2);
+          const row = page.locator(`[data-rank-row="1"] td[headers$="vs-mine-${slot}"]`);
+          await expect(row.locator('[data-form-cooldown="B"] [data-cooldown]')).toHaveText(cooldown);
+          await skill.getByRole("button").click();
+          const dialog = page.getByRole("dialog");
+          await expect(dialog.locator("[data-ability-form]")).toHaveCount(2);
+          await expect.poll(() => dialog.locator("[data-form-icon] img").evaluateAll((images) => images.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
+          if (id === "Kled") await expect(dialog.locator('[data-ability-form="B"]')).toContainText("18/16/14/12/10");
+          if (id === "Rell") await expect(dialog.locator('[data-ability-form="B"]')).toContainText(/마나 40|40 Mana|40 法力/);
+          await page.keyboard.press("Escape");
+          await expect(dialog).toHaveCount(0);
+        }
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      }
     });
   }
 }

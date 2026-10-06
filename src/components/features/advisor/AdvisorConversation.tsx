@@ -9,6 +9,7 @@ import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { AdvisorEmptyState } from "./AdvisorEmptyState";
 import { AdvisorTurnView } from "./AdvisorTurnView";
+import { HistoryReference } from "./HistoryReference";
 
 type TurnHandlers = Pick<
   React.ComponentProps<typeof AdvisorTurnView>,
@@ -44,15 +45,15 @@ export function AdvisorConversation({ scrollRef, lastTurnRef, turns, error, load
         <AdvisorEmptyState contextCards={contextCards} context={context} ddragonVersion={ddragonVersion} onAsk={onAsk} />
       )}
       {turns.map((turn, index) => (
+        <HistoryReference key={turn.id} turn={turn}>
         <AdvisorTurnView
-          key={turn.id}
           ref={index === turns.length - 1 ? lastTurnRef : undefined}
           turn={turn}
           index={index}
-          previousAnswer={turns
+          previousTurn={turns
             .slice(0, index)
             .reverse()
-            .find((entry) => entry.role === "assistant" && entry.answer)?.answer}
+            .find((entry) => entry.role === "assistant" && entry.answer)}
           asReference={props.isReference(turn)}
           shownInReference={props.shownReferenceId === turn.id}
           answering={busy && turn.id === props.lastAssistantId}
@@ -65,6 +66,7 @@ export function AdvisorConversation({ scrollRef, lastTurnRef, turns, error, load
           onPickChampion={props.onPickChampion}
           onNavigate={props.onNavigate}
         />
+        </HistoryReference>
       ))}
       {error && (
         <p className="text-destructive">

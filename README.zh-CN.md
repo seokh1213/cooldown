@@ -22,7 +22,7 @@
 
 ## 其他功能
 
-- 符文、装备、召唤师技能百科
+- 英雄背景故事与皮肤、符文、装备、召唤师技能百科
 - 韩语、英语、简体中文
 - 可安装、可离线使用的 PWA
 - 可选的英雄联盟知识助手。模型只在浏览器内运行，不向任何服务器发送数据。参见 `docs/advisor-answer-pipeline.md`。
@@ -61,9 +61,9 @@ npm run test:e2e
 ## 更多
 
 - `docs/product-roadmap.md`：优先级与完成标准
-- `docs/pwa-updates.md`：PWA 发布与更新规则
-- `docs/versioning.md`：版本号与数据源版本规则
-- `docs/local-llm-advisor.md`、`knowledge/README.md`：知识助手
+- [数据版本与 PWA 更新](docs/data-and-updates.md)
+- [知识助手设计](docs/advisor-answer-pipeline.md)、[知识编写指南](knowledge/README.md)
+- [补丁变更记录](docs/patch-notes.md)
 
 ## 许可证
 

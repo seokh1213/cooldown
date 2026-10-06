@@ -8,12 +8,15 @@ import { MAX_NEW_TOKENS, NO_REPEAT_NGRAM } from "@/lib/advisor/config";
 import { createLoopGuard, trimLoop } from "@/lib/advisor/loopGuard";
 import type { AdvisorRequest } from "@/lib/advisor/protocol";
 import { getModel, getTokenizer, load } from "./model";
+import { withGenerationAdapter } from "./lora";
 import { post } from "./port";
 
 /** 생성 중단 스위치. 라이브러리가 매 토큰마다 확인한다. */
 let stopper = new InterruptableStoppingCriteria();
+let stopEpoch = 0;
 
 export function stopGeneration() {
+  stopEpoch += 1;
   stopper.interrupt();
 }
 
@@ -24,7 +27,13 @@ type ChatMessage = { role: string; content: string };
 
 export async function generate(request: Extract<AdvisorRequest, { type: "generate" }>) {
   const { id, model: spec, messages, system, maxTokens, loopGuard = true, purpose } = request;
+  const grounded = purpose === "grounded-summary" || purpose === "grounded-numeric";
+  const requestEpoch = stopEpoch;
   await load(spec);
+  if (requestEpoch !== stopEpoch) {
+    post({ type: "done", id, text: "", tokens: 0, seconds: 0 });
+    return;
+  }
   const tokenizer = getTokenizer();
   const model = getModel();
   if (!tokenizer || !model) throw new Error("모델이 준비되지 않았습니다");
@@ -61,7 +70,7 @@ export async function generate(request: Extract<AdvisorRequest, { type: "generat
       text += chunk;
       tokens += 1;
       // 요약 후보는 완료 후 검사한다. 검증되지 않은 조각은 화면에 흘리지 않는다.
-      if (purpose !== "grounded-summary") post({ type: "chunk", id, text: chunk });
+      if (!grounded) post({ type: "chunk", id, text: chunk });
       if (loopGuard && !looped && guard.feed(chunk)) {
         looped = true;
         stopper.interrupt();
@@ -69,13 +78,13 @@ export async function generate(request: Extract<AdvisorRequest, { type: "generat
     },
   });
 
-  await model.generate({
+  await withGenerationAdapter(purpose, () => model.generate({
     ...inputs,
-    max_new_tokens: maxTokens ?? MAX_NEW_TOKENS,
+    max_new_tokens: purpose === "grounded-numeric" ? Math.min(maxTokens ?? 24, 24) : maxTokens ?? MAX_NEW_TOKENS,
     do_sample: false,
     // 탐욕 복호화만으로는 같은 구절을 반복해 찍는다. 살짝만 눌러 준다. 크게 주면
     // 스킬 이름처럼 되풀이해야 하는 낱말까지 피하려 들어 글이 이상해진다.
-    repetition_penalty: purpose === "grounded-summary" ? 1 : 1.1,
+    repetition_penalty: grounded ? 1 : 1.1,
     /*
      * 같은 20토큰이 두 번 나오지 못하게 한다. 끊는 것보다 앞에서 막는다.
      *
@@ -85,11 +94,11 @@ export async function generate(request: Extract<AdvisorRequest, { type: "generat
      * 되풀이 한 바퀴는 18토큰 남짓이었다("1레벨 기준 전체 챔피언 중 하위권이라는 점,
      * 그리고 오공이 "). 20 이면 이름은 막지 않고 바퀴는 두 번째에서 막힌다.
      */
-    no_repeat_ngram_size: purpose === "grounded-summary" ? 0 : NO_REPEAT_NGRAM,
+    no_repeat_ngram_size: grounded ? 0 : NO_REPEAT_NGRAM,
     streamer,
     // 중단 요청이 오면 다음 토큰에서 멈춘다
     stopping_criteria: stopper,
-  } as Parameters<PreTrainedModel["generate"]>[0]);
+  } as Parameters<PreTrainedModel["generate"]>[0]));
 
   const finishedAt = performance.now();
   const dims = (inputs as { input_ids?: { dims?: number[] } }).input_ids?.dims;
@@ -141,6 +150,9 @@ function encodeWithinLimit(tokenizer: PreTrainedTokenizer, messages: ChatMessage
       systemText = systemText.slice(0, Math.floor(systemText.length * 0.85));
       inputs = encode(history, systemText);
     }
+  }
+  if (lengthOf(inputs) > PROMPT_LIMIT) {
+    throw new Error(`질문이 너무 깁니다. ${PROMPT_LIMIT}토큰 이내로 줄여 다시 질문해 주세요.`);
   }
   return inputs;
 }

@@ -116,12 +116,12 @@ function main() {
       loadSpellOverrides(),
     ).buildAll();
     koreanCards = base;
-    const bySlot = new Map<string, { damageTypes: ChampionCard["spells"][number]["damageTypes"]; effects: string[] }>();
+    const bySlot = new Map<string, ChampionCard["spells"][number]>();
     const byId = new Map<string, ChampionCard>();
     for (const card of base) {
       byId.set(card.id, card);
       for (const spell of card.spells) {
-        bySlot.set(`${card.id}:${spell.slot}`, { damageTypes: spell.damageTypes, effects: spell.effects });
+        bySlot.set(`${card.id}:${spell.slot}`, spell);
       }
     }
     for (const card of cards) {
@@ -137,6 +137,13 @@ function main() {
         if (!derived) continue;
         spell.damageTypes = derived.damageTypes;
         spell.effects = derived.effects;
+        for (const form of spell.forms ?? []) {
+          const koreanForm = derived.forms?.find(item => item.key === form.key);
+          if (!koreanForm) continue;
+          form.damageTypes = koreanForm.damageTypes;
+          form.effects = koreanForm.effects;
+          form.ratios = koreanForm.ratios;
+        }
       }
     }
   }
@@ -149,11 +156,12 @@ function main() {
    * 나가는데, 빈칸이 아니라서 눈으로는 고장으로 안 보인다. 실제로 그렇게 새고
    * 있었다. 표는 툴팁 정규식보다 늦게 자라기 마련이니 자동으로 잡아야 한다.
    */
+  const spells = cards.flatMap(card => card.spells.flatMap(spell => [spell, ...spell.forms ?? []]));
   const gaps: Array<readonly [string, string[]]> = ([
-    ["효과 태그", missingCardWords(cards.flatMap((c) => [...c.mechanics, ...c.spells.flatMap((s) => s.effects)]), TAGS)],
-    ["피해 유형", missingCardWords(cards.flatMap((c) => c.spells.flatMap((s) => s.damageTypes)), DAMAGE)],
+    ["효과 태그", missingCardWords([...cards.flatMap(card => card.mechanics), ...spells.flatMap(spell => spell.effects)], TAGS)],
+    ["피해 유형", missingCardWords(spells.flatMap(spell => spell.damageTypes), DAMAGE)],
     ["사거리", missingCardWords(cards.map((c) => c.rangeType), RANGE)],
-    ["계수 능력치", missingCardWords(cards.flatMap((c) => c.spells.flatMap((s) => Object.keys(s.ratios ?? {}))), RATIO_STATS)],
+    ["계수 능력치", missingCardWords(spells.flatMap(spell => Object.keys(spell.ratios ?? {})), RATIO_STATS)],
     ["능력치 등급", missingCardWords(cards.flatMap((c) => Object.values(c.stats).flatMap((s) => [s.gradeLv1, s.gradeLv18])), GRADE)],
   ] as const).filter(([, missing]) => missing.length > 0);
   if (gaps.length > 0) {

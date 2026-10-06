@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import type { Rune, RuneStatShard, RuneTree } from "@/types";
 import { runeIconKey, runeIconUrl } from "@/data/assets/riotAssetUrls";
 import { SpriteIcon, useSpriteSheet, type SheetState } from "@/components/ui/sprite-icon";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useRef } from "react";
 import { AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import {
@@ -90,7 +90,7 @@ interface RuneIconProps {
   style: CSSProperties;
   isMobile: boolean;
   warning: string;
-  onSelect: (rune: Rune) => void;
+  onSelect: (rune: Rune, trigger: HTMLButtonElement) => void;
 }
 
 function RuneIcon(props: RuneIconProps) {
@@ -98,7 +98,9 @@ function RuneIcon(props: RuneIconProps) {
   const button = (
     <button
       type="button"
-      onClick={isMobile ? () => onSelect(rune) : undefined}
+      onClick={(event) => onSelect(rune, event.currentTarget)}
+      aria-label={rune.name}
+      aria-haspopup="dialog"
       className={`flex flex-col items-center gap-1 focus:outline-hidden min-w-0 ${
         isMobile ? "" : "cursor-help"
       }`}
@@ -139,7 +141,7 @@ interface RuneTreeCardProps {
   tree: RuneTree;
   isMobile: boolean;
   warning: string;
-  onSelect: (rune: Rune) => void;
+  onSelect: (rune: Rune, trigger: HTMLButtonElement) => void;
 }
 
 function RuneTreeCard({ tree, isMobile, warning, onSelect }: RuneTreeCardProps) {
@@ -233,8 +235,13 @@ export function RuneCatalog(props: {
   onSelectRune: (rune: Rune | null) => void;
 }) {
   const { trees, statShardRows, selectedRune, isMobile, warning, statShardsTitle, onSelectRune } = props;
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
   // 칸 차례는 묶음에 심어 두었다. 룬은 판본 밖에 모이므로 판본을 비워 부른다.
   const sprite = useSpriteSheet("rune", "");
+  function selectRune(rune: Rune, trigger: HTMLButtonElement) {
+    triggerRef.current = trigger;
+    onSelectRune(rune);
+  }
   return (
     <RuneSpriteContext.Provider value={sprite}>
     <TooltipProvider delayDuration={200}>
@@ -242,24 +249,28 @@ export function RuneCatalog(props: {
         <ScrollArea className="rounded-md border bg-card/40">
           <div className="p-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {trees.map((tree) => (
-              <RuneTreeCard key={tree.id} tree={tree} isMobile={isMobile} warning={warning} onSelect={onSelectRune} />
+              <RuneTreeCard key={tree.id} tree={tree} isMobile={isMobile} warning={warning} onSelect={selectRune} />
             ))}
             <StatShardCard rows={statShardRows} title={statShardsTitle} warning={warning} />
           </div>
         </ScrollArea>
-        {isMobile && (
-          <Dialog open={selectedRune !== null} onOpenChange={(open) => !open && onSelectRune(null)}>
-            <DialogContent className="w-[calc(100vw-32px)] max-w-lg h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col">
-              <VisuallyHidden>
-                <DialogTitle>{selectedRune?.name ?? "Rune"}</DialogTitle>
-                <DialogDescription>{selectedRune?.name ?? "Rune"}</DialogDescription>
-              </VisuallyHidden>
-              <ScrollArea className="flex-1 min-h-0">
-                <div className="p-4">{selectedRune && <RuneDetail rune={selectedRune} warning={warning} />}</div>
-              </ScrollArea>
-            </DialogContent>
-          </Dialog>
-        )}
+        <Dialog open={selectedRune !== null} onOpenChange={(open) => !open && onSelectRune(null)}>
+          <DialogContent
+            className="w-[calc(100vw-32px)] max-w-lg h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              triggerRef.current?.focus();
+            }}
+          >
+            <VisuallyHidden>
+              <DialogTitle>{selectedRune?.name ?? "Rune"}</DialogTitle>
+              <DialogDescription>{selectedRune?.name ?? "Rune"}</DialogDescription>
+            </VisuallyHidden>
+            <ScrollArea className="flex-1 min-h-0">
+              <div className="p-4">{selectedRune && <RuneDetail rune={selectedRune} warning={warning} />}</div>
+            </ScrollArea>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
     </RuneSpriteContext.Provider>
