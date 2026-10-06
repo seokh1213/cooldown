@@ -21,9 +21,9 @@ export interface ChampionStatQuery {
 const STAT_LEXICON: Array<[StatName, RegExp]> = [
   ["healthRegen", /체[력럭려]\s*(?:재생|회[복븍])|체[젠잰]|(?:health|hp)\s*(?:regen(?:eration)?|regneration|recovery)|\bhp5\b|生命(?:值)?(?:回复|恢复)|回血|가만히.*피가\s*차는\s*양/i],
   ["magicResist", /마법\s*저[항향]|마저|마방|magic\s*(?:resist(?:ance)?|resitance)|\bmr\b|魔抗|魔法抗性/i],
-  ["attackSpeed", /공[격걱]\s*속[도두]|공속|attack\s*speed|\bas\b|攻(?:击)?速(?:度)?/i],
-  ["moveSpeed", /이동\s*속[도두]|이속|무빙|빨라|빠르|빠른|move(?:ment)?\s*speed|\bms\b|\bfaster\b|移动速度|移速|更快/i],
-  ["attackDamage", /공[격걱][력럭]|깡공|깡뎀|\bad\b|attack\s*damage|攻击力/i],
+  ["attackSpeed", /공[격걱]\s*속[도두]|공속|at{1,2}ack\s*speed|\bas\b|攻(?:击)?速(?:度)?/i],
+  ["moveSpeed", /이[동돔]\s*속[도두]|이속|걷는\s*속도|무빙|빨라|빠르|빠른|move?(?:ment)?\s*speed|\bms\b|\bfaster\b|移动速度|移速|更快/i],
+  ["attackDamage", /공[격걱][력럭]|깡공|깡뎀|\bad\b|attack\s*dama?ge|攻击力/i],
   ["armor", /방[어오][력럭]|방어|아머|물리\s*방어|\barmou?r\b|护甲/i],
   ["health", /체[력럭려]|생명력(?!\s*흡수)|피통|단단|튼튼|탱키|\bhp\b|\bhealth\b|\btank(?:y|ier)\b|生命值|更肉|坦/i],
 ];

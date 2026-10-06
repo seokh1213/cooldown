@@ -1,10 +1,11 @@
 /** 대상과 수치 칸이 명확한 조회는 판정·검색보다 먼저 카드로 답한다. */
 import { buildCompareAnswer, buildRuleAnswer, buildSpellAnswer } from "./answer";
-import { asksSkillHandling, asksWholeKit } from "./askWords";
+import { asksSkillHandling, asksWholeKit, asksScenarioAdvice } from "./askWords";
 import type { AnswerPlan, PlanContext } from "./planTypes";
 import { askedRules, ruleCooldown } from "./questionDocs";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import { unavailableStatPlan } from "./unavailableStats";
+import { asksSpellNumbers } from "./spellFocus";
 
 const ADVICE = /빠졌|빠진|없으면|대신|들어가|진입|상대법|교환|언제|어떻게|피하|피해\s*버|좋아|추천|\b(when|should|instead|without|bait|avoid|engage)\b|怎么|何时|没了|没有|换成|推荐/i;
 
@@ -13,7 +14,9 @@ export function directFactPlan(resolved: ResolvedQuestion, ctx: PlanContext): An
   const unavailable = unavailableStatPlan(resolved, ctx);
   if (unavailable) return unavailable;
   const { text: question, champions, slot, spellFocus } = resolved;
-  if (!ctx.data || !spellFocus || ADVICE.test(question) || asksSkillHandling(question) || asksWholeKit(question)) return undefined;
+  if (!asksSpellNumbers(question) && /(?:쿨(?:타임)?|재사용 대기)\s*중|on cooldown|冷却中/i.test(question)) return undefined;
+  if (!ctx.data || !spellFocus || asksWholeKit(question)) return undefined;
+  if (!asksSpellNumbers(question) && (ADVICE.test(question) || asksScenarioAdvice(question) || asksSkillHandling(question))) return undefined;
   if (!["cooldown", "cost", "range", "ratio"].includes(spellFocus.focus)) return undefined;
   const rules = askedRules(ctx.data, question);
   if (rules.length === 1 && rules[0].subject !== "gameplay" && spellFocus.focus === "cooldown" && !champions.length) {

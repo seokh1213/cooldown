@@ -14,13 +14,10 @@
  *
  * 합쳐 7MB 남짓이다. 모델(570MB)에 비하면 작고, 한 번 받으면 캐시에 남는다.
  */
+import { withParticle } from "./answerText";
 import { revisionedDataPath } from "@/pwa/release";
 import { abilityIndex, type Ability, type AbilityBundle } from "./mechanics/types";
 import type { ChampionCard } from "@/lib/knowledge/facts";
-import { aliasAt } from "@/lib/knowledge/searchAliases";
-import { askedRuleKinds } from "@/lib/knowledge/rules";
-import { asksPrice } from "./gameMeta";
-import itemAliasFile from "../../../knowledge/item-aliases.json";
 import type { CuratedTip } from "@/lib/knowledge/knowledgeCore";
 import {
   indexRules,
@@ -34,7 +31,6 @@ import {
   type MechanicsIndex,
 } from "@/lib/knowledge/mechanics";
 import type { WikiItemMeta } from "@/lib/knowledge/sourceRecords";
-import type { AdvisorAnswer, Fact } from "./answer";
 import type {
   NormalizedItem,
   NormalizedRune,
@@ -215,11 +211,13 @@ export function loadAdvisorData(patch: string, locale = "ko_KR"): Promise<Adviso
  * 영어 낱말 속 알파벳에 걸리지 않도록 슬롯 문자는 앞뒤가 한글이거나 경계일 때만 센다.
  */
 export function detectSlot(question: string): string | undefined {
-  if (/패시브|기본\s?지속/.test(question)) return "P";
+  if (/패시브|기본\s?지속|\bpassive\b|被动/i.test(question)) return "P";
   // 한글에는 \b 가 듣지 않는다. "가렌 궁 뭐야" 를 놓쳤다.
   // 영어 "ult·ulti·ultimate" 와 중국어 "大招" 도 궁이다. 상성 대화 중 "give me the ult cooldowns for both",
   // "两人大招CD各是多少" 가 슬롯 없이 네 스킬 표로 나갔다. 영어는 낱말 경계로 잰다("result", "ultra" 에 걸리면 안 된다).
-  if (/궁극기|궁(?=[\s을은이의로에만도]|$)|\bult(?:i|imate)?\b|大招/i.test(question)) return "R";
+  if (/궁극기|궁(?=[\s을은이의으로에만도]|$)|\bult(?:i|imate)?\b|大招|(?:一|二|三|1|2|3)级大(?=能|的|招|多|冷|飞)/i.test(question)) return "R";
+  const compact = /\b([QWER])(?=mana|cost|cooldown|range)/i.exec(question);
+  if (compact) return compact[1].toUpperCase();
   const match = /(^|[^A-Za-z])([QWERqwer])($|[^A-Za-z])/.exec(question);
   return match ? match[2].toUpperCase() : undefined;
 }
@@ -267,115 +265,6 @@ export function buildTagAnswer(
   return `${lines.join("\n")}\n\n_v${data.patch}_`;
 }
 
-/** 받침 유무로 조사를 고른다. "보호막는" 처럼 나가면 답이 어설퍼 보인다. */
-function withParticle(word: string, withFinal: string, withoutFinal: string): string {
-  const last = word.charCodeAt(word.length - 1);
-  const hasFinal = last >= 0xac00 && last <= 0xd7a3 && (last - 0xac00) % 28 !== 0;
-  return `${word}${hasFinal ? withFinal : withoutFinal}`;
-}
-
-/**
- * 설명문에서 그 낱말이 나온 문장을 찾는다. 판정의 근거로 함께 보여 준다.
- * 근거 없이 "네/아니오" 만 내면 사용자가 확인할 방법이 없다.
- */
-function sentenceWith(body: string, term: string): string | undefined {
-  return body
-    .split(/\n|(?<=니다\.)\s*/)
-    .map((line) => line.trim())
-    .find((line) => line.includes(term));
-}
-
-/**
- * 아이템 질문의 답. 설명문을 통째로 던지지 않고 능력치·효과로 갈라 둔다.
- *
- * **모델을 거치지 않는다.** 설명문을 요약시켰더니 두 가지로 틀렸다.
- * "쇼진의 창은 궁극기에도 적용되나요" 에 "적용되지 않습니다" 라고 답했고
- * (설명문은 "챔피언 스킬" 이라 적는데 궁극기가 거기 든다는 추론을 못 한다),
- * "몰락한 왕의 검은 어떤 효과야" 에는 능력치만 읊고 고유 효과 두 개를 빠뜨렸다.
- * e4b 로 키워도 같았다. 설명문 자체가 답이므로 그대로 낸다.
- *
- * 갈라 두면 카드가 표로 그릴 수 있고, 대화에는 효과 이름과 설명만 나간다.
- * **아이템을 둘 이상 물었으면 구조를 쓰지 않는다** — 카드는 하나뿐인데 둘을 담으면
- * 한쪽이 소리 없이 사라진다. 그때는 예전처럼 설명문을 그대로 낸다.
- */
-/** 방금 다룬 아이템을 가리키는 말 */
-const ITEM_REFERENCE = /거기|그거|이거|그 아이템|이 아이템|\b(it|that|this)\b|这个|那个|它/i;
-
-export function buildItemCard(
-  data: AdvisorData,
-  question: string,
-  /** 이름을 생략했을 때 쓸 아이템. 대화에서 방금 다룬 것 — "거기 둔화 있어?" */
-  recent?: string,
-): AdvisorAnswer | undefined {
-  const named = findItems(data, question);
-  // 이름이 없어도 효과 낱말·가격·지시어("거기", "그거")를 물었으면 방금 다룬 아이템에 대한 질문이다.
-  // "쇼진의 창 효과" 뒤의 "가격은?" 이 검색 벡터 길로 가 "혹시 이 자료?" 로 빠졌다(2026-09-30 브라우저 시험).
-  const followsRecent =
-    named.length === 0 && Boolean(recent) && (data.effectTags.some((tag) => question.includes(tag)) || asksPrice(question) || ITEM_REFERENCE.test(question));
-  const items = followsRecent ? data.items.filter((item) => String(item.id) === recent).slice(0, 1) : named;
-  if (items.length === 0) return undefined;
-  if (items.length > 1) {
-    const text = buildItemAnswer(data, question);
-    return text ? { kind: "text", text } : undefined;
-  }
-
-  const [item] = items;
-  const body = htmlToText(item.description ?? "");
-  const asked = data.effectTags.filter((tag) => question.includes(tag));
-  return {
-    kind: "item",
-    itemId: String(item.id),
-    itemName: item.name,
-    price: item.priceTotal,
-    askedPrice: asksPrice(question) || undefined,
-    stats: (item.statDescriptions ?? [])
-      .map((line) => {
-        // "공격력 <span>45</span>" → 마지막 낱말이 값, 앞이 이름. "공격 속도 25%" 도 같다.
-        const text = htmlToText(line).replace(/\s+/g, " ").trim();
-        const at = text.lastIndexOf(" ");
-        return at < 0 ? undefined : { label: text.slice(0, at), value: text.slice(at + 1) };
-      })
-      .filter((stat): stat is Fact => Boolean(stat)),
-    effects: (item.effects ?? [])
-      .map((effect) => ({
-        name: effect.name?.replace(/\s*[-–:]\s*$/, "").trim() ?? "",
-        active: effect.kind === "active",
-        text: htmlToText(effect.description ?? ""),
-      }))
-      // 이름도 설명도 없는 칸이 자료에 섞여 있다(선혈포식자). 빈 줄을 카드에 남기지 않는다.
-      .filter((effect) => effect.name || effect.text),
-    verdicts: asked.map((tag) => {
-      const evidence = sentenceWith(body, tag);
-      return { tag, yes: Boolean(evidence), evidence };
-    }),
-  };
-}
-
-export function buildItemAnswer(data: AdvisorData, question: string): string | undefined {
-  const items = findItems(data, question);
-  if (!items.length) return undefined;
-
-  const blocks: string[] = [];
-  for (const item of items) {
-    const body = htmlToText(item.description ?? "");
-    // 효과 낱말을 물었으면 설명문에 그 말이 있는지로 판정한다.
-    // 모델에게 맡겼더니 "둔화시킵니다" 가 적혀 있는데도 "둔화 효과가 없습니다" 라고 답했다.
-    const asked = data.effectTags.filter((tag) => question.includes(tag));
-    const verdicts = asked.map((tag) => {
-      const evidence = sentenceWith(body, tag);
-      return evidence
-        ? `네. ${item.name}에 ${withParticle(tag, "이", "가")} 있습니다.\n> ${evidence}`
-        : `아니요. ${item.name} 설명에 ${withParticle(tag, "은", "는")} 없습니다.`;
-    });
-    blocks.push(
-      verdicts.length > 0
-        ? `${verdicts.join("\n\n")}\n\n## ${item.name}\n${body}`
-        : `## ${item.name}\n${body}`,
-    );
-  }
-  return `${blocks.join("\n\n")}\n\n_v${data.patch}_`;
-}
-
 /**
  * 챔피언과 무관한 규칙을 묻는 질문의 답.
  *
@@ -402,70 +291,5 @@ export function buildMechanicsAnswerById(data: AdvisorData, id: string): string 
 }
 
 /** 설명문은 HTML 이라 그대로 실으면 태그가 답에 샌다. */
-function htmlToText(html: string): string {
-  return html
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
 
-/**
- * 질문에서 아이템 이름을 찾는다.
- * 챔피언과 같은 이유로 긴 이름을 먼저 맞춘다. "판금 장화" 를 "장화" 로 자르면 안 된다.
- */
-function findItems(data: AdvisorData, question: string, limit = 3) {
-  const named = data.items
-    .filter((item) => item.name && item.name.length >= 2 && item.description)
-    .sort((a, b) => b.name.length - a.name.length);
-  const found: typeof named = [];
-  const taken: Array<[number, number]> = [];
-  const take = (item: (typeof named)[number], index: number, length: number) => {
-    if (index < 0 || found.includes(item)) return;
-    if (taken.some(([start, end]) => index < end && index + length > start)) return;
-    taken.push([index, index + length]);
-    found.push(item);
-  };
-  for (const item of named) {
-    take(item, question.indexOf(item.name), item.name.length);
-    if (found.length >= limit) return found;
-  }
-  /*
-   * 줄임말("쇼진 몇 골드야?", "botrk passive", "中亚能挡什么"). knowledge/item-aliases.json — 협곡 기본 아이템 id 마다 세 언어.
-   * 공식 이름을 먼저 찾고, 남은 자리에서 긴 줄임말부터. 짧은 한글·영문은 낱말 경계로(`aliasAt`).
-   */
-  // 다른 언어 공식 이름("Blade of the Ruined King" 을 한국어 화면에서). 긴 이름부터, 영문은 낱말 경계로.
-  if (data.itemNames) {
-    const byIdAll = new Map(named.map((item) => [item.id, item]));
-    const other = [...data.itemNames]
-      .flatMap(([id, list]) => list.map((name) => ({ id, name })))
-      .filter(({ id, name }) => byIdAll.get(id)?.name !== name)
-      .sort((a, b) => b.name.length - a.name.length);
-    for (const { id, name } of other) {
-      const item = byIdAll.get(id);
-      if (item) take(item, aliasAt(question, name), name.length);
-      if (found.length >= limit) return found;
-    }
-  }
-  // 룬·소환사 주문을 묻는다고 밝힌 질문에서는 줄임말로만 걸린 아이템을 보지 않는다. "리안드리 화상으로 영혼 거두는 룬 발동돼?" 는 룬 질문이다.
-  if (askedRuleKinds(question).size > 0) return found;
-  const byId = new Map(named.map((item) => [item.id, item]));
-  // 챔피언 별명 안에 든 줄임말은 아이템이 아니다. "破败王来反野"(비에고)의 "破败" 가 몰락한 왕의 검으로 잡혔다.
-  const championAliases = [...(data.aliases?.values() ?? [])].flat().filter((alias) => alias.length >= 2 && question.includes(alias));
-  for (const { id, alias } of itemAliasList()) {
-    const item = byId.get(id);
-    if (!item) continue;
-    if (championAliases.some((name) => name !== alias && name.includes(alias))) continue;
-    take(item, aliasAt(question, alias), alias.length);
-    if (found.length >= limit) break;
-  }
-  return found;
-}
-
-let itemAliasCache: Array<{ id: string; alias: string }> | null = null;
-function itemAliasList(): Array<{ id: string; alias: string }> {
-  itemAliasCache ??= Object.entries((itemAliasFile as { aliases: Record<string, Record<string, string[]>> }).aliases)
-    .flatMap(([id, byLang]) => Object.values(byLang).flat().map((alias) => ({ id, alias })))
-    .sort((a, b) => b.alias.length - a.alias.length);
-  return itemAliasCache;
-}
+export { buildItemCard, buildItemAnswer } from "./itemAnswer";

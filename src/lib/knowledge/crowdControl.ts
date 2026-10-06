@@ -60,7 +60,7 @@ export function controlText(control: SpellCrowdControl, lang: Language): string 
   if (!control.effects.length) return control.status === "borrowed"
     ? ["복사·지배·반사한 스킬에 따라 달라집니다", "Depends on the copied, possessed or reflected ability", "取决于复制、附身或反弹的技能"][i]
     : control.status === "inferred" ? ["툴팁에서 확인되는 CC 없음", "No CC identified in the tooltip", "技能文本未发现控制效果"][i]
-    : ["CC 없음", "No crowd control", "无控制效果"][i];
+    : ["CC 없음(기절·속박·둔화 없음)", "No crowd control, including stun, root or slow", "无控制效果，没有眩晕、禁锢或减速"][i];
   const descriptions = control.effects.map(effect => {
     const definition = CROWD_CONTROL[effect.type];
     const kind = { hard: ["하드", "Hard", "硬控"], soft: ["소프트", "Soft", "软控"], instant: ["즉시 판정", "Instant", "即时"] }[definition.class][i];

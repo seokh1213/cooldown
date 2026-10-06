@@ -1,9 +1,3 @@
-/**
- * 롤 지식 질의 패널
- *
- * 화면 오른쪽 아래에 떠 있고, 동의 전에는 동의 화면을, 그 뒤에는 대화를 보여 준다.
- * 모델 적재는 수십 초가 걸리므로 진행률을 파일 합계로 계속 보여 준다.
- */
 import { useEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
@@ -45,6 +39,7 @@ interface AdvisorPanelProps {
    * false 면 내려받기를 권하지 않고 코드 답변만으로 쓴다.
    */
   canUseModel: boolean;
+  modelSupportPending: boolean;
   onClose: () => void;
   /** 드로어 폭이 바뀔 때. 레이아웃이 페이지를 그만큼 민다. */
   onWidthChange?: (px: number) => void;
@@ -65,7 +60,7 @@ function formatMb(bytes: number): string {
   return (bytes / 1048576).toFixed(0);
 }
 
-export function AdvisorPanel({ advisor, data, dataError, onRetryData, history, patch, ddragonVersion, canUseModel, onClose, onWidthChange }: AdvisorPanelProps) {
+export function AdvisorPanel({ advisor, data, dataError, onRetryData, history, patch, ddragonVersion, canUseModel, modelSupportPending, onClose, onWidthChange }: AdvisorPanelProps) {
   const { t } = useTranslation();
   const copy = t.advisor;
   const [draft, setDraft] = useState("");
@@ -172,7 +167,8 @@ export function AdvisorPanel({ advisor, data, dataError, onRetryData, history, p
   );
 
   // 보여 줄 카드가 없으면(동의 화면, 빈 대화) 패널을 두지 않는다. 첫 카드가 오면 그때 넓어진다.
-  const showingConsent = canUseModel && !advisor.consented && !skippedModel;
+  // 확인 중에는 다운로드가 비활성화된 안내를 유지해 입력창이 뒤늦게 사라지지 않게 한다.
+  const showingConsent = (canUseModel || modelSupportPending) && !advisor.consented && !skippedModel;
   /*
    * 이 기기가 모델을 못 쓰는 사유. 쓸 수 있으면, 그리고 아직 어댑터를 확인하는
    * 중이면(`webgpu === null`) 아무 말도 하지 않는다. 확인이 끝나기 전에

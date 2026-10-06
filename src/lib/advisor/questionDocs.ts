@@ -9,13 +9,15 @@ import { buildItemCard, buildMechanicsAnswerById, type AdvisorData } from "./con
 import { buildRuleAnswer as buildRuleCard, type AdvisorAnswer } from "./answer";
 import { suggestChampions } from "./championTypo";
 import { asksAboutHelper, detectChampions, nicknames } from "./intent";
-import { asksPriceTiers, findGameMeta, gameMetaById, gameMetaDocs } from "./gameMeta";
-import type { LexicalHit } from "./searchFallback";
-import { findMentionedRules, type RuleNotes } from "@/lib/knowledge/rules";
+import { asksPrice, asksPriceTiers, findGameMeta, gameMetaById, gameMetaDocs } from "./gameMeta";
+import { descriptiveRuleHit, type LexicalHit } from "./searchFallback";
+import { findMentionedRules, askedRuleKinds, type RuleNotes } from "@/lib/knowledge/rules";
 import { detectSpellFocus } from "./spellFocus";
 import { findMechanics } from "@/lib/knowledge/mechanics";
 import { detectStat } from "./statQuery";
 import { unavailableStatName } from "./unavailableStats";
+import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
+import { describedRule } from "./ruleDescriptions";
 
 /** 검색 벡터로 찾을 질문인가(모델·동의 조건은 뺀 것). 평가 하네스도 이 조건으로 가른다. */
 export function searchesByVector(data: AdvisorData, question: string, recentItem: string | undefined, inMatchup: boolean): boolean {
@@ -44,6 +46,25 @@ export function isGameWord(data: AdvisorData, token: string): boolean {
 
 /** 낱말이 가리키는 문서: 룬·주문 이름 → 게임 메타 → 게임 원리 */
 export function lexicalHit(data: AdvisorData, question: string): LexicalHit | undefined {
+  if (/프리징|freez(?:e|ing).*wave|控线/i.test(question) && !detectSpellFocus(question)) return undefined;
+  if (!askedRuleKinds(question).size && asksPrice(question) && buildItemCard(data, question)) return undefined;
+  const names = askedRules(data, question);
+  const named = names.find(rule => rule.subject !== "gameplay") ?? names[0];
+  const kinds = askedRuleKinds(question);
+  const game = findGameMeta(question);
+  if (game && (game.id === "death-timer" || game.id === "inhibitor") && (!named || named.name === "부활")) return { id: `meta:${game.id}`, step: "meta" };
+  if (game && named?.subject === "gameplay") return { id: `meta:${game.id}`, step: "meta" };
+  if (!kinds.size && /포션|물약|potion|药水/i.test(question) && asksPrice(question)) return undefined;
+  if (/방깎|shred|减甲/i.test(question) && /방관|penetration|armor pen|穿甲/i.test(question)) {
+    return { id: "mech:관통과-감소,-그리고-적용-순서", step: "mech" };
+  }
+  if (/고정\s*피해|true damage|真伤|真实伤害/i.test(question) && !kinds.size && !named) return { id: "mech:고정-피해", step: "mech" };
+  if (named && named.subject === "rune") return { id: `rule:${named.name}`, step: "rule" };
+  const described = describedRule(data, question);
+  if (described) return { id: described, step: "rule" };
+  if (named && named.subject !== "gameplay" && (!kinds.size || kinds.has(named.subject))) return { id: `rule:${named.name}`, step: "rule" };
+  const descriptive = descriptiveRuleHit(data, question);
+  if (descriptive) return descriptive;
   const [rule] = askedRules(data, question);
   if (rule) return { id: `rule:${rule.name}`, step: "rule" };
   const fact = findGameMeta(question);
@@ -58,7 +79,12 @@ export function lexicalHit(data: AdvisorData, question: string): LexicalHit | un
  * "미니언 웨이브 생성 주기" 가 미니언 규칙으로, "억제기 … 슈퍼 미니언" 이 미니언으로 갔다.
  */
 export function askedRules(data: AdvisorData, question: string) {
-  const named = findMentionedRules(data.ruleIndex, question);
+  const champions = detectChampions(data, question);
+  const protectedNames = champions.flatMap(card => [card.name, ...(data.aliases.get(card.id) ?? []), ...card.spells.map(spell => spell.name)])
+    .filter(name => name.length > 2 && aliasAt(question, name) >= 0);
+  const named = findMentionedRules(data.ruleIndex, question).filter(rule => !(rule.name === "수호자"
+    && /수호자\s*(?:계열|아이템)|가디언\s*아이템|\bguardian\s+items?\b|守护者.*装备/i.test(question))).filter(rule => ![rule.name, rule.nameEn, rule.nameZh, ...aliasesOf(`rule:${rule.name}`)]
+    .some(name => name && aliasAt(question, name) >= 0 && protectedNames.some(protectedName => protectedName !== name && protectedName.includes(name))));
   const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(findGameMeta(question));
   return metaFirst ? [] : named;
 }

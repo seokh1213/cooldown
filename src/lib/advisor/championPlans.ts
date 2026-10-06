@@ -2,8 +2,8 @@
 import { championNotes } from "./playbookNotes";
 import { buildItemCard, buildTagAnswer, buildMechanicsAnswer } from "./context";
 import { buildCompareAnswer as buildCompareCard, buildSpellAnswer as buildSpellCard } from "./answer";
-import { asksComparison, asksWholeKit, looksChampionDirected, asksSkillHandling } from "./askWords";
-import { detectSpellFocus } from "./spellFocus";
+import { asksComparison, asksWholeKit, looksChampionDirected, asksSkillHandling, asksScenarioAdvice } from "./askWords";
+import { detectSpellFocus, asksSpellNumbers } from "./spellFocus";
 import { topicFromWords } from "./topicJudge";
 import { asksCombo } from "./comboIntent";
 import type { ChampionCard } from "@/lib/knowledge/facts";
@@ -36,7 +36,7 @@ export async function answerChampion(intent: Intent): Promise<AnswerPlan | undef
   if (asksComparison(question, about.champions.length) || about.champions.length > 1) {
     // 여럿을 한데 묻는 말도 나란히 놓은 표로 답한다
     // 상성 대화 중의 조회 표는 상성 맥락을 잇는다(`matchupStateOf`)
-    const card = buildCompareCard(about.champions, question, slot, { lang: ctx.lang });
+    const card = buildCompareCard(about.champions, question, slot, { lang: ctx.lang, abilityRules: intent.data.abilityRules });
     return { type: "card", answer: intent.matchup && card.kind === "compare" ? { ...card, inMatchup: true } : card, notice: about.notice };
   }
   return answerOneChampion(intent, about.champions[0], about.notice);
@@ -88,21 +88,23 @@ async function answerOneChampion({ question, ctx, data, ask, topic: judgeTopicOn
   // "패시브와 네 가지 스킬을 각각" 은 패시브 한 칸이 아니라 스킬 전체 소개다
   const wholeKit = requestIntent ? requestIntent.scope === "skills" : asksWholeKit(question);
   const spell = slot && !wholeKit ? card.spells.find((entry) => entry.slot === slot) : undefined;
-  if (spell && (requestIntent ? requestIntent.scope === "counterplay" : asksSkillHandling(question))) {
+  const numericLookup = asksSpellNumbers(question);
+  if (spell && !numericLookup && (requestIntent ? requestIntent.scope === "counterplay" : asksSkillHandling(question))) {
     const notes = championNotes(data, card, question, "against", { topic: "skill", perspective: "against" });
     return { type: "card", answer: { kind: "champion", card, notes: { ...notes, playing: [], against: notes.against.slice(0, 1), detail: "full" } }, notice };
   }
-  if (spell) return { type: "card", answer: buildSpellCard(card, spell, question, ctx.lang), notice };
+  const scenario = asksScenarioAdvice(question) && !numericLookup;
+  if (spell && !scenario) return { type: "card", answer: buildSpellCard(card, spell, question, ctx.lang), notice };
   // 효과 태그 예/아니오는 코드가 바로 답한다. 태그가 없다는 사실을 근거로
   // "아니다" 라고 말하는 것을 모델이 못 한다.
-  const tagAnswer = buildTagAnswer(data, card, question);
+  const tagAnswer = scenario ? undefined : buildTagAnswer(data, card, question);
   if (tagAnswer) return { type: "code", answer: tagAnswer, notice };
   // "말파이트 스킬 설명해줘": 스킬 다섯 개의 요약 + 운용 노트. 능력치 표는 뺀다.
-  if (requestIntent ? requestIntent.scope === "skills" : ask === "skills" || wholeKit) {
+  if (requestIntent?.scope === "skills" || wholeKit && requestIntent?.scope !== "overview" || !requestIntent && ask === "skills") {
     return { type: "card", answer: { kind: "champion", card, view: "skills", notes: championNotes(data, card, question, undefined, await judgeTopicOnce()) }, notice };
   }
   // "말파이트 스킬 쿨타임": 슬롯 없이 사실 하나를 물으면 스킬 다섯 개의 그 사실을 표로.
-  const focus = detectSpellFocus(question)?.focus;
+  const focus = scenario ? undefined : detectSpellFocus(question)?.focus;
   if (focus && focus !== "damage") {
     /*
      * 수치 하나를 물은 것이니 그 수치만 준다.

@@ -10,7 +10,7 @@
 
 /** gameplay 는 챔피언·룬과 무관한 일반 플레이 지식(미니언, 와드, 포탑 …)이다. */
 import { aliasAt, aliasesOf } from "./searchAliases";
-import type { NoteVersion } from "./noteVersion";
+import { removalNotice, type NoteVersion } from "./noteVersion";
 
 export type RuleSubject = "rune" | "summoner" | "gameplay";
 
@@ -63,13 +63,16 @@ export function findMentionedRules(index: RuleIndex, text: string, limit = 3): R
       at = m ? m.index : -1;
     } else {
       at = aliasAt(text, name);
+      if (at < 0 && rule.subject === "rune" && /^[가-힣]{2}$/.test(name)
+        && /(?:랑|하고|과|와|중).*(?:들어|고르|선택|좋)/.test(text)) at = text.indexOf(name);
     }
     if (at < 0) continue;
     if (taken.some(([s, e]) => at < e && at + name.length > s)) continue;
     taken.push([at, at + name.length]);
     found.push(rule);
   }
-  return narrowToAsked(found, text);
+  const primary = found.filter(rule => rule.subject !== "gameplay");
+  return narrowToAsked(primary.length ? primary : found, text);
 }
 
 /** 질문이 "룬" 이라고 밝혔는가. 세 언어. */
@@ -95,7 +98,9 @@ export function askedRuleKinds(text: string): Set<RuleSubject> {
 export function narrowToAsked(rules: RuleNotes[], text: string): RuleNotes[] {
   const asked = askedRuleKinds(text);
   if (asked.size === 0) return rules;
-  return rules.filter((rule) => asked.has(rule.subject));
+  return rules.filter((rule) => asked.has(rule.subject) || rule.subject === "rune" && asked.has("summoner")
+    && [rule.name, rule.nameEn, rule.nameZh, ...aliasesOf(`rule:${rule.name}`)]
+      .some(name => name && name.length >= 2 && aliasAt(text, name) >= 0));
 }
 
 /** 화면 언어의 이름과 본문. 중국어 본문이 없으면 영어 원문이다. */
@@ -193,7 +198,8 @@ export function buildRuleAnswer(rules: RuleNotes[], patch: string): string | und
   const blocks = rules.map((rule) => {
     const lines = rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
     const body = lines.flatMap((n) => renderNote(n)).join("\n");
-    return `## ${rule.name}\n${body}`;
+    const removed = removalNotice(rule.name, rule.version, "ko_KR");
+    return `## ${rule.name}\n${removed ? `${removed}\n` : ""}${body}`;
   });
   const answerFirst = crossed.length
     ? [`## 관련 규칙\n${crossed.flatMap((n) => renderNote(n)).join("\n")}`]

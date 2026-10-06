@@ -20,9 +20,11 @@
  */
 import type { AdvisorData } from "./context";
 import { aliasesOf } from "@/lib/knowledge/searchAliases";
-import { gameMetaDocs } from "./gameMeta";
+import { asksPrice, gameMetaDocs } from "./gameMeta";
 import { ruleLines, ruleName } from "@/lib/knowledge/rules";
 import { matchesMechanicsQuestion, type MechanicsSection } from "@/lib/knowledge/mechanics";
+import { searchTerms } from "./searchTerms";
+import { htmlToText } from "./answerText";
 
 export interface SearchDoc {
   /** 검색 문서 id(`rule:점화`). 하이브리드 검색이 벡터 점수와 맞춘다 */
@@ -56,7 +58,7 @@ export function buildSearchCorpus(data: AdvisorData, lang = "ko_KR"): SearchDoc[
   const docs: SearchDoc[] = [];
   // 화면 언어의 이름·본문으로 찾는다. 한국어 이름만 두었더니 영어·중국어 질문이 규칙을 하나도 못 찾았다.
   for (const rule of new Set(data.ruleIndex.values())) {
-    docs.push({ kind: "rule", title: ruleName(rule, lang), text: ruleLines(rule, lang).join("\n") });
+    docs.push(ruleDoc(data, rule, lang));
   }
   for (const section of data.mechanics) {
     docs.push(mechanicsDoc(section, lang));
@@ -64,15 +66,8 @@ export function buildSearchCorpus(data: AdvisorData, lang = "ko_KR"): SearchDoc[
   return docs;
 }
 
-/** 조사를 떼야 "미니언을" 과 "미니언" 이 만난다. */
-const PARTICLE = /(은|는|이|가|을|를|의|에|에서|으로|로|과|와|도|만|이나|나)$/;
-
 function tokenize(query: string): string[] {
-  const terms = query
-    .split(/[\s,.·?!"'()[\]]+/)
-    .map((term) => term.replace(PARTICLE, ""))
-    .filter((term) => term.length >= 2);
-  return [...new Set(terms)];
+  return searchTerms(query);
 }
 
 /** 한국어는 띄어쓰기로 낱말이 안 갈린다("미니언에" "미니언을"). 부분 문자열로 센다. */
@@ -103,11 +98,12 @@ const TITLE_WEIGHT = 3;
  */
 export function lexicalSearch(docs: SearchDoc[], query: string, top = 3): SearchHit[] {
   docs = docs.filter(doc => matchesMechanicsQuestion(doc, query));
+  const normalized = docs.map(doc => ({ title: searchTerms(doc.title).join(" "), text: searchTerms(doc.text).join(" ") }));
   const terms = tokenize(query);
   if (terms.length === 0 || docs.length === 0) return [];
 
   const idf = terms.map((term) => {
-    const df = docs.filter((doc) => doc.title.includes(term) || doc.text.includes(term)).length;
+    const df = normalized.filter((doc) => doc.title.includes(term) || doc.text.includes(term)).length;
     return df === 0 ? 0 : Math.log(1 + (docs.length - df + 0.5) / (df + 0.5));
   });
   if (idf.every((weight) => weight === 0)) return [];
@@ -120,7 +116,7 @@ export function lexicalSearch(docs: SearchDoc[], query: string, top = 3): Search
       let score = 0;
       terms.forEach((term, i) => {
         if (idf[i] === 0) return;
-        const tf = occurrences(doc.text, term) + occurrences(doc.title, term) * TITLE_WEIGHT;
+        const tf = occurrences(normalized[index].text, term) + occurrences(normalized[index].title, term) * TITLE_WEIGHT;
         if (tf === 0) return;
         const norm = K1 * (1 - B + (B * lengths[index]) / average);
         score += idf[i] * ((tf * (K1 + 1)) / (tf + norm));
@@ -128,7 +124,8 @@ export function lexicalSearch(docs: SearchDoc[], query: string, top = 3): Search
       return { doc, score };
     })
     .filter((hit) => hit.score > 0)
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => Number(titleMentions(query.toLowerCase(), b.doc.title.toLowerCase()))
+      - Number(titleMentions(query.toLowerCase(), a.doc.title.toLowerCase())) || b.score - a.score)
     .slice(0, top);
 }
 
@@ -139,7 +136,7 @@ export function lexicalSearch(docs: SearchDoc[], query: string, top = 3): Search
  * "that precision rune …" 이 "Press **the** Attack" 으로 갔다(이름 없는 질문 720문항 중 영어 40건).
  */
 const ENGLISH_FUNCTION_WORDS = new Set(
-  "the that this what which when where does did how why who with from for you your are was were can could should would and but not its it's into onto about after before still then than them they their there here have has had get got give gives just like also only very much many more most some any all each every one two three is be been being do doing to of in on at by as or if so up out off my me mine i we us our".split(" "),
+  "the that this what which when where does did how why who with from for you your are was were can could should would and but not its it's into onto about after before still then than them they their there here have has had get got give gives just like also only very much many more most some any all each every one two three is be been being do doing to of in on at by as or if so up out off back my me mine i we us our".split(" "),
 );
 function titleMentions(title: string, term: string): boolean {
   if (/^[A-Za-z0-9'-]+$/.test(term)) {
@@ -151,7 +148,7 @@ function titleMentions(title: string, term: string): boolean {
 }
 
 export function mentionsSearchDocument(doc: Pick<SearchDoc, "title" | "text">, question: string): boolean {
-  return tokenize(question).some(term => titleMentions(doc.title, term) || titleMentions(doc.text, term));
+  return tokenize(question).some(term => searchTerms(`${doc.title} ${doc.text}`).includes(term));
 }
 
 /**
@@ -162,7 +159,8 @@ export function mentionsSearchDocument(doc: Pick<SearchDoc, "title" | "text">, q
  * 든 것만 옮긴다. 1위가 틀릴 수 있어(정답은 상위 3위 안에 8/8) 두 문서까지 싣는다. 걸리는 문장이 없으면 undefined.
  */
 export function hitsToAnswer(hits: SearchHit[], question: string, maxDocs = 2, maxLines = 3): string | undefined {
-  const terms = tokenize(question);
+  if (/포션|물약|potion|药水/i.test(question) && asksPrice(question)) return undefined;
+  const terms = question.split(/[\s,.·?!"'()[\]]+/).map(term => term.replace(/(은|는|이|가|을|를|의|에|에서|으로|로|과|와|도|만|이나|나)$/, "")).filter(term => term.length >= 2);
   const parts: string[] = [];
   for (const hit of hits) {
     // 제목에 질문 낱말이 있는 문서만. "정글이 자꾸 탑으로 오는데" 가 "정글" 한 낱말로 기민한 발놀림(정글 식물)을 끌어왔다.
@@ -200,11 +198,60 @@ export interface RetrievalDoc {
 export function buildRetrievalDocs(data: AdvisorData, lang: string, withAliases = false): RetrievalDoc[] {
   const docs: RetrievalDoc[] = [];
   for (const rule of new Set(data.ruleIndex.values())) {
-    docs.push({ id: `rule:${rule.name}`, kind: "rule", title: ruleName(rule, lang), text: ruleLines(rule, lang).join("\n") });
+    docs.push(ruleDoc(data, rule, lang));
   }
   for (const section of data.mechanics) docs.push(mechanicsDoc(section, lang));
   for (const fact of gameMetaDocs(lang)) docs.push({ ...fact, kind: "meta" });
   return withAliases ? docs.map((doc) => ({ ...doc, text: `${doc.text}\n${aliasesOf(doc.id).join(" ")}` })) : docs;
+}
+
+function ruleDoc(data: AdvisorData, rule: import("@/lib/knowledge/rules").RuleNotes, lang: string): RetrievalDoc {
+  const names = [rule.name, rule.nameEn, rule.nameZh];
+  const core = rule.subject === "rune" ? data.runes?.find(entry => names.includes(entry.name))
+    : rule.subject === "summoner" ? data.summoners?.find(entry => names.includes(entry.name) && entry.modes?.includes("CLASSIC")) : undefined;
+  const text = [core ? htmlToText(core.tooltip ?? "") : undefined, ...ruleLines(rule, lang)].filter(Boolean).join("\n");
+  return { id: `rule:${rule.name}`, kind: "rule", title: ruleName(rule, lang), text };
+}
+
+/** 이름이 생략된 효과 설명은 기본 툴팁과 예외 규칙을 함께 검색한다. */
+export function descriptiveRuleHit(data: AdvisorData, question: string): LexicalHit | undefined {
+  const rune = /룬|키스톤|\brune\b|\bkeystone\b|符文|基石/i.test(question);
+  const summoner = /스펠|소환사\s*주문|summoner|召唤师技能/i.test(question) && !rune;
+  if (!rune && !summoner) return undefined;
+  const historical = /예전|옛날|삭제|과거|\b(?:old|former|removed|historical)\b|以前|过去|旧|曾经/i.test(question);
+  const schools: Array<[RegExp, number]> = [[/지배|domination|主宰/i, 8100], [/정밀|precision|精密/i, 8000], [/결의|resolve|坚决/i, 8400], [/마법\s*(?:룬|핵심)|sorcery|巫术/i, 8200], [/영감|inspiration|启迪/i, 8300]];
+  const path = schools.find(([pattern]) => pattern.test(question))?.[1];
+  const candidates = new Set([...data.ruleIndex.values()].filter(rule => {
+    if (rune ? rule.subject !== "rune" : rule.subject !== "summoner") return false;
+    const names = [rule.name, rule.nameEn, rule.nameZh];
+    const primary = (rune ? data.runes : data.summoners)?.find(entry => names.includes(entry.name));
+    if (!historical && !primary) return false;
+    return !rune || path === undefined || Boolean(data.runes?.some(entry => names.includes(entry.name) && entry.pathId === path));
+  }).map(rule => `rule:${rule.name}`));
+  const docs = buildRetrievalDocs(data, data.locale ?? "ko_KR").filter(doc => candidates.has(doc.id));
+  const coreDocs = docs.map(doc => {
+    const rule = data.ruleIndex.get(doc.id.slice(5))!;
+    const names = [rule.name, rule.nameEn, rule.nameZh];
+    const core = [...(data.runes ?? []), ...(data.summoners ?? [])].find(entry => names.includes(entry.name));
+    return { ...doc, text: core ? htmlToText(core.tooltip ?? "") : doc.text };
+  });
+  const description = question.split(/[,，—]|\s[-–]\s/)[0];
+  const specific = searchTerms(description).filter(term => !["rune", "summoner", "domination", "precision", "sorcery", "resolve", "inspiration"].includes(term)).join(" ");
+  const coreHits = new Map(lexicalSearch(coreDocs, specific, docs.length).map(hit => [hit.doc.id!, hit.score]));
+  const queryTerms = new Set(searchTerms(specific));
+  const matches = (terms: string[], term: string) => terms.some(word => word === term || /[가-힣\u3400-\u9fff]/.test(term) && word.startsWith(term));
+  const coreMatches = new Map(coreDocs.map(doc => [doc.id, [...queryTerms].filter(term => matches(searchTerms(doc.text), term)).length]));
+  const hits = lexicalSearch(docs, specific, docs.length).map(hit => ({ ...hit,
+    score: ((coreHits.get(hit.doc.id!) ?? 0) + hit.score * .15) * Math.max(1, coreMatches.get(hit.doc.id!) ?? 0) }))
+    .sort((a, b) => b.score - a.score).slice(0, 2);
+  const first = hits[0];
+  if (!first || hits[1] && first.score < hits[1].score * 1.15) return undefined;
+  const terms = searchTerms(question).filter(term => !["rune", "summoner", "domination", "precision", "sorcery", "resolve", "inspiration"].includes(term));
+  const body = searchTerms(first.doc.text);
+  const matched = terms.filter(term => matches(body, term)).length;
+  if (matched < 2 && !(path !== undefined && matched === 1 && (coreMatches.get(first.doc.id!) ?? 0) === 1
+    && (!hits[1] || first.score >= hits[1].score * 1.3))) return undefined;
+  return { id: first.doc.id!, step: "rule" };
 }
 
 /**

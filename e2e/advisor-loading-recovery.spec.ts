@@ -1,5 +1,25 @@
 import { expect, test } from "@playwright/test";
 
+test("늦은 기기 확인이 모델 없이 시작한 채팅 입력창을 없애지 않는다", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "gpu", { value: { requestAdapter: () => new Promise(resolve => {
+      Object.assign(window, { completeAdapterCheck: () => resolve({ features: new Set(["shader-f16"]) }) });
+    }) } });
+  });
+  await page.goto("./");
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
+  await expect(input).toBeHidden();
+  await expect(page.getByRole("button", { name: "내려받고 시작", exact: true })).toBeDisabled();
+  await page.getByRole("button", { name: "모델 없이 써보기", exact: true }).click();
+  await input.fill("바론 공격력 알려줘");
+  await page.evaluate(() => (window as unknown as { completeAdapterCheck(): void }).completeAdapterCheck());
+  await expect(input).toBeVisible();
+  await expect(input).toHaveValue("바론 공격력 알려줘");
+  await expect(page.getByRole("button", { name: "모델 없이 써보기", exact: true })).toBeHidden();
+});
+
 test.use({ serviceWorkers: "block" });
 
 const widgetModule = /\/AdvisorWidget(?:-[^/]+\.js|\.tsx)(?:\?.*)?$/;

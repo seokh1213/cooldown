@@ -13,19 +13,20 @@ import { detectStats, excludedStats, statFields, validStatFields, explicitStatLe
 import { addsSelection } from "./selectionWords";
 import { statTargets } from "./dialogueStatSelection";
 
-const OTHER_QUERY = /스킬|패시브|궁|쿨|사거리|피해량|계수|마나|소모|아이템|회복\s*물약|가속|랭크|(?<![A-Za-z])[PQWER](?![A-Za-z])|\b(?:ability|abilities|skill|passive|ult|cooldown|range|ratio|mana|item|haste|rank)\b|技能|被动|冷却|射程|法力|装备/i;
-const ADVICE = /상대법|상대할|카운터|싸우|싸워|교환|진입|템|빌드|추천|올려|사면|사야|맞춰|어떻게\s*(?:싸|버|이|피|굴)|\b(?:counter|fight|engage|build|recommend|buy)\b|how.*\b(?:survive|play|respond|deal with)\b|怎么打|出装|推荐/i;
+const OTHER_QUERY = /스킬|패시브|궁|쿨|사거리|피해량|계수|(?<!얼)마나|소모|아이템|룬|회복\s*물약|가속|랭크|(?<![A-Za-z])[PQWER](?![A-Za-z])|\b(?:ability|abilities|skill|passive|ult|cooldown|range|ratio|mana|item|rune|haste|rank)\b|技能|被动|冷却|射程|法力|装备|符文/i;
+const ADVICE = /상대법|상대할|카운터|싸우|싸워|교환|진입|템|빌드|추천|올려|사면|사야|맞춰|무빙\s*팁|어떻게\s*(?:싸|버|이|피|굴)|\b(?:counter|fight|engage|build|recommend|buy)\b|how.*\b(?:survive|play|respond|deal with)\b|怎么打|出装|出护甲|出魔抗|推荐/i;
 const HEALING = /회복량|재생량|\b(?:regen|regeneration|recovery)\b|回复量|恢复量/i;
 const STAT_CONTEXT = /스탯|능력치|기본|스킬\s*말고|패시브\s*말고|\b(?:base|stats?)\b|基础|属性/i;
 type StatResolution = ChampionStatQuery | { kind: "unsupportedStatLevel"; level: number } | { kind: "emptyStatSelection" };
 
 /** 이름만 줄이거나 레벨만 바꾼 후속 질문에도 나머지 조회 조건을 보존한다. */
 export function resolveStatQuery(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): StatResolution | undefined {
-  if (resolved.requestIntent && resolved.requestIntent.scope !== "stats") return undefined;
   const question = resolved.text.replace(/(?:스킬|패시브)\s*말고/g, "");
+  if (resolved.requestIntent?.scope === "overview" && /소개|프로필|개요|챔피언.{0,8}대해|profile|overview|基本资料/i.test(question)) return undefined;
   if (!ctx.data || resolved.matchup || OTHER_QUERY.test(question) || ADVICE.test(question)
     || asksMatchupHelp(question) || isBasicAttackMechanicQuestion(question)) return undefined;
   if (/뜻|원리|메커니즘|적용|meaning|mechanic|how.*work|原理|是什么/i.test(question)) return undefined;
+  if (!STAT_CONTEXT.test(question) && /추가\s*체력|비축|회복(?:돼|되|해)|받으면|충족|충전|bonus health|stored health|recover|额外生命|储存|恢复/i.test(question)) return undefined;
   const cards = statTargets(resolved, memory, ctx);
   if (cards.some(card => card.spells.some(spell => spell.name.length > 1 && question.includes(spell.name)))) return undefined;
   if (buildItemCard(ctx.data, question) || findGameMeta(question) || askedRules(ctx.data, question).some(rule => rule.subject !== "gameplay")) return undefined;
@@ -34,6 +35,7 @@ export function resolveStatQuery(resolved: ResolvedQuestion, memory: DialogueMem
   const healingStat = HEALING.test(question) && (continuing || STAT_CONTEXT.test(question));
   const excluded = excludedStats(question);
   let fields = detectStats(question);
+  if (!fields.length && /정보|특징|소개|\b(?:profile|overview|introduce)\b|介绍/i.test(question)) return undefined;
   if (!fields.length && healingStat) fields = ["healthRegen"];
   if (continuing && memory.stat && addsSelection(question)) fields = [...new Set([...statFields(memory.stat), ...fields])];
   if (!fields.length && continuing && memory.stat && (level !== undefined || resolved.champions.length || excluded.length)) fields = statFields(memory.stat);

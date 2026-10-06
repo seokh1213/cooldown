@@ -65,6 +65,24 @@ test("확실하지 않은 수치 질문은 잘못된 계산 대신 확인을 요
   assert.match(reply.text, /수치를 하나로 알려/);
   assert.doesNotMatch(reply.text, /공격력 5|공격력 15/);
 });
+
+test("부활의 선행 조건과 지속형 스킬의 마나·피해를 함께 복원한다", async () => {
+  const ctx = context();
+  const revive = await ask(ctx, "질리언 R은 걸면 바로 부활해?");
+  assert.match(revive.text, /치명.*죽을/);
+  assert.match(revive.text, /경직.*끝난.*부활/);
+  const aura = await ask(ctx, "카서스 E를 켜고 계속 있으면 어떻게 돼?");
+  assert.match(aura.text, /초당/);
+  assert.match(aura.text, /마법 피해/);
+  assert.match(aura.text, /마나.*소모/);
+  assert.equal(aura.memory.mechanic?.topic, "activation");
+});
+
+test("대상별 피해 차이와 평타 적중의 쿨 반환을 수치 표로 축소하지 않는다", async () => {
+  const ctx = context();
+  assert.match((await ask(ctx, "이즈리얼 R은 미니언에게도 피해가 같아?")).text, /미니언.*감소/);
+  assert.match((await ask(ctx, "우디르 P 각성 쿨은 공격하면 언제 돌려받아?")).text, /적중.*각성.*돌려받/);
+});
 test("아크샨 발사·취소·대상·쿨 조건은 실제 스킬 카드와 함께 답한다", async () => {
   const ctx = context();
   const cancel = await ask(ctx, "아크샨 평타 한 방 치고 두 번째 안 쏘면?");

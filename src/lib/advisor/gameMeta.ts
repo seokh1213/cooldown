@@ -10,7 +10,8 @@ import meta from "../../../knowledge/game-meta.json";
 import prices from "../../../knowledge/champion-prices.json";
 import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
 import { removalNotice, type NoteVersion } from "@/lib/knowledge/noteVersion";
-import { unreviewedMonsterDetail } from "./gameMetaCoverage";
+import { monsterDetails, monsterDocs, namedMonsters } from "./monsterAnswer";
+import { describedGameFact, describesChampionRespawn } from "./gameDescriptions";
 type Language = string;
 const short = (lang: Language): "ko" | "en" | "zh" => (lang.startsWith("en") ? "en" : lang.startsWith("zh") ? "zh" : "ko");
 
@@ -22,29 +23,38 @@ export interface GameMetaFact {
   text: Record<"ko" | "en" | "zh", string>;
 }
 
-const FACTS = meta.facts as GameMetaFact[];
+const FACTS = [...meta.facts, ...monsterDocs("ko")] as GameMetaFact[];
 
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** 영어 낱말은 낱말 경계로("ff" 가 "effect" 에 걸리지 않게), 한국어·중국어는 들어 있으면 */
 function matches(question: string, keyword: string): boolean {
-  if (/^[a-z0-9 '-]+$/i.test(keyword)) return new RegExp(`(?<![a-z])${escape(keyword)}(?![a-z])`, "i").test(question);
+  if (/^[a-z0-9 '-]+$/i.test(keyword)) return new RegExp(`(?<![a-z])${escape(keyword)}s?(?![a-z])`, "i").test(question);
   return question.includes(keyword);
 }
 
 /** 가장 길게 걸린 낱말의 사실. 세 언어 낱말을 모두 본다(한국어 화면에서 영어로 물어도). */
 export function findGameMeta(question: string): GameMetaFact | undefined {
+  question = question.replace(/\b(baron|blue|red)buff(?=\b|last|duration)/gi, "$1 buff ");
+  const described = describedGameFact(question);
+  if (described) return FACTS.find(fact => fact.id === described);
+  const buffQuestion = /버프|\bbuff\b|增益/i.test(question);
   let best: { fact: GameMetaFact; score: number } | undefined;
   for (const fact of FACTS) {
+    if (fact.id === "death-timer" && /캠프|몬스터|바위게|crab|scuttle|raptor|camp|monster|野怪|螃蟹|河蟹/i.test(question)
+      && !describesChampionRespawn(question)) continue;
+    if (buffQuestion && fact.id.startsWith("monster-")) continue;
     const words = [...fact.keywords.ko, ...fact.keywords.en, ...fact.keywords.zh];
     const aliases = aliasesOf(`meta:${fact.id}`).filter((alias) => aliasAt(question, alias) >= 0);
     const score = Math.max(0, ...words.filter((w) => matches(question, w)).map((w) => w.length), ...aliases.map((w) => w.length));
     if (score > 0 && (!best || score > best.score)) best = { fact, score };
   }
-  return best?.fact;
+  if (best) return best.fact;
+  const group = buffQuestion ? namedMonsters(question)[0]?.group : undefined;
+  return group ? FACTS.find(fact => fact.id === group) : undefined;
 }
 
-const PRICE_WORDS = /가격|얼마|정수|블루\s*정수|\bRP\b|\bBE\b|\bprice\b|\bcost\b|how much|blue essence|多少钱|价格|精粹|点券/i;
+const PRICE_WORDS = /가격|얼마(?!나)|몇\s*골드|정수|블루\s*정수|\bRP\b|\bBE\b|\bprice\b|\bcost\b|how much|blue essence|多少钱|价格|精粹|点券/i;
 
 export function asksPrice(question: string): boolean {
   return PRICE_WORDS.test(question);
@@ -65,6 +75,7 @@ const TIERS_TEXT: Record<"ko" | "en" | "zh", string> = {
 /** 챔피언 한 명의 가격. 가격 낱말이 있고 가격 자료가 있을 때만. */
 export function championPriceAnswer(question: string, champion: { id: string; name: string }, lang: Language): string | undefined {
   if (!asksPrice(question)) return undefined;
+  if (/마나|스킬|공격력|체력|쿨|\b(?:mana|ability|skill|ult|health|hp|damage|cooldown)\b|法力|技能|伤害|冷却/i.test(question)) return undefined;
   const price = (prices.prices as Record<string, { be: number; rp: number }>)[champion.id];
   if (!price) return undefined;
   const l = short(lang);
@@ -88,7 +99,12 @@ export function gameMetaAnswer(question: string, lang: Language): string | undef
 /** 검색 문서 꼴(id · 제목 · 본문). 문서 벡터를 만든 것과 같은 제목·본문이다. */
 export function gameMetaDocs(lang: Language): Array<{ id: string; title: string; text: string }> {
   const l = short(lang);
-  return FACTS.map((fact) => ({ id: `meta:${fact.id}`, title: fact.keywords[l][0] ?? fact.id, text: factText(fact, lang) }));
+  return FACTS.map((fact) => {
+    const monsters = ["baron", "grubs", "herald", "dragon", "buffs", "scuttle"].includes(fact.id)
+      ? [monsterDetails("스탯", lang, fact.id), monsterDetails("버프", lang, fact.id)].filter(Boolean).join("\n\n") : undefined;
+    return { id: `meta:${fact.id}`, title: fact.keywords[l][0] ?? fact.id,
+      text: [factText(fact, lang), monsters].filter(Boolean).join("\n\n") };
+  });
 }
 
 /** 문서 id(`meta:surrender`)로 답한다. 검색 벡터가 고른 문서를 보일 때 쓴다. */
@@ -101,5 +117,5 @@ export function gameMetaById(id: string, lang: Language, question?: string): str
 function factText(fact: GameMetaFact, lang: Language, question?: string): string {
   const l = short(lang);
   return removalNotice(fact.keywords[l][0] ?? fact.id, fact.version, lang)
-    ?? unreviewedMonsterDetail(fact.id, question, lang) ?? fact.text[l];
+    ?? (question ? monsterDetails(question, lang, fact.id.startsWith("monster-") ? undefined : fact.id) : undefined) ?? fact.text[l];
 }

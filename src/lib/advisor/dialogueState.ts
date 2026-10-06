@@ -105,7 +105,7 @@ export function dialogueMemoryOf(turns: readonly DialogueHistoryTurn[], data: Ad
 
 export function rememberAnswer(previous: DialogueMemory, answer: AdvisorAnswer): DialogueMemory {
   const memory = structuredClone(previous);
-  memory.mechanic = undefined;
+  if (answer.kind !== "item" && answer.kind !== "rule") memory.mechanic = undefined;
   memory.combo = answer.kind === "champion" && answer.notes?.topic === "combo"
     ? { champion: answer.card.id, unavailable: answer.notes.unavailable ?? [] } : undefined;
   const stat = statQueryFromAnswer(answer);

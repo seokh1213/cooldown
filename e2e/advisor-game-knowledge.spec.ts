@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("오브젝트 생성·제거와 미검수 상세 질문을 구분한다", async ({ page }) => {
+test("오브젝트 생성·제거와 검수한 상세 수치를 구분한다", async ({ page }) => {
   await page.goto("./");
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
@@ -12,7 +12,10 @@ test("오브젝트 생성·제거와 미검수 상세 질문을 구분한다", a
     ["공허 유충 몇 분에 나와?", /8분.*한 번/],
     ["아타칸 스킬이 뭐야?", /현재.*제거.*26\.1 패치/],
     ["힘의 위업 지금도 있어?", /현재.*제거.*26\.1 패치/],
-    ["바론 공격력 얼마야?", /검수된 자료가 없어/],
+    ["바론 공격력 얼마야?", /350\.5–515/],
+    ["바론 18레벨 체력", /19,190/],
+    ["유충 스킬 알려줘", /12초마다.*4마리/],
+    ["화학공학 드래곤 공격력", /위키 50.*47.*확정하지/],
   ] as const) {
     await input.fill(question);
     await page.getByRole("button", { name: "보내기", exact: true }).click();

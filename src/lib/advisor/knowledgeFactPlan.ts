@@ -5,12 +5,13 @@ import { controlQuery } from "./crowdControlQuestion";
 import { controlInteractionAnswer, controlRuleAddenda } from "./controlInteractionAnswer";
 import { controlSubject, controlClarification } from "./controlSubject";
 import { dialogueMemoryOf, type DialogueMemory } from "./dialogueState";
-import { asksSkillHandling, asksScenarioAdvice } from "./askWords";
+import { asksSkillHandling, asksScenarioAdvice, asksMatchup } from "./askWords";
 import { buildSpellAnswer } from "./spellAnswer";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { AnswerPlan, PlanContext, ControlContext } from "./planTypes";
 import type { Language } from "@/i18n";
 import { interfaceSlotPlan } from "./abilityBoundaryPlan";
+import { detectChampionMentions } from "./intent";
 
 function smiteRestriction(effects: Array<SpellCrowdControl | undefined>, lang: Language): string {
   const i = lang === "ko_KR" ? 0 : lang === "en_US" ? 1 : 2;
@@ -29,10 +30,13 @@ function smiteRestriction(effects: Array<SpellCrowdControl | undefined>, lang: L
 
 function curatedInteraction(question: string, ctx: PlanContext, subject?: ControlContext): AnswerPlan | undefined {
   const query = subject ? `${subject.champions.map(id => ctx.data!.cardById.get(id)?.name ?? "").join(" ")} ${subject.slot ?? ""} ${question}` : question;
+  const names = detectChampionMentions(ctx.data!, query).map(mention => query.slice(mention.index, mention.index + mention.length));
   const candidates = ctx.data!.mechanics.filter(section => section.questionGroups?.length
     && (!section.subjects || section.subjects.some(s => subject?.champions.includes(s.champion)
       && (subject.slot === s.slot || !subject.slot && Boolean(section.evidence))))
-    && matchesMechanicsQuestion(section, query));
+    && matchesMechanicsQuestion(section, section.subjects ? query : names.reduce((text, name) =>
+      section.questionGroups!.some(group => group.some(word => word.toLowerCase() === name.toLowerCase()))
+        ? text : text.split(name).join(" "), query)));
   const relevance = (note: typeof candidates[number]) => note.keywords.reduce((score, word) => score
     + (matchesMechanicsQuestion({ questionGroups: [[word]] }, query) ? word.length : 0), 0);
   const best = candidates.sort((a, b) => Number(Boolean(b.subjects)) - Number(Boolean(a.subjects))
@@ -54,6 +58,7 @@ function curatedInteraction(question: string, ctx: PlanContext, subject?: Contro
 
 export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, suppliedMemory?: DialogueMemory): AnswerPlan | undefined {
   if (!ctx.data) return undefined;
+  if (resolved.champions.length > 1 && !resolved.slot && asksMatchup(resolved.text)) return undefined;
   const memory = suppliedMemory ?? dialogueMemoryOf(ctx.turns, ctx.data);
   const query = controlQuery(resolved.text);
   const direct = curatedInteraction(resolved.text, ctx, {
@@ -65,13 +70,16 @@ export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, 
   // 구체적인 상호작용 노트는 일반 스킬·CC 목록보다 질문에 직접 답한다.
   if (directNote && directNote.questionGroups!.length >= 2
     && (directNote.evidence || !directNote.subjects && !directNote.controls)) return direct;
-  const subject = query ? controlSubject(resolved, ctx, memory) : undefined;
+  if (asksSkillHandling(resolved.text) || asksScenarioAdvice(resolved.text)) return undefined;
+  const inferredPassive = query === "types" && !resolved.slot && resolved.champions.length === 1
+    && /평타.*(?:한\s*대|한대|1\s*대)|\b(?:basic|auto)\s*attack\b|普攻/i.test(resolved.text);
+  const subject = query ? controlSubject(inferredPassive ? { ...resolved, slot: "P" } : resolved, ctx, memory) : undefined;
   const champions = subject ? subject.champions.map(id => ctx.data!.cardById.get(id)!).filter(Boolean) : resolved.champions;
   const slot = subject?.slot ?? resolved.slot;
   const boundary = interfaceSlotPlan({ champions, slot }, ctx);
   if (boundary) return boundary;
   const contextual = subject ? `${champions.map(card => card.name).join(" ")} ${slot ?? ""} ${resolved.text}` : resolved.text;
-  const interaction = curatedInteraction(contextual, ctx, subject);
+  const interaction = subject ? curatedInteraction(contextual, ctx, subject) : direct;
   if (asksSkillHandling(resolved.text) || asksScenarioAdvice(resolved.text) || resolved.matchup) return undefined;
   if (!subject || !query) return interaction;
   const withContext = (plan: AnswerPlan): AnswerPlan => ({ ...plan, controlContext: subject });

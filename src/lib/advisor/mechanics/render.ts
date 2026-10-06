@@ -59,6 +59,9 @@ function excludedCondition(rule: Rule, job: AbilityJob, state: QuestionState): s
     if (condition.field === "shield_ready" && value.kind === "enum" && value.value === "ready" && state.shieldReady === "down") {
       return "보호막 재사용 대기시간이 남아 있으면 이 보호막의 사용 가능 조건에 해당하지 않습니다.";
     }
+    if (condition.field === "spell_ready" && value.kind === "enum" && value.value === "ready" && state.spellReady === "down") {
+      return "스킬 재사용 대기시간 중에는 이 효과의 사용 가능 조건에 해당하지 않습니다.";
+    }
     if (condition.field === "hit_count" && value.kind === "number_ref" && state.hitCount !== undefined) {
       const required = job.numbers.find(n => n.id === value.ref)?.value;
       if (required !== undefined && ["eq", "gte"].includes(condition.operator) && state.hitCount < required) {
@@ -71,6 +74,11 @@ function excludedCondition(rule: Rule, job: AbilityJob, state: QuestionState): s
 function parameterDetails(effect: Effect, job: AbilityJob): string[] {
   const names: Record<string, string> = { count: "횟수/중첩", duration_seconds: "지속 시간", cooldown_seconds: "재사용 대기시간", damage_multiplier: "피해 비율", stat_coefficient: "계수" };
   return effect.parameters.flatMap(parameter => {
+    if (parameter.role === "storage_cap" && parameter.shape === "formula_components" && parameter.stat) {
+      const components = parameter.numberRefs.map(ref => job.numbers.find(number => number.id === ref));
+      if (!components.length || components.some(number => !number)) return [];
+      return [`비축 상한 구성값: ${components.map(number => number!.percent ? `${stats[parameter.stat!] ?? parameter.stat} 계수 ${number!.value}%` : String(number!.value)).join(" · ")}.`];
+    }
     const name = parameter.role === "amount" && effect.kind === "resource_change" ? "중첩/자원 획득량" : names[parameter.role];
     if (!name || !["scalar", "rank_values", "level_range"].includes(parameter.shape)) return [];
     const numbers = parameter.numberRefs.map(ref => job.numbers.find(n => n.id === ref));
@@ -91,7 +99,10 @@ export function renderRules(job: AbilityJob, rules: Rule[], question: string, st
     const header = [phase, ...conditions].filter(Boolean).join(" · ");
     const excluded = excludedCondition(rule, job, state);
     if (excluded) return [excluded, header ? `발동 조건: ${header}.` : undefined].filter(Boolean).join("\n");
-    const effects = rule.effects.flatMap(effect => [effect.text, ...parameterDetails(effect, job),
+    const effects = rule.effects.flatMap(effect => [effect.text,
+      effect.kind === "damage" && effect.damageType && !effect.text.includes(({ physical: "물리", magic: "마법", true: "고정" })[effect.damageType])
+        ? `${({ physical: "물리", magic: "마법", true: "고정" })[effect.damageType]} 피해입니다.` : undefined,
+      ...parameterDetails(effect, job),
       ...(effect.kind === "stat_conversion" ? conversionText(effect, job, question, state) : [])]);
     return [header ? `${header}:` : undefined, ...effects].filter(Boolean).join("\n");
   });

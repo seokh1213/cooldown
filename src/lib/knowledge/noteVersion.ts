@@ -35,6 +35,7 @@ export interface LifecycleEntity {
   introducedInPatch?: string;
   removedInPatch: string | null;
   scope: string;
+  basis?: NoteVersion["lifecycle"]["basis"];
 }
 
 export function normalizePatch(patch: unknown): string | null {
@@ -59,7 +60,7 @@ export function noteVersion(note: object, context: VersionContext, entities = li
     scope: entity?.scope ?? (typeof fields.scope === "string" ? fields.scope : context.scope ?? previous?.scope ?? null),
     lifecycle: entity ? {
       state: entity.state, asOfPatch: context.baselinePatch, introducedInPatch: entity.introducedInPatch ?? null,
-      removedInPatch: entity.removedInPatch, basis: "official-note",
+      removedInPatch: entity.removedInPatch, basis: entity.basis ?? "official-note",
     } : previous?.lifecycle ?? {
       state: "active", asOfPatch: context.baselinePatch, introducedInPatch: null, removedInPatch: null,
       basis: context.verifiedThroughPatch ? "source-review" : "backfill",

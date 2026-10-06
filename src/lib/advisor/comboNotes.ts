@@ -2,6 +2,7 @@
 import type { PlaybookEntry } from "@/lib/knowledge/playbookCore";
 import { comboSlots } from "@/lib/knowledge/comboGuide";
 import type { SelectedNotes } from "./noteSelect";
+import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
 
 interface ComboSelection {
   question: string;
@@ -12,7 +13,9 @@ interface ComboSelection {
 
 export function selectComboNotes(entries: PlaybookEntry[], options: ComboSelection): SelectedNotes {
   const { question, locale, translations, unavailable = [] } = options;
-  const combos = entries.filter(entry => entry.category === "combo");
+  const available = entries.filter(entry => entry.category === "combo");
+  const named = available.filter(entry => entry.id && aliasesOf(`note:${entry.id}`).some(alias => aliasAt(question, alias) >= 0));
+  const combos = named.length ? named : available;
   const curated = locale && locale !== "ko_KR" ? [] : combos.filter(entry => entry.combo);
   const allowed = curated.filter(entry => {
     const keys = entry.combo!.keys;

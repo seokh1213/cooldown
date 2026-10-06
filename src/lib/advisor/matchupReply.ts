@@ -60,7 +60,10 @@ export function composeMatchupEvidence(data: AdvisorData, lang: Language, reques
   if (notes.plan && focus) notes.plan.focus = focus;
   if (notes.plan) notes.plan.question = question;
   const answer = buildCompareAnswer([mine, enemy], question, undefined, { matchup: true, notes, lang });
-  if (answer.kind === "compare") answer.more = request.more || undefined;
+  if (answer.kind === "compare") {
+    answer.more = request.more || undefined;
+    answer.statQuery = undefined;
+  }
   return selectMatchupReply(answer, pair, request, lang);
 }
 

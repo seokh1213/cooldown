@@ -125,6 +125,7 @@ export function AdvisorWidget({ patch, ddragonVersion, onOpenChange, onWidthChan
           patch={patch}
           ddragonVersion={ddragonVersion}
           canUseModel={canUseModel}
+          modelSupportPending={device === "desktop" && advisor.webgpu === null}
           onClose={() => setOpen(false)}
           onWidthChange={onWidthChange}
         />

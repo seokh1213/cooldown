@@ -3,10 +3,11 @@ import type { Rule, Ability, Topic } from "./types";
 import { normalizeMechanicQuestion, questionState } from "./question";
 export type { Topic } from "./types";
 export const TOPICS = [
-  ["resource", /(?:마나|기력|분노|자원).*(?:돌려|반환|회복|환급)|(?:스킬|구체).*(?:폭발|터뜨)/i, ["resource_change", "damage"]],
+  ["resource", /(?:마나|기력|분노|자원|쿨|재사용).*(?:돌려|반환|회복|환급)|(?:스킬|구체).*(?:폭발|터뜨)/i, ["resource_change", "damage", "cooldown_change"]],
+  ["activation", /(?:켜|켠|활성화).*(?:계속|유지|동안)|(?:끄면|꺼지면)/i, []],
   ["mark", /(?:구체|표식).*(?:붙|부착|대상)|어떤\s*대상/i, ["mark"]],
   ["control_resistance", /CC.*(?:막|무시|저항)|(?:기절|속박|이동\s*불가).*(?:막|무시|저항)/i, ["other"]],
-  ["conversion", /(?:체력|주문력).*(?:템|전환|변환|치환|공격력|바뀌|늘|얼마)|(?:기본|성장|추가)\s*체력.*(?:바뀌|늘|공격력)|체력.*(?:추가되|전환되)|(?:체력|주문력)\s*\d.*(?:이면|짜리|템)/i, ["stat_conversion"]],
+  ["conversion", /(?:체력|주문력).*(?:템|전환|변환|치환|공격력|바뀌|늘|얼마)|(?:기본|성장|추가)\s*체력.*(?:바뀌|늘|공격력)|체력.*(?:추가되|전환되)|(?:체력|주문력)\s*\d.*(?:이면|짜리|템|받으면)/i, ["stat_conversion"]],
   ["shield", /보호막|쉴드|실드/i, ["shield"]],
   ["summon", /소환|(?:정령|영혼).*(?:나오|생겨|생기|풀려|제령)/i, ["summon"]],
   ["movement", /이속|이동\s*속도|취소|한\s*대|1\s*대|두\s*발|두\s*대|두\s*번째/i, ["movement", "attack_followup"]],
@@ -25,11 +26,11 @@ function ruleText(rule: Rule): string {
   return [rule.trigger.event, ...rule.effects.map(e => e.text), ...rule.conditions.map(c => c.value.kind === "text" ? c.value.value : ""),
     ...rule.evidence.map(e => e.quote)].join(" ");
 }
-export function selectRules(ability: Ability, question: string, topic?: Topic, championMentions: readonly string[] = []): Rule[] {
+export function selectRules(ability: Ability, question: string, topic?: Topic, context: { championMentions?: readonly string[]; state?: ReturnType<typeof questionState> } = {}): Rule[] {
   question = normalizeMechanicQuestion(question);
   const wanted = TOPICS.find(([name]) => name === topic)?.[2] as readonly string[] | undefined;
   const names = ability.job.facts.name as { en?: string; ko?: string } | undefined;
-  const withoutNames = [...championMentions, names?.en, names?.ko].filter((name): name is string => Boolean(name))
+  const withoutNames = [...(context.championMentions ?? []), names?.en, names?.ko].filter((name): name is string => Boolean(name))
     .reduce((text, name) => text.split(name).join(""), question);
   const query = grams(withoutNames.replace(/어떻게|뭐야|무슨|패시브|스킬|어때|할까|알려줘/g, ""));
   const scored = ability.draft.rules.map((rule, index) => {
@@ -41,12 +42,27 @@ export function selectRules(ability: Ability, question: string, topic?: Topic, c
       || topic === "shield" && /보호막|쉴드/.test(ruleText(rule));
     return { rule, index, score: lexical + (kind ? 30 : 0), kind };
   });
+  if (topic === "activation") {
+    const active = scored.filter(item => item.rule.conditions.some(condition => condition.field === "activation"
+      && condition.value.kind === "boolean"));
+    if (active.length) return active.map(item => item.rule);
+  }
+  // 부활 효과의 선행 조건을 함께 보여야 즉시 부활과 치명적 피해 후 부활을 구분할 수 있다.
+  if (/부활/.test(question) && ability.draft.rules.some(rule => rule.effects.some(effect => effect.kind === "revive"))) {
+    return ability.draft.rules;
+  }
+  if (topic === "conversion" && /\d\s*%/.test(question)) {
+    const percentages = [...question.matchAll(/(\d+(?:\.\d+)?)\s*%/g)].map(match => Number(match[1]));
+    const refs = new Set(ability.job.numbers.filter(number => number.percent && percentages.includes(number.value)).map(number => number.id));
+    const linked = scored.filter(item => item.kind || item.rule.effects.some(effect => effect.parameters.some(parameter => parameter.numberRefs.some(ref => refs.has(ref)))));
+    if (linked.some(item => item.kind) && linked.length > 1) return linked.map(item => item.rule);
+  }
   if (/추가\s*공격|두\s*번째|탄환/.test(question) && /퍼센트|물리|피해|대미지/.test(question)) {
     const damage = scored.filter(item => item.rule.trigger.event === "followup_attack" && item.rule.effects.some(effect => effect.kind === "damage"));
     if (damage.length) return damage.map(item => item.rule);
   }
-  const hits = questionState(question).hitCount;
-  if ((!topic || topic === "movement") && hits !== undefined && hits >= 3) {
+  const hits = (context.state ?? questionState(question)).hitCount;
+  if (hits !== undefined && (!topic || topic === "movement" && hits >= 3 || topic === "shield")) {
     const hitRules = scored.filter(item => item.rule.conditions.some(condition => condition.field === "hit_count"));
     const shieldAndDamage = ["shield", "damage"].every(kind => hitRules.some(item => item.rule.effects.some(effect => effect.kind === kind)));
     if (hitRules.length && (topic === "movement" || shieldAndDamage)) return hitRules.slice(0, 3).map(item => item.rule);

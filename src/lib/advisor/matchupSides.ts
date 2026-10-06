@@ -117,6 +117,7 @@ export function matchupSidesByPhrase<T>(question: string, found: [T, T], names: 
       new RegExp(`${name}\\s+(?:into|vs\\.?|versus|against)\\s`, "i"),
       new RegExp(`我(?:用|玩|拿|是|选)\\s*${name}`),
       new RegExp(`${name}\\s*(?:打|对线|对上|对)`),
+      new RegExp(`${name}\\s*(?:골랐|고른|선택했|선택한|하는\\s*중)`),
     ];
     const enemy = [
       new RegExp(`\\b(?:into|against|vs\\.?|versus|facing)\\s+(?:a\\s+|an\\s+)?${name}`, "i"),

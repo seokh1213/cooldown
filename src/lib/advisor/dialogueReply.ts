@@ -62,7 +62,8 @@ async function partReply(part: DialoguePlan["parts"][number], options: { data: A
   }
   const answer = plan.answer;
   if (typeof answer === "string") return { text: answer, notice: plan.notice, related: plan.type === "code" ? plan.related : undefined };
-  return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice };
+  const text = dialogueAnswerText(answer, lang);
+  return text.trim() ? { answer, text, notice: plan.notice } : { text: requestGuidance("evidence", lang), notice: plan.notice };
 }
 
 export async function assembleDialogueReply(dialogue: DialoguePlan, data: AdvisorData | null, lang: Language, deps: ReplyDependencies = { matchup: buildMatchupReply }): Promise<DialogueReply> {

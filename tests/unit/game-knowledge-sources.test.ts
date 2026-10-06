@@ -3,7 +3,7 @@ import { test } from "node:test";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { collectSource, diffSnapshots, officialBody, officialPatches, SITEMAP, wikiGameplay } from "../../scripts/llm/game-knowledge/sources";
+import { collectSource, diffSnapshots, getText, officialBody, officialPatches, SITEMAP, wikiGameplay } from "../../scripts/llm/game-knowledge/sources";
 import { watchSources } from "../../scripts/llm/game-knowledge/watch";
 
 test("매시 상류 확인만 끝난 경우는 건너뛰고 실제 생성 뒤에 검사한다", async () => {
@@ -67,5 +67,37 @@ test("수집 실패는 불완전 보고서를 남기고 기준을 덮어쓰지 �
     const report = JSON.parse(await fs.readFile(path.join(output, "report.json"), "utf8"));
     assert.equal(report.complete, false);
     assert.equal(report.errors.length, 2);
+  } finally { await fs.rm(root, { recursive: true, force: true }); }
+});
+
+test("일시적인 상류 서버 오류는 재시도하고 존재하지 않는 주소는 다시 요청하지 않는다", async context => {
+  let calls = 0;
+  context.mock.method(globalThis, "fetch", async () => ++calls < 3
+    ? new Response("Origin timeout", { status: 522 }) : new Response("verified source"));
+  assert.equal(await getText("https://example.com/source"), "verified source");
+  assert.equal(calls, 3);
+  calls = 0;
+  context.mock.method(globalThis, "fetch", async () => {
+    calls++;
+    return new Response("Missing", { status: 404 });
+  });
+  await assert.rejects(getText("https://example.com/missing"), /HTTP 404/);
+  assert.equal(calls, 1);
+});
+
+test("노트 승인 해시와 원문 변경은 별도로 감지하며 승인 상태를 수정하지 않는다", async () => {
+  const { writeNoteImpacts } = await import("../../scripts/llm/game-knowledge/note-impacts");
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "cooldown-note-impact-"));
+  await fs.mkdir(path.join(root, "knowledge"));
+  const source = { id: "wiki:Example", kind: "wiki" as const, url: "https://wiki.leagueoflegends.com/en-us/Example", hash: "current", fetchedAt: "2026-10-07" };
+  const notes = JSON.stringify({ notes: [{ id: "reviewed", sources: [source.url], sourceHash: "approved", version: { verifiedThroughPatch: "26.19" } }] });
+  await fs.writeFile(path.join(root, "knowledge/mechanics-notes.json"), notes);
+  try {
+    const report = await writeNoteImpacts(root, [source], [source], root);
+    assert.equal(report.affectedNotes[0].reason, "approved-source-mismatch");
+    assert.equal(report.affectedNotes[0].verifiedThroughPatch, "26.19");
+    assert.equal(await fs.readFile(path.join(root, "knowledge/mechanics-notes.json"), "utf8"), notes);
+    const unchanged = await writeNoteImpacts(root, [{ ...source, hash: "approved" }], [{ ...source, hash: "approved" }], root);
+    assert.equal(unchanged.affectedNotes.length, 0);
   } finally { await fs.rm(root, { recursive: true, force: true }); }
 });

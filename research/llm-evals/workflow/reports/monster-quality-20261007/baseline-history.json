@@ -1,0 +1,77 @@
+{
+  "original": {
+    "commit": "fb101f27b84256621ad07d85b9d4dba49bf4b7a8",
+    "path": "research/llm-evals/workflow/reports/regression/baseline.json",
+    "sha256": "97ea719a8f822045d477312ab988846103dbf3466f7b7bedf024456e609188b6",
+    "caseHash": "52c7db51816237c00c1b7cd3950290a1d6a7d1d75aee7c8d07b09161395cddc5",
+    "dataHash": "e830f64bb3d9f08d3c0813c16354928838e4f355024482842658fb645e14cb78",
+    "scorerHash": "cf21d4f0fc5b6b093d84341cbfa625c1204caa04674bbcb16110d87009410606",
+    "counts": {
+      "True": 4660,
+      "False": 1095,
+      "None": 20
+    }
+  },
+  "matchedControl": {
+    "commit": "fb101f27b84256621ad07d85b9d4dba49bf4b7a8",
+    "method": "Original application, current game JSON and independently reviewed evaluation contracts; raw model unchanged. Production code not copied.",
+    "caseHash": "c41eb14367fbdcdac10e5900e469f0ae3eb9667d6886ca052303a6aa73915d42",
+    "dataHash": "1b57234cbb39fcbecf513f3f81984053e2ce103d27bf166322b0ea053201eac5",
+    "scorerHash": "33cbebef547fd1b99965e2c179622b72d6ff800ba49137ba3ad429cfab553671",
+    "sourceHash": "1eb44015b2b5998c660e3461ee3c4eeaca2df5a5dbaf1219c15f7f0b525a8c2e",
+    "counts": {
+      "True": 4955,
+      "False": 800,
+      "None": 20
+    },
+    "checks": [
+      {
+        "name": "split-separation",
+        "pass": true,
+        "log": "logs/splits.json"
+      },
+      {
+        "name": "node-regression",
+        "pass": false,
+        "log": "logs/node-regression.log"
+      },
+      {
+        "name": "types",
+        "pass": false,
+        "log": "logs/types.log"
+      },
+      {
+        "name": "mechanics-answer",
+        "pass": false,
+        "log": "logs/mechanics-answer.log"
+      },
+      {
+        "name": "source-unchanged",
+        "pass": true,
+        "log": "provenance.json"
+      },
+      {
+        "name": "data-unchanged",
+        "pass": true,
+        "log": "provenance.json"
+      },
+      {
+        "name": "complete-coverage",
+        "pass": true,
+        "log": "logs/coverage.json"
+      }
+    ],
+    "limitation": "Old unit tests call the previous grading API and assert old curated data. Control infrastructure is not approved for deployment; the complete, unchanged 5,775 answer measurements are used only for paired comparison.",
+    "artifact": "matched-control.json.gz",
+    "sha256": "6a7fdf798522fc845719ac32d8776e425820722cbae72c8da3d6c84745358424",
+    "provenance": "matched-control-provenance.json"
+  },
+  "newCiBaseline": {
+    "method": "Complete current application results promoted after identical-input old-application paired comparison: 769 gains, zero new regressions. Known 31 classifier failures and 20 manual rows retained.",
+    "path": "research/llm-evals/workflow/reports/regression/baseline.json",
+    "sha256": "711a138ecff22a864b1523d9039ed75dca0728234f54c4a45206e7fde3d2f469",
+    "infrastructurePassed": true,
+    "measurements": 5775,
+    "format": "Compact JSON, preserving the measured results and all metadata"
+  }
+}

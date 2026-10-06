@@ -2,6 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { collectSource, diffSnapshots, getText, officialPatches, sha256, SITEMAP, type Snapshot, type Source } from "./sources";
+import { writeMonsterCandidates } from "./monster-candidates";
+import { writeNoteImpacts } from "./note-impacts";
 
 interface Registry { wiki: Array<{ title: string }>; cdragon: string[]; pinnedOfficialPatches: string[]; recentOfficialCount: number }
 interface Baseline { schemaVersion: number; patch: string; snapshots: Snapshot[] }
@@ -45,13 +47,17 @@ export async function watchSources(output = path.join(process.cwd(), "research/.
   const baseline = mode === "initialize" ? { schemaVersion: 1, patch: marker.patchVersion, snapshots: [] } : await readJson<Baseline>(baselineFile);
   const { sources, patches, indexHash } = await sourceList(registry, marker.sources.cdragon);
   const { snapshots, errors } = await collect(sources, output);
+  const monsterReview = await writeMonsterCandidates(output, snapshots, root);
   const changes = diffSnapshots(baseline.snapshots, snapshots);
+  const noteReview = await writeNoteImpacts(output, snapshots, baseline.snapshots, root);
   const report = { schemaVersion: 1, checkedAt: new Date().toISOString(), patch: marker.patchVersion,
     baselinePatch: baseline.patch, complete: errors.length === 0, indexHash, discoveredLatestPatch: patches.at(-1)!.patch,
-    officialPatchCount: patches.length, changes, errors, reviewStatus: "detection-only", snapshots };
+    officialPatchCount: patches.length, changes, errors, reviewStatus: "detection-only", snapshots,
+    monsterCandidates: monsterReview.candidates.length, affectedMonsterFacts: monsterReview.affectedFacts.length,
+    affectedReviewedNotes: noteReview.affectedNotes.length };
   await fs.writeFile(path.join(output, "report.json"), `${JSON.stringify(report, null, 2)}\n`);
   await fs.writeFile(path.join(output, "official-index.json"), JSON.stringify(patches, null, 2));
-  const summary = `# Game knowledge source check\n\nPatch: ${report.patch}; latest official: ${report.discoveredLatestPatch}\n\n${snapshots.length} sources checked; ${changes.length} changed/new; ${errors.length} failed. Detection does not approve facts.\n\n${changes.map(change => `- ${change.change}: [${change.id}](${change.url})`).join("\n")}\n${errors.map(error => `- Failed: ${error.id}: ${error.error}`).join("\n")}\n`;
+  const summary = `# Game knowledge source check\n\nPatch: ${report.patch}; latest official: ${report.discoveredLatestPatch}\n\n${snapshots.length} sources checked; ${changes.length} changed/new; ${errors.length} failed. Detection does not approve facts.\n\n${monsterReview.candidates.length} monster candidates; ${monsterReview.affectedFacts.length} reviewed monster facts and ${noteReview.affectedNotes.length} reviewed notes affected.\n\n${changes.map(change => `- ${change.change}: [${change.id}](${change.url})`).join("\n")}\n${errors.map(error => `- Failed: ${error.id}: ${error.error}`).join("\n")}\n`;
   await fs.writeFile(path.join(output, "summary.md"), summary);
   if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, summary);
   if (errors.length) throw new Error(`Incomplete source check: ${errors.length} failed; baseline retained`);

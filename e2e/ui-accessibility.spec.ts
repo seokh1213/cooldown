@@ -206,10 +206,11 @@ test("desktop rail remains nonmodal and resizing an open mobile menu restores pa
   await page.goto("./");
   await page.getByRole("button", { name: "Open menu", exact: true }).click();
   await page.setViewportSize({ width: 1024, height: 768 });
+  await expect(page.getByRole("dialog", { name: "Primary navigation", exact: true })).toBeHidden();
   const rail = page.getByRole("navigation", { name: "Primary navigation", exact: true });
   await expect(rail).toBeVisible();
   await expect(rail).not.toHaveAttribute("aria-modal", "true");
-  expect(await page.locator("main").evaluate((element) => Boolean(element.closest("[inert]")))).toBe(false);
+  await expect.poll(() => page.locator("main").evaluate((element) => Boolean(element.closest("[inert]")))).toBe(false);
   await page.getByRole("button", { name: "챔피언 추가하기", exact: true }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");

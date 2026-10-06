@@ -30,6 +30,7 @@ cases.push(
 );
 export function grade(text: string, item: Case): { pass: boolean; missing: string[]; forbidden: string[] } {
   const equivalents: Record<string, RegExp> = {
+    "기절 효과가 없어": /기절.*(?:없|않)/,
     "두 번째": /두\s*번째|추가\s*공격/,
     "발동하지 않아": /발동하지\s*않|취소 조건에 해당하지\s*않/,
     "3번째": /3번째|세\s*번째|3회\s*적중/,
@@ -47,5 +48,7 @@ export function grade(text: string, item: Case): { pass: boolean; missing: strin
     ? !new RegExp(`(?<![\\d.])${check.replace(/\./g, "\\.")}(?![\\d.])`).test(text)
     : equivalents[check] ? !equivalents[check].test(text) : !text.includes(check));
   const forbidden = (item.rejects ?? []).filter(check => text.includes(check));
+  const positive = text.replace(/기절[^.!。\n]*?(?:없(?:음|습니다|어요|어)|않(?:습니다|아요|아))/g, "");
+  if (item.checks.includes("기절 효과가 없어") && /기절(?:\s*효과)?(?:이|가|을|를)?\s*(?:있|생|적용|걸)/.test(positive)) forbidden.push("contradictory-stun");
   return { pass: !missing.length && !forbidden.length, missing, forbidden };
 }

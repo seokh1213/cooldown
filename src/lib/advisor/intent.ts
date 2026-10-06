@@ -6,6 +6,8 @@
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import type { AdvisorData } from "./context";
 import championAliasFile from "../../../knowledge/champion-aliases.json";
+import { findItems } from "./itemAnswer";
+import itemAliases from "../../../knowledge/item-aliases.json";
 
 export interface ChampionMention {
   card: ChampionCard;
@@ -114,7 +116,7 @@ export function nicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
  * 아이번이 됐다. "오공으로 럼블 상대할 때 아이템 뭐 가?" 가 챔피언 셋을 부른 질문이 되어
  * 상성 답으로 가지 못했다. 게임에서 흔히 쓰는 말과 아이템 이름을 가린 뒤에 줄임말을 찾는다.
  */
-const COMMON_WORDS = ["아이템", "템트리", "다이아", "카이팅", "회오리", "밀리"];
+const COMMON_WORDS = ["아이템", "템트리", "다이아", "카이팅", "회오리", "밀리", "触发条件"];
 
 let itemNameCache: { items: unknown; names: string[] } | null = null;
 
@@ -124,8 +126,10 @@ function maskCommonWords(text: string, data: AdvisorData): string {
     itemNameCache = { items: data.items, names: [...new Set(names)].sort((a, b) => b.length - a.length) };
   }
   let out = text;
-  for (const word of [...itemNameCache.names, ...COMMON_WORDS]) {
-    if (out.includes(word)) out = out.split(word).join("□".repeat(word.length));
+  const recognized = findItems(data, text).flatMap(item => Object.values(itemAliases.aliases[String(item.id) as keyof typeof itemAliases.aliases] ?? {}).flat());
+  for (const word of [...itemNameCache.names, ...recognized, ...COMMON_WORDS]) {
+    const pattern = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    out = out.replace(pattern, match => "□".repeat(match.length));
   }
   return out;
 }
@@ -282,7 +286,8 @@ const SMALL_TALK =
   /^(고마워(요)?|고맙(다|습니다)|감사(합니다|해요|해)?|ㄳ|ㄱㅅ|땡큐|덕분에[^?？]*|안녕(하세요)?|ㅎㅇ|잘\s*자|ㅋㅋ+|ㅎㅎ+|thanks?( you)?|thx|ty|tysm|hi|hello|hey|gg|谢谢|谢了|多谢|你好|嗨)([\s,.!~ㅋㅎ，。！]|덕분에|이겼다|이겼어|won|that one|这把赢了|赢了)*[.!~。！]*$/i;
 
 export function isSmallTalk(question: string): boolean {
-  return SMALL_TALK.test(question.trim());
+  if (SMALL_TALK.test(question.trim())) return true;
+  return /(?:위로|멘탈).*(?:한마디|말|해줄|해줘)|같이\s*롤\s*얘기|\bpep talk\b|陪我(?:聊|唠)|(?:안녕|\bhey\b|你好).*(?:얘기|talk|聊天)/i.test(question);
 }
 
 /** 분류기 확신도와 별개로 도우미를 직접 가리키는 질문인지 확인한다. */

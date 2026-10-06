@@ -1,6 +1,7 @@
 /** 명시적 콤보와 바로 이어지는 스킬 상태 질문을 같은 자료로 답한다. */
 import { asksCombo } from "./comboIntent";
 import { asksSkillHandling } from "./askWords";
+import { asksSpellNumbers } from "./spellFocus";
 import { mentionsAbilityState, abilityStatus } from "./abilityStatus";
 import { selectComboNotes } from "./comboNotes";
 import { scenarioConditions, type DialogueMemory } from "./dialogueState";
@@ -27,11 +28,13 @@ function unavailableAbilities(question: string, previous: string[]): string[] {
 
 export function comboAdvicePlan(resolved: ResolvedQuestion, ctx: PlanContext, memory?: DialogueMemory): AnswerPlan | undefined {
   const { text: question, champions } = resolved;
-  const explicit = resolved.requestIntent ? resolved.requestIntent.scope === "combo" : asksCombo(question);
+  const explicit = asksCombo(question) || resolved.requestIntent?.scope === "combo";
+  if (asksSpellNumbers(question)) return undefined;
+  if (memory?.matchup && /아까|상대할|against|对局|之前/i.test(question)) return undefined;
   const followup = memory?.active === "champion" && memory.combo
     && (mentionsAbilityState(question) || /without\s+(?:my\s+)?(?:ult|R|flash)/i.test(question))
     && !/쿨타임|몇\s*초|사거리|계수|cooldown|range|ratio/i.test(question);
-  const handling = resolved.requestIntent ? resolved.requestIntent.scope === "counterplay" : asksSkillHandling(question);
+  const handling = !explicit && (resolved.requestIntent ? resolved.requestIntent.scope === "counterplay" : asksSkillHandling(question));
   if (!ctx.data || (!explicit && !followup) || resolved.matchup || champions.length > 1 || handling) return undefined;
   if (!champions.length && memory?.active === "matchup") return undefined;
   const id = champions[0]?.id ?? memory?.combo?.champion ?? memory?.champion ?? ctx.championIds[0];

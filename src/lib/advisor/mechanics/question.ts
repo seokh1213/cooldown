@@ -42,7 +42,7 @@ export function conversionAmount(question: string): number | undefined {
 export function cooldownRemaining(question: string): boolean | undefined {
   const text = correctedQuestion(question);
   if (!/쿨|재사용\s*대기/.test(text)) return undefined;
-  if (/끝.*(?:아니|않)|안\s*돌|돌지\s*않|남|아직.*쿨/.test(text)
+  if (/끝.*(?:아니|않)|안\s*돌|돌지\s*않|남|아직.*쿨|(?:쿨타임|쿨|재사용\s*대기)\s*(?:중|동안)/.test(text)
     && !/안\s*남|남지\s*않|남.*없/.test(text)) return true;
   if (/안\s*남|남지\s*않|남.*없|(?:다|이미)\s*돌|끝|없/.test(text)) return false;
   return undefined;
@@ -69,12 +69,12 @@ export function questionState(question: string, previous?: MechanicMemory): Ques
   const stat = numericStat?.startsWith("주문력") ? "abilityPower" : numericStat?.startsWith("체력") ? "bonusHealth" : previous?.amount?.stat ?? "bonusHealth";
   if (amount !== undefined) state.amount = { value: amount, stat, count: count ?? 1 };
   else if (count && state.amount) state.amount = { ...state.amount, count };
-  if (amount === undefined && /(?:체력|주문력).*\d|^-?\d/.test(text) && !/(?:레벨|초|대|발|번|스택|중첩)/.test(text)) {
+  if (amount === undefined && /(?:체력|주문력)\s*(?:템\s*(?:으로\s*)?)?[-\d]|\d\s*(?:짜리|체력)|^-?\d/.test(text) && !/(?:레벨|초|대|발|번|스택|중첩)/.test(text)) {
     state.amount = undefined;
     state.invalidAmount = true;
   }
   if (/안\s*보이|보이지\s*않|시야.*(?:없|밖)/.test(text)) state.visibility = "unseen";
-  else if (/보이는\s*상태|보일\s*때|보이는데/.test(text)) state.visibility = "visible";
+  else if (/보이는\s*(?:상태|동안)|보일\s*때|보이는데/.test(text)) state.visibility = "visible";
   const target = /미니언|몬스터|챔피언|구조물/.exec(text)?.[0];
   if (target) state.targetType = ({ 미니언: "minion", 몬스터: "monster", 챔피언: "champion", 구조물: "structure" } as const)[target as "미니언"];
   const extra = /두\s*번째|추가\s*공격|후속|두\s*(?:발|대)|둘\s*다/.test(text);
@@ -83,7 +83,10 @@ export function questionState(question: string, previous?: MechanicMemory): Ques
   else if (extra && /쏘|쏠|쏜|쏴|발사|다\s*(?:맞|치)|모두/.test(text)) state.followupStatus = "fired";
   const cooldown = cooldownRemaining(text);
   if (/보호막.*(?:못\s*쓰|사용\s*불가|없)|(?:못\s*쓰|사용\s*불가).*보호막/.test(text)) state.shieldReady = "down";
-  if (cooldown !== undefined) state.shieldReady = cooldown ? "down" : "ready";
+  if (cooldown !== undefined) {
+    state.shieldReady = cooldown ? "down" : "ready";
+    state.spellReady = cooldown ? "down" : "ready";
+  }
   const hits = countOf(text, "(?:대|번|발)");
   if (hits !== undefined) state.hitCount = previous?.hitCount !== undefined && /(?:이미|앞서|더|다음|한\s*번\s*더)/.test(text)
     ? previous.hitCount + hits : hits;

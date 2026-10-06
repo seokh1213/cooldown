@@ -13,10 +13,11 @@ import type { AskKind } from "./routeAsk";
 import { isSmallTalk } from "./intent";
 import { asksSpellNumbers } from "./spellFocus";
 import { asksCombo } from "./comboIntent";
+import { requestedContent } from "./requestText";
 
 /** 둘 이상을 견주는 질문인가. "누가 더 높아", "어느 쪽이", "비교", "중에", "두 챔피언", "둘 다". */
 const COMPARISON =
-  /더\s*(높|많|센|강|단단|긴|짧|빠|느|좋)|누가|어느\s*쪽|비교|중에|두\s*챔피언|둘\s*다|양쪽|\bboth\b|两个|\bvs\b|\b(who|which)\b|\b(more|higher|better|stronger|tankier|longer|shorter|faster|slower)\b|\bcompare\b|谁|哪个|比较|更(高|多|强|快|好)/i;
+  /더\s*(높|많|센|강|단단|긴|짧|빠|느|좋)|누가|어느\s*쪽|비교|중에|각각|두\s*챔피언|둘\s*다|양쪽|\bboth\b|两个|分别|\bvs\b|\b(who|which)\b|\b(more|higher|better|stronger|tankier|longer|shorter|faster|slower)\b|\bcompare\b|谁|哪个|比较|更(高|多|强|快|好)/i;
 
 export function asksComparison(question: string, championCount: number): boolean {
   return championCount >= 2 && COMPARISON.test(question);
@@ -71,7 +72,14 @@ export function asksSkillsOverview(question: string): boolean {
  * 슬롯이 둘 이상 나오거나 "각각·전체·모든 스킬·네 가지" 를 말하면 전체로 본다.
  */
 export function asksWholeKit(question: string): boolean {
-  if (asksCombo(question)) return false;
+  question = requestedContent(question);
+  const explicitSlots = [...question.matchAll(/(?<![A-Za-z])([PQWER])(?![A-Za-z])/gi)];
+  const singleSlot = new Set(explicitSlots.map(match => match[1].toUpperCase())).size === 1;
+  if (singleSlot && !/QWER|전체|전부|모든|나머지|각각|\ball\b|\beach\b|\bevery\b|全套|整套|全部|所有|其他技能|各自|分别/i.test(question)) return false;
+  if (/패시브.*각각/.test(question) && !/스킬|궁|(?<![A-Za-z])[QWER](?![A-Za-z])/i.test(question)) return false;
+  if (asksCombo(question) || asksScenarioAdvice(question) && !/(?:스킬|기술).*(?:전체|구성)|\ball\s+(?:abilities|skills)\b|全部技能|全套技能/i.test(question)) return false;
+  if (/패시브.*(?:일반\s*스킬|나머지\s*스킬)|기본\s*지속.*(?:궁극기|스킬)|(?:스킬|기술)\s*(?:요약|전부|구성|어떻게\s*구성)|무슨\s*스킬|\ball\s+(?:his|her|their)\s+buttons\b|(?:从)?被动到大招|技能(?:组|介绍|机制|是什么)|(?:全|所有|哪些)技能|技能.*(?:都想|也.*一起)/i.test(question)) return true;
+  if (/스킬\s*(?:셋|세트|구성)|스킬\s*뭐|패시브(?:도|까지)|패시브부터\s*궁까지|\bkit\b|\babilities\b|all\s+(?:four\s+)?active|every\s+move|from\s+(?:the\s+)?passive\s+(?:to|through)\s+(?:the\s+)?ult|技能(?:说明|配置|逐个|逐项)|全套技能|整套技能|(?:四个|四种|4个).*(?:主动|技能)|被动.*(?:和|加).*?(?:主动|技能)/i.test(question)) return true;
   if (/네\s*가지|4\s*가지|각각|전체|모든\s*스킬|스킬\s*다|QWER|all (abilities|skills|spells)|each (ability|skill)|every (ability|skill)|全部技能|每个技能|所有技能|各个技能/i.test(question)) return true;
   const slots = new Set<string>();
   if (/패시브|passive|被动/i.test(question)) slots.add("P");
@@ -178,4 +186,4 @@ export const asksGenericAdvice = (question: string): boolean => GENERIC_ADVICE.t
 export const asksSkillHandling = (question: string): boolean => SPELL_HANDLING.test(question);
 export const asksReason = (question: string): boolean => /(?:^|\s)왜(?=\s|[?？]|$)|어째서|이유|\bwhy\b|为什么/i.test(question);
 /** 수치 조회와 상성 복귀가 같은 상황 조언 문형을 사용한다. */
-export const asksScenarioAdvice = (question: string): boolean => /언제\s*(써|쓰|사용|들어|진입)|어떻게\s*(써|쓰|빼|교환|상대|싸|해|들어|대응|버텨)|그래도\s*(들어|싸|진입)|대응|대처|아군\s*보호|빠졌|빠진|빠지면|상대법|콤보|교환|라인전|한타|when.*(use|engage)|how.*(use|bait|respond|survive|engage)|protect|怎么.*(用|打|应对)|应对/i.test(question);
+export const asksScenarioAdvice = (question: string): boolean => /누구(?:부터|.*노려)|who.*target|target first|先打谁|优先.*目标|언제\s*(써|쓰|사용|들어|진입|아끼|아껴)|어떻게\s*(써|쓰|빼|교환|상대|싸|해|들어|대응|버텨)|그래도\s*(들어|싸|진입)|들어가도|붙어야|기다려|맞싸움|맞서\s*싸|도망가|뒤로\s*빠|거리.*잡|안\s*맞|견제.*못\s*하게|어디.*확인|경계해야|파밍.*틈|뭐\s*(?:해야|할까)|대신.*들어|不带.*带|instead of.*(?:flash|barrier)|(?:kill.window|all.in).*flash.*down|闪现没|什么时候.*(?:切|进|开)|该(?:怎样|怎么|如何)|击杀窗口|怎么破|换血|怎么抓|一直被.*压|走位|反打|what\s+should|should\s+I|how\s+do\s+I|any\s+advice|wont.*trade|won[’'’]?t.*trade|matchup\s+tips|stop\s+dying|what\s+to\s+watch|trade\s+window|(?:clear|wait).*turrets?|대응|대처|아군\s*보호|빠졌|빠진|빠지면|상대법|콤보|교환|라인전|한타|when.*(use|engage|go in)|how.*(use|bait|respond|survive|engage)|protect|怎么.*(用|打|应对|安排|防)|求.*思路|对付.*思路|应对/i.test(question);

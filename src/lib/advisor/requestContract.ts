@@ -27,6 +27,8 @@ export interface DialogueTrace {
 
 /** 현재 자료는 기본 쿨 계산만 보장한다. 진행 중 타이머 변경과 승리 보장은 답을 만들어 내지 않는다. */
 export function unsupportedCondition(question: string): GuidanceReason | undefined {
+  if (/프리징|freez(?:e|ing).*wave|控线/i.test(question)) return "evidence";
+  if (/커피값|\bcoffee\s+(?:price|cost)|커피.*계산|\bweather\b|날씨.*(?:알려|어때)|파이썬.*(?:코드|작성)/i.test(question)) return "unsupported";
   if (/가속|haste|急速/i.test(question) && /이미|남은|돌고|중에|during|remaining|already|冷却中/i.test(question)
     && /사면|얻|늘|올|gain|buy|change|增加/i.test(question)) return "evidence";
   if (/100\s*(?:%|퍼)|무조건|guarantee|保证/i.test(question) && /이겨|이기|이길|승리|승률|\bwin\b|赢/i.test(question)) return "guarantee";

@@ -1,4 +1,5 @@
 import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
+import { requestedContent } from "./requestText";
 
 export type SpellFocus =
   | "cooldown"
@@ -25,8 +26,8 @@ export type SpellFocus =
  * 있을 까닭이 없고, 그 반대도 마찬가지다.
  */
 const FOCUS_LEXICON: Array<[SpellFocus, RegExp]> = [
-  ["cooldown", /쿨(타임|다운)?|재사용|\bcd\b|cool\s*down|冷却|CD/i],
-  ["cost", /마나|소모|코스트|기력|분노|비용|\bmana\b|\bcost\b|energy|fury|法力|消耗|能量/i],
+  ["cooldown", /쿨(타임|다운)?|재사용|\bcd\b|cool\s*down|recharge|冷却|CD/i],
+  ["cost", /(?<!얼)마나|소모|코스트|기력|분노|비용|\bmana\b|mana\s*cost|\bcosts?\b|energy|fury|法力|消耗|能量|蓝耗|耗蓝|耗多少蓝/i],
   ["ratio", /계수|주문력\s*계수|공격력\s*계수|\bap\b|\bad\b|ratio|scaling|coefficient|加成|系数/i],
   ["damage", /피해|데미지|딜(량)?|대미지|\bdamage\b|\bdmg\b|伤害/i],
 ];
@@ -51,13 +52,14 @@ const EFFECT_ALIASES: Array<[RegExp, string[], SpellFocus?]> = [
    * 툴팁 문장만 나오고 625 가 없었다(2026-09-30 브라우저 시험). 숫자가 없는 스킬(자기 시전·전역)은
    * 같은 낱말로 본문 문장을 찾는다. 자리는 그대로 둔다 — 표 순서가 곧 우선순위다.
    */
-  [/사거리|거리|범위|\brange\b|射程|范围/i, ["사거리", "범위", "Range", "射程", "范围"], "range"],
+  [/사거리|거리|범위|\brange\b|射程|范围|飞多远/i, ["사거리", "범위", "Range", "射程", "范围"], "range"],
   [/지속(시간)?|초\s*동안|duration|持续/i, ["초 동안", "초간", "second", "seconds", "秒"]],
   [/침묵|silence|沉默/i, ["침묵", "Silence", "沉默"]],
   [/에어본|띄우|공중|airborne|knock\s*up|击飞/i, ["공중", "띄", "Airborne", "击飞"]],
 ];
 
 export function detectSpellFocus(question: string): { focus: SpellFocus; keywords: string[] } | undefined {
+  question = requestedContent(question);
   // “기절 스킬 쿨타임”의 기절은 수식어다. 명시한 구조 수치를 효과 낱말보다 먼저 읽는다.
   const numeric = FOCUS_LEXICON.find(([focus, pattern]) => focus !== "damage" && pattern.test(question));
   if (numeric) return { focus: numeric[0], keywords: [] };
@@ -76,14 +78,16 @@ export function detectSpellFocus(question: string): { focus: SpellFocus; keyword
  * "궁 쿨 빠지면 들어가도 돼?" 처럼 때를 묻는 말은 공략이라 뺀다.
  */
 export function asksSpellNumbers(question: string): boolean {
+  question = requestedContent(question);
   const focus = detectSpellFocus(question)?.focus;
-  if (focus !== "cooldown" && focus !== "cost" && focus !== "ratio") return false;
+  if (!["cooldown", "cost", "ratio", "range"].includes(focus ?? "")) return false;
   // 스킬 가속(쿨감·cdr·冷却缩减)은 능력치이지 스킬 수치가 아니다. 쿨타임 낱말이 그 안에 들어 있어 "쿨감 템 먼저 가는 게 나아?",
   // "should I rush a cdr item?", "先出冷却缩减装备好吗" 가 상성 대화에서 수치 조회로 빠져나가 "스킬 가속" 절 원문을 받았다.
   if (aliasesOf("mech:스킬-가속").some((alias) => aliasAt(question, alias) >= 0)) return false;
   // 코스트·계수 낱말은 스킬 밖에서도 쓴다. 스킬을 가리키는 말이 함께 있어야 한다.
-  if (focus !== "cooldown" && !/스킬|기술|궁|패시브|(?<![a-z])[qwer](?![a-z])|\b(skill|ability|spell|ult)\b|技能|大招/i.test(question)) return false;
-  return !/빠지|돌아|돌 때|들어가|노려|때[는에]?|이후|동안|어떻게|언제|\b(when|after|while|how to)\b|之后|的时候|怎么/i.test(question);
+  if (focus !== "cooldown" && !/스킬|기술|궁|패시브|(?<![a-z])[qwer](?![a-z])|[QWER](?=mana|cost)|\b(skill|ability|spell|ult)\b|\brank\s*[1-5]\b|技能|大招|蓝耗|耗蓝|级大/i.test(question)) return false;
+  if (/(?:기본|사거리|계수|소모).*(?:몇|얼마)|\b(?:what(?:'s| is)?|how much).*\b(?:base|cooldown|cost|ratio)|\b(?:ap|ad)\s+ratio|冷却.*多少|(?:蓝耗|耗蓝).*多少/i.test(question)) return true;
+  return !/빠지|돌아|돌 때|들어가|노려|때[는에]?|이후|동안|(?:쿨(?:타임)?|대기)\s*중|어떻게|언제|\b(when|after|while|how to)\b|之后|的时候|冷却中|怎么/i.test(question);
 }
 
 /** 효과·수치를 묻는 낱말인가. 챔피언 이름 오타 후보에서 뺀다(`suggestChampions`). */

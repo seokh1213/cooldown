@@ -11,6 +11,9 @@
  */
 import type { ChampionCard, SpellFact, StatName } from "@/lib/knowledge/facts";
 import { ruleLines, ruleName, type RuleNotes } from "@/lib/knowledge/rules";
+import { removalNotice } from "@/lib/knowledge/noteVersion";
+import type { Ability } from "./mechanics/types";
+import { renderRules } from "./mechanics/render";
 import type { Language } from "@/i18n";
 import { translations } from "@/i18n/translations";
 import type { SelectedNotes } from "./noteSelect";
@@ -187,10 +190,12 @@ export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang 
   // "점멸 쿨타임" 은 판정 규칙이 아니라 수치를 묻는 것이다. 규칙 문장만 보였더니 300초가 어디에도 없었다(2026-09-30 브라우저 시험).
   const cooldownLine =
     cooldownSeconds === undefined ? undefined : `${cardLabels(lang as Language).cooldown} ${cooldownSeconds}${translations[lang as Language].comparison.seconds}`;
+  const removed = removalNotice(ruleName(rule, lang), rule.version, lang);
   const lines = [...(cooldownLine ? [cooldownLine] : []), ...ruleLines(rule, lang)];
   // 함께 물은 다른 규칙을 그 화면 언어 이름으로 찾는다("정복자에 점화" → 점화 규칙에서 정복자가 든 줄)
   const others = [...new Set([...mentionedNames.filter((name) => name !== rule.name), ...mentioned.filter((r) => r !== rule).map((r) => ruleName(r, lang))])];
   const highlighted = [
+    ...(removed ? [removed, ...lines] : []),
     ...(cooldownLine ? [cooldownLine] : []),
     ...(others.length ? lines.filter((line) => line !== cooldownLine && others.some((name) => line.toLowerCase().includes(name.toLowerCase()))) : []),
   ];
@@ -242,7 +247,7 @@ export function buildCompareAnswer(
   cards: ChampionCard[],
   question: string,
   slot?: string,
-  options: { matchup?: boolean; notes?: MatchupNotes; lang?: Language; statQuery?: ChampionStatQuery } = {},
+  options: { matchup?: boolean; notes?: MatchupNotes; lang?: Language; statQuery?: ChampionStatQuery; abilityRules?: Map<string, Ability> } = {},
 ): AdvisorAnswer {
   const lang = options.lang ?? "ko_KR";
   const w = cardLabels(lang);
@@ -262,6 +267,13 @@ export function buildCompareAnswer(
       if (values.some(Boolean)) rows.push({ label, values, hit });
     };
     push(w.spell, (spell) => spell.name, false);
+    if (!focus || focus === "effect") {
+      const values = spells.map((spell, i) => {
+        const approved = lang === "ko_KR" && slot === "P" ? options.abilityRules?.get(`${cards[i].id}.${slot}`) : undefined;
+        return approved ? renderRules(approved.job, approved.draft.rules, question) : spell?.text ?? "";
+      });
+      rows.push({ label: lang === "en_US" ? "Description" : lang === "zh_CN" ? "说明" : "설명", values });
+    }
     push(
       spells.some((spell) => spell?.recharge) ? w.recharge : w.cooldown,
       (spell) => spellFocusValue(spell, "cooldown", lang),

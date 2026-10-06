@@ -20,7 +20,7 @@ export function splitDialogueQuestions(question: string, data?: PlanContext["dat
   const pieces = question.split(/(?:(?:알려|설명해|비교해|정리해|보여)주고)\s*[,，]?\s*|[,;]\s*(?:그리고|추가로)?\s*|\n+(?:그리고\s*)?|\s+그리고\s+|\s+and also\s+|\s+and\s+(?=\w+\s+(?:vs\.?|versus)\s)|另外|还有/i).map(q => q.trim()).filter(Boolean);
   if (pieces.length < 2) return [question];
   const stateOnly = (text: string) => /(?<![A-Za-z])[QWER](?![A-Za-z])/i.test(text)
-    && /없|빠졌|빠진|돌아왔|사용\s*가능|재사용\s*대기\s*중|is down|available|冷却中|可用/i.test(text)
+    && /없|빠졌|빠진|돌아왔|사용\s*가능|재사용\s*대기\s*중|있어|있고|is down|available|冷却中|可用/i.test(text)
     && !/\?|？|알려|설명|어떻게|언제|how|what|when|怎么|多少/i.test(text);
   if (pieces.some(stateOnly)) return [question];
   // 쉼표로 나열한 능력치는 한 조회다. 명시한 여러 요청만 분리한다.
@@ -63,8 +63,9 @@ export function prepareDialogueRequest(question: string, ctx: PlanContext, varia
   const pieces = (split ? splitDialogueQuestions(question, ctx.data) : [question]).map(q => {
     const resolved = resolveQuestion(q, ctx.data!);
     // 이름이 있는 스킬 질문을 '누구의 스킬?' 확인 단계가 먼저 가로채지 않게 한다.
-    if (resolved.champions.length || !resolved.slot) return resolved;
-    const typo = championTypoPlan(q, ctx.data!, { champions: [], inMatchup: Boolean(memory.matchup) });
+    const partialComparison = resolved.champions.length === 1 && /비교|둘\s*중|중\s*\d+\s*레벨|\bcompare\b|比较/i.test(q);
+    if (!partialComparison && (resolved.champions.length || !resolved.slot)) return resolved;
+    const typo = championTypoPlan(q, ctx.data!, { champions: resolved.champions, inMatchup: Boolean(memory.matchup) });
     return typo?.type === "retry" ? resolveQuestion(typo.question, ctx.data!) : resolved;
   });
   const questions = pieces.flatMap(resolved => split ? matchupQuestions(resolved, memory, ctx) ?? [resolved] : [resolved]);

@@ -93,6 +93,9 @@ export function sideOfNewName(question: string, names: string[]): "mine" | "enem
   for (const name of names.filter((n) => n.length >= 1)) {
     const n = escape(name);
     const mine = [
+      new RegExp(`${n}\\s*(?:인\\s*내가|하는\\s*나는|했는데)|\\bmy pick is\\s+${n}\\b|\\b${n} main\\b|我(?:这把|操控的|玩的|选的)(?:是)?\\s*${n}|我\\s*${n}`, "i"),
+      new RegExp(`${n}\\s*인데|\\b(?:i'?m|i am)\\s*(?:on\\s+|playing\\s+)?${n}(?=\\b|how|what|why)|\\bim\\s+(?:\\w+\\s+)?on\\s+${n}\\b`, "i"),
+      new RegExp(`${n}\\s*(?:하는|플레이하는)\\s*(?:쪽|입장)|\\b(?:for (?:the )?)${n} player\\b`, "i"),
       new RegExp(`내\\s*챔피언(?:은|는|이|을)?\\s*${n}`),
       new RegExp(`${n}\\s*(으로|로)(?![가-힣])|${n}\\s*(으로|로)\\s*(하|바꾸|가|상대|는|해)|${n}\\s*(하면|이라면|라면|잡으면|골라|픽하|로 바꿨)|내가\\s*${n}`),
       new RegExp(`\\b(as|play|playing|pick|picked|picking|go|switch(ed)? to|swap(ped)? to|with)\\s+${n}\\b`, "i"),

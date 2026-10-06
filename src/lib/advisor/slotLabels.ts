@@ -25,7 +25,7 @@ export function labelSlots(text: string, cards: ChampionCard[]): string {
     for (const spell of card.spells) {
       const forms = [spell.name, ...spell.name.split(/\s*[/|]\s*/)];
       for (const form of new Set(forms)) {
-        if (form.replace(/\s/g, "").length < 3 || tags.has(form)) continue;
+        if (form === card.name || form.replace(/\s/g, "").length < 3 || tags.has(form)) continue;
         names.push({ name: form, slot: spell.slot });
       }
     }

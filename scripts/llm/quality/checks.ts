@@ -7,14 +7,37 @@ import type { PlanContext, AnswerPlan } from "../../../src/lib/advisor/planTypes
 import type { StatName } from "../../../src/lib/knowledge/facts";
 import type { QualityStory, Check } from "./types";
 import { isDeepStrictEqual } from "node:util";
-import { understand } from "../../../src/lib/advisor/plan";
 import { statFields, validStatFields, type ChampionStatQuery } from "../../../src/lib/advisor/statQuery";
+import { buildItemCard } from "../../../src/lib/advisor/context";
 
-export async function routeCheck(input: { question: string; ctx: PlanContext; deps: Parameters<typeof understand>[3]; expected: Record<string, unknown> }): Promise<Check[]> {
-  const result = await understand(input.question, input.ctx, input.ctx.data!, input.deps);
-  const kind = result.route?.kind ?? result.ask;
+export function routeCheck(input: { output: Output; ctx: PlanContext; expected: Record<string, unknown> }): Check[] {
+  const kind = deliveredRoute(input.output, input.ctx);
   return [{ label: "route-kind", pass: input.expected.coarseOther ? !["matchup", "guide", "skills", "spellStat"].includes(kind)
     : kind === input.expected.routeGold }];
+}
+
+function deliveredRoute(output: Output, ctx: PlanContext): string {
+  const plan = output.dialogue.parts[0]?.plan;
+  if (!plan) return "other";
+  if (plan.type === "matchup") return "matchup";
+  const answer = plan.type === "card" || plan.type === "code" ? plan.answer : undefined;
+  if (answer && typeof answer !== "string") {
+    if (answer.kind === "item") return "item";
+    if (answer.kind === "rule") return answer.rule.subject === "summoner" ? "spell" : answer.rule.subject === "gameplay" ? "game" : "rune";
+    if (answer.kind === "spell") return "spellStat";
+    if (answer.kind === "champion") return answer.view === "skills" ? "skills" : answer.focus || answer.statQuery ? "spellStat" : "guide";
+    if (answer.kind === "compare") return answer.matchup ? "matchup" : answer.slot || answer.statQuery ? "spellStat" : "skills";
+  }
+  if (plan.type === "code" && plan.knowledge) {
+    if (plan.controlContext && ctx.data && buildItemCard(ctx.data, output.dialogue.parts[0].question)) return "item";
+    if (plan.knowledge.context?.champions.length === 1 && plan.knowledge.context.slot) return "spellStat";
+    if (plan.knowledge.id.startsWith("meta:") || plan.knowledge.id.startsWith("mech:")) return "game";
+    const rule = [...new Set(ctx.data?.ruleIndex.values())].find(rule => `rule:${rule.name}` === plan.knowledge!.id);
+    if (rule) return rule.subject === "summoner" ? "spell" : rule.subject === "gameplay" ? "game" : "rune";
+  }
+  if (plan.controlContext?.champions.length) return ctx.data && buildItemCard(ctx.data, output.dialogue.parts[0].question) ? "item" : "spellStat";
+  const text = output.reply.text;
+  return [ctx.copy.smallTalk, ctx.copy.identity].includes(text) ? "chat" : "other";
 }
 
 export function sameStatQuery(actual: ChampionStatQuery | undefined, expected: unknown): boolean {
@@ -97,6 +120,8 @@ export function gradeTurn(input: { story: QualityStory; turn: number; output: Ou
     }
   }
   if (expected.pairs) add("pairs", JSON.stringify(pairs) === JSON.stringify(expected.pairs));
+  if (expected.memoryPair) add("memory-pair", isDeepStrictEqual(expected.memoryPair,
+    reply.memory.matchup && [reply.memory.matchup.mine, reply.memory.matchup.enemy]));
   if (expected.parts) add("parts", dialogue.parts.length === expected.parts);
   if (expected.targets) add("targets", JSON.stringify(reply.answer ? answerChampionIds(reply.answer) : []) === JSON.stringify(expected.targets));
   const query = reply.answer && "statQuery" in reply.answer ? reply.answer.statQuery : undefined;

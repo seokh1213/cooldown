@@ -5,6 +5,8 @@ import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { DialogueMemory } from "./dialogueState";
 import { ALL_CHAMPION_STATS, explicitStatLevel, isStatLevel } from "./statQuery";
 import { statPlanForQuery, unsupportedStatLevelPlan } from "./dialogueStats";
+import { asksWholeKit } from "./askWords";
+import { asksSpellNumbers } from "./spellFocus";
 
 function targets(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): ChampionCard[] {
   const explicit = resolved.champions.map(card => card.id);
@@ -15,13 +17,21 @@ function targets(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanCo
 }
 
 export function requestIntentPlan(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): AnswerPlan | undefined {
-  const scope = resolved.requestIntent?.scope;
+  const profile = /기본.*정보|프로필|개요|\b(?:basic\s+profile|basic\s+info|profile|background\s+basics|introduction)\b|基础资料|基本信息|英雄概况/i.test(resolved.text);
+  const profileAndKit = profile
+    && /스킬|기술|\b(?:abilities|kit|skills)\b|技能/i.test(resolved.text)
+    && /같이|함께|포함|\bboth\b|\band\b|\balongside\b|一起|和/i.test(resolved.text);
+  const typedKit = asksWholeKit(resolved.text) && !asksSpellNumbers(resolved.text)
+    && /스킬|기술|패시브|지속\s*효과|궁|\b(?:skills?|abilities|passive|kit|buttons?)\b|技能|被动|大招/i.test(resolved.text);
+  const scope = profileAndKit ? "overview" : typedKit && !profile ? "skills" : resolved.requestIntent?.scope;
   if (scope === "chat") return { type: "code", answer: ctx.copy.smallTalk };
   if (scope === "identity") return { type: "code", answer: ctx.copy.identity };
+  if (scope === "overview" && asksWholeKit(resolved.text) && !profile && !/소개/.test(resolved.text)) return undefined;
   if (!["overview", "statsAll", "skills"].includes(scope ?? "") || resolved.matchup) return undefined;
   const cards = targets(resolved, memory, ctx);
   if (!cards.length) return undefined;
   if (scope === "statsAll") {
+    if (/스킬|패시브|궁(?!금)|아이템|템\s*사|한타|뜻|관통|치명력|\b(?:skill|ability|passive|item|teamfight)\b|技能|被动|装备|团战/i.test(resolved.text.replace(/(?:스킬|패시브)\s*말고/g, ""))) return undefined;
     const explicit = explicitStatLevel(resolved.text);
     const level = explicit ?? (memory.active === "stat" ? memory.stat?.level : undefined) ?? 1;
     if (!isStatLevel(level)) return unsupportedStatLevelPlan(level, ctx);

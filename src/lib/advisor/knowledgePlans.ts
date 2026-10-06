@@ -12,7 +12,7 @@ import { ruleCooldown, askedRules, docAnswer, knowledgeReference, lexicalHit, se
 import { type AnswerPlan, type PlanDeps, type Intent } from "./planTypes";
 
 /** 상성 대화에서 소환사 주문의 쓰임새를 묻는 말(규칙 카드가 아니라 이어 묻기) */
-const SPELL_USE_IN_MATCHUP = /대신|빠지|빠졌|없(을|으면|는데|을\s*때)|instead|\bis\s+down\b|\bdown\b|without|没了|没有|不带|换成/i;
+const SPELL_USE_IN_MATCHUP = /대신|빠지|빠졌|없(을|으면|는데|을\s*때)|instead|\bis\s+down\b|\bdown\b|without|没了|没有|不带|换成|交了.*(?:窗口|开|打|杀)/i;
 
 /*
  * 이름 없는 질문은 검색 LoRA 벡터로 찾는다(`model.retrieval`). 챔피언·아이템 이름이 없고, 이어 묻는 상성 대화도 아니고,
@@ -60,8 +60,14 @@ export async function answerByVector({ question, ctx, data, ask, recentItem, mat
  * 이런 질문은 툴팁만 보면 틀린다. 실제로 그렇게 틀렸다. 그래서 문장에서 룬·주문 이름을 찾아
  * 위키에서 모은 판정 규칙으로 답한다.
  */
-export function answerRuleQuestion({ question, ctx, data, matchup }: Intent): AnswerPlan | undefined {
-  const named = askedRules(data, question);
+export function answerRuleQuestion({ question, ctx, data, matchup }: Pick<Intent, "question" | "ctx" | "data" | "matchup">): AnswerPlan | undefined {
+  const descriptive = lexicalHit(data, question);
+  if (descriptive?.step === "rule" && !askedRules(data, question).some(rule => `rule:${rule.name}` === descriptive.id)) {
+    const answer = docAnswer(data, ctx.lang, descriptive.id, question);
+    if (typeof answer === "string") return { type: "code", answer, notice: ctx.notice };
+    if (answer) return { type: "card", answer, notice: ctx.notice };
+  }
+  const named = askedRules(data, question).sort((a, b) => Number(a.subject === "gameplay") - Number(b.subject === "gameplay"));
   /*
    * 상성 대화 중에 소환사 주문을 **어떻게 쓰느냐**를 물으면("점멸 빠지면 물어도 돼?", "점멸 대신 방어막 들어도 돼?") 규칙 카드가 아니라
    * 그 상성의 이어 묻기다. 대화 흐름 시험에서 이름이 든 이어 묻기 9개가 모두 이 꼴이었고, 새 질문 3개는 룬 자체의 속성("감전 쿨타임")이었다.

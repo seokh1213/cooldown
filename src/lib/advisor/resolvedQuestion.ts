@@ -4,6 +4,8 @@ import { detectSlot } from "./context";
 import { detectChampionMentions, type ChampionMention } from "./intent";
 import { detectSpellFocus } from "./spellFocus";
 import type { RequestIntent } from "./requestIntent";
+import abilityAliases from "../../../knowledge/ability-aliases.json";
+import { aliasAt } from "@/lib/knowledge/searchAliases";
 
 export interface ResolvedQuestion {
   text: string;
@@ -20,8 +22,14 @@ export type QuestionInput = string | ResolvedQuestion;
 
 export function resolveQuestion(input: QuestionInput, data: AdvisorData): ResolvedQuestion {
   if (typeof input !== "string") return input;
-  const mentions = detectChampionMentions(data, input);
+  const mentions = detectChampionMentions(data, input).filter(mention =>
+    !/^\s*(?:말고|이\s*아니라|가\s*아니라)/.test(input.slice(mention.index + mention.length)));
   const letter = /(^|[^A-Za-z])([QWERqwer])($|[^A-Za-z])/.exec(input);
   const slotIndex = letter ? letter.index + letter[1].length : undefined;
-  return { text: input, mentions, champions: mentions.map(m => m.card), slot: detectSlot(input), slotIndex, spellFocus: detectSpellFocus(input) };
+  const champions = mentions.map(m => m.card);
+  const aliases = abilityAliases.aliases as Record<string, Record<string, string[]>>;
+  const namedSlots = champions.length === 1 ? champions[0].spells.filter(spell =>
+    [spell.name, ...(aliases[champions[0].id]?.[spell.slot] ?? [])].some(name => aliasAt(input, name) >= 0)).map(spell => spell.slot) : [];
+  const slot = detectSlot(input) ?? (new Set(namedSlots).size === 1 ? namedSlots[0] : undefined);
+  return { text: input, mentions, champions, slot, slotIndex, spellFocus: detectSpellFocus(input) };
 }

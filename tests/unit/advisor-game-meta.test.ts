@@ -46,16 +46,16 @@ test("게임 메타 답", () => {
 });
 
 for (const [lang, question, expected] of [
-  ["ko_KR", "바론 공격력 얼마야?", /검수된 자료가 없어/],
-  ["en_US", "Baron attack damage?", /Reviewed data.*not available/],
-  ["zh_CN", "大龙的攻击力是多少？", /还没有经过核实/],
-] as const) test(`${lang} 미검수 상세 질문에는 생성 시간으로 대신 답하지 않는다`, () => {
+  ["ko_KR", "바론 공격력 얼마야?", /350\.5–515/],
+  ["en_US", "Baron attack damage?", /350\.5–515/],
+  ["zh_CN", "大龙的攻击力是多少？", /350\.5–515/],
+] as const) test(`${lang} 상세 질문에는 검수한 레벨별 수치로 답한다`, () => {
   assert.match(gameMetaAnswer(question, lang)!, expected);
   assert.match(gameMetaById("meta:baron", lang, question)!, expected);
 });
 
 test("생성 시간은 계속 답하고 제거된 오브젝트는 상세 질문에도 제거 상태가 우선이다", () => {
   assert.match(gameMetaAnswer("바론 몇 분에 나와?", "ko_KR")!, /20분/);
-  assert.match(gameMetaAnswer("유충 스킬 알려줘", "ko_KR")!, /검수된 자료가 없어/);
+  assert.match(gameMetaAnswer("유충 스킬 알려줘", "ko_KR")!, /12초마다.*4마리/);
   assert.match(gameMetaAnswer("아타칸 공격력 얼마야?", "ko_KR")!, /현재.*제거.*26\.1 패치/);
 });

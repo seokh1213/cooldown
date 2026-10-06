@@ -68,7 +68,7 @@ export async function runDialogue(options: { stories: QualityStory[]; mode: "non
       const start = performance.now();
       const output = await answerDialogue(entry.q, ctx, deps);
       const checks = gradeTurn({ story, turn, output, ctx });
-      if (entry.expected.routeGold) checks.push(...await routeCheck({ question: entry.q, ctx, deps, expected: entry.expected }));
+      if (entry.expected.routeGold) checks.push(...routeCheck({ output, ctx, expected: entry.expected }));
       const first = output.dialogue.parts[0]?.plan;
       if (entry.expected.mine) checks.push({ label: "route-mine", pass: first?.type === "matchup" && first.mine.id === entry.expected.mine });
       const evidence = output.dialogue.parts.map(part => answerEvidence(part.plan, buildRetrievalDocs(ctx.data!, ctx.lang), ctx.lang).text).filter(Boolean).join("\n\n");

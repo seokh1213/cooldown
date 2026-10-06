@@ -25,15 +25,15 @@ for (const [lang, question, champion, slot, value] of [
 
 const lang = "ko_KR";
 const ctx: PlanContext = { data: loadData(lang), lang, copy: translations[lang].advisor, turns: [], championIds: [], consented: true, canUseModel: true, retrieval: true, judge: "model" };
-test("실제 대화 경로에서도 바론의 미검수 공격력은 생성 시간으로 답하지 않는다", async () => {
+test("실제 대화와 검색 경로에서 바론의 검수된 레벨별 공격력으로 답한다", async () => {
   const question = "바론 공격력 얼마야?";
   const deps = { judge: async () => { assert.fail("판정 불필요"); }, search: async () => { assert.fail("검색 불필요"); } };
   const dialogue = await planDialogue(question, { ...ctx, judge: "none", canUseModel: false }, deps, "combined");
   const plan = dialogue.parts[0].plan;
-  if (plan.type !== "code" || typeof plan.answer !== "string") assert.fail("자료 미확인 안내");
-  assert.match(plan.answer, /검수된 자료가 없어/);
+  if (plan.type !== "code" || typeof plan.answer !== "string") assert.fail("몬스터 수치 답변");
+  assert.match(plan.answer, /350\.5–515/);
   assert.doesNotMatch(plan.answer, /20분/);
-  assert.match(docAnswer(ctx.data!, lang, "meta:baron", question) as string, /검수된 자료가 없어/);
+  assert.match(docAnswer(ctx.data!, lang, "meta:baron", question) as string, /350\.5–515/);
 });
 
 test("감전 쿨타임은 벡터 검색과 갈래 판정을 건너뛴다", async () => {

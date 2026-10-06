@@ -84,14 +84,14 @@ export function topicFromJudge(topicProbs: number[], perspectiveProbs?: number[]
  */
 const TOPIC_WORDS: Array<[RegExp, TopicLabel]> = [
   [/한타|팀\s*파이트|teamfight|team fight|团战/i, "teamfight"],
-  [/라인전|laning|对线/i, "laning"],
+  [/라인전|라인.*(?:서야|밀리|서\s)|\b(?:in|survive) lane\b|\blane\s*(?:phase|trades?|positioning)\b|laning|对线|怎么活下来/i, "laning"],
   // 갱은 라인에 선 사람이 받는 것이다. "탑 갱 오는 정글이 녹턴이면?" 을 판정기가 한타로 갈랐다.
   [/갱(?![가-힣])|갱킹|갱\s*(와|오|옴|당)|\bganks?\b|\bganking\b|抓人|被抓/i, "laning"],
-  [/아이템|템\s|템$|(?<!시스|아이)템(은|는|이|을|트리)|뭐\s*(사|가|올려)|빌드|룬|\bbuild\b|\bitems?\b|\brunes?\b|what (should I|to) buy|出装|装备|符文/i, "situational-item"],
-  [/콤보|연계|\bcombo\b|连招/i, "combo"],
-  [/후반|중반|late game|mid game|scal(e|ing)|后期|中期/i, "phase"],
+  [/아이템|템\s|템$|(?<!시스|아이)템(은|는|이|을|트리)|뭐\s*(사|가|올려)|(?:방어력|마저|마방|체력)\s*올려|빌드|룬|\b(?:build|buy|items?|runes?)\b|what (should I|to) buy|出装|装备|符文|出护甲|出魔抗/i, "situational-item"],
+  [/콤보|풀콤|연계|\bcombo\b|连招/i, "combo"],
+  [/후반|중반|몇\s*레벨부터\s*강|late game|mid game|scal(e|ing)|后期|中期|几级.*强/i, "phase"],
   [/초반|early game|前期/i, "laning"],
-  [/언제\s*(들어가|물|진입|이니시|올인)|진입\s*타이밍|when (can|should|do) I (go in|engage|all[- ]?in|jump)|什么时候(进|切|开)/i, "escape-window"],
+  [/언제\s*(들어가|물|진입|이니시|올인)|진입\s*타이밍|점멸.*빠지|when (can|should|do) I (go in|engage|all[- ]?in|jump)|all.?in.*(?:down|flash)|什么时候(?:可以)?(进|切|开)|闪现.*没/i, "escape-window"],
   // 갈래 낱말 없이 두루 묻는 말. 위의 갈래 낱말이 먼저라 "라인전 팁" 은 라인전이다.
   // 판정기가 "How do I play Jax against Fiora?" 를 한타로 확신했다.
   [/팁|공략|어떻게\s*(이겨|이기|상대해|상대하|잡아)|how (do|should|can) I (play|beat|win|deal with)|\btips?\b|怎么玩|怎么打|攻略/i, "general"],

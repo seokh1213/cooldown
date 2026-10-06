@@ -29,6 +29,11 @@ const GUIDANCE: Record<Language, Record<GuidanceReason, string>> = {
   },
 };
 
-export function requestGuidance(reason: GuidanceReason, lang: Language): string {
+export function requestGuidance(reason: GuidanceReason, lang: Language, question?: string): string {
+  if (reason === "evidence" && question && /프리징|freez(?:e|ing).*wave|控线/i.test(question)) {
+    return lang === "ko_KR" ? "프리징을 풀어내는 구체적인 방법은 현재 검수 자료에 없습니다. 내 챔피언과 상대를 알려주시면 확인된 스킬과 거리 관리 자료를 조회할 수 있어요."
+      : lang === "en_US" ? "The reviewed sources do not cover breaking a frozen wave. Name your champion and opponent to look up sourced ability and spacing advice."
+        : "当前已核实资料没有如何破解控线的具体方法。请提供自己和对手的英雄，以查询有依据的技能和距离管理建议。";
+  }
   return GUIDANCE[lang][reason];
 }

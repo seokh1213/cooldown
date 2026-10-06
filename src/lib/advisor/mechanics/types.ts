@@ -6,7 +6,7 @@ export type { Condition, Effect, Rule, Slot, Parameter } from "../../../../scrip
 export type AbilityJob = Pick<Job, "id" | "champion" | "slot" | "patch" | "sourceHash" | "slotRole" | "variants" | "facts"> & { numbers: Array<Pick<SourceNumber, "id" | "value" | "percent">> };
 export interface Ability { job: AbilityJob; draft: Draft; version?: NoteVersion }
 export interface AbilityBundle { schemaVersion: 2; patch: string; abilities: Ability[] }
-export type Topic = "control_resistance" | "conversion" | "shield" | "movement" | "control" | "heal" | "stats" | "stack" | "summon" | "mark" | "resource";
+export type Topic = "control_resistance" | "conversion" | "shield" | "movement" | "control" | "heal" | "stats" | "stack" | "summon" | "mark" | "resource" | "activation";
 export interface MechanicMemory {
   abilityId: string;
   sourceHash: string;
@@ -16,6 +16,7 @@ export interface MechanicMemory {
   targetType?: "champion" | "minion" | "monster" | "structure";
   followupStatus?: "cancelled" | "fired";
   shieldReady?: "ready" | "down";
+  spellReady?: "ready" | "down";
   hitCount?: number;
 }
 export function abilityIndex(bundle: AbilityBundle | undefined, patch: string): Map<string, Ability> {

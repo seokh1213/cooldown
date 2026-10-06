@@ -24,3 +24,8 @@ test("프리징은 자료 부재를 밝히면 범위 조건을 통과하고 포�
   assert.equal(check.test("프리징을 푸는 절차가 정리되어 있지 않습니다."), true);
   assert.equal(check.test("포탑 방패 장치를 깨면 125골드입니다."), false);
 });
+test("보호막의 크기를 줄이지 않는다는 답도 인정하고 감소한다는 답은 기각한다", () => {
+  const check = checksFor("s13", 0)[0];
+  assert.equal(check.test("고통스러운 상처는 보호막의 크기는 줄이지 않습니다."), true);
+  assert.equal(check.test("고통스러운 상처는 보호막의 크기를 줄입니다."), false);
+});

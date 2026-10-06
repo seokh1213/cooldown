@@ -6,7 +6,7 @@ export type AdviceIntent = "engage" | "survive" | "trade" | "combo" | "general";
 export interface AdviceQuestion { intent: AdviceIntent; target?: { owner: "mine" | "enemy"; slot: string } }
 const INTENTS: Array<[AdviceIntent, RegExp]> = [
   ["combo", /콤보|연계|\bcombo\b|连招/i],
-  ["survive", /버텨|생존|피하|피해\s*가는|대응|대처|막아|빠져|도망|surviv|avoid|dodge|escape|respond|躲|逃|应对/i],
+  ["survive", /버텨|생존|피하|어떻게\s*피해|어케\s*피해|피해\s*가는|대응|대처|막아|빠져|도망|surviv|avoid|dodge|escape|respond|躲|逃|应对/i],
   ["engage", /진입|들어가|붙어|붙는|올인|이니시|engage|go in|all.?in|进场|开团/i],
   ["trade", /딜교|교환|견제|\btrad(e|ing)\b|harass|换血|消耗/i],
 ];
@@ -25,7 +25,8 @@ export function adviceQuestion(question: string, subjects: AdviceSubjects): Advi
     const explicitOwner = markers.sort((a, b) => b.at - a.at)[0]?.side;
     owner = explicitOwner ?? (/[.!?。！？]/.test(prefix) ? undefined : owner);
     const suffix = question.slice(ref.index! + ref[0].length, refs[i + 1]?.index ?? question.length);
-    const state = mentionsAbilityState(suffix.split(/[.!?。！？]/)[0]);
+    const clause = suffix.split(/[.!?。！？]/)[0];
+    const state = mentionsAbilityState(clause) && !/대응|대처|피하|피할|피하려|avoid|dodge|respond|应对|躲/i.test(clause);
     // 조건의 '내 E'를 별도로 물은 '궁 대응'의 주인으로 이어 붙이지 않는다.
     if (!explicitOwner && !state && intent === "survive" && /대응|대처|피하|피할|피하려|avoid|dodge|respond|应对|躲/i.test(suffix)) owner = "enemy";
     if (owner && !state) targets.push({ owner, slot: ref[1]?.toUpperCase() ?? "R" });
@@ -39,11 +40,12 @@ export function adviceQuestion(question: string, subjects: AdviceSubjects): Advi
 /** 대상을 지목하면 그 스킬의 원문을 찾는다. 단순 스킬 설명을 무관한 실행 대안으로 쓰지 않는다. */
 export function relevantAdvice(text: string, category: string, side: "mine" | "enemy", query: AdviceQuestion): boolean {
   if (query.target?.owner === "enemy") {
-    return side === "enemy" && new RegExp(`(?:^|[^A-Za-z])${query.target.slot}(?![A-Za-z])`).test(text);
+    return side === "enemy" && !(query.intent === "survive" && ["escape-window", "combo"].includes(category))
+      && new RegExp(`(?:^|[^A-Za-z])${query.target.slot}(?![A-Za-z])`).test(text);
   }
   if (query.intent === "combo") return side === "mine" && category === "combo";
   if (query.intent === "engage") return /진입|개시|붙어|붙는|거리를 좁|접근|engage|approach|进场|接近/i.test(text);
   if (query.intent === "trade") return ["combo", "laning", "skill"].includes(category) && /교환|딜교|견제|파밍|급소|trade|harass|farm|换血|消耗|补刀/i.test(text);
-  if (query.intent === "survive") return /피하|피합|물러|거리|범위 밖|미니언을 사이|보호|surviv|avoid|distance|shield|躲|距离|保护/i.test(text);
+  if (query.intent === "survive") return /피하|피합|물러|거리|범위\s*(?:밖|바깥)|미니언.*(?:사이|뒤)|보호|surviv|avoid|distance|shield|躲|距离|保护/i.test(text);
   return true;
 }

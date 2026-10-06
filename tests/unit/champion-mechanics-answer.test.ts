@@ -94,8 +94,8 @@ test("챔피언 이름만 겹치는 규칙은 선택하지 않고 실제 전환 
   const unrelated: Rule = { ...rule, effects: [emptyEffect("mark", "시험용 챔피언의 아군이 표식을 남깁니다.")] };
   const ability = { job, draft: { summary: "fixture", rules: [unrelated, rule], gaps: [] } };
   const question = "시험용 챔피언 패시브 평타 세 대 치면?";
-  assert.deepEqual(selectRules(ability, question, undefined, ["시험용 챔피언"]), []);
-  assert.deepEqual(selectRules(ability, "시험용 챔피언 체력 전환은?", "conversion", ["시험용 챔피언"]), [rule]);
+  assert.deepEqual(selectRules(ability, question, undefined, { championMentions: ["시험용 챔피언"] }), []);
+  assert.deepEqual(selectRules(ability, "시험용 챔피언 체력 전환은?", "conversion", { championMentions: ["시험용 챔피언"] }), [rule]);
 });
 test("평가기는 단순 통과 숫자와 별개로 누락과 금지 문구를 기록한다", () => {
   assert.deepEqual(gradeAnswer({ q: "fixture", require: ["공격력 10"], forbid: ["800%"] }, "공격력 10"), []);

@@ -162,7 +162,7 @@ async function run(c: Case): Promise<{ want: string; calls: string[] }> {
 const CASES: Case[] = [
   // --- 모델 없이 써보기(판정기·검색 없음) ---
   { name: "룬 판정: 함께 부른 규칙의 판정 팁", question: "정복자에 점화 들어가?", want: "code text \"### 점화와 정복자 중첩\n점화는 사용하는 \"", calls: [] },
-  { name: "상성 대화 중 주문 쓰임새는 규칙 카드가 아니다", question: "점멸 빠지면 물어도 돼?", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius", calls: [] },
+  { name: "상성 대화 중 주문 쓰임새는 규칙 카드가 아니다", question: "점멸 빠지면 물어도 돼?", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius focus=escape-window", calls: [] },
   { name: "상성 대화 밖의 주문 질문은 규칙 카드", question: "점멸 빠지면 물어도 돼?", want: "card rule 점멸 highlighted=0", calls: [] },
   // 룬 쿨타임은 runes-normalized 의 cooldown 을 첫 줄로 올린다(highlighted 1). 전에는 규칙 문장만 있었다(highlighted 0).
   { name: "오타 후보가 여럿이면 고르게 한다", question: "제라 e", want: "code suggestion \"제라\" [Zeri,Zed] pending", calls: [] },

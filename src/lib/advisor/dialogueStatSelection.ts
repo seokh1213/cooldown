@@ -13,7 +13,8 @@ export function statTargets(resolved: ResolvedQuestion, memory: DialogueMemory, 
     : memory.active === "champion" && memory.champion ? [memory.champion]
       : memory.active === "compare" ? memory.compared
         : memory.active === "spell" ? memory.compared ?? (memory.spell ? [memory.spell.champion] : [])
-          : memory.active === "matchup" && memory.matchup ? [memory.matchup.mine, memory.matchup.enemy] : undefined;
+          : memory.active === "matchup" && memory.matchup ? [memory.matchup.mine, memory.matchup.enemy]
+            : /기본|\bbase\b|基础/i.test(resolved.text) ? memory.stat?.champions : undefined;
   const excluded = resolved.mentions.filter(m => excludesMention(resolved.text, m.index + m.length)).map(m => m.card.id);
   const named = resolved.champions.filter(card => !excluded.includes(card.id));
   if (named.length) {

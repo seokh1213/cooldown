@@ -9,6 +9,7 @@ import type { AnswerPlan, PlanContext } from "./plan";
 import { inferredSpellFocus, numericConditions, type DialogueMemory } from "./dialogueState";
 import { resolveDialogueRule, isPenetrationRule } from "./dialogueRules";
 import { josa } from "@/lib/knowledge/text";
+import { asksSpellNumbers } from "./spellFocus";
 
 export interface FactResolution {
   plan?: AnswerPlan;
@@ -51,7 +52,7 @@ function withCalculation(answer: AdvisorAnswer, numeric: DialogueMemory["numeric
 
 function comparison(cards: ChampionCard[], slot: string, request: { question: string; focus?: string; numeric: DialogueMemory["numeric"] }, ctx: PlanContext): AdvisorAnswer {
   const { numeric, focus, question } = request;
-  const answer = buildCompareAnswer(cards, question, slot, { lang: ctx.lang });
+  const answer = buildCompareAnswer(cards, question, slot, { lang: ctx.lang, abilityRules: ctx.data?.abilityRules });
   if (answer.kind !== "compare" || focus !== "cooldown" || !numeric) return answer;
   const values = cards.map(card => {
     const spell = card.spells.find(s => s.slot === slot);
@@ -120,8 +121,11 @@ function penetrationAnswer(answer: AdvisorAnswer, question: string, memory: Dial
 export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
   if (!ctx.data || ctx.lang !== "ko_KR") return undefined;
   const resolved = resolveQuestion(input, ctx.data);
-  if (resolved.requestIntent && ["overview", "statsAll", "skills", "combo", "advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
+  const pendingTarget = memory.pending && resolved.champions.length === 1 && memory.pending.candidates.includes(resolved.champions[0].id)
+    && (!resolved.slot || resolved.slot === memory.pending.slot) && !asksScenarioAdvice(resolved.text);
+  if (!pendingTarget && resolved.requestIntent && ["overview", "statsAll", "skills", "combo", "advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
   const question = resolved.text;
+  if (!asksSpellNumbers(question) && /(?:쿨(?:타임)?|재사용 대기)\s*중|on cooldown|冷却中/i.test(question)) return undefined;
   const formula = hasteFormula(question, memory);
   if (formula) return formula;
   const rule = resolveDialogueRule(question, ctx);
@@ -130,8 +134,8 @@ export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory
   if (entity) return entity;
   // 룬·주문은 knowledgePlans의 공통 계획으로 넘긴다. 최근 스킬의 생략으로 읽지 않는다.
   if (askedRules(ctx.data, question).some(rule => rule.subject !== "gameplay")) return undefined;
-  if (memory.active === "matchup" && !QUERY.test(question) && (asksMatchup(question) || asksReason(question) || /정정|사실.*[QWER]|빠지면/.test(question))) return undefined;
-  if (asksScenarioAdvice(question) || asksSkillHandling(question) || asksWholeKit(question)) return undefined;
+  if (!pendingTarget && memory.active === "matchup" && !QUERY.test(question) && (asksMatchup(question) || asksReason(question) || /정정|사실.*[QWER]|빠지면/.test(question))) return undefined;
+  if (asksWholeKit(question) || !asksSpellNumbers(question) && (asksScenarioAdvice(question) || asksSkillHandling(question))) return undefined;
   const numeric = numericConditions(question, memory.numeric);
   const named = resolved.champions;
   // 여러 이름의 전체 조회를 이전에 물었던 단일 슬롯으로 좁히지 않는다.

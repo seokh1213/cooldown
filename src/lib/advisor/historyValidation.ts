@@ -122,12 +122,13 @@ function control(value: unknown): boolean {
 
 function mechanic(value: unknown): boolean {
   if (!record(value) || !string(value.abilityId) || !string(value.sourceHash) || !array(value.ruleIndices, integer)) return false;
-  return optional(value.topic, entry => oneOf(entry, ["control_resistance", "conversion", "shield", "movement", "control", "heal", "stats", "stack", "summon", "mark", "resource"]))
+  return optional(value.topic, entry => oneOf(entry, ["control_resistance", "conversion", "shield", "movement", "control", "heal", "stats", "stack", "summon", "mark", "resource", "activation"]))
     && optional(value.amount, amount => record(amount) && nonNegative(amount.value)
       && oneOf(amount.stat, ["bonusHealth", "abilityPower"]) && integer(amount.count) && amount.count > 0)
     && optional(value.targetType, entry => oneOf(entry, ["champion", "minion", "monster", "structure"]))
     && optional(value.followupStatus, entry => oneOf(entry, ["cancelled", "fired"]))
-    && optional(value.shieldReady, entry => oneOf(entry, ["ready", "down"])) && optional(value.hitCount, integer);
+    && optional(value.shieldReady, entry => oneOf(entry, ["ready", "down"]))
+    && optional(value.spellReady, entry => oneOf(entry, ["ready", "down"])) && optional(value.hitCount, integer);
 }
 
 function memory(value: unknown): boolean {
