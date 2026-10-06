@@ -5,7 +5,7 @@ export type { Condition, Effect, Rule, Slot, Parameter } from "../../../../scrip
 export type AbilityJob = Pick<Job, "id" | "champion" | "slot" | "patch" | "sourceHash" | "slotRole" | "variants" | "facts"> & { numbers: Array<Pick<SourceNumber, "id" | "value" | "percent">> };
 export interface Ability { job: AbilityJob; draft: Draft }
 export interface AbilityBundle { schemaVersion: 2; patch: string; abilities: Ability[] }
-export type Topic = "control_resistance" | "conversion" | "shield" | "movement" | "control" | "heal" | "stats" | "stack";
+export type Topic = "control_resistance" | "conversion" | "shield" | "movement" | "control" | "heal" | "stats" | "stack" | "summon";
 export interface MechanicMemory {
   abilityId: string;
   sourceHash: string;

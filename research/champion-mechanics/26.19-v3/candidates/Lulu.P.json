@@ -1,0 +1,193 @@
+{
+  "summary": "픽스가 따라다니는 챔피언이 적을 공격하면 픽스가3개 추적광선을 발사합니다. 다른 유닛이 광선을 가로막을 수 있으며 처음 맞는 적에게 마법피해를 줍니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "픽스가 현재 룰루를 따라다님"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공격대상이 적유닛"
+          }
+        },
+        {
+          "subject": "secondary_targets",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "각광선을 가로막거나 목표로서 처음 맞은 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "픽스가 대상에게 추적광선3개를 발사해 처음맞은적에게(15~117+15%AP)의 마법피해를 줍니다. 다른유닛이가로막을수있으며 공급본문은 이식의총계/광선당기준을명시하지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Lulu Attacks, Pix fires 3 bolts at her target, dealing ((15 ~ 117) + (15% Ability Power)) magic damage to the first enemy hit."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Pix fires magical bolts of energy whenever the champion he's following attacks another enemy unit. These bolts are homing, but can be intercepted by other units."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "픽스가 현재 이 아군챔피언을 따라다님"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공격대상이 적유닛"
+          }
+        },
+        {
+          "subject": "secondary_targets",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "각광선을 가로막거나 목표로서 처음 맞은 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "픽스를따르는아군챔피언이적을공격하면픽스가그대상에게 같은추적광선을발사합니다. 광선3개/주어진피해식을 개당반복량으로추정하지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Lulu Attacks, Pix fires 3 bolts at her target, dealing ((15 ~ 117) + (15% Ability Power)) magic damage to the first enemy hit."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Pix fires magical bolts of energy whenever the champion he's following attacks another enemy unit. These bolts are homing, but can be intercepted by other units."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "15~117 범위의변화기준과3광선의총계/개당피해관계는 이본문이명시하지않는다.3광선이라는count를피해식에추가곱하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Pix fires 3 bolts at her target, dealing ((15 ~ 117) + (15% Ability Power)) magic damage to the first enemy hit."
+        }
+      ]
+    }
+  ]
+}

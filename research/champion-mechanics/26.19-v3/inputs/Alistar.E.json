@@ -1,0 +1,396 @@
+{
+  "champion": "Alistar",
+  "slot": "E",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Alistar tramples nearby enemy units, ignoring unit collision and gaining stacks if he damages an enemy champion. At full stacks Alistar's next basic attack against an enemy champion deals additional magic damage and stuns them.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Alistar begins trampling the ground, becoming Ghosted and dealing (80/110/140/170/200 + (70% Ability Power)) magic damage over 5 seconds to nearby enemies. Each pulse that damages a champion grants a stack. At 5 stacks, Alistar's next Attack against champions Stuns for 1 second and deals an additional (20 ~ 275) magic damage. Ghosted units ignore collision with other units.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "알리스타가 근처의 적 유닛을 짓밟아 적 챔피언에게 피해를 입힐 경우 중첩을 얻고, 유닛을 통과해서 다닐 수 있게 됩니다. 최대치까지 중첩되면 알리스타의 적 챔피언에 대한 다음 기본 공격이 강화되어 추가 마법 피해를 입히고 기절시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "알리스타가 땅을 짓밟기 시작하며 유체화 상태가 되고 5초에 걸쳐 근처 적에게 (80/110/140/170/200 + (70% 주문력))의 마법 피해를 입힙니다. 이 스킬로 챔피언에게 피해를 입힐 때마다 중첩이 1회 쌓입니다. 5회 중첩되면 알리스타가 다음으로 챔피언을 기본 공격할 때 대상을 1초 동안 기절시키고 (20 ~ 275)의 마법 피해를 추가로 입힙니다. 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Trample",
+      "ko": "짓밟기"
+    },
+    "cooldownSeconds": [
+      12,
+      11.5,
+      11,
+      10.5,
+      10
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      350,
+      350,
+      350,
+      350,
+      350
+    ],
+    "cost": {
+      "values": [
+        50,
+        55,
+        60,
+        65,
+        70
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "12/11.5/11/10.5/10"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "50/55/60/65/70"
+      },
+      {
+        "label": "Damage",
+        "values": "80/110/140/170/200"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          20,
+          35,
+          50,
+          65,
+          80,
+          95,
+          110,
+          125,
+          140,
+          155,
+          170,
+          185,
+          200,
+          215,
+          230,
+          245,
+          260,
+          275,
+          290,
+          305
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          80,
+          110,
+          140,
+          170,
+          200
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.699999988079071,
+              0.699999988079071,
+              0.699999988079071,
+              0.699999988079071,
+              0.699999988079071
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Alistar",
+          "condition": "5중첩 후 기본 공격"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Alistar.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Alistar.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 67,
+      "end": 69
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 70,
+      "end": 73
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 74,
+      "end": 77
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 78,
+      "end": 81
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 82,
+      "end": 85
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 89,
+      "end": 92
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 127,
+      "end": 128
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 210,
+      "end": 211
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 270,
+      "end": 271
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 304,
+      "end": 306
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 309,
+      "end": 312
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 29,
+      "end": 30
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 44,
+      "end": 46
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 47,
+      "end": 50
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 51,
+      "end": 54
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 55,
+      "end": 58
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 66,
+      "end": 69
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 117,
+      "end": 118
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 126,
+      "end": 127
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 163,
+      "end": 164
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 176,
+      "end": 178
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 181,
+      "end": 184
+    }
+  ],
+  "sourceHash": "6a1ffe0e5668a0e0937d46128ceba862ca4d29cc914b4171f6ad70ff71085512",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

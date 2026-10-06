@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 2,
+  "id": "Lucian.E",
+  "champion": "Lucian",
+  "slot": "E",
+  "patch": "26.19",
+  "sourceHash": "70d9d8fc98136a7c5ea79e82d3b9fce661bd2ba90cf85a0e7e621a6c7d464d0c",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Relentless Pursuit",
+      "ko": "끈질긴 추격"
+    },
+    "cooldownSeconds": [
+      16,
+      15.5,
+      15,
+      14.5,
+      14
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      445,
+      445,
+      445,
+      445,
+      445
+    ],
+    "cost": {
+      "values": [
+        32,
+        24,
+        16,
+        8,
+        0
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "16/15.5/15/14.5/14"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "32/24/16/8/0"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Lucian.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Lucian quickly dashes a short distance. Lightslinger attacks reduce Relentless Pursuit's cooldown.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Lucian dashes. Cooldown is reduced by 1 second whenever Lucian hits an enemy with Lightslinger (2 seconds for champions). Lucian can use other Abilities while dashing.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "루시안이 짧은 거리를 빠르게 돌진합니다. 빛의 사수 스킬로 공격하면 끈질긴 추격의 재사용 대기시간이 감소합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "루시안이 돌진합니다. 빛의 사수로 적을 맞힐 때마다 재사용 대기시간이 1초씩 감소합니다. (챔피언인 경우 2초 감소) 루시안은 돌진 중에도 다른 스킬을 사용할 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 38,
+      "end": 39
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 96,
+      "end": 97
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 39,
+      "end": 40
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 59,
+      "end": 60
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "루시안이 돌진합니다. 빛의 사수로 적을 맞히면 재사용 대기시간이 감소하며, 챔피언 적중 시 감소량이 더 큽니다. 돌진 중에도 다른 스킬을 사용할 수 있습니다.",
+  "rules": [
+    {
+      "id": "2247d236cddb6cc442a1",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "루시안이 짧은 거리를 빠르게 돌진한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lucian dashes."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Lucian quickly dashes a short distance."
+        }
+      ]
+    },
+    {
+      "id": "c17e16fbf978a4c2c31e",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "빛의 사수(Lightslinger)로 적을 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "빛의 사수로 적을 맞히면 이 스킬의 재사용 대기시간이 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cooldown is reduced by 1 second whenever Lucian hits an enemy with Lightslinger (2 seconds for champions)."
+        }
+      ]
+    },
+    {
+      "id": "d91e65106e0dbb813884",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "빛의 사수(Lightslinger)로 적을 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "빛의 사수로 챔피언을 맞히면 이 스킬의 재사용 대기시간이 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cooldown is reduced by 1 second whenever Lucian hits an enemy with Lightslinger (2 seconds for champions)."
+        }
+      ]
+    },
+    {
+      "id": "5d42ae0980b65243953f",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "돌진 중에도 다른 스킬을 사용할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lucian can use other Abilities while dashing."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "툴팁은 빛의 사수 적중에 따른 재사용 대기시간 감소를 설명하지만, 강화된 두 번째 탄환만 적중으로 계산되는지는 명시하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cooldown is reduced by 1 second whenever Lucian hits an enemy with Lightslinger (2 seconds for champions)."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "a293948365c4b5a13c2e3743ed4183fbf8fe0ea417e710a63e3624d8728aadb7"
+}

@@ -1,0 +1,367 @@
+{
+  "summary": "지정 방향으로 도약해 처음 충돌한 챔피언을 제압하며, 정신 집중 중 여러 차례 공격해 피해를 입히고 입힌 피해량에 따라 회복한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "이동 속도에 비례하는 거리를 지정 방향으로 도약한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick leaps a huge distance that scales with his Move Speed"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기 도약 충돌 후 정신 집중 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "정신 집중 중 처음 충돌한 챔피언을 제압한다.",
+          "damageType": null,
+          "crowdControl": "suppression",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Suppressing the first champion he collides with while he channels for 1.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick leaps a huge distance that scales with his Move Speed, Suppressing the first champion he collides with while he channels for 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기 도약 충돌 후 정신 집중 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "정신 집중 중 해당 챔피언을 여러 차례 공격해 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He attacks that champion 3 times over the duration, dealing (175/350/525 + (167% bonus Attack Damage)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick leaps a huge distance that scales with his Move Speed, Suppressing the first champion he collides with while he channels for 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기의 정신 집중 중 입힌 모든 피해"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "정신 집중 중 입힌 모든 피해량의 일부만큼 체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick heals for 100% of all damage dealt during the channel."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick leaps a huge distance that scales with his Move Speed, Suppressing the first champion he collides with while he channels for 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 궁극기 도약 충돌 후 정신 집중 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "정신 집중 중 적중 및 공격 시 효과를 지속시간 동안 여러 차례 적용하며, 치명타가 발생하지 않는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability applies On-Hit and On-Attack effects 3 distinct times over its duration, and does not Critically Strike."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick leaps a huge distance that scales with his Move Speed, Suppressing the first champion he collides with while he channels for 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "적을 넘어뜨린다.",
+          "damageType": null,
+          "crowdControl": "knockdown",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability Knocks Down enemies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick leaps a huge distance that scales with his Move Speed, Suppressing the first champion he collides with while he channels for 1.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "Tooltip은 3회 공격하는 동안 괄호 안 피해를 입힌다고 하지만, 괄호 안 피해가 각 공격당 피해인지 전체 피해인지는 명시하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He attacks that champion 3 times over the duration, dealing (175/350/525 + (167% bonus Attack Damage)) magic damage."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "도약거리 이동속도는 본문 total 범위 미명시 Move Speed, 요약은 bonus Move Speed. 더 구체 본문 표기를 유지하고 세부 계수는 미명시.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Warwick leaps a huge distance that scales with his Move Speed"
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Warwick leaps in a direction (scaling with his bonus Move Speed), suppressing the first champion he collides with for 1.5 seconds."
+        }
+      ]
+    }
+  ]
+}

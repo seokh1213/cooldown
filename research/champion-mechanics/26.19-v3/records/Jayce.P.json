@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 2,
+  "id": "Jayce.P",
+  "champion": "Jayce",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "36c6503a7c08f5a8f29c6fd85bb8974635c475db3592763f42bbbc6573735f97",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Hextech Capacitor",
+      "ko": "마법공학 축전기"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Jayce.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "When Jayce swaps weapons he gains Move Speed for a short duration.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Jayce can swap between melee and ranged weapons using Mercury Cannon / Mercury Hammer starting from level 1. Swapping weapons also swaps all his Abilities and grants him 30 Move Speed for 0.75 seconds.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "제이스가 무기를 바꾸면 잠시 동안 이동 속도가 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "제이스는 1레벨부터 머큐리 캐논 / 머큐리 해머를 사용해 근접 무기와 원거리 무기를 교체할 수 있습니다. 무기를 교체하면 스킬 또한 바뀌며 0.75초 동안 이동 속도가 30 상승합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 106,
+      "end": 107
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 170,
+      "end": 172
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 188,
+      "end": 192
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 5,
+      "end": 6
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 78,
+      "end": 82
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 94,
+      "end": 96
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "무기를 교체하면 스킬 구성이 바뀌고, 잠시 이동 속도가 증가합니다.",
+  "rules": [
+    {
+      "id": "ea8b02a158eb3e5ec0fa",
+      "variant": "base",
+      "trigger": {
+        "event": "transform",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "근접 무기와 원거리 무기를 교체하고 스킬을 바꿉니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Jayce can swap between melee and ranged weapons using Mercury Cannon / Mercury Hammer starting from level 1. Swapping weapons also swaps all his Abilities and grants him 30 Move Speed for 0.75 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "88599c4dcdab64702b3d4060c559c6b4f1d91df0d79be6c3565f31ed78c74b7c"
+}

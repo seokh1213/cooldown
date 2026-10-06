@@ -1,0 +1,1026 @@
+{
+  "schemaVersion": 2,
+  "id": "Zoe.E",
+  "champion": "Zoe",
+  "slot": "E",
+  "patch": "26.19",
+  "sourceHash": "c90c0167bba27748f3a429fee417486e95e4ead1594246cb68ed543edac26b2d",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Sleepy Trouble Bubble",
+      "ko": "헤롱헤롱쿨쿨방울"
+    },
+    "cooldownSeconds": [
+      18,
+      17,
+      16,
+      15,
+      14
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      800,
+      800,
+      800,
+      800,
+      800
+    ],
+    "cost": {
+      "values": [
+        80,
+        80,
+        80,
+        80,
+        80
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "70/110/150/190/230"
+      },
+      {
+        "label": "Bonus Damage Cap",
+        "values": "70/110/150/190/230"
+      },
+      {
+        "label": "Cooldown",
+        "values": "18/17/16/15/14"
+      },
+      {
+        "label": "Cooldown Refresh",
+        "values": "16%/19.5%/23%/26.5%/30%"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:TotalDamageTooltip"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamageTooltip",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          70,
+          110,
+          150,
+          190,
+          230
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.44999998807907104,
+              0.44999998807907104,
+              0.44999998807907104,
+              0.44999998807907104,
+              0.44999998807907104
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "drowsy",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Zoe",
+          "condition": "방울 적중"
+        },
+        {
+          "type": "sleep",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Zoe",
+          "condition": "졸음이 끝난 뒤"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Zoe.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Causes the target to become drowsy, then fall asleep. While asleep, the target's Magic Resist is reduced. The first source of damage that breaks the sleep is doubled, up to a cap.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Zoe dropkicks a bubble that deals (70/110/150/190/230 + (45% Ability Power)) magic damage, lingering as a trap if it hits nothing. The bubble's range is extended when flying over terrain. If either the bubble or trap hits an enemy champion she refreshes 16/19.5/23/26.5/30% of her cooldown. After a delay, the victim falls Asleep and have their Magic Resist reduced by 30% for 2 seconds. Attacks and Ability hits wake them up but deal double damage, up to (70/110/150/190/230 + (45% Ability Power)) true damage. Before the target falls Asleep, they are Drowsy, becoming increasingly Slowed (up to 10/15/20/25/30%).",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "대상을 졸음 상태에 빠지게 한 뒤 잠들게 합니다. 잠든 동안 대상의 마법 저항력이 감소됩니다. 잠든 뒤 처음으로 입는 피해는 두 배로 적용됩니다. (최대치 있음)",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "조이가 (70/110/150/190/230 + (45% 주문력))의 마법 피해를 입히는 방울을 던집니다. 방울이 아무도 맞히지 못하면 덫이 되어 그 자리에 남습니다. 방울을 벽 너머로 던지면 사거리가 증가합니다. 방울 또는 덫이 적 챔피언에게 적중하면 조이의 스킬 재사용 대기시간이 16/19.5/23/26.5/30%만큼 초기화됩니다. 방울에 맞은 적은 잠시 후 2초 동안 수면 상태가 되고 마법 저항력이 30% 감소합니다. 기본 공격이나 스킬에 맞으면 두 배의 피해(최대 (70/110/150/190/230 + (45% 주문력))의 고정 피해)를 입고 잠에서 깨어납니다. 수면 상태가 되기 전 적은 졸음 상태가 되어 점차 둔화됩니다. (최대 10/15/20/25/30%)",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 35,
+      "end": 37
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 38,
+      "end": 41
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 46,
+      "end": 49
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "230",
+      "value": 230,
+      "percent": false,
+      "start": 50,
+      "end": 53
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "16",
+      "value": 16,
+      "percent": true,
+      "start": 254,
+      "end": 256
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "19.5",
+      "value": 19.5,
+      "percent": true,
+      "start": 257,
+      "end": 261
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "23",
+      "value": 23,
+      "percent": true,
+      "start": 262,
+      "end": 264
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "26.5",
+      "value": 26.5,
+      "percent": true,
+      "start": 265,
+      "end": 269
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 270,
+      "end": 273
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 369,
+      "end": 372
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 377,
+      "end": 378
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 457,
+      "end": 459
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 460,
+      "end": 463
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 464,
+      "end": 467
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 468,
+      "end": 471
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "230",
+      "value": 230,
+      "percent": false,
+      "start": 472,
+      "end": 475
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 479,
+      "end": 482
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 597,
+      "end": 599
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 600,
+      "end": 602
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 603,
+      "end": 605
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 606,
+      "end": 608
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 609,
+      "end": 612
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 5,
+      "end": 7
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 8,
+      "end": 11
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 12,
+      "end": 15
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 16,
+      "end": 19
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "230",
+      "value": 230,
+      "percent": false,
+      "start": 20,
+      "end": 23
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 27,
+      "end": 30
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "16",
+      "value": 16,
+      "percent": true,
+      "start": 158,
+      "end": 160
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "19.5",
+      "value": 19.5,
+      "percent": true,
+      "start": 161,
+      "end": 165
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "23",
+      "value": 23,
+      "percent": true,
+      "start": 166,
+      "end": 168
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "26.5",
+      "value": 26.5,
+      "percent": true,
+      "start": 169,
+      "end": 173
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 174,
+      "end": 177
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 203,
+      "end": 204
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 227,
+      "end": 230
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 266,
+      "end": 268
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 269,
+      "end": 272
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 273,
+      "end": 276
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 277,
+      "end": 280
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "230",
+      "value": 230,
+      "percent": false,
+      "start": 281,
+      "end": 284
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 288,
+      "end": 291
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": true,
+      "start": 360,
+      "end": 362
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 363,
+      "end": 365
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 366,
+      "end": 368
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 369,
+      "end": 371
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 372,
+      "end": 375
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "방울은 마법 피해를 입히며, 적중하지 않으면 덫으로 남습니다. 방울이나 덫이 적 챔피언에게 적중하면 재사용 대기시간 일부가 회복됩니다. 적중한 대상은 졸음 후 수면에 빠지고 마법 저항력이 감소합니다. 수면 중 공격이나 스킬 적중은 대상을 깨우며 피해를 두 배로 입히되, 고정 피해에는 상한이 있습니다.",
+  "rules": [
+    {
+      "id": "e7c310277076f6103c8d",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "방울이 적중한 대상에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zoe dropkicks a bubble that deals (70/110/150/190/230 + (45% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Zoe dropkicks a bubble that deals (70/110/150/190/230 + (45% Ability Power)) magic damage, lingering as a trap if it hits nothing."
+        }
+      ]
+    },
+    {
+      "id": "c63532bb18583342b4ae",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "방울이 아무것도 맞히지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "unknown",
+          "text": "방울은 적중하지 않으면 덫으로 남습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "lingering as a trap if it hits nothing."
+        }
+      ]
+    },
+    {
+      "id": "bfe028bfe149e50f0080",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "unknown",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "방울 또는 덫이 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "방울 또는 덫이 적 챔피언을 맞히면 이E의 재사용 대기시간을16/19.5/23/26.5/30%만큼 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If either the bubble or trap hits an enemy champion she refreshes 16/19.5/23/26.5/30% of her cooldown."
+        }
+      ]
+    },
+    {
+      "id": "c46f5194cc917650f13c",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "방울 적중 후 수면 전"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상은 졸음 상태가 되고 점차 둔화됩니다.",
+          "damageType": null,
+          "crowdControl": "drowsy",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "수면 전 졸음 상태에서 최대10/15/20/25/30%까지 점점 둔화됩니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Before the target falls Asleep, they are Drowsy, becoming increasingly Slowed (up to 10/15/20/25/30%)."
+        }
+      ]
+    },
+    {
+      "id": "e360e3b727dd9eeacad9",
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "졸음 지연 후 수면에 듦"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상이 수면 상태가 됩니다.",
+          "damageType": null,
+          "crowdControl": "sleep",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "target",
+          "text": "수면 중 마법 저항력이30% 감소하며2초 수면이 지속됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "magicResist",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "magicResist",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After a delay, the victim falls Asleep and have their Magic Resist reduced by 30% for 2 seconds."
+        }
+      ]
+    },
+    {
+      "id": "edf597309c971b58bdb1",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "대상은 수면 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "잠든 대상을 처음 깨우는 공격/스킬 피해를 두 배로 적용하며 고정 피해 상한은70/110/150/190/230+시전자AP45%입니다. 원문에 없는 독립 추가 피해를 별도로 더하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks and Ability hits wake them up but deal double damage, up to (70/110/150/190/230 + (45% Ability Power)) true damage."
+        }
+      ]
+    },
+    {
+      "id": "93ec6a39b85ca59ad0b8",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이E 방울이 지형을 넘어감"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "방울이 지형을 넘어 날아가면 사거리가 늘어납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The bubble's range is extended when flying over terrain."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "수면 중 공격/스킬 적중 시 두 배가 적용되는 피해의 산출 기준과 고정 피해 상한 적용 방식이 원문만으로 완전히 특정되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks and Ability hits wake them up but deal double damage, up to (70/110/150/190/230 + (45% Ability Power)) true damage."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "졸음에서수면까지의delay초와덫지속초는공급되지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After a delay, the victim falls Asleep and have their Magic Resist reduced by 30% for 2 seconds."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "15ebabe25b55f26c4d8842ee7bf705235981fdce673c3ad1d3cce5c66239a178"
+}

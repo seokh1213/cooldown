@@ -1,0 +1,201 @@
+{
+  "summary": "기본 지속 효과로 자르반 4세의 공격 속도가 증가합니다. 사용하면 깃발이 적중 지점에 마법 피해를 입히고, 깃발 근처 아군의 공격 속도를 일정 시간 증가시킵니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "본인의공격속도가20/22.5/25/27.5/30%증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Jarvan gains 20/22.5/25/27.5/30% Attack Speed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "깃발이 지면에 닿을 때 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "지면에데마시아의깃발을설치합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jarvan throws a standard into the ground, dealing (80/120/160/200/240 + (80% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jarvan throws a standard into the ground, dealing (80/120/160/200/240 + (80% Ability Power)) magic damage and granting allies near the standard 20/22.5/25/27.5/30% Attack Speed for 8 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이데마시아의깃발근처에있는아군"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "이깃발근처아군의공격속도가8초동안20/22.5/25/27.5/30%증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": "attackSpeed",
+              "statSubject": "ally",
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "granting allies near the standard 20/22.5/25/27.5/30% Attack Speed for 8 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jarvan throws a standard into the ground, dealing (80/120/160/200/240 + (80% Ability Power)) magic damage and granting allies near the standard 20/22.5/25/27.5/30% Attack Speed for 8 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "en/ko요약은근처아군챔피언,본문은깃발근처allies/아군으로기록한다. 본문범위를우선해챔피언전용제한을추정하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "nearby allied champions"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "allies near the standard"
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "20/22.5/25/27.5/30%는모든랭크%이지만frozen숫자표는각마지막값만percent=true이다.전체단위를텍스트에보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "20/22.5/25/27.5/30% Attack Speed."
+        }
+      ]
+    }
+  ]
+}

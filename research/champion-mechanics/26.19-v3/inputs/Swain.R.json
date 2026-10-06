@@ -1,0 +1,548 @@
+{
+  "champion": "Swain",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Swain transforms into a demon and drains health from nearby enemy champions, minions, and neutral monsters. Swain can cast Demonflare to decimate and slow nearby enemies with a nova of soulfire. This form is indefinite as long as Swain drains enemy champions.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Swain frees the demon, which deals (15/25/35 + (4% Ability Power)) magic damage and drains (15/30/45 + (5% Ability Power) + (1.5% bonus Health)) Health per second from nearby enemies. His Demonic Energy depletes over time but can be recharged indefinitely by draining enemy Champions and is fully restored on Champion takedowns. After 2 seconds and every 8 seconds thereafter, Swain can cast Demonflare while transformed, which deals (150/250/350 + (40% Ability Power)) magic damage and Slows enemies by 50%, decaying over 1.5s. Healing is reduced to 10% against non-champions. Depletes 10 Demonic Energy per second. After 5 seconds, this increases to 15. Regenerates 20 Demonic Energy per second while draining from champions.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "스웨인이 악마로 변신해 근처 적 챔피언, 미니언, 중립 몬스터에게서 생명력을 흡수합니다. 악의 불길을 사용하면 주변 적을 학살하고 둔화시킵니다. 이 형태는 스웨인이 적 챔피언을 흡수하는 한 무기한 지속됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "스웨인이 악을 끌어내 (15/25/35 + (4% 주문력))의 마법 피해를 입히고 매초 주변 적의 체력을 (15/30/45 + (5% 주문력) + (1.5% 추가 체력)) 흡수합니다. 악마의 기운은 시간이 지나면서 소진되지만 적 챔피언을 흡수해 무한히 충전할 수 있으며 챔피언 처치 관여 시 완전히 충전됩니다. 2초 후 그리고 8초가 지날 때마다 스웨인이 변신 상태에서 악의 불길을 사용해 적에게 (150/250/350 + (40% 주문력))의 마법 피해를 입히고 50% 둔화시킬 수 있습니다. 둔화 효과는 1.5초에 걸쳐 사라집니다. 챔피언이 아닌 적을 상대로는 회복되는 체력이 10%까지 감소합니다. 매초 악마의 기운이 10씩 소진되며 5초 후에는 15씩 소진됩니다. 챔피언에게서 흡수하는 동안에는 악마의 기운을 매초 20씩 회복합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Demonic Ascension",
+      "ko": "악의 승천"
+    },
+    "cooldownSeconds": [
+      120,
+      120,
+      120
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      650,
+      650,
+      650
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Drain Damage",
+        "values": "15/25/35"
+      },
+      {
+        "label": "Drain Heal",
+        "values": "15/30/45"
+      },
+      {
+        "label": "Demonflare Damage",
+        "values": "150/250/350"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:HealingCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "DamageCalc",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          15,
+          25,
+          35
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.03999999910593033,
+              0.03999999910593033,
+              0.03999999910593033
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Swain.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Swain.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Swain.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 36,
+      "end": 38
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 39,
+      "end": 41
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 42,
+      "end": 44
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "4%",
+      "value": 4,
+      "percent": true,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 92,
+      "end": 94
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 95,
+      "end": 97
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 98,
+      "end": 100
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 104,
+      "end": 106
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 125,
+      "end": 129
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 335,
+      "end": 336
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 355,
+      "end": 356
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 435,
+      "end": 438
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 439,
+      "end": 442
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 443,
+      "end": 446
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 450,
+      "end": 453
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 504,
+      "end": 507
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 523,
+      "end": 526
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 551,
+      "end": 554
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 587,
+      "end": 589
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 623,
+      "end": 624
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 652,
+      "end": 654
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 668,
+      "end": 670
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 13,
+      "end": 15
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 16,
+      "end": 18
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 19,
+      "end": 21
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "4%",
+      "value": 4,
+      "percent": true,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 60,
+      "end": 62
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 63,
+      "end": 65
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 66,
+      "end": 68
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 72,
+      "end": 74
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 83,
+      "end": 87
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 174,
+      "end": 175
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 183,
+      "end": 184
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 223,
+      "end": 226
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 227,
+      "end": 230
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 231,
+      "end": 234
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 238,
+      "end": 241
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 260,
+      "end": 263
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 284,
+      "end": 287
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 325,
+      "end": 328
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 349,
+      "end": 351
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 358,
+      "end": 359
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 365,
+      "end": 367
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 404,
+      "end": 406
+    }
+  ],
+  "sourceHash": "6fc46444038da5a450da13621de7b82c2814471064da925fed8544392de2b020",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

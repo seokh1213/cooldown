@@ -1,0 +1,366 @@
+{
+  "summary": "충전하며 체력을 소모하고, 완전히 충전된 동안 이동 속도가 감소합니다. 방출 시 충전 시간에 따라 주변 적에게 피해를 주며, 일정 시간 이상 충전했다면 적을 둔화시킵니다. 적 하나는 여러 투사체에 맞아도 첫 투사체 피해만 받습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "충전하며 시전자 체력 기준 최대 8%의 체력을 소모합니다. Health의 정확한 통계는 원문에 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Begin Charging: Vladimir charges up a reservoir of blood, spending up to (8% Health) Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "full charge"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "caster",
+          "text": "완전히 충전된 동안 자신을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While at full charge, Vladimir is Slowed by 20%."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "충전 해제하여 방출"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 방출에서 대상별 첫 투사체 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "방출 시 충전 시간에 따른 최소식 (기본 피해 + 1.5% Health + 35% AP)부터 최대식 (기본 피해 + 6% Health + 80% AP)의 마법 피해를 줍니다. 한 대상은 첫 투사체에만 피해를 받으며 적 유닛이 투사체를 막을 수 있습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies can be hit by multiple blood missiles, but take no damage after the first."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Release: Vladimir unleashes a torrent of blood missiles at surrounding enemies, dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Vladimir pays his own health to charge up a reservoir of blood which, when released, deals damage in the area around him but can be blocked by enemy units."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n16"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "충전 해제하여 방출"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "1초 이상 충전한 뒤 방출 시 대상을 40/45/50/55/60% 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this Ability was charged for at least 1 second, it also Slows targets by 40/45/50/55/60% for 0.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n23"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "충전이 일정 시간 지나면 스킬이 자동으로 방출됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability releases automatically after 1.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "지출 상한·피해식의 Health는 구체 체력 스탯이 아니므로 maxHealth 단정을 제거; 시전자 체력 기준을 수식 구성요소로 보존.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(1.5% Health)"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Begin Charging: Vladimir charges up a reservoir of blood, spending up to (8% Health) Health."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "충전 시간별 최소/최대식의 계수는 각 끝점 식에만 속하며 모두 합산하는 선형식이 아님. 중간 충전 보간은 원문에 없음.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies can be hit by multiple blood missiles, but take no damage after the first."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Release: Vladimir unleashes a torrent of blood missiles at surrounding enemies, dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Vladimir pays his own health to charge up a reservoir of blood which, when released, deals damage in the area around him but can be blocked by enemy units."
+        }
+      ]
+    }
+  ]
+}

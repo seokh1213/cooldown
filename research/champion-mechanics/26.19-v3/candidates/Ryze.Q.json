@@ -1,0 +1,359 @@
+{
+  "summary": "다른 기본 스킬 사용은 과부하의 재사용 대기시간을 초기화하고 룬을 충전한다. 과부하를 사용하면 첫 적중 대상에게 피해를 주며, 전이 표식이 있으면 표식을 소모해 피해를 늘리고 전이 표식이 있는 주변 적에게 튕긴다. 룬을 모두 방출하며, 사용 시 룬이 2개 충전되어 있으면 이동 속도가 증가한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "룬 감옥 또는 주문 전이 사용"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "과부하의 재사용 대기시간을 초기화한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "룬 감옥(W) 또는 주문 전이(E) 사용마다 룬 하나를4초 동안 충전합니다. 최대2룬입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Rune Prison and Spell Flux refresh this Ability's Cooldown and charge a rune for 4 seconds (max 2 runes)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 직선 과부하에 처음 맞은 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "직선으로 에너지를 발사해 처음 맞힌 적에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "bonusMana",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Ryze unleashes a blast, dealing (75/95/115/135/155 + (55% Ability Power) + (2% bonus Mana)) magic damage to the first enemy hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "전이(Flux) 표식"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "전이 표식을 소모한 과부하 피해는 기본 과부하 피해에15/40/65/90% 증가분을 더합니다. 기본피해×(1+증가율)이며15% 자체를 최종 피해 배율로 쓰지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "대상의 전이 표식을 소모한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the target has Flux on it, it is consumed, causing this Ability to deal 15/40/65/90% increased damage and bounces to nearby enemies with Flux."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "전이(Flux) 표식"
+          }
+        },
+        {
+          "subject": "nearby_enemies",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "전이(Flux) 표식이 있는 주변 적들"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "nearby_enemies",
+          "text": "전이 표식이 있는 주변 적에게 과부하가 튕긴다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the target has Flux on it, it is consumed, causing this Ability to deal 15/40/65/90% increased damage and bounces to nearby enemies with Flux."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "과부하 시전 시 충전된 룬을 모두 방출합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ryze also discharges all runes, granting Ryze 28/32/36/40/44% Move Speed for 2 seconds if 2 runes were charged."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "방출 직전 충전된 룬2개"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "시전 직전 룬2개가 충전되어 있으면 룬방출 시2초 동안 이동속도가28/32/36/40/44% 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ryze also discharges all runes, granting Ryze 28/32/36/40/44% Move Speed for 2 seconds if 2 runes were charged."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "튕긴 주변 적에게 적용되는 피해량과 튕김 횟수는 명시되지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the target has Flux on it, it is consumed, causing this Ability to deal 15/40/65/90% increased damage and bounces to nearby enemies with Flux."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "Flux피해증가15/40/65/90은4개 값이고 Q기본피해/이속은5개 값이다. 공급원문은 증가율의 인덱스 기준을 명시하지 않아 Q랭크라고 추정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "15/40/65/90% increased damage"
+        }
+      ]
+    }
+  ]
+}

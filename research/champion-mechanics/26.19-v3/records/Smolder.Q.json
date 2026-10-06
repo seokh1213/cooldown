@@ -1,0 +1,1107 @@
+{
+  "schemaVersion": 2,
+  "id": "Smolder.Q",
+  "champion": "Smolder",
+  "slot": "Q",
+  "patch": "26.19",
+  "sourceHash": "d83b2484b6d3a1a5d5e3fb0849fdd060c6f6619de4411c4b0a0da4fea47e8d8b",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Super Scorcher Breath",
+      "ko": "초강력 화염 숨결"
+    },
+    "cooldownSeconds": [
+      5.5,
+      5,
+      4.5,
+      4,
+      3.5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      550,
+      550,
+      550,
+      550,
+      550
+    ],
+    "cost": {
+      "values": [
+        25,
+        25,
+        25,
+        25,
+        25
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Base Damage",
+        "values": "60/70/80/90/100"
+      },
+      {
+        "label": "Cooldown",
+        "values": "5.5/5/4.5/4/3.5"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "expression",
+      "expression": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "root": {
+          "kind": "product",
+          "parts": [
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      60,
+                      70,
+                      80,
+                      90,
+                      100
+                    ]
+                  }
+                },
+                {
+                  "kind": "stat",
+                  "stat": "bonusAttackDamage",
+                  "coefficient": {
+                    "byRank": [
+                      1.2999999523162842,
+                      1.2999999523162842,
+                      1.2999999523162842,
+                      1.2999999523162842,
+                      1.2999999523162842
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      1,
+                      1,
+                      1,
+                      1,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "kind": "product",
+                  "parts": [
+                    {
+                      "kind": "stat",
+                      "stat": "critChance",
+                      "coefficient": {
+                        "byRank": [
+                          0.75,
+                          0.75,
+                          0.75,
+                          0.75,
+                          0.75
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "sum",
+                      "parts": [
+                        {
+                          "kind": "stat",
+                          "stat": "critDamage",
+                          "coefficient": {
+                            "byRank": [
+                              1,
+                              1,
+                              1,
+                              1,
+                              1
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "value",
+                          "value": {
+                            "byRank": [
+                              -1,
+                              -1,
+                              -1,
+                              -1,
+                              -1
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "requiresBuffStacks": false
+      },
+      "unsupportedPartTypes": [
+        "nonlinear-product"
+      ]
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Smolder.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Smolder breathes fire on an enemy. As he gains more stacks, this ability becomes more powerful.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Smolder belches flame, dealing (60/70/80/90/100 + (130% bonus Attack Damage)) physical damage + 0.25 magic damage. If the target dies, Smolder refunds 15 Mana, once per cast. Based on stacks of Dragon Practice, this Ability evolves to gain the following effects:25 Stacks: Damages all enemies surrounding the target.125 Stacks: Sends 2.008 explosions beyond the target that deal 50% of this Ability's damage.225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds. Enemy champions that drop below 6.5% total health while burning are killed instantly. Super Scorcher Breath is considered a basic Attack, applies On-Hit effects, and applies Life Steal at 50% effectiveness. Damage is increased by Critical Strike Chance and Critical Strike Damage at 75% effectiveness. This Ability can only damage each target one time per cast.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "스몰더가 적에게 불을 내뿜습니다. 이 스킬은 스몰더가 중첩을 쌓을수록 더 강력해집니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "스몰더가 불꽃을 내뿜어 (60/70/80/90/100 + (130% 추가 공격력))의 물리 피해+0.25의 마법 피해를 입힙니다. 대상이 사망하면 스몰더가 스킬 사용 한 번당 15의 마나를 돌려받습니다. 이 스킬은 용 훈련 중첩 수에 따라 진화하며 다음과 같은 효과를 얻습니다.25회 중첩: 대상 주변의 모든 적에게 피해를 입힙니다.125회 중첩: 이 스킬 피해량의 50%만큼 피해를 입히는 폭발 2.008개를 대상 너머로 날립니다.225회 중첩: 대상을 불태우며 3초에 걸쳐 최대 체력의 (0.01% + (추가 공격력 100당 2.5%))에 해당하는 고정 피해를 입힙니다. 불타는 동안 총 체력이 6.5% 밑으로 떨어지는 적 챔피언은 즉시 처치됩니다. 초강력 화염 숨결 스킬은 기본 공격으로 간주되며 적중 시 효과와 50%의 생명력 흡수 효과를 적용합니다. 피해량은 치명타 확률및 치명타 피해량에 따라 75%만큼 증가합니다. 이 스킬은 사용할 때마다 각 대상에게 한 번씩만 피해를 입힐 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 32,
+      "end": 34
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 35,
+      "end": 37
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 38,
+      "end": 40
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 41,
+      "end": 43
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 44,
+      "end": 47
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "130%",
+      "value": 130,
+      "percent": true,
+      "start": 51,
+      "end": 55
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "0.25",
+      "value": 0.25,
+      "percent": false,
+      "start": 96,
+      "end": 100
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 151,
+      "end": 153
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 262,
+      "end": 264
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 316,
+      "end": 319
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "2.008",
+      "value": 2.008,
+      "percent": false,
+      "start": 334,
+      "end": 339
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 379,
+      "end": 382
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 408,
+      "end": 411
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "0.01%",
+      "value": 0.01,
+      "percent": true,
+      "start": 447,
+      "end": 452
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "2.5%",
+      "value": 2.5,
+      "percent": true,
+      "start": 456,
+      "end": 460
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 465,
+      "end": 468
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 519,
+      "end": 520
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "6.5%",
+      "value": 6.5,
+      "percent": true,
+      "start": 562,
+      "end": 566
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 718,
+      "end": 721
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "75%",
+      "value": 75,
+      "percent": true,
+      "start": 813,
+      "end": 816
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "one",
+      "value": 1,
+      "percent": false,
+      "start": 873,
+      "end": 876
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 14,
+      "end": 16
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 17,
+      "end": 19
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 20,
+      "end": 22
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 23,
+      "end": 25
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 26,
+      "end": 29
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "130%",
+      "value": 130,
+      "percent": true,
+      "start": 33,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "0.25",
+      "value": 0.25,
+      "percent": false,
+      "start": 54,
+      "end": 58
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 98,
+      "end": 100
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 155,
+      "end": 157
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 186,
+      "end": 189
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 205,
+      "end": 208
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "2.008",
+      "value": 2.008,
+      "percent": false,
+      "start": 222,
+      "end": 227
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 242,
+      "end": 245
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 260,
+      "end": 261
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "0.01%",
+      "value": 0.01,
+      "percent": true,
+      "start": 275,
+      "end": 280
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 291,
+      "end": 294
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "2.5%",
+      "value": 2.5,
+      "percent": true,
+      "start": 296,
+      "end": 300
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "6.5%",
+      "value": 6.5,
+      "percent": true,
+      "start": 335,
+      "end": 339
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 402,
+      "end": 405
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "75%",
+      "value": 75,
+      "percent": true,
+      "start": 450,
+      "end": 453
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "불꽃을 내뿜어 적에게 물리 및 마법 피해를 입힙니다. 대상이 사망하면 시전당 한 번 마나를 돌려받습니다. 용 훈련 중첩에 따라 추가 효과를 얻습니다.",
+  "rules": [
+    {
+      "id": "08a3d54e2d1664390e66",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "불꽃을 내뿜어 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Smolder belches flame, dealing (60/70/80/90/100 + (130% bonus Attack Damage)) physical damage + 0.25 magic damage."
+        }
+      ]
+    },
+    {
+      "id": "f5deb2e8540b0132cfe8",
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 시전의 대상이 사망하고 아직 마나 환급을 받지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "대상이 사망하면 마나를 돌려받습니다. 시전당 한 번만 발동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_refund",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If the target dies, Smolder refunds 15 Mana, once per cast."
+        }
+      ]
+    },
+    {
+      "id": "e973b41b8d37c43ee1f7",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n8"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "secondary_targets",
+          "text": "대상 주변의 모든 적에게 피해를 입힙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "25 Stacks: Damages all enemies surrounding the target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Based on stacks of Dragon Practice, this Ability evolves to gain the following effects:25 Stacks: Damages all enemies surrounding the target.125 Stacks: Sends 2.008 explosions beyond the target that deal 50% of this Ability's damage.225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds."
+        }
+      ]
+    },
+    {
+      "id": "337f26c9f264ecfc2f13",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n9"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "secondary_targets",
+          "text": "대상 너머로 원문상 2.008개 폭발을 보내 이 스킬 피해의 50%를 입힙니다. 피해 유형은 단일 물리로 한정하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "125 Stacks: Sends 2.008 explosions beyond the target that deal 50% of this Ability's damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Based on stacks of Dragon Practice, this Ability evolves to gain the following effects:25 Stacks: Damages all enemies surrounding the target.125 Stacks: Sends 2.008 explosions beyond the target that deal 50% of this Ability's damage.225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds."
+        }
+      ]
+    },
+    {
+      "id": "8700e0dda394e748e3f8",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n12"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "용 훈련 225중첩부터 3초에 걸쳐 (0.01% + 추가 공격력 100당 2.5%) × 최대 체력 고정 피해를 줍니다. 최대 체력 소유자는 미명시입니다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "unknown",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Based on stacks of Dragon Practice, this Ability evolves to gain the following effects:25 Stacks: Damages all enemies surrounding the target.125 Stacks: Sends 2.008 explosions beyond the target that deal 50% of this Ability's damage.225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds."
+        }
+      ]
+    },
+    {
+      "id": "3ee3c975140357e56b02",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n17"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "불타는 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "불타는 동안 체력이 기준 아래로 떨어진 적 챔피언을 즉시 처치합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemy champions that drop below 6.5% total health while burning are killed instantly."
+        }
+      ]
+    },
+    {
+      "id": "08bcc72c6567ef60ec45",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "기본 공격으로 간주되며 적중 시 효과와 생명력 흡수 효과를 적용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "치명타 확률과 치명타 피해량에 따라 피해량이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Super Scorcher Breath is considered a basic Attack, applies On-Hit effects, and applies Life Steal at 50% effectiveness. Damage is increased by Critical Strike Chance and Critical Strike Damage at 75% effectiveness."
+        }
+      ]
+    },
+    {
+      "id": "566f434f1ed37855ec1f",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "이 시전에서 각 대상에게 한 번만 피해를 입힐 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability can only damage each target one time per cast."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "용 훈련 중첩을 resource 조건으로 보존하되 자원의 이름·다른 자원과 구별은 원문 텍스트로 확인해야 함.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Based on stacks of Dragon Practice, this Ability evolves to gain the following effects:25 Stacks: Damages all enemies surrounding the target.125 Stacks: Sends 2.008 explosions beyond the target that deal 50% of this Ability's damage.225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "화상은 최대 체력에 (0.01% + 추가 공격력 100당 2.5%)를 곱하는 복합식이며 선형 피해 합산 금지; 최대 체력 소유자 미명시. 2.008 폭발은 공급 원문 값으로 유지하며 정수로 임의 수정하지 않음.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "225 Stacks: Burns the target, dealing (0.01% + (2.5% per 100 bonus Attack Damage)) max Health true damage over 3 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "치명타 확률과 피해량 75% 효율은 두 입력의 결합식이 없어 단일 피해 75% 배율로 실행하지 않음.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Super Scorcher Breath is considered a basic Attack, applies On-Hit effects, and applies Life Steal at 50% effectiveness. Damage is increased by Critical Strike Chance and Critical Strike Damage at 75% effectiveness."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "0271fa047d1311b4ff5605d819adaec5d05ce739353afd0fec15f229f8e2bc22"
+}

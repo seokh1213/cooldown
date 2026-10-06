@@ -1,0 +1,341 @@
+{
+  "summary": "여우불 세 개가 근처 적을 찾아 마법 피해를 줍니다. 첫 번째 여우불 이후 피해가 감소합니다. 이동 속도가 증가했다가 2초에 걸쳐 감소하며, 대상 우선순위와 체력 20% 미만인 미니언에 대한 추가 피해가 적용됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "여우불 세 개를 방출해 근처 적을 찾아갑니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ahri releases 3 fox-fires that seek nearby enemies"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Ahri releases 3 fox-fires that seek nearby enemies and deal (40/60/80/100/120 + (40% Ability Power)) magic damage, reduced to (16/24/32/40/48 + (16% Ability Power)) damage beyond the first."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "여우불의 첫 피해 판정에 해당함(순서의 적용 기준은 미확정)"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "첫 번째 여우불이 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ahri releases 3 fox-fires that seek nearby enemies and deal (40/60/80/100/120 + (40% Ability Power)) magic damage, reduced to (16/24/32/40/48 + (16% Ability Power)) damage beyond the first."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "여우불의 첫 피해 이후 감소 피해 판정에 해당함(순서의 적용 기준은 미확정)"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "첫 번째 이후 여우불이 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "reduced to (16/24/32/40/48 + (16% Ability Power)) damage beyond the first."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Ahri releases 3 fox-fires that seek nearby enemies and deal (40/60/80/100/120 + (40% Ability Power)) magic damage, reduced to (16/24/32/40/48 + (16% Ability Power)) damage beyond the first."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가하고 시간이 지나며 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "She also gains 40% Move Speed decaying over 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n15"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "체력 20% 미만인 미니언은 배율 피해를 받습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Minions below 20% Health take 200% damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "여우불은매혹에맞은챔피언을우선하고,아리가공격한적,그밖의챔피언순으로대상을선정한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fox-fires prioritize champions hit by Charm, enemies Ahri has attacked, then other champions."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "여우불 대상 우선순위는 매혹에 적중한 챔피언, 아리가 공격한 적, 이후 다른 챔피언 순이다. 허용된 조건 필드로 순서를 완전히 표현할 수 없어 문장으로 보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fox-fires prioritize champions hit by Charm, enemies Ahri has attacked, then other champions."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "본문beyond the first는첫피해와추가피해를구별하지만첫순서가각대상별인지전체발사체순서인지명시하지않는다.첫피해관계를보존하고둘중하나로추정하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ahri releases 3 fox-fires that seek nearby enemies and deal (40/60/80/100/120 + (40% Ability Power)) magic damage, reduced to (16/24/32/40/48 + (16% Ability Power)) damage beyond the first."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "영문 툴팁은 체력 20% 미만(below 20%)이라고 하나 한국어 툴팁은 20% 이하라고 하여 경계값이 다르다. 영문 툴팁에 따라 미만 조건을 적용했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Minions below 20% Health take 200% damage."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "체력이 20% 이하인 미니언은 200%의 피해를 입습니다."
+        }
+      ]
+    }
+  ]
+}

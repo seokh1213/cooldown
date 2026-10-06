@@ -1,0 +1,163 @@
+{
+  "summary": "장신구가 허수아비로 대체됩니다. 적에게 발각되면 잠시 피들스틱을 흉내 내며, 가만히 있으면 허수아비인 척합니다. 일정 레벨부터 주변 와드를 드러냅니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "장신구가 허수아비로 대체됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks' trinket is replaced by Scarecrow Effigies. When discovered by enemies, Effigies briefly impersonate Fiddlesticks. If Fiddlesticks does not move for 2 seconds, he will impersonate an Effigy. At level six Effigies reveal nearby wards for 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "움직이지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "움직이지 않으면 허수아비를 흉내 냅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks' trinket is replaced by Scarecrow Effigies. When discovered by enemies, Effigies briefly impersonate Fiddlesticks. If Fiddlesticks does not move for 2 seconds, he will impersonate an Effigy. At level six Effigies reveal nearby wards for 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "summon",
+          "text": "자신이6레벨이상이면허수아비가6초동안근처와드를드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks' trinket is replaced by Scarecrow Effigies. When discovered by enemies, Effigies briefly impersonate Fiddlesticks. If Fiddlesticks does not move for 2 seconds, he will impersonate an Effigy. At level six Effigies reveal nearby wards for 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적에게 발견됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "summon",
+          "text": "적에게발각된허수아비는잠시피들스틱을흉내낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks' trinket is replaced by Scarecrow Effigies. When discovered by enemies, Effigies briefly impersonate Fiddlesticks. If Fiddlesticks does not move for 2 seconds, he will impersonate an Effigy. At level six Effigies reveal nearby wards for 6 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

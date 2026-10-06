@@ -51,9 +51,9 @@ for (const card of cards) {
   }
   const now = fingerprint(card, patch);
   if (now.names !== seen.names) {
-    reworked.push(`| ${card.name} | \`${seen.spells}\` → \`${spellNameLine(card)}\` | ${notes} |`);
+    reworked.push(`| ${card.name} | \`${seen.spells}\` → \`${spellNameLine(card)}\` | ${notes} | \`${seen.text}\` → \`${now.text}\` |`);
   } else if (now.text !== seen.text) {
-    reworded.push(`| ${card.name} | ${notes} | \`npm run llm:stamp -- ${card.id}\` |`);
+    reworded.push(`| ${card.name} | ${notes} | \`${seen.text}\` → \`${now.text}\` | \`npm run llm:stamp -- ${card.id}\` |`);
   }
 }
 
@@ -87,12 +87,12 @@ const section = (title: string, header: string, lines: string[]) => {
 
 section(
   "리워크 의심 — 스킬 이름이 바뀜",
-  "| 챔피언 | 이름 변동 | 다시 읽을 노트 |\n|---|---|---|",
+  "| 챔피언 | 이름 변동 | 다시 읽을 노트 | 본문 지문 변동 |\n|---|---|---|---|",
   reworked,
 );
 section(
   "툴팁 문구가 바뀜 — 노트를 읽어 볼 것",
-  "| 챔피언 | 노트 | 확인 뒤 |\n|---|---|---|",
+  "| 챔피언 | 노트 | 본문 지문 변동 | 확인 뒤 |\n|---|---|---|---|",
   reworded,
 );
 section(

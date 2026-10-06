@@ -1,0 +1,237 @@
+{
+  "summary": "기본 지속 효과로 잔나의 이동 속도가 증가하고 유체화 상태가 됩니다. 사용하면 정령이 적을 공격해 둔화시키고 마법 피해를 입힙니다. 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 (6/7/8/9/10% + 주문력 100당 2%) 상승한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "유체화 상태가 됩니다. 유체화 상태인 유닛은 다른 유닛과 충돌하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "공급 요약의 공기 정령을 소환하며 지속 이동 속도와 유체화를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed and is Ghosted."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Ghosted units ignore collision with other units."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Janna summons an air elemental that passively increases her Move Speed and enables her to pass through units."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "정령 적중 시 55/85/115/145/175 + 주문력 50% + 잔나의 추가 이동 속도 30%의 마법 피해를 준다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "정령 적중 시 (20/24/28/32/36% + 주문력 100당 6%)만큼 2초 둔화한다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Janna's elemental strikes an enemy, Slowing them by (20/24/28/32/36% + (6% per 100 Ability Power)) for 2 seconds, and dealing (55/85/115/145/175 + (50% Ability Power)) + (30% bonus Movement Speed) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "슬래시 이동 속도·둔화 배열의 앞 항목은 frozen lexical percent=false지만 모든 항목이 퍼센트다. lexical 숫자표만으로 단위를 실행하지 말 것. bonusMovementSpeed stat이 없어 전체 moveSpeed로 대체하지 않고 잔나의 추가 이동 속도 30%를 문장으로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Janna gains (6/7/8/9/10% + (2% per 100 Ability Power)) Move Speed"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "(30% bonus Movement Speed) magic damage."
+        }
+      ]
+    }
+  ]
+}

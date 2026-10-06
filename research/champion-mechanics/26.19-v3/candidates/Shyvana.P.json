@@ -1,0 +1,89 @@
+{
+  "summary": "적 챔피언, 대형 미니언 및 몬스터 처치 관여 시 중첩을 얻고, 중첩마다 영구적으로 방어력과 마법 저항력이 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "takedown",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언 또는 대형 미니언 또는 몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "미늘갑옷 중첩을 얻습니다. 중첩마다 영구적으로 방어력이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "미늘갑옷 중첩을 얻습니다. 중첩마다 영구적으로 마법 저항력이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "magicResist",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Takedowns on champions, large minions, and monsters earn Shyvana stacks of Scalemail, each stack grants Shyvana permanent 0.3 Armor and 0.3 Magic Resist."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "영문 툴팁은 모든 몬스터를 적격 대상으로 쓰지만 요약은 대형 몬스터로 한정합니다. 몬스터 대상 범위가 서로 다릅니다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Takedowns on enemy champions, large minions, and large monsters grant Shyvana Scalemail stacks, improving her defenses."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Takedowns on champions, large minions, and monsters earn Shyvana stacks of Scalemail, each stack grants Shyvana permanent 0.3 Armor and 0.3 Magic Resist."
+        }
+      ]
+    }
+  ]
+}

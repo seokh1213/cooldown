@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 2,
+  "id": "Nidalee.R",
+  "champion": "Nidalee",
+  "slot": "R",
+  "patch": "26.19",
+  "sourceHash": "8411fe3fe872ab283a85a0bd686120e0b9eb821d343b01fc73c495c65573ada2",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Aspect Of The Cougar",
+      "ko": "쿠거의 상"
+    },
+    "cooldownSeconds": [
+      3,
+      3,
+      3,
+      3
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Takedown Damage",
+        "values": "5/30/55/80"
+      },
+      {
+        "label": "Takedown Damage Amp",
+        "values": "100%/125%/150%/175%"
+      },
+      {
+        "label": "Pounce Damage",
+        "values": "55/100/145/190"
+      },
+      {
+        "label": "Swipe Damage",
+        "values": "70/130/190/250"
+      },
+      {
+        "label": "Enhanced Pounce Cooldown",
+        "values": "3/2.5/2/1.5"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:TotalPounceDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalPounceDamage",
+        "kind": "damage",
+        "damageType": "unknown",
+        "baseByRank": [
+          55,
+          100,
+          145,
+          190
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          },
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Nidalee.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Nidalee transforms into a cougar, gaining new abilities.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive: While in Human Form, applying Hunted refreshes this Ability's Cooldown. Human Form: Nidalee transforms into Cougar Form, gaining melee Attacks and replacing her Active Abilities. Cougar Form: Nidalee transforms into Human Form, gaining ranged Attacks and replacing her Active Abilities.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "니달리가 쿠거로 변신하여 새로운 스킬을 사용할 수 있게 됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과: 인간 형태일 때 사냥을 적용하면 이 스킬의 재사용 대기시간이 초기화됩니다. 인간 형태: 니달리가 쿠거 형태로 변하며 기본 공격이 근접으로 바뀌고 사용 스킬이 변경됩니다. 쿠거 형태: 니달리가 인간 형태로 변하며 기본 공격이 원거리로 바뀌고 사용 스킬이 변경됩니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "인간 형태에서 사냥을 적용하면 이 스킬의 재사용 대기시간이 초기화됩니다. 인간 형태와 쿠거 형태 사이를 전환하며, 각 형태에서 공격 유형과 사용 스킬이 바뀝니다.",
+  "rules": [
+    {
+      "id": "f35690e6b0dcd7ba8611",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "인간 형태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "쿠거 형태로 변하며 기본 공격이 근접 공격으로 바뀌고 사용 스킬이 변경됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Human Form: Nidalee transforms into Cougar Form, gaining melee Attacks and replacing her Active Abilities."
+        }
+      ]
+    },
+    {
+      "id": "4fce5b552a4386f45961",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "쿠거 형태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "인간 형태로 변하며 기본 공격이 원거리 공격으로 바뀌고 사용 스킬이 변경됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cougar Form: Nidalee transforms into Human Form, gaining ranged Attacks and replacing her Active Abilities."
+        }
+      ]
+    },
+    {
+      "id": "c15d1d9aabc05634d206",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "인간 형태"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 이벤트에서 새로 사냥 표식이 적용됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "인간 형태에서 사냥을 적용하면 이 스킬의 재사용 대기시간이 초기화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: While in Human Form, applying Hunted refreshes this Ability's Cooldown."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "사냥 적용 효과를 발생시키는 구체적인 사건의 형태는 원문에서 더 구체적으로 설명되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: While in Human Form, applying Hunted refreshes this Ability's Cooldown."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "스키마에 표식 적용 전용 event가 없어 신규 Hunted 적용을 other 이벤트와 텍스트 조건으로 보존했다. 기존 표식 대상에 대한 임의 적중은 새로 적용되는 사건으로 취급하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: While in Human Form, applying Hunted refreshes this Ability's Cooldown."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "7b40fe011c794208f86f3c7ea79e1f74729d6cebecb860e3e05e4796e4af32f3"
+}

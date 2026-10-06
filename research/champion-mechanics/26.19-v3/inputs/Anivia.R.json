@@ -1,0 +1,430 @@
+{
+  "champion": "Anivia",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Anivia summons a driving rain of ice and hail to damage her enemies and slow their advance.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Toggle: Anivia calls forth a driving rain of ice and hail that Slows enemies by 20/30/40% and deals (30/45/60 + (12.5% Ability Power)) magic damage per second. The storm increases in size over 1.5 seconds. When the storm is fully formed, it Chills, Slows by 30/45/60%, and does (90/135/180 + (37.5% Ability Power)) magic damage per second instead. The storm ends if Anivia is too far away.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "애니비아가 얼음의 비와 폭풍우를 소환하여 적에게 피해를 입히고 이동 속도를 늦춥니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "활성화/비활성화: 애니비아가 1.5초에 걸쳐 크기가 커지는 얼음의 폭풍우를 소환하여 적에게 초당 (30/45/60 + (12.5% 주문력))의 마법 피해를 입히고 20/30/40% 둔화시킵니다. 얼음 폭풍이 최대 크기가 되면 적들을 냉각하고 30/45/60% 둔화시키며, 초당 (90/135/180 + (37.5% 주문력))의 마법 피해를 입힙니다. 애니비아가 너무 멀어지면 폭풍이 멈춥니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Glacial Storm",
+      "ko": "얼음 폭풍"
+    },
+    "cooldownSeconds": [
+      4,
+      3,
+      2
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      750,
+      750,
+      750
+    ],
+    "cost": {
+      "values": [
+        60,
+        60,
+        60
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage Per Second",
+        "values": "30/45/60"
+      },
+      {
+        "label": "Slow",
+        "values": "20%/30%/40%"
+      },
+      {
+        "label": "Chilled Slow Amount",
+        "values": "30%/45%/60%"
+      },
+      {
+        "label": "Mana Cost Per Second",
+        "values": "35/45/55"
+      },
+      {
+        "label": "Cooldown",
+        "values": "4/3/2"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:TotalDamagePerSecond"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamagePerSecond",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          30,
+          45,
+          60
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.125,
+              0.125,
+              0.125
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Anivia.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Anivia.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Anivia.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 80,
+      "end": 82
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 83,
+      "end": 85
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 86,
+      "end": 89
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 101,
+      "end": 103
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 104,
+      "end": 106
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 107,
+      "end": 109
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "12.5%",
+      "value": 12.5,
+      "percent": true,
+      "start": 113,
+      "end": 118
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 193,
+      "end": 196
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 258,
+      "end": 260
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 261,
+      "end": 263
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 264,
+      "end": 267
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 279,
+      "end": 281
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 282,
+      "end": 285
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 286,
+      "end": 289
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "37.5%",
+      "value": 37.5,
+      "percent": true,
+      "start": 293,
+      "end": 298
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 16,
+      "end": 19
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 55,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 58,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 61,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "12.5%",
+      "value": 12.5,
+      "percent": true,
+      "start": 67,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 91,
+      "end": 93
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 94,
+      "end": 96
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 97,
+      "end": 100
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 135,
+      "end": 137
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 138,
+      "end": 140
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 141,
+      "end": 144
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 156,
+      "end": 158
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 159,
+      "end": 162
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 163,
+      "end": 166
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "37.5%",
+      "value": 37.5,
+      "percent": true,
+      "start": 170,
+      "end": 175
+    }
+  ],
+  "sourceHash": "5704ac37da6ac1854f786896e330acf385c97b49c713230f8dcfe8a544df4049",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

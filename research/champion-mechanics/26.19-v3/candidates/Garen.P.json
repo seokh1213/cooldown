@@ -1,0 +1,100 @@
+{
+  "summary": "최근 일정 시간 동안 피해를 입지 않고 적의 스킬에도 맞지 않으면 주기적으로 최대 체력에 비례해 회복합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n3"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "absent",
+          "value": {
+            "kind": "text",
+            "value": "최근 해당 시간 동안 피해를 입음"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "absent",
+          "value": {
+            "kind": "text",
+            "value": "최근 해당 시간 동안 적의 스킬에 맞음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "최근8초간 피해도 받지 않고 적 스킬에도 맞지 않으면5초마다 최대 체력의1.5~10.1%를 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "unknown"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Garen regenerates (1.5% ~ 10.1%) max Health every 5 seconds if he has not been damaged or hit with enemy Abilities in the last 8 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "본문5초당회복과요약매초표현의시간단위차이가있어본문수치를우선한다. KO본문부정조건or는EN의두피격조건모두부재와다르게읽힐수있어EN의두조건부재를기록한다. 회복범위변화기준은미공급.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "he regenerates a percentage of his total health each second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Garen regenerates (1.5% ~ 10.1%) max Health every 5 seconds if he has not been damaged or hit with enemy Abilities in the last 8 seconds."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "가렌이 8초 동안 피해를 입지 않거나 적의 스킬에 맞지 않으면"
+        }
+      ]
+    }
+  ]
+}

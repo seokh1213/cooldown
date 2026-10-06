@@ -1,0 +1,305 @@
+{
+  "summary": "벡스는 일정 시간마다 파멸 상태가 되어 다음 기본 스킬로 적을 쓰러뜨리고 공포에 빠뜨립니다. 주변 적이 돌진하거나 순간 이동하면 우울 표식을 남기며, 벡스가 표식 대상에게 다음 공격을 적중시키면 추가 마법 피해를 주고 파멸 강화 상태의 재사용 대기시간을 줄입니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "레벨범위로제시된최소16~최대25초주기마다파멸상태가된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every (25 ~ 16) seconds Vex becomes afflicted with Doom"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Every (25 ~ 16) seconds Vex becomes afflicted with Doom, causing her next basic Ability to Knock Down and Fear enemies for (0.75 ~ 1.5) seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "파멸을 소비하는 다음 기본 스킬에 적이 적중함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "벡스의 다음 기본 스킬이 적을 쓰러뜨리고 공포에 빠뜨립니다.",
+          "damageType": null,
+          "crowdControl": "knockdown",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "다음기본스킬에맞은적을해당최소~최대시간(초)동안공포에빠뜨린다.",
+          "damageType": null,
+          "crowdControl": "fear",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "causing her next basic Ability to Knock Down and Fear enemies for (0.75 ~ 1.5) seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Every (25 ~ 16) seconds Vex becomes afflicted with Doom, causing her next basic Ability to Knock Down and Fear enemies for (0.75 ~ 1.5) seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "주변 적이 돌진 또는 순간 이동함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "대상에게 6초 동안 우울 표식을 남깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Whenever a nearby enemy dashes or blinks, Vex marks them with Gloom for 6 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공격 전 우울(Gloom) 표식이 있는 적에 대한 다음 기본 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "벡스가 우울 표식이 있는 적을 다음 공격으로 공격하면 추가 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "우울표식을소모한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vex's next Attack against a Gloomed enemy deals an additional ((40 ~ 150) + (25% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Vex's next Attack against a Gloomed enemy deals an additional ((40 ~ 150) + (25% Ability Power)) magic damage and reduces this Ability's Cooldown by 25%."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Vex applies a mark that can be consumed for bonus damage that also reduces the cooldown of her empowered state."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공격 전 우울(Gloom) 표식이 있는 적에 대한 다음 기본 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "우울표식대상에대한다음기본공격이파멸강화상태의재사용대기시간을해당비율만큼줄인다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vex's next Attack against a Gloomed enemy deals an additional ((40 ~ 150) + (25% Ability Power)) magic damage and reduces this Ability's Cooldown by 25%."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

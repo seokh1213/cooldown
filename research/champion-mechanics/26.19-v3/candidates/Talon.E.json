@@ -1,0 +1,132 @@
+{
+  "summary": "탈론이 가장 가까운 지형이나 구조물을 뛰어넘습니다. 한 번 넘은 지형은 정해진 시간 동안 다시 넘을 수 없습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "넘을 지형 또는 구조물의 재사용 제한이 끝남"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "가장 가까운 지형이나 구조물을 뛰어넘습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Talon vaults over the nearest terrain or structure."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "넘어간 지형"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "unknown",
+          "text": "넘은 동일 지형에 160/135/110/85/60초 재사용 제한이 생긴다. 스킬 자체의 짧은 쿨다운과 별개다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Talon cannot dash over the same terrain more than once every 160/135/110/85/60 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "스킬 자체 쿨다운은 짧으며 최대 도약 거리가 있다. 두 수치는 공급 원문에 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Talon vaults over any terrain or structure, up to a max distance. This ability has a low cooldown, but puts the used terrain on a long cooldown."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "missing_source",
+      "detail": "최대 도약 거리와 스킬 자체의 짧은 쿨다운 수치는 공급 원문에 없다. 지형별 160/135/110/85/60초 제한과 혼동하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "up to a max distance. This ability has a low cooldown"
+        }
+      ]
+    }
+  ]
+}

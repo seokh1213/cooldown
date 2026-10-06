@@ -1,0 +1,364 @@
+{
+  "summary": "시비르가 잠시 공격 속도를 얻고, 강화된 기본 공격이 주위 적에게 튕깁니다. 튕긴 공격은 원래 공격이 치명타이면 치명타가 되며, 새로운 대상을 우선합니다. 각대상은최대두번까지맞으며전체튕김은최대8회입니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "공격 속도가 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 4 seconds, Sivir gains 20/25/30/35/40% Attack Speed"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 4 seconds, Sivir gains 20/25/30/35/40% Attack Speed and her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce for up to 8 bounces."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "W사용후4초동안의강화기본공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_followup",
+          "subject": "nearby_enemies",
+          "text": "강화된 기본 공격이 주위의 추가 적에게 튕겨 물리 피해를 입힙니다. 튕김은 최대 횟수까지 이어지고, 각 대상은 최대 횟수만큼 적중당할 수 있습니다. 튕김은 이미 맞은 대상보다 새로운 대상을 우선합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce for up to 8 bounces."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bounces will prioritize new targets before returning to targets that have already been struck. Can only hit each target a maximum of two times."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 4 seconds, Sivir gains 20/25/30/35/40% Attack Speed and her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce for up to 8 bounces."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이W강화공격에서생성된튕김"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "튕김마다공격력의40/42.5/45/47.5/50%물리피해를줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bounces deal 65% damage to minions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 4 seconds, Sivir gains 20/25/30/35/40% Attack Speed and her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce for up to 8 bounces."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "튕김을생성한원래W강화평타가치명타"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "생성한 공격이 치명타이면 튕긴 공격도 치명타가 됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "These bounces critically strike if the attack generating them does."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "text",
+            "value": "low"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이W의튕김피해"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "체력이 낮은 미니언을 처치합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This ability executes low Health minions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이W강화공격에서생성된튕김"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "미니언은기본튕김피해의65%를받습니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Bounces deal 65% damage to minions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 4 seconds, Sivir gains 20/25/30/35/40% Attack Speed and her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce for up to 8 bounces."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "튕김 피해의 공격력 계수가 전체 공격력인지 추가 공격력인지 명확하지 않습니다. 원문은 Attack Damage라고만 합니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "her auto attacks are empowered to bounce to additional surrounding enemies dealing (40/42.5/45/47.5/50% Attack Damage) physical damage each bounce"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "낮은 체력의 구체적인 기준은 원문에 명시되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This ability executes low Health minions."
+        }
+      ]
+    }
+  ]
+}

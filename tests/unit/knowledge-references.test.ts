@@ -7,6 +7,7 @@ import { fillGenerated, loadPlaybooks, type Playbook, type PlaybookEntry } from 
 import { loadCuratedTips } from "../../scripts/llm/lib/knowledge";
 import { validateKnowledge } from "../../scripts/llm/validate-knowledge";
 import type { ChampionCard } from "../../src/lib/knowledge/facts";
+import { deriveItemClaims } from "../../src/lib/knowledge/claims";
 
 const data = loadStaticData("ko_KR");
 const directory = path.join(PUBLIC_DATA_ROOT, data.patch, "llm");
@@ -26,6 +27,24 @@ function validate(entry: PlaybookEntry, actualCards = cards) {
   const book: Playbook = { champion: card.id, playing: [], against: [entry] };
   return validateKnowledge(data, actualCards, new Map([[card.id, book]]), []).findings;
 }
+
+test("챔피언 대상 아이템 조언은 미니언만 끌어당기는 클레드 E를 군중 제어로 세지 않는다", () => {
+  const kled = cards.find(card => card.id === "Kled")!;
+  const jousting = kled.spells.find(spell => spell.slot === "E")!;
+  assert.ok(jousting.effects.includes("강제 이동(넉백/끌기)"), "미니언 끌어당김 자체는 보존한다");
+  assert.equal(jousting.crowdControl?.status, "known");
+  assert.deepEqual(jousting.crowdControl?.effects.map(effect => effect.target), ["nonChampion"]);
+  assert.deepEqual(deriveItemClaims(kled).cc, ["Q", "R"]);
+});
+
+test("검수한 클레드 탈출 노트가 있으면 일반 이동기 설명을 중복 생성하지 않는다", () => {
+  const bundle = JSON.parse(fs.readFileSync(path.join(directory, "advisor-knowledge.json"), "utf8")) as { playbooks: Record<string, Playbook> };
+  const escapes = bundle.playbooks.Kled.against.filter(entry => entry.category === "escape-window");
+  assert.equal(escapes.length, 1, "검수한 수동 탈출 노트가 있으면 일반 도출문을 중복 생성하지 않는다");
+  assert.match(escapes[0].text, /탑승한 상태에서만 E와 R/);
+  assert.match(escapes[0].text, /미탑승|내린 상태/);
+  assert.doesNotMatch(escapes[0].text, /여러 개를 겹쳐 빠져나가므로/);
+});
 
 test("current playbooks validate and generation preserves text while excluding authoring references", () => {
   const playbooks = loadPlaybooks();

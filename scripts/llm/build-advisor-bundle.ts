@@ -114,7 +114,7 @@ function main() {
   for (const card of cards.values()) {
     const book = playbooks.get(card.id) ?? { champion: card.id, playing: [], against: [] };
     const against = book.against.map((entry) => fillGenerated(entry, card));
-    const have = new Set(book.against.map((entry) => entry.generated).filter(Boolean));
+    const have = new Set(book.against.flatMap((entry) => [entry.generated, entry.category]).filter(Boolean));
     for (const made of synthesizeGenerated(card, have)) {
       against.push(made);
       synthesized += 1;

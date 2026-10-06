@@ -1,0 +1,468 @@
+{
+  "champion": "Shaco",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Shaco creates an illusion of himself near him, which can attack nearby enemies (Deals reduced damage to turrets). Upon death, it explodes, spawning three mini Jack in the Boxes and dealing damage to nearby enemies.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Shaco briefly disappears, then reappears with a clone that lasts 18 seconds and detonates when it dies, dealing (150/225/300 + (70% Ability Power)) magic damage and spawning three mini Jack in the Boxes that trigger immediately. The clone deals 60% of Shaco's damage and receives 50% increased damage. Mini Jack in the Boxes deal (10/20/30 + (10% Ability Power)) magic damage, or (25/50/75 + (15% Ability Power)) magic damage if firing at only one enemy, and Fear for 1 second. The clone can be controlled using the Alt key and right click, or by Recasting this Ability.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "샤코가 자신의 환영을 생성합니다. 적 포탑에게는 환영의 피해량이 줄어듭니다. 환영은 죽을 경우 폭발하며 세 개의 작은 깜짝 상자를 남겨 주변 적에게 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "샤코가 잠시 사라졌다가 18초 동안 유지되는 분신과 함께 다시 나타납니다. 분신은 처치되면 폭발하여 (150/225/300 + (70% 주문력))의 마법 피해를 입히고 즉시 발동하는 작은 깜짝 상자 세 개를 남깁니다. 분신은 샤코의 60%에 해당하는 피해를 입히지만, 받는 피해량이 50% 증가합니다. 작은 깜짝 상자는 (10/20/30 + (10% 주문력))의 마법 피해를 입히거나 단일 적 공격 시 (25/50/75 + (15% 주문력))의 마법 피해를 입히고 1초 동안 적을 공포에 빠뜨립니다. Alt 키를 누른 채로 마우스 오른쪽 버튼을 누르거나 이 스킬을 재사용하면 분신을 조종할 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Hallucinate",
+      "ko": "환각"
+    },
+    "cooldownSeconds": [
+      100,
+      90,
+      80
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      200,
+      200,
+      200
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "On Death Damage",
+        "values": "150/225/300"
+      },
+      {
+        "label": "Mini Box Damage",
+        "values": "25/50/75"
+      },
+      {
+        "label": "Cooldown",
+        "values": "100/90/80"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:STDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "ExplosionTotalDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          150,
+          225,
+          300
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.699999988079071,
+              0.699999988079071,
+              0.699999988079071
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "fear",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Shaco.json",
+          "condition": "분신 사망 시 생성되는 상자"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Shaco.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Shaco.R",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "three",
+      "value": 3,
+      "percent": false,
+      "start": 148,
+      "end": 153
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 65,
+      "end": 67
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 113,
+      "end": 116
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 117,
+      "end": 120
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 121,
+      "end": 124
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 128,
+      "end": 131
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "three",
+      "value": 3,
+      "percent": false,
+      "start": 174,
+      "end": 179
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 245,
+      "end": 248
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 280,
+      "end": 283
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 331,
+      "end": 333
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 334,
+      "end": 336
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 337,
+      "end": 339
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 343,
+      "end": 346
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 381,
+      "end": 383
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 384,
+      "end": 386
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 387,
+      "end": 389
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 393,
+      "end": 396
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "one",
+      "value": 1,
+      "percent": false,
+      "start": 444,
+      "end": 447
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 468,
+      "end": 469
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 13,
+      "end": 15
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 61,
+      "end": 64
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 65,
+      "end": 68
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 72,
+      "end": 75
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 130,
+      "end": 133
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 158,
+      "end": 161
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 180,
+      "end": 182
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 183,
+      "end": 185
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 186,
+      "end": 188
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 192,
+      "end": 195
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 226,
+      "end": 228
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 229,
+      "end": 231
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 232,
+      "end": 234
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 238,
+      "end": 241
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 260,
+      "end": 261
+    }
+  ],
+  "sourceHash": "e559067c35b8d710c8fc1db24798121c35d822e501d7027647b5c20acf2c6c0d",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

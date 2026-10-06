@@ -1,0 +1,424 @@
+{
+  "champion": "TahmKench",
+  "slot": "W",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Dive down and then re-appear at target location, damaging and knocking up all enemies in an area.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Dive down and then re-appear at target location, dealing (100/135/170/205/240 + (150% Ability Power)) magic damage and Knock Up all enemies in an area for 1 second. Hitting at least one enemy champion refunds 40/42.5/45/47.5/50% of the Cooldown and Mana cost. Devoured allies can be taken along for the ride (but can always hop out early). Enemies cannot see where you are headed to until 0.75 seconds into the channel. 'Boy, the world's one river, and I'm its king. Ain't no place I ain't been; ain't no place I can't go again.'",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "아래로 잠수한 후 지정한 장소에서 다시 나타나며 피해를 입히고 일정 지역에 있는 모든 적을 공중으로 띄웁니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "아래로 잠수한 후 지정한 장소에서 다시 나타나며 (100/135/170/205/240 + (150% 주문력))의 마법 피해를 입히고 1초 동안 일정 지역에 있는 모든 적을 공중으로 띄웁니다. 적 챔피언을 한 명 이상 적중시키면 재사용 대기시간과 소모한 마나를 40/42.5/45/47.5/50% 돌려받습니다. 집어삼킨 아군을 태우고 함께 이동할 수 있습니다. (아군 유닛은 언제든 일찍 나올 수 있습니다.) 적은 정신 집중 시작 후 0.75초까지 탐 켄치의 도착 지점을 확인할 수 없습니다. '세상은 한 줄기 강이고 내가 강의 왕이지. 내가 가보지 않은 곳은 없고, 돌아갈 수 없는 곳도 없다.'",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Abyssal Dive",
+      "ko": "심연 잠수"
+    },
+    "cooldownSeconds": [
+      21,
+      20,
+      19,
+      18,
+      17
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1000,
+      1050,
+      1100,
+      1150,
+      1200
+    ],
+    "cost": {
+      "values": [
+        60,
+        75,
+        90,
+        105,
+        120
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "21/20/19/18/17"
+      },
+      {
+        "label": "Damage",
+        "values": "100/135/170/205/240"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "60/75/90/105/120"
+      },
+      {
+        "label": "Cooldown Refund",
+        "values": "40%/42.5%/45%/47.5%/50%"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          100,
+          135,
+          170,
+          205,
+          240
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1.5,
+              1.5,
+              1.5,
+              1.5,
+              1.5
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockup",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/TahmKench.json"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Tahm_Kench",
+          "condition": "강제 이동과 함께 적용"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/TahmKench.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "TahmKench.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 58,
+      "end": 61
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 62,
+      "end": 65
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 66,
+      "end": 69
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "205",
+      "value": 205,
+      "percent": false,
+      "start": 70,
+      "end": 73
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "240",
+      "value": 240,
+      "percent": false,
+      "start": 74,
+      "end": 77
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 81,
+      "end": 85
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 155,
+      "end": 156
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "one",
+      "value": 1,
+      "percent": false,
+      "start": 182,
+      "end": 185
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 209,
+      "end": 211
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "42.5",
+      "value": 42.5,
+      "percent": true,
+      "start": 212,
+      "end": 216
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 217,
+      "end": 219
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "47.5",
+      "value": 47.5,
+      "percent": true,
+      "start": 220,
+      "end": 224
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 225,
+      "end": 228
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 389,
+      "end": 393
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "one",
+      "value": 1,
+      "percent": false,
+      "start": 438,
+      "end": 441
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 28,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 32,
+      "end": 35
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 36,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "205",
+      "value": 205,
+      "percent": false,
+      "start": 40,
+      "end": 43
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "240",
+      "value": 240,
+      "percent": false,
+      "start": 44,
+      "end": 47
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 51,
+      "end": 55
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 74,
+      "end": 75
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 145,
+      "end": 147
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "42.5",
+      "value": 42.5,
+      "percent": true,
+      "start": 148,
+      "end": 152
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 153,
+      "end": 155
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "47.5",
+      "value": 47.5,
+      "percent": true,
+      "start": 156,
+      "end": 160
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 161,
+      "end": 164
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 242,
+      "end": 246
+    }
+  ],
+  "sourceHash": "60c6b5310a9726c28bb1a0ce6b47fde2772737bbaaaf2f7b6d4ae2d061ca713a",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

@@ -1,0 +1,176 @@
+{
+  "summary": "카사딘 근처에서 임의의 스킬이 사용될 때마다 E쿨타임이0.75초 감소합니다. 사용하면 전방 원뿔의 적에게 마법 피해와1초둔화를 줍니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스킬 사용 위치가 카사딘 근처"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "카사딘 근처에서 임의의 스킬이 사용될 때마다 힘의파동쿨이0.75초 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Force Pulse's Cooldown is reduced by 0.75 second whenever any Ability is used near Kassadin."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "nearby_enemies",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "카사딘 전방 원뿔 안 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "전방 원뿔 안의 적에게 공허의 파동으로 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "전방 원뿔 안의 적을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kassadin unleashes a void pulse, dealing (70/100/130/160/190 + (70% Ability Power)) magic damage and Slowing by 50/55/60/65/70% for 1 second."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Upon charging up, Kassadin can use Force Pulse to damage and slow enemies in a cone in front of him."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "양언어summary는 충전완료시 사용을 설명하지만 body는 주변스킬사용당0.75초쿨감으로 기술하고 충전 조건을 쓰지 않는다. 구체본문쿨감 우선으로summary를수정하며 추가충전요건을 추정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Upon charging up, Kassadin can use Force Pulse"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Force Pulse's Cooldown is reduced by 0.75 second whenever any Ability is used near Kassadin."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "근처의 구체적인 거리임계값은 없다. anyAbility를 특정아군/적스킬로 제한하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "whenever any Ability is used near Kassadin."
+        }
+      ]
+    }
+  ]
+}

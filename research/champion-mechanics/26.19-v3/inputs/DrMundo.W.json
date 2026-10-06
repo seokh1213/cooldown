@@ -1,0 +1,507 @@
+{
+  "champion": "DrMundo",
+  "slot": "W",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Dr. Mundo electrocutes himself, dealing persistent damage to nearby enemies and storing a portion of damage he takes. At the end of the duration or on Recast, Dr. Mundo deals a burst of damage to nearby enemies. If the burst hit an enemy, he heals a percentage of the stored damage.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Dr. Mundo charges up a defibrilator, dealing 20/35/50/65/80 magic damage each second for up to 3 seconds to nearby enemies. Additionally he stores (80% ~ 95%) of damage taken for the first 0.75 seconds and 25% for the remaining duration as gray health and can Recast. Recast: Detonate the defibrilator, dealing (20/35/50/65/80 + (7% bonus Health)) magic damage to nearby enemies. If this hits at least one champion, Dr. Mundo restores 100% of gray health, otherwise he instead restores 50% of gray health.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "문도 박사가 스스로를 감전시켜 주변 적에게 지속 피해를 입히고 자신이 입는 피해의 일부를 저장합니다. 지속시간이 끝나거나 다시 사용하면 주변 적에게 큰 피해를 입힙니다. 적에게 적중 시 저장한 피해의 일부를 체력으로 회복합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "문도 박사가 제세동기를 충전하여 주변 적에게 최대 3초까지 초당 20/35/50/65/80의 마법 피해를 입힙니다. 추가로 첫 0.75초 동안에는 입는 피해의 (80% ~ 95%)를, 남은 지속시간에는 입는 피해의 25%를 회색 체력으로 저장하고 재사용할 수 있습니다. 재사용 시: 제세동기가 폭발하여 주변 적에게 (20/35/50/65/80 + (7% 추가 체력))의 마법 피해를 입힙니다. 챔피언에게 적중하면 문도 박사가 회색 체력의 100%를 회복하며 그렇지 않으면 회색 체력의 50%를 회복합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Heart Zapper",
+      "ko": "심장 전기 충격"
+    },
+    "cooldownSeconds": [
+      17,
+      16.5,
+      16,
+      15.5,
+      15
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      325,
+      325,
+      325,
+      325,
+      325
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Damage per Tick",
+        "values": "5/8.75/12.5/16.25/20"
+      },
+      {
+        "label": "Recast Damage",
+        "values": "20/35/50/65/80"
+      },
+      {
+        "label": "Cooldown",
+        "values": "17/16.5/16/15.5/15"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          80,
+          80.88235,
+          81.76471,
+          82.64706,
+          83.52941,
+          84.41177,
+          85.29412,
+          86.17647,
+          87.05882,
+          87.94118,
+          88.82353,
+          89.70588,
+          90.58823,
+          91.47059,
+          92.35294,
+          93.23529,
+          94.11765,
+          95,
+          95,
+          95
+        ],
+        "digits": 0,
+        "percent": true
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          20,
+          35,
+          50,
+          65,
+          80
+        ],
+        "terms": [
+          {
+            "stat": "bonusHealth",
+            "coefficientsByRank": [
+              0.07000000029802322,
+              0.07000000029802322,
+              0.07000000029802322,
+              0.07000000029802322,
+              0.07000000029802322
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/DrMundo.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "DrMundo.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 51,
+      "end": 53
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 54,
+      "end": 56
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 57,
+      "end": 59
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 95,
+      "end": 96
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 148,
+      "end": 151
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "95%",
+      "value": 95,
+      "percent": true,
+      "start": 154,
+      "end": 157
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 189,
+      "end": 193
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 206,
+      "end": 209
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 312,
+      "end": 314
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 315,
+      "end": 317
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 318,
+      "end": 320
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 321,
+      "end": 323
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 324,
+      "end": 326
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "7%",
+      "value": 7,
+      "percent": true,
+      "start": 330,
+      "end": 332
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "one",
+      "value": 1,
+      "percent": false,
+      "start": 402,
+      "end": 405
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 435,
+      "end": 439
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 486,
+      "end": 489
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 28,
+      "end": 29
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 36,
+      "end": 38
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 39,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 42,
+      "end": 44
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 71,
+      "end": 75
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 90,
+      "end": 93
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "95%",
+      "value": 95,
+      "percent": true,
+      "start": 96,
+      "end": 99
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 120,
+      "end": 123
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 177,
+      "end": 179
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 180,
+      "end": 182
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 183,
+      "end": 185
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 186,
+      "end": 188
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 189,
+      "end": 191
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "7%",
+      "value": 7,
+      "percent": true,
+      "start": 195,
+      "end": 197
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 245,
+      "end": 249
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 271,
+      "end": 274
+    }
+  ],
+  "sourceHash": "1fd162095cddb1f57d4dfdf05404f2b1eb9157dabb7ba371f16d2da1e39d0c80",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

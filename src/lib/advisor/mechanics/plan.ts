@@ -30,7 +30,10 @@ export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, 
   if (!champion) return undefined;
   const remembered = priorAbility?.job.champion === champion ? previous : undefined;
   const inherit = isMechanicFollowup(question);
-  const topic = questionTopic(question) ?? (inherit ? remembered?.topic : undefined);
+  const detectedTopic = questionTopic(question);
+  // 소환 조건의 “한 대면?”을 이동 속도 질문으로 바꾸지 않는다.
+  const topic = inherit && remembered?.topic === "summon" && detectedTopic === "movement"
+    && !/이속|이동\s*속도|취소/.test(question) ? remembered.topic : detectedTopic ?? (inherit ? remembered?.topic : undefined);
   if (topic === "control") return undefined;
   const explicitPassive = /(?<![A-Za-z])[Pp](?![A-Za-z])/.test(question) ? "P" : undefined;
   const slot = resolved.slot ?? explicitPassive ?? (remembered && (inherit || topic || /패시브|주문력/.test(question)) ? abilitySlot(remembered.abilityId)
@@ -52,8 +55,10 @@ export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, 
   const state = questionState(question, remembered?.abilityId === ability.job.id ? remembered : undefined);
   const text = renderRules(ability.job, rules, question, state);
   if (!text.trim()) return undefined;
+  const summonName = topic === "summon" ? /정령|영혼|소환/.exec(question)?.[0] : undefined;
   const next: MechanicMemory = { abilityId: ability.job.id, sourceHash: ability.job.sourceHash, topic,
     ruleIndices: rules.map(rule => ability.draft.rules.indexOf(rule)), amount: state.amount, targetType: state.targetType,
     followupStatus: state.followupStatus, shieldReady: state.shieldReady, hitCount: state.hitCount };
-  return { plan: { type: "card", answer: { ...answer, focus: "effect", headline: undefined, facts: [], highlighted: text.split("\n\n") } }, memory: next };
+  return { plan: { type: "card", answer: { ...answer, focus: "effect", headline: undefined, facts: [],
+    highlighted: (summonName ? `${summonName} 생성 조건:\n${text}` : text).split("\n\n") } }, memory: next };
 }

@@ -1,0 +1,352 @@
+{
+  "summary": "일정 횟수의 공격을 쌓으면 헤드샷을 발사한다. 헤드샷은 추가 물리 피해를 입히며, 요들잡이 덫에 적중한 적에게는 추가 피해를 더 입힌다. 덫·투망에 영향을 받는 적을 향한 헤드샷은 사거리가 늘어난다. 헤드샷 추가 피해는 치명타 확률에 따라 증가하지만 정확한 공식은 제공되지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "케이틀린이 수풀 안에서 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "수풀 안에서 한 기본 공격은 헤드샷 준비에 두 번 반영됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks while in brush count as 2 for building towards a Headshot."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "헤드샷 준비 카운터가 다음 발동 주기에 도달함. 기본 공격 5회분마다 발동하며, 수풀 안 공격은 2회분으로 계산되고 발사 후 다음 주기를 다시 누적한다."
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "다섯 번째 공격마다 헤드샷을 발사합니다. 이 헤드샷은 공격 횟수 누적 경로로 발동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 5 Attacks, Caitlyn fires a Headshot. Attacks while in brush count as 2 for building towards a Headshot."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "헤드샷은 추가 물리 피해를 입히며, 피해는 케이틀린의 공격력 및 치명타 확률에 따라 증가합니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 5 Attacks, Caitlyn fires a Headshot."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Headshots deal an additional ((60% ~ 100%) Attack Damage) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "90 Caliber Net 또는 Yordle Snap Trap"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "헤드샷은 90 Caliber Net 또는 Yordle Snap Trap의 영향을 받는 적에 대해 사거리가 두 배입니다. 스키마와 수치 인벤토리에 이 사거리 배수를 위한 수치 참조가 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "They have double range against enemies affected by 90 Caliber Net and Yordle Snap Trap."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks while in brush count as 2 for building towards a Headshot."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "요들잡이 덫에 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "요들잡이 덫에 적중한 적에게 헤드샷은 추가 물리 피해를 더 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Headshots against enemies hit by Yordle Snap Trap deal a further (35/80/125/170/215 + (30% bonus Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "요들잡이 덫 또는 90구경 투망에 걸림"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "요들잡이 덫 또는 90구경 투망에 걸린 대상을 공격할 때 헤드샷을 발사합니다. 일반 헤드샷 피해 규칙이 이 공격의 추가 피해를 처리합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Every few basic attacks, or against a target she has trapped or netted, Caitlyn will fire a headshot dealing bonus damage that scales with her critical strike chance."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Headshots deal an additional ((60% ~ 100%) Attack Damage) physical damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "헤드샷 사거리 배수는 원문에 두 배라고 명시되지만 입력 수치 참조에 포함되지 않고 스키마에 사거리 modifier 필드가 없습니다. 본문 텍스트로만 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "They have double range against enemies affected by 90 Caliber Net and Yordle Snap Trap."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "헤드샷 추가 피해가 치명타 확률에 따라 증가하지만 치명타 확률과 피해의 정확한 계산식은 제공되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Every few basic attacks, or against a target she has trapped or netted, Caitlyn will fire a headshot dealing bonus damage that scales with her critical strike chance."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "덫 또는 투망으로 헤드샷을 얻는 대체 경로는 요약에 있지만, 해당 상태가 헤드샷 공격 기회를 얼마나 유지하는지 구체적으로 주어지지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Every few basic attacks, or against a target she has trapped or netted, Caitlyn will fire a headshot dealing bonus damage that scales with her critical strike chance."
+        }
+      ]
+    }
+  ]
+}

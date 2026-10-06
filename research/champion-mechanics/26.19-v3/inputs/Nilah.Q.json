@@ -1,0 +1,462 @@
+{
+  "champion": "Nilah",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "With a snap of her whip-blade, Nilah damages any enemies she hits in a straight line in her chosen direction. This action extends her attack range for a short duration.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive: Nilah gains (30% Critical Strike Chance) Armor Penetration, and her Attacks against champions restore (20% Critical Strike Chance) damage dealt as Health. Overhealing from this is converted into a Shield for 4 seconds. Active: Nilah cracks her whip-blade, dealing (0/10/20/30/40 + (100% Attack Damage)) physical damage. If an enemy unit or structure is hit, Nilah gains 125 Attack Range and (10 ~ 60)% Attack Speed, and her Attacks hit in a cone for 4 seconds. Damage is increased by her Critical Strike Chance and Critical Strike Damage at 70% effectiveness. If cast during Slipstream, Nilah creates a wave of water striking all enemies along Nilah's path. Area attacks deal 33% damage to minions and 100% damage to monsters. This ability executes low Health minions.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "지정한 방향으로 칼날 채찍을 후려쳐 일직선상에 있는 모든 적에게 피해를 입힙니다. 공격 사거리가 잠깐 동안 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과: 방어구 관통력이 (30% 치명타 확률) 증가하고, 챔피언에게 기본 공격 시 입힌 피해의 (20% 치명타 확률)만큼 체력을 회복합니다. 최대 체력을 초과한 회복량은 4초 동안 유지되는 보호막으로 전환됩니다. 사용 시: 칼날 채찍을 휘둘러 (0/10/20/30/40 + (100% 공격력))의 물리 피해를 입힙니다. 적 유닛이나 구조물에 공격이 적중하면 125의 공격 사거리와 (10 ~ 60)%의 공격 속도를 얻으며, 4초 동안 원뿔 범위를 공격합니다. 피해량은 치명타 확률 및 치명타 피해량에 따라 70%만큼 증가합니다. 급류 사용 중에 사용하면 파도를 일으켜 경로상의 모든 적을 공격합니다. 광역 공격 시 미니언에게는 33%의 피해를 입히고 몬스터에게는 100%의 피해를 입힙니다. 체력이 낮은 미니언을 즉시 처치합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Formless Blade",
+      "ko": "무형의 검"
+    },
+    "cooldownSeconds": [
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      600,
+      600,
+      600,
+      600,
+      600
+    ],
+    "cost": {
+      "values": [
+        30,
+        30,
+        30,
+        30,
+        30
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "0/10/20/30/40"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          10,
+          12.94118,
+          15.88235,
+          18.82353,
+          21.76471,
+          24.70588,
+          27.64706,
+          30.58824,
+          33.52941,
+          36.47059,
+          39.41176,
+          42.35294,
+          45.29412,
+          48.23529,
+          51.17647,
+          54.11765,
+          57.05882,
+          60,
+          60,
+          60
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:DamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "AttackTotalDamageTooltip",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "terms": [
+          {
+            "stat": "totalAttackDamage",
+            "coefficientsByRank": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Nilah.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Nilah.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 22,
+      "end": 25
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 112,
+      "end": 115
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 217,
+      "end": 218
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "0",
+      "value": 0,
+      "percent": false,
+      "start": 274,
+      "end": 275
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 276,
+      "end": 278
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 279,
+      "end": 281
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 282,
+      "end": 284
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 285,
+      "end": 287
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 291,
+      "end": 295
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 379,
+      "end": 382
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 401,
+      "end": 403
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 406,
+      "end": 408
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 459,
+      "end": 460
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 550,
+      "end": 553
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "33%",
+      "value": 33,
+      "percent": true,
+      "start": 685,
+      "end": 688
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 711,
+      "end": 715
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 20,
+      "end": 23
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 60,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 101,
+      "end": 102
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "0",
+      "value": 0,
+      "percent": false,
+      "start": 143,
+      "end": 144
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 145,
+      "end": 147
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 148,
+      "end": 150
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 151,
+      "end": 153
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 154,
+      "end": 156
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 160,
+      "end": 164
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 206,
+      "end": 209
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 220,
+      "end": 222
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 225,
+      "end": 227
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 243,
+      "end": 244
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 289,
+      "end": 292
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "33%",
+      "value": 33,
+      "percent": true,
+      "start": 357,
+      "end": 360
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 377,
+      "end": 381
+    }
+  ],
+  "sourceHash": "e09fa1ea08a7856b600e1278cf5b77c33c783c889cafeca086168e77ad008a7c",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

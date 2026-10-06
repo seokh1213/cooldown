@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 2,
+  "id": "Ezreal.P",
+  "champion": "Ezreal",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "35ce91f83707aff1a0cfc09e1441676321820618f166425a67eea860cf488648",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Rising Spell Force",
+      "ko": "끓어오르는 주문의 힘"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Ezreal.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Ezreal gains increasing Attack Speed each time he successfully hits a spell, stacking up to 5 times.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Ezreal's Ability hits grant him 10% Attack Speed for 6 seconds, stacking up to 5 times.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "이즈리얼이 스킬을 적중시킬 때마다 공격 속도가 증가합니다. (최대 5회 중첩)",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "이즈리얼이 스킬을 적중시키면 6초 동안 공격 속도가 10% 증가합니다. 이 효과는 최대 5번 중첩됩니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 92,
+      "end": 93
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 32,
+      "end": 35
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 53,
+      "end": 54
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 79,
+      "end": 80
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 37,
+      "end": 38
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 16,
+      "end": 17
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 29,
+      "end": 32
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 49,
+      "end": 50
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "이즈리얼이 스킬을 적중시키면 공격 속도가 증가하고, 효과는 중첩됩니다.",
+  "rules": [
+    {
+      "id": "5b941d56feb059c6b2d2",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "스킬 적중 시 일정 시간 동안 공격 속도를 얻으며, 효과가 중첩됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Ezreal's Ability hits grant him 10% Attack Speed for 6 seconds, stacking up to 5 times."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "93b87aee29815d1cde391b7f79a8cbe54504b54efe7e387b453e974f37291fc9"
+}

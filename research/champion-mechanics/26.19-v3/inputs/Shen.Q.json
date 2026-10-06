@@ -1,0 +1,839 @@
+{
+  "champion": "Shen",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Shen recalls his spirit blade to attack with it, dealing damage based on the target's max health. The attacks are greatly empowered if it collides with an enemy champion, and all collided enemies are slowed while running away from Shen.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Shen recalls his Spirit Blade. Enemies hit by the pull are Slowed by 25/30/35/40/45% while moving away from Shen for the next 2 seconds. Additionally, Shen's next 3 Attacks deal an additional (10 ~ 40) plus (2/2.5/3/3.5/4% + (1.5% per 100 Ability Power)) max Health magic damage. If Shen hit an enemy champion with the Spirit Blade, the damage is increased to (10 ~ 40) plus (5/5.5/6/6.5/7% + (2% per 100 Ability Power)) max Health magic damage and he gains 50% Attack Speed for those Attacks. Each Attack deals 100% increased damage to jungle monsters (max 100/125/150/175/200 damage). Attacks against structures deal (10 ~ 40) damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "쉔이 기의 검을 불러들여 공격해 대상의 최대 체력에 비례한 피해를 입힙니다. 기의 검이 적 챔피언과 충돌하면 이 공격이 크게 강화되며, 기의 검에 부딪힌 적들은 쉔으로부터 달아날 때 둔화됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "쉔이 기의 검을 불러냅니다. 기의 검에 부딪히는 적들은 2초 동안 쉔으로부터 멀어지려 할 때 25/30/35/40/45% 둔화됩니다. 쉔의 다음 기본 공격 3회는 (10 ~ 40)+최대 체력의 (2/2.5/3/3.5/4% + (주문력 100당 1.5%))에 해당하는 마법 피해를 추가로 입힙니다. 기의 검이 적 챔피언에게 부딪힌 경우, (10 ~ 40)+최대 체력의 (5/5.5/6/6.5/7% + (주문력 100당 2%))에 해당하는 마법 피해를 입힙니다. 또한 공격 속도가 50% 증가합니다. 정글 몬스터 상대로는 피해량이 100% 증가합니다. (최대 피해량: 100/125/150/175/200) 구조물 상대로는 (10 ~ 40)의 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Twilight Assault",
+      "ko": "황혼 강습"
+    },
+    "cooldownSeconds": [
+      8,
+      7.25,
+      6.5,
+      5.75,
+      5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      400,
+      400,
+      400,
+      400,
+      400
+    ],
+    "cost": {
+      "values": [
+        140,
+        130,
+        120,
+        110,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Base Percent Damage",
+        "values": "2%/2.5%/3%/3.5%/4%"
+      },
+      {
+        "label": "Enhanced Percent Damage",
+        "values": "5%/5.5%/6%/6.5%/7%"
+      },
+      {
+        "label": "Slow",
+        "values": "25%/30%/35%/40%/45%"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "140/130/120/110/100"
+      },
+      {
+        "label": "Monster Damage Cap",
+        "values": "100/125/150/175/200"
+      },
+      {
+        "label": "Cooldown",
+        "values": "8/7.25/6.5/5.75/5"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          10,
+          10,
+          10,
+          16,
+          16,
+          16,
+          22,
+          22,
+          22,
+          28,
+          28,
+          28,
+          34,
+          34,
+          34,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "digits": 0
+      },
+      {
+        "values": [
+          10,
+          10,
+          10,
+          16,
+          16,
+          16,
+          22,
+          22,
+          22,
+          28,
+          28,
+          28,
+          34,
+          34,
+          34,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:BaseFlatDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "BaseFlatDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByLevel": [
+          10,
+          10,
+          10,
+          16,
+          16,
+          16,
+          22,
+          22,
+          22,
+          28,
+          28,
+          28,
+          34,
+          34,
+          34,
+          40,
+          40,
+          40
+        ],
+        "terms": []
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Shen.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Shen.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Shen.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 69,
+      "end": 71
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 72,
+      "end": 74
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 75,
+      "end": 77
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 78,
+      "end": 80
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 81,
+      "end": 84
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 126,
+      "end": 127
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 163,
+      "end": 164
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 193,
+      "end": 195
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 198,
+      "end": 200
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": true,
+      "start": 208,
+      "end": 209
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": true,
+      "start": 210,
+      "end": 213
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": true,
+      "start": 214,
+      "end": 215
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "3.5",
+      "value": 3.5,
+      "percent": true,
+      "start": 216,
+      "end": 219
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "4%",
+      "value": 4,
+      "percent": true,
+      "start": 220,
+      "end": 222
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 226,
+      "end": 230
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 235,
+      "end": 238
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 361,
+      "end": 363
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 366,
+      "end": 368
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": true,
+      "start": 376,
+      "end": 377
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "5.5",
+      "value": 5.5,
+      "percent": true,
+      "start": 378,
+      "end": 381
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 382,
+      "end": 383
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "6.5",
+      "value": 6.5,
+      "percent": true,
+      "start": 384,
+      "end": 387
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "7%",
+      "value": 7,
+      "percent": true,
+      "start": 388,
+      "end": 390
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "2%",
+      "value": 2,
+      "percent": true,
+      "start": 394,
+      "end": 396
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 401,
+      "end": 404
+    },
+    {
+      "id": "en:body:n25",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 458,
+      "end": 461
+    },
+    {
+      "id": "en:body:n26",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 512,
+      "end": 516
+    },
+    {
+      "id": "en:body:n27",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 558,
+      "end": 561
+    },
+    {
+      "id": "en:body:n28",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 562,
+      "end": 565
+    },
+    {
+      "id": "en:body:n29",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 566,
+      "end": 569
+    },
+    {
+      "id": "en:body:n30",
+      "sourceId": "en:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 570,
+      "end": 573
+    },
+    {
+      "id": "en:body:n31",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 574,
+      "end": 577
+    },
+    {
+      "id": "en:body:n32",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 620,
+      "end": 622
+    },
+    {
+      "id": "en:body:n33",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 625,
+      "end": 627
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 31,
+      "end": 32
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 52,
+      "end": 54
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 55,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 58,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 61,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 64,
+      "end": 67
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 87,
+      "end": 88
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 92,
+      "end": 94
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 97,
+      "end": 99
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": true,
+      "start": 109,
+      "end": 110
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": true,
+      "start": 111,
+      "end": 114
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": true,
+      "start": 115,
+      "end": 116
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "3.5",
+      "value": 3.5,
+      "percent": true,
+      "start": 117,
+      "end": 120
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "4%",
+      "value": 4,
+      "percent": true,
+      "start": 121,
+      "end": 123
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 131,
+      "end": 134
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 136,
+      "end": 140
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 189,
+      "end": 191
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 194,
+      "end": 196
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": true,
+      "start": 206,
+      "end": 207
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "5.5",
+      "value": 5.5,
+      "percent": true,
+      "start": 208,
+      "end": 211
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": true,
+      "start": 212,
+      "end": 213
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "6.5",
+      "value": 6.5,
+      "percent": true,
+      "start": 214,
+      "end": 217
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "7%",
+      "value": 7,
+      "percent": true,
+      "start": 218,
+      "end": 220
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 228,
+      "end": 231
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "2%",
+      "value": 2,
+      "percent": true,
+      "start": 233,
+      "end": 235
+    },
+    {
+      "id": "ko:body:n25",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 267,
+      "end": 270
+    },
+    {
+      "id": "ko:body:n26",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 295,
+      "end": 299
+    },
+    {
+      "id": "ko:body:n27",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 316,
+      "end": 319
+    },
+    {
+      "id": "ko:body:n28",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 320,
+      "end": 323
+    },
+    {
+      "id": "ko:body:n29",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 324,
+      "end": 327
+    },
+    {
+      "id": "ko:body:n30",
+      "sourceId": "ko:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 328,
+      "end": 331
+    },
+    {
+      "id": "ko:body:n31",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 332,
+      "end": 335
+    },
+    {
+      "id": "ko:body:n32",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 347,
+      "end": 349
+    },
+    {
+      "id": "ko:body:n33",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 352,
+      "end": 354
+    }
+  ],
+  "sourceHash": "29b27e9a92c9e6579aaf4fe32048a27ac360a418caf2b434821c41af0cf749a8",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

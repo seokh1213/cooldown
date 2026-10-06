@@ -1,0 +1,314 @@
+{
+  "champion": "Sett",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Sett carries an enemy champion through the air and slams them into the ground, dealing damage and slowing all enemies near where they land.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Sett grabs an enemy champion and Suppresses them as he carries them forward, then slams them into the ground, dealing (200/300/400 + (120% bonus Attack Damage)) plus 40/50/60% of the grabbed enemy's bonus Health physical damage to surrounding enemies and Slowing them by 99% for 1 second. Enemies take less damage the further they are from where Sett lands.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "세트가 적 하나를 붙잡아 공중으로 도약한 후 바닥에 내리꽂아 피해를 입히고 착지 지점 근처에 있는 모든 적을 둔화시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "세트가 적 챔피언을 붙잡고 제압한 후 앞으로 도약해 바닥에 내리꽂습니다. 주변에 있는 적은 (200/300/400 + (120% 추가 공격력)) + 붙잡은 적 추가 체력의 40/50/60%에 해당하는 물리 피해를 입고 1초 동안 99% 둔화됩니다. 세트가 착지하는 지점에서 멀리 떨어질수록 더 적은 피해를 입습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "The Show Stopper",
+      "ko": "대미 장식"
+    },
+    "cooldownSeconds": [
+      120,
+      100,
+      80
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      400,
+      400,
+      400
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "120/100/80"
+      },
+      {
+        "label": "Bonus Health Damage",
+        "values": "40%/50%/60%"
+      },
+      {
+        "label": "Base Damage",
+        "values": "200/300/400"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:DamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "DamageCalc",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          200,
+          300,
+          400
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "suppression",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Sett",
+          "condition": "붙잡은 주 대상"
+        },
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Sett",
+          "condition": "착지 범위 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Sett.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Sett.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 119,
+      "end": 122
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 123,
+      "end": 126
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 127,
+      "end": 130
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 134,
+      "end": 138
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 166,
+      "end": 168
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": true,
+      "start": 169,
+      "end": 171
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 172,
+      "end": 175
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "99%",
+      "value": 99,
+      "percent": true,
+      "start": 271,
+      "end": 274
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 279,
+      "end": 280
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 52,
+      "end": 55
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 56,
+      "end": 59
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 60,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 67,
+      "end": 71
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 96,
+      "end": 98
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": true,
+      "start": 99,
+      "end": 101
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 102,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 122,
+      "end": 123
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "99%",
+      "value": 99,
+      "percent": true,
+      "start": 128,
+      "end": 131
+    }
+  ],
+  "sourceHash": "54564192a08e59ef93aea7cee9b9b1203a784727079ca3f58c825024b3ef456d",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

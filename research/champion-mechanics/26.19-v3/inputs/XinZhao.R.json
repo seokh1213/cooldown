@@ -1,0 +1,324 @@
+{
+  "champion": "XinZhao",
+  "slot": "R",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Xin Zhao passively challenges an enemy he damaged recently. When activated, Xin Zhao deals damage to nearby enemies based on their current Health and knocks non-challenged targets back, becoming impervious to damage dealt by champions outside of the circle created.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive: The last champion Xin Zhao damaged with an Attack or Audacious Charge is Challenged for 3 seconds. Active: Xin Zhao unleashes a sweep around him that deals (75/175/275 + (100% bonus Attack Damage) + (110% Ability Power)) plus 15% current Health physical damage and Knocks Back all non-Challenged enemies. Afterwards, Xin Zhao becomes immune to damage from enemies outside the sweep range for 4 seconds. Deals a max of 600 damage to jungle monsters and minions.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "기본 지속 효과로 신 짜오가 자신이 최근에 피해를 입힌 적에게 도전합니다. 사용 시, 신 짜오가 주위 적들에게 각 유닛의 현재 체력에 비례한 피해를 입히고 도전 받지 않은 대상을 뒤로 밀어내며 일정 거리 밖에 있는 적 챔피언에게 피해를 받지 않는 상태가 됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과: 신 짜오의 기본 공격 또는 무쌍돌격에 마지막으로 적중당한 적 챔피언은 3초 동안 도전 받은 상태가 됩니다. 사용 시: 신 짜오가 창을 휘둘러 적에게 (75/175/275 + (100% 추가 공격력) + (110% 주문력)) + 적 현재 체력의 15%에 해당하는 물리 피해를 입히고 도전 받지 않은 적을 뒤로 밀쳐냅니다. 이후 신 짜오가 4초 동안 창이 닿는 거리 밖에 있는 적의 공격에 피해를 입지 않게 됩니다. 정글 몬스터와 미니언 상대로는 최대 600의 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Crescent Guard",
+      "ko": "현월수호"
+    },
+    "cooldownSeconds": [
+      120,
+      110,
+      100
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      500,
+      500,
+      500
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "75/175/275"
+      },
+      {
+        "label": "Cooldown",
+        "values": "120/110/100"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          75,
+          175,
+          275
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1.100000023841858,
+              1.100000023841858,
+              1.100000023841858
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockback",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/XinZhao.json"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Xin_Zhao",
+          "condition": "강제 이동과 함께 적용"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/XinZhao.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "XinZhao.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 97,
+      "end": 98
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 166,
+      "end": 168
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 169,
+      "end": 172
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 173,
+      "end": 176
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 180,
+      "end": 184
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "110%",
+      "value": 110,
+      "percent": true,
+      "start": 209,
+      "end": 213
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 235,
+      "end": 238
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 401,
+      "end": 402
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "600",
+      "value": 600,
+      "percent": false,
+      "start": 427,
+      "end": 430
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 49,
+      "end": 50
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 94,
+      "end": 96
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 97,
+      "end": 100
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 101,
+      "end": 104
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 108,
+      "end": 112
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "110%",
+      "value": 110,
+      "percent": true,
+      "start": 124,
+      "end": 128
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 146,
+      "end": 149
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 198,
+      "end": 199
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "600",
+      "value": 600,
+      "percent": false,
+      "start": 261,
+      "end": 264
+    }
+  ],
+  "sourceHash": "41005f6a3f1eec7717b28676b60da1e02857f18f553de7cb9e902cf90b6f332b",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

@@ -1,0 +1,724 @@
+{
+  "champion": "Gnar",
+  "slot": "Q",
+  "patch": "26.19",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Gnar throws a boomerang that damages and slows enemies it hits before returning to him. If he catches the boomerang its cooldown is reduced. Mega Gnar instead throws a boulder that stops on the first unit hit, damaging and slowing everything nearby. It can then be picked up to reduce the cooldown.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Mini Gnar: Gnar throws a boomerang that deals (5/45/85/125/165 + (125% Attack Damage)) physical damage and Slows by 15/20/25/30/35% for 2 seconds. The boomerang returns after hitting an enemy, dealing reduced damage to subsequent targets. Each enemy can only be hit once. Catching the boomerang reduces its Cooldown by 40%. Deals 50% damage to enemies beyond the first.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "나르가 부메랑을 던지면 맞힌 적에게 피해를 입히고 속도를 늦춘 다음 나르에게 돌아옵니다. 나르가 부메랑을 받으면 재사용 대기시간이 감소합니다. 메가 나르는 돌덩어리를 던져 주위 모두에게 피해를 입히고 속도를 늦춥니다. 던져진 돌덩어리는 적에게 맞으면 그 자리에 멈추며, 메가 나르가 다시 집어들면 재사용 대기시간이 감소합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "미니 나르: 나르가 부메랑을 던져 (5/45/85/125/165 + (125% 공격력))의 물리 피해를 입히고 2초 동안 15/20/25/30/35% 둔화시킵니다. 부메랑은 적 하나를 맞힌 다음 돌아오며, 이후 맞히는 적들은 받는 피해량이 감소합니다. 적 하나당 부메랑에 한 번만 맞습니다. 부메랑을 받으면 재사용 대기시간이 40% 감소합니다. 첫 번째 적에게 적중한 후에 적중당한 적은 50%의 피해를 입습니다.",
+      "variant": null
+    },
+    {
+      "id": "form:A:en",
+      "text": "Mini Gnar: Gnar throws a boomerang that deals (5/45/85/125/165 + (125% Attack Damage)) physical damage and Slows by 15/20/25/30/35% for 2 seconds. The boomerang returns after hitting an enemy, dealing reduced damage to subsequent targets. Each enemy can only be hit once. Catching the boomerang reduces its Cooldown by 40%. Deals 50% damage to enemies beyond the first.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:A"
+    },
+    {
+      "id": "form:B:en",
+      "text": "Mega Gnar: Gnar hurls a boulder, dealing (45/90/135/180/225 + (140% Attack Damage)) physical damage and Slowing by 30/35/40/45/50% for 2 seconds to the first enemy hit and surrounding enemies. Picking up the boulder reduces this Ability's Cooldown by 70%.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:B"
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    },
+    {
+      "id": "form:A",
+      "label": "Mini",
+      "sourceIds": [
+        "form:A:en"
+      ]
+    },
+    {
+      "id": "form:B",
+      "label": "Mega",
+      "sourceIds": [
+        "form:B:en"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Boomerang Throw / Boulder Toss",
+      "ko": "부메랑 던지기 / 돌덩이 던지기"
+    },
+    "cooldownSeconds": [
+      16,
+      14.5,
+      13,
+      11.5,
+      10
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1100,
+      1100,
+      1100,
+      1100,
+      1100
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Boomerang Damage",
+        "values": "5/45/85/125/165"
+      },
+      {
+        "label": "Boulder Damage",
+        "values": "45/90/135/180/225"
+      },
+      {
+        "label": "Slow",
+        "values": "15%/20%/25%/30%/35%"
+      },
+      {
+        "label": "Boulder Slow Amount",
+        "values": "30%/35%/40%/45%/50%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "16/14.5/13/11.5/10"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:MiniTotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "MiniTotalDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          5,
+          45,
+          85,
+          125,
+          165
+        ],
+        "terms": [
+          {
+            "stat": "totalAttackDamage",
+            "coefficientsByRank": [
+              1.25,
+              1.25,
+              1.25,
+              1.25,
+              1.25
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Gnar",
+          "condition": "두 형태 모두"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [
+      {
+        "key": "A",
+        "label": "Mini",
+        "id": "GnarQ",
+        "name": "Boomerang Throw",
+        "iconPath": "assets/characters/gnar/hud/icons2d/gnar_q.png",
+        "iconVersion": "16.19",
+        "cooldownSeconds": [
+          16,
+          14.5,
+          13,
+          11.5,
+          10
+        ],
+        "tooltipRankSource": "Q",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      {
+        "key": "B",
+        "label": "Mega",
+        "id": "GnarBigQ",
+        "name": "Boulder Toss",
+        "iconPath": "assets/characters/gnar/hud/icons2d/gnarbig_q.png",
+        "iconVersion": "16.19",
+        "cooldownSeconds": [
+          16,
+          14.5,
+          13,
+          11.5,
+          10
+        ],
+        "tooltipRankSource": "Q",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    ],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Gnar.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Gnar.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 47,
+      "end": 48
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 49,
+      "end": 51
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 52,
+      "end": 54
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 55,
+      "end": 58
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "125%",
+      "value": 125,
+      "percent": true,
+      "start": 66,
+      "end": 70
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 116,
+      "end": 118
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 119,
+      "end": 121
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 122,
+      "end": 124
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 125,
+      "end": 127
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 128,
+      "end": 131
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 136,
+      "end": 137
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 319,
+      "end": 322
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 330,
+      "end": 333
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 20,
+      "end": 21
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 22,
+      "end": 24
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 28,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 32,
+      "end": 35
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "125%",
+      "value": 125,
+      "percent": true,
+      "start": 39,
+      "end": 43
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 62,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 68,
+      "end": 70
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 71,
+      "end": 73
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 74,
+      "end": 76
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 77,
+      "end": 79
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 80,
+      "end": 83
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 182,
+      "end": 185
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 217,
+      "end": 220
+    },
+    {
+      "id": "form:A:en:n0",
+      "sourceId": "form:A:en",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 47,
+      "end": 48
+    },
+    {
+      "id": "form:A:en:n1",
+      "sourceId": "form:A:en",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 49,
+      "end": 51
+    },
+    {
+      "id": "form:A:en:n2",
+      "sourceId": "form:A:en",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 52,
+      "end": 54
+    },
+    {
+      "id": "form:A:en:n3",
+      "sourceId": "form:A:en",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 55,
+      "end": 58
+    },
+    {
+      "id": "form:A:en:n4",
+      "sourceId": "form:A:en",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "form:A:en:n5",
+      "sourceId": "form:A:en",
+      "raw": "125%",
+      "value": 125,
+      "percent": true,
+      "start": 66,
+      "end": 70
+    },
+    {
+      "id": "form:A:en:n6",
+      "sourceId": "form:A:en",
+      "raw": "15",
+      "value": 15,
+      "percent": true,
+      "start": 116,
+      "end": 118
+    },
+    {
+      "id": "form:A:en:n7",
+      "sourceId": "form:A:en",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 119,
+      "end": 121
+    },
+    {
+      "id": "form:A:en:n8",
+      "sourceId": "form:A:en",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 122,
+      "end": 124
+    },
+    {
+      "id": "form:A:en:n9",
+      "sourceId": "form:A:en",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 125,
+      "end": 127
+    },
+    {
+      "id": "form:A:en:n10",
+      "sourceId": "form:A:en",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 128,
+      "end": 131
+    },
+    {
+      "id": "form:A:en:n11",
+      "sourceId": "form:A:en",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 136,
+      "end": 137
+    },
+    {
+      "id": "form:A:en:n12",
+      "sourceId": "form:A:en",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 319,
+      "end": 322
+    },
+    {
+      "id": "form:A:en:n13",
+      "sourceId": "form:A:en",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 330,
+      "end": 333
+    },
+    {
+      "id": "form:B:en:n0",
+      "sourceId": "form:B:en",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 42,
+      "end": 44
+    },
+    {
+      "id": "form:B:en:n1",
+      "sourceId": "form:B:en",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    },
+    {
+      "id": "form:B:en:n2",
+      "sourceId": "form:B:en",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "form:B:en:n3",
+      "sourceId": "form:B:en",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 52,
+      "end": 55
+    },
+    {
+      "id": "form:B:en:n4",
+      "sourceId": "form:B:en",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 56,
+      "end": 59
+    },
+    {
+      "id": "form:B:en:n5",
+      "sourceId": "form:B:en",
+      "raw": "140%",
+      "value": 140,
+      "percent": true,
+      "start": 63,
+      "end": 67
+    },
+    {
+      "id": "form:B:en:n6",
+      "sourceId": "form:B:en",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 115,
+      "end": 117
+    },
+    {
+      "id": "form:B:en:n7",
+      "sourceId": "form:B:en",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 118,
+      "end": 120
+    },
+    {
+      "id": "form:B:en:n8",
+      "sourceId": "form:B:en",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 121,
+      "end": 123
+    },
+    {
+      "id": "form:B:en:n9",
+      "sourceId": "form:B:en",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 124,
+      "end": 126
+    },
+    {
+      "id": "form:B:en:n10",
+      "sourceId": "form:B:en",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 127,
+      "end": 130
+    },
+    {
+      "id": "form:B:en:n11",
+      "sourceId": "form:B:en",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 135,
+      "end": 136
+    },
+    {
+      "id": "form:B:en:n12",
+      "sourceId": "form:B:en",
+      "raw": "70%",
+      "value": 70,
+      "percent": true,
+      "start": 251,
+      "end": 254
+    }
+  ],
+  "sourceHash": "d2ffa51d9a0b79005aa9b724530f17e49df2b57b6e1a315a8b73d2dbbaac353b",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

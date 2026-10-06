@@ -1,0 +1,917 @@
+{
+  "schemaVersion": 2,
+  "id": "Zeri.E",
+  "champion": "Zeri",
+  "slot": "E",
+  "patch": "26.19",
+  "sourceHash": "1a31e900b5406ea245f8f6980599d20c764ffd71d513301b8c1311ecdcc1c81c",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Spark Surge",
+      "ko": "스파크 돌진"
+    },
+    "cooldownSeconds": [
+      24,
+      22.5,
+      21,
+      19.5,
+      18
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      25000,
+      25000,
+      25000,
+      25000,
+      25000
+    ],
+    "cost": {
+      "values": [
+        90,
+        85,
+        80,
+        75,
+        70
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Percentage Damage",
+        "values": "80%/85%/90%/95%/100%"
+      },
+      {
+        "label": "Base Damage",
+        "values": "22/24/26/28/30"
+      },
+      {
+        "label": "Cooldown",
+        "values": "24/22.5/21/19.5/18"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "90/85/80/75/70"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:DashSpeed"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "expression",
+      "expression": {
+        "id": "BonusDamageTotal",
+        "kind": "damage",
+        "damageType": "magical",
+        "root": {
+          "kind": "product",
+          "parts": [
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      22,
+                      24,
+                      26,
+                      28,
+                      30
+                    ]
+                  }
+                },
+                {
+                  "kind": "stat",
+                  "stat": "abilityPower",
+                  "coefficient": {
+                    "byRank": [
+                      0.20000000298023224,
+                      0.20000000298023224,
+                      0.20000000298023224,
+                      0.20000000298023224,
+                      0.20000000298023224
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      1,
+                      1,
+                      1,
+                      1,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "kind": "product",
+                  "parts": [
+                    {
+                      "kind": "stat",
+                      "stat": "critChance",
+                      "coefficient": {
+                        "byRank": [
+                          1,
+                          1,
+                          1,
+                          1,
+                          1
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "sum",
+                      "parts": [
+                        {
+                          "kind": "stat",
+                          "stat": "critDamage",
+                          "coefficient": {
+                            "byRank": [
+                              1,
+                              1,
+                              1,
+                              1,
+                              1
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "value",
+                          "value": {
+                            "byRank": [
+                              -1,
+                              -1,
+                              -1,
+                              -1,
+                              -1
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "requiresBuffStacks": false
+      },
+      "unsupportedPartTypes": [
+        "nonlinear-product"
+      ]
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Zeri.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Zeri dashes a short distance and energizes Burst Fire to pierce through enemies. She will vault and grind over any terrain she touches.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Zeri dashes a short distance and vaults over any terrain she touches, greatly extending the dash range. For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck. Hitting an enemy with an Attack reduces this Ability's cooldown by 0.5 seconds. Critical strikes reduce the cooldown by 1.5 seconds instead. On-hit damage is increased by Zeri's Critical Strike Chance and Critical Strike Damage at 100% effectiveness. Pierce damage can critically strike but does not apply On-Hit effects.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "제리가 짧은 거리를 돌진하며 집중 사격을 충전합니다. 충전된 집중 사격은 적을 꿰뚫습니다. 돌진 시 맞닥트리는 지형을 모두 뛰어넘습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "제리가 짧은 거리를 돌진하며 맞닥트리는 지형을 모두 뛰어넘습니다. 지형을 뛰어넘으면 돌진 거리가 크게 늘어납니다. 5초 동안 집중 사격의 다음 사격이 적을 꿰뚫어, 두 번째 적부터는 80/85/90/95/100%의 피해를 입히며 처음 적중한 대상에게 (22/24/26/28/30 + (20% 주문력))의 마법 피해를 추가로 입힙니다. 기본 공격으로 적을 맞히면 이 스킬의 재사용 대기시간이 0.5초 감소합니다. 치명타 적중 시 재사용 대기시간이 1.5초 감소합니다. 적중 시 피해량은 제리의 치명타 확률 및 치명타 피해량에 따라 100%만큼 증가합니다. 첫 적을 꿰뚫은 후에도 치명타가 적용될 수 있지만, 적중 시 효과는 적용되지 않습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 117,
+      "end": 118
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": true,
+      "start": 167,
+      "end": 169
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "85",
+      "value": 85,
+      "percent": true,
+      "start": 170,
+      "end": 172
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": true,
+      "start": 173,
+      "end": 175
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "95",
+      "value": 95,
+      "percent": true,
+      "start": 176,
+      "end": 178
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 179,
+      "end": 183
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "22",
+      "value": 22,
+      "percent": false,
+      "start": 237,
+      "end": 239
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "24",
+      "value": 24,
+      "percent": false,
+      "start": 240,
+      "end": 242
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "26",
+      "value": 26,
+      "percent": false,
+      "start": 243,
+      "end": 245
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "28",
+      "value": 28,
+      "percent": false,
+      "start": 246,
+      "end": 248
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 249,
+      "end": 251
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 255,
+      "end": 258
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 390,
+      "end": 393
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 443,
+      "end": 446
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 554,
+      "end": 558
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 64,
+      "end": 65
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": true,
+      "start": 102,
+      "end": 104
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "85",
+      "value": 85,
+      "percent": true,
+      "start": 105,
+      "end": 107
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": true,
+      "start": 108,
+      "end": 110
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "95",
+      "value": 95,
+      "percent": true,
+      "start": 111,
+      "end": 113
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 114,
+      "end": 118
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "22",
+      "value": 22,
+      "percent": false,
+      "start": 141,
+      "end": 143
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "24",
+      "value": 24,
+      "percent": false,
+      "start": 144,
+      "end": 146
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "26",
+      "value": 26,
+      "percent": false,
+      "start": 147,
+      "end": 149
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "28",
+      "value": 28,
+      "percent": false,
+      "start": 150,
+      "end": 152
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 153,
+      "end": 155
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 159,
+      "end": 162
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 218,
+      "end": 221
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 249,
+      "end": 252
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 296,
+      "end": 300
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "스파크 돌진은 짧은 거리를 돌진하며, 접촉한 지형을 뛰어넘으면 돌진 거리가 크게 늘어납니다. 이후 집중 사격은 일정 시간 동안 적을 관통하고, 기본 공격 적중은 재사용 대기시간을 줄입니다.",
+  "rules": [
+    {
+      "id": "35507844cb8b000a4029",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "짧은 거리를 돌진하며 접촉한 지형을 뛰어넘습니다. 지형을 뛰어넘으면 돌진 거리가 크게 늘어납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zeri dashes a short distance and vaults over any terrain she touches, greatly extending the dash range."
+        }
+      ]
+    },
+    {
+      "id": "3d74d2fcbd8d325249f0",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "정해진 시간 동안 집중 사격의 탄환이 첫 대상 이후의 적에게 관통 피해를 입힙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        }
+      ]
+    },
+    {
+      "id": "c6ff3792d22d225849a9",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스파크 돌진 후5초 동안 집중 사격 탄환 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "첫 적중 대상에게 적중 시 마법 피해를 추가로 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        }
+      ]
+    },
+    {
+      "id": "46ba3e207b7f5b134571",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격으로 적 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "적을 기본 공격으로 맞히면 재사용 대기시간이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting an enemy with an Attack reduces this Ability's cooldown by 0.5 seconds."
+        }
+      ]
+    },
+    {
+      "id": "41e116a2a0546c95aaa4",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적에게 치명타 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "치명타 적중 시 재사용 대기시간이 대신 더 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Critical strikes reduce the cooldown by 1.5 seconds instead."
+        }
+      ]
+    },
+    {
+      "id": "4ba66aac34e9b56a8a07",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스파크 돌진 후5초 동안 집중 사격 탄환 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "첫 대상 추가 마법온힛 피해는 caster 치명타 확률과 치명타 피해량을 100% 효율로 반영해 증가한다. 정확한 합성식은 원문에 명시되지 않았다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "critChance",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "critDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On-hit damage is increased by Zeri's Critical Strike Chance and Critical Strike Damage at 100% effectiveness."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        }
+      ]
+    },
+    {
+      "id": "a059e3276e027edece51",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스파크 돌진 후5초 동안 집중 사격 탄환 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "관통 피해는 치명타가 적용될 수 있지만 적중 시 효과는 적용되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Pierce damage can critically strike but does not apply On-Hit effects."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For the next 5 seconds, her shots of Burst Fire pierce dealing 80/85/90/95/100% damage to enemies after the first and an additional (22/24/26/28/30 + (20% Ability Power)) magic damage On-Hit to the first target struck."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "치명타 적중으로 재사용 대기시간이 감소하는 문장에는 기본 공격이라는 제한이 명시되어 있지 않아, 발동 가능한 적중 종류를 확정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Critical strikes reduce the cooldown by 1.5 seconds instead."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "온힛 피해의 치명타 확률/치명타피해100% 효율 증가는 정확한 합성식을 명시하지 않는다. 두100%를 별도 추가피해로 실행하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On-hit damage is increased by Zeri's Critical Strike Chance and Critical Strike Damage at 100% effectiveness."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "81091c934dfc30984b636eb98a5daa30f3e7bfefcd577abc413075c118d30b22"
+}

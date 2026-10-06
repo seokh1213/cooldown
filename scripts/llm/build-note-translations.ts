@@ -17,31 +17,45 @@
  */
 import * as fs from "fs";
 import * as path from "path";
+import { createHash } from "node:crypto";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import type { AtomFile } from "./build-note-atoms";
+import type { Playbook } from "../../src/lib/knowledge/playbookCore";
 
 const LANGS = ["en_US", "zh_CN"] as const;
 const ATOM_DIR = path.join(process.cwd(), "knowledge", "atoms");
+export const noteSourceDigest = (text: string) => createHash("sha256").update(text).digest("hex");
 
 /** 같은 노트의 번역 원자를 순서대로 이은 글. 절반 미만만 번역된 노트는 뺀다. */
-export function joinedNotes(lang: (typeof LANGS)[number], atomDir = ATOM_DIR): { notes: Record<string, string>; skipped: number } {
+export function joinedNotes(lang: (typeof LANGS)[number], atomDir = ATOM_DIR,
+  playbookDir = path.join(process.cwd(), "knowledge", "playbooks")): { notes: Record<string, string>; skipped: number } {
   const files = fs.existsSync(atomDir) ? fs.readdirSync(atomDir).filter((f) => f.endsWith(".json")) : [];
   const notes: Record<string, string> = {};
   let skipped = 0;
   for (const file of files) {
-    const atoms = (JSON.parse(fs.readFileSync(path.join(atomDir, file), "utf8")) as AtomFile).atoms;
+    const { atoms, sourceDigests } = JSON.parse(fs.readFileSync(path.join(atomDir, file), "utf8")) as AtomFile;
+    const sourceFile = path.join(playbookDir, file);
+    const book = sourceDigests && fs.existsSync(sourceFile) ? JSON.parse(fs.readFileSync(sourceFile, "utf8")) as Playbook : undefined;
+    const sourceNotes = book && [...book.playing, ...book.against];
     const bySource = new Map<string, typeof atoms>();
     for (const atom of atoms) {
       if (!atom.source.startsWith("playbook:")) continue;
       bySource.set(atom.source, [...(bySource.get(atom.source) ?? []), atom]);
     }
     for (const [source, list] of bySource) {
+      const id = source.slice("playbook:".length);
+      const expectedDigest = sourceDigests?.[id];
+      const current = sourceNotes?.find(note => note.id === id);
+      if (expectedDigest && (!current || noteSourceDigest(current.text) !== expectedDigest)) {
+        skipped += 1;
+        continue;
+      }
       const parts = list.map((atom) => (atom.text as Record<string, string | undefined>)[lang]).filter((t): t is string => !!t);
       if (parts.length * 2 < list.length) {
         skipped += 1;
         continue;
       }
-      notes[source.slice("playbook:".length)] = parts.join(lang === "zh_CN" ? "" : " ");
+      notes[id] = parts.join(lang === "zh_CN" ? "" : " ");
     }
   }
   return { notes, skipped };

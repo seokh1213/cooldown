@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 2,
+  "id": "Sivir.P",
+  "champion": "Sivir",
+  "slot": "P",
+  "patch": "26.19",
+  "sourceHash": "4fb2d22c37a341e47dc6ba9ed8499763982f5551cd01f322526e6cf1cf4f5487",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Fleet of Foot",
+      "ko": "재빠른 발놀림"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          55,
+          55,
+          55,
+          55,
+          55,
+          60,
+          60,
+          60,
+          60,
+          60,
+          65,
+          65,
+          65,
+          65,
+          65,
+          70,
+          70,
+          75,
+          75,
+          75
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.19/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.19/champions/en_US/Sivir.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Sivir gains a short burst of Move Speed when she attacks an enemy champion.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Sivir's Attacks and Abilities grant her a burst of (55 ~ 75) Decaying Move Speed for 1.5 seconds when they damage enemy champions.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "시비르가 적 챔피언을 공격할 때 짧은 시간 동안 이동 속도가 대폭 상승합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "시비르가 기본 공격이나 스킬로 적 챔피언을 공격해 피해를 입히면 (55 ~ 75)의 이동 속도를 얻습니다. 이 효과는 1.5초에 걸쳐 점차 감소합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 52,
+      "end": 54
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 57,
+      "end": 59
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 85,
+      "end": 88
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 37,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 42,
+      "end": 44
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 66,
+      "end": 69
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "시비르의 기본 공격과 스킬이 적 챔피언에게 피해를 입히면 이동 속도가 잠시 증가하고 점차 감소합니다.",
+  "rules": [
+    {
+      "id": "0111690866dda1cd7c12",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기본공격또는스킬로적챔피언에게피해를입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "적 챔피언에게 피해를 입히면 이동 속도가 증가하고 점차 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sivir's Attacks and Abilities grant her a burst of (55 ~ 75) Decaying Move Speed for 1.5 seconds when they damage enemy champions."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "9a2cf0813849b04be02362fcdf124d44071c43d4537227859a3e3fd18f8a09e8"
+}

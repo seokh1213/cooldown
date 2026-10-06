@@ -1,0 +1,3075 @@
+{
+  "schemaVersion": 1,
+  "patch": "26.19",
+  "baseline": "26.19-v2",
+  "candidate": "26.19-v3",
+  "reviewer": "/root/ui_review",
+  "approval": "Independent fact review only; root owns review-ledger and current pointer.",
+  "scope": [
+    "Kled.Q",
+    "Kled.E",
+    "Kled.R",
+    "RekSai.Q",
+    "RekSai.W",
+    "RekSai.E",
+    "Rell.W"
+  ],
+  "method": "각 슬롯의 최신 frozen input 영문·한국어 원문, 모든 숫자 참조/역할/소유자/단위, 실제 후보 전체 규칙·summary·gaps, v2 승인 후보의 기존 범위를 직접 대조했다. author report 결론을 읽기 전에 원문과 후보를 독립 검토했고, 발견한 3개 정정을 author에게 전달한 뒤 최종 파일을 다시 검토했다.",
+  "hashConvention": "sha256(JSON.stringify(parsedObject)); source hashes recomputed from {champion,slot,patch,slotRole,sources,variants,facts}",
+  "counts": {
+    "slots": 7,
+    "accepted": 7,
+    "needsRevision": 0,
+    "checkedRules": 50,
+    "checkedGaps": 10,
+    "baselineRules": 41,
+    "schemaValid": 7,
+    "validationErrors": 0,
+    "directNumericEffectText": 0
+  },
+  "externalPrimaryEvidence": [
+    {
+      "id": "riot-rell-14.23-self-slow-removal",
+      "url": "https://www.leagueoflegends.com/en-au/news/game-updates/patch-14-23-notes/",
+      "published": "2024-11-19",
+      "section": "Rell / W - Ferromancy: Crash Down",
+      "quote": "[REMOVED]: Dismounted 10% slow has been removed",
+      "use": "오래된 summary의 self slow를 현재 규칙에서 배제하는 근거. 과거 삭제율을 현재 수치로 추가하지 않는다."
+    }
+  ],
+  "resolvedFindings": [
+    {
+      "id": "Kled.Q",
+      "issue": "대상 순서와 대상별 산탄 적중 순서 혼동",
+      "resolution": "rules[8]/[9] 조건을 해당 대상의 첫 산탄/이후 산탄 text 조건으로 정정했고 발명 숫자는 없다."
+    },
+    {
+      "id": "Rell.W",
+      "issue": "14.23에서 삭제된 self slow가 오래된 요약에서 v2/v3 규칙으로 남음",
+      "resolution": "현재 self slow 규칙 삭제, source_conflict gap 보존, 최신 상세 본문과 Riot 공식 삭제 근거를 우선했다."
+    },
+    {
+      "id": "Kled.R",
+      "issue": "직접 숫자 본문 및 최대치 도달 시간 ref 누락",
+      "resolution": "본문의 직접 숫자를 기준량 표현으로 변경하고 기존 ratio_input과 en:body:n15 ref로 모두 보존했다."
+    }
+  ],
+  "limits": [
+    "검토 대상은 코드가 제공한 frozen source/fact 문맥과 후보 규칙의 사실·범위·수치 참조다. 숨은 conditional gameplay engine 전체나 실행 가능한 판정기를 검증한 것은 아니다.",
+    "text_condition/unresolved_effect 경고는 의미를 text/unknown으로 보존한 결과다. 이를 완전한 typed predicate로 실행해서는 안 된다.",
+    "Kled.R 체력 소유자/거리 보간식, Rell 보호막 현재·최대 Health 구분/감쇠MS 곡선, Kled.Q 괄호 헤더 시간/최대 탄약 등 공급 원문에서 불명확한 항목은 실제 gaps로 유지한다.",
+    "CD·cost·IDs·숫자 원본/형태 선택 정보는 code-owned facts다. 본 검토가 코드 소유 값을 임의 생성/수정하거나 과거 승인 기록을 변경하지 않는다."
+  ],
+  "validation": {
+    "counts": {
+      "checked": 7,
+      "valid": 7
+    },
+    "records": [
+      {
+        "id": "Kled.E",
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          {
+            "code": "text_condition",
+            "path": "rules.0",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.1",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.2",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.3",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.4",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.5",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.6",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.7",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "source_gaps",
+            "path": "gaps",
+            "detail": "1 unresolved source gaps"
+          }
+        ]
+      },
+      {
+        "id": "Kled.Q",
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          {
+            "code": "text_condition",
+            "path": "rules.0",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.1",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "unresolved_effect",
+            "path": "rules.1",
+            "detail": "Effect or stat owner is not completely typed; requires semantic review"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.2",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.3",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.4",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.5",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.6",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "unresolved_effect",
+            "path": "rules.6",
+            "detail": "Effect or stat owner is not completely typed; requires semantic review"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.7",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.8",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.9",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.10",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.11",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.12",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.13",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.14",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "source_gaps",
+            "path": "gaps",
+            "detail": "2 unresolved source gaps"
+          }
+        ]
+      },
+      {
+        "id": "Kled.R",
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          {
+            "code": "text_condition",
+            "path": "rules.0",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.1",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.2",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.3",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "unresolved_effect",
+            "path": "rules.3",
+            "detail": "Effect or stat owner is not completely typed; requires semantic review"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.4",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "source_gaps",
+            "path": "gaps",
+            "detail": "2 unresolved source gaps"
+          }
+        ]
+      },
+      {
+        "id": "RekSai.E",
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          {
+            "code": "text_condition",
+            "path": "rules.0",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.1",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.2",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.3",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.4",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "unresolved_effect",
+            "path": "rules.4",
+            "detail": "Effect or stat owner is not completely typed; requires semantic review"
+          },
+          {
+            "code": "source_gaps",
+            "path": "gaps",
+            "detail": "2 unresolved source gaps"
+          }
+        ]
+      },
+      {
+        "id": "RekSai.Q",
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          {
+            "code": "text_condition",
+            "path": "rules.0",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.1",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.2",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.3",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "unresolved_effect",
+            "path": "rules.3",
+            "detail": "Effect or stat owner is not completely typed; requires semantic review"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.4",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.5",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.6",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          }
+        ]
+      },
+      {
+        "id": "RekSai.W",
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          {
+            "code": "text_condition",
+            "path": "rules.0",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.1",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.2",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.3",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          }
+        ]
+      },
+      {
+        "id": "Rell.W",
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          {
+            "code": "text_condition",
+            "path": "rules.0",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.1",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.2",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.3",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.4",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "text_condition",
+            "path": "rules.5",
+            "detail": "Condition is retained as text; do not execute it as a complete typed predicate"
+          },
+          {
+            "code": "source_gaps",
+            "path": "gaps",
+            "detail": "3 unresolved source gaps"
+          }
+        ]
+      }
+    ]
+  },
+  "slots": [
+    {
+      "id": "Kled.Q",
+      "sourceHash": "d6d91efc124e50b55b559f0ad72097c43efcc5349f29075580fbcdb218dce59e",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "candidateHash": "f5bf37d35f5480a3755f42728fff546f27132dccf93a8f185400018e7d7cb0b1",
+      "baselineCandidateHash": "6c1bade4bbc7a23eb7a7df2930a85d37ea387881352379e2be94d9b70c5accea",
+      "verdict": "accepted",
+      "checkedRuleCount": 15,
+      "checkedGapCount": 2,
+      "baselineRuleCount": 9,
+      "summaryCheck": {
+        "verdict": "accepted",
+        "reason": "요약은 상세 규칙의 상태·대상·발동 범위를 넓히거나 새로운 수치/사실을 추가하지 않는다."
+      },
+      "baselineDelta": "v2 탑승 8규칙을 form:A로 보존하고 미탑승 간략 transform 설명을 실제 form:B 피해·반동·용기·탄약·재충전 7규칙으로 대체했다. 대상별 산탄 조건의 독립 검토 정정을 반영했다.",
+      "ruleChecks": [
+        {
+          "ruleIndex": 0,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "탑승 덫의 일반 적중 피해를 챔피언/대형 몬스터 조건으로 제한하지 않는다. 기본 피해와 시전자 추가 공격력 계수는 form:A 원문의 서로 다른 수치 역할로 보존했다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n0",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n1",
+              "raw": "55",
+              "value": 55,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n2",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n3",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n4",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n5",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n0",
+                "form:A:en:n1",
+                "form:A:en:n2",
+                "form:A:en:n3",
+                "form:A:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 1,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "첫 적중 대형 정글 몬스터의 붙잡기를 독립 분기로 보존했다. 챔피언 분기와 OR 관계이며 두 대상 종류를 동시에 요구하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 2,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "붙잡힌 대상과 근거리를 계속 유지한 뒤에만 지연 추가 피해가 발생한다. 지연 시간, 추가 피해 랭크, 시전자 추가 공격력 계수를 구분했다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n6",
+              "raw": "1.75",
+              "value": 1.75,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n7",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n8",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n9",
+              "raw": "160",
+              "value": 160,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n10",
+              "raw": "210",
+              "value": 210,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n11",
+              "raw": "260",
+              "value": 260,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n12",
+              "raw": "120%",
+              "value": 120,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n7",
+                "form:A:en:n8",
+                "form:A:en:n9",
+                "form:A:en:n10",
+                "form:A:en:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 3,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "같은 붙잡힘·근거리 유지·시간 조건 아래 끌어당김이 발생한다. 최초 덫 적중에 바로 끌어당기는 규칙으로 확대하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n6",
+              "raw": "1.75",
+              "value": 1.75,
+              "percent": false
+            }
+          ],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 4,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "지연 후 둔화의 랭크별 비율과 지속시간을 별도로 참조한다. 둔화 수치와 덫 유지 시간을 혼합하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n6",
+              "raw": "1.75",
+              "value": 1.75,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n13",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n14",
+              "raw": "35",
+              "value": 35,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n15",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n16",
+              "raw": "45",
+              "value": 45,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n17",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n18",
+              "raw": "2.5",
+              "value": 2.5,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n13",
+                "form:A:en:n14",
+                "form:A:en:n15",
+                "form:A:en:n16",
+                "form:A:en:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:A:en:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 5,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "절대 시야는 붙잡힌 동안 해당 적에게 적용된다. 전체 적이나 모든 시간에 적용되는 시야로 확대하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 6,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "첫 적중 적 챔피언 붙잡기를 대형 몬스터와 별도 분기로 보존했다. 원문의 champion OR large jungle monster를 AND로 바꾸지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 7,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "미니언 피해 증가량은 기본 피해에 대한 대체 배율이다. 추가 피해 합산으로 해석하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n19",
+              "raw": "150%",
+              "value": 150,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "form:A:en:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 8,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "미탑승 산탄의 첫 적중은 해당 대상에게 맞은 첫 산탄으로 명시했다. 다른 첫 적중 대상을 뜻하는 hit_order 조건을 제거했고, 기본 랭크 피해와 추가 공격력 계수를 보존했다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n7",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n8",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n9",
+              "raw": "65",
+              "value": 65,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n10",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n11",
+              "raw": "95",
+              "value": 95,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n12",
+              "raw": "65%",
+              "value": 65,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n7",
+                "form:B:en:n8",
+                "form:B:en:n9",
+                "form:B:en:n10",
+                "form:B:en:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 9,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "동일 대상에게 첫 산탄 이후 맞은 각 산탄은 기본 산탄 피해의 감소 배율을 적용한다. 새 대상에게 처음 맞은 산탄까지 감소시키지 않으며 replacements 플래그와 기존 피해 계수를 유지했다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n7",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n8",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n9",
+              "raw": "65",
+              "value": 65,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n10",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n11",
+              "raw": "95",
+              "value": 95,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n12",
+              "raw": "65%",
+              "value": 65,
+              "percent": true
+            },
+            {
+              "id": "form:B:en:n15",
+              "raw": "20%",
+              "value": 20,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n7",
+                "form:B:en:n8",
+                "form:B:en:n9",
+                "form:B:en:n10",
+                "form:B:en:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "form:B:en:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 10,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "미탑승 발사 시 클레드의 후방 이동을 보존했다. 반동이 적중에 성공해야만 발생하는 효과로 제한되지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 11,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "산탄마다 적 챔피언 적중 시 시전자 용기를 회복한다. 챔피언 회복량을 모든 몬스터 적중에 적용하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n13",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 12,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "에픽 몬스터 산탄 적중의 별도 용기 회복량을 보존했다. 일반/대형 몬스터 전체로 범위를 넓히지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n14",
+              "raw": "2.5",
+              "value": 2.5,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 13,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "헤더의 탄약 수치는 사용 비용으로 보존했다. 최대 탄약 보유량이나 산탄 발사 개수로 바꾸지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n0",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "resource_cost",
+              "numberRefs": [
+                "form:B:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 14,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "탄약 재충전 랭크별 시간은 재충전 역할로 보존했다. 의미가 생략된 괄호 안 시간은 별도 gap으로 남겨 같은 재충전 값으로 합치지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n1",
+              "raw": "18",
+              "value": 18,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n2",
+              "raw": "16",
+              "value": 16,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n3",
+              "raw": "14",
+              "value": 14,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n4",
+              "raw": "12",
+              "value": 12,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n5",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "form:B:en:n1",
+                "form:B:en:n2",
+                "form:B:en:n3",
+                "form:B:en:n4",
+                "form:B:en:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ]
+        }
+      ],
+      "gapChecks": [
+        {
+          "gapIndex": 0,
+          "reason": "unresolved_number",
+          "verdict": "accepted",
+          "check": "미탑승 헤더 괄호 시간에는 이름이 없어 재충전 시간과 혼합하지 않은 것이 적절하다. 기존 normalized cast CD는 코드 소유 fact이며 candidate는 본문 없는 의미를 추정하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        },
+        {
+          "gapIndex": 1,
+          "reason": "missing_source",
+          "verdict": "accepted",
+          "check": "원문이 제공하지 않은 산탄 총개수와 최대 탄약 보유량을 발명하지 않는다. 헤더 탄약 비용과 최대 보유량은 별개다.",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Kled.E",
+      "sourceHash": "49dc7279caee1c22c3d2ce1a72c475348252b03e7e2a75ea3efa27f19764865b",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "candidateHash": "021669ce159f90f3e3869b646f1a0873fa7e602e7c98c032d75f099da0331f1b",
+      "baselineCandidateHash": "56af2be9341680d891133fe88919a7fcb9168e6dfd10bbaf2d0a184147046ac1",
+      "verdict": "accepted",
+      "checkedRuleCount": 8,
+      "checkedGapCount": 1,
+      "baselineRuleCount": 8,
+      "summaryCheck": {
+        "verdict": "accepted",
+        "reason": "요약은 상세 규칙의 상태·대상·발동 범위를 넓히거나 새로운 수치/사실을 추가하지 않는다."
+      },
+      "baselineDelta": "v2 8규칙의 효과·대상·수치는 그대로 보존하고 전 규칙에 탑승 조건을 추가했다. input crowdControl의 pull 대상이 nonChampion으로 정정되어 챔피언 pull 오해를 막는다.",
+      "ruleChecks": [
+        {
+          "ruleIndex": 0,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "탑승 조건은 최초 돌진과 경로상의 일반 물리 피해 모두에 적용된다. 시전자 추가 공격력 계수를 유지하며 챔피언 적중 조건이 일반 피해를 제한하지 않는다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [
+            {
+              "id": "en:body:n0",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "85",
+              "value": 85,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "55%",
+              "value": 55,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 1,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "돌진 경로 미니언만 끌어당기는 분기다. 챔피언 pull을 만들지 않고 경로상 적 조건도 보존한다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 2,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "돌진 경로의 작은 몬스터만 끌어당긴다. 대형 정글 몬스터와 적 챔피언은 이 pull 분기에 포함되지 않는다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 3,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "적 챔피언 적중은 시전자 이동 속도 증가와 해당 지속시간을 부여한다. 원문의 적 챔피언 OR 대형 정글 몬스터를 별도 분기로 보존한다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [
+            {
+              "id": "en:body:n6",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 0,
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 4,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "대형 정글 몬스터 적중에도 같은 이동 속도 보상이 적용된다. 작은 몬스터 적중까지 보상을 넓히지 않는다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [
+            {
+              "id": "en:body:n6",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 0,
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 5,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "재사용은 탑승 상태, 원문의 시간 제한, 앞선 챔피언/대형 몬스터 적중, 같은 대상 조건을 모두 유지한다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [
+            {
+              "id": "en:body:n8",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "other",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 6,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "재돌진의 동일 물리 피해는 summary의 명시적 보완과 body의 기본 피해 수치를 함께 근거로 사용한다. 재사용 시간/대상 조건을 보존하며 다른 통과 적 피해 여부는 gap으로 남겼다.",
+          "sourceIds": [
+            "en:summary",
+            "en:body"
+          ],
+          "numericRefs": [
+            {
+              "id": "en:body:n8",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            },
+            {
+              "id": "en:body:n0",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "en:body:n1",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "85",
+              "value": 85,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "135",
+              "value": 135,
+              "percent": false
+            },
+            {
+              "id": "en:body:n5",
+              "raw": "55%",
+              "value": 55,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 7,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "통과한 적의 절대 시야를 보존한다. 원문에 없는 시야 지속시간을 추가하지 않는다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        }
+      ],
+      "gapChecks": [
+        {
+          "gapIndex": 0,
+          "reason": "unresolved_condition",
+          "verdict": "accepted",
+          "check": "재돌진은 같은 최초 대상을 통과하지만 주변 통과 적 피해와 선택 방식은 공급 원문에서 불명확하다. 최초 경로 일반 피해와 재돌진 대상 피해를 혼동하지 않는다.",
+          "sourceIds": [
+            "en:summary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Kled.R",
+      "sourceHash": "2555e2bbd7bfb0d29b115c32e22e42119ec2175445467726c6170c2ba1cf26a3",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "candidateHash": "7cb67d851d187df48f157ff7107831cab8f323485a231dbc857da355a97250d6",
+      "baselineCandidateHash": "28be87d2482a46d935c8a7a7aa440038d9ddf8e2cedf820502cf3772ebb37151",
+      "verdict": "accepted",
+      "checkedRuleCount": 5,
+      "checkedGapCount": 2,
+      "baselineRuleCount": 4,
+      "summaryCheck": {
+        "verdict": "accepted",
+        "reason": "요약은 상세 규칙의 상태·대상·발동 범위를 넓히거나 새로운 수치/사실을 추가하지 않는다."
+      },
+      "baselineDelta": "v2 4규칙을 보존하면서 탑승 조건과 시전자 돌진 1규칙을 보완했다. 원문 수치만으로 최대치 도달 시간 ref를 보강하고 직접 숫자 서술을 제거했다.",
+      "ruleChecks": [
+        {
+          "ruleIndex": 0,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "스칼 탑승 중 목표 지역으로 돌진하는 시전자 이동을 명시했다. 이전 후보에 암묵적이던 이동을 원문의 명시 내용으로 보완했다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 1,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "경로 위 아군에게 증가하는 이동 속도를 제공한다. 최대치 도달 시간은 원문 수치 참조이며 아군 전체에 위치 조건 없이 부여하지 않는다.",
+          "sourceIds": [
+            "en:body",
+            "ko:summary"
+          ],
+          "numericRefs": [
+            {
+              "id": "en:body:n15",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "other",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 2,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "시전자 보호막은 돌진 중과 종료 후의 별도 지속시간을 유지한다. 최대 흡수량과 추가 공격력 계수, 최대치 도달 시간을 각각 분리했다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [
+            {
+              "id": "en:body:n1",
+              "raw": "200",
+              "value": 200,
+              "percent": false
+            },
+            {
+              "id": "en:body:n2",
+              "raw": "300",
+              "value": 300,
+              "percent": false
+            },
+            {
+              "id": "en:body:n3",
+              "raw": "400",
+              "value": 400,
+              "percent": false
+            },
+            {
+              "id": "en:body:n4",
+              "raw": "300%",
+              "value": 300,
+              "percent": true
+            },
+            {
+              "id": "en:body:n0",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 0,
+              "role": "other",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 3,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "첫 적 챔피언 충돌만 마법 피해 대상으로 삼고 최소/최대 비율, 시전자 추가 공격력 기준량당 계수, 최대치 도달 시간을 참조한다. 직접 숫자 본문을 제거했다. 원문이 체력 소유자와 거리 보간식을 명시하지 않으므로 unknown/gap을 유지하며 숨은 계산을 실행 가능한 수식으로 확정하지 않는다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [
+            {
+              "id": "en:body:n5",
+              "raw": "4",
+              "value": 4,
+              "percent": true
+            },
+            {
+              "id": "en:body:n6",
+              "raw": "6",
+              "value": 6,
+              "percent": true
+            },
+            {
+              "id": "en:body:n7",
+              "raw": "8%",
+              "value": 8,
+              "percent": true
+            },
+            {
+              "id": "en:body:n8",
+              "raw": "3%",
+              "value": 3,
+              "percent": true
+            },
+            {
+              "id": "en:body:n9",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n10",
+              "raw": "12",
+              "value": 12,
+              "percent": true
+            },
+            {
+              "id": "en:body:n11",
+              "raw": "18",
+              "value": 18,
+              "percent": true
+            },
+            {
+              "id": "en:body:n12",
+              "raw": "24%",
+              "value": 24,
+              "percent": true
+            },
+            {
+              "id": "en:body:n13",
+              "raw": "9%",
+              "value": 9,
+              "percent": true
+            },
+            {
+              "id": "en:body:n14",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "en:body:n15",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "unknown",
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "unknown",
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "other",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 4,
+          "variant": "base",
+          "verdict": "accepted",
+          "reason": "같은 첫 적 챔피언에 잠깐 밀쳐내기를 적용한다. 원문에 없는 CC 지속시간, 면역, 몬스터 충돌 효과를 추가하지 않는다.",
+          "sourceIds": [
+            "en:body"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        }
+      ],
+      "gapChecks": [
+        {
+          "gapIndex": 0,
+          "reason": "unsupported_formula",
+          "verdict": "accepted",
+          "check": "거리 보간식은 공급 텍스트에 없다. 알려진 최소/최대 수치와 최대치 도달 시간은 보존하되 정확한 숨은 연산을 실행하지 않는다.",
+          "sourceIds": [
+            "en:body"
+          ]
+        },
+        {
+          "gapIndex": 1,
+          "reason": "scope_ambiguous",
+          "verdict": "accepted",
+          "check": "피해 체력 소유자를 frozen en/ko 본문은 명시적으로 이름 붙이지 않는다. 시전자 체력이나 대상 체력으로 추정하지 않고 unknown을 유지한다.",
+          "sourceIds": [
+            "en:body"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "RekSai.Q",
+      "sourceHash": "694a3595dd0c48a272c5007b12b296798846135b445abb8d5656d4580a1b04b9",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "candidateHash": "74cb10623129aca082eca122a6d111b003e1e403973da45c9e38b01b99b6aa6d",
+      "baselineCandidateHash": "41df594655228a6199f1bfbed6c5f1b64fe4da3629d232aa9bc1158cf31b7c75",
+      "verdict": "accepted",
+      "checkedRuleCount": 7,
+      "checkedGapCount": 0,
+      "baselineRuleCount": 4,
+      "summaryCheck": {
+        "verdict": "accepted",
+        "reason": "요약은 상세 규칙의 상태·대상·발동 범위를 넓히거나 새로운 수치/사실을 추가하지 않는다."
+      },
+      "baselineDelta": "v2 돌출 강화 공격을 form:A로 분리 보존했다. form:B 피해·비은신 위치 공개·챔피언 분노를 실제 상세 본문으로 보완해 이전 missing_source gap을 해결했다.",
+      "ruleChecks": [
+        {
+          "ruleIndex": 0,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "돌출 시 다음 공격 횟수, 유효 지속시간, 공격 속도 증가를 서로 다른 수치 역할로 보존한다. 공격 횟수를 탄약/충전량으로 바꾸지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n0",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n1",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n2",
+              "raw": "35%",
+              "value": 35,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "count",
+              "numberRefs": [
+                "form:A:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 0,
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:A:en:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 1,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "강화된 돌출 기본 공격은 주변 적에게 시전자 총 공격력 비례 추가 물리 피해를 준다. 추가 공격력 계수로 잘못 바꾸거나 주 대상에게만 피해를 제한하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n3",
+              "raw": "30",
+              "value": 30,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n4",
+              "raw": "35",
+              "value": 35,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n5",
+              "raw": "40",
+              "value": 40,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n6",
+              "raw": "45",
+              "value": 45,
+              "percent": true
+            },
+            {
+              "id": "form:A:en:n7",
+              "raw": "50%",
+              "value": 50,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n3",
+                "form:A:en:n4",
+                "form:A:en:n5",
+                "form:A:en:n6",
+                "form:A:en:n7"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 2,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "치명타 가능 여부는 강화 공격의 추가 피해 중 주 대상에만 적용된다. 주변 광역 피해 전체에 치명타를 확대하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 3,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "강화 공격이 지속시간을 갱신한다. 이미 소모한 강화 공격 횟수를 다시 채운다는 효과를 발명하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n1",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:A:en:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 4,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "매복 투사체는 첫 적중에서 작은 범위로 폭발해 마법 피해를 준다. 기본 랭크, 추가 공격력, 주문력 계수는 각기 원문 참조이며 챔피언 조건이 이 일반 피해를 제한하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n0",
+              "raw": "50",
+              "value": 50,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n1",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n2",
+              "raw": "110",
+              "value": 110,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n3",
+              "raw": "140",
+              "value": 140,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n4",
+              "raw": "170",
+              "value": 170,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n5",
+              "raw": "25%",
+              "value": 25,
+              "percent": true
+            },
+            {
+              "id": "form:B:en:n6",
+              "raw": "70%",
+              "value": 70,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n0",
+                "form:B:en:n1",
+                "form:B:en:n2",
+                "form:B:en:n3",
+                "form:B:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 5,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "매복 투사체에 맞은 은신하지 않은 적에게만 위치 공개 지속시간이 적용된다. 은신 탐지 절대 시야로 바꾸지 않는다.",
+          "sourceIds": [
+            "form:B:en",
+            "en:summary"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n7",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:B:en:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 6,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "챔피언 적중 시에만 분노가 생성된다. 이 조건을 일반 피해/위치 공개 분기에 적용하지 않으며 같은 숫자를 추가 공격력 계수로 혼동하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n8",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        }
+      ],
+      "gapChecks": []
+    },
+    {
+      "id": "RekSai.W",
+      "sourceHash": "0a90d1cb560c5a0ce6dd7077900174e5b1626907df5ad911ad705c01723ccb97",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "candidateHash": "234339873ec4d5904822c448043a9b0286302fdd931326543e30be3ce945bb0a",
+      "baselineCandidateHash": "719cc41eb20dc89a7bb8a39b1a1d1877cf56de0990e993e03b7df94650b052fb",
+      "verdict": "accepted",
+      "checkedRuleCount": 4,
+      "checkedGapCount": 0,
+      "baselineRuleCount": 4,
+      "summaryCheck": {
+        "verdict": "accepted",
+        "reason": "요약은 상세 규칙의 상태·대상·발동 범위를 넓히거나 새로운 수치/사실을 추가하지 않는다."
+      },
+      "baselineDelta": "v2 매복 전환/감지 내용을 form:A로 보존했다. 기존 광범위한 근처 적 knockup 추정은 form:B의 정확한 OR 대상/대상별 timer로 좁히고 모든 근처 적의 마법 피해를 별도로 유지했다.",
+      "ruleChecks": [
+        {
+          "ruleIndex": 0,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "돌출에서 매복으로 전환하면 스킬 접근, 기본 공격 제한, 랭크별 이동 속도, 감소 시야 범위를 보존한다. 매복 결과 상태의 제한을 일반 챔피언 상태 전체에 적용하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n0",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n1",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n2",
+              "raw": "15",
+              "value": 15,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n3",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n4",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n5",
+              "raw": "65%",
+              "value": 65,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 2,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n0",
+                "form:A:en:n1",
+                "form:A:en:n2",
+                "form:A:en:n3",
+                "form:A:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 3,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 1,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "매복 중 근처에 있고 움직이며 보이지 않는 적이라는 세 조건은 원문상 모두 필요하다. 대상 위치는 렉사이와 아군에게 공개되며 적중이나 챔피언 전용 조건을 추가하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        },
+        {
+          "ruleIndex": 2,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "매복에서 돌출할 때 근처 모든 적에게 마법 피해를 준다. 챔피언/대형 몬스터/공중 띄우기 준비 조건이 일반 피해를 제한하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n0",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n1",
+              "raw": "55",
+              "value": 55,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n2",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n3",
+              "raw": "105",
+              "value": 105,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n4",
+              "raw": "130",
+              "value": 130,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n5",
+              "raw": "80%",
+              "value": 80,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 1,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n0",
+                "form:B:en:n1",
+                "form:B:en:n2",
+                "form:B:en:n3",
+                "form:B:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 1,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 3,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "공중 띄우기 대상은 주 대상 OR 근처 적 챔피언 OR 근처 대형 몬스터다. 지속시간과 대상별 재적용 대기시간을 분리하고 per_target을 유지하며 스킬 시전 자체의 글로벌 재사용 대기시간으로 대체하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n6",
+              "raw": "1",
+              "value": 1,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n7",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n8",
+              "raw": "9",
+              "value": 9,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n9",
+              "raw": "8",
+              "value": 8,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n10",
+              "raw": "7",
+              "value": 7,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n11",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:B:en:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 0,
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "form:B:en:n7",
+                "form:B:en:n8",
+                "form:B:en:n9",
+                "form:B:en:n10",
+                "form:B:en:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ]
+        }
+      ],
+      "gapChecks": []
+    },
+    {
+      "id": "RekSai.E",
+      "sourceHash": "b59fbac3617aaaa3b94d48501febd4edeae57941b95d703949590f90d63aaa5f",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "candidateHash": "d6fa25a00ec02f761676f9e297e685dba9c7247ed6538aeb6cb3c28f70dc7f41",
+      "baselineCandidateHash": "6eaa02a8f62b557237183ffae23904449f21ea3aac1bf1629ef15048fcddbe0f",
+      "verdict": "accepted",
+      "checkedRuleCount": 5,
+      "checkedGapCount": 2,
+      "baselineRuleCount": 4,
+      "summaryCheck": {
+        "verdict": "accepted",
+        "reason": "요약은 상세 규칙의 상태·대상·발동 범위를 넓히거나 새로운 수치/사실을 추가하지 않는다."
+      },
+      "baselineDelta": "v2 비최대/최대 분노의 대체 피해를 form:A로 보존했다. form:B 입구·분 단위 지속·동시 상한·입구 클릭·땅굴별 재사용·적 파괴를 상세 원문으로 보완했다.",
+      "ruleChecks": [
+        {
+          "ruleIndex": 0,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "최대 분노가 아닐 때의 일반 물리 피해와 시전자 추가 공격력 계수를 보존한다. 최대 분노 분기와 동시에 합산하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n0",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n1",
+              "raw": "95",
+              "value": 95,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n2",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n3",
+              "raw": "145",
+              "value": 145,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n4",
+              "raw": "170",
+              "value": 170,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n5",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n0",
+                "form:A:en:n1",
+                "form:A:en:n2",
+                "form:A:en:n3",
+                "form:A:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 1,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "최대 분노에서는 더 큰 고정 피해로 일반 물리 피해를 대체한다. replaces_base와 본문 instead를 따르고 분노 소비/수치 임계값을 원문 밖에서 추가하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n6",
+              "raw": "84",
+              "value": 84,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n7",
+              "raw": "114",
+              "value": 114,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n8",
+              "raw": "144",
+              "value": 144,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n9",
+              "raw": "174",
+              "value": 174,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n10",
+              "raw": "204",
+              "value": 204,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n11",
+              "raw": "72%",
+              "value": 72,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n6",
+                "form:A:en:n7",
+                "form:A:en:n8",
+                "form:A:en:n9",
+                "form:A:en:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 2,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "매복 시 앞쪽으로 이동해 연결된 두 입구를 가진 땅굴을 만든다. count는 입구 수, storage_cap은 동시 땅굴 수다. 지속시간은 원문의 분 단위를 text/other 역할로 보존하며 초로 오독하거나 임의 변환 숫자를 만들지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n0",
+              "raw": "two",
+              "value": 2,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n1",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n9",
+              "raw": "8",
+              "value": 8,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 1,
+              "role": "count",
+              "numberRefs": [
+                "form:B:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 1,
+              "role": "other",
+              "numberRefs": [
+                "form:B:en:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 1,
+              "role": "storage_cap",
+              "numberRefs": [
+                "form:B:en:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 3,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "한 입구를 클릭하고 해당 땅굴의 재사용 시간이 지났을 때 다른 입구로 이동한다. 각 땅굴의 사용 간 대기시간을 생성 스킬 자체 재사용 대기시간과 합치지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n4",
+              "raw": "6",
+              "value": 6,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n5",
+              "raw": "5",
+              "value": 5,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n6",
+              "raw": "4",
+              "value": 4,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n7",
+              "raw": "3",
+              "value": 3,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n8",
+              "raw": "2",
+              "value": 2,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "form:B:en:n4",
+                "form:B:en:n5",
+                "form:B:en:n6",
+                "form:B:en:n7",
+                "form:B:en:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 4,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "적이 어느 한 입구 위에 서면 땅굴을 파괴할 수 있다는 body+summary 보완을 보존한다. 아군/시전자 사용으로 파괴되거나 원문에 없는 파괴 대기시간을 추가하지 않는다.",
+          "sourceIds": [
+            "form:B:en",
+            "en:summary"
+          ],
+          "numericRefs": [],
+          "parameterRoles": []
+        }
+      ],
+      "gapChecks": [
+        {
+          "gapIndex": 0,
+          "reason": "source_conflict",
+          "verdict": "accepted",
+          "check": "요약의 bonus true damage와 본문의 true damage instead 충돌에서 자세한 본문을 우선했다. 두 피해를 합산하지 않는다.",
+          "sourceIds": [
+            "en:summary",
+            "form:A:en"
+          ]
+        },
+        {
+          "gapIndex": 1,
+          "reason": "unsupported_formula",
+          "verdict": "accepted",
+          "check": "계약에 분 단위 duration 역할이 없으므로 분 단위 text+other 참조로 보존한다. 원문 수치를 duration_seconds에 그대로 넣는 오류를 피했다.",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Rell.W",
+      "sourceHash": "baff4d807116e0a03a7bb2e92a64ce3f4e20df1afa8f1c915bba4e206bc4f9d3",
+      "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+      "candidateHash": "a858b8e832086db4126db6828a6ddd23f8ad798f652c9a2e05e3ada50ac98281",
+      "baselineCandidateHash": "ce01eea30dfd94eb98d5d8e91b5c0a422a0a2b3a2cc72c2dc1ee78581d499f7d",
+      "verdict": "accepted",
+      "checkedRuleCount": 6,
+      "checkedGapCount": 3,
+      "baselineRuleCount": 8,
+      "summaryCheck": {
+        "verdict": "accepted",
+        "reason": "요약은 상세 규칙의 상태·대상·발동 범위를 넓히거나 새로운 수치/사실을 추가하지 않는다."
+      },
+      "baselineDelta": "v2 탑승/중갑 상태 전환·피해·보호막·상시 상태 스탯을 form:A/B로 보존했다. 실제 Mount Up의 감쇠MS·다음 공격 제한·추가 피해·뒤로 넘기기를 보완하고, 공식적으로 삭제된 self slow를 제거했다. 스킬 이름/형태별 사용 가능성은 코드 소유 variants와 form 이름으로 보존한다.",
+      "ruleChecks": [
+        {
+          "ruleIndex": 0,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "탑승 상태의 랭크별 이동 속도 증가를 보존한다. 보행 상태에도 상시 적용되는 증가로 확대하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n1",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n2",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n3",
+              "raw": "30",
+              "value": 30,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n4",
+              "raw": "35",
+              "value": 35,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n5",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n1",
+                "form:A:en:n2",
+                "form:A:en:n3",
+                "form:A:en:n4",
+                "form:A:en:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 1,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "탑승 상태에서 붕괴하면 적을 띄우고 마법 피해를 주며 중갑 보행 형태가 된다. 기본 피해/주문력 계수는 form:A 근거이며 원문에 없는 CC 지속시간을 추가하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n6",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n7",
+              "raw": "90",
+              "value": 90,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n8",
+              "raw": "120",
+              "value": 120,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n9",
+              "raw": "150",
+              "value": 150,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n10",
+              "raw": "180",
+              "value": 180,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n11",
+              "raw": "60%",
+              "value": 60,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 1,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n6",
+                "form:A:en:n7",
+                "form:A:en:n8",
+                "form:A:en:n9",
+                "form:A:en:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 1,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 2,
+          "variant": "form:A",
+          "verdict": "accepted",
+          "reason": "붕괴 보호막은 다시 탑승할 때까지 지속된다. 기본 랭크 흡수량과 Health 비율을 보존하고 제공된 본문의 현재/최대 체력 구분 부족은 gap으로 유지한다.",
+          "sourceIds": [
+            "form:A:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:A:en:n12",
+              "raw": "20",
+              "value": 20,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n13",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n14",
+              "raw": "60",
+              "value": 60,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n15",
+              "raw": "80",
+              "value": 80,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n16",
+              "raw": "100",
+              "value": 100,
+              "percent": false
+            },
+            {
+              "id": "form:A:en:n17",
+              "raw": "11%",
+              "value": 11,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n12",
+                "form:A:en:n13",
+                "form:A:en:n14",
+                "form:A:en:n15",
+                "form:A:en:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 0,
+              "role": "other",
+              "numberRefs": [
+                "form:A:en:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 3,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "미탑승 상태의 방어력·마법 저항력·공격 속도·사거리 증가를 form:B 본문에서 보존했다. 제거된 self slow는 현재 규칙으로 채택하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n1",
+              "raw": "15%",
+              "value": 15,
+              "percent": true
+            },
+            {
+              "id": "form:B:en:n2",
+              "raw": "20%",
+              "value": 20,
+              "percent": true
+            },
+            {
+              "id": "form:B:en:n3",
+              "raw": "75",
+              "value": 75,
+              "percent": false
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 0,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 1,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 2,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "effectIndex": 3,
+              "role": "distance_units",
+              "numberRefs": [
+                "form:B:en:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 4,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "미탑승에서 탑승으로 전환할 때 순간 이동 속도 증가는 감쇠한다. 다음 공격 제한 시간을 이 감쇠의 지속시간으로 쓰지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n4",
+              "raw": "30%",
+              "value": 30,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 1,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ]
+        },
+        {
+          "ruleIndex": 5,
+          "variant": "form:B",
+          "verdict": "accepted",
+          "reason": "탑승 이후 제한 시간 안의 다음 강화 공격만 공중 띄우기·뒤로 넘기기·추가 마법 피해를 준다. 랭크 피해와 주문력 계수를 보존하며 이후 모든 공격으로 확대하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ],
+          "numericRefs": [
+            {
+              "id": "form:B:en:n5",
+              "raw": "3.5",
+              "value": 3.5,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n6",
+              "raw": "10",
+              "value": 10,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n7",
+              "raw": "25",
+              "value": 25,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n8",
+              "raw": "40",
+              "value": 40,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n9",
+              "raw": "55",
+              "value": 55,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n10",
+              "raw": "70",
+              "value": 70,
+              "percent": false
+            },
+            {
+              "id": "form:B:en:n11",
+              "raw": "40%",
+              "value": 40,
+              "percent": true
+            }
+          ],
+          "parameterRoles": [
+            {
+              "effectIndex": 2,
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n6",
+                "form:B:en:n7",
+                "form:B:en:n8",
+                "form:B:en:n9",
+                "form:B:en:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "effectIndex": 2,
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ]
+        }
+      ],
+      "gapChecks": [
+        {
+          "gapIndex": 0,
+          "reason": "scope_ambiguous",
+          "verdict": "accepted",
+          "check": "제공 본문의 Health 문구만으로 현재/최대 체력을 확정하지 않는다. 숨은 게임 계산의 완전성을 주장하지 않는다.",
+          "sourceIds": [
+            "form:A:en"
+          ]
+        },
+        {
+          "gapIndex": 1,
+          "reason": "source_conflict",
+          "verdict": "accepted",
+          "check": "summary에 남은 self slow는 Riot 공식 삭제 공지와 현재 상세 form 본문에 의해 배제했다. 수치 미제공 문제가 아닌 오래된 소스 충돌로 정정했다.",
+          "sourceIds": [
+            "en:summary",
+            "form:B:en"
+          ]
+        },
+        {
+          "gapIndex": 2,
+          "reason": "unresolved_number",
+          "verdict": "accepted",
+          "check": "감쇠 이동 속도 유지시간/곡선은 해당 본문에 없다. 다음 공격 제한 시간과 혼합하지 않는다.",
+          "sourceIds": [
+            "form:B:en"
+          ]
+        }
+      ]
+    }
+  ]
+}

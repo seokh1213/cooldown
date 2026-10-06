@@ -1,0 +1,168 @@
+{
+  "summary": "영역 안의 모든 유닛은 지속시간 동안 사망하지 않습니다. 체력이 기준치에 도달하면 영역 안에서 피해를 받거나 치유되지 않으며, 축복이 끝날 때 영역 안의 모든 유닛이 회복합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "축복 영역 안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "영역 안에서는 유닛이 사망하지 않습니다. 아군, 적, 중립 유닛에 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred blesses the ground for 4 seconds, allowing no unit, ally, enemy, or neutral to die while inside."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "health_threshold",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n1"
+          }
+        },
+        {
+          "subject": "unknown",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "축복 영역 안"
+          }
+        },
+        {
+          "subject": "unknown",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "영역 안에서 체력10%에 도달함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "해당 체력 기준에 도달한 유닛은 영역 안에 있는 동안 피해를 받거나 치유되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Upon reaching 10% Health, units can't be damaged or healed while still inside the zone."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "unknown",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "축복 영역 안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "unknown",
+          "text": "축복이 끝날 때 영역 안의 모든 유닛이 회복합니다. 아군, 적, 중립 유닛에 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When the blessing ends, all units inside heal for 225/300/375 Health."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "허용된 subject 값에 neutral 유닛이 없어 영역 안의 중립 유닛을 unknown으로 표현했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred blesses the ground for 4 seconds, allowing no unit, ally, enemy, or neutral to die while inside."
+        }
+      ]
+    }
+  ]
+}
