@@ -1,3 +1,4 @@
+import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function openAdvisor(page: Page) {
@@ -5,8 +6,7 @@ async function openAdvisor(page: Page) {
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
   const skip = page.getByRole("button", { name: "모델 없이 써보기", exact: true });
-  await expect(input.or(skip)).toBeVisible();
-  if (await skip.isVisible()) await skip.click();
+  await waitForModelFreeInput(page, input, skip);
   return async (question: string) => {
     await input.fill(question);
     await page.getByRole("button", { name: "보내기", exact: true }).click();

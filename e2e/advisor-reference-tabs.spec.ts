@@ -1,3 +1,4 @@
+import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test } from "@playwright/test";
 
 for (const width of [390, 1280]) test(`자료 탭을 챔피언 이름으로 구분하고 전환한다: ${width}px`, async ({ page }) => {
@@ -6,8 +7,7 @@ for (const width of [390, 1280]) test(`자료 탭을 챔피언 이름으로 구�
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
   const skip = page.getByRole("button", { name: "모델 없이 써보기", exact: true });
-  await expect(input.or(skip)).toBeVisible();
-  if (await skip.isVisible()) await skip.click();
+  await waitForModelFreeInput(page, input, skip);
   for (const champion of ["오공", "자헨"]) {
     await input.fill(`${champion} 콤보 알려줘`);
     await page.getByRole("button", { name: "보내기", exact: true }).click();

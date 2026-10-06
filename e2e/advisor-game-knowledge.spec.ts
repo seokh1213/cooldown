@@ -1,3 +1,4 @@
+import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test } from "@playwright/test";
 
 test("오브젝트 생성·제거와 검수한 상세 수치를 구분한다", async ({ page }) => {
@@ -5,8 +6,7 @@ test("오브젝트 생성·제거와 검수한 상세 수치를 구분한다", a
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
   const skip = page.getByRole("button", { name: "모델 없이 써보기", exact: true });
-  await expect(input.or(skip)).toBeVisible();
-  if (await skip.isVisible()) await skip.click();
+  await waitForModelFreeInput(page, input, skip);
   for (const [question, expected] of [
     ["바론 몇 분에 나와?", /20분.*6분/],
     ["공허 유충 몇 분에 나와?", /8분.*한 번/],
@@ -30,8 +30,7 @@ test("중국어 아타칸 이름으로 제거 상태를 찾는다", async ({ pag
   await page.getByRole("button", { name: "打开英雄联盟知识助手", exact: true }).click();
   const input = page.getByRole("textbox", { name: "输入英雄联盟问题", exact: true });
   const skip = page.getByRole("button", { name: "不下载模型直接试用", exact: true });
-  await expect(input.or(skip)).toBeVisible();
-  if (await skip.isVisible()) await skip.click();
+  await waitForModelFreeInput(page, input, skip);
   await input.fill("厄塔汗现在还在游戏里吗？");
   await page.getByRole("button", { name: "发送", exact: true }).click();
   await expect(page.getByRole("dialog").getByText(/目前已.*移除.*26\.1/).last()).toBeVisible();

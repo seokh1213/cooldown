@@ -1,3 +1,4 @@
+import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test, type Page } from "@playwright/test";
 import { translations } from "../src/i18n/translations";
 import type { Language } from "../src/i18n";
@@ -9,8 +10,7 @@ async function openAdvisor(page: Page, lang: Language) {
   await page.getByRole("button", { name: copy.open, exact: true }).click();
   const input = page.getByRole("textbox", { name: copy.questionLabel, exact: true });
   const skip = page.getByRole("button", { name: copy.consent.skipModel, exact: true });
-  await expect(input.or(skip)).toBeVisible();
-  if (await skip.isVisible()) await skip.click();
+  await waitForModelFreeInput(page, input, skip);
   return async (question: string) => {
     await input.fill(question);
     await page.getByRole("button", { name: copy.send, exact: true }).click();

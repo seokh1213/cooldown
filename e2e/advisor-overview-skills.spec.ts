@@ -1,3 +1,4 @@
+import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test } from "@playwright/test";
 
 for (const width of [390, 1280]) test(`기본 소개·전체 스탯 정정·스킬 아이콘 상세: ${width}px`, async ({ page }) => {
@@ -6,8 +7,7 @@ for (const width of [390, 1280]) test(`기본 소개·전체 스탯 정정·스�
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
   const skip = page.getByRole("button", { name: "모델 없이 써보기", exact: true });
-  await expect(input.or(skip)).toBeVisible();
-  if (await skip.isVisible()) await skip.click();
+  await waitForModelFreeInput(page, input, skip);
   const ask = async (question: string) => {
     await input.fill(question);
     await page.getByRole("button", { name: "보내기", exact: true }).click();

@@ -1,3 +1,4 @@
+import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test } from "@playwright/test";
 
 test("늦은 기기 확인이 모델 없이 시작한 채팅 입력창을 없애지 않는다", async ({ page }) => {
@@ -36,12 +37,32 @@ test("기기 확인 뒤 모델을 지원하지 않아도 키보드 포커스를 
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
   await expect.poll(() => dialog.evaluate(node => node.contains(document.activeElement))).toBe(true);
+  const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
+  const skip = page.getByRole("button", { name: "모델 없이 써보기", exact: true });
+  const inputReady = waitForModelFreeInput(page, input, skip);
   await page.evaluate(() => (window as unknown as { finishUnsupportedCheck(): void }).finishUnsupportedCheck());
-  await expect(page.getByRole("textbox", { name: "롤 질문 입력", exact: true })).toBeVisible();
+  await inputReady;
   await expect.poll(() => dialog.evaluate(node => node.contains(document.activeElement))).toBe(true);
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
   await expect(trigger).toBeFocused();
+});
+
+test("모델 없이 시작하는 검사는 지원 확인 후 동의 버튼을 선택한다", async ({ page }) => {
+  await page.addInitScript(() => Object.defineProperty(navigator, "gpu", { value: {
+    requestAdapter: () => new Promise(resolve => Object.assign(window, {
+      finishSupportedCheck: () => resolve({ features: new Set(["shader-f16"]) }),
+    })),
+  } }));
+  await page.goto("./");
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
+  const skip = page.getByRole("button", { name: "모델 없이 써보기", exact: true });
+  await expect(page.getByRole("button", { name: "내려받고 시작", exact: true })).toBeDisabled();
+  const inputReady = waitForModelFreeInput(page, input, skip);
+  await page.evaluate(() => (window as unknown as { finishSupportedCheck(): void }).finishSupportedCheck());
+  await inputReady;
+  await expect(skip).toBeHidden();
 });
 
 const widgetModule = /\/AdvisorWidget(?:-[^/]+\.js|\.tsx)(?:\?.*)?$/;
@@ -52,8 +73,7 @@ async function openAdvisor(page: import("@playwright/test").Page) {
   await page.getByRole("button", { name: launcher, exact: true }).click();
   const skip = page.getByRole("button", { name: "모델 없이 써보기", exact: true });
   const input = page.getByRole("textbox", { name: questionLabel, exact: true });
-  await expect(input.or(skip)).toBeVisible();
-  if (await skip.isVisible()) await skip.click();
+  await waitForModelFreeInput(page, input, skip);
   return input;
 }
 
