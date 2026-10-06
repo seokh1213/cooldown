@@ -10,6 +10,7 @@
 - [official-patches.json](2026-10-06/official-patches.json): 사이트맵에서 발견한 PC LoL 패치 노트 URL 167개와 위키 패치 문서의 공식 링크 대조 결과.
 - [baron-example.json](2026-10-06/baron-example.json): 바론의 CDragon 필드 관측과 사실별 구조 예시. 충돌과 미검수 상태를 보존한다.
 - [wiki-migration-verification.json](2026-10-06/wiki-migration-verification.json): 주소를 수정한 수집기 5개를 격리된 임시 디렉터리에서 실제 위키에 실행한 결과.
+- [validation.json](2026-10-06/validation.json): 원본 보존, 회귀 기준 갱신, 실제 Actions 실행, 운영 배포와 세 언어 챗봇 질문 검증 결과.
 - [note-versions.json](../../knowledge/note-versions.json): 챔피언·아이템 관련 조언, 번역, 일반 규칙, 현재 승인 스킬 원본을 포함한 파일별 버전 기본값과 원본 해시.
 - [game-source-registry.json](../../knowledge/game-source-registry.json)과 [game-source-baseline.json](../../knowledge/game-source-baseline.json): 예약 검사 대상과 비교 기준.
 
@@ -100,7 +101,9 @@
 
 기존 `.github/workflows/update-static-data.yml`은 매시 17분에 DDragon 버전과 CDragon 빌드·캐릭터 표식을 보고, 표식이 같아도 하루 한 번 무거운 데이터 갱신을 실행한다. 공식 글 수정과 위키 리비전은 지금 표식에 포함되지 않는다. `llm:fetch-gameplay`도 현재 워크플로의 자동 수집 단계가 아니다.
 
-[Watch Game Knowledge](../../.github/workflows/watch-game-knowledge.yml)를 추가했다. 매일 UTC 00:37, 한국 시간 09:37에 실행하며, `Update Static Data`의 master 실행 성공 뒤와 수동 실행도 지원한다. 원격 저장소에 반영되기 전에는 예약 실행이 활성화되지 않는다. 이번에는 로컬에서 검증했으며 원격 Actions 실행은 하지 않았다.
+[Watch Game Knowledge](../../.github/workflows/watch-game-knowledge.yml)는 master에 반영해 활성화했다. 매일 UTC 00:37, 한국 시간 09:37에 예약하며, `Update Static Data`의 master 실행 성공 뒤와 수동 실행도 지원한다. 원격 수동 실행에서 55개 출처, 변경 0건, 실패 0건을 확인했다. 앱 배포의 브라우저 검사 191건과 운영 사이트의 세 언어 질문 14개도 통과했다. 운영 사이트의 배포 버전은 `validation.json`에 기록한다.
+
+배포 성공 후 `workflow_run`으로 이어지는 자동 검사도 실제 실행해 55개 출처, 변경 0건, 실패 0건을 확인했다. 운영 사이트의 release.json과 앱·도우미·worker 스크립트 3개를 해당 CI 산출물과 대조해 일치함을 확인했다. 큰 생성 모델은 내려받지 않았으며, 운영 사이트의 14개 질문은 모델 없는 조회 모드에서 검증했다.
 
 2026-10-06 13:20 UTC 확인에서는 기존 매시 예약의 실제 실행이 최근 24시간 3회였고 모두 성공했다. [GitHub는 예약 실행의 지연·누락 가능성을 문서화한다](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule). 정시·매시 실행 보장으로 표현하지 않는다. 원격 반영 뒤의 실행·배포·실제 챗봇 검증은 `validation.json`에 별도로 기록한다.
 

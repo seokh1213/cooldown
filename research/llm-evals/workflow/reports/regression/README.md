@@ -81,4 +81,4 @@ Gains: 220. Regressions: 0.
 
 Detailed rows: results.json. Semantic review: review-packet.json. Failed checks: logs/.
 
-Baseline provenance: refreshed after the 26.19 note-version and lifecycle backfill. All 5,775 measured answers and pass results match the previous baseline, with unchanged cases and scorers. The data fingerprint includes the new provenance records. 4,660 passes, 1,095 failed contracts and 20 historical semantic measurements are preserved; this baseline prevents new regressions and is not full quality approval. See ../../../game-knowledge/2026-10-06/validation.json and ../repair-2026-10-06/README.md.
+Baseline provenance: refreshed after the 26.19 note-version and lifecycle backfill. All 5,775 measured answers and pass results match the previous baseline, with unchanged cases and scorers. The data fingerprint includes the new provenance records. 4,660 passes, 1,095 failed contracts and 20 historical semantic measurements are preserved; this baseline prevents new regressions and is not full quality approval. See ../../../../game-knowledge/2026-10-06/validation.json and ../repair-2026-10-06/README.md.
