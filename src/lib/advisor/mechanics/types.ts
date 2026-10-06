@@ -1,9 +1,10 @@
 /** 승인 계약은 타입으로만 공유한다. 브라우저 번들에는 작성 도구가 들어가지 않는다. */
 import type { Draft, Job, Slot, SourceNumber } from "../../../../scripts/llm/champion-mechanics/contract";
+import type { NoteVersion } from "../../knowledge/noteVersion";
 export type { Condition, Effect, Rule, Slot, Parameter } from "../../../../scripts/llm/champion-mechanics/contract";
 
 export type AbilityJob = Pick<Job, "id" | "champion" | "slot" | "patch" | "sourceHash" | "slotRole" | "variants" | "facts"> & { numbers: Array<Pick<SourceNumber, "id" | "value" | "percent">> };
-export interface Ability { job: AbilityJob; draft: Draft }
+export interface Ability { job: AbilityJob; draft: Draft; version?: NoteVersion }
 export interface AbilityBundle { schemaVersion: 2; patch: string; abilities: Ability[] }
 export type Topic = "control_resistance" | "conversion" | "shield" | "movement" | "control" | "heal" | "stats" | "stack" | "summon" | "mark" | "resource";
 export interface MechanicMemory {

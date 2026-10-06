@@ -1,5 +1,5 @@
 /**
- * LoL Wiki(Fandom) 챔피언 팁 수집
+ * LoL Wiki 챔피언 팁 수집
  *
  * 정적 데이터에서 사라진 공식 팁(allytips/enemytips)이 위키 Strategy 문서에 남아 있고,
  * 스킬별 운용 노트(Playstyle)는 그보다 상세하다.
@@ -12,7 +12,7 @@
  *
  * 스킬 이름은 영문이므로 en_US 챔피언 데이터로 한국어 이름에 대응시킨다.
  *
- * 출처: League of Legends Wiki (Fandom) <Champion>/Strategy — CC BY-SA
+ * 출처: wiki.leagueoflegends.com <Champion>/Strategy, CC BY-SA
  * 출력: public/data/<patch>/llm/champion-wiki-tips.json
  * 사용: npm run llm:fetch-wiki-tips [-- --limit 5]
  */
@@ -41,10 +41,10 @@ export interface WikiTipsFile {
   champions: WikiChampionTips[];
 }
 
-const API = "https://leagueoflegends.fandom.com/api.php";
+const API = "https://wiki.leagueoflegends.com/en-us/api.php";
 
 async function fetchWikitext(page: string): Promise<string | undefined> {
-  const url = `${API}?action=parse&page=${encodeURIComponent(page)}&prop=wikitext&format=json&formatversion=2`;
+  const url = `${API}?action=parse&page=${encodeURIComponent(page)}&redirects=1&prop=wikitext&format=json&formatversion=2`;
   const res = await fetch(url, { headers: { "User-Agent": "cooldown-llm-advisor/1.0 (research)" } });
   if (!res.ok) return undefined;
   const parsed = (await res.json()) as { parse?: { wikitext?: string }; error?: unknown };
@@ -157,7 +157,7 @@ async function main() {
   const file: WikiTipsFile = {
     schemaVersion: 1,
     patch: data.patch,
-    source: "League of Legends Wiki (Fandom), <Champion>/Strategy",
+    source: "https://wiki.leagueoflegends.com/en-us/<Champion>/Strategy",
     license: "CC BY-SA 3.0",
     note: "최신 패치 기준이 아닐 수 있다. 프롬프트에서는 knowledge/ 지식 카드보다 낮은 우선순위로 쓴다.",
     fetchedAt: new Date().toISOString(),

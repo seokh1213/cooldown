@@ -28,6 +28,8 @@ import {
 import type { RuleNotes } from "../../src/lib/knowledge/rules";
 import { parseMechanics, type MechanicsIndex } from "../../src/lib/knowledge/mechanics";
 import { loadMechanicsNotes } from "./lib/mechanicsNotes";
+import { enrichNotes } from "./note-versions/backfill";
+import { noteVersion } from "../../src/lib/knowledge/noteVersion";
 
 export const ADVISOR_BUNDLE_FILE = "advisor-knowledge.json";
 
@@ -88,9 +90,12 @@ function main() {
   );
 
   const ruleFile = path.join(PUBLIC_DATA_ROOT, patch, "llm", "rule-notes.json");
-  const rules: RuleNotes[] = fs.existsSync(ruleFile)
-    ? (JSON.parse(fs.readFileSync(ruleFile, "utf8")) as { rules?: RuleNotes[] }).rules ?? []
-    : [];
+  const ruleData = fs.existsSync(ruleFile)
+    ? JSON.parse(fs.readFileSync(ruleFile, "utf8")) as { rules?: RuleNotes[]; patch?: string; fetchedAt?: string }
+    : {};
+  const rules: RuleNotes[] = (ruleData.rules ?? []).map(rule => ({ ...rule,
+    version: noteVersion(rule, { baselinePatch: patch, sourcePatch: ruleData.patch, fetchedAt: ruleData.fetchedAt }),
+  }));
 
   // 사람이 쓴 기초 문서를 절 단위로 싣는다. 브라우저가 docs/ 를 못 읽으므로 여기서 옮긴다.
   const mechanicsFile = path.join(process.cwd(), "docs", "lol-fundamentals.md");
@@ -147,7 +152,7 @@ function main() {
 
   const out = path.join(PUBLIC_DATA_ROOT, patch, "llm", ADVISOR_BUNDLE_FILE);
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, JSON.stringify(bundle), "utf8");
+  fs.writeFileSync(out, JSON.stringify(enrichNotes(bundle, { baselinePatch: patch })), "utf8");
 
   const kb = (fs.statSync(out).size / 1024).toFixed(0);
   console.log(

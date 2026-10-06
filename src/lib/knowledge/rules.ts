@@ -10,10 +10,12 @@
 
 /** gameplay 는 챔피언·룬과 무관한 일반 플레이 지식(미니언, 와드, 포탑 …)이다. */
 import { aliasAt, aliasesOf } from "./searchAliases";
+import type { NoteVersion } from "./noteVersion";
 
 export type RuleSubject = "rune" | "summoner" | "gameplay";
 
 export interface RuleNotes {
+  version?: NoteVersion;
   name: string;
   page: string;
   subject: RuleSubject;

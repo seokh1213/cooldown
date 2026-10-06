@@ -9,10 +9,12 @@
 import meta from "../../../knowledge/game-meta.json";
 import prices from "../../../knowledge/champion-prices.json";
 import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
+import { removalNotice, type NoteVersion } from "@/lib/knowledge/noteVersion";
 type Language = string;
 const short = (lang: Language): "ko" | "en" | "zh" => (lang.startsWith("en") ? "en" : lang.startsWith("zh") ? "zh" : "ko");
 
 export interface GameMetaFact {
+  version?: NoteVersion;
   id: string;
   page: string;
   keywords: Record<"ko" | "en" | "zh", string[]>;
@@ -77,7 +79,7 @@ export function asksPriceTiers(question: string): boolean {
 export function gameMetaAnswer(question: string, lang: Language): string | undefined {
   const l = short(lang);
   const fact = findGameMeta(question);
-  if (fact) return fact.text[l];
+  if (fact) return factText(fact, lang);
   if (asksPriceTiers(question)) return TIERS_TEXT[l];
   return undefined;
 }
@@ -85,13 +87,17 @@ export function gameMetaAnswer(question: string, lang: Language): string | undef
 /** 검색 문서 꼴(id · 제목 · 본문). 문서 벡터를 만든 것과 같은 제목·본문이다. */
 export function gameMetaDocs(lang: Language): Array<{ id: string; title: string; text: string }> {
   const l = short(lang);
-  return FACTS.map((fact) => ({ id: `meta:${fact.id}`, title: fact.keywords[l][0] ?? fact.id, text: fact.text[l] }));
+  return FACTS.map((fact) => ({ id: `meta:${fact.id}`, title: fact.keywords[l][0] ?? fact.id, text: factText(fact, lang) }));
 }
 
 /** 문서 id(`meta:surrender`)로 답한다. 검색 벡터가 고른 문서를 보일 때 쓴다. */
 export function gameMetaById(id: string, lang: Language): string | undefined {
   const fact = FACTS.find((entry) => `meta:${entry.id}` === id);
   if (!fact) return undefined;
+  return factText(fact, lang);
+}
+
+function factText(fact: GameMetaFact, lang: Language): string {
   const l = short(lang);
-  return fact.text[l];
+  return removalNotice(fact.keywords[l][0] ?? fact.id, fact.version, lang) ?? fact.text[l];
 }

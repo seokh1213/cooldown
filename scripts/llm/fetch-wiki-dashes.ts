@@ -153,7 +153,7 @@ async function main(): Promise<void> {
   const out: AbilityDashFile = {
     schemaVersion: 1,
     patch,
-    source: "https://leagueoflegends.fandom.com/",
+    source: "https://wiki.leagueoflegends.com/en-us/",
     license: "CC BY-SA 3.0",
     fetchedAt: new Date().toISOString(),
     abilities,

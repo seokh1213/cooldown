@@ -1,5 +1,5 @@
 /**
- * LoL Wiki(Fandom) 챔피언 분류 수집
+ * LoL Wiki 챔피언 분류 수집
  *
  * 라이엇 데이터(roles, damageType, playstyleInfo)는 큰 분류만 알려준다.
  * 커뮤니티 위키는 그보다 세분화된 **하위 클래스**와 **포지션**을 관리한다.
@@ -14,7 +14,7 @@
  * 예: 나서스는 herotype=Fighter, alttype=Tank, role=Juggernaut, 포지션=Top 이다.
  *     "브루저 또는 탱커" 라는 실제 인식과 정확히 맞는다.
  *
- * 출처: League of Legends Wiki (Fandom) Module:ChampionData/data — CC BY-SA 라이선스
+ * 출처: wiki.leagueoflegends.com Module:ChampionData/data, CC BY-SA
  * 출력: public/data/<patch>/llm/champion-wiki-meta.json
  * 사용: npm run llm:fetch-wiki
  */
@@ -29,7 +29,7 @@ import {
 } from "./lib/luaTable";
 
 const MODULE_URL =
-  "https://leagueoflegends.fandom.com/api.php?action=parse&page=Module:ChampionData/data&prop=wikitext&format=json&formatversion=2";
+  "https://wiki.leagueoflegends.com/en-us/api.php?action=parse&page=Module:ChampionData/data&prop=wikitext&format=json&formatversion=2";
 
 export interface WikiChampionMeta {
   /** ddragon id (apiname) */
@@ -62,7 +62,7 @@ export interface WikiMetaFile {
 async function main() {
   const data = loadStaticData("ko_KR");
   console.log(`패치 ${data.patch} / 대상 ${data.champions.length}종`);
-  console.log("LoL Wiki(Fandom) Module:ChampionData/data 수집…");
+  console.log("LoL Wiki Module:ChampionData/data 수집…");
 
   const res = await fetch(MODULE_URL, {
     headers: { "User-Agent": "cooldown-llm-advisor/1.0 (research)" },
@@ -109,7 +109,7 @@ async function main() {
   const file: WikiMetaFile = {
     schemaVersion: 1,
     patch: data.patch,
-    source: "League of Legends Wiki (Fandom), Module:ChampionData/data",
+    source: "https://wiki.leagueoflegends.com/en-us/Module:ChampionData/data",
     license: "CC BY-SA 3.0",
     fetchedAt: new Date().toISOString(),
     champions: champions.sort((a, b) => a.id.localeCompare(b.id)),

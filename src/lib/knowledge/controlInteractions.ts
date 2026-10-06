@@ -3,9 +3,9 @@ import type { CrowdControlType } from "./crowdControl";
 export type Cleanser = "cleanse" | "qss" | "mikael";
 
 export const CONTROL_RULE_SOURCES = [
-  "https://leagueoflegends.fandom.com/wiki/Types_of_Crowd_Control",
-  "https://leagueoflegends.fandom.com/wiki/Crowd_control",
-  "https://leagueoflegends.fandom.com/wiki/Quicksilver_Sash",
+  "https://wiki.leagueoflegends.com/en-us/Types_of_Crowd_Control",
+  "https://wiki.leagueoflegends.com/en-us/Crowd_control",
+  "https://wiki.leagueoflegends.com/en-us/Quicksilver_Sash",
 ];
 export const CONTROL_RULE_REVIEWED_AT = "2026-10-02";
 interface ControlInteraction { cleanse: Partial<Record<Cleanser, boolean>>; tenacity: boolean }

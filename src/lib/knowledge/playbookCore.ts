@@ -7,6 +7,7 @@
 import type { ChampionCard } from "./facts";
 import type { ComboPattern } from "./comboGuide";
 import { hasFinalConsonant, josa } from "./text";
+import type { NoteVersion } from "./noteVersion";
 
 export interface PlaybookCondition {
   /** 상대 주 피해 유형 */
@@ -57,6 +58,7 @@ export interface PlaybookHook {
 }
 
 export interface PlaybookEntry {
+  version?: NoteVersion;
   /** 출처와 사용 조건을 갖춘 상황별 콤보. 본문은 빌드에서 같은 형식으로 만든다. */
   combo?: ComboPattern;
   id?: string;

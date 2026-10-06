@@ -6,6 +6,7 @@ import { reviewedAbilities } from "./retrieval";
 import { readJson } from "./sources";
 import { ROOT } from "./prepare";
 import type { AbilityBundle } from "../../../src/lib/advisor/mechanics/types";
+import { noteVersion } from "../../../src/lib/knowledge/noteVersion";
 
 export async function buildMechanicBundle(root = ROOT): Promise<AbilityBundle> {
   const { patchVersion: patch } = await readJson<{ patchVersion: string }>(path.join(root, "public/data/version.json"));
@@ -13,7 +14,7 @@ export async function buildMechanicBundle(root = ROOT): Promise<AbilityBundle> {
   const abilities = [...index.values()].map(({ job, draft }) => ({ job: {
     id: job.id, champion: job.champion, slot: job.slot, patch: job.patch, sourceHash: job.sourceHash,
     slotRole: job.slotRole, facts: { name: job.facts.name }, numbers: job.numbers.map(({ id, value, percent }) => ({ id, value, percent })), variants: job.variants,
-  }, draft }));
+  }, draft, version: noteVersion({}, { baselinePatch: patch, sourcePatch: job.patch, verifiedThroughPatch: job.patch }) }));
   const bundle: AbilityBundle = { schemaVersion: 2, patch, abilities };
   const file = path.join(root, "public/data", patch, "llm/champion-mechanics.json");
   await mkdir(path.dirname(file), { recursive: true });

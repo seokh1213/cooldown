@@ -1,0 +1,62 @@
+name: Watch Game Knowledge
+
+on:
+  schedule:
+    - cron: '37 0 * * *'
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Update Static Data']
+    types: [completed]
+    branches: [master]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: watch-game-knowledge
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: master
+          sparse-checkout: scripts/ci
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Check whether static data was generated
+        id: trigger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: node scripts/ci/game-knowledge-trigger.mjs
+      - uses: actions/checkout@v7
+        if: steps.trigger.outputs.run == 'true'
+        with:
+          ref: master
+          sparse-checkout: '/*'
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v7
+        if: steps.trigger.outputs.run == 'true'
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+        if: steps.trigger.outputs.run == 'true'
+      - name: Compare wiki, official notes and CDragon
+        if: steps.trigger.outputs.run == 'true'
+        run: npm run llm:watch-game-knowledge
+      - name: Preserve report and collected sources
+        if: always() && steps.trigger.outputs.run == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: game-knowledge-source-check
+          path: research/.cache/game-knowledge/watch/
+          retention-days: 14
+          if-no-files-found: warn

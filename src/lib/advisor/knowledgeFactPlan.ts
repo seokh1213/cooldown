@@ -76,7 +76,7 @@ export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, 
   if (!subject || !query) return interaction;
   const withContext = (plan: AnswerPlan): AnswerPlan => ({ ...plan, controlContext: subject });
   if (subject.types?.length && !champions.length) {
-    const control: SpellCrowdControl = { status: "known", effects: subject.types.map(type => ({ type, target: "enemy", source: "https://leagueoflegends.fandom.com/wiki/Types_of_Crowd_Control" })) };
+    const control: SpellCrowdControl = { status: "known", effects: subject.types.map(type => ({ type, target: "enemy", source: "https://wiki.leagueoflegends.com/en-us/Types_of_Crowd_Control" })) };
     const text = query === "types" ? controlText(control, ctx.lang)
       : query === "smite" ? smiteRestriction([control], ctx.lang) : controlInteractionAnswer(control, query, resolved.text, ctx.lang);
     return withContext({ type: "code", answer: `### ${subject.types.map(type => controlLabel(type, ctx.lang)).join(" · ")}\n${text}` });

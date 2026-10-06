@@ -1,5 +1,5 @@
 /**
- * LoL Wiki(Fandom) 아이템 상점 분류 수집
+ * LoL Wiki 아이템 상점 분류 수집
  *
  * 상점의 역할군 탭(브루저·탱커·메이지·원거리 딜러·암살자·서포터)은 라이엇 데이터에 없지만
  * 위키의 `Module:ItemData/data` 가 `menu` 필드로 관리한다. 우리가 스탯으로 추정하던 것의 정답이다.
@@ -13,7 +13,7 @@
  *
  * 아이템 이름은 영문이지만 `id` 가 있어 우리 한국어 데이터와 숫자 id 로 대응된다.
  *
- * 출처: League of Legends Wiki (Fandom) Module:ItemData/data — CC BY-SA
+ * 출처: wiki.leagueoflegends.com Module:ItemData/data, CC BY-SA
  * 출력: public/data/<patch>/llm/item-wiki-meta.json
  * 사용: npm run llm:fetch-wiki-items
  */
@@ -29,7 +29,7 @@ import {
 } from "./lib/luaTable";
 
 const MODULE_URL =
-  "https://leagueoflegends.fandom.com/api.php?action=parse&page=Module:ItemData/data&prop=wikitext&format=json&formatversion=2";
+  "https://wiki.leagueoflegends.com/en-us/api.php?action=parse&page=Module:ItemData/data&prop=wikitext&format=json&formatversion=2";
 
 export interface WikiItemMeta {
   /** 우리 데이터의 아이템 id (숫자 문자열) */
@@ -57,7 +57,7 @@ export interface WikiItemMetaFile {
 async function main() {
   const data = loadStaticData("ko_KR");
   console.log(`패치 ${data.patch} / 협곡 아이템 대상`);
-  console.log("LoL Wiki(Fandom) Module:ItemData/data 수집…");
+  console.log("LoL Wiki Module:ItemData/data 수집…");
 
   const res = await fetch(MODULE_URL, {
     headers: { "User-Agent": "cooldown-llm-advisor/1.0 (research)" },
@@ -100,7 +100,7 @@ async function main() {
   const file: WikiItemMetaFile = {
     schemaVersion: 1,
     patch: data.patch,
-    source: "League of Legends Wiki (Fandom), Module:ItemData/data",
+    source: "https://wiki.leagueoflegends.com/en-us/Module:ItemData/data",
     license: "CC BY-SA 3.0",
     fetchedAt: new Date().toISOString(),
     items: items.sort((a, b) => Number(a.id) - Number(b.id)),
