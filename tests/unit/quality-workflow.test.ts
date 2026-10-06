@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { mergeStories, digest, buildBank } from "../../scripts/llm/quality/bank";
 import videoCoverage from "../../research/video-notes/mangdasu-20261006/coverage-questions.json";
 import { compareReports, verifyReview, reviewPacket, saveReport } from "../../scripts/llm/quality/report";
@@ -13,6 +14,7 @@ import { openOllama } from "../../scripts/llm/quality/ollama";
 import { scopeMatches, observedAnswer } from "../../scripts/llm/quality/checks";
 import { graphRoute } from "../../scripts/llm/quality/model";
 import { inventoryChanges } from "../../scripts/llm/quality/audit";
+import { retiredFiles } from "../../scripts/llm/quality/archive";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
 
 const story = (prefix: string, answer: string, source: string): QualityStory => ({ id: "", suites: [source], lang: "ko_KR",
@@ -89,6 +91,25 @@ test("a clean checkout may omit ignored research artifacts but must keep require
   assert.deepEqual(inventoryChanges([{ file: "fixture.json" }], locked), { added: [], removed: [] });
   assert.equal(inventoryChanges([], locked).removed[0].file, "fixture.json");
   assert.equal(inventoryChanges([{ file: "new-case.json" }], locked).added[0].file, "new-case.json");
+});
+
+test("retired fixtures come from the tested branch, not an unmerged experiment", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "advisor-history-"));
+  const git = (...args: string[]) => execFileSync("git", ["-C", root, "-c", "user.name=Quality fixture",
+    "-c", "user.email=quality@example.invalid", "-c", "commit.gpgsign=false", ...args], { stdio: "pipe" });
+  try {
+    git("init", "--quiet", "--initial-branch=main");
+    fs.mkdirSync(path.join(root, "research/llm-evals/workflow/datasets/archive/retired"), { recursive: true });
+    fs.writeFileSync(path.join(root, "research/llm-evals/workflow/datasets/archive/retired/sources.json"), "[]");
+    fs.writeFileSync(path.join(root, "research/old.json"), "{}");
+    git("add", "research/old.json"); git("commit", "--quiet", "-m", "Initial fixture");
+    git("switch", "--quiet", "--create", "experiment");
+    fs.writeFileSync(path.join(root, "research/in-progress.json"), "{}");
+    git("add", "research/in-progress.json"); git("commit", "--quiet", "-m", "Unmerged experiment");
+    git("switch", "--quiet", "main");
+    git("rm", "--quiet", "research/old.json"); git("commit", "--quiet", "-m", "Retired fixture");
+    assert.deepEqual(retiredFiles(root).map(row => row.file), ["research/old.json"]);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
 test("Ollama cleanup unloads only a model loaded by this run", async () => {

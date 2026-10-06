@@ -50,15 +50,16 @@ export function archivedInputs(files: string[], canonical: QualityStory[]): Qual
   return mergeStories(stories);
 }
 
-export function retiredFiles(): Array<{ file: string; lastChange: string; recovery: string }> {
-  const recovered = new Set((JSON.parse(fs.readFileSync(path.join(ROOT, WORKFLOW, "datasets/archive/retired/sources.json"), "utf8")) as Array<{ original: string }>).map(row => row.original));
-  const history = execFileSync("git", ["log", "--all", "--format=%H", "--name-only", "--", "research", "scripts/llm", "tests", "e2e"], { cwd: ROOT, encoding: "utf8", maxBuffer: 10_000_000 });
+export function retiredFiles(root = ROOT): Array<{ file: string; lastChange: string; recovery: string }> {
+  const recovered = new Set((JSON.parse(fs.readFileSync(path.join(root, WORKFLOW, "datasets/archive/retired/sources.json"), "utf8")) as Array<{ original: string }>).map(row => row.original));
+  // Unmerged branches can contain active experiments absent from this checkout.
+  const history = execFileSync("git", ["log", "HEAD", "--format=%H", "--name-only", "--", "research", "scripts/llm", "tests", "e2e"], { cwd: root, encoding: "utf8", maxBuffer: 10_000_000 });
   const missing = new Map<string, string>();
   let commit = "";
   for (const line of history.split("\n")) {
     if (/^[0-9a-f]{40}$/.test(line)) commit = line;
     else if (line && !line.split("/").some(part => part.startsWith(".") || part === "__pycache__" || part === "node_modules")
-      && !fs.existsSync(path.join(ROOT, line)) && !missing.has(line)) missing.set(line, commit);
+      && !fs.existsSync(path.join(root, line)) && !missing.has(line)) missing.set(line, commit);
   }
   return [...missing].map(([file, lastChange]) => ({ file, lastChange,
     recovery: recovered.has(file) ? "datasets/archive/retired; historical contract needs current-patch review"

@@ -81,4 +81,4 @@ A matched baseline is required before deciding a model change.
 
 Detailed rows: results.json. Semantic review: review-packet.json. Failed checks: logs/.
 
-Baseline provenance: complete `regression-portable`, tracked index of master 61d22ed0778aea8f6923cdd646bdcb84893ad1c9 with workflow changes. 4,036 automatic contracts pass, 1,519 historical contracts fail, 220 manual measurements. Local uncommitted advisor knowledge was excluded. Known failures remain pending; this baseline does not approve them.
+Baseline provenance: complete `push-regression-final` after integrating origin/master d852a92b9. Current data fingerprints differ from c4189e502; every measured verdict and answer is unchanged. 4,036 automatic contracts pass, 1,519 historical contracts fail, 220 manual measurements. Related Node tests: 804. This baseline preserves pending failures and does not approve their semantic quality.
