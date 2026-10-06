@@ -162,7 +162,7 @@ async function run(c: Case): Promise<{ want: string; calls: string[] }> {
 const CASES: Case[] = [
   // --- 모델 없이 써보기(판정기·검색 없음) ---
   { name: "잡담", question: "고마워 덕분에 이겼다", want: "code copy.smallTalk", calls: [] },
-  { name: "룬 판정: 함께 부른 규칙의 문장", question: "정복자에 점화 들어가?", want: "card rule 점화 highlighted=1", calls: [] },
+  { name: "룬 판정: 함께 부른 규칙의 판정 팁", question: "정복자에 점화 들어가?", want: "code text \"### 점화와 정복자 중첩\n점화는 사용하는 \"", calls: [] },
   { name: "게임 요소만 걸리고 게임 메타가 있으면 메타", question: "미니언 웨이브 생성 주기", want: "code text \"미니언 웨이브는 0분 30초부터 30초마다 \"", calls: [] },
   { name: "상성 대화 중 주문 쓰임새는 규칙 카드가 아니다", question: "점멸 빠지면 물어도 돼?", turns: matchupTurns("Garen", "Darius"), want: "matchup Garen>Darius", calls: [] },
   { name: "상성 대화 밖의 주문 질문은 규칙 카드", question: "점멸 빠지면 물어도 돼?", want: "card rule 점멸 highlighted=0", calls: [] },

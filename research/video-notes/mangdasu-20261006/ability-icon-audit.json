@@ -1,0 +1,1196 @@
+{
+  "patch": "26.19",
+  "sources": {
+    "cdragon": "16.19",
+    "ddragon": "16.19.1"
+  },
+  "championsChecked": 173,
+  "spellSlotsChecked": 692,
+  "failures": [],
+  "multiIconSlots": 100,
+  "method": "Read each champion BIN Q/W/E/R inventory, deduplicate icon paths, compare the existing default thumbnail with the first source icon. Visually inspect readiness masks and weapon/element/rank variants; this does not reproduce game-state transitions.",
+  "selectedStates": {
+    "Belveth:Q": {
+      "spellId": "BelvethQ",
+      "thumbnailName": "BelvethQ-ready",
+      "defaultIconPath": "assets/characters/belveth/hud/icons2d/bv_q_15.png",
+      "reason": "Four directions available. The first source image has only one direction available."
+    },
+    "Qiyana:Q": {
+      "spellId": "QiyanaQ",
+      "thumbnailName": "QiyanaQ-neutral",
+      "defaultIconPath": "assets/characters/qiyana/hud/icons2d/qiyana_q1.png",
+      "reason": "No element selected. The first source image represents the rock element."
+    },
+    "Samira:R": {
+      "spellId": "SamiraR",
+      "thumbnailName": "SamiraR-ready",
+      "defaultIconPath": "assets/characters/samira/hud/icons2d/samirar8.png",
+      "reason": "S-rank castable state. The first source image is the unavailable grayscale state."
+    },
+    "Jinx:Q": {
+      "spellId": "JinxQ",
+      "variants": [
+        {
+          "key": "A",
+          "iconPath": "assets/characters/jinx/hud/icons2d/jinx_q1.png",
+          "labels": {
+            "ko_KR": "생선대가리",
+            "en_US": "Fishbones",
+            "zh_CN": "鱼骨头"
+          }
+        },
+        {
+          "key": "B",
+          "iconPath": "assets/characters/jinx/hud/icons2d/jinx_q2.png",
+          "labels": {
+            "ko_KR": "빵야빵야",
+            "en_US": "Pow-Pow",
+            "zh_CN": "砰砰"
+          }
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "champion": "Ahri",
+      "slot": "Q",
+      "spell": "Characters/Ahri/Spells/AhriQAbility/AhriQ",
+      "icons": [
+        "ASSETS/Characters/Ahri/HUD/Icons2D/Icons_Ahri_Q.dds",
+        "ASSETS/Characters/Ahri/HUD/Icons2D/Ahri_SoulEater.dds"
+      ],
+      "defaultImageMse": 104.58,
+      "id": "AhriQ"
+    },
+    {
+      "champion": "Akali",
+      "slot": "Q",
+      "spell": "Characters/Akali/Spells/AkaliQAbility/AkaliQ",
+      "icons": [
+        "ASSETS/Characters/Akali/HUD/Icons2D/Akali_Q.dds",
+        "ASSETS/Characters/Akali/HUD/Icons2D/Akali_Q2.dds"
+      ],
+      "defaultImageMse": 89.89,
+      "id": "AkaliQ"
+    },
+    {
+      "champion": "Akali",
+      "slot": "E",
+      "spell": "Characters/Akali/Spells/AkaliEAbility/AkaliE",
+      "icons": [
+        "ASSETS/Characters/Akali/HUD/Icons2D/Akali_E.dds",
+        "ASSETS/Characters/Akali/HUD/Icons2D/Akali_E2.dds"
+      ],
+      "defaultImageMse": 68.51,
+      "id": "AkaliE"
+    },
+    {
+      "champion": "Ambessa",
+      "slot": "Q",
+      "spell": "Characters/Ambessa/Spells/AmbessaQAbility/AmbessaQ",
+      "icons": [
+        "ASSETS/Characters/Ambessa/HUD/Icons2D/Icon_Ambessa_Q1.dds",
+        "ASSETS/Characters/Ambessa/HUD/Icons2D/Icon_Ambessa_Q2.dds"
+      ],
+      "defaultImageMse": 63.61,
+      "id": "AmbessaQ"
+    },
+    {
+      "champion": "Ashe",
+      "slot": "Q",
+      "spell": "Characters/Ashe/Spells/AsheQAbility/AsheQ",
+      "icons": [
+        "ASSETS/Characters/Ashe/HUD/Icons2D/Ashe_Q.dds",
+        "ASSETS/Characters/Ashe/HUD/Icons2D/Ashe_Q_active.dds"
+      ],
+      "defaultImageMse": 46.7,
+      "id": "AsheQ"
+    },
+    {
+      "champion": "AurelionSol",
+      "slot": "W",
+      "spell": "Characters/AurelionSol/Spells/AurelionSolWAbility/AurelionSolW",
+      "icons": [
+        "ASSETS/Characters/AurelionSol/HUD/Icons2D/AurelionSolW1.dds",
+        "ASSETS/Characters/AurelionSol/HUD/Icons2D/AurelionSolW2.dds"
+      ],
+      "defaultImageMse": 136.14,
+      "id": "AurelionSolW"
+    },
+    {
+      "champion": "AurelionSol",
+      "slot": "R",
+      "spell": "Characters/AurelionSol/Spells/AurelionSolRAbility/AurelionSolR",
+      "icons": [
+        "ASSETS/Characters/AurelionSol/HUD/Icons2D/AurelionSolR1.dds",
+        "ASSETS/Characters/AurelionSol/HUD/Icons2D/AurelionSolR2.dds"
+      ],
+      "defaultImageMse": 77.88,
+      "id": "AurelionSolR"
+    },
+    {
+      "champion": "Azir",
+      "slot": "Q",
+      "spell": "Characters/Azir/Spells/AzirQWrapperAbility/AzirQWrapper",
+      "icons": [
+        "ASSETS/Characters/Azir/HUD/Icons2D/Azir_Q.dds",
+        "ASSETS/Characters/Azir/HUD/Icons2D/Azir_Q_Gray.dds"
+      ],
+      "defaultImageMse": 29.37,
+      "id": "AzirQWrapper"
+    },
+    {
+      "champion": "Azir",
+      "slot": "E",
+      "spell": "Characters/Azir/Spells/AzirEWrapperAbility/AzirEWrapper",
+      "icons": [
+        "ASSETS/Characters/Azir/HUD/Icons2D/Azir_E.dds",
+        "ASSETS/Characters/Azir/HUD/Icons2D/Azir_E_Gray.dds"
+      ],
+      "defaultImageMse": 37.58,
+      "id": "AzirEWrapper"
+    },
+    {
+      "champion": "Belveth",
+      "slot": "Q",
+      "spell": "Characters/Belveth/Spells/BelvethQAbility/BelvethQ",
+      "icons": [
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_1.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_2.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_3.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_4.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_5.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_6.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_7.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_8.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_9.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_10.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_11.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_12.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_13.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_14.dds",
+        "ASSETS/Characters/Belveth/HUD/Icons2D/BV_Q_15.dds"
+      ],
+      "defaultImageMse": 52.1,
+      "id": "BelvethQ"
+    },
+    {
+      "champion": "Briar",
+      "slot": "W",
+      "spell": "Characters/Briar/Spells/BriarWAbility/BriarW",
+      "icons": [
+        "ASSETS/Characters/Briar/HUD/Icons2D/BriarW.dds",
+        "ASSETS/Characters/Briar/HUD/Icons2D/BriarW2.dds",
+        "ASSETS/Characters/Briar/HUD/Icons2D/BriarWBuff.dds"
+      ],
+      "defaultImageMse": 191.22,
+      "id": "BriarW"
+    },
+    {
+      "champion": "Briar",
+      "slot": "R",
+      "spell": "Characters/Briar/Spells/BriarRAbility/BriarR",
+      "icons": [
+        "ASSETS/Characters/Briar/HUD/Icons2D/BriarR.dds",
+        "ASSETS/Characters/Briar/HUD/Icons2D/BriarWBuff.dds"
+      ],
+      "defaultImageMse": 115.6,
+      "id": "BriarR"
+    },
+    {
+      "champion": "Camille",
+      "slot": "Q",
+      "spell": "Characters/Camille/Spells/CamilleQAbility/CamilleQ",
+      "icons": [
+        "ASSETS/Characters/Camille/HUD/Icons2D/Camille_Q1.dds",
+        "ASSETS/Characters/Camille/HUD/Icons2D/Camille_Q2.dds",
+        "ASSETS/Characters/Camille/HUD/Icons2D/Camille_Q3.dds"
+      ],
+      "defaultImageMse": 62.68,
+      "id": "CamilleQ"
+    },
+    {
+      "champion": "Corki",
+      "slot": "R",
+      "spell": "Characters/Corki/Spells/MissileBarrageAbility/MissileBarrage",
+      "icons": [
+        "ASSETS/Characters/Corki/HUD/Icons2D/Corki_MissileBarrage.dds",
+        "ASSETS/Characters/Corki/HUD/Icons2D/Corki_R_BigOne.dds"
+      ],
+      "defaultImageMse": 45.05,
+      "id": "MissileBarrage"
+    },
+    {
+      "champion": "Fiddlesticks",
+      "slot": "Q",
+      "spell": "Characters/Fiddlesticks/Spells/FiddleSticksQAbility/FiddleSticksQ",
+      "icons": [
+        "ASSETS/Characters/Fiddlesticks/HUD/Icons2D/FiddlesticksQ.dds",
+        "ASSETS/Characters/Fiddlesticks/HUD/Icons2D/FiddlesticksQ2.dds"
+      ],
+      "defaultImageMse": 134.84,
+      "id": "FiddleSticksQ"
+    },
+    {
+      "champion": "Fiddlesticks",
+      "slot": "W",
+      "spell": "Characters/Fiddlesticks/Spells/FiddleSticksWAbility/FiddleSticksW",
+      "icons": [
+        "ASSETS/Characters/Fiddlesticks/HUD/Icons2D/FiddlesticksW.dds",
+        "ASSETS/Characters/Fiddlesticks/HUD/Icons2D/FiddlesticksW2.dds"
+      ],
+      "defaultImageMse": 136.04,
+      "id": "FiddleSticksW"
+    },
+    {
+      "champion": "Fiddlesticks",
+      "slot": "E",
+      "spell": "Characters/Fiddlesticks/Spells/FiddleSticksEAbility/FiddleSticksE",
+      "icons": [
+        "ASSETS/Characters/Fiddlesticks/HUD/Icons2D/FiddlesticksE.dds",
+        "ASSETS/Characters/Fiddlesticks/HUD/Icons2D/FiddlesticksE2.dds"
+      ],
+      "defaultImageMse": 117.5,
+      "id": "FiddleSticksE"
+    },
+    {
+      "champion": "Fiddlesticks",
+      "slot": "R",
+      "spell": "Characters/Fiddlesticks/Spells/FiddleSticksRAbility/FiddleSticksR",
+      "icons": [
+        "ASSETS/Characters/Fiddlesticks/HUD/Icons2D/FiddlesticksR.dds",
+        "ASSETS/Characters/Fiddlesticks/HUD/Icons2D/FiddlesticksR2.dds"
+      ],
+      "defaultImageMse": 186.83,
+      "id": "FiddleSticksR"
+    },
+    {
+      "champion": "Gnar",
+      "slot": "E",
+      "spell": "Characters/Gnar/Spells/GnarEAbility/GnarE",
+      "icons": [
+        "ASSETS/Characters/Gnar/HUD/Icons2D/Gnar_E.dds",
+        "ASSETS/Characters/Gnar/HUD/Icons2D/Gnar_E_cancel.dds"
+      ],
+      "defaultImageMse": 102.27,
+      "id": "GnarE"
+    },
+    {
+      "champion": "Gnar",
+      "slot": "R",
+      "spell": "Characters/Gnar/Spells/GnarRAbility/GnarR",
+      "icons": [
+        "ASSETS/Characters/Gnar/HUD/Icons2D/GnarBig_R.dds",
+        "ASSETS/Characters/Gnar/HUD/Icons2D/Gnar_R_Grey.dds"
+      ],
+      "defaultImageMse": 81.8,
+      "id": "GnarR"
+    },
+    {
+      "champion": "Gwen",
+      "slot": "R",
+      "spell": "Characters/Gwen/Spells/GwenRAbility/GwenR",
+      "icons": [
+        "ASSETS/Characters/Gwen/HUD/Icons2D/Gwen_R.dds",
+        "ASSETS/Characters/Gwen/HUD/Icons2D/Gwen_R2.dds",
+        "ASSETS/Characters/Gwen/HUD/Icons2D/Gwen_R3.dds"
+      ],
+      "defaultImageMse": 27.62,
+      "id": "GwenR"
+    },
+    {
+      "champion": "Heimerdinger",
+      "slot": "Q",
+      "spell": "Characters/Heimerdinger/Spells/HeimerdingerQAbility/HeimerdingerQ",
+      "icons": [
+        "ASSETS/Characters/Heimerdinger/HUD/Icons2D/Heimerdinger_Q1.dds",
+        "ASSETS/Characters/Heimerdinger/HUD/Icons2D/Heimerdinger_Q2.dds"
+      ],
+      "defaultImageMse": 81.81,
+      "id": "HeimerdingerQ"
+    },
+    {
+      "champion": "Heimerdinger",
+      "slot": "W",
+      "spell": "Characters/Heimerdinger/Spells/HeimerdingerWAbility/HeimerdingerW",
+      "icons": [
+        "ASSETS/Characters/Heimerdinger/HUD/Icons2D/Heimerdinger_W1.dds",
+        "ASSETS/Characters/Heimerdinger/HUD/Icons2D/Heimerdinger_W2.dds"
+      ],
+      "defaultImageMse": 82.08,
+      "id": "HeimerdingerW"
+    },
+    {
+      "champion": "Heimerdinger",
+      "slot": "E",
+      "spell": "Characters/Heimerdinger/Spells/HeimerdingerEAbility/HeimerdingerE",
+      "icons": [
+        "ASSETS/Characters/Heimerdinger/HUD/Icons2D/Heimerdinger_E1.dds",
+        "ASSETS/Characters/Heimerdinger/HUD/Icons2D/Heimerdinger_E2.dds"
+      ],
+      "defaultImageMse": 89.99,
+      "id": "HeimerdingerE"
+    },
+    {
+      "champion": "Jhin",
+      "slot": "R",
+      "spell": "Characters/Jhin/Spells/JhinRAbility/JhinR",
+      "icons": [
+        "ASSETS/Characters/Jhin/HUD/Icons2D/Jhin_R.dds",
+        "ASSETS/Characters/Jhin/HUD/Icons2D/Jhin_R_Shot.dds",
+        "ASSETS/Characters/Jhin/HUD/Icons2D/Jhin_R_Shot4.dds"
+      ],
+      "defaultImageMse": 105.09,
+      "id": "JhinR"
+    },
+    {
+      "champion": "Jinx",
+      "slot": "Q",
+      "spell": "Characters/Jinx/Spells/JinxQAbility/JinxQ",
+      "icons": [
+        "ASSETS/Characters/Jinx/HUD/Icons2D/Jinx_Q1.dds",
+        "ASSETS/Characters/Jinx/HUD/Icons2D/Jinx_Q2.dds"
+      ],
+      "defaultImageMse": 77.21,
+      "id": "JinxQ"
+    },
+    {
+      "champion": "KSante",
+      "slot": "Q",
+      "spell": "Characters/KSante/Spells/KSanteQAbility/KSanteQ",
+      "icons": [
+        "ASSETS/Characters/KSante/HUD/Icons2D/Icons_KSante_Q1.dds",
+        "ASSETS/Characters/KSante/HUD/Icons2D/Icons_KSante_Q2.dds"
+      ],
+      "defaultImageMse": 140.71,
+      "id": "KSanteQ"
+    },
+    {
+      "champion": "Kaisa",
+      "slot": "Q",
+      "spell": "Characters/Kaisa/Spells/KaisaQAbility/KaisaQ",
+      "icons": [
+        "ASSETS/Characters/Kaisa/HUD/Icons2D/Kaisa_Q.dds",
+        "ASSETS/Characters/Kaisa/HUD/Icons2D/Kaisa_Q2.dds"
+      ],
+      "defaultImageMse": 110.19,
+      "id": "KaisaQ"
+    },
+    {
+      "champion": "Kaisa",
+      "slot": "W",
+      "spell": "Characters/Kaisa/Spells/KaisaWAbility/KaisaW",
+      "icons": [
+        "ASSETS/Characters/Kaisa/HUD/Icons2D/Kaisa_W.dds",
+        "ASSETS/Characters/Kaisa/HUD/Icons2D/Kaisa_W2.dds"
+      ],
+      "defaultImageMse": 81.72,
+      "id": "KaisaW"
+    },
+    {
+      "champion": "Kaisa",
+      "slot": "E",
+      "spell": "Characters/Kaisa/Spells/KaisaEAbility/KaisaE",
+      "icons": [
+        "ASSETS/Characters/Kaisa/HUD/Icons2D/Kaisa_E.dds",
+        "ASSETS/Characters/Kaisa/HUD/Icons2D/Kaisa_E2.dds"
+      ],
+      "defaultImageMse": 148.08,
+      "id": "KaisaE"
+    },
+    {
+      "champion": "Kalista",
+      "slot": "E",
+      "spell": "Characters/Kalista/Spells/KalistaExpungeWrapperAbility/KalistaExpungeWrapper",
+      "icons": [
+        "ASSETS/Characters/Kalista/HUD/Icons2D/Kalista_E.dds",
+        "ASSETS/Characters/Kalista/HUD/Icons2D/Kalista_E_Off.dds"
+      ],
+      "defaultImageMse": 59.44,
+      "id": "KalistaExpungeWrapper"
+    },
+    {
+      "champion": "Karma",
+      "slot": "Q",
+      "spell": "Characters/Karma/Spells/KarmaQAbility/KarmaQ",
+      "icons": [
+        "ASSETS/Characters/Karma/HUD/Icons2D/Karma_Q1.dds",
+        "ASSETS/Characters/Karma/HUD/Icons2D/Karma_Q2.dds"
+      ],
+      "defaultImageMse": 54.61,
+      "id": "KarmaQ"
+    },
+    {
+      "champion": "Karma",
+      "slot": "W",
+      "spell": "Characters/Karma/Spells/KarmaSpiritBindAbility/KarmaSpiritBind",
+      "icons": [
+        "ASSETS/Characters/Karma/HUD/Icons2D/Karma_W1.dds",
+        "ASSETS/Characters/Karma/HUD/Icons2D/Karma_W2.dds"
+      ],
+      "defaultImageMse": 31.4,
+      "id": "KarmaSpiritBind"
+    },
+    {
+      "champion": "Karma",
+      "slot": "E",
+      "spell": "Characters/Karma/Spells/KarmaSolKimShieldAbility/KarmaSolKimShield",
+      "icons": [
+        "ASSETS/Characters/Karma/HUD/Icons2D/Karma_E1.dds",
+        "ASSETS/Characters/Karma/HUD/Icons2D/Karma_E2.dds"
+      ],
+      "defaultImageMse": 39.08,
+      "id": "KarmaSolKimShield"
+    },
+    {
+      "champion": "Karthus",
+      "slot": "Q",
+      "spell": "Characters/Karthus/Spells/KarthusLayWasteA1Ability/KarthusLayWasteA1",
+      "icons": [
+        "ASSETS/Characters/Karthus/HUD/Icons2D/Karthus_Q.dds",
+        "ASSETS/Characters/Karthus/HUD/Icons2D/Karthus_Q_OnCooldown.dds"
+      ],
+      "defaultImageMse": 87.02,
+      "id": "KarthusLayWasteA1"
+    },
+    {
+      "champion": "Katarina",
+      "slot": "R",
+      "spell": "Characters/Katarina/Spells/KatarinaRAbility/KatarinaR",
+      "icons": [
+        "ASSETS/Characters/Katarina/HUD/Icons2D/Katarina_R.dds",
+        "ASSETS/Characters/Katarina/HUD/Icons2D/Katarina_R_CannotCast.dds"
+      ],
+      "defaultImageMse": 61.61,
+      "id": "KatarinaR"
+    },
+    {
+      "champion": "Kayle",
+      "slot": "Q",
+      "spell": "Characters/Kayle/Spells/KayleQAbility/KayleQ",
+      "icons": [
+        "ASSETS/Characters/Kayle/HUD/Icons2D/Kayle_Q.dds",
+        "ASSETS/Characters/Kayle/HUD/Icons2D/Kayle_Q_Shred.dds"
+      ],
+      "defaultImageMse": 89.59,
+      "id": "KayleQ"
+    },
+    {
+      "champion": "Kayle",
+      "slot": "E",
+      "spell": "Characters/Kayle/Spells/KayleEAbility/KayleE",
+      "icons": [
+        "ASSETS/Characters/Kayle/HUD/Icons2D/Kayle_E.dds",
+        "ASSETS/Characters/Kayle/HUD/Icons2D/Kayle_E2.dds"
+      ],
+      "defaultImageMse": 46.35,
+      "id": "KayleE"
+    },
+    {
+      "champion": "Kayn",
+      "slot": "Q",
+      "spell": "Characters/Kayn/Spells/KaynQAbility/KaynQ",
+      "icons": [
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_Q_Primary.dds",
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_Q_Ass.dds",
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_Q_Slay.dds"
+      ],
+      "defaultImageMse": 94.04,
+      "id": "KaynQ"
+    },
+    {
+      "champion": "Kayn",
+      "slot": "W",
+      "spell": "Characters/Kayn/Spells/KaynWAbility/KaynW",
+      "icons": [
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_W_Primary.dds",
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_W_Slay.dds"
+      ],
+      "defaultImageMse": 99.63,
+      "id": "KaynW"
+    },
+    {
+      "champion": "Kayn",
+      "slot": "E",
+      "spell": "Characters/Kayn/Spells/KaynEAbility/KaynE",
+      "icons": [
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_E_Primary.dds",
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_E_Ass.dds",
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_E_Slay.dds"
+      ],
+      "defaultImageMse": 134.47,
+      "id": "KaynE"
+    },
+    {
+      "champion": "Kayn",
+      "slot": "R",
+      "spell": "Characters/Kayn/Spells/KaynRAbility/KaynR",
+      "icons": [
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_R1_Primary.dds",
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_R1_Disabled.dds",
+        "ASSETS/Characters/Kayn/HUD/Icons2D/Kayn_R1_Slay.dds"
+      ],
+      "defaultImageMse": 129.18,
+      "id": "KaynR"
+    },
+    {
+      "champion": "Khazix",
+      "slot": "R",
+      "spell": "Characters/Khazix/Spells/KhazixRAbility/KhazixR",
+      "icons": [
+        "ASSETS/Characters/KhaZix/HUD/Icons2D/Khazix_R.dds",
+        "ASSETS/Characters/KhaZix/HUD/Icons2D/Khazix_R_red.dds"
+      ],
+      "defaultImageMse": 61.35,
+      "id": "KhazixR"
+    },
+    {
+      "champion": "Kled",
+      "slot": "E",
+      "spell": "Characters/Kled/Spells/KledEAbility/KledE",
+      "icons": [
+        "ASSETS/Characters/Kled/HUD/Icons2D/Kled_E1.dds",
+        "ASSETS/Characters/Kled/HUD/Icons2D/Kled_E_Grey.dds"
+      ],
+      "defaultImageMse": 98.33,
+      "id": "KledE"
+    },
+    {
+      "champion": "Kled",
+      "slot": "R",
+      "spell": "Characters/Kled/Spells/KledRAbility/KledR",
+      "icons": [
+        "ASSETS/Characters/Kled/HUD/Icons2D/Kled_R.dds",
+        "ASSETS/Characters/Kled/HUD/Icons2D/Kled_R_Grey.dds"
+      ],
+      "defaultImageMse": 96.9,
+      "id": "KledR"
+    },
+    {
+      "champion": "Leblanc",
+      "slot": "Q",
+      "spell": "Characters/Leblanc/Spells/LeblancQAbility/LeblancQ",
+      "icons": [
+        "ASSETS/Characters/Leblanc/HUD/Icons2D/LeblancQ.dds",
+        "ASSETS/Characters/Leblanc/HUD/Icons2D/LeblancRQ.dds"
+      ],
+      "defaultImageMse": 48.11,
+      "id": "LeblancQ"
+    },
+    {
+      "champion": "Leblanc",
+      "slot": "W",
+      "spell": "Characters/Leblanc/Spells/LeblancWAbility/LeblancW",
+      "icons": [
+        "ASSETS/Characters/Leblanc/HUD/Icons2D/LeblancW.dds",
+        "ASSETS/Characters/Leblanc/HUD/Icons2D/LeblancRW.dds"
+      ],
+      "defaultImageMse": 50.33,
+      "id": "LeblancW"
+    },
+    {
+      "champion": "Leblanc",
+      "slot": "E",
+      "spell": "Characters/Leblanc/Spells/LeblancEAbility/LeblancE",
+      "icons": [
+        "ASSETS/Characters/Leblanc/HUD/Icons2D/LeblancE.dds",
+        "ASSETS/Characters/Leblanc/HUD/Icons2D/LeblancRE.dds"
+      ],
+      "defaultImageMse": 45.51,
+      "id": "LeblancE"
+    },
+    {
+      "champion": "Leblanc",
+      "slot": "R",
+      "spell": "Characters/Leblanc/Spells/LeblancRAbility/LeblancR",
+      "icons": [
+        "ASSETS/Characters/Leblanc/HUD/Icons2D/LeblancR.dds",
+        "ASSETS/Characters/Leblanc/HUD/Icons2D/LeblancRR.dds"
+      ],
+      "defaultImageMse": 48.63,
+      "id": "LeblancR"
+    },
+    {
+      "champion": "Locke",
+      "slot": "E",
+      "spell": "Characters/Locke/Spells/LockeEAbility/LockeE",
+      "icons": [
+        "ASSETS/Characters/Locke/HUD/Icons2D/Locke_E.dds",
+        "ASSETS/Characters/Locke/HUD/Icons2D/Locke_E2.dds"
+      ],
+      "defaultImageMse": 104.95,
+      "id": "LockeE"
+    },
+    {
+      "champion": "Mel",
+      "slot": "R",
+      "spell": "Characters/Mel/Spells/MelRAbility/MelR",
+      "icons": [
+        "ASSETS/Characters/Mel/HUD/Icons2D/Mel_R.dds",
+        "ASSETS/Characters/Mel/HUD/Icons2D/Mel_R2.dds"
+      ],
+      "defaultImageMse": 68.31,
+      "id": "MelR"
+    },
+    {
+      "champion": "MonkeyKing",
+      "slot": "R",
+      "spell": "Characters/MonkeyKing/Spells/MonkeyKingSpinToWinAbility/MonkeyKingSpinToWin",
+      "icons": [
+        "ASSETS/Characters/MonkeyKing/HUD/Icons2D/MonkeyKingCyclone.dds",
+        "ASSETS/Characters/MonkeyKing/HUD/Icons2D/MonkeyKingCycloneCancel.dds",
+        "ASSETS/Characters/MonkeyKing/HUD/Icons2D/MonkeyKingCyclone2.dds"
+      ],
+      "defaultImageMse": 131.98,
+      "id": "MonkeyKingSpinToWin"
+    },
+    {
+      "champion": "Mordekaiser",
+      "slot": "W",
+      "spell": "Characters/Mordekaiser/Spells/MordekaiserWAbility/MordekaiserW",
+      "icons": [
+        "ASSETS/Characters/Mordekaiser/HUD/Icons2D/MordekaiserW.dds",
+        "ASSETS/Characters/Mordekaiser/HUD/Icons2D/MordekaiserW2.dds"
+      ],
+      "defaultImageMse": 125.74,
+      "id": "MordekaiserW"
+    },
+    {
+      "champion": "Nidalee",
+      "slot": "R",
+      "spell": "Characters/Nidalee/Spells/AspectOfTheCougarAbility/AspectOfTheCougar",
+      "icons": [
+        "ASSETS/Characters/Nidalee/HUD/Icons2D/Nidalee_R1.dds",
+        "ASSETS/Characters/Nidalee/HUD/Icons2D/Nidalee_R2.dds"
+      ],
+      "defaultImageMse": 137.9,
+      "id": "AspectOfTheCougar"
+    },
+    {
+      "champion": "Nunu",
+      "slot": "W",
+      "spell": "Characters/Nunu/Spells/NunuWAbility/NunuW",
+      "icons": [
+        "ASSETS/Characters/Nunu/HUD/Icons2D/NunuW1.dds",
+        "ASSETS/Characters/Nunu/HUD/Icons2D/NunuW2.dds"
+      ],
+      "defaultImageMse": 53.48,
+      "id": "NunuW"
+    },
+    {
+      "champion": "Pantheon",
+      "slot": "Q",
+      "spell": "Characters/Pantheon/Spells/PantheonQAbility/PantheonQ",
+      "icons": [
+        "ASSETS/Characters/Pantheon/HUD/Icons2D/Pantheon_Q1.dds",
+        "ASSETS/Characters/Pantheon/HUD/Icons2D/Pantheon_Q2.dds"
+      ],
+      "defaultImageMse": 72.4,
+      "id": "PantheonQ"
+    },
+    {
+      "champion": "Pantheon",
+      "slot": "W",
+      "spell": "Characters/Pantheon/Spells/PantheonWAbility/PantheonW",
+      "icons": [
+        "ASSETS/Characters/Pantheon/HUD/Icons2D/Pantheon_W1.dds",
+        "ASSETS/Characters/Pantheon/HUD/Icons2D/Pantheon_W2.dds"
+      ],
+      "defaultImageMse": 118.4,
+      "id": "PantheonW"
+    },
+    {
+      "champion": "Pantheon",
+      "slot": "E",
+      "spell": "Characters/Pantheon/Spells/PantheonEAbility/PantheonE",
+      "icons": [
+        "ASSETS/Characters/Pantheon/HUD/Icons2D/Pantheon_E1.dds",
+        "ASSETS/Characters/Pantheon/HUD/Icons2D/Pantheon_E2.dds"
+      ],
+      "defaultImageMse": 88.9,
+      "id": "PantheonE"
+    },
+    {
+      "champion": "Qiyana",
+      "slot": "Q",
+      "spell": "Characters/Qiyana/Spells/QiyanaQAbility/QiyanaQ",
+      "icons": [
+        "ASSETS/Characters/Qiyana/HUD/Icons2D/Qiyana_Q2_Red.dds",
+        "ASSETS/Characters/Qiyana/HUD/Icons2D/Qiyana_Q2_Green.dds",
+        "ASSETS/Characters/Qiyana/HUD/Icons2D/Qiyana_Q2_Blue.dds",
+        "ASSETS/Characters/Qiyana/HUD/Icons2D/Qiyana_Q1.dds"
+      ],
+      "defaultImageMse": 67.72,
+      "id": "QiyanaQ"
+    },
+    {
+      "champion": "Rakan",
+      "slot": "E",
+      "spell": "Characters/Rakan/Spells/RakanEAbility/RakanE",
+      "icons": [
+        "ASSETS/Characters/Rakan/HUD/Icons2D/Rakan_E.dds",
+        "ASSETS/Characters/Rakan/HUD/Icons2D/Rakan_E2.dds"
+      ],
+      "defaultImageMse": 90.09,
+      "id": "RakanE"
+    },
+    {
+      "champion": "Rakan",
+      "slot": "R",
+      "spell": "Characters/Rakan/Spells/RakanRAbility/RakanR",
+      "icons": [
+        "ASSETS/Characters/Rakan/HUD/Icons2D/Rakan_R.dds",
+        "Rakan_R_Cancel.dds"
+      ],
+      "defaultImageMse": 81.29,
+      "id": "RakanR"
+    },
+    {
+      "champion": "RekSai",
+      "slot": "W",
+      "spell": "Characters/RekSai/Spells/RekSaiWAbility/RekSaiW",
+      "icons": [
+        "ASSETS/Characters/RekSai/HUD/Icons2D/RekSai_W1.dds",
+        "ASSETS/Characters/RekSai/HUD/Icons2D/RekSai_W2.dds"
+      ],
+      "defaultImageMse": 41.89,
+      "id": "RekSaiW"
+    },
+    {
+      "champion": "Rell",
+      "slot": "W",
+      "spell": "Characters/Rell/Spells/RellW_DismountAbility/RellW_Dismount",
+      "icons": [
+        "ASSETS/Characters/Rell/HUD/Icons2D/RellW.dds",
+        "ASSETS/Characters/Rell/HUD/Icons2D/RellMount.dds"
+      ],
+      "defaultImageMse": 126.92,
+      "id": "RellW_Dismount"
+    },
+    {
+      "champion": "Rumble",
+      "slot": "E",
+      "spell": "Characters/Rumble/Spells/RumbleGrenadeAbility/RumbleGrenade",
+      "icons": [
+        "ASSETS/Characters/Rumble/HUD/Icons2D/Rumble_ElectroHarpoon.dds",
+        "ASSETS/Characters/Rumble/HUD/Icons2D/Rumble_ElectroHarpoon_Twin.dds"
+      ],
+      "defaultImageMse": 77.81,
+      "id": "RumbleGrenade"
+    },
+    {
+      "champion": "Samira",
+      "slot": "R",
+      "spell": "Characters/Samira/Spells/SamiraRAbility/SamiraR",
+      "icons": [
+        "ASSETS/Characters/Samira/HUD/Icons2D/SamiraR1.dds",
+        "ASSETS/Characters/Samira/HUD/Icons2D/SamiraR2.dds",
+        "ASSETS/Characters/Samira/HUD/Icons2D/SamiraR3.dds",
+        "ASSETS/Characters/Samira/HUD/Icons2D/SamiraR4.dds",
+        "ASSETS/Characters/Samira/HUD/Icons2D/SamiraR5.dds",
+        "ASSETS/Characters/Samira/HUD/Icons2D/SamiraR6.dds",
+        "ASSETS/Characters/Samira/HUD/Icons2D/SamiraR7.dds",
+        "ASSETS/Characters/Samira/HUD/Icons2D/SamiraR8.dds"
+      ],
+      "defaultImageMse": 11.25,
+      "id": "SamiraR"
+    },
+    {
+      "champion": "Sejuani",
+      "slot": "E",
+      "spell": "Characters/Sejuani/Spells/SejuaniEAbility/SejuaniE",
+      "icons": [
+        "ASSETS/Characters/Sejuani/HUD/Icons2D/Sejuani_E.dds",
+        "Sejuani_E_Dark.dds"
+      ],
+      "defaultImageMse": 84.95,
+      "id": "SejuaniE"
+    },
+    {
+      "champion": "Senna",
+      "slot": "E",
+      "spell": "Characters/Senna/Spells/SennaEAbility/SennaE",
+      "icons": [
+        "ASSETS/Characters/Senna/HUD/Icons2D/Senna_E.dds",
+        "ASSETS/Characters/Senna/HUD/Icons2D/Senna_E2.dds"
+      ],
+      "defaultImageMse": 61.85,
+      "id": "SennaE"
+    },
+    {
+      "champion": "Senna",
+      "slot": "R",
+      "spell": "Characters/Senna/Spells/SennaRAbility/SennaR",
+      "icons": [
+        "ASSETS/Characters/Senna/HUD/Icons2D/Senna_R.dds",
+        "ASSETS/Characters/Senna/HUD/Icons2D/Senna_R2.dds"
+      ],
+      "defaultImageMse": 64.45,
+      "id": "SennaR"
+    },
+    {
+      "champion": "Seraphine",
+      "slot": "Q",
+      "spell": "Characters/Seraphine/Spells/SeraphineQAbility/SeraphineQ",
+      "icons": [
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_Q1.dds",
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_Q2.dds",
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_Q3.dds"
+      ],
+      "defaultImageMse": 63.36,
+      "id": "SeraphineQ"
+    },
+    {
+      "champion": "Seraphine",
+      "slot": "W",
+      "spell": "Characters/Seraphine/Spells/SeraphineWAbility/SeraphineW",
+      "icons": [
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_W1.dds",
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_W2.dds",
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_W3.dds"
+      ],
+      "defaultImageMse": 89.82,
+      "id": "SeraphineW"
+    },
+    {
+      "champion": "Seraphine",
+      "slot": "E",
+      "spell": "Characters/Seraphine/Spells/SeraphineEAbility/SeraphineE",
+      "icons": [
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_E1.dds",
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_E2.dds",
+        "ASSETS/Characters/Seraphine/HUD/Icons2D/Seraphine_E3.dds"
+      ],
+      "defaultImageMse": 128.64,
+      "id": "SeraphineE"
+    },
+    {
+      "champion": "Singed",
+      "slot": "Q",
+      "spell": "Characters/Singed/Spells/PoisonTrailAbility/PoisonTrail",
+      "icons": [
+        "ASSETS/Characters/Singed/HUD/Icons2D/Singed_Q.dds",
+        "ASSETS/Characters/Singed/HUD/Icons2D/Singed_Q_Off.dds"
+      ],
+      "defaultImageMse": 44.93,
+      "id": "PoisonTrail"
+    },
+    {
+      "champion": "Sion",
+      "slot": "R",
+      "spell": "Characters/Sion/Spells/SionRAbility/SionR",
+      "icons": [
+        "ASSETS/Characters/Sion/HUD/Icons2D/Sion_R1.dds",
+        "ASSETS/Characters/Sion/HUD/Icons2D/Sion_R2.dds"
+      ],
+      "defaultImageMse": 78.66,
+      "id": "SionR"
+    },
+    {
+      "champion": "Smolder",
+      "slot": "Q",
+      "spell": "Characters/Smolder/Spells/SmolderQAbility/SmolderQ",
+      "icons": [
+        "ASSETS/Characters/Smolder/HUD/Icons2D/Icons_Smolder_Q1.dds",
+        "ASSETS/Characters/Smolder/HUD/Icons2D/Icons_Smolder_Q2.dds",
+        "ASSETS/Characters/Smolder/HUD/Icons2D/Icons_Smolder_Q3.dds",
+        "ASSETS/Characters/Smolder/HUD/Icons2D/Icons_Smolder_Q4.dds"
+      ],
+      "defaultImageMse": 148.21,
+      "id": "SmolderQ"
+    },
+    {
+      "champion": "Swain",
+      "slot": "R",
+      "spell": "Characters/Swain/Spells/SwainRAbility/SwainR",
+      "icons": [
+        "ASSETS/Characters/Swain/HUD/Icons2D/Swain_R.dds",
+        "ASSETS/Characters/Swain/HUD/Icons2D/Swain_R2.dds",
+        "ASSETS/Characters/Swain/HUD/Icons2D/Swain_R2_No_Charge.dds"
+      ],
+      "defaultImageMse": 91.17,
+      "id": "SwainR"
+    },
+    {
+      "champion": "Syndra",
+      "slot": "Q",
+      "spell": "Characters/Syndra/Spells/SyndraQAbility/SyndraQ",
+      "icons": [
+        "ASSETS/Characters/Syndra/HUD/Icons2D/Syndra_Q1.dds",
+        "ASSETS/Characters/Syndra/HUD/Icons2D/Syndra_Q2.dds"
+      ],
+      "defaultImageMse": 51.74,
+      "id": "SyndraQ"
+    },
+    {
+      "champion": "Syndra",
+      "slot": "W",
+      "spell": "Characters/Syndra/Spells/SyndraWAbility/SyndraW",
+      "icons": [
+        "ASSETS/Characters/Syndra/HUD/Icons2D/Syndra_W1.dds",
+        "ASSETS/Characters/Syndra/HUD/Icons2D/Syndra_W2.dds"
+      ],
+      "defaultImageMse": 92.46,
+      "id": "SyndraW"
+    },
+    {
+      "champion": "Syndra",
+      "slot": "E",
+      "spell": "Characters/Syndra/Spells/SyndraEAbility/SyndraE",
+      "icons": [
+        "ASSETS/Characters/Syndra/HUD/Icons2D/Syndra_E1.dds",
+        "ASSETS/Characters/Syndra/HUD/Icons2D/Syndra_E2.dds"
+      ],
+      "defaultImageMse": 39.39,
+      "id": "SyndraE"
+    },
+    {
+      "champion": "Syndra",
+      "slot": "R",
+      "spell": "Characters/Syndra/Spells/SyndraRAbility/SyndraR",
+      "icons": [
+        "ASSETS/Characters/Syndra/HUD/Icons2D/Syndra_R1.dds",
+        "ASSETS/Characters/Syndra/HUD/Icons2D/Syndra_R2.dds"
+      ],
+      "defaultImageMse": 42.93,
+      "id": "SyndraR"
+    },
+    {
+      "champion": "Taliyah",
+      "slot": "Q",
+      "spell": "Characters/Taliyah/Spells/TaliyahQAbility/TaliyahQ",
+      "icons": [
+        "ASSETS/Characters/Taliyah/HUD/Icons2D/Taliyah_Q.dds",
+        "ASSETS/Characters/Taliyah/HUD/Icons2D/Taliyah_Q2.dds"
+      ],
+      "defaultImageMse": 33.27,
+      "id": "TaliyahQ"
+    },
+    {
+      "champion": "TwistedFate",
+      "slot": "E",
+      "spell": "Characters/TwistedFate/Spells/CardmasterStackAbility/CardmasterStack",
+      "icons": [
+        "ASSETS/Characters/TwistedFate/HUD/Icons2D/Cardmaster_RapidToss.dds",
+        "ASSETS/Characters/TwistedFate/HUD/Icons2D/Cardmaster_RapidToss_Charging.dds"
+      ],
+      "defaultImageMse": 30.22,
+      "id": "CardmasterStack"
+    },
+    {
+      "champion": "Twitch",
+      "slot": "Q",
+      "spell": "Characters/Twitch/Spells/TwitchHideInShadowsAbility/TwitchHideInShadows",
+      "icons": [
+        "ASSETS/Characters/Twitch/HUD/Icons2D/Twitch_Q.dds",
+        "ASSETS/Characters/Twitch/HUD/Icons2D/Twitch_Q_Stealth.dds"
+      ],
+      "defaultImageMse": 44.25,
+      "id": "TwitchHideInShadows"
+    },
+    {
+      "champion": "Varus",
+      "slot": "W",
+      "spell": "Characters/Varus/Spells/VarusWAbility/VarusW",
+      "icons": [
+        "ASSETS/Characters/Varus/HUD/Icons2D/VarusW.dds",
+        "ASSETS/Characters/Varus/HUD/Icons2D/VarusW2.dds"
+      ],
+      "defaultImageMse": 117.01,
+      "id": "VarusW"
+    },
+    {
+      "champion": "Vex",
+      "slot": "Q",
+      "spell": "Characters/Vex/Spells/VexQAbility/VexQ",
+      "icons": [
+        "ASSETS/Characters/Vex/HUD/Icons2D/Icons_Vex_Q01.dds",
+        "ASSETS/Characters/Vex/HUD/Icons2D/Icons_Vex_Q02.dds"
+      ],
+      "defaultImageMse": 119.53,
+      "id": "VexQ"
+    },
+    {
+      "champion": "Vex",
+      "slot": "W",
+      "spell": "Characters/Vex/Spells/VexWAbility/VexW",
+      "icons": [
+        "ASSETS/Characters/Vex/HUD/Icons2D/Icons_Vex_W01.dds",
+        "ASSETS/Characters/Vex/HUD/Icons2D/Icons_Vex_W02.dds"
+      ],
+      "defaultImageMse": 91.64,
+      "id": "VexW"
+    },
+    {
+      "champion": "Vex",
+      "slot": "E",
+      "spell": "Characters/Vex/Spells/VexEAbility/VexE",
+      "icons": [
+        "ASSETS/Characters/Vex/HUD/Icons2D/Icons_Vex_E01.dds",
+        "ASSETS/Characters/Vex/HUD/Icons2D/Icons_Vex_E02.dds"
+      ],
+      "defaultImageMse": 112.07,
+      "id": "VexE"
+    },
+    {
+      "champion": "Viego",
+      "slot": "E",
+      "spell": "Characters/Viego/Spells/ViegoEAbility/ViegoE",
+      "icons": [
+        "ASSETS/Characters/Viego/HUD/Icons2D/Viego_E.dds",
+        "ASSETS/Characters/Viego/HUD/Icons2D/Viego_Buff.dds"
+      ],
+      "defaultImageMse": 53.39,
+      "id": "ViegoE"
+    },
+    {
+      "champion": "Viktor",
+      "slot": "Q",
+      "spell": "Characters/Viktor/Spells/ViktorQAbility/ViktorQ",
+      "icons": [
+        "ASSETS/Characters/Viktor/HUD/Icons2D/Viktor_Q1.dds",
+        "ASSETS/Characters/Viktor/HUD/Icons2D/Viktor_Q2.dds"
+      ],
+      "defaultImageMse": 72.8,
+      "id": "ViktorQ"
+    },
+    {
+      "champion": "Viktor",
+      "slot": "W",
+      "spell": "Characters/Viktor/Spells/ViktorWAbility/ViktorW",
+      "icons": [
+        "ASSETS/Characters/Viktor/HUD/Icons2D/Viktor_W1.dds",
+        "ASSETS/Characters/Viktor/HUD/Icons2D/Viktor_W2.dds"
+      ],
+      "defaultImageMse": 91.9,
+      "id": "ViktorW"
+    },
+    {
+      "champion": "Viktor",
+      "slot": "E",
+      "spell": "Characters/Viktor/Spells/ViktorEAbility/ViktorE",
+      "icons": [
+        "ASSETS/Characters/Viktor/HUD/Icons2D/Viktor_E1.dds",
+        "ASSETS/Characters/Viktor/HUD/Icons2D/Viktor_E2.dds"
+      ],
+      "defaultImageMse": 100.53,
+      "id": "ViktorE"
+    },
+    {
+      "champion": "Viktor",
+      "slot": "R",
+      "spell": "Characters/Viktor/Spells/ViktorRAbility/ViktorR",
+      "icons": [
+        "ASSETS/Characters/Viktor/HUD/Icons2D/Viktor_R1.dds",
+        "ASSETS/Characters/Viktor/HUD/Icons2D/Viktor_R2.dds"
+      ],
+      "defaultImageMse": 146.6,
+      "id": "ViktorR"
+    },
+    {
+      "champion": "Warwick",
+      "slot": "E",
+      "spell": "Characters/Warwick/Spells/WarwickEAbility/WarwickE",
+      "icons": [
+        "ASSETS/Characters/Warwick/HUD/Icons2D/WarwickE.dds",
+        "ASSETS/Characters/Warwick/HUD/Icons2D/WarwickE2.dds"
+      ],
+      "defaultImageMse": 70.58,
+      "id": "WarwickE"
+    },
+    {
+      "champion": "Yasuo",
+      "slot": "R",
+      "spell": "Characters/Yasuo/Spells/YasuoRAbility/YasuoR",
+      "icons": [
+        "ASSETS/Characters/Yasuo/HUD/Icons2D/Yasuo_R.dds",
+        "ASSETS/Characters/Yasuo/HUD/Icons2D/Yasuo_R_Grey.dds"
+      ],
+      "defaultImageMse": 103.05,
+      "id": "YasuoR"
+    },
+    {
+      "champion": "Yone",
+      "slot": "E",
+      "spell": "Characters/Yone/Spells/YoneEAbility/YoneE",
+      "icons": [
+        "ASSETS/Characters/Yone/HUD/Icons2D/YoneE.dds",
+        "ASSETS/Characters/Yone/HUD/Icons2D/YoneE2.dds"
+      ],
+      "defaultImageMse": 89.05,
+      "id": "YoneE"
+    },
+    {
+      "champion": "Yunara",
+      "slot": "Q",
+      "spell": "Characters/Yunara/Spells/YunaraQAbility/YunaraQ",
+      "icons": [
+        "ASSETS/Characters/Yunara/HUD/Icons2D/Yunara_Q.dds",
+        "ASSETS/Characters/Yunara/HUD/Icons2D/Yunara_Q2.dds"
+      ],
+      "defaultImageMse": 13.73,
+      "id": "YunaraQ"
+    },
+    {
+      "champion": "Yuumi",
+      "slot": "Q",
+      "spell": "Characters/Yuumi/Spells/YuumiQAbility/YuumiQ",
+      "icons": [
+        "ASSETS/Characters/Yuumi/HUD/Icons2D/YuumiQ.dds",
+        "ASSETS/Characters/Yuumi/HUD/Icons2D/YuumiQ2.dds"
+      ],
+      "defaultImageMse": 161.47,
+      "id": "YuumiQ"
+    },
+    {
+      "champion": "Zaahen",
+      "slot": "Q",
+      "spell": "Characters/Zaahen/Spells/ZaahenQAbility/ZaahenQ",
+      "icons": [
+        "ASSETS/Characters/Zaahen/HUD/Icons2D/ZaahenQ.dds",
+        "ASSETS/Characters/Zaahen/HUD/Icons2D/ZaahenQ2.dds"
+      ],
+      "defaultImageMse": 37.87,
+      "id": "ZaahenQ"
+    },
+    {
+      "champion": "Zeri",
+      "slot": "Q",
+      "spell": "Characters/Zeri/Spells/ZeriQAbility/ZeriQ",
+      "icons": [
+        "ASSETS/Characters/Zeri/HUD/Icons2D/ZeriQ.dds",
+        "ASSETS/Characters/Zeri/HUD/Icons2D/ZeriQE.dds",
+        "ASSETS/Characters/Zeri/HUD/Icons2D/ZeriQR.dds",
+        "ASSETS/Characters/Zeri/HUD/Icons2D/ZeriQRE.dds",
+        "ASSETS/Characters/Zeri/HUD/Icons2D/ZeriQPassive.dds",
+        "ASSETS/Characters/Zeri/HUD/Icons2D/ZeriQPassiveCharged.dds"
+      ],
+      "defaultImageMse": 111.9,
+      "id": "ZeriQ"
+    },
+    {
+      "champion": "Zilean",
+      "slot": "W",
+      "spell": "Characters/Zilean/Spells/ZileanWAbility/ZileanW",
+      "icons": [
+        "ASSETS/Characters/Zilean/HUD/Icons2D/Zilean_W.dds",
+        "ASSETS/Characters/Zilean/HUD/Icons2D/Zilean_W_Disabled.dds"
+      ],
+      "defaultImageMse": 53.34,
+      "id": "ZileanW"
+    },
+    {
+      "champion": "Zoe",
+      "slot": "W",
+      "spell": "Characters/Zoe/Spells/ZoeWAbility/ZoeW",
+      "icons": [
+        "ASSETS/Characters/Zoe/HUD/Icons2D/Zoe_W.dds",
+        "ASSETS/Characters/Zoe/HUD/Icons2D/Zoe_W2.dds"
+      ],
+      "defaultImageMse": 98.9,
+      "id": "ZoeW"
+    }
+  ]
+}

@@ -28,8 +28,8 @@ function smiteRestriction(effects: Array<SpellCrowdControl | undefined>, lang: L
 
 function curatedInteraction(question: string, ctx: PlanContext, subject?: ControlContext): AnswerPlan | undefined {
   const candidates = ctx.data!.mechanics.filter(section => section.questionGroups?.length
-    && (!section.subjects || section.subjects.some(s => subject?.champions.length === 1
-      && subject.champions[0] === s.champion && subject.slot === s.slot))
+    && (!section.subjects || section.subjects.some(s => subject?.champions.includes(s.champion)
+      && (subject.slot === s.slot || !subject.slot && Boolean(section.evidence))))
     && matchesMechanicsQuestion(section, question));
   const best = candidates.sort((a, b) => Number(Boolean(b.subjects)) - Number(Boolean(a.subjects))
     || b.questionGroups!.length - a.questionGroups!.length)[0];
@@ -37,20 +37,27 @@ function curatedInteraction(question: string, ctx: PlanContext, subject?: Contro
   const localized = ctx.lang === "ko_KR" ? undefined : best.localized?.[ctx.lang];
   const title = localized?.title ?? best.title;
   const text = localized?.text ?? best.text;
+  const scoped = best.subjects?.filter(s => subject?.champions.includes(s.champion)
+    && (!subject.slot || subject.slot === s.slot));
+  const controlContext: ControlContext | undefined = best.controls?.length
+    ? scoped?.length === 1 ? { champions: [scoped[0].champion], slot: scoped[0].slot }
+      : { champions: [], types: [...best.controls] } : undefined;
   return { type: "code", answer: `### ${title}\n${text}`, knowledge: { id: `mech:${best.id}`, title },
-    controlContext: best.controls?.length ? { champions: [], types: [...best.controls] } : undefined };
+    controlContext };
 }
 
 export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, suppliedMemory?: DialogueMemory): AnswerPlan | undefined {
   if (!ctx.data) return undefined;
   const query = controlQuery(resolved.text);
   // CC 낱말이 섞여 있어도 쿨·사거리·피해량을 묻는 조회는 기존 수치 경로로 보낸다.
-  if (!query && /쿨|재사용|사거리|계수|피해량|지속시간|몇\s*초|cooldown|range|ratio|duration|冷却|射程/i.test(resolved.text)) return undefined;
-  const direct = curatedInteraction(resolved.text, ctx);
+  if (!query && /쿨|재사용|사거리|계수|피해량|지속시간|몇\s*초|\b(?:cooldown|range|ratio|duration)\b|冷却|射程/i.test(resolved.text)) return undefined;
+  const direct = curatedInteraction(resolved.text, ctx, {
+    champions: resolved.champions.map(card => card.id), slot: resolved.slot,
+  });
   const directNote = direct?.type === "code" && ctx.data.mechanics.find(section => `mech:${section.id}` === direct.knowledge?.id);
-  // 새 아이템·주문의 완결된 규칙 질문은 직전 스킬의 생략으로 읽지 않는다.
-  if (!resolved.champions.length && !resolved.slot && directNote && !directNote.subjects && !directNote.controls
-    && directNote.questionGroups!.length >= 2) return direct;
+  // 구체적인 상호작용 노트는 일반 스킬·CC 목록보다 질문에 직접 답한다.
+  if (directNote && directNote.questionGroups!.length >= 2
+    && (directNote.evidence || !directNote.subjects && !directNote.controls)) return direct;
   const memory = suppliedMemory ?? dialogueMemoryOf(ctx.turns, ctx.data);
   const subject = query ? controlSubject(resolved, ctx, memory) : undefined;
   const champions = subject ? subject.champions.map(id => ctx.data!.cardById.get(id)!).filter(Boolean) : resolved.champions;

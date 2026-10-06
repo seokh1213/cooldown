@@ -179,3 +179,7 @@ npm run llm:source-pack -- --todo          # 아직 안 쓴 챔피언 (표본 �
 5. 상성별로 쓰기 전에 **`when` 조건으로 챔피언 단위로 쓸 수 있는지** 먼저 검토한다.
 6. 작성 후 `npm run llm:validate` 를 돌린다. 데이터에 없는 이름, 본문과 어긋난 `refs`,
    존재하지 않는 효과 태그를 잡아 준다.
+
+## 영상 판정 팁
+
+`video-tips.json`은 `tip`·`mechanics`·`interaction` 태그, 대상 스킬, 조건을 포함한 답변, 세 언어, 내부 출처와 주장 ID를 보존한다. 패치가 일치할 때만 번들에 가져오며, 출처는 화면과 복사문에 표시하지 않는다. [영상별 기록과 평가](../research/video-notes/mangdasu-20261006/README.md)에 포함·보류 상태와 질문 세트가 있다.

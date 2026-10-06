@@ -1,6 +1,9 @@
 /** 문서의 공식으로 계산할 수 있는 규칙과, 없는 지식을 다른 문서로 대신하지 않는 범위 처리. */
 import type { AnswerPlan, PlanContext } from "./plan";
 import type { DialogueMemory } from "./dialogueState";
+import type { ResolvedQuestion } from "./resolvedQuestion";
+import { mentionsSearchDocument } from "./searchFallback";
+import { matchesMechanicsQuestion, mechanicsToText } from "@/lib/knowledge/mechanics";
 
 const rulePlan = (title: string, text: string): AnswerPlan => ({ type: "code", answer: `### ${title}\n${text}` });
 
@@ -34,7 +37,18 @@ export function resolveDialogueRule(question: string, ctx: PlanContext): AnswerP
   return undefined;
 }
 
-export function ruleEllipsis(question: string, memory: DialogueMemory, ctx: PlanContext): AnswerPlan | undefined {
+export function ruleEllipsis(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): AnswerPlan | undefined {
+  const question = resolved.text;
+  const note = memory.active === "rule" && !resolved.champions.length && !resolved.slot
+    ? ctx.data?.mechanics.find(section => section.evidence && `mech:${section.id}` === memory.rule?.id) : undefined;
+  if (note) {
+    const localized = ctx.lang === "ko_KR" ? undefined : note.localized?.[ctx.lang];
+    const doc = { title: localized?.title ?? note.title, text: localized?.text ?? note.text };
+    // 저장한 노트를 가리키는 내용어가 있어야 이어 쓴다. 새 주제는 이전 답변으로 채우지 않는다.
+    const namesTopic = note.questionGroups?.some(group => matchesMechanicsQuestion({ questionGroups: [group] }, question));
+    if (namesTopic || mentionsSearchDocument(doc, question)) return { type: "code", answer: mechanicsToText([note], ctx.lang)!,
+      knowledge: { id: `mech:${note.id}`, title: doc.title } };
+  }
   if (ctx.lang !== "ko_KR" || memory.active !== "rule" || !isPenetrationRule(memory.rule)) return undefined;
   if (!/그거|그럼|관통/.test(question) || !/평타|기본\s*공격/.test(question)) return undefined;
   const source = ctx.data!.mechanics.find(m => m.id === "저항과-피해-감소");

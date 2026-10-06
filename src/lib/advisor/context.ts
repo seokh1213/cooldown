@@ -388,7 +388,7 @@ export function buildMechanicsAnswer(
   data: AdvisorData,
   question: string,
 ): string | undefined {
-  const text = mechanicsToText(findMechanics(data.mechanics, question));
+  const text = mechanicsToText(findMechanics(data.mechanics, question), data.locale);
   if (!text) return undefined;
   return `${text}\n\n_v${data.patch}_`;
 }
@@ -396,7 +396,7 @@ export function buildMechanicsAnswer(
 /** 문서 id(`mech:스킬-가속`)로 답한다. 검색 벡터가 고른 절을 보일 때 쓴다. */
 export function buildMechanicsAnswerById(data: AdvisorData, id: string): string | undefined {
   const section = data.mechanics.find((entry) => `mech:${entry.id}` === id);
-  const text = section ? mechanicsToText([section]) : undefined;
+  const text = section ? mechanicsToText([section], data.locale) : undefined;
   if (!text) return undefined;
   return `${text}\n\n_v${data.patch}_`;
 }

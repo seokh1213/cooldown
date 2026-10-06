@@ -21,6 +21,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { SKILL_LETTERS } from "./constants";
 import { SkillTooltipContent } from "./SkillTooltipContent";
 import { AbilityFormIcon } from "./AbilityFormIcon";
+import { AbilityStateIcon } from "@/components/ui/ability-state-icon";
+import { spellIconStates } from "@/data/abilityIconStates";
 import { getCooldownText, getCostText } from "./utils";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useTranslation } from "@/i18n";
@@ -224,7 +226,7 @@ export function SkillTooltip({
         </>
       ) : skill ? (
         <>
-          {skill.forms ? <AbilityFormIcon forms={skill.forms} label={SKILL_LETTERS[skillIdx]} ddragonVersion={ddragonVersion} className={iconSize} /> : <img
+          {skill.forms ? <AbilityFormIcon forms={skill.forms} label={SKILL_LETTERS[skillIdx]} ddragonVersion={ddragonVersion} className={iconSize} /> : spellIconStates(skill.id)?.variants ? <AbilityStateIcon spellId={skill.id} label={SKILL_LETTERS[skillIdx]} ddragonVersion={ddragonVersion} className={iconSize} /> : <img
             src={spellIconUrl(ddragonVersion, skill.id)}
             alt={SKILL_LETTERS[skillIdx]}
             className={cn(iconSize, "rounded")}

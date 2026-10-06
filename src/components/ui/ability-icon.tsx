@@ -19,6 +19,8 @@
  */
 
 import { sheetBackground } from "./sprite-icon";
+import { ABILITY_ICON_STATES } from "@/data/abilityIconStates";
+import { AbilityStateIcon } from "./ability-state-icon";
 
 /** 띠의 칸 차례. 생성기와 같아야 하고, 어긋나면 `test-thumbnails` 가 잡는다. */
 const SLOTS = ["P", "Q", "W", "E", "R"] as const;
@@ -41,6 +43,9 @@ interface AbilityIconProps {
 export function AbilityIcon({ championId, slot, ddragonVersion, className, alt = "" }: AbilityIconProps) {
   const column = SLOTS.indexOf(slot as AbilitySlot);
   if (column < 0) return null;
+  const states = ABILITY_ICON_STATES[`${championId}:${slot}`];
+  if (states?.variants) return <AbilityStateIcon spellId={states.spellId} label={alt || slot}
+    ddragonVersion={ddragonVersion} className={className} />;
   return (
     <span
       role={alt ? "img" : "presentation"}

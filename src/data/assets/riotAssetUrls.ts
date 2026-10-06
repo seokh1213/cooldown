@@ -12,6 +12,7 @@
  * 줄여 두는 값보다 저장소에 쌓이는 값이 크다.
  */
 import { IMAGE_VERSION } from "@/data/generated/assetVersion";
+import { spellIconStates } from "@/data/abilityIconStates";
 
 const local = (ddragonVersion: string, kind: string, name: string) =>
   `${import.meta.env.BASE_URL}img/${ddragonVersion}/${kind}/${name}.webp`;
@@ -26,7 +27,7 @@ export const passiveIconUrl = (ddragonVersion: string, fileName: string) =>
   local(ddragonVersion, "passive", fileName.replace(/\.png$/, ""));
 
 export const spellIconUrl = (ddragonVersion: string, spellId: string) =>
-  local(ddragonVersion, "spell", spellId);
+  local(ddragonVersion, "spell", spellIconStates(spellId)?.thumbnailName ?? spellId);
 
 export const itemIconUrl = (ddragonVersion: string, itemId: string) =>
   local(ddragonVersion, "item", itemId);

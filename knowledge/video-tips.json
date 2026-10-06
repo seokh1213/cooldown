@@ -1,0 +1,4218 @@
+{
+  "schemaVersion": 1,
+  "patch": "26.19",
+  "collection": "mangdasu-20261006",
+  "sourceFile": "research/video-notes/mangdasu-20261006/extracted.json",
+  "tags": [
+    "tip",
+    "mechanics",
+    "interaction"
+  ],
+  "reviewPolicy": "Video claims are visually reviewed. Conflicts, unverified bugs, incomplete icon groups, setup-dependent rankings and uncorroborated special cases remain source notes. This is not live-client reproduction. A different patch requires another review.",
+  "notes": [
+    {
+      "id": "slow-low-speed",
+      "title": "강한 둔화와 낮은 이동 속도 보정",
+      "keywords": [
+        "둔화",
+        "slow",
+        "减速",
+        "이속",
+        "이동 속도",
+        "100%",
+        "99%",
+        "movement speed",
+        "移速"
+      ],
+      "questionGroups": [
+        [
+          "둔화",
+          "slow",
+          "减速"
+        ],
+        [
+          "이속",
+          "이동 속도",
+          "100%",
+          "99%",
+          "movement speed",
+          "移速"
+        ]
+      ],
+      "text": "일반 이동 속도는 계산값이 220보다 낮으면 110 + 계산값 × 0.5로 보정됩니다. 예를 들어 이동 속도 400에 99% 둔화를 가정하면 계산값은 4지만, 보정 후에는 112입니다. 고정 이동 속도 효과는 이 일반식과 구분해야 합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "slow",
+        "movement-speed"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Strong slows and low movement speed",
+          "text": "Ordinary movement speed below a raw value of 220 is adjusted to 110 + raw speed × 0.5. A hypothetical 99% slow on 400 speed gives raw speed 4 and adjusted speed 112. Fixed-speed effects require separate treatment."
+        },
+        "zh_CN": {
+          "title": "强减速与低移速修正",
+          "text": "普通移速的计算值低于220时，按110 + 计算值 × 0.5修正。假设400移速受到99%减速，计算值为4，修正后为112。固定移速效果需单独处理。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/AL3VsRUkMHI"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "AL3VsRUkMHI:01",
+          "AL3VsRUkMHI:02"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "move-speed-soft-cap",
+      "title": "높은 이동 속도의 보정",
+      "keywords": [
+        "이속",
+        "이동속도",
+        "이동 속도",
+        "movement speed",
+        "移速",
+        "보정",
+        "상한",
+        "캡",
+        "높",
+        "soft cap",
+        "cap",
+        "上限"
+      ],
+      "questionGroups": [
+        [
+          "이속",
+          "이동속도",
+          "이동 속도",
+          "movement speed",
+          "移速"
+        ],
+        [
+          "보정",
+          "상한",
+          "캡",
+          "높",
+          "soft cap",
+          "cap",
+          "上限"
+        ]
+      ],
+      "text": "계산 이동 속도 415~490 구간은 415를 넘는 부분에 80%를 적용합니다. 490을 넘으면 475 + (계산값 − 490) × 0.5가 됩니다. 따라서 계산값 455는 실제 447, 계산값 550은 실제 505가 됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "movement-speed"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "High movement speed soft caps",
+          "text": "For raw speed from 415 to 490, only 80% of the amount above 415 is retained. Above 490, the result is 475 + (raw speed − 490) × 0.5. Raw 455 becomes 447, and raw 550 becomes 505."
+        },
+        "zh_CN": {
+          "title": "高移速软上限",
+          "text": "计算移速在415至490之间时，超过415的部分按80%计算。超过490时，结果为475 + (计算值 − 490) × 0.5。因此455变为447，550变为505。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/Ji8LbdEL8YI"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "Ji8LbdEL8YI:01"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "negative-resistances",
+      "title": "음수 방어력·마법 저항력",
+      "keywords": [
+        "방어력",
+        "방마저",
+        "마저",
+        "저항력",
+        "armor",
+        "magic resist",
+        "护甲",
+        "魔抗",
+        "음수",
+        "마이너스",
+        "negative",
+        "below zero",
+        "负数"
+      ],
+      "questionGroups": [
+        [
+          "방어력",
+          "방마저",
+          "마저",
+          "저항력",
+          "armor",
+          "magic resist",
+          "护甲",
+          "魔抗"
+        ],
+        [
+          "음수",
+          "마이너스",
+          "negative",
+          "below zero",
+          "负数"
+        ]
+      ],
+      "text": "방어력이나 마법 저항력이 음수이면 받는 해당 피해가 증가합니다. 저항값 A가 0 이상일 때 피해 배율은 100 / (100 + A), 음수일 때는 2 − 100 / (100 − A)입니다. 저항값이 −100이면 피해는 1.5배이고, 음수 저항만으로 피해 배율이 2배에 도달하지는 않습니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "resistance"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Negative armor and magic resistance",
+          "text": "Negative resistance increases the relevant damage received. For resistance A ≥ 0, the multiplier is 100 / (100 + A); below zero it is 2 − 100 / (100 − A). At −100 resistance, damage is multiplied by 1.5. Negative resistance alone approaches but never reaches a multiplier of 2."
+        },
+        "zh_CN": {
+          "title": "负护甲与负魔抗",
+          "text": "负抗性会增加对应的承受伤害。抗性A ≥ 0时，倍率为100 / (100 + A)；负数时为2 − 100 / (100 − A)。抗性为−100时承伤为1.5倍；单靠负抗性无法达到2倍。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/3Zd7w35g1i0"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "3Zd7w35g1i0:01"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "penetration-vs-reduction",
+      "title": "저항 감소와 관통의 차이",
+      "keywords": [
+        "관통",
+        "방관",
+        "마관",
+        "penetration",
+        "穿透",
+        "음수",
+        "마이너스",
+        "감소",
+        "negative",
+        "reduction",
+        "负数",
+        "削减",
+        "방어력",
+        "저항",
+        "armor",
+        "resistance",
+        "护甲",
+        "抗性"
+      ],
+      "questionGroups": [
+        [
+          "관통",
+          "방관",
+          "마관",
+          "penetration",
+          "穿透"
+        ],
+        [
+          "음수",
+          "마이너스",
+          "감소",
+          "negative",
+          "reduction",
+          "负数",
+          "削减"
+        ],
+        [
+          "방어력",
+          "저항",
+          "armor",
+          "resistance",
+          "护甲",
+          "抗性"
+        ]
+      ],
+      "text": "방어력·마법 저항력 감소는 대상의 저항 수치 자체를 낮추므로 아군의 해당 피해에도 영향을 줍니다. 관통은 내 피해 계산에서만 저항을 무시하며, 관통만으로 대상의 저항을 음수로 만들지는 않습니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "penetration"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Resistance reduction versus penetration",
+          "text": "Reduction changes the target’s resistance and also benefits allied damage of that type. Penetration ignores resistance only for the owner’s damage calculation. Penetration alone cannot push resistance below zero."
+        },
+        "zh_CN": {
+          "title": "抗性削减与穿透的区别",
+          "text": "削减会降低目标本身的抗性，也能帮助队友的对应伤害。穿透只在自己的伤害计算中忽略抗性，不能单靠穿透把目标抗性降为负数。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/k_GRgd1uTho"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "k_GRgd1uTho:03"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "trundle-temporary-resistances",
+      "title": "트런들 궁과 일시적 저항 증가",
+      "keywords": [
+        "트런들",
+        "trundle",
+        "特朗德尔",
+        "Trundle",
+        "the Troll King",
+        "巨魔",
+        "巨魔之王",
+        "트런",
+        "트롤 왕",
+        "람머스",
+        "말파",
+        "rammus",
+        "malphite",
+        "龙龟",
+        "墨菲特",
+        "拉莫斯",
+        "Malphite",
+        "Shard of the Monolith",
+        "malph",
+        "巨兽",
+        "混分巨兽",
+        "熔岩",
+        "熔岩巨兽",
+        "石头人",
+        "거석의 파편",
+        "말파이트",
+        "Rammus",
+        "the Armordillo",
+        "乌龟",
+        "披甲",
+        "披甲龙龟",
+        "중무장 아르마딜로"
+      ],
+      "questionGroups": [
+        [
+          "트런들",
+          "trundle",
+          "特朗德尔",
+          "Trundle",
+          "the Troll King",
+          "巨魔",
+          "巨魔之王",
+          "트런",
+          "트롤 왕"
+        ],
+        [
+          "람머스",
+          "말파",
+          "rammus",
+          "malphite",
+          "龙龟",
+          "墨菲特",
+          "拉莫斯",
+          "Malphite",
+          "Shard of the Monolith",
+          "malph",
+          "巨兽",
+          "混分巨兽",
+          "熔岩",
+          "熔岩巨兽",
+          "石头人",
+          "거석의 파편",
+          "말파이트",
+          "Rammus",
+          "the Armordillo",
+          "乌龟",
+          "披甲",
+          "披甲龙龟",
+          "중무장 아르마딜로"
+        ]
+      ],
+      "text": "트런들이 궁극기로 저항을 빼앗은 뒤 상대의 일시적인 저항 증가가 끝나면, 궁극기의 감소량이 남아 저항이 크게 내려갈 수 있습니다. 람머스 W나 말파이트의 보호막 연계 방어력이 켜졌을 때 궁을 쓴 경우가 이에 해당합니다. 예시로 증가 상태 방어력 416의 40%인 166.4를 빼앗고, 기본 방어력이 112로 돌아오면 남은 방어력은 −54.4가 됩니다. 이 수치는 가정 예시입니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "stat-steal"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Trundle against temporary resistance buffs",
+          "text": "Trundle’s ultimate can leave a large resistance reduction after a temporary buff, such as Rammus W or Malphite’s shield-related armor, expires. As a hypothetical example, stealing 40% of 416 armor removes 166.4. If armor then returns to 112, the remaining value is −54.4."
+        },
+        "zh_CN": {
+          "title": "特朗德尔大招与临时抗性",
+          "text": "特朗德尔大招窃取抗性后，若拉莫斯W或墨菲特护盾关联的临时护甲结束，削减仍在，抗性可能大幅降低。假设从416护甲窃取40%，即166.4；之后原护甲回到112，剩余为−54.4。这些数值仅为计算示例。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/3Zd7w35g1i0"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "3Zd7w35g1i0:04",
+          "3Zd7w35g1i0:05"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "resistance-effective-health",
+      "title": "저항과 유효 체력",
+      "keywords": [
+        "방어력",
+        "마저",
+        "저항",
+        "armor",
+        "resistance",
+        "护甲",
+        "魔抗",
+        "효율",
+        "유효 체력",
+        "체력",
+        "효용",
+        "effective health",
+        "diminishing",
+        "有效生命"
+      ],
+      "questionGroups": [
+        [
+          "방어력",
+          "마저",
+          "저항",
+          "armor",
+          "resistance",
+          "护甲",
+          "魔抗"
+        ],
+        [
+          "효율",
+          "유효 체력",
+          "체력",
+          "효용",
+          "effective health",
+          "diminishing",
+          "有效生命"
+        ]
+      ],
+      "text": "저항이 0 이상일 때 해당 피해에 대한 유효 체력은 체력 × (1 + 저항 / 100)입니다. 체력 1000에 방어력 100이면 물리 피해에 대한 유효 체력은 2000입니다. 피해 감소율의 증가 폭이 작아져도 저항 1당 유효 체력은 원래 체력의 1%씩 늘어납니다. 관통·저항 감소나 고정 피해는 별도로 계산해야 합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "resistance"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Resistance and effective health",
+          "text": "At nonnegative resistance, effective health against that damage type is health × (1 + resistance / 100). With 1000 health and 100 armor, physical effective health is 2000. Each resistance point adds 1% of original health even as the displayed reduction gains become smaller. Penetration, reduction and true damage require separate calculations."
+        },
+        "zh_CN": {
+          "title": "抗性与有效生命",
+          "text": "非负抗性下，对应伤害的有效生命为生命值 × (1 + 抗性 / 100)。1000生命值和100护甲对应2000物理有效生命。每点抗性增加原生命值的1%，即使面板减伤率的增幅逐渐减小。穿透、削减和真实伤害需单独计算。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/k_GRgd1uTho"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "k_GRgd1uTho:01",
+          "k_GRgd1uTho:02"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "percent-penetration-stacking",
+      "title": "퍼센트 관통 중첩",
+      "keywords": [
+        "퍼센트 관통",
+        "퍼센트 방관",
+        "방관",
+        "관통",
+        "percent penetration",
+        "armor penetration",
+        "百分比穿透",
+        "중첩",
+        "합산",
+        "더하",
+        "더해",
+        "30",
+        "stack",
+        "add",
+        "叠加"
+      ],
+      "questionGroups": [
+        [
+          "퍼센트 관통",
+          "퍼센트 방관",
+          "방관",
+          "관통",
+          "percent penetration",
+          "armor penetration",
+          "百分比穿透"
+        ],
+        [
+          "중첩",
+          "합산",
+          "더하",
+          "더해",
+          "30",
+          "stack",
+          "add",
+          "叠加"
+        ]
+      ],
+      "text": "일반적인 퍼센트 관통은 단순 합산하지 않고 남은 저항에 곱해서 적용합니다. 30% 관통 두 개의 계산 예시는 1 − 0.7 × 0.7 = 51%입니다. 고정 관통은 퍼센트 관통 뒤에 적용합니다. 특정 스킬의 별도 방어력 무시 효과와는 구분해야 합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "penetration"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Stacking percentage penetration",
+          "text": "Ordinary percentage penetration stacks multiplicatively, not by addition. Two hypothetical 30% sources combine to 1 − 0.7 × 0.7 = 51%. Flat penetration is applied afterward. Separate ability-specific armor-ignore effects require their own rules."
+        },
+        "zh_CN": {
+          "title": "百分比穿透叠加",
+          "text": "普通百分比穿透按剩余抗性相乘，并非直接相加。两个假设的30%来源合计为1 − 0.7 × 0.7 = 51%。固定穿透在百分比穿透之后应用。特定技能的额外护甲忽略机制需另行区分。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/k_GRgd1uTho"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "k_GRgd1uTho:04"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "slow-resist-stacking",
+      "title": "둔화 저항 중첩",
+      "keywords": [
+        "둔화 저항",
+        "둔화저항",
+        "slow resist",
+        "减速抗性",
+        "중첩",
+        "합산",
+        "계산",
+        "stack",
+        "calculate",
+        "叠加",
+        "计算"
+      ],
+      "questionGroups": [
+        [
+          "둔화 저항",
+          "둔화저항",
+          "slow resist",
+          "减速抗性"
+        ],
+        [
+          "중첩",
+          "합산",
+          "계산",
+          "stack",
+          "calculate",
+          "叠加",
+          "计算"
+        ]
+      ],
+      "text": "둔화 저항은 남은 둔화 비율에 곱해서 적용합니다. 15%, 50%, 25%, 15%를 가정하면 1 − 0.85 × 0.5 × 0.75 × 0.85로 합계 약 72.9%입니다. 이 예시는 네 아이템이나 룬을 실제로 동시에 갖출 수 있다는 뜻이 아닙니다. 고정 이속 변경과 일부 예외 효과에는 같은 방식으로 적용되지 않습니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Stacking slow resistance",
+          "text": "Slow resistance combines multiplicatively. Hypothetical values 15%, 50%, 25% and 15% give 1 − 0.85 × 0.5 × 0.75 × 0.85, about 72.9%. This calculation does not assert that four matching items or runes can be equipped together. Fixed-speed changes and exceptional effects need separate handling."
+        },
+        "zh_CN": {
+          "title": "减速抗性叠加",
+          "text": "减速抗性按剩余减速比例相乘。假设15%、50%、25%、15%，合计为1 − 0.85 × 0.5 × 0.75 × 0.85，约72.9%。这不代表一定能同时携带四个对应装备或符文。固定移速变化与部分例外需单独处理。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/Ji8LbdEL8YI"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "Ji8LbdEL8YI:03"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "move-speed-order",
+      "title": "이동 속도 계산 순서",
+      "keywords": [
+        "이속",
+        "이동속도",
+        "이동 속도",
+        "movement speed",
+        "移速",
+        "계산",
+        "순서",
+        "합산",
+        "중첩",
+        "order",
+        "stack",
+        "calculation",
+        "计算",
+        "叠加"
+      ],
+      "questionGroups": [
+        [
+          "이속",
+          "이동속도",
+          "이동 속도",
+          "movement speed",
+          "移速"
+        ],
+        [
+          "계산",
+          "순서",
+          "합산",
+          "중첩",
+          "order",
+          "stack",
+          "calculation",
+          "计算",
+          "叠加"
+        ]
+      ],
+      "text": "기본 이속과 고정 추가 이속을 더한 뒤, 일반 추가 퍼센트 이속과 별도의 곱연산 이속 효과를 적용합니다. 이어 둔화 저항으로 조정한 둔화를 적용하고 마지막으로 이동 속도 보정을 합니다. 일반 추가 이속 10%, 4%, 24%는 합계 38%지만, 모든 이속 효과가 이 합산 그룹에 들어가는 것은 아닙니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "movement-speed"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Movement speed calculation order",
+          "text": "Start with base speed plus flat bonuses, then apply additive percentage bonuses and separate multiplicative modifiers. Apply slows adjusted by slow resistance, then the speed soft caps. Ordinary bonuses of 10%, 4% and 24% add to 38%; not every speed modifier belongs to that additive group."
+        },
+        "zh_CN": {
+          "title": "移速计算顺序",
+          "text": "先计算基础移速与固定加成，再应用普通百分比加成和独立乘算效果。之后计算减速抗性调整过的减速，最后进行移速修正。普通10%、4%、24%加成合计38%，但并非所有移速效果都属于这一加算组。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/Ji8LbdEL8YI"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "Ji8LbdEL8YI:04",
+          "Ji8LbdEL8YI:05",
+          "Ji8LbdEL8YI:07"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "celerity-own-bonus",
+      "title": "기민함의 자체 이동 속도",
+      "keywords": [
+        "기민함",
+        "celerity",
+        "迅捷",
+        "1%",
+        "7%",
+        "자체",
+        "계산",
+        "이속",
+        "own",
+        "bonus",
+        "speed",
+        "加成",
+        "移速"
+      ],
+      "questionGroups": [
+        [
+          "기민함",
+          "celerity",
+          "迅捷"
+        ],
+        [
+          "1%",
+          "7%",
+          "자체",
+          "계산",
+          "이속",
+          "own",
+          "bonus",
+          "speed",
+          "加成",
+          "移速"
+        ]
+      ],
+      "text": "기민함은 다른 추가 이동 속도 효과를 7% 강화하지만, 기민함 자체가 주는 이동 속도 1%에는 이 강화가 다시 적용되지 않습니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "rune"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Celerity’s own speed bonus",
+          "text": "Celerity amplifies other movement speed bonuses by 7%. Its own 1% movement speed bonus is excluded from that amplification."
+        },
+        "zh_CN": {
+          "title": "迅捷自身的移速加成",
+          "text": "迅捷使其他额外移速效果增强7%，但自身提供的1%移速不再被这一效果增强。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/Ji8LbdEL8YI"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "Ji8LbdEL8YI:06"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "garen-wall-lunge",
+      "title": "가렌 Q로 얇은 벽 넘기",
+      "keywords": [
+        "가렌",
+        "garen",
+        "盖伦",
+        "Garen",
+        "The Might of Demacia",
+        "大宝剑",
+        "德玛",
+        "德玛西亚",
+        "德玛西亚之力",
+        "데마시아의 힘",
+        "벽",
+        "지형",
+        "wall",
+        "terrain",
+        "翻墙",
+        "walls"
+      ],
+      "questionGroups": [
+        [
+          "가렌",
+          "garen",
+          "盖伦",
+          "Garen",
+          "The Might of Demacia",
+          "大宝剑",
+          "德玛",
+          "德玛西亚",
+          "德玛西亚之力",
+          "데마시아의 힘"
+        ],
+        [
+          "벽",
+          "지형",
+          "wall",
+          "terrain",
+          "翻墙",
+          "walls"
+        ]
+      ],
+      "text": "가렌 Q의 강화 평타에는 대상에게 짧게 붙는 이동 판정이 있어 아주 얇은 벽을 넘을 수 있습니다. 벽 반대편에 공격 가능한 대상이 있어야 하며, 벽 두께와 대상 위치에 따라 실패합니다. 사거리 증가가 도움이 될 수 있지만, Q를 누르는 것만으로 일반 돌진처럼 벽을 넘는 것은 아닙니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "terrain",
+        "basic-attack"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Garen Q and thin walls",
+          "text": "Garen’s empowered Q attack includes a short lunge that can cross very thin terrain. An attackable target must be in range on the other side; wall thickness and target position matter. Extra range can help, but pressing Q alone does not create a freely aimed wall-crossing dash."
+        },
+        "zh_CN": {
+          "title": "盖伦Q穿越薄墙",
+          "text": "盖伦Q的强化普攻带有短距离贴近目标的移动，可穿过很薄的墙。墙另一侧必须有可攻击且在射程内的目标，墙厚和目标位置会影响结果。增加射程可能有帮助，但仅按Q并不是可自由选择方向的穿墙位移。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/mKpYKgVy4Lg"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "mKpYKgVy4Lg:01",
+          "mKpYKgVy4Lg:02"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Garen",
+          "slot": "Q"
+        }
+      ]
+    },
+    {
+      "id": "lifesteal-magic-attacks",
+      "title": "마법 평타와 생명력 흡수",
+      "keywords": [
+        "생명력 흡수",
+        "생흡",
+        "흡혈",
+        "lifesteal",
+        "life steal",
+        "生命偷取",
+        "빅토르",
+        "트페",
+        "트위스티드",
+        "갈리오",
+        "사일러스",
+        "마법 평타",
+        "viktor",
+        "twisted fate",
+        "galio",
+        "sylas",
+        "魔法普攻",
+        "Galio",
+        "the Colossus",
+        "加里奥",
+        "哨兵之殇",
+        "正义巨像",
+        "위대한 석상",
+        "Sylas",
+        "the Unshackled",
+        "偷男",
+        "塞拉斯",
+        "脱者",
+        "解脱",
+        "解脱者",
+        "사일",
+        "해방된 자",
+        "TF",
+        "Twisted Fate",
+        "the Card Master",
+        "twistedfate",
+        "卡牌",
+        "卡牌大师",
+        "崔斯特",
+        "카드의 달인",
+        "트위스티드 페이트",
+        "Viktor",
+        "the Herald of the Arcane",
+        "vik",
+        "三只手",
+        "先驱",
+        "奥术先驱",
+        "维克托",
+        "아케인의 전령관",
+        "피흡",
+        "吸血"
+      ],
+      "questionGroups": [
+        [
+          "생명력 흡수",
+          "생흡",
+          "흡혈",
+          "lifesteal",
+          "life steal",
+          "生命偷取",
+          "피흡",
+          "吸血"
+        ],
+        [
+          "빅토르",
+          "트페",
+          "트위스티드",
+          "갈리오",
+          "사일러스",
+          "마법 평타",
+          "viktor",
+          "twisted fate",
+          "galio",
+          "sylas",
+          "魔法普攻",
+          "Galio",
+          "the Colossus",
+          "加里奥",
+          "哨兵之殇",
+          "正义巨像",
+          "위대한 석상",
+          "Sylas",
+          "the Unshackled",
+          "偷男",
+          "塞拉斯",
+          "脱者",
+          "解脱",
+          "解脱者",
+          "사일",
+          "해방된 자",
+          "TF",
+          "Twisted Fate",
+          "the Card Master",
+          "twistedfate",
+          "卡牌",
+          "卡牌大师",
+          "崔斯特",
+          "카드의 달인",
+          "트위스티드 페이트",
+          "Viktor",
+          "the Herald of the Arcane",
+          "vik",
+          "三只手",
+          "先驱",
+          "奥术先驱",
+          "维克托",
+          "아케인의 전령관"
+        ]
+      ],
+      "text": "기본 공격 피해 자체가 마법 피해로 바뀌는 경우에는 생명력 흡수가 적용됩니다. 빅토르 Q 강화 평타, 트위스티드 페이트 W, 갈리오 P, 사일러스 P가 예시입니다. 별도로 붙는 추가 마법 적중 피해는 같은 규칙이 아니므로 기본 공격 성분과 나눠 봐야 합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "lifesteal"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Magic attacks and life steal",
+          "text": "Life steal applies when the basic attack damage itself is converted to magic damage, such as Viktor Q, Twisted Fate W, Galio P and Sylas P. Separate bonus magic on-hit damage follows different rules; distinguish it from the underlying attack."
+        },
+        "zh_CN": {
+          "title": "魔法普攻与生命偷取",
+          "text": "基本攻击伤害本身转为魔法伤害时，可以触发生命偷取，例如维克托Q强化攻击、崔斯特W、加里奥P和塞拉斯P。独立附加的魔法攻击特效不能直接套用同一规则，应与普攻本体分开判断。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/zuqazXTk1ZA"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "zuqazXTk1ZA:02",
+          "zuqazXTk1ZA:03",
+          "zuqazXTk1ZA:05"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Galio",
+          "slot": "P"
+        },
+        {
+          "champion": "Gwen",
+          "slot": "P"
+        },
+        {
+          "champion": "Jax",
+          "slot": "R"
+        },
+        {
+          "champion": "Jax",
+          "slot": "W"
+        },
+        {
+          "champion": "Kayle",
+          "slot": "E"
+        },
+        {
+          "champion": "KogMaw",
+          "slot": "W"
+        },
+        {
+          "champion": "Leona",
+          "slot": "Q"
+        },
+        {
+          "champion": "Shen",
+          "slot": "Q"
+        },
+        {
+          "champion": "Sylas",
+          "slot": "P"
+        },
+        {
+          "champion": "TwistedFate",
+          "slot": "W"
+        },
+        {
+          "champion": "Viktor",
+          "slot": "Q"
+        }
+      ]
+    },
+    {
+      "id": "lifesteal-true-components",
+      "title": "고정 피해 성분과 생명력 흡수",
+      "keywords": [
+        "생명력 흡수",
+        "생흡",
+        "흡혈",
+        "lifesteal",
+        "life steal",
+        "生命偷取",
+        "마이",
+        "마스터 이",
+        "벨베스",
+        "카밀",
+        "코르키",
+        "master yi",
+        "belveth",
+        "bel'veth",
+        "camille",
+        "corki",
+        "易大师",
+        "卑尔维斯",
+        "卡蜜尔",
+        "库奇",
+        "Bel'Veth",
+        "belv",
+        "the Empress of the Void",
+        "女皇",
+        "虚空女皇",
+        "가오리",
+        "공허의 여제",
+        "벨베",
+        "Camille",
+        "the Steel Shadow",
+        "卡密尔",
+        "卡米尔",
+        "钢影",
+        "青钢",
+        "青钢影",
+        "강철의 그림자",
+        "Corki",
+        "the Daring Bombardier",
+        "弹手",
+        "英勇投弹手",
+        "飞机",
+        "대담한 폭격수",
+        "Master Yi",
+        "masteryi",
+        "the Wuju Bladesman",
+        "yi",
+        "剑圣",
+        "无极",
+        "无极剑圣",
+        "易",
+        "우주 검사",
+        "피흡",
+        "吸血"
+      ],
+      "questionGroups": [
+        [
+          "생명력 흡수",
+          "생흡",
+          "흡혈",
+          "lifesteal",
+          "life steal",
+          "生命偷取",
+          "피흡",
+          "吸血"
+        ],
+        [
+          "마이",
+          "마스터 이",
+          "벨베스",
+          "카밀",
+          "코르키",
+          "master yi",
+          "belveth",
+          "bel'veth",
+          "camille",
+          "corki",
+          "易大师",
+          "卑尔维斯",
+          "卡蜜尔",
+          "库奇",
+          "Bel'Veth",
+          "belv",
+          "the Empress of the Void",
+          "女皇",
+          "虚空女皇",
+          "가오리",
+          "공허의 여제",
+          "벨베",
+          "Camille",
+          "the Steel Shadow",
+          "卡密尔",
+          "卡米尔",
+          "钢影",
+          "青钢",
+          "青钢影",
+          "강철의 그림자",
+          "Corki",
+          "the Daring Bombardier",
+          "弹手",
+          "英勇投弹手",
+          "飞机",
+          "대담한 폭격수",
+          "Master Yi",
+          "masteryi",
+          "the Wuju Bladesman",
+          "yi",
+          "剑圣",
+          "无极",
+          "无极剑圣",
+          "易",
+          "우주 검사"
+        ]
+      ],
+      "text": "마스터 이 E와 벨베스 R이 별도로 더하는 고정 적중 피해는 생명력 흡수 대상이 아닙니다. 코르키 P와 카밀 Q 두 번째 공격처럼 기본 공격 피해를 고정 피해로 전환하는 경우와는 다릅니다. 기본 공격 본체의 흡혈과 추가 고정 피해의 흡혈을 구분해야 합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "lifesteal"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "True damage components and life steal",
+          "text": "The separate bonus true on-hit damage from Master Yi E and Bel’Veth R does not apply life steal. That differs from basic attack damage converted to true damage, such as Corki P or Camille’s second Q attack. Keep the attack’s healing separate from the bonus true damage component."
+        },
+        "zh_CN": {
+          "title": "真实伤害组成与生命偷取",
+          "text": "易大师E和卑尔维斯R独立附加的真实攻击特效伤害不触发生命偷取。这与库奇P或卡蜜尔第二次Q将普攻本体转为真实伤害不同。需要区分普攻本体和额外真实伤害部分的吸血。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/zuqazXTk1ZA"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "zuqazXTk1ZA:06",
+          "zuqazXTk1ZA:07"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Belveth",
+          "slot": "R"
+        },
+        {
+          "champion": "Camille",
+          "slot": "Q"
+        },
+        {
+          "champion": "Corki",
+          "slot": "P"
+        },
+        {
+          "champion": "MasterYi",
+          "slot": "E"
+        }
+      ]
+    },
+    {
+      "id": "lifesteal-onhit-exceptions",
+      "title": "적중 효과와 생명력 흡수의 예외",
+      "keywords": [
+        "생명력 흡수",
+        "생흡",
+        "흡혈",
+        "lifesteal",
+        "life steal",
+        "生命偷取",
+        "적중",
+        "온힛",
+        "on-hit",
+        "onhit",
+        "피즈",
+        "카타",
+        "마이",
+        "마스터 이",
+        "fizz",
+        "katarina",
+        "master yi",
+        "攻击特效",
+        "菲兹",
+        "卡特琳娜",
+        "易大师",
+        "Fizz",
+        "fish",
+        "the Tidal Trickster",
+        "小鱼人",
+        "海灵",
+        "潮汐",
+        "潮汐海灵",
+        "鱼人",
+        "대양의 말썽꾸러기",
+        "Kat",
+        "Kata",
+        "Katarina",
+        "the Sinister Blade",
+        "不祥之刃",
+        "卡特",
+        "사악한 칼날",
+        "카타리나",
+        "Master Yi",
+        "masteryi",
+        "the Wuju Bladesman",
+        "yi",
+        "剑圣",
+        "无极",
+        "无极剑圣",
+        "易",
+        "우주 검사",
+        "피흡",
+        "吸血"
+      ],
+      "questionGroups": [
+        [
+          "생명력 흡수",
+          "생흡",
+          "흡혈",
+          "lifesteal",
+          "life steal",
+          "生命偷取",
+          "피흡",
+          "吸血"
+        ],
+        [
+          "적중",
+          "온힛",
+          "on-hit",
+          "onhit",
+          "피즈",
+          "카타",
+          "마이",
+          "마스터 이",
+          "fizz",
+          "katarina",
+          "master yi",
+          "攻击特效",
+          "菲兹",
+          "卡特琳娜",
+          "易大师",
+          "Fizz",
+          "fish",
+          "the Tidal Trickster",
+          "小鱼人",
+          "海灵",
+          "潮汐",
+          "潮汐海灵",
+          "鱼人",
+          "대양의 말썽꾸러기",
+          "Kat",
+          "Kata",
+          "Katarina",
+          "the Sinister Blade",
+          "不祥之刃",
+          "卡特",
+          "사악한 칼날",
+          "카타리나",
+          "Master Yi",
+          "masteryi",
+          "the Wuju Bladesman",
+          "yi",
+          "剑圣",
+          "无极",
+          "无极剑圣",
+          "易",
+          "우주 검사"
+        ]
+      ],
+      "text": "적중 시 효과를 적용한다고 모든 스킬이 생명력 흡수를 적용하는 것은 아닙니다. 워윅 Q·R, 피오라 Q, 아크샨 E, 이즈리얼 Q, 갱플랭크 Q는 생명력 흡수 적용 사례입니다. 카타리나 P·E·R과 마스터 이 Q는 적중 효과가 있어도 생명력 흡수가 적용되지 않습니다. 피즈 Q는 물리 피해 성분에만 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "lifesteal"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "On-hit effects and life steal exceptions",
+          "text": "Applying on-hit effects does not guarantee life steal. Warwick Q/R, Fiora Q, Akshan E, Ezreal Q and Gangplank Q apply it. Katarina P/E/R and Master Yi Q can apply on-hit effects without life steal. Fizz Q applies life steal only to its physical damage component."
+        },
+        "zh_CN": {
+          "title": "攻击特效与生命偷取例外",
+          "text": "触发攻击特效并不意味着一定触发生命偷取。沃里克Q/R、菲奥娜Q、阿克尚E、伊泽瑞尔Q和普朗克Q可以应用；卡特琳娜P/E/R和易大师Q即使带攻击特效也不应用。菲兹Q只对物理伤害部分应用。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/zuqazXTk1ZA"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "zuqazXTk1ZA:10",
+          "zuqazXTk1ZA:11",
+          "zuqazXTk1ZA:12",
+          "zuqazXTk1ZA:13"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Akshan",
+          "slot": "E"
+        },
+        {
+          "champion": "Ezreal",
+          "slot": "Q"
+        },
+        {
+          "champion": "Fiora",
+          "slot": "Q"
+        },
+        {
+          "champion": "Fizz",
+          "slot": "Q"
+        },
+        {
+          "champion": "Gangplank",
+          "slot": "Q"
+        },
+        {
+          "champion": "Jax",
+          "slot": "E"
+        },
+        {
+          "champion": "Katarina",
+          "slot": "E"
+        },
+        {
+          "champion": "Katarina",
+          "slot": "P"
+        },
+        {
+          "champion": "Katarina",
+          "slot": "R"
+        },
+        {
+          "champion": "MasterYi",
+          "slot": "Q"
+        },
+        {
+          "champion": "Warwick",
+          "slot": "Q"
+        },
+        {
+          "champion": "Warwick",
+          "slot": "R"
+        }
+      ]
+    },
+    {
+      "id": "collector-display-number",
+      "title": "징수의 총의 999 표시",
+      "keywords": [
+        "징수",
+        "징수의 총",
+        "collector",
+        "收集者",
+        "999",
+        "고정 피해",
+        "고정피해",
+        "숫자",
+        "true damage",
+        "number",
+        "真实伤害"
+      ],
+      "questionGroups": [
+        [
+          "징수",
+          "징수의 총",
+          "collector",
+          "收集者"
+        ],
+        [
+          "999",
+          "고정 피해",
+          "고정피해",
+          "숫자",
+          "true damage",
+          "number",
+          "真实伤害"
+        ]
+      ],
+      "text": "징수의 총 처형에 보이는 999는 연출 숫자이며 실제로 매번 고정 피해 999를 가한다는 뜻이 아닙니다. 올라프 E처럼 원래 고정 피해를 주는 공격과 함께 발동할 수 있으므로, 숫자의 색만으로 각 피해 성분의 종류를 판단하면 안 됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "execute"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "The Collector’s displayed 999",
+          "text": "The displayed 999 on The Collector’s execute is a visual indicator, not a claim that it always deals 999 true damage. It may appear alongside genuine true damage, such as Olaf E. Damage-number color alone does not identify every component."
+        },
+        "zh_CN": {
+          "title": "收集者显示的999",
+          "text": "收集者处决时显示的999是视觉提示，并不代表每次造成999真实伤害。它可能与奥拉夫E等实际真实伤害同时出现，因此不能只根据数字颜色判断各伤害部分的类别。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/7BBG2o7cmAI"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "7BBG2o7cmAI:01",
+          "7BBG2o7cmAI:04"
+        ],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "basic-attack-crit-components",
+      "title": "평타 강화의 치명타 범위",
+      "keywords": [
+        "치명타",
+        "crit",
+        "critical",
+        "暴击",
+        "트런들",
+        "신짜오",
+        "신 짜오",
+        "문도",
+        "리븐",
+        "비에고",
+        "평타 강화",
+        "trundle",
+        "xin zhao",
+        "mundo",
+        "riven",
+        "viego",
+        "empowered attack",
+        "特朗德尔",
+        "赵信",
+        "蒙多",
+        "锐雯",
+        "佛耶戈",
+        "Dr. Mundo",
+        "Mundo",
+        "drmundo",
+        "the Madman of Zaun",
+        "狂人",
+        "祖安狂人",
+        "蒙多医生",
+        "문도 박사",
+        "자운의 광인",
+        "Riven",
+        "the Exile",
+        "放逐",
+        "放逐之刃",
+        "瑞文",
+        "锐萌萌",
+        "추방자",
+        "Trundle",
+        "the Troll King",
+        "巨魔",
+        "巨魔之王",
+        "트런",
+        "트롤 왕",
+        "The Ruined King",
+        "Viego",
+        "佛爷",
+        "佛爷哥",
+        "破败之王",
+        "破败王",
+        "몰락한 왕",
+        "Xin Zhao",
+        "the Seneschal of Demacia",
+        "xin",
+        "xinzhao",
+        "信爷",
+        "德邦",
+        "德邦总管",
+        "总管",
+        "菊花信",
+        "데마시아의 호위무사",
+        "신짜",
+        "짜오"
+      ],
+      "questionGroups": [
+        [
+          "치명타",
+          "crit",
+          "critical",
+          "暴击"
+        ],
+        [
+          "트런들",
+          "신짜오",
+          "신 짜오",
+          "문도",
+          "리븐",
+          "비에고",
+          "평타 강화",
+          "trundle",
+          "xin zhao",
+          "mundo",
+          "riven",
+          "viego",
+          "empowered attack",
+          "特朗德尔",
+          "赵信",
+          "蒙多",
+          "锐雯",
+          "佛耶戈",
+          "Dr. Mundo",
+          "Mundo",
+          "drmundo",
+          "the Madman of Zaun",
+          "狂人",
+          "祖安狂人",
+          "蒙多医生",
+          "문도 박사",
+          "자운의 광인",
+          "Riven",
+          "the Exile",
+          "放逐",
+          "放逐之刃",
+          "瑞文",
+          "锐萌萌",
+          "추방자",
+          "Trundle",
+          "the Troll King",
+          "巨魔",
+          "巨魔之王",
+          "트런",
+          "트롤 왕",
+          "The Ruined King",
+          "Viego",
+          "佛爷",
+          "佛爷哥",
+          "破败之王",
+          "破败王",
+          "몰락한 왕",
+          "Xin Zhao",
+          "the Seneschal of Demacia",
+          "xin",
+          "xinzhao",
+          "信爷",
+          "德邦",
+          "德邦总管",
+          "总管",
+          "菊花信",
+          "데마시아의 호위무사",
+          "신짜",
+          "짜오"
+        ]
+      ],
+      "text": "강화 평타라도 모든 추가 피해가 치명타 배율을 받지는 않습니다. 트런들 Q는 기본 공격력 성분에 치명타가 붙지만 Q의 추가 피해는 별도로 더해집니다. 신 짜오 Q와 문도 E에는 추가 피해까지 치명타가 적용되는 사례가 있습니다. 스킬별 피해 성분을 구분해서 계산해야 합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "critical-strike"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Critical strikes on empowered attacks",
+          "text": "Not every empowered attack bonus is multiplied by a critical strike. Trundle Q multiplies the attack component while adding its Q bonus separately. Xin Zhao Q and Dr. Mundo E include bonuses that can benefit from critical strikes. Evaluate each ability’s damage components separately."
+        },
+        "zh_CN": {
+          "title": "强化普攻的暴击范围",
+          "text": "强化普攻的额外伤害不一定全部获得暴击倍率。特朗德尔Q对普攻部分计算暴击，Q额外伤害另行相加。赵信Q和蒙多E有额外伤害也受到暴击影响的情况，应按各技能的伤害组成分别计算。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/hWrHEurO8kc"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "hWrHEurO8kc:02",
+          "hWrHEurO8kc:03",
+          "hWrHEurO8kc:05",
+          "hWrHEurO8kc:06"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "DrMundo",
+          "slot": "E"
+        },
+        {
+          "champion": "Riven",
+          "slot": "P"
+        },
+        {
+          "champion": "Trundle",
+          "slot": "Q"
+        },
+        {
+          "champion": "Viego",
+          "slot": "Q"
+        },
+        {
+          "champion": "XinZhao",
+          "slot": "Q"
+        }
+      ]
+    },
+    {
+      "id": "nasus-stack-crit",
+      "title": "나서스 Q 중첩과 치명타",
+      "keywords": [
+        "나서스",
+        "nasus",
+        "内瑟斯",
+        "Nasus",
+        "susan",
+        "the Curator of the Sands",
+        "死神",
+        "沙漠死神",
+        "狗头",
+        "똥개",
+        "사막의 관리자",
+        "치명타",
+        "크리",
+        "스택",
+        "중첩",
+        "crit",
+        "stack",
+        "暴击",
+        "层数"
+      ],
+      "questionGroups": [
+        [
+          "나서스",
+          "nasus",
+          "内瑟斯",
+          "Nasus",
+          "susan",
+          "the Curator of the Sands",
+          "死神",
+          "沙漠死神",
+          "狗头",
+          "똥개",
+          "사막의 관리자"
+        ],
+        [
+          "치명타",
+          "크리",
+          "crit",
+          "critical",
+          "暴击"
+        ]
+      ],
+      "text": "나서스 Q의 성장 중첩 피해는 치명타 배율로 증폭되지 않습니다. Q 공격의 기본 공격 성분과 스킬 기본 피해에 적용되는 치명타 계산을 끝낸 뒤 중첩 피해를 별도로 더해야 합니다. 중첩이 10 늘었다고 치명타 피해가 중첩 때문에 20 늘어나는 것은 아닙니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "critical-strike"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Nasus Q stacks and critical strikes",
+          "text": "Nasus Q’s stacking bonus is not amplified by critical strike multipliers. Add that stacking damage separately from the crit-eligible attack and base ability components. Ten additional stacks do not become twenty additional damage solely because the attack critically strikes."
+        },
+        "zh_CN": {
+          "title": "内瑟斯Q层数与暴击",
+          "text": "内瑟斯Q的成长层数伤害不被暴击倍率放大。应先计算可暴击的普攻和技能基础伤害部分，再单独加上层数伤害。增加10层并不会仅因暴击就让这一部分增加20伤害。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/hWrHEurO8kc"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "hWrHEurO8kc:08"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Nasus",
+          "slot": "Q"
+        }
+      ]
+    },
+    {
+      "id": "conqueror-ignite",
+      "title": "점화와 정복자 중첩",
+      "keywords": [
+        "정복자",
+        "conqueror",
+        "征服者",
+        "점화",
+        "ignite",
+        "引燃"
+      ],
+      "questionGroups": [
+        [
+          "정복자",
+          "conqueror",
+          "征服者"
+        ],
+        [
+          "점화",
+          "ignite",
+          "引燃"
+        ]
+      ],
+      "text": "점화는 사용하는 순간 정복자 중첩 2개를 줍니다. 점화의 매 피해 틱마다 정복자 중첩을 2개씩 계속 주는 것은 아닙니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "rune",
+        "summoner"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Ignite and Conqueror stacks",
+          "text": "Casting Ignite grants two Conqueror stacks. Each subsequent damage tick does not continuously grant another two stacks."
+        },
+        "zh_CN": {
+          "title": "引燃与征服者层数",
+          "text": "施放引燃时获得两层征服者；后续每次伤害并不会持续再给两层。"
+        }
+      },
+      "sources": [
+        "https://wiki.leagueoflegends.com/en-us/Ignite"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "existing-rule-notes",
+        "claimIds": [],
+        "patch": "26.19"
+      }
+    },
+    {
+      "id": "cc-movement-rammus",
+      "title": "람머스 E 도발과 이동 속도",
+      "keywords": [
+        "람머스",
+        "rammus",
+        "披甲龙龟",
+        "Rammus",
+        "the Armordillo",
+        "乌龟",
+        "披甲",
+        "拉莫斯",
+        "龙龟",
+        "중무장 아르마딜로",
+        "도발",
+        "taunt",
+        "嘲讽",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "람머스",
+          "rammus",
+          "披甲龙龟",
+          "rammus",
+          "Rammus",
+          "the Armordillo",
+          "乌龟",
+          "披甲",
+          "拉莫斯",
+          "龙龟",
+          "중무장 아르마딜로"
+        ],
+        [
+          "도발",
+          "taunt",
+          "嘲讽"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "람머스 E의 도발 동안 이 CC에는 별도 둔화가 없습니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Rammus E taunt and movement speed",
+          "text": "During Rammus E taunt, this CC has no separate slow."
+        },
+        "zh_CN": {
+          "title": "披甲龙龟 E 嘲讽与移速",
+          "text": "披甲龙龟 E的嘲讽期间，此控制不附带独立减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:02"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Rammus",
+          "slot": "E"
+        }
+      ],
+      "controls": [
+        "taunt"
+      ]
+    },
+    {
+      "id": "cc-movement-shen",
+      "title": "쉔 E 도발과 이동 속도",
+      "keywords": [
+        "쉔",
+        "shen",
+        "暮光之眼",
+        "Shen",
+        "the Eye of Twilight",
+        "慎",
+        "腰子",
+        "황혼의 눈",
+        "도발",
+        "taunt",
+        "嘲讽",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "쉔",
+          "shen",
+          "暮光之眼",
+          "shen",
+          "Shen",
+          "the Eye of Twilight",
+          "慎",
+          "腰子",
+          "황혼의 눈"
+        ],
+        [
+          "도발",
+          "taunt",
+          "嘲讽"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "쉔 E의 도발 동안 이 CC에는 별도 둔화가 없습니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Shen E taunt and movement speed",
+          "text": "During Shen E taunt, this CC has no separate slow."
+        },
+        "zh_CN": {
+          "title": "暮光之眼 E 嘲讽与移速",
+          "text": "暮光之眼 E的嘲讽期间，此控制不附带独立减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:03"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Shen",
+          "slot": "E"
+        }
+      ],
+      "controls": [
+        "taunt"
+      ]
+    },
+    {
+      "id": "cc-movement-galio",
+      "title": "갈리오 W 도발과 이동 속도",
+      "keywords": [
+        "갈리오",
+        "galio",
+        "正义巨像",
+        "Galio",
+        "the Colossus",
+        "加里奥",
+        "哨兵之殇",
+        "위대한 석상",
+        "도발",
+        "taunt",
+        "嘲讽",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "갈리오",
+          "galio",
+          "正义巨像",
+          "galio",
+          "Galio",
+          "the Colossus",
+          "加里奥",
+          "哨兵之殇",
+          "위대한 석상"
+        ],
+        [
+          "도발",
+          "taunt",
+          "嘲讽"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "갈리오 W의 도발 동안 챔피언의 이동 속도를 60으로 고정합니다. 60% 둔화나 이동 속도 60 감소라는 뜻이 아닙니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Galio W taunt and movement speed",
+          "text": "During Galio W taunt, Champion movement speed is set to 60, not reduced by 60% or by 60 flat."
+        },
+        "zh_CN": {
+          "title": "正义巨像 W 嘲讽与移速",
+          "text": "正义巨像 W的嘲讽期间，英雄移速被设为60，并非减速60%或降低60点。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:04"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Galio",
+          "slot": "W"
+        }
+      ],
+      "controls": [
+        "taunt"
+      ]
+    },
+    {
+      "id": "cc-movement-nocturne",
+      "title": "녹턴 E 공포와 이동 속도",
+      "keywords": [
+        "녹턴",
+        "nocturne",
+        "永恒梦魇",
+        "Nocturne",
+        "noc",
+        "the Eternal Nightmare",
+        "梦魇",
+        "魔腾",
+        "영원한 악몽",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "녹턴",
+          "nocturne",
+          "永恒梦魇",
+          "nocturne",
+          "Nocturne",
+          "noc",
+          "the Eternal Nightmare",
+          "梦魇",
+          "魔腾",
+          "영원한 악몽"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "녹턴 E의 공포 동안 90% 둔화가 함께 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Nocturne E fear and movement speed",
+          "text": "During Nocturne E fear, an accompanying 90% slow applies."
+        },
+        "zh_CN": {
+          "title": "永恒梦魇 E 恐惧与移速",
+          "text": "永恒梦魇 E的恐惧期间，同时附带90%减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:05"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Nocturne",
+          "slot": "E"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-darius",
+      "title": "다리우스 R 공포와 이동 속도",
+      "keywords": [
+        "다리우스",
+        "darius",
+        "诺克萨斯之手",
+        "Darius",
+        "the Hand of Noxus",
+        "小学生之手",
+        "德莱厄斯",
+        "诺手",
+        "녹서스의 실력자",
+        "다리",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "다리우스",
+          "darius",
+          "诺克萨斯之手",
+          "darius",
+          "Darius",
+          "the Hand of Noxus",
+          "小学生之手",
+          "德莱厄斯",
+          "诺手",
+          "녹서스의 실력자",
+          "다리"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "다리우스 R의 공포 동안 이 수치는 비챔피언 대상 공포에 대한 설명입니다. 시간이 지나면서 0~99% 둔화됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Darius R fear and movement speed",
+          "text": "During Darius R fear, this applies to fear against non-champions. The slow varies from 0% to 99% with elapsed time."
+        },
+        "zh_CN": {
+          "title": "诺克萨斯之手 R 恐惧与移速",
+          "text": "诺克萨斯之手 R的恐惧期间，此处指对非英雄的恐惧。减速随时间在0%至99%之间变化。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:06"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Darius",
+          "slot": "R"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-vex",
+      "title": "벡스 P 공포와 이동 속도",
+      "keywords": [
+        "벡스",
+        "vex",
+        "愁云使者",
+        "Vex",
+        "the Gloomist",
+        "愁云",
+        "薇古丝",
+        "우울주의자",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "벡스",
+          "vex",
+          "愁云使者",
+          "vex",
+          "Vex",
+          "the Gloomist",
+          "愁云",
+          "薇古丝",
+          "우울주의자"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "벡스 P의 공포 동안 거리에 따라 60~99% 둔화됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Vex P fear and movement speed",
+          "text": "During Vex P fear, the slow varies from 60% to 99% with distance."
+        },
+        "zh_CN": {
+          "title": "愁云使者 P 恐惧与移速",
+          "text": "愁云使者 P的恐惧期间，减速随距离在60%至99%之间变化。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:07"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Vex",
+          "slot": "P"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-briar",
+      "title": "브라이어 R 공포와 이동 속도",
+      "keywords": [
+        "브라이어",
+        "briar",
+        "狂厄蔷薇",
+        "Briar",
+        "the Restrained Hunger",
+        "狂厄",
+        "蔷薇",
+        "贝蕾亚",
+        "억눌린 허기",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "브라이어",
+          "briar",
+          "狂厄蔷薇",
+          "briar",
+          "Briar",
+          "the Restrained Hunger",
+          "狂厄",
+          "蔷薇",
+          "贝蕾亚",
+          "억눌린 허기"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "브라이어 R의 공포 동안 35% 둔화가 함께 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Briar R fear and movement speed",
+          "text": "During Briar R fear, an accompanying 35% slow applies."
+        },
+        "zh_CN": {
+          "title": "狂厄蔷薇 R 恐惧与移速",
+          "text": "狂厄蔷薇 R的恐惧期间，同时附带35%减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:08"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Briar",
+          "slot": "R"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-aatrox",
+      "title": "아트록스 R 공포와 이동 속도",
+      "keywords": [
+        "아트록스",
+        "aatrox",
+        "暗裔剑魔",
+        "Aatrox",
+        "the Darkin Blade",
+        "亚托",
+        "亚托克斯",
+        "剑魔",
+        "暗裔",
+        "다르킨의 검",
+        "아트",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "아트록스",
+          "aatrox",
+          "暗裔剑魔",
+          "aatrox",
+          "Aatrox",
+          "the Darkin Blade",
+          "亚托",
+          "亚托克斯",
+          "剑魔",
+          "暗裔",
+          "다르킨의 검",
+          "아트"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "아트록스 R의 공포 동안 이 수치는 비챔피언 대상 공포에 대한 설명입니다. 시간이 지나면서 0~99% 둔화됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Aatrox R fear and movement speed",
+          "text": "During Aatrox R fear, this applies to fear against non-champions. The slow varies from 0% to 99% with elapsed time."
+        },
+        "zh_CN": {
+          "title": "暗裔剑魔 R 恐惧与移速",
+          "text": "暗裔剑魔 R的恐惧期间，此处指对非英雄的恐惧。减速随时间在0%至99%之间变化。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:09"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Aatrox",
+          "slot": "R"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-urgot",
+      "title": "우르곳 R 공포와 이동 속도",
+      "keywords": [
+        "우르곳",
+        "urgot",
+        "无畏战车",
+        "Urgot",
+        "the Dreadnought",
+        "厄加特",
+        "战车",
+        "无畏",
+        "꽃게",
+        "살상 병기",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "우르곳",
+          "urgot",
+          "无畏战车",
+          "urgot",
+          "Urgot",
+          "the Dreadnought",
+          "厄加特",
+          "战车",
+          "无畏",
+          "꽃게",
+          "살상 병기"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "우르곳 R의 공포 동안 75% 둔화가 함께 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Urgot R fear and movement speed",
+          "text": "During Urgot R fear, an accompanying 75% slow applies."
+        },
+        "zh_CN": {
+          "title": "无畏战车 R 恐惧与移速",
+          "text": "无畏战车 R的恐惧期间，同时附带75%减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:10"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Urgot",
+          "slot": "R"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-warwick",
+      "title": "워윅 E 공포와 이동 속도",
+      "keywords": [
+        "워윅",
+        "warwick",
+        "祖安怒兽",
+        "Warwick",
+        "the Uncaged Wrath of Zaun",
+        "ww",
+        "怒兽",
+        "沃里克",
+        "狼人",
+        "자운의 고삐 풀린 분노",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "워윅",
+          "warwick",
+          "祖安怒兽",
+          "warwick",
+          "Warwick",
+          "the Uncaged Wrath of Zaun",
+          "ww",
+          "怒兽",
+          "沃里克",
+          "狼人",
+          "자운의 고삐 풀린 분노"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "워윅 E의 공포 동안 90% 둔화가 함께 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Warwick E fear and movement speed",
+          "text": "During Warwick E fear, an accompanying 90% slow applies."
+        },
+        "zh_CN": {
+          "title": "祖安怒兽 E 恐惧与移速",
+          "text": "祖安怒兽 E的恐惧期间，同时附带90%减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:11"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Warwick",
+          "slot": "E"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-fiddlesticks",
+      "title": "피들스틱 Q 공포와 이동 속도",
+      "keywords": [
+        "피들스틱",
+        "fiddlesticks",
+        "远古恐惧",
+        "Fiddlesticks",
+        "fiddle",
+        "fiddles",
+        "the Ancient Fear",
+        "末日使者",
+        "稻草人",
+        "草人",
+        "费德提克",
+        "오래된 공포",
+        "피들",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "피들스틱",
+          "fiddlesticks",
+          "远古恐惧",
+          "fiddlesticks",
+          "Fiddlesticks",
+          "fiddle",
+          "fiddles",
+          "the Ancient Fear",
+          "末日使者",
+          "稻草人",
+          "草人",
+          "费德提克",
+          "오래된 공포",
+          "피들"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "피들스틱 Q의 공포 동안 90% 둔화가 함께 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Fiddlesticks Q fear and movement speed",
+          "text": "During Fiddlesticks Q fear, an accompanying 90% slow applies."
+        },
+        "zh_CN": {
+          "title": "远古恐惧 Q 恐惧与移速",
+          "text": "远古恐惧 Q的恐惧期间，同时附带90%减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:12"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Fiddlesticks",
+          "slot": "Q"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-hecarim",
+      "title": "헤카림 R 공포와 이동 속도",
+      "keywords": [
+        "헤카림",
+        "hecarim",
+        "战争之影",
+        "Heca",
+        "Hecarim",
+        "hec",
+        "horse",
+        "the Shadow of War",
+        "人马",
+        "赫卡里姆",
+        "전쟁의 전조",
+        "헤카",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "헤카림",
+          "hecarim",
+          "战争之影",
+          "hecarim",
+          "Heca",
+          "Hecarim",
+          "hec",
+          "horse",
+          "the Shadow of War",
+          "人马",
+          "赫卡里姆",
+          "전쟁의 전조",
+          "헤카"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "헤카림 R의 공포 동안 거리에 따라 0~99% 둔화됩니다. 이 효과는 둔화 저항을 무시합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Hecarim R fear and movement speed",
+          "text": "During Hecarim R fear, the slow varies from 0% to 99% with distance. This effect ignores slow resistance."
+        },
+        "zh_CN": {
+          "title": "战争之影 R 恐惧与移速",
+          "text": "战争之影 R的恐惧期间，减速随距离在0%至99%之间变化。 此效果无视减速抗性。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:13"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Hecarim",
+          "slot": "R"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-hwei",
+      "title": "흐웨이 EQ 공포와 이동 속도",
+      "keywords": [
+        "흐웨이",
+        "hwei",
+        "异画师",
+        "Hwei",
+        "the Visionary",
+        "异画",
+        "彗",
+        "画师",
+        "몽상가",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "흐웨이",
+          "hwei",
+          "异画师",
+          "hwei",
+          "Hwei",
+          "the Visionary",
+          "异画",
+          "彗",
+          "画师",
+          "몽상가"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "흐웨이 EQ의 공포 동안 거리에 따라 70~99% 둔화됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Hwei EQ fear and movement speed",
+          "text": "During Hwei EQ fear, the slow varies from 70% to 99% with distance."
+        },
+        "zh_CN": {
+          "title": "异画师 EQ 恐惧与移速",
+          "text": "异画师 EQ的恐惧期间，减速随距离在70%至99%之间变化。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:14"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Hwei",
+          "slot": "E"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-shaco",
+      "title": "샤코 W·R 공포와 이동 속도",
+      "keywords": [
+        "샤코",
+        "shaco",
+        "恶魔小丑",
+        "Shaco",
+        "clown",
+        "the Demon Jester",
+        "小丑",
+        "萨科",
+        "악마 어릿광대",
+        "공포",
+        "fear",
+        "恐惧",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "샤코",
+          "shaco",
+          "恶魔小丑",
+          "shaco",
+          "Shaco",
+          "clown",
+          "the Demon Jester",
+          "小丑",
+          "萨科",
+          "악마 어릿광대"
+        ],
+        [
+          "공포",
+          "fear",
+          "恐惧"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "샤코 W·R의 공포 동안 챔피언의 이동 속도는 100, 비챔피언은 60으로 고정됩니다. 퍼센트 둔화와 구분해야 합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Shaco W fear and movement speed",
+          "text": "During Shaco W fear, movement speed is set to 100 for champions and 60 for non-champions, rather than using an ordinary percentage slow."
+        },
+        "zh_CN": {
+          "title": "恶魔小丑 W 恐惧与移速",
+          "text": "恶魔小丑 W的恐惧期间，英雄移速设为100，非英雄设为60，需与普通百分比减速区分。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:15"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Shaco",
+          "slot": "W"
+        },
+        {
+          "champion": "Shaco",
+          "slot": "R"
+        }
+      ],
+      "controls": [
+        "fear"
+      ]
+    },
+    {
+      "id": "cc-movement-rakan",
+      "title": "라칸 R 매혹과 이동 속도",
+      "keywords": [
+        "라칸",
+        "rakan",
+        "幻翎",
+        "Rakan",
+        "The Charmer",
+        "洛",
+        "매혹하는 자",
+        "매혹",
+        "charm",
+        "魅惑",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "라칸",
+          "rakan",
+          "幻翎",
+          "rakan",
+          "Rakan",
+          "The Charmer",
+          "洛",
+          "매혹하는 자"
+        ],
+        [
+          "매혹",
+          "charm",
+          "魅惑"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "라칸 R의 매혹 동안 75% 둔화가 함께 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Rakan R charm and movement speed",
+          "text": "During Rakan R charm, an accompanying 75% slow applies."
+        },
+        "zh_CN": {
+          "title": "幻翎 R 魅惑与移速",
+          "text": "幻翎 R的魅惑期间，同时附带75%减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:16"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Rakan",
+          "slot": "R"
+        }
+      ],
+      "controls": [
+        "charm"
+      ]
+    },
+    {
+      "id": "cc-movement-seraphine",
+      "title": "세라핀 R 매혹과 이동 속도",
+      "keywords": [
+        "세라핀",
+        "seraphine",
+        "星籁歌姬",
+        "Seraphine",
+        "sera",
+        "the Starry-Eyed Songstress",
+        "星籁",
+        "歌姬",
+        "萨勒芬妮",
+        "노래하는 별",
+        "세라",
+        "매혹",
+        "charm",
+        "魅惑",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "세라핀",
+          "seraphine",
+          "星籁歌姬",
+          "seraphine",
+          "Seraphine",
+          "sera",
+          "the Starry-Eyed Songstress",
+          "星籁",
+          "歌姬",
+          "萨勒芬妮",
+          "노래하는 별",
+          "세라"
+        ],
+        [
+          "매혹",
+          "charm",
+          "魅惑"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "세라핀 R의 매혹 동안 시간이 지나면서 40~99% 둔화됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Seraphine R charm and movement speed",
+          "text": "During Seraphine R charm, the slow varies from 40% to 99% with elapsed time."
+        },
+        "zh_CN": {
+          "title": "星籁歌姬 R 魅惑与移速",
+          "text": "星籁歌姬 R的魅惑期间，减速随时间在40%至99%之间变化。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:17"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Seraphine",
+          "slot": "R"
+        }
+      ],
+      "controls": [
+        "charm"
+      ]
+    },
+    {
+      "id": "cc-movement-ahri",
+      "title": "아리 E 매혹과 이동 속도",
+      "keywords": [
+        "아리",
+        "ahri",
+        "九尾妖狐",
+        "Ahri",
+        "the Nine-Tailed Fox",
+        "九尾",
+        "妖狐",
+        "狐狸",
+        "阿狸",
+        "구미호",
+        "매혹",
+        "charm",
+        "魅惑",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "아리",
+          "ahri",
+          "九尾妖狐",
+          "ahri",
+          "Ahri",
+          "the Nine-Tailed Fox",
+          "九尾",
+          "妖狐",
+          "狐狸",
+          "阿狸",
+          "구미호"
+        ],
+        [
+          "매혹",
+          "charm",
+          "魅惑"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "아리 E의 매혹 동안 65% 둔화가 함께 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Ahri E charm and movement speed",
+          "text": "During Ahri E charm, an accompanying 65% slow applies."
+        },
+        "zh_CN": {
+          "title": "九尾妖狐 E 魅惑与移速",
+          "text": "九尾妖狐 E的魅惑期间，同时附带65%减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:18"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Ahri",
+          "slot": "E"
+        }
+      ],
+      "controls": [
+        "charm"
+      ]
+    },
+    {
+      "id": "cc-movement-evelynn",
+      "title": "이블린 W 매혹과 이동 속도",
+      "keywords": [
+        "이블린",
+        "evelynn",
+        "痛苦之拥",
+        "Agony's Embrace",
+        "Evelynn",
+        "eve",
+        "伊芙琳",
+        "寡妇",
+        "寡妇制造者",
+        "고통스런 포옹",
+        "이블",
+        "매혹",
+        "charm",
+        "魅惑",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "이블린",
+          "evelynn",
+          "痛苦之拥",
+          "evelynn",
+          "Agony's Embrace",
+          "Evelynn",
+          "eve",
+          "伊芙琳",
+          "寡妇",
+          "寡妇制造者",
+          "고통스런 포옹",
+          "이블"
+        ],
+        [
+          "매혹",
+          "charm",
+          "魅惑"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "이블린 W의 매혹 동안 45% 둔화가 함께 적용됩니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Evelynn W charm and movement speed",
+          "text": "During Evelynn W charm, an accompanying 45% slow applies."
+        },
+        "zh_CN": {
+          "title": "痛苦之拥 W 魅惑与移速",
+          "text": "痛苦之拥 W的魅惑期间，同时附带45%减速。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:19"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Evelynn",
+          "slot": "W"
+        }
+      ],
+      "controls": [
+        "charm"
+      ]
+    },
+    {
+      "id": "cc-movement-lulu",
+      "title": "룰루 W 변이와 이동 속도",
+      "keywords": [
+        "룰루",
+        "lulu",
+        "仙灵女巫",
+        "Lulu",
+        "the Fae Sorceress",
+        "仙灵",
+        "璐璐",
+        "露露",
+        "요정 마법사",
+        "변이",
+        "polymorph",
+        "变形",
+        "둔화",
+        "이속",
+        "이동 속도",
+        "slow",
+        "movement speed",
+        "移速",
+        "减速"
+      ],
+      "questionGroups": [
+        [
+          "룰루",
+          "lulu",
+          "仙灵女巫",
+          "lulu",
+          "Lulu",
+          "the Fae Sorceress",
+          "仙灵",
+          "璐璐",
+          "露露",
+          "요정 마법사"
+        ],
+        [
+          "변이",
+          "polymorph",
+          "变形"
+        ],
+        [
+          "둔화",
+          "이속",
+          "이동 속도",
+          "slow",
+          "movement speed",
+          "移速",
+          "减速"
+        ]
+      ],
+      "text": "룰루 W의 변이 동안 이동 속도를 고정값 60만큼 감소시킵니다. 이동 속도를 60으로 고정한다는 뜻이 아닙니다. 이 효과는 둔화 저항을 무시합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "crowd-control",
+        "slow"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Lulu W polymorph and movement speed",
+          "text": "During Lulu W polymorph, movement speed is reduced by a flat 60, not set to 60. This effect ignores slow resistance."
+        },
+        "zh_CN": {
+          "title": "仙灵女巫 W 变形与移速",
+          "text": "仙灵女巫 W的变形期间，移速降低固定的60点，并非设为60。 此效果无视减速抗性。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/XZAZ30sW48c"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "XZAZ30sW48c:20"
+        ],
+        "patch": "26.19"
+      },
+      "subjects": [
+        {
+          "champion": "Lulu",
+          "slot": "W"
+        }
+      ],
+      "controls": [
+        "polymorph"
+      ]
+    },
+    {
+      "id": "darius-w-crit",
+      "title": "다리우스 W와 치명타",
+      "keywords": [
+        "다리우스",
+        "다리",
+        "Darius",
+        "诺克萨斯之手",
+        "德莱厄斯",
+        "诺手",
+        "치명타",
+        "크리",
+        "crit",
+        "critical strike",
+        "暴击"
+      ],
+      "questionGroups": [
+        [
+          "다리우스",
+          "다리",
+          "Darius",
+          "诺克萨斯之手",
+          "德莱厄斯",
+          "诺手"
+        ],
+        [
+          "치명타",
+          "크리",
+          "crit",
+          "critical strike",
+          "暴击"
+        ]
+      ],
+      "subjects": [
+        {
+          "champion": "Darius",
+          "slot": "W"
+        }
+      ],
+      "text": "다리우스 W 강화 평타는 치명타가 터집니다. 기본 공격 피해뿐 아니라 W의 추가 피해에도 치명타 배율이 적용됩니다. W를 썼다고 무조건 치명타가 되는 것은 아니며, 치명타 확률에 따라 발생합니다.",
+      "tags": [
+        "tip",
+        "mechanics",
+        "interaction",
+        "critical-strike"
+      ],
+      "localized": {
+        "en_US": {
+          "title": "Darius W critical strikes",
+          "text": "Darius W can critically strike. The critical strike multiplier applies to both the underlying attack and W bonus damage. Casting W does not guarantee a critical strike; it depends on critical strike chance."
+        },
+        "zh_CN": {
+          "title": "德莱厄斯W暴击",
+          "text": "德莱厄斯W强化普攻可以暴击，普攻与W额外伤害都享受暴击倍率。施放W并不保证暴击，仍取决于暴击几率。"
+        }
+      },
+      "sources": [
+        "https://www.youtube.com/shorts/hWrHEurO8kc"
+      ],
+      "reviewedAt": "2026-10-06",
+      "evidence": {
+        "collection": "mangdasu-20261006",
+        "claimIds": [
+          "hWrHEurO8kc:07:darius-w"
+        ],
+        "patch": "26.19"
+      }
+    }
+  ],
+  "claimReviews": [
+    {
+      "claimId": "AL3VsRUkMHI:01",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "AL3VsRUkMHI:02",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "AL3VsRUkMHI:03",
+      "status": "conflict",
+      "reason": "두 스킬의 실제 수치를 모두 99%로 확정하면 안 된다. 로컬 26.19 카드와 위키의 나서스 W 최대치는 95%다. 영상의 계산 가정과 개별 스킬 수치를 분리한다."
+    },
+    {
+      "claimId": "AL3VsRUkMHI:04",
+      "status": "source_only",
+      "reason": "소나 E 자체는 아군 이속 증가다. 해당 둔화는 E로 강화된 P 파워 코드 맥락으로 해석해야 한다. 아이콘을 효과와 직접 동일시하지 않는다."
+    },
+    {
+      "claimId": "AL3VsRUkMHI:05",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "AL3VsRUkMHI:06",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "3Zd7w35g1i0:01",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "3Zd7w35g1i0:02",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "3Zd7w35g1i0:03",
+      "status": "source_only",
+      "reason": "모데의 아이콘 아래 모든 능력치라는 문구는 엄밀한 모든 스탯 목록으로 확대하지 않는다."
+    },
+    {
+      "claimId": "3Zd7w35g1i0:04",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "3Zd7w35g1i0:05",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "k_GRgd1uTho:01",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "k_GRgd1uTho:02",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "k_GRgd1uTho:03",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "k_GRgd1uTho:04",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "k_GRgd1uTho:05",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "k_GRgd1uTho:06",
+      "status": "conflict",
+      "reason": "찾은 위키의 Yasuo/Last Breath 노트는 다른 퍼센트 관통과 곱적용이라고 설명한다. 검색 자료의 크롤링 시점도 오래되어 현재 게임 실험 전에는 어느 쪽도 최신 확정값으로 승격하지 않는다."
+    },
+    {
+      "claimId": "XZAZ30sW48c:01",
+      "status": "source_only",
+      "reason": "모든 하드 CC에 둔화가 있다는 보편 규칙으로 확대하지 않는다. 마스터 이 R의 둔화 면역 예외는 아래 별도 기록한다."
+    },
+    {
+      "claimId": "XZAZ30sW48c:02",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:03",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:04",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:05",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:06",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:07",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:08",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:09",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:10",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:11",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:12",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:13",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:14",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:15",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:16",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:17",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:18",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:19",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:20",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "XZAZ30sW48c:21",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "Ji8LbdEL8YI:01",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "Ji8LbdEL8YI:02",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "Ji8LbdEL8YI:03",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "Ji8LbdEL8YI:04",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "Ji8LbdEL8YI:05",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "Ji8LbdEL8YI:06",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "Ji8LbdEL8YI:07",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "mKpYKgVy4Lg:01",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "mKpYKgVy4Lg:02",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "mKpYKgVy4Lg:03",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "mKpYKgVy4Lg:04",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:01",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:02",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:03",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:04",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:05",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:06",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:07",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:08",
+      "status": "source_only",
+      "reason": "무라마나의 스킬 추가 피해에도 적용된다는 별도 화면 주석이 있다. 아이템의 모든 피해 성분까지 확대하지 않는다."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:09",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:10",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:11",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:12",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:13",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "zuqazXTk1ZA:14",
+      "status": "source_only",
+      "reason": "모든 광역 스킬이 생명력 흡수를 얻는다는 뜻이 아니다."
+    },
+    {
+      "claimId": "bEOGdxK9-Eg:01",
+      "status": "bug_report_unreproduced",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "bEOGdxK9-Eg:02",
+      "status": "bug_report_unreproduced",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "bEOGdxK9-Eg:03",
+      "status": "bug_report_unreproduced",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "bEOGdxK9-Eg:04",
+      "status": "bug_report_unreproduced",
+      "reason": "이 배율은 추가 피해 성분의 예시다. 기본 공격 전체 피해가 8.8% 줄어든다는 뜻으로 바꾸지 않는다."
+    },
+    {
+      "claimId": "W5diJtxRboI:01",
+      "status": "source_only",
+      "reason": "챔피언 레벨·스킬 랭크·동일 공격력 기준은 명확히 적혀 있지 않다. 무조건적인 평타 강함 순위로 사용하지 않는다."
+    },
+    {
+      "claimId": "W5diJtxRboI:02",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "W5diJtxRboI:03",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "W5diJtxRboI:04",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "W5diJtxRboI:05",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "W5diJtxRboI:06",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "W5diJtxRboI:07",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "W5diJtxRboI:08",
+      "status": "source_only",
+      "reason": "아펠리오스 E는 공식 카드의 무기 교체 자리다. 반월검(Crescendum) 무기 아이콘을 가리키므로 이 수치를 E 시전 효과로 오해하면 안 된다."
+    },
+    {
+      "claimId": "7BBG2o7cmAI:01",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "7BBG2o7cmAI:02",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "7BBG2o7cmAI:03",
+      "status": "source_only",
+      "reason": "Source observation retained. Not promoted to an unconditional app answer."
+    },
+    {
+      "claimId": "7BBG2o7cmAI:04",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "hWrHEurO8kc:01",
+      "status": "source_only",
+      "reason": "첫 게임 화면은 175를 보여 설명과 일치하지 않는다. 과거 영상 사용 가능성을 표시하고 현재 게임 실험으로 취급하지 않는다."
+    },
+    {
+      "claimId": "hWrHEurO8kc:02",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "hWrHEurO8kc:03",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "hWrHEurO8kc:04",
+      "status": "needs_review",
+      "reason": "겹친 아이콘 몇 개와 왼쪽 아이템 2개는 미확정이다. 목록을 완전한 분류로 사용하지 않는다."
+    },
+    {
+      "claimId": "hWrHEurO8kc:05",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "hWrHEurO8kc:06",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "hWrHEurO8kc:07",
+      "status": "needs_review",
+      "reason": "겹치거나 화면 가장자리에서 잘린 스킬·무기 아이콘은 별도 미확정으로 남겼다."
+    },
+    {
+      "claimId": "hWrHEurO8kc:08",
+      "status": "included",
+      "reason": "Curated with component/target conditions; video observation is not a current-game reproduction."
+    },
+    {
+      "claimId": "hWrHEurO8kc:07:darius-w",
+      "status": "included",
+      "reason": "다리우스 W만 화면에서 확인하여 미확정 묶음에서 분리했다."
+    }
+  ],
+  "videos": [
+    {
+      "videoId": "AL3VsRUkMHI",
+      "title": "롤 둔화율이 100%를 넘으면 어떻게 될까",
+      "claimIds": [
+        "AL3VsRUkMHI:01",
+        "AL3VsRUkMHI:02",
+        "AL3VsRUkMHI:03",
+        "AL3VsRUkMHI:04",
+        "AL3VsRUkMHI:05",
+        "AL3VsRUkMHI:06"
+      ],
+      "appNoteIds": [
+        "slow-low-speed"
+      ]
+    },
+    {
+      "videoId": "3Zd7w35g1i0",
+      "title": "롤 방마저가 음수라면 어떻게 될까?",
+      "claimIds": [
+        "3Zd7w35g1i0:01",
+        "3Zd7w35g1i0:02",
+        "3Zd7w35g1i0:03",
+        "3Zd7w35g1i0:04",
+        "3Zd7w35g1i0:05"
+      ],
+      "appNoteIds": [
+        "negative-resistances",
+        "trundle-temporary-resistances"
+      ]
+    },
+    {
+      "videoId": "k_GRgd1uTho",
+      "title": "롤 방마저, 물마관 파헤치기",
+      "claimIds": [
+        "k_GRgd1uTho:01",
+        "k_GRgd1uTho:02",
+        "k_GRgd1uTho:03",
+        "k_GRgd1uTho:04",
+        "k_GRgd1uTho:05",
+        "k_GRgd1uTho:06"
+      ],
+      "appNoteIds": [
+        "penetration-vs-reduction",
+        "resistance-effective-health",
+        "percent-penetration-stacking"
+      ]
+    },
+    {
+      "videoId": "XZAZ30sW48c",
+      "title": "롤 군중 제어의 비밀",
+      "claimIds": [
+        "XZAZ30sW48c:01",
+        "XZAZ30sW48c:02",
+        "XZAZ30sW48c:03",
+        "XZAZ30sW48c:04",
+        "XZAZ30sW48c:05",
+        "XZAZ30sW48c:06",
+        "XZAZ30sW48c:07",
+        "XZAZ30sW48c:08",
+        "XZAZ30sW48c:09",
+        "XZAZ30sW48c:10",
+        "XZAZ30sW48c:11",
+        "XZAZ30sW48c:12",
+        "XZAZ30sW48c:13",
+        "XZAZ30sW48c:14",
+        "XZAZ30sW48c:15",
+        "XZAZ30sW48c:16",
+        "XZAZ30sW48c:17",
+        "XZAZ30sW48c:18",
+        "XZAZ30sW48c:19",
+        "XZAZ30sW48c:20",
+        "XZAZ30sW48c:21"
+      ],
+      "appNoteIds": [
+        "cc-movement-rammus",
+        "cc-movement-shen",
+        "cc-movement-galio",
+        "cc-movement-nocturne",
+        "cc-movement-darius",
+        "cc-movement-vex",
+        "cc-movement-briar",
+        "cc-movement-aatrox",
+        "cc-movement-urgot",
+        "cc-movement-warwick",
+        "cc-movement-fiddlesticks",
+        "cc-movement-hecarim",
+        "cc-movement-hwei",
+        "cc-movement-shaco",
+        "cc-movement-rakan",
+        "cc-movement-seraphine",
+        "cc-movement-ahri",
+        "cc-movement-evelynn",
+        "cc-movement-lulu"
+      ]
+    },
+    {
+      "videoId": "Ji8LbdEL8YI",
+      "title": "롤 이동속도 파헤치기",
+      "claimIds": [
+        "Ji8LbdEL8YI:01",
+        "Ji8LbdEL8YI:02",
+        "Ji8LbdEL8YI:03",
+        "Ji8LbdEL8YI:04",
+        "Ji8LbdEL8YI:05",
+        "Ji8LbdEL8YI:06",
+        "Ji8LbdEL8YI:07"
+      ],
+      "appNoteIds": [
+        "move-speed-soft-cap",
+        "slow-resist-stacking",
+        "move-speed-order",
+        "celerity-own-bonus"
+      ]
+    },
+    {
+      "videoId": "mKpYKgVy4Lg",
+      "title": "사실 가렌도 벽 넘을 수 있음",
+      "claimIds": [
+        "mKpYKgVy4Lg:01",
+        "mKpYKgVy4Lg:02",
+        "mKpYKgVy4Lg:03",
+        "mKpYKgVy4Lg:04"
+      ],
+      "appNoteIds": [
+        "garen-wall-lunge"
+      ]
+    },
+    {
+      "videoId": "zuqazXTk1ZA",
+      "title": "롤 생명력 흡수 파헤치기",
+      "claimIds": [
+        "zuqazXTk1ZA:01",
+        "zuqazXTk1ZA:02",
+        "zuqazXTk1ZA:03",
+        "zuqazXTk1ZA:04",
+        "zuqazXTk1ZA:05",
+        "zuqazXTk1ZA:06",
+        "zuqazXTk1ZA:07",
+        "zuqazXTk1ZA:08",
+        "zuqazXTk1ZA:09",
+        "zuqazXTk1ZA:10",
+        "zuqazXTk1ZA:11",
+        "zuqazXTk1ZA:12",
+        "zuqazXTk1ZA:13",
+        "zuqazXTk1ZA:14"
+      ],
+      "appNoteIds": [
+        "lifesteal-magic-attacks",
+        "lifesteal-true-components",
+        "lifesteal-onhit-exceptions"
+      ]
+    },
+    {
+      "videoId": "bEOGdxK9-Eg",
+      "title": "가렌 자헨 장인들도 모르는 버그",
+      "claimIds": [
+        "bEOGdxK9-Eg:01",
+        "bEOGdxK9-Eg:02",
+        "bEOGdxK9-Eg:03",
+        "bEOGdxK9-Eg:04"
+      ],
+      "appNoteIds": []
+    },
+    {
+      "videoId": "W5diJtxRboI",
+      "title": "롤에서 가장 강한 기본 공격 TOP 7",
+      "claimIds": [
+        "W5diJtxRboI:01",
+        "W5diJtxRboI:02",
+        "W5diJtxRboI:03",
+        "W5diJtxRboI:04",
+        "W5diJtxRboI:05",
+        "W5diJtxRboI:06",
+        "W5diJtxRboI:07",
+        "W5diJtxRboI:08"
+      ],
+      "appNoteIds": []
+    },
+    {
+      "videoId": "7BBG2o7cmAI",
+      "title": "롤 처형 메커니즘 알아보기",
+      "claimIds": [
+        "7BBG2o7cmAI:01",
+        "7BBG2o7cmAI:02",
+        "7BBG2o7cmAI:03",
+        "7BBG2o7cmAI:04"
+      ],
+      "appNoteIds": [
+        "collector-display-number"
+      ]
+    },
+    {
+      "videoId": "hWrHEurO8kc",
+      "title": "제멋대로인 롤 평타 강화 스킬들",
+      "claimIds": [
+        "hWrHEurO8kc:01",
+        "hWrHEurO8kc:02",
+        "hWrHEurO8kc:03",
+        "hWrHEurO8kc:04",
+        "hWrHEurO8kc:05",
+        "hWrHEurO8kc:06",
+        "hWrHEurO8kc:07",
+        "hWrHEurO8kc:08",
+        "hWrHEurO8kc:07:darius-w"
+      ],
+      "appNoteIds": [
+        "basic-attack-crit-components",
+        "nasus-stack-crit",
+        "darius-w-crit"
+      ]
+    }
+  ]
+}

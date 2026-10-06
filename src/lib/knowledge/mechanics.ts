@@ -34,6 +34,8 @@ export interface MechanicsSection {
   controls?: CrowdControlType[];
   sources?: string[];
   reviewedAt?: string;
+  tags?: string[];
+  evidence?: { collection: string; claimIds: string[]; patch: string };
   localized?: Partial<Record<"en_US" | "zh_CN", { title: string; text: string }>>;
 }
 
@@ -200,10 +202,11 @@ export function findMechanics(
     .map((entry) => entry.section);
 }
 
-export function mechanicsToText(sections: MechanicsSection[]): string | undefined {
+export function mechanicsToText(sections: MechanicsSection[], lang = "ko_KR"): string | undefined {
   if (!sections.length) return undefined;
   return sections.map((s) => {
-    const text = s.text.replace(/^(?:\*\*)?조언에 쓰는 규칙(?:\*\*)?(?::[ \t]*|[ \t]*$)/gm, "");
-    return `### ${s.title}\n${text}`;
+    const localized = lang === "en_US" || lang === "zh_CN" ? s.localized?.[lang] : undefined;
+    const text = (localized?.text ?? s.text).replace(/^(?:\*\*)?조언에 쓰는 규칙(?:\*\*)?(?::[ \t]*|[ \t]*$)/gm, "");
+    return `### ${localized?.title ?? s.title}\n${text}`;
   }).join("\n\n");
 }

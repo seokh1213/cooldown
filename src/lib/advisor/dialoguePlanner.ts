@@ -73,14 +73,17 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     const learned = requestIntentPlan(resolved, memory, ctx);
     if (learned?.type === "card") contract = { operation: resolved.requestIntent?.scope === "statsAll" ? "lookup" : "explain",
       targets: answerChampionIds(learned.answer), stat: statQueryFromAnswer(learned.answer) };
-    const preferred = learned ?? combo ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? knowledge ?? passive
+    // 명확한 챔피언 수치 조회를 일반 규칙 문서의 어휘 겹침보다 먼저 처리한다.
+    const numeric = dialogueStatPlan(resolved, memory, ctx);
+    const preferred = (!numeric && knowledge?.type === "code" && knowledge.knowledge ? knowledge : undefined) ?? learned ?? combo
+      ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? (numeric ? undefined : knowledge) ?? passive
       ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
+    let stat = preferred ? undefined : numeric;
     if (passive?.type === "card" && passive.answer.kind === "spell" && preferred === passive) {
       contract = { operation: "explain", targets: [passive.answer.championId] };
     }
     if (mechanic && preferred === mechanic.plan) contract = { operation: "explain", targets: [mechanic.memory.abilityId.split(".")[0]] };
     if (combo?.type === "card" && combo.answer.kind === "champion") contract = { operation: "advice", targets: [combo.answer.card.id] };
-    let stat = preferred ? undefined : dialogueStatPlan(resolved, memory, ctx);
     if (!preferred && !stat && deps.inferStatQuery) {
       const query = await deps.inferStatQuery(resolved, memory, ctx).catch(() => undefined);
       if (query) {
@@ -99,7 +102,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
       parts.push({ question, request: contract, plan: { type: "code", answer: { kind: "text", text: clarification } } });
       continue;
     }
-    let plan = preferred ?? stat ?? fact?.plan ?? ruleEllipsis(question, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
+    let plan = preferred ?? stat ?? fact?.plan ?? ruleEllipsis(resolved, memory, ctx) ?? await matchupPlan(resolved, memory, ctx, deps);
     plan ??= await planAnswer(resolved, ctx, deps);
     if (plan.type === "retry") plan = await planAnswer(plan.question, ctx, deps);
     const noEvidence = plan.type === "respond" || plan.type === "code" && typeof plan.answer === "string"

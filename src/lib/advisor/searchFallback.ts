@@ -31,12 +31,13 @@ export interface SearchDoc {
   title: string;
   text: string;
   questionGroups?: string[][];
+  tags?: string[];
 }
 
 function mechanicsDoc(section: MechanicsSection, lang: string): SearchDoc & { id: string } {
   const localized = lang === "en_US" || lang === "zh_CN" ? section.localized?.[lang] : undefined;
   return { id: `mech:${section.id}`, kind: "mechanics", title: localized?.title ?? section.title,
-    text: localized?.text ?? section.text, questionGroups: section.questionGroups };
+    text: localized?.text ?? section.text, questionGroups: section.questionGroups, tags: section.tags };
 }
 
 export interface SearchHit {
@@ -147,6 +148,10 @@ function titleMentions(title: string, term: string): boolean {
     return new RegExp(`(?<![a-z0-9])${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![a-z0-9])`).test(title.toLowerCase());
   }
   return title.includes(term);
+}
+
+export function mentionsSearchDocument(doc: Pick<SearchDoc, "title" | "text">, question: string): boolean {
+  return tokenize(question).some(term => titleMentions(doc.title, term) || titleMentions(doc.text, term));
 }
 
 /**

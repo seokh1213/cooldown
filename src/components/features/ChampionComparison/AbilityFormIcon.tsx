@@ -7,7 +7,7 @@ import { formIconUrl } from "@/data/assets/riotAssetUrls";
  * 아이콘은 우리 자리에서 온다. 예전에는 `raw.communitydragon.org` 를 직접 봤는데,
  * 서비스워커가 맡지 못해 볼 때마다 밖으로 나갔고 그쪽이 흔들리면 그림이 빈다.
  */
-export function AbilityFormIcon(props: { forms: AbilityForm[]; label: string; ddragonVersion: string; className?: string }) {
+export function AbilityFormIcon(props: { forms: Array<Pick<AbilityForm, "key" | "iconPath">>; label: string; ddragonVersion: string; className?: string }) {
   const [a, b] = props.forms;
   return (
     <span role="img" aria-label={props.label} className={"relative inline-block size-10 shrink-0 overflow-hidden rounded bg-muted " + (props.className ?? "")} data-form-icon data-skill-icon>

@@ -1,0 +1,738 @@
+{
+  "schemaVersion": 1,
+  "description": "Dialogue entry point, model-free. Baseline excludes new video notes with the same code. Source exclusion and wrong-slot questions are included.",
+  "cases": [
+    {
+      "id": "ko_KR-01",
+      "lang": "ko_KR",
+      "question": "가렌 Q로 벽 넘을 수 있어?",
+      "expected": [
+        "얇은 벽",
+        "대상"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-02",
+      "lang": "ko_KR",
+      "question": "가렌 벽넘기 팁 좀",
+      "expected": [
+        "얇은 벽",
+        "실패"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-03",
+      "lang": "ko_KR",
+      "question": "아리 매혹은 둔화 몇 퍼센트야?",
+      "expected": [
+        "65%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-04",
+      "lang": "ko_KR",
+      "question": "샤코 공포는 챔피언하고 몬스터 이속이 같아?",
+      "expected": [
+        "100",
+        "60",
+        "고정"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-05",
+      "lang": "ko_KR",
+      "question": "갈리오 W 도발은 이속 60% 감소야?",
+      "expected": [
+        "60으로 고정",
+        "아닙니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-06",
+      "lang": "ko_KR",
+      "question": "룰루 변이는 이속을 60으로 만드는 거야?",
+      "expected": [
+        "60만큼 감소",
+        "아닙니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-07",
+      "lang": "ko_KR",
+      "question": "방어력이 음수가 되면 피해를 얼마나 받아?",
+      "expected": [
+        "1.5배",
+        "−100"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-08",
+      "lang": "ko_KR",
+      "question": "방관만으로 방어력이 음수가 돼?",
+      "expected": [
+        "관통만으로",
+        "만들지는 않습니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-09",
+      "lang": "ko_KR",
+      "question": "트런들 궁 쓰고 람머스 W가 끝나면?",
+      "expected": [
+        "−54.4",
+        "가정"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-10",
+      "lang": "ko_KR",
+      "question": "둔화 저항 여러 개 중첩은 합산해?",
+      "expected": [
+        "곱",
+        "72.9%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-11",
+      "lang": "ko_KR",
+      "question": "징수의 총 999는 진짜 고정 피해 999야?",
+      "expected": [
+        "연출",
+        "아닙니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-12",
+      "lang": "ko_KR",
+      "question": "마이 E 고정 피해도 흡혈돼?",
+      "expected": [
+        "생명력 흡수 대상이 아닙니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-13",
+      "lang": "ko_KR",
+      "question": "카타리나 온힛이면 흡혈도 되는 거 아냐?",
+      "expected": [
+        "카타리나",
+        "적용되지 않습니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-14",
+      "lang": "ko_KR",
+      "question": "빅토르 마법 평타는 생흡 안 돼?",
+      "expected": [
+        "빅토르 Q",
+        "적용됩니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-15",
+      "lang": "ko_KR",
+      "question": "나서스 Q 스택도 치명타가 떠?",
+      "expected": [
+        "증폭되지 않습니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-16",
+      "lang": "ko_KR",
+      "question": "정복자에 점화 들어가?",
+      "expected": [
+        "2개",
+        "매 피해 틱"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-17",
+      "lang": "ko_KR",
+      "question": "이속이 높으면 상한 보정 어떻게 돼?",
+      "expected": [
+        "415",
+        "490",
+        "505"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-18",
+      "lang": "ko_KR",
+      "question": "기민함 자체 1%도 7% 강화돼?",
+      "expected": [
+        "다시 적용되지 않습니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-19",
+      "lang": "ko_KR",
+      "question": "둔화로 이속이 99% 줄면 그냥 4 되는 거야?",
+      "expected": [
+        "112",
+        "가정"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-20",
+      "lang": "ko_KR",
+      "question": "퍼센트 방관 30% 두 개는 합산해서 60이야?",
+      "expected": [
+        "51%",
+        "단순 합산하지"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-21",
+      "lang": "ko_KR",
+      "question": "방어력 효율은 체력 1000일 때 어떻게 봐?",
+      "expected": [
+        "유효 체력",
+        "2000"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-22",
+      "lang": "ko_KR",
+      "question": "이속 계산 순서 알려줘",
+      "expected": [
+        "마지막",
+        "보정"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "en_US-23",
+      "lang": "en_US",
+      "question": "Can Garen Q cross a thin wall?",
+      "expected": [
+        "thin",
+        "target"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "en_US-24",
+      "lang": "en_US",
+      "question": "Does Ahri charm also slow movement speed?",
+      "expected": [
+        "65%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "en_US-25",
+      "lang": "en_US",
+      "question": "Does penetration make armor negative?",
+      "expected": [
+        "cannot push resistance below zero"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "en_US-26",
+      "lang": "en_US",
+      "question": "How does negative armor affect damage?",
+      "expected": [
+        "1.5",
+        "−100"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "en_US-27",
+      "lang": "en_US",
+      "question": "Does Ignite stack Conqueror?",
+      "expected": [
+        "two",
+        "subsequent"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "en_US-28",
+      "lang": "en_US",
+      "question": "Does Nasus Q stack damage crit?",
+      "expected": [
+        "not amplified"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "en_US-29",
+      "lang": "en_US",
+      "question": "Does Katarina on-hit apply life steal?",
+      "expected": [
+        "without life steal"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "en_US-30",
+      "lang": "en_US",
+      "question": "Is Collector 999 real true damage?",
+      "expected": [
+        "visual",
+        "not a claim"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "zh_CN-31",
+      "lang": "zh_CN",
+      "question": "盖伦Q能翻墙吗？",
+      "expected": [
+        "很薄",
+        "目标"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "zh_CN-32",
+      "lang": "zh_CN",
+      "question": "引燃会叠征服者吗？",
+      "expected": [
+        "两层"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "zh_CN-33",
+      "lang": "zh_CN",
+      "question": "阿狸魅惑减速多少？",
+      "expected": [
+        "65%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "zh_CN-34",
+      "lang": "zh_CN",
+      "question": "穿透能把护甲降到负数吗？",
+      "expected": [
+        "不能",
+        "负数"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "zh_CN-35",
+      "lang": "zh_CN",
+      "question": "内瑟斯Q层数会暴击吗？",
+      "expected": [
+        "不被",
+        "暴击"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "zh_CN-36",
+      "lang": "zh_CN",
+      "question": "收集者999是真实伤害吗？",
+      "expected": [
+        "视觉",
+        "并不代表"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-37",
+      "lang": "ko_KR",
+      "question": "람머스 도발 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "별도 둔화가 없습니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-38",
+      "lang": "ko_KR",
+      "question": "쉔 도발 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "별도 둔화가 없습니다"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-39",
+      "lang": "ko_KR",
+      "question": "녹턴 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "90%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-40",
+      "lang": "ko_KR",
+      "question": "다리우스 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "비챔피언",
+        "0~99%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-41",
+      "lang": "ko_KR",
+      "question": "벡스 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "60~99%",
+        "거리"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-42",
+      "lang": "ko_KR",
+      "question": "브라이어 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "35%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-43",
+      "lang": "ko_KR",
+      "question": "아트록스 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "비챔피언",
+        "0~99%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-44",
+      "lang": "ko_KR",
+      "question": "우르곳 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "75%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-45",
+      "lang": "ko_KR",
+      "question": "워윅 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "90%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-46",
+      "lang": "ko_KR",
+      "question": "피들스틱 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "90%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-47",
+      "lang": "ko_KR",
+      "question": "헤카림 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "0~99%",
+        "둔화 저항을 무시"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-48",
+      "lang": "ko_KR",
+      "question": "흐웨이 공포 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "EQ",
+        "70~99%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-49",
+      "lang": "ko_KR",
+      "question": "라칸 매혹 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "75%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-50",
+      "lang": "ko_KR",
+      "question": "세라핀 매혹 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "40~99%",
+        "시간"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-51",
+      "lang": "ko_KR",
+      "question": "이블린 매혹 중 이속 둔화는 어떻게 돼?",
+      "expected": [
+        "45%"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-52",
+      "lang": "ko_KR",
+      "question": "아리 Q CC 종류 알려줘",
+      "expected": [
+        "CC 없음"
+      ],
+      "forbidden": [
+        "65%"
+      ]
+    },
+    {
+      "id": "ko_KR-53",
+      "lang": "ko_KR",
+      "question": "가렌 Q 쿨타임 얼마야?",
+      "expected": [
+        "8초"
+      ],
+      "forbidden": [
+        "얇은 벽"
+      ]
+    },
+    {
+      "id": "ko_KR-54",
+      "lang": "ko_KR",
+      "question": "파이크 체력 70짜리 템 두 개면?",
+      "expected": [
+        "추가 공격력 10"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-55",
+      "lang": "ko_KR",
+      "question": "아크샨 평타 한 방 치고 두 번째 안 쏘면?",
+      "expected": [
+        "이동 속도"
+      ],
+      "forbidden": []
+    },
+    {
+      "id": "ko_KR-56",
+      "lang": "ko_KR",
+      "question": "나서스 스택 쌓는 팁 좀",
+      "expected": [
+        "나서스"
+      ],
+      "forbidden": [
+        "치명타 배율로 증폭되지"
+      ]
+    },
+    {
+      "id": "ko_KR-57",
+      "lang": "ko_KR",
+      "question": "오공 1레벨 체력은?",
+      "expected": [
+        "610"
+      ],
+      "forbidden": [
+        "유효 체력"
+      ]
+    },
+    {
+      "id": "quiz-58",
+      "lang": "ko_KR",
+      "question": "다리우스 W는 치명타 터져 안 터져?",
+      "expected": [
+        "치명타가 터집니다",
+        "W의 추가 피해"
+      ]
+    },
+    {
+      "id": "quiz-59",
+      "lang": "ko_KR",
+      "question": "갈리오 평타는 피흡이 적용돼 안 돼?",
+      "expected": [
+        "갈리오 P",
+        "생명력 흡수"
+      ]
+    },
+    {
+      "id": "quiz-60",
+      "lang": "en_US",
+      "question": "Can Darius W crit?",
+      "expected": [
+        "can critically strike",
+        "W bonus damage"
+      ]
+    },
+    {
+      "id": "quiz-61",
+      "lang": "en_US",
+      "question": "Does Galio passive apply life steal?",
+      "expected": [
+        "Galio P",
+        "Life steal"
+      ]
+    },
+    {
+      "id": "quiz-62",
+      "lang": "zh_CN",
+      "question": "诺手W能暴击吗？",
+      "expected": [
+        "可以暴击",
+        "W额外伤害"
+      ]
+    },
+    {
+      "id": "quiz-63",
+      "lang": "zh_CN",
+      "question": "加里奥被动普攻能吸血吗？",
+      "expected": [
+        "加里奥P",
+        "生命偷取"
+      ]
+    }
+  ],
+  "sessions": [
+    {
+      "id": "cc-followup",
+      "lang": "ko_KR",
+      "turns": [
+        {
+          "question": "아리 매혹은 둔화 몇 퍼센트야?",
+          "expected": [
+            "65%"
+          ]
+        },
+        {
+          "question": "그럼 수은으로 풀려?",
+          "expected": [
+            "수은"
+          ]
+        },
+        {
+          "question": "그럼 강타는?",
+          "expected": [
+            "강타 사용을 막지"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-followup",
+      "lang": "ko_KR",
+      "turns": [
+        {
+          "question": "정복자에 점화 들어가?",
+          "expected": [
+            "2개"
+          ]
+        },
+        {
+          "question": "그럼 매 틱마다 줘?",
+          "expected": [
+            "매 피해 틱",
+            "아닙니다"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wall-followup",
+      "lang": "ko_KR",
+      "turns": [
+        {
+          "question": "가렌 Q로 벽 넘을 수 있어?",
+          "expected": [
+            "얇은 벽"
+          ]
+        },
+        {
+          "question": "그럼 두꺼운 벽도 돼?",
+          "expected": [
+            "벽 두께",
+            "실패"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "topic-switch",
+      "lang": "ko_KR",
+      "turns": [
+        {
+          "question": "아리 매혹은 둔화 몇 퍼센트야?",
+          "expected": [
+            "65%"
+          ]
+        },
+        {
+          "question": "오공 체력 얼마야?",
+          "expected": [
+            "610"
+          ],
+          "forbidden": [
+            "65%"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rule-followup-en",
+      "lang": "en_US",
+      "turns": [
+        {
+          "question": "Does Ignite proc Conqueror?",
+          "expected": [
+            "two Conqueror stacks"
+          ]
+        },
+        {
+          "question": "Does every damage tick add more stacks?",
+          "expected": [
+            "does not",
+            "another two stacks"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wall-followup-en",
+      "lang": "en_US",
+      "turns": [
+        {
+          "question": "Can Garen Q cross walls?",
+          "expected": [
+            "thin terrain"
+          ]
+        },
+        {
+          "question": "Then thick walls too?",
+          "expected": [
+            "wall thickness",
+            "target position"
+          ]
+        }
+      ]
+    }
+  ]
+}
