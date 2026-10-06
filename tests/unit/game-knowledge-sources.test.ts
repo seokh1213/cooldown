@@ -9,7 +9,9 @@ import { watchSources } from "../../scripts/llm/game-knowledge/watch";
 test("매시 상류 확인만 끝난 경우는 건너뛰고 실제 생성 뒤에 검사한다", async () => {
   const { shouldWatch } = await import(new URL("../../scripts/ci/game-knowledge-trigger.mjs", import.meta.url).href);
   assert.equal(shouldWatch("workflow_run", [{ name: "update-data", conclusion: "skipped" }]), false);
-  assert.equal(shouldWatch("workflow_run", [{ name: "update-data", conclusion: "success" }]), true);
+  assert.equal(shouldWatch("workflow_run", [{ name: "update-data", conclusion: "success", steps: [{ name: "Generate static data", conclusion: "success" }] }]), true);
+  assert.equal(shouldWatch("workflow_run", [{ name: "update-data", conclusion: "success", steps: [{ name: "Generate static data", conclusion: "skipped" }] }]), false);
+  assert.equal(shouldWatch("workflow_run", [{ name: "update-data", conclusion: "failure", steps: [{ name: "Generate static data", conclusion: "success" }] }]), false);
   assert.equal(shouldWatch("schedule"), true);
   assert.equal(shouldWatch("workflow_dispatch"), true);
 });

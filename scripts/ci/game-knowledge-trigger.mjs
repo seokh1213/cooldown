@@ -3,7 +3,8 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 export function shouldWatch(event, jobs = []) {
-  return event !== "workflow_run" || jobs.some(job => job.name === "update-data" && job.conclusion === "success");
+  return event !== "workflow_run" || jobs.some(job => job.name === "update-data" && job.conclusion === "success"
+    && job.steps?.some(step => step.name === "Generate static data" && step.conclusion === "success"));
 }
 
 async function main() {
