@@ -8,12 +8,12 @@ import path from "node:path";
  * 한 번 실패로 전체 생성이 죽지 않도록 지수 백오프로 물러섰다 다시 시도한다.
  * 4xx 는 재시도해도 같은 결과라 바로 던진다.
  */
-export async function fetchJson<T>(url: string, retries = 4): Promise<T> {
+export async function fetchJson<T>(url: string, retries = 4, fetcher: typeof fetch = fetch): Promise<T> {
   for (let attempt = 0; attempt < retries; attempt += 1) {
     try {
       // 받을 때마다 찍으면 CI 로그가 700줄 넘게 이 줄로 찬다. 다시 받을 때만 남긴다.
       if (attempt > 0) console.log(`Fetching: ${url} (retry ${attempt})`);
-      const response = await fetch(url);
+      const response = await fetcher(url);
       if (!response.ok) {
         const error = new Error(`HTTP ${response.status}: ${url}`);
         // 404 같은 클라이언트 오류는 재시도 대상이 아니다

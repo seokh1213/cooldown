@@ -1,4 +1,5 @@
 import type { RuneStatShard, RuneStatShardData } from "../normalization/rune";
+import { fetchJson } from "../io/json";
 
 interface RawSlot {
   type?: string;
@@ -62,18 +63,14 @@ export async function fetchCDragonRuneStatShards(
   cdragonVersion: string,
   fetcher: Fetcher = fetch,
 ): Promise<RuneStatShardData> {
-  const [stylesResponse, perksResponse] = await Promise.all([
-    fetcher(resourceUrl(cdragonVersion, locale, "perkstyles.json")),
-    fetcher(resourceUrl(cdragonVersion, locale, "perks.json")),
-  ]);
-  if (!stylesResponse.ok || !perksResponse.ok) {
-    throw new Error(
-      `[CD][Runes] Exact ${cdragonVersion}/${cdragonLocale(locale)} unavailable: ` +
-        `${stylesResponse.status}/${perksResponse.status}`,
-    );
-  }
-  const styles = decodeStyles(await stylesResponse.json());
-  const perksById = decodePerks(await perksResponse.json());
+  const [styleData, perkData] = await Promise.all([
+    fetchJson<unknown>(resourceUrl(cdragonVersion, locale, "perkstyles.json"), 4, fetcher),
+    fetchJson<unknown>(resourceUrl(cdragonVersion, locale, "perks.json"), 4, fetcher),
+  ]).catch((error: unknown) => {
+    throw new Error(`[CD][Runes] Exact ${cdragonVersion}/${cdragonLocale(locale)} unavailable: ${String(error)}`);
+  });
+  const styles = decodeStyles(styleData);
+  const perksById = decodePerks(perkData);
   const groups = styles
     .filter((style) =>
       style.type === "kStatMod" ||

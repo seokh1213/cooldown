@@ -170,6 +170,35 @@ test("CDragon 아이템 병합", () => {
 
 });
 
+test("CDragon 룬 파편의 일시적 522는 같은 패치 원천으로 재시도한다", async () => {
+  const requests = new Map<string, number>();
+  const shards = await fetchCDragonRuneStatShards("ko_KR", "16.19", async input => {
+    const url = String(input), count = (requests.get(url) ?? 0) + 1;
+    requests.set(url, count);
+    if (count === 1) return new Response("", { status: 522 });
+    const body = url.endsWith("perkstyles.json")
+      ? [{ id: 5000, slots: [{ type: "kStatMod", perks: [5001] }] }]
+      : [{ id: 5001, name: "Health" }];
+    return new Response(JSON.stringify(body));
+  });
+  assert.equal(shards.groups[0].rows[0].perks[0].id, 5001);
+  assert.equal(requests.size, 2);
+  for (const [url, count] of requests) {
+    assert.ok(url.includes("/16.19/"));
+    assert.equal(count, 2);
+  }
+});
+
+test("없는 CDragon 룬 패치를 다른 버전으로 대체하지 않는다", async () => {
+  const requests: string[] = [];
+  await assert.rejects(fetchCDragonRuneStatShards("en_US", "16.19", async input => {
+    requests.push(String(input));
+    return new Response("", { status: 404 });
+  }), /Exact 16\.19\/default unavailable:.*HTTP 404/);
+  assert.equal(requests.length, 2);
+  assert.ok(requests.every(url => url.includes("/16.19/") && !url.includes("latest")));
+});
+
 test("챔피언 정규화", () => {
   const champion = normalizeChampion({
     locale: "en_US",
