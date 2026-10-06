@@ -3,7 +3,7 @@ import { resolveQuestion } from "./resolvedQuestion";
 import { planAnswer } from "./plan";
 import type { AnswerPlan, PlanContext, PlanDeps } from "./planTypes";
 import { resolveDialogueFact } from "./dialogueFacts";
-import { ruleEllipsis } from "./dialogueRules";
+import { ruleEllipsis, penetrationCalculation } from "./dialogueRules";
 import { matchupPlan } from "./dialogueMatchup";
 import { dialogueStatPlan, statPlanForQuery } from "./dialogueStats";
 import { describeRequest, planMismatch, unsupportedCondition, type RequestContract, type DialogueTrace } from "./requestContract";
@@ -19,6 +19,7 @@ import { requestIntentPlan } from "./requestIntentPlan";
 import { answerChampionIds } from "./answer";
 import { statQueryFromAnswer } from "./statQuery";
 import { mechanicsContinuation } from "./mechanicsContinuation";
+import { abilityBoundaryPlan } from "./abilityBoundaryPlan";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
@@ -76,7 +77,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
       targets: answerChampionIds(learned.answer), stat: statQueryFromAnswer(learned.answer) };
     // 명확한 챔피언 수치 조회를 일반 규칙 문서의 어휘 겹침보다 먼저 처리한다.
     const numeric = dialogueStatPlan(resolved, memory, ctx);
-    const preferred = (!numeric && knowledge?.type === "code" && knowledge.knowledge ? knowledge : undefined) ?? learned ?? combo
+    const preferred = abilityBoundaryPlan(resolved, ctx) ?? penetrationCalculation(question, ctx) ?? (!numeric && knowledge?.type === "code" && knowledge.knowledge ? knowledge : undefined) ?? learned ?? combo
       ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? (numeric ? undefined : knowledge) ?? passive
       ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
     let stat = preferred ? undefined : numeric;

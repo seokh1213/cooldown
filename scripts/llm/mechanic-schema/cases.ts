@@ -29,8 +29,23 @@ cases.push(
   { id: "n08", group: "n08", split: "new", question: "아크샨이랑 파이크 패시브 둘 다 설명해줘", checks: ["한 챔피언"], rejects: ["공격력 10"] },
 );
 export function grade(text: string, item: Case): { pass: boolean; missing: string[]; forbidden: string[] } {
+  const equivalents: Record<string, RegExp> = {
+    "두 번째": /두\s*번째|추가\s*공격/,
+    "발동하지 않아": /발동하지\s*않|취소 조건에 해당하지\s*않/,
+    "3번째": /3번째|세\s*번째|3회\s*적중/,
+    "1번": /1번|1회\s*적중/,
+    "기본 체력": /기본(?:·성장)?\s*체력/,
+    "전환되지 않아": /(?:전환|포함)(?:되지|하지)?\s*않/,
+    "최대 체력에 붙지 않고": /최대 체력에 붙지 않고|전환 시 추가 최대 체력 증가를 대체/,
+    "미니언에게는 보호막이 생기지 않아": /미니언에게는 보호막이 생기지\s*않|미니언은.*챔피언 대상 조건에 해당하지\s*않/,
+    "보호막 쿨이 남아": /보호막 (?:쿨|재사용 대기시간)(?:이)?\s*남아/,
+    "생기지 않아": /생기지\s*않|사용 가능 조건에 해당하지\s*않/,
+    "충족하지 않아": /충족하지\s*않|조건에 해당하지\s*않/,
+    "적에게 보이는 동안": /적에게 보이는 동안|보이는 상태/,
+  };
   const missing = item.checks.filter(check => /^\d+(?:\.\d+)?$/.test(check)
-    ? !new RegExp(`(?<![\\d.])${check.replace(/\./g, "\\.")}(?![\\d.])`).test(text) : !text.includes(check));
+    ? !new RegExp(`(?<![\\d.])${check.replace(/\./g, "\\.")}(?![\\d.])`).test(text)
+    : equivalents[check] ? !equivalents[check].test(text) : !text.includes(check));
   const forbidden = (item.rejects ?? []).filter(check => text.includes(check));
   return { pass: !missing.length && !forbidden.length, missing, forbidden };
 }

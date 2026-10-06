@@ -101,6 +101,14 @@ export function splitAudit(stories: QualityStory[]): string[] {
   const test = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/llm/offline-classifier/request-test.json"), "utf8")) as Record<string, string[]>;
   const used = new Set(Object.values(training).flat());
   const errors = Object.values(test).flat().filter(text => used.has(text)).map(text => `Request train/test overlap: ${text}`);
+  const maskedKey = (text: string) => text.toLowerCase().replace(/\s+/g, "");
+  const trained = new Set([...used].map(maskedKey));
+  for (const story of stories.filter(story => story.suites.includes("request-scope"))) {
+    const resolved = resolveQuestion(story.turns[0].q, qualityContext(story.lang, "none").data!);
+    const masked = [...resolved.mentions].sort((a, b) => b.index - a.index).reduce((text, mention) =>
+      text.slice(0, mention.index) + "◇" + text.slice(mention.index + mention.length), story.turns[0].q);
+    if (trained.has(maskedKey(masked))) errors.push(`Request heldout/training overlap: ${story.sources[0].row}`);
+  }
   const sft = JSON.parse(fs.readFileSync(path.join(ROOT, WORKFLOW, "datasets/qa/manifests/splits.json"), "utf8")) as Record<string, { docIds: string[]; sha256: string }>;
   for (const [name, partition] of [["natural-train.jsonl", "train"], ["natural-dev.jsonl", "dev"]]) {
     if (fileHash(`${WORKFLOW}/datasets/qa/${partition}/natural.jsonl`) !== sft[name].sha256) errors.push(`SFT ${partition} changed; update provenance and inspect document splits`);

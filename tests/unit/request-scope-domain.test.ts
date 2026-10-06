@@ -30,3 +30,12 @@ test("높은 확신의 로지스틱 판정은 기존 정책을 유지한다", as
   deps.classifyRequest = async () => ({ scope: "identity", confidence: 0.95 });
   assert.equal((await classifyRequestInput(question("도우미를 소개해줘"), deps)).requestIntent?.scope, "identity");
 });
+
+test("높은 확신이어도 게임 질문을 자기소개로 바꾸지 않는다", async () => {
+  const deps = classify("identity");
+  deps.classifyRequest = async () => ({ scope: "identity", confidence: 0.95 });
+  for (const text of ["무한의 대검 능력치 뭐야?", "둘 다 라인전에서 뭘 조심해?"]) {
+    const resolved = question(text);
+    assert.equal(await classifyRequestInput(resolved, deps), resolved);
+  }
+});

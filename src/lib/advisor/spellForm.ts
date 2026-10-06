@@ -6,7 +6,7 @@ import { aliasAt } from "@/lib/knowledge/searchAliases";
 const LABELS = [
   ["인간", "Human", "人类"], ["거미", "Spider", "蜘蛛"], ["쿠거", "Cougar", "美洲狮"],
   ["미니", "Mini", "小型"], ["메가", "Mega", "巨型"],
-  ["해머", "Hammer", "战锤"], ["캐논", "Cannon", "加农炮"],
+  ["해머", "망치", "Hammer", "战锤"], ["캐논", "Cannon", "加农炮"],
   ["탑승", "Mounted", "骑乘"],
   ["미탑승", "비탑승", "보행", "중갑", "Dismounted", "Armored", "非骑乘", "步行", "披甲", "not mounted"],
   ["돌출", "Unburrowed", "未潜地", "位于地表", "not burrowed"],
@@ -47,6 +47,12 @@ function clarification(spell: SpellFact, lang: Language): string {
   return lang === "en_US" ? `Which form do you mean${labels ? `: ${labels}` : ""}?`
     : lang === "zh_CN" ? `请明确技能形态${labels ? `：${labels}` : ""}。`
       : `어느 형태의 스킬인지 알려주세요${labels ? `: ${labels}` : ""}.`;
+}
+
+export function requestedSpellForms(card: ChampionCard, spell: SpellFact, question: string): SpellFormFact[] {
+  if (!spell.forms?.length || /말고|아니|\bnot\b|不是/i.test(question)) return [];
+  const keys = new Set(mentions(question, spell.forms, card.id).map(item => item.key));
+  return spell.forms.filter(form => keys.has(form.key) && form.text.trim());
 }
 
 export function selectSpellForm(card: ChampionCard, spell: SpellFact, question: string, lang: Language):

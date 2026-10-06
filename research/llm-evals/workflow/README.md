@@ -11,6 +11,7 @@ workflow/
   inventory.json                  현존 파일·삭제된 파일의 커밋·SHA-256·역할
   datasets/
     regression/cases.jsonl        질문·전체 대화·기대값·원본 출처를 합친 질문 은행
+    regression/reviewed-contracts.jsonl  수동 턴의 검수한 기대값·이유·패치, 원래 ID 유지
     review/archive.jsonl          기대값이 없는 과거 질문, 수동 의미 검토용
     qa/
       train/natural.jsonl         자연 질문 SFT 학습 415개
@@ -67,6 +68,8 @@ pnpm llm:test --profile model \
 ```
 
 두 실행 사이에 질문·데이터·채점기를 바꾸면 비교를 거부한다. 앱 코드 변경 자체의 비교는 가능하지만 데이터와 채점기는 고정해야 한다. 원본 그래프에는 QA gate가 없으므로 `--base-weights`가 필요하다. 두 실행 모두 현행 앱 코드를 쓰며, 과거 master 앱 전체와의 비교로 해석하면 안 된다.
+
+분류기와 앱 경로를 함께 바꿀 때는 새 채점기·은행을 동결한 master 앱에도 적용해 대조군을 먼저 재측정한다. 후보 실행에 `--pipeline-baseline MASTER_RESULTS_JSON`을 사용하면 게임 데이터·QA 웨이트를 고정하고 `public/models/offline/request-v1.bin`과 `.json`의 교체만 허용한다. 출처 목록이 실측 해시와 다르거나 다른 데이터가 변하면 거부하며 허용한 두 파일의 해시 차이를 비교 결과에 명시한다. `--baseline`의 엄격한 동일 데이터 조건은 바꾸지 않는다. 상세 수정과 미해결 실패는 [요청 분류·답변 회귀 수정 기록](reports/repair-2026-10-06/README.md)을 따른다.
 
 교체 그래프는 파일 내용의 SHA-256마다 다른 주소로 제공한다. 같은 Chrome 캐시에서 원본과 후보를 차례로 실행해도 이전 그래프를 재사용하지 않는다. 실행 도중 그래프 파일이 바뀌면 실패한다.
 

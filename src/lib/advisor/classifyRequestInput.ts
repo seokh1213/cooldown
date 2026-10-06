@@ -5,7 +5,7 @@ import { asksAboutHelper, isSmallTalk } from "./intent";
 export async function classifyRequestInput(resolved: ResolvedQuestion, deps: PlanDeps): Promise<ResolvedQuestion> {
   if (!deps.classifyRequest || resolved.requestIntent) return resolved;
   const requestIntent = await deps.classifyRequest(resolved).catch(() => undefined);
-  if (requestIntent?.confidence === 0 && (requestIntent.scope === "identity" && !asksAboutHelper(resolved.text)
+  if (requestIntent && (requestIntent.scope === "identity" && !asksAboutHelper(resolved.text)
     || requestIntent.scope === "chat" && !isSmallTalk(resolved.text))) return resolved;
   return requestIntent ? { ...resolved, requestIntent } : resolved;
 }

@@ -8,6 +8,7 @@ import { cases as schema } from "../mechanic-schema/cases";
 import { dialogueSources, requestSources } from "./sources";
 import type { Language } from "../../../src/i18n";
 import type { QualityStory } from "./types";
+import { applyReviewedContracts, type ReviewedContract } from "./reviewedContracts";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
 export const EVALS = "research/llm-evals";
@@ -167,4 +168,7 @@ function videoBank(): QualityStory[] {
         sources: [{ file, row: entry.id }], turns: entry.turns.map(turn) }))];
   });
 }
-export function buildBank(): QualityStory[] { return mergeStories([...dialogueBank(), ...extraDialogue(), ...requestBank(), ...singleBank(), ...legacyBank(), ...retiredBank(), ...videoBank()]); }
+export function buildBank(): QualityStory[] {
+  const stories = mergeStories([...dialogueBank(), ...extraDialogue(), ...requestBank(), ...singleBank(), ...legacyBank(), ...retiredBank(), ...videoBank()]);
+  return applyReviewedContracts(stories, readRows(`${WORKFLOW}/datasets/regression/reviewed-contracts.jsonl`) as unknown as ReviewedContract[]);
+}

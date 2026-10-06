@@ -3,6 +3,8 @@ import type { Rule, Ability, Topic } from "./types";
 import { normalizeMechanicQuestion, questionState } from "./question";
 export type { Topic } from "./types";
 export const TOPICS = [
+  ["resource", /(?:마나|기력|분노|자원).*(?:돌려|반환|회복|환급)|(?:스킬|구체).*(?:폭발|터뜨)/i, ["resource_change", "damage"]],
+  ["mark", /(?:구체|표식).*(?:붙|부착|대상)|어떤\s*대상/i, ["mark"]],
   ["control_resistance", /CC.*(?:막|무시|저항)|(?:기절|속박|이동\s*불가).*(?:막|무시|저항)/i, ["other"]],
   ["conversion", /(?:체력|주문력).*(?:템|전환|변환|치환|공격력|바뀌|늘|얼마)|(?:기본|성장|추가)\s*체력.*(?:바뀌|늘|공격력)|체력.*(?:추가되|전환되)|(?:체력|주문력)\s*\d.*(?:이면|짜리|템)/i, ["stat_conversion"]],
   ["shield", /보호막|쉴드|실드/i, ["shield"]],
@@ -44,9 +46,10 @@ export function selectRules(ability: Ability, question: string, topic?: Topic, c
     if (damage.length) return damage.map(item => item.rule);
   }
   const hits = questionState(question).hitCount;
-  if (topic === "movement" && hits !== undefined && hits >= 3) {
+  if ((!topic || topic === "movement") && hits !== undefined && hits >= 3) {
     const hitRules = scored.filter(item => item.rule.conditions.some(condition => condition.field === "hit_count"));
-    if (hitRules.length) return hitRules.slice(0, 3).map(item => item.rule);
+    const shieldAndDamage = ["shield", "damage"].every(kind => hitRules.some(item => item.rule.effects.some(effect => effect.kind === kind)));
+    if (hitRules.length && (topic === "movement" || shieldAndDamage)) return hitRules.slice(0, 3).map(item => item.rule);
   }
   const enemy = /적\s*챔피언.*(?:밟|줍|먹)/.test(question) ? scored.filter(item => item.rule.trigger.subject === "enemy") : [];
   const filtered = enemy.length ? enemy : scored.filter(item => wanted && scored.some(row => row.kind) ? item.kind : item.score >= 2);

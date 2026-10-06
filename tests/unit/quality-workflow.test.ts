@@ -13,7 +13,7 @@ import { numericChecks, numericRequest } from "../../scripts/llm/quality/numeric
 import { openOllama } from "../../scripts/llm/quality/ollama";
 import { scopeMatches, observedAnswer } from "../../scripts/llm/quality/checks";
 import { graphRoute } from "../../scripts/llm/quality/model";
-import { inventoryChanges } from "../../scripts/llm/quality/audit";
+import { inventoryChanges, refreshedRecords } from "../../scripts/llm/quality/audit";
 import { retiredFiles } from "../../scripts/llm/quality/archive";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
 
@@ -91,6 +91,13 @@ test("a clean checkout may omit ignored research artifacts but must keep require
   assert.deepEqual(inventoryChanges([{ file: "fixture.json" }], locked), { added: [], removed: [] });
   assert.equal(inventoryChanges([], locked).removed[0].file, "fixture.json");
   assert.equal(inventoryChanges([{ file: "new-case.json" }], locked).added[0].file, "new-case.json");
+});
+
+test("inventory refresh retains historical optional provenance without retaining deleted required files", () => {
+  const previous = [{ file: "required.json", localOnly: false, hash: "old" }, { file: "removed.json", localOnly: false, hash: "deleted" },
+    { file: "local-results.json", localOnly: true, hash: "historical" }];
+  const current = [{ file: "required.json", localOnly: false, hash: "new" }, { file: "new-test.ts", localOnly: false, hash: "added" }];
+  assert.deepEqual(refreshedRecords(current, previous), [current[0], previous[2], current[1]]);
 });
 
 test("retired fixtures come from the tested branch, not an unmerged experiment", () => {

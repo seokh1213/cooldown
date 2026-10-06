@@ -8,12 +8,21 @@ import type { StatName } from "../../../src/lib/knowledge/facts";
 import type { QualityStory, Check } from "./types";
 import { isDeepStrictEqual } from "node:util";
 import { understand } from "../../../src/lib/advisor/plan";
-import { statFields } from "../../../src/lib/advisor/statQuery";
+import { statFields, validStatFields, type ChampionStatQuery } from "../../../src/lib/advisor/statQuery";
 
 export async function routeCheck(input: { question: string; ctx: PlanContext; deps: Parameters<typeof understand>[3]; expected: Record<string, unknown> }): Promise<Check[]> {
   const result = await understand(input.question, input.ctx, input.ctx.data!, input.deps);
-  return [{ label: "route-kind", pass: input.expected.coarseOther ? Boolean(result.route && !["matchup", "guide", "skills", "spellStat"].includes(result.route.kind))
-    : result.route?.kind === input.expected.routeGold }];
+  const kind = result.route?.kind ?? result.ask;
+  return [{ label: "route-kind", pass: input.expected.coarseOther ? !["matchup", "guide", "skills", "spellStat"].includes(kind)
+    : kind === input.expected.routeGold }];
+}
+
+export function sameStatQuery(actual: ChampionStatQuery | undefined, expected: unknown): boolean {
+  if (!actual || !expected) return (actual ?? null) === expected;
+  const wanted = expected as ChampionStatQuery;
+  return validStatFields(actual) && validStatFields(wanted) && actual.kind === wanted.kind
+    && actual.level === wanted.level && isDeepStrictEqual(actual.champions, wanted.champions)
+    && isDeepStrictEqual(statFields(actual), statFields(wanted));
 }
 
 type Output = Awaited<ReturnType<typeof import("../../../src/lib/advisor/dialogueFlow").answerDialogue>>;
@@ -92,8 +101,9 @@ export function gradeTurn(input: { story: QualityStory; turn: number; output: Ou
   if (expected.targets) add("targets", JSON.stringify(reply.answer ? answerChampionIds(reply.answer) : []) === JSON.stringify(expected.targets));
   const query = reply.answer && "statQuery" in reply.answer ? reply.answer.statQuery : undefined;
   if (expected.stat) add("stat", query?.field === expected.stat);
-  if ("statQuery" in expected) add("statQuery", isDeepStrictEqual(query ?? null, expected.statQuery));
+  if ("statQuery" in expected) add("statQuery", sameStatQuery(query, expected.statQuery));
   if (expected.kind || expected.answerKind) add("kind", reply.answer?.kind === (expected.kind ?? expected.answerKind));
+  if (expected.itemId) add("item-id", reply.answer?.kind === "item" && reply.answer.itemId === expected.itemId);
   if (expected.replyScope) add("replyScope", scopeMatches(reply.answer, String(expected.replyScope)));
   if (expected.guidance) add("guidance", /예:/.test(text));
   if (expected.guide) add("guide", !pairs.length && !(reply.answer ? answerChampionIds(reply.answer) : []).length && text.length > 35

@@ -5,24 +5,31 @@ import type { ResolvedQuestion } from "./resolvedQuestion";
 import { mentionsSearchDocument } from "./searchFallback";
 import { matchesMechanicsQuestion, mechanicsToText } from "@/lib/knowledge/mechanics";
 
-const rulePlan = (title: string, text: string): AnswerPlan => ({ type: "code", answer: `### ${title}\n${text}` });
+const rulePlan = (title: string, text: string): Extract<AnswerPlan, { type: "code" }> => ({ type: "code", answer: `### ${title}\n${text}` });
 
 export function isPenetrationRule(rule: DialogueMemory["rule"]): boolean {
   return rule?.id === "meta:lethality" || /관통|치명력/.test(rule?.title ?? "");
 }
 
+export function penetrationCalculation(question: string, ctx: PlanContext): AnswerPlan | undefined {
+  if (ctx.lang !== "ko_KR" || !/관통/.test(question) || /감소|마법|저항력/.test(question)) return undefined;
+  const source = ctx.data?.mechanics.find(m => m.id === "관통과-감소,-그리고-적용-순서");
+  if (!source || !/3\)\s*비율 관통\s*→\s*4\)\s*고정 관통/.test(source.text)) return undefined;
+  const armor = /방어력(?:이|은|\s)*(-?\d+(?:\.\d+)?)/.exec(question)?.[1];
+  const percentages = [...question.matchAll(/(-?\d+(?:\.\d+)?)\s*%\s*관통/g)];
+  const flats = [...question.matchAll(/고정\s*관통\s*(-?\d+(?:\.\d+)?)/g)];
+  if (armor === undefined || percentages.length !== 1 || flats.length !== 1) return undefined;
+  const percent = percentages[0][1], flat = flats[0][1];
+  if (![armor, percent, flat].every(value => Number.isFinite(Number(value)) && Number(value) >= 0) || Number(percent) > 100) return undefined;
+  const remaining = Math.max(0, Number(armor) * (1 - Number(percent) / 100) - Number(flat));
+  return { ...rulePlan("관통 계산", `비율 관통을 먼저, 고정 관통을 나중에 적용합니다. 방어력 ${armor} × (1 − ${percent}/100) − ${flat} = ${Number(remaining.toFixed(2))}입니다. 대상의 실제 방어력을 바꾸는 감소와 달리, 관통은 내 물리 피해 계산에만 적용됩니다.`),
+    knowledge: { id: `mech:${source.id}`, title: source.title } };
+}
+
 export function resolveDialogueRule(question: string, ctx: PlanContext): AnswerPlan | undefined {
   if (ctx.lang !== "ko_KR" || !ctx.data) return undefined;
-  const penetration = ctx.data.mechanics.find(m => m.id === "관통과-감소,-그리고-적용-순서");
-  if (/관통/.test(question) && penetration?.text.includes("비율 관통  →  4) 고정 관통")) {
-    const armor = /방어력(?:이|은|\s)*(\d+(?:\.\d+)?)/.exec(question)?.[1];
-    const percent = /(\d+(?:\.\d+)?)\s*%\s*관통/.exec(question)?.[1];
-    const flat = /고정\s*관통\s*(\d+(?:\.\d+)?)/.exec(question)?.[1];
-    if (armor && percent && flat && Number(percent) <= 100) {
-      const remaining = Math.max(0, Number(armor) * (1 - Number(percent) / 100) - Number(flat));
-      return rulePlan("관통 계산", `비율 관통을 먼저, 고정 관통을 나중에 적용합니다. 방어력 ${armor} × (1 − ${percent}/100) − ${flat} = ${Number(remaining.toFixed(2))}입니다. 대상의 실제 방어력을 바꾸는 감소와 달리, 관통은 내 물리 피해 계산에만 적용됩니다.`);
-    }
-  }
+  const calculation = penetrationCalculation(question, ctx);
+  if (calculation) return calculation;
   if (/치유\s*감소|치감|고통스러운\s*상처/.test(question) && /중첩|보호막|실드/.test(question)) {
     const topic = /중첩/.test(question) ? "치유 감소의 중첩 여부" : "치유 감소가 보호막에 적용되는지";
     return rulePlan("치유 감소", `${topic}는 아직 확인할 수 없어요.`);

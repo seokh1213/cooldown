@@ -1,0 +1,4870 @@
+[
+  {
+    "key": "none:9f043997e21282e01082:0",
+    "question": "방어력이 100인 상대에게 30% 관통이랑 고정 관통 10이 있으면 어떤 순서로 계산해?",
+    "sources": [
+      {
+        "file": "research/llm-evals/conversational-advisor/questions.json",
+        "row": "s12"
+      }
+    ],
+    "before": "### 퍼센트 관통 중첩\n일반적인 퍼센트 관통은 단순 합산하지 않고 남은 저항에 곱해서 적용합니다. 30% 관통 두 개의 계산 예시는 1 − 0.7 × 0.7 = 51%입니다. 고정 관통은 퍼센트 관통 뒤에 적용합니다. 특정 스킬의 별도 방어력 무시 효과와는 구분해야 합니다.",
+    "after": "### 관통 계산\n비율 관통을 먼저, 고정 관통을 나중에 적용합니다. 방어력 100 × (1 − 30/100) − 10 = 60입니다. 대상의 실제 방어력을 바꾸는 감소와 달리, 관통은 내 물리 피해 계산에만 적용됩니다.",
+    "checks": [
+      {
+        "label": "target",
+        "pass": true
+      },
+      {
+        "label": "관통 순서",
+        "pass": true
+      },
+      {
+        "label": "수치 예시 결과 60",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:7bd1cd858c3e9d1bb638:4",
+    "question": "아니 다시 내가 말파이트고 상대가 피오라야. 라인전만 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/conversational-advisor/questions.json",
+        "row": "d02"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "**라인전**\n저레벨 Q를 쿨마다 쓰면 마나가 모자라므로 사용을 아끼고, 급소가 뜬 반대쪽에 서서 피오라가 파고드는 순간에만 짧게 반격합니다.",
+    "checks": [
+      {
+        "label": "target",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:66d75b35d439d146729d:0",
+    "question": "피오라로 다리우스 상대하는데 라인전 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/conversational-advisor/questions.json",
+        "row": "d08"
+      }
+    ],
+    "before": "**조심할 것**\n다리우스 E 포획에 끌리면 후속 공격을 맞기 쉬우므로 사거리 밖에서 견제하고, 끌어오는 순간에는 피오라 W 응수로 받아냅니다. 다리우스 Q 학살이 보이면 도끼날 밖으로 빠지거나 바짝 붙어 회복을 줄입니다. 다리우스 P 과다출혈 중첩이 쌓이면 거리를 벌리고, 중첩된 채 체력이 낮을 때는 다리우스 R 녹서스의 단두대 사거리 밖으로 완전히 빠집니다.\n\n**아이템**\n다리우스의 물리 피해에 대비해 방어력을 먼저 올리되, 다리우스 E 포획의 관통과 R 녹서스의 단두대 고정 피해를 고려해 체력도 챙깁니다. 다리우스 Q 학살의 회복이 딜 교환을 무효로 만든다면 처형인의 대검을 코어 아이템 사이에 끼워 넣습니다. 방어력이 높은 다리우스에게는 관통을 섞고 피오라 P 치명적인 검무와 R 대결투의 고정 피해를 활용합니다.\n\n**싸우는 법**\n다리우스 E 포획이 빗나가거나 빠진 뒤 급소 하나를 치고, 얻은 이동 속도로 물러나는 짧은 교환을 반복합니다. 다리우스 Q 학살을 미니언 정리에 쓴 직후도 견제할 기회입니다. 다리우스 P 과다출혈이 쌓이는 긴 싸움은 끊고, 중첩이 사라진 뒤 다시 각을 잡습니다.",
+    "after": "**라인전**\n초반에는 라인전을 억지로 이기려 하지 말고, 미니언을 조금 놓치더라도 경험치를 챙길 거리에서 포탑 쪽으로 라인을 당겨 받습니다. 다리우스 E 포획 사거리 밖을 지키며, E가 빠졌을 때만 짧게 교환합니다. 아이템이 갖춰지는 중반부터 사이드에서 1대1을 강요합니다.",
+    "checks": [
+      {
+        "label": "target",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:1eb1080ff78220c6b0aa:0",
+    "question": "아펠리오스 E는 쓰면 무슨 스킬이 나가?",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/questions.json",
+        "row": "aphelios-interface"
+      }
+    ],
+    "before": "쿨 0 · 둔화 · 속박 · 회복",
+    "after": "아펠리오스 E는 무기 정보를 표시하는 인터페이스입니다. 직접 시전하는 스킬이 아니므로 공격 효과나 쿨타임으로 설명할 수 없습니다.",
+    "checks": [
+      {
+        "label": "must:(?:표시|정보|인터페이스)",
+        "pass": true
+      },
+      {
+        "label": "must:시전.*스킬.*아니",
+        "pass": true
+      },
+      {
+        "label": "forbid:쿨 0",
+        "pass": true
+      },
+      {
+        "label": "forbid:둔화",
+        "pass": true
+      },
+      {
+        "label": "forbid:속박",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:aa27d136a8a190fd10ae:0",
+    "question": "제이스 망치 Q랑 캐논 Q 쿨타임 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/questions.json",
+        "row": "jayce-form"
+      }
+    ],
+    "before": "제이스 Q 전격 폭발 재사용 대기시간은 8초입니다. 이 스킬의 효과는 이동 속도 증가, 사거리 증가, 광역입니다.",
+    "after": "해머: 제이스 Q 하늘로! 재사용 대기시간은 16/14/12/10/8/6초입니다. 이 스킬의 효과는 둔화, 광역입니다.\n\n캐논: 제이스 Q 전격 폭발 재사용 대기시간은 8초입니다. 이 스킬의 효과는 이동 속도 증가, 사거리 증가, 광역입니다.",
+    "checks": [
+      {
+        "label": "must:(?:해머|망치).*16/14/12/10/8/6",
+        "pass": true
+      },
+      {
+        "label": "must:캐논.*8초",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:49ba1d6e0f82d8607d9e:0",
+    "question": "이즈리얼 W 구체는 어떤 대상에 붙어?",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/full-approval-questions.json",
+        "row": "new-ezreal-mark"
+      }
+    ],
+    "before": "이즈리얼 W 정수의 흐름 구체:\n표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다.\n계수 (추가 공격력): 100%.\n계수 (주문력): 90%.",
+    "after": "스킬 적중 시 · 첫 번째 · 대상 종류: 챔피언, 구조물 또는 에픽 정글 몬스터:\n구체가 처음 적중한 챔피언, 구조물 또는 에픽 정글 몬스터에게 일정 시간 붙습니다.\n지속 시간: 4초.",
+    "checks": [
+      {
+        "label": "require:챔피언",
+        "pass": true
+      },
+      {
+        "label": "require:구조물",
+        "pass": true
+      },
+      {
+        "label": "require:에픽",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:49ba1d6e0f82d8607d9e:1",
+    "question": "그럼 스킬로 구체를 폭발시키면?",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/full-approval-questions.json",
+        "row": "new-ezreal-mark"
+      }
+    ],
+    "before": "**플레이할 때**\nQ 신비한 화살이 이즈리얼의 엔진입니다. Q는 적중 시 효과가 적용되는 스킬이라, 평타에 붙는 효과가 Q에도 그대로 들어갑니다. W 정수의 흐름은 먼저 붙여 놓고 나중에 터뜨리는 스킬입니다.\n\n**상대할 때**\n이즈리얼의 도주 수단은 E 하나뿐이고 쿨이 길습니다.",
+    "after": "이즈리얼 W 정수의 흐름 구체:\n표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다.\n계수 (추가 공격력): 100%.\n계수 (주문력): 90%. 스킬 적중 시 · 이즈리얼 W 정수의 흐름 구체:\n스킬로 구체를 폭발시키면 해당 스킬의 마나 소모량에 60 마나를 더한 양을 돌려받습니다.",
+    "checks": [
+      {
+        "label": "require:스킬",
+        "pass": true
+      },
+      {
+        "label": "require:마나",
+        "pass": true
+      },
+      {
+        "label": "require:60",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:13bb62b5f7bc4f440203:0",
+    "question": "이즈리얼 W 마나는 언제 돌려받아?",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/full-approval-questions.json",
+        "row": "new-ezreal-refund"
+      }
+    ],
+    "before": "**상대할 때**\nW 구체가 몸에 붙었다면 다음 평타나 스킬이 닿는 순간 추가 피해가 함께 터집니다. 구체가 붙은 상태에서 계속 사거리 안에 머무르면 한 번의 딜 교환이 두 배가 되므로 구체를 맞았으면 짧게라도 사거리 밖으로 빠졌다가 다시 붙습니다.",
+    "after": "이즈리얼 W 정수의 흐름 구체:\n표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다.\n계수 (추가 공격력): 100%.\n계수 (주문력): 90%. 스킬 적중 시 · 이즈리얼 W 정수의 흐름 구체:\n스킬로 구체를 폭발시키면 해당 스킬의 마나 소모량에 60 마나를 더한 양을 돌려받습니다.",
+    "checks": [
+      {
+        "label": "require:스킬",
+        "pass": true
+      },
+      {
+        "label": "require:폭발",
+        "pass": true
+      },
+      {
+        "label": "require:60",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:6d9f6ae8e1d959f2a45f:4",
+    "question": "그럼 공걱속도는?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "user-report"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격 속도 (18레벨)는 문도 박사 1.05 > 오공 1.04입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:6d9f6ae8e1d959f2a45f:5",
+    "question": "문도만 보여줘",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "user-report"
+      }
+    ],
+    "before": "문도 박사 체력 재생 (5초당) (18레벨)는 15.5입니다.",
+    "after": "문도 박사 공격 속도 (18레벨)는 1.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:1f35ca2abb2e70bee759:1",
+    "question": "이동속두는?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "level-and-target"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "이동 속도 (6레벨)는 문도 박사 345 > 오공 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:1f35ca2abb2e70bee759:2",
+    "question": "18레벨은?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "level-and-target"
+      }
+    ],
+    "before": "방어력 (18레벨)는 오공 110.9 > 문도 박사 108.5입니다.",
+    "after": "이동 속도 (18레벨)는 문도 박사 345 > 오공 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:1f35ca2abb2e70bee759:3",
+    "question": "오공만 보여줘",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "level-and-target"
+      }
+    ],
+    "before": "오공 방어력 (18레벨)는 110.9입니다.",
+    "after": "오공 이동 속도 (18레벨)는 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:3a711e9c46aee5e8aaaf:3",
+    "question": "기본 스탯의 체력 재생을 말한 거야",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "spell-vs-stat"
+      }
+    ],
+    "before": "체력 (1레벨)는 문도 박사 640입니다.\n\n체력 재생 (5초당) (1레벨)는 문도 박사 7입니다.\n\n방어력 (1레벨)는 문도 박사 32입니다.\n\n마법 저항력 (1레벨)는 문도 박사 29입니다.\n\n공격력 (1레벨)는 문도 박사 61입니다.\n\n공격 속도 (1레벨)는 문도 박사 0.67입니다.\n\n이동 속도 (1레벨)는 문도 박사 345입니다.",
+    "after": "문도 박사 체력 재생 (5초당) (1레벨)는 7입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:3a711e9c46aee5e8aaaf:4",
+    "question": "18레벨에서는?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "spell-vs-stat"
+      }
+    ],
+    "before": "체력 (18레벨)는 문도 박사 2391입니다.\n\n체력 재생 (5초당) (18레벨)는 문도 박사 15.5입니다.\n\n방어력 (18레벨)는 문도 박사 108.5입니다.\n\n마법 저항력 (18레벨)는 문도 박사 68.1입니다.\n\n공격력 (18레벨)는 문도 박사 103.5입니다.\n\n공격 속도 (18레벨)는 문도 박사 1.05입니다.\n\n이동 속도 (18레벨)는 문도 박사 345입니다.",
+    "after": "문도 박사 체력 재생 (5초당) (18레벨)는 15.5입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:2dcab61126b461fd34e9:3",
+    "question": "제이스만 보여줘",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "name-typo"
+      }
+    ],
+    "before": "**플레이할 때**\n무기를 바꿀 때마다 짧게 이동 속도가 붙습니다. 해머 형태는 방어력과 마법 저항력을 올려 줍니다.\n\n**상대할 때**\n제이스가 캐논을 들었는지 해머를 들었는지 보고 대응을 바꿉니다. E 가속 관문이 깔리는 것이 보이면 곧바로 Q 전격 폭발이 온다는 신호입니다.",
+    "after": "제이스 마법 저항력 (18레벨)는 52.1입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:23288963cd648d1c34bb:2",
+    "question": "공격속두는?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "ten-champions"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격 속도 (18레벨)는 문도 박사 1.05 > 오공 1.04 > 제드 1.02 > 럭스 1.01 = 가렌 1.01 > 제이스 0.99 > 조이 0.94 > 아리 0.92 > 벡스 0.78 > 다리우스 0.73입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:23288963cd648d1c34bb:3",
+    "question": "문도만",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "ten-champions"
+      }
+    ],
+    "before": "문도 박사 체력 재생 (5초당) (18레벨)는 15.5입니다.",
+    "after": "문도 박사 공격 속도 (18레벨)는 1.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c8ce3b93b2d3e8d00883:1",
+    "question": "both health regneration please",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "english"
+      }
+    ],
+    "before": "Health (level 11) is Dr. Mundo 1543.83 > Wukong 1478.73.",
+    "after": "Health regen (per 5s) (level 11) is Dr. Mundo 11.39 > Wukong 9.2.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c8ce3b93b2d3e8d00883:2",
+    "question": "level 18?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "english"
+      }
+    ],
+    "before": "Health (level 18) is Dr. Mundo 2391 > Wukong 2293.",
+    "after": "Health regen (per 5s) (level 18) is Dr. Mundo 15.5 > Wukong 14.55.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c8ce3b93b2d3e8d00883:3",
+    "question": "Dr. Mundo only",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "english"
+      }
+    ],
+    "before": "Dr. Mundo Health (level 18) is 2391.",
+    "after": "Dr. Mundo Health regen (per 5s) (level 18) is 15.5.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:e930642b85c5039fce09:0",
+    "question": "아크샨 평타 세대 챔피언에게 맞추면?",
+    "sources": [
+      {
+        "file": "scripts/llm/passive-rag/cases.ts",
+        "row": "a07"
+      }
+    ],
+    "before": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+    "after": "3회 적중:\n기본 공격 또는 스킬의 세 번째 적중마다 추가 마법 피해를 준다.\n계수 (주문력): 60%. 3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+    "checks": [
+      {
+        "label": "must:마법",
+        "pass": true
+      },
+      {
+        "label": "must:챔피언",
+        "pass": true
+      },
+      {
+        "label": "must:보호막",
+        "pass": true
+      },
+      {
+        "label": "forbid:미니언에게도 보호막",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:7355898d582efa0603f0:0",
+    "question": "아리 체력템 사면 공격력으로 전환돼?",
+    "sources": [
+      {
+        "file": "scripts/llm/passive-rag/cases.ts",
+        "row": "c01"
+      }
+    ],
+    "before": "**플레이할 때**\n상대 회복량 때문에 콤보 한 세트가 지워지면 모렐로노미콘으로 치유를 깎습니다. E는 처음 맞는 대상 하나에만 걸립니다. W는 대상을 자동으로 고르는 스킬이라 우선순위를 알고 써야 합니다.\n\n**상대할 때**\n아리의 주력 피해는 Q 현혹의 구슬, W 여우불과 E 매혹이 마법이므로 마법 저항력이 먼저입니다.",
+    "after": "현재 자료에서 이 스킬의 능력치 전환 효과는 확인할 수 없어요.",
+    "checks": [
+      {
+        "label": "must:확인할 수 없|근거.*없|전환.*않",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:62c23fc329d44c0e6327:0",
+    "question": "아크샨 평타 세대 챔피언에게 맞추면?",
+    "sources": [
+      {
+        "file": "scripts/llm/mechanic-schema/cases.ts",
+        "row": "a07"
+      }
+    ],
+    "before": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+    "after": "3회 적중:\n기본 공격 또는 스킬의 세 번째 적중마다 추가 마법 피해를 준다.\n계수 (주문력): 60%. 3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+    "checks": [
+      {
+        "label": "schema-contract",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:6711e750ed78eec1466e:0",
+    "question": "아리 체력템 사면 공격력으로 전환돼?",
+    "sources": [
+      {
+        "file": "scripts/llm/mechanic-schema/cases.ts",
+        "row": "c01"
+      }
+    ],
+    "before": "**플레이할 때**\n상대 회복량 때문에 콤보 한 세트가 지워지면 모렐로노미콘으로 치유를 깎습니다. E는 처음 맞는 대상 하나에만 걸립니다. W는 대상을 자동으로 고르는 스킬이라 우선순위를 알고 써야 합니다.\n\n**상대할 때**\n아리의 주력 피해는 Q 현혹의 구슬, W 여우불과 E 매혹이 마법이므로 마법 저항력이 먼저입니다.",
+    "after": "현재 자료에서 이 스킬의 능력치 전환 효과는 확인할 수 없어요.",
+    "checks": [
+      {
+        "label": "schema-contract",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:f88da84b6ef9d10cbd18:3",
+    "question": "기본 능력치는 알았으니 오공 스킬 구성 전체를 듣고 싶어",
+    "sources": [
+      {
+        "file": "research/llm-evals/request-classifier/comparison/flows.json",
+        "row": "ko_KR:scope-switch"
+      }
+    ],
+    "before": "체력 (1레벨)는 오공 610입니다.\n\n체력 재생 (5초당) (1레벨)는 오공 3.5입니다.\n\n방어력 (1레벨)는 오공 31입니다.\n\n마법 저항력 (1레벨)는 오공 28입니다.\n\n공격력 (1레벨)는 오공 66입니다.\n\n공격 속도 (1레벨)는 오공 0.69입니다.\n\n이동 속도 (1레벨)는 오공 340입니다.",
+    "after": "오공의 스킬 구성입니다.\n- **P 바위 피부:** 오공이 챔피언 및 몬스터와 싸우는 동안 방어력이 점점 높아지며 최대 체력 재생 효과를 얻습니다.\n- **Q 파쇄격:** 오공의 다음 공격 사거리가 증가하고 추가 피해를 입히며 맞은 대상의 방어력이 몇 초 동안 낮아집니다.\n- **W 분신 전사:** 오공이 잠깐 동안 투명 상태가 되고 지정한 방향으로 돌진하며 근처 적을 공격하는 분신을 남깁니다.\n- **E 근두운 급습:** 오공이 대상에게 돌격하는 동시에 자신의 분신을 만들어 대상 근처에 있는 적들에게 추가 공격을 하여 피해를 줍니다.\n- **R 회전격:** 오공이 여의봉을 늘린 후 빙빙 휘두르며 이동 속도가 증가합니다. 적중당한 적은 피해를 입고 공중에 떠오릅니다.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c4094fba7ba28fc23ff2:0",
+    "question": "How should I sequence Wukong spells during a short trade",
+    "sources": [
+      {
+        "file": "research/llm-evals/request-classifier/comparison/flows.json",
+        "row": "en_US:advice"
+      }
+    ],
+    "before": "**Playing it**\nR (Cyclone) increases your movement speed while spinning, so walk into grouped enemies instead of standing still. W (Warrior Trickster) is a short dash that briefly makes you invisible and leaves a stationary clone where you cast it.\n\n**Playing against it**\nW (Warrior Trickster) leaves a clone in place while the real Wukong turns invisible and retreats in another direction. E (Nimbus Strike) is a targeted dash, so it cannot be dodged; staying outside its range is the way to prevent Wukong from engaging.",
+    "after": "Wukong's combos by situation. AA means basic attack.\n\n- Dash in with E (Nimbus Strike) and buffer Q (Crushing Blow) during the dash. Because Q empowers your next basic attack, activating it before you arrive lets the attack land immediately; waiting until you arrive delays it.\n- Use W Warrior Trickster immediately after starting R Cyclone. The clone will mimic Cyclone, while Wukong can retreat invisibly and avoid the enemy’s counterattack.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:295c729fdbc29eccb7b9:4",
+    "question": "想同时了解齐天大圣的基本信息和技能概要",
+    "sources": [
+      {
+        "file": "research/llm-evals/request-classifier/comparison/flows.json",
+        "row": "zh_CN:scope-switch"
+      }
+    ],
+    "before": "**使用时**\nR大闹天宫旋转期间会提高移动速度，开启后应走向对手聚集的位置，而非站在原地。 W真假猴王会让齐天大圣短暂隐身并突进，同时在原地留下不会移动的分身。\n\n**对线时**\n齐天大圣使用W真假猴王时会在原地留下分身，本体隐身后向另一个方向撤退。 E腾云突击是无法躲避的指向性突进，唯一的应对办法是站在其施放距离之外。",
+    "after": "齐天大圣 · 战士 · 坦克 · 近战\n\n**基础属性（1级）**\n- 生命值: 610\n- 生命回复: 3.5\n- 护甲: 31\n- 魔抗: 28\n- 攻击力: 66\n- 攻速: 0.69\n- 移动速度: 340\n\n**技能**\n- **P 金刚不坏:** 孙悟空在与英雄或野怪战斗时，会获得可叠加的护甲和最大生命值回复。\n- **Q 粉碎打击:** 孙悟空的下次攻击获得额外距离，造成额外伤害，并暂时减少敌人的护甲。\n- **W 真假猴王:** 孙悟空变为隐形状态并朝着一个方向突进，同时留下一个会攻击附近敌人的分身。\n- **E 腾云突击:** 孙悟空突进至一名目标敌人处，并放出幻象来攻击他目标附近的敌人，同时对每个被击中的敌人造成伤害。\n- **R 大闹天宫:** 孙悟空伸展金箍棒不断旋转，并获得移动速度。 击中敌人时会造成伤害和击飞效果。",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:e50b9cdac297e230b29f:0",
+    "question": "齐天大圣短换血时技能应该按什么顺序连起来",
+    "sources": [
+      {
+        "file": "research/llm-evals/request-classifier/comparison/flows.json",
+        "row": "zh_CN:advice"
+      }
+    ],
+    "before": "**使用时**\nR大闹天宫旋转期间会提高移动速度，开启后应走向对手聚集的位置，而非站在原地。 W真假猴王会让齐天大圣短暂隐身并突进，同时在原地留下不会移动的分身。\n\n**对线时**\n齐天大圣使用W真假猴王时会在原地留下分身，本体隐身后向另一个方向撤退。 E腾云突击是无法躲避的指向性突进，唯一的应对办法是站在其施放距离之外。",
+    "after": "齐天大圣的情境连招。AA表示普攻。\n\n- 进场时用E腾云突击贴近目标，并在突进途中提前按下Q粉碎打击。Q会强化下一次普攻，提前开启就能在抵达时立刻打出强化普攻；等到抵达后再按Q，就会慢一拍。\n- 开启R大闹天宫后立刻使用W真假猴王，留下的分身会模仿大招，相当于在同一位置再转一次。R和W连着用收益最高，齐天大圣还能借W进入隐身状态撤离，躲开对手的反击。",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c677ace9369214eeec22:0",
+    "question": "오공이 가진 능력과 기본 능력치를 같이 소개해 줄래?",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "0"
+      }
+    ],
+    "before": "**플레이할 때**\nR 회전격은 도는 동안 이동 속도가 오르므로 제자리에서 돌리지 말고 상대가 뭉친 자리로 걸어 들어가며 씁니다. W 분신 전사는 짧게 투명해지며 돌진하고 그 자리에 움직이지 않는 분신을 남깁니다.\n\n**상대할 때**\n오공의 W는 그 자리에 분신을 남기고 오공 본체는 투명해져 다른 방향으로 빠집니다. E 근두운 급습은 대상 지정이라 피할 수 없습니다.",
+    "after": "오공 · 전사 · 탱커 · 근접\n\n**기본 능력치 (1레벨)**\n- 체력: 610\n- 체력 재생: 3.5\n- 방어력: 31\n- 마법 저항력: 28\n- 공격력: 66\n- 공격 속도: 0.69\n- 이동 속도: 340\n\n**스킬**\n- **P 바위 피부:** 오공이 챔피언 및 몬스터와 싸우는 동안 방어력이 점점 높아지며 최대 체력 재생 효과를 얻습니다.\n- **Q 파쇄격:** 오공의 다음 공격 사거리가 증가하고 추가 피해를 입히며 맞은 대상의 방어력이 몇 초 동안 낮아집니다.\n- **W 분신 전사:** 오공이 잠깐 동안 투명 상태가 되고 지정한 방향으로 돌진하며 근처 적을 공격하는 분신을 남깁니다.\n- **E 근두운 급습:** 오공이 대상에게 돌격하는 동시에 자신의 분신을 만들어 대상 근처에 있는 적들에게 추가 공격을 하여 피해를 줍니다.\n- **R 회전격:** 오공이 여의봉을 늘린 후 빙빙 휘두르며 이동 속도가 증가합니다. 적중당한 적은 피해를 입고 공중에 떠오릅니다.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:147685f18e80071895b7:0",
+    "question": "능력치는 됐고 오공 기술을 빠짐없이 설명해",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "1"
+      }
+    ],
+    "before": "**플레이할 때**\nR 회전격은 도는 동안 이동 속도가 오르므로 제자리에서 돌리지 말고 상대가 뭉친 자리로 걸어 들어가며 씁니다. W 분신 전사는 짧게 투명해지며 돌진하고 그 자리에 움직이지 않는 분신을 남깁니다.\n\n**상대할 때**\n오공의 W는 그 자리에 분신을 남기고 오공 본체는 투명해져 다른 방향으로 빠집니다. E 근두운 급습은 대상 지정이라 피할 수 없습니다.",
+    "after": "오공의 스킬 구성입니다.\n- **P 바위 피부:** 오공이 챔피언 및 몬스터와 싸우는 동안 방어력이 점점 높아지며 최대 체력 재생 효과를 얻습니다.\n- **Q 파쇄격:** 오공의 다음 공격 사거리가 증가하고 추가 피해를 입히며 맞은 대상의 방어력이 몇 초 동안 낮아집니다.\n- **W 분신 전사:** 오공이 잠깐 동안 투명 상태가 되고 지정한 방향으로 돌진하며 근처 적을 공격하는 분신을 남깁니다.\n- **E 근두운 급습:** 오공이 대상에게 돌격하는 동시에 자신의 분신을 만들어 대상 근처에 있는 적들에게 추가 공격을 하여 피해를 줍니다.\n- **R 회전격:** 오공이 여의봉을 늘린 후 빙빙 휘두르며 이동 속도가 증가합니다. 적중당한 적은 피해를 입고 공중에 떠오릅니다.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:6eda8385c68eda956ee6:0",
+    "question": "Give me Wukong background basics alongside a rundown of his abilities",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "6"
+      }
+    ],
+    "before": "Wukong's abilities:\n- **P Stone Skin:** Wukong gains stacking armor and max health regeneration while fighting champions and monsters.\n- **Q Crushing Blow:** Wukong's next attack gains attack range, deals bonus damage, and reduces the target's armor for a few seconds.\n- **W Warrior Trickster:** Wukong becomes Invisible and dashes in a direction, leaving behind a clone that will attack nearby enemies.\n- **E Nimbus Strike:** Wukong dashes to a targeted enemy and sends out images to attack enemies near his target, dealing damage to each enemy struck.\n- **R Cyclone:** Wukong's extends his staff and spins it around repeatedly, gaining Move Speed. Enemies struck take damage and are knocked up.",
+    "after": "Wukong · Fighter · Tank · melee\n\n**Base stats (level 1)**\n- Health: 610\n- Health regen: 3.5\n- Armor: 31\n- Magic resist: 28\n- Attack damage: 66\n- Attack speed: 0.69\n- Move speed: 340\n\n**Abilities**\n- **P Stone Skin:** Wukong gains stacking armor and max health regeneration while fighting champions and monsters.\n- **Q Crushing Blow:** Wukong's next attack gains attack range, deals bonus damage, and reduces the target's armor for a few seconds.\n- **W Warrior Trickster:** Wukong becomes Invisible and dashes in a direction, leaving behind a clone that will attack nearby enemies.\n- **E Nimbus Strike:** Wukong dashes to a targeted enemy and sends out images to attack enemies near his target, dealing damage to each enemy struck.\n- **R Cyclone:** Wukong's extends his staff and spins it around repeatedly, gaining Move Speed. Enemies struck take damage and are knocked up.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:84256ac84f90c7c46279:0",
+    "question": "I want every base attribute Wukong starts with in one table",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "9"
+      }
+    ],
+    "before": "**Playing it**\nR (Cyclone) increases your movement speed while spinning, so walk into grouped enemies instead of standing still. W (Warrior Trickster) is a short dash that briefly makes you invisible and leaves a stationary clone where you cast it.\n\n**Playing against it**\nW (Warrior Trickster) leaves a clone in place while the real Wukong turns invisible and retreats in another direction. E (Nimbus Strike) is a targeted dash, so it cannot be dodged; staying outside its range is the way to prevent Wukong from engaging.",
+    "after": "Health (level 1) is Wukong 610.\n\nHealth regen (per 5s) (level 1) is Wukong 3.5.\n\nArmor (level 1) is Wukong 31.\n\nMagic resist (level 1) is Wukong 28.\n\nAttack damage (level 1) is Wukong 66.\n\nAttack speed (level 1) is Wukong 0.69.\n\nMove speed (level 1) is Wukong 340.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:86ac96908d5f720231c2:0",
+    "question": "齐天大圣所有初始属性放在一张表里给我",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "15"
+      }
+    ],
+    "before": "**使用时**\nR大闹天宫旋转期间会提高移动速度，开启后应走向对手聚集的位置，而非站在原地。 W真假猴王会让齐天大圣短暂隐身并突进，同时在原地留下不会移动的分身。\n\n**对线时**\n齐天大圣使用W真假猴王时会在原地留下分身，本体隐身后向另一个方向撤退。 E腾云突击是无法躲避的指向性突进，唯一的应对办法是站在其施放距离之外。",
+    "after": "生命值 (1级)为 齐天大圣 610。\n\n生命回复 (每5秒) (1级)为 齐天大圣 3.5。\n\n护甲 (1级)为 齐天大圣 31。\n\n魔抗 (1级)为 齐天大圣 28。\n\n攻击力 (1级)为 齐天大圣 66。\n\n攻速 (1级)为 齐天大圣 0.69。\n\n移动速度 (1级)为 齐天大圣 340。",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:61ce805ff1c3daba7d31:0",
+    "question": "오공 문도 박사 1레벨 체럭은 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0105"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:fe6309991e579ae9d0b2:0",
+    "question": "그럼 체럭은 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0106"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:9358542215b181a4299b:0",
+    "question": "럭스 1레벨 기본 스탯 체럭은 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0107"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 (1레벨)는 580입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:3c6e9732afcc2e3fbab2:0",
+    "question": "오공 문도 박사 6레벨 최대 체려 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0108"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:b2898b3a536daf5ca863:0",
+    "question": "그럼 최대 체려 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0109"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:331593ebfb7716c3b635:0",
+    "question": "럭스 6레벨 기본 스탯 최대 체려 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0110"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 (6레벨)는 971.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c535b30f650874453f3b:0",
+    "question": "럭스 18레벨 기본 스탯 base HP please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0116"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 (18레벨)는 2263입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:9fc372f7b0e8212a65be:0",
+    "question": "럭스 1레벨 기본 스탯 生命值有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0119"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 (1레벨)는 580입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:f166ef6c82dad7ce4682:0",
+    "question": "오공 문도 박사 6레벨 기본 생명력 수치는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0120"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:810c46a5e9f694737d1c:0",
+    "question": "그럼 기본 생명력 수치는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0121"
+      }
+    ],
+    "before": "### 아이템 등급\n| 등급 | 특징 | 데이터 판정 |\n|---|---|---|\n| 소모품·장신구 | 물약, 와드 | `Consumable`, `Trinket` 태그 |\n| 시작 아이템 | 도란 계열, 정글 아이템, 여신의 눈물 | 이름과 가격, 조합 관계 |\n| 기본 | 조합 재료 | 상위 조합만 있고 하위 조합 없음 |\n| 서사 | 부가 효과가 붙기 시작 | 하위·상위 조합 모두 있음 |\n| 전설 | 최종 아이템 | 상위 조합 없음 |\n| 장화 | 이동 속도 전용 계열 | `Boots` 태그 |\n\n_v26.19_",
+    "after": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:99ff3f7630fffc614924:0",
+    "question": "오공 문도 박사 6레벨 체력 회븍량 수치",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0231"
+      }
+    ],
+    "before": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "after": "체력 재생 (5초당) (6레벨)는 문도 박사 8.98 > 오공 6.07입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:ca2d7b5f61ceca8ce810:0",
+    "question": "그럼 체력 회븍량 수치",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0232"
+      }
+    ],
+    "before": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "after": "체력 재생 (5초당) (6레벨)는 문도 박사 8.98 > 오공 6.07입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c603334e890bfa757641:0",
+    "question": "럭스 6레벨 기본 스탯 체력 회븍량 수치",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0233"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 재생 (5초당) (6레벨)는 7.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c773f057e321f2cb2259:0",
+    "question": "오공 문도 박사 11레벨 체잰이 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0234"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "체력 재생 (5초당) (11레벨)는 문도 박사 11.39 > 오공 9.2입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:09ad2c5c3a3ea77af610:0",
+    "question": "그럼 체잰이 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0235"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "체력 재생 (5초당) (11레벨)는 문도 박사 11.39 > 오공 9.2입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:5bba5563360e4b5f01f8:0",
+    "question": "럭스 11레벨 기본 스탯 체잰이 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0236"
+      }
+    ],
+    "before": "체력 (11레벨)는 럭스 1448.73입니다.\n\n체력 재생 (5초당) (11레벨)는 럭스 10.33입니다.\n\n방어력 (11레벨)는 럭스 66.63입니다.\n\n마법 저항력 (11레벨)는 럭스 41.41입니다.\n\n공격력 (11레벨)는 럭스 82.96입니다.\n\n공격 속도 (11레벨)는 럭스 0.85입니다.\n\n이동 속도 (11레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 재생 (5초당) (11레벨)는 10.33입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:edba93e6d5682eb5f93a:0",
+    "question": "오공 문도 박사 18레벨 기본 스탯에서 가만히 있을 때 피가 차는 양",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0237"
+      }
+    ],
+    "before": "체력 (18레벨)는 문도 박사 2391 > 오공 2293입니다.\n\n체력 재생 (5초당) (18레벨)는 문도 박사 15.5 > 오공 14.55입니다.\n\n방어력 (18레벨)는 오공 110.9 > 문도 박사 108.5입니다.\n\n마법 저항력 (18레벨)는 문도 박사 68.1 > 오공 62.85입니다.\n\n공격력 (18레벨)는 오공 125.5 > 문도 박사 103.5입니다.\n\n공격 속도 (18레벨)는 문도 박사 1.05 > 오공 1.04입니다.\n\n이동 속도 (18레벨)는 문도 박사 345 > 오공 340입니다.",
+    "after": "체력 재생 (5초당) (18레벨)는 문도 박사 15.5 > 오공 14.55입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:05b3902d35b0dd6116fe:0",
+    "question": "그럼 기본 스탯에서 가만히 있을 때 피가 차는 양",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0238"
+      }
+    ],
+    "before": "체력 (18레벨)는 문도 박사 2391 > 오공 2293입니다.\n\n체력 재생 (5초당) (18레벨)는 문도 박사 15.5 > 오공 14.55입니다.\n\n방어력 (18레벨)는 오공 110.9 > 문도 박사 108.5입니다.\n\n마법 저항력 (18레벨)는 문도 박사 68.1 > 오공 62.85입니다.\n\n공격력 (18레벨)는 오공 125.5 > 문도 박사 103.5입니다.\n\n공격 속도 (18레벨)는 문도 박사 1.05 > 오공 1.04입니다.\n\n이동 속도 (18레벨)는 문도 박사 345 > 오공 340입니다.",
+    "after": "체력 재생 (5초당) (18레벨)는 문도 박사 15.5 > 오공 14.55입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:6d230d7b34609463140e:0",
+    "question": "럭스 18레벨 기본 스탯 기본 스탯에서 가만히 있을 때 피가 차는 양",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0239"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 재생 (5초당) (18레벨)는 14.85입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:f20fc488bdb49020f4eb:0",
+    "question": "오공 문도 박사 1레벨 health regneration please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0240"
+      }
+    ],
+    "before": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.",
+    "after": "체력 재생 (5초당) (1레벨)는 문도 박사 7 > 오공 3.5입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:6cc76b270543f0b8f8fd:0",
+    "question": "그럼 health regneration please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0241"
+      }
+    ],
+    "before": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.",
+    "after": "체력 재생 (5초당) (1레벨)는 문도 박사 7 > 오공 3.5입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:bc433218a1b9eaaff21f:0",
+    "question": "럭스 1레벨 기본 스탯 health regneration please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0242"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 재생 (5초당) (1레벨)는 5.5입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:21e4567ed1f2e0af10c5:0",
+    "question": "오공 문도 박사 6레벨 기본 방오력 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0354"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "방어력 (6레벨)는 문도 박사 49.78 > 오공 49.57입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:e502f6d6d8b374045fce:0",
+    "question": "그럼 기본 방오력 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0355"
+      }
+    ],
+    "before": "### 아이템 등급\n| 등급 | 특징 | 데이터 판정 |\n|---|---|---|\n| 소모품·장신구 | 물약, 와드 | `Consumable`, `Trinket` 태그 |\n| 시작 아이템 | 도란 계열, 정글 아이템, 여신의 눈물 | 이름과 가격, 조합 관계 |\n| 기본 | 조합 재료 | 상위 조합만 있고 하위 조합 없음 |\n| 서사 | 부가 효과가 붙기 시작 | 하위·상위 조합 모두 있음 |\n| 전설 | 최종 아이템 | 상위 조합 없음 |\n| 장화 | 이동 속도 전용 계열 | `Boots` 태그 |\n\n_v26.19_",
+    "after": "방어력 (6레벨)는 문도 박사 49.78 > 오공 49.57입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:980fcd1bd80cd5ed90ff:0",
+    "question": "럭스 18레벨 기본 스탯 physical armor please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0362"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스 방어력 (18레벨)는 109.4입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:9790c31ecc0364f3fa28:0",
+    "question": "럭스 1레벨 기본 스탯 护甲有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0365"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 방어력 (1레벨)는 21입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c207e2007eb3b37e05cb:0",
+    "question": "오공 문도 박사 1레벨 마법 저향력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0474"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "마법 저항력 (1레벨)는 문도 박사 29 > 오공 28입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:7c39125aec266ff8ee83:0",
+    "question": "그럼 마법 저향력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0475"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "마법 저항력 (1레벨)는 문도 박사 29 > 오공 28입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:28a32fca60e4ad85f49c:0",
+    "question": "럭스 1레벨 기본 스탯 마법 저향력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0476"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 마법 저항력 (1레벨)는 30입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:8d7a7ce551b7126df492:0",
+    "question": "럭스 6레벨 기본 스탯 마법 저항럭 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0479"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 마법 저항력 (6레벨)는 35.14입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:fdec6fe00e0dee38f4ea:0",
+    "question": "오공 문도 박사 18레벨 magic resitance please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0483"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "마법 저항력 (18레벨)는 문도 박사 68.1 > 오공 62.85입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:51c095749f86f217ae5b:0",
+    "question": "그럼 magic resitance please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0484"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "마법 저항력 (18레벨)는 문도 박사 68.1 > 오공 62.85입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:e7fdc0d345b4c4ce2d64:0",
+    "question": "럭스 18레벨 기본 스탯 magic resitance please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0485"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스 마법 저항력 (18레벨)는 52.1입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:1c20dbe83b954cef4ee4:0",
+    "question": "럭스 6레벨 기본 스탯 기본 마방은 얼마?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0491"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 마법 저항력 (6레벨)는 35.14입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:f34e8144dd215358d346:0",
+    "question": "오공 문도 박사 1레벨 공걱력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0597"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "공격력 (1레벨)는 오공 66 > 문도 박사 61입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:b428dac403ff39dd8f47:0",
+    "question": "그럼 공걱력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0598"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격력 (1레벨)는 오공 66 > 문도 박사 61입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:29bf73fb4c7d2c72248d:0",
+    "question": "럭스 1레벨 기본 스탯 공걱력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0599"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 공격력 (1레벨)는 54입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:f2c6ef75914bd5d961e2:0",
+    "question": "오공 문도 박사 6레벨 공격럭 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0600"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "공격력 (6레벨)는 오공 79.83 > 문도 박사 70.88입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:ae01b0f91137dca48f73:0",
+    "question": "그럼 공격럭 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0601"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격력 (6레벨)는 오공 79.83 > 문도 박사 70.88입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:6d014c4758e094aae52c:0",
+    "question": "럭스 6레벨 기본 스탯 공격럭 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0602"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 공격력 (6레벨)는 67.03입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:d37491f3529abb53d59a:0",
+    "question": "럭스 1레벨 기본 스탯 攻击力有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0611"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 공격력 (1레벨)는 54입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:b1c2e26aee1fef709481:0",
+    "question": "럭스 6레벨 기본 스탯 AD가 얼마인지 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0614"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 공격력 (6레벨)는 67.03입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:e4d98ae7dfef24ca3fb9:0",
+    "question": "오공 문도 박사 1레벨 공걱속도는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0720"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "공격 속도 (1레벨)는 오공 0.69 > 문도 박사 0.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:ec2b151440f8fcb8aac1:0",
+    "question": "그럼 공걱속도는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0721"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격 속도 (1레벨)는 오공 0.69 > 문도 박사 0.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:74da9bccdd52d41b5551:0",
+    "question": "럭스 1레벨 기본 스탯 공걱속도는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0722"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 공격 속도 (1레벨)는 0.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:d7ee1b38c626a4bc267e:0",
+    "question": "오공 문도 박사 6레벨 공격속두 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0723"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "공격 속도 (6레벨)는 오공 0.77 > 문도 박사 0.76입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:50e5886d9361d80d3d99:0",
+    "question": "그럼 공격속두 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0724"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격 속도 (6레벨)는 오공 0.77 > 문도 박사 0.76입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:86cc31b82bb76d3be3c7:0",
+    "question": "럭스 6레벨 기본 스탯 공격속두 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0725"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 공격 속도 (6레벨)는 0.75입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:8a61683ae7d6cfcca8d8:0",
+    "question": "럭스 1레벨 기본 스탯 攻击速度有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0734"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 공격 속도 (1레벨)는 0.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c0f9d7072d6e7d7c3615:0",
+    "question": "럭스 6레벨 기본 스탯 평타 공격 속도 스탯은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0737"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 공격 속도 (6레벨)는 0.75입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:fd2a4bd9817c28201373:0",
+    "question": "오공 문도 박사 1레벨 이동속두는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0843"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "이동 속도 (1레벨)는 문도 박사 345 > 오공 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:a5657f44c06790239f70:0",
+    "question": "그럼 이동속두는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0844"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "이동 속도 (1레벨)는 문도 박사 345 > 오공 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:122e6065a7e9d7a6fe89:0",
+    "question": "럭스 1레벨 기본 스탯 이동속두는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0845"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 이동 속도 (1레벨)는 330입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:17be4673c137f79ae55e:0",
+    "question": "럭스 1레벨 기본 스탯 移动速度有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0857"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 이동 속도 (1레벨)는 330입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:084ff274372507e3db4f:0",
+    "question": "럭스 1레벨 기본 스탯 궁으로 체력이 얼마나 회복되냐",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1073"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스의 상점 가격은 블루 정수 225 또는 260 RP입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:9cb0a060a894b5fde4ba:0",
+    "question": "럭스 11레벨 기본 스탯 Q 공격 속도 증가량",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1079"
+      }
+    ],
+    "before": "체력 (11레벨)는 럭스 1448.73입니다.\n\n체력 재생 (5초당) (11레벨)는 럭스 10.33입니다.\n\n방어력 (11레벨)는 럭스 66.63입니다.\n\n마법 저항력 (11레벨)는 럭스 41.41입니다.\n\n공격력 (11레벨)는 럭스 82.96입니다.\n\n공격 속도 (11레벨)는 럭스 0.85입니다.\n\n이동 속도 (11레벨)는 럭스 330입니다.",
+    "after": "쿨 10 · 속박 · 주문력 75%",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:d6988eb7bb81445ed3a8:0",
+    "question": "럭스 18레벨 기본 스탯 마나리젠은 얼마야",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1082"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스의 상점 가격은 블루 정수 225 또는 260 RP입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:c83e69333332b1340bf9:0",
+    "question": "럭스 1레벨 기본 스탯 피흡이 얼마나 붙어",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1085"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "생명력 흡수 수치는 아직 확인할 수 없어요.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:f3f1125ff801b812def6:0",
+    "question": "럭스 6레벨 기본 스탯 체력 물약 회복량",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1088"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "15초에 걸쳐 120의 체력을 회복합니다.\n15초에 걸쳐 120의 체력을 회복합니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:e7c2ea8c65aef057f657:0",
+    "question": "럭스 1레벨 기본 스탯 그거 마법 피해야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1109"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "**플레이할 때**\n상대에 암살자가 있으면 존야의 모래시계를 앞으로 당깁니다. 상대 회복량이 문제가 되면 모렐로노미콘으로 치유를 깎습니다.\n\n**상대할 때**\n럭스의 P 광채, Q 빛의 속박과 E 광휘의 특이점 피해는 마법이라 이 스킬 피해에 대비하려면 마법 저항력을 챙깁니다. Q 빛의 속박이 럭스 조합의 전부입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:74da65a5c750c91284ef:0",
+    "question": "럭스 11레벨 기본 스탯 회복되는 스킬이 있어?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1115"
+      }
+    ],
+    "before": "체력 (11레벨)는 럭스 1448.73입니다.\n\n체력 재생 (5초당) (11레벨)는 럭스 10.33입니다.\n\n방어력 (11레벨)는 럭스 66.63입니다.\n\n마법 저항력 (11레벨)는 럭스 41.41입니다.\n\n공격력 (11레벨)는 럭스 82.96입니다.\n\n공격 속도 (11레벨)는 럭스 0.85입니다.\n\n이동 속도 (11레벨)는 럭스 330입니다.",
+    "after": "아니요. 럭스에게는 회복 스킬이 없습니다.\n\n_v26.19_",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:3710590e4f1544071803:2",
+    "question": "团战该干什么",
+    "sources": [
+      {
+        "file": "research/llm-evals/kev-agent/a-set.jsonl",
+        "row": "d073"
+      }
+    ],
+    "before": "我是内置于本应用的英雄联盟助手。我依据英雄、技能、装备与判定规则的资料作答。全部在你的设备上运行，对话不会发送到任何地方。",
+    "after": "**团战**\n站在队友身后，用邪恶小法师 E 扭曲空间封住暗黑元首的退路或敌方的突进路线；敌人被困或晕眩时，命中邪恶小法师 W 黑暗物质和 Q 黑暗祭祀。 避开暗黑元首 Q 暗黑法球铺下多个法球的位置，提防暗黑元首 R 能量倾泻；邪恶小法师 R 能量爆裂留给已损失生命值的敌方输出位收尾。",
+    "checks": [
+      {
+        "label": "legacy-target",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:ad77ad03b641cb7cdf54:1",
+    "question": "那出装思路是什么",
+    "sources": [
+      {
+        "file": "research/llm-evals/kev-agent/act-test.jsonl",
+        "row": "40"
+      }
+    ],
+    "before": "我是内置于本应用的英雄联盟助手。我依据英雄、技能、装备与判定规则的资料作答。全部在你的设备上运行，对话不会发送到任何地方。",
+    "after": "**出装**\n先堆护甲，应对诺克萨斯之手 P 出血、Q 大杀四方和 W 致残打击的物理伤害。 考虑到诺克萨斯之手 E 无情铁手的护甲穿透和 R 诺克萨斯断头台的真实伤害，也要补充生命值。 如果诺克萨斯之手 Q 大杀四方的回复是问题，就早点买死刑宣告，或提前做出凡性的提醒。",
+    "checks": [
+      {
+        "label": "act-flow",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "none:8baf47d394e32712ebd3:1",
+    "question": "你刚说的能再讲细一点吗",
+    "sources": [
+      {
+        "file": "research/llm-evals/kev-agent/act-test.jsonl",
+        "row": "45"
+      }
+    ],
+    "before": "我是内置于本应用的英雄联盟助手。我依据英雄、技能、装备与判定规则的资料作答。全部在你的设备上运行，对话不会发送到任何地方。",
+    "after": "**对线**\n迅捷斥候 E 毒性射击只要命中一次普攻，毒伤就会持续，因此还没准备好贴近时就站在射程之外。 用控制守卫检查视野盲区的草丛，或绕开草丛，等迅捷斥候现身后再反击。\n\n**连招**\n如果破绽出现在侧面或身后，且迅捷斥候 Q 致盲吹箭已交掉，就用无双剑姬 Q 破空斩切入破绽，接普攻和无双剑姬 E 夺命连刺的强化攻击。 如果能用无双剑姬 E 夺命连刺的第二次攻击命中新破绽，就能同时打出暴击和破绽伤害。 如果破绽在正面，先用普攻和无双剑姬 E 夺命连刺处理，把无双剑姬 Q 破空斩留作追击或撤离。\n\n**进场时机**\n趁迅捷斥候 Q 致盲吹箭交掉时切入。 如果迅捷斥候用 W 小莫快跑拉开距离，就不要在他凭借该效果逃跑时勉强追击，等到再次有机会贴近时再用无双剑姬 Q 破空斩。 资料中未提及迅捷斥候拥有可由无双剑姬 W 劳伦特心眼刀格挡并反制眩晕的定身效果，因此把无双剑姬 W 劳伦特心眼刀用于格挡迅捷斥候 Q 致盲吹箭等关键攻击。",
+    "checks": [
+      {
+        "label": "act-flow",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:9f043997e21282e01082:0",
+    "question": "방어력이 100인 상대에게 30% 관통이랑 고정 관통 10이 있으면 어떤 순서로 계산해?",
+    "sources": [
+      {
+        "file": "research/llm-evals/conversational-advisor/questions.json",
+        "row": "s12"
+      }
+    ],
+    "before": "### 퍼센트 관통 중첩\n일반적인 퍼센트 관통은 단순 합산하지 않고 남은 저항에 곱해서 적용합니다. 30% 관통 두 개의 계산 예시는 1 − 0.7 × 0.7 = 51%입니다. 고정 관통은 퍼센트 관통 뒤에 적용합니다. 특정 스킬의 별도 방어력 무시 효과와는 구분해야 합니다.",
+    "after": "### 관통 계산\n비율 관통을 먼저, 고정 관통을 나중에 적용합니다. 방어력 100 × (1 − 30/100) − 10 = 60입니다. 대상의 실제 방어력을 바꾸는 감소와 달리, 관통은 내 물리 피해 계산에만 적용됩니다.",
+    "checks": [
+      {
+        "label": "target",
+        "pass": true
+      },
+      {
+        "label": "관통 순서",
+        "pass": true
+      },
+      {
+        "label": "수치 예시 결과 60",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:7bd1cd858c3e9d1bb638:4",
+    "question": "아니 다시 내가 말파이트고 상대가 피오라야. 라인전만 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/conversational-advisor/questions.json",
+        "row": "d02"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "**라인전**\n저레벨 Q를 쿨마다 쓰면 마나가 모자라므로 사용을 아끼고, 급소가 뜬 반대쪽에 서서 피오라가 파고드는 순간에만 짧게 반격합니다.",
+    "checks": [
+      {
+        "label": "target",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:66d75b35d439d146729d:0",
+    "question": "피오라로 다리우스 상대하는데 라인전 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/conversational-advisor/questions.json",
+        "row": "d08"
+      }
+    ],
+    "before": "**조심할 것**\n다리우스 E 포획에 끌리면 후속 공격을 맞기 쉬우므로 사거리 밖에서 견제하고, 끌어오는 순간에는 피오라 W 응수로 받아냅니다. 다리우스 Q 학살이 보이면 도끼날 밖으로 빠지거나 바짝 붙어 회복을 줄입니다. 다리우스 P 과다출혈 중첩이 쌓이면 거리를 벌리고, 중첩된 채 체력이 낮을 때는 다리우스 R 녹서스의 단두대 사거리 밖으로 완전히 빠집니다.\n\n**아이템**\n다리우스의 물리 피해에 대비해 방어력을 먼저 올리되, 다리우스 E 포획의 관통과 R 녹서스의 단두대 고정 피해를 고려해 체력도 챙깁니다. 다리우스 Q 학살의 회복이 딜 교환을 무효로 만든다면 처형인의 대검을 코어 아이템 사이에 끼워 넣습니다. 방어력이 높은 다리우스에게는 관통을 섞고 피오라 P 치명적인 검무와 R 대결투의 고정 피해를 활용합니다.\n\n**싸우는 법**\n다리우스 E 포획이 빗나가거나 빠진 뒤 급소 하나를 치고, 얻은 이동 속도로 물러나는 짧은 교환을 반복합니다. 다리우스 Q 학살을 미니언 정리에 쓴 직후도 견제할 기회입니다. 다리우스 P 과다출혈이 쌓이는 긴 싸움은 끊고, 중첩이 사라진 뒤 다시 각을 잡습니다.",
+    "after": "**라인전**\n초반에는 라인전을 억지로 이기려 하지 말고, 미니언을 조금 놓치더라도 경험치를 챙길 거리에서 포탑 쪽으로 라인을 당겨 받습니다. 다리우스 E 포획 사거리 밖을 지키며, E가 빠졌을 때만 짧게 교환합니다. 아이템이 갖춰지는 중반부터 사이드에서 1대1을 강요합니다.",
+    "checks": [
+      {
+        "label": "target",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:1eb1080ff78220c6b0aa:0",
+    "question": "아펠리오스 E는 쓰면 무슨 스킬이 나가?",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/questions.json",
+        "row": "aphelios-interface"
+      }
+    ],
+    "before": "쿨 0 · 둔화 · 속박 · 회복",
+    "after": "아펠리오스 E는 무기 정보를 표시하는 인터페이스입니다. 직접 시전하는 스킬이 아니므로 공격 효과나 쿨타임으로 설명할 수 없습니다.",
+    "checks": [
+      {
+        "label": "must:(?:표시|정보|인터페이스)",
+        "pass": true
+      },
+      {
+        "label": "must:시전.*스킬.*아니",
+        "pass": true
+      },
+      {
+        "label": "forbid:쿨 0",
+        "pass": true
+      },
+      {
+        "label": "forbid:둔화",
+        "pass": true
+      },
+      {
+        "label": "forbid:속박",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:aa27d136a8a190fd10ae:0",
+    "question": "제이스 망치 Q랑 캐논 Q 쿨타임 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/questions.json",
+        "row": "jayce-form"
+      }
+    ],
+    "before": "제이스 Q 전격 폭발 재사용 대기시간은 8초입니다. 이 스킬의 효과는 이동 속도 증가, 사거리 증가, 광역입니다.",
+    "after": "해머: 제이스 Q 하늘로! 재사용 대기시간은 16/14/12/10/8/6초입니다. 이 스킬의 효과는 둔화, 광역입니다.\n\n캐논: 제이스 Q 전격 폭발 재사용 대기시간은 8초입니다. 이 스킬의 효과는 이동 속도 증가, 사거리 증가, 광역입니다.",
+    "checks": [
+      {
+        "label": "must:(?:해머|망치).*16/14/12/10/8/6",
+        "pass": true
+      },
+      {
+        "label": "must:캐논.*8초",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:49ba1d6e0f82d8607d9e:0",
+    "question": "이즈리얼 W 구체는 어떤 대상에 붙어?",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/full-approval-questions.json",
+        "row": "new-ezreal-mark"
+      }
+    ],
+    "before": "이즈리얼 W 정수의 흐름 구체:\n표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다.\n계수 (추가 공격력): 100%.\n계수 (주문력): 90%.",
+    "after": "스킬 적중 시 · 첫 번째 · 대상 종류: 챔피언, 구조물 또는 에픽 정글 몬스터:\n구체가 처음 적중한 챔피언, 구조물 또는 에픽 정글 몬스터에게 일정 시간 붙습니다.\n지속 시간: 4초.",
+    "checks": [
+      {
+        "label": "require:챔피언",
+        "pass": true
+      },
+      {
+        "label": "require:구조물",
+        "pass": true
+      },
+      {
+        "label": "require:에픽",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:49ba1d6e0f82d8607d9e:1",
+    "question": "그럼 스킬로 구체를 폭발시키면?",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/full-approval-questions.json",
+        "row": "new-ezreal-mark"
+      }
+    ],
+    "before": "이즈리얼의 스킬 구성입니다.\n- **P 끓어오르는 주문의 힘:** 이즈리얼이 스킬을 적중시킬 때마다 공격 속도가 증가합니다. (최대 5회 중첩)\n- **Q 신비한 화살:** 이즈리얼이 에너지로 이루어진 화살을 발사합니다. 적 유닛에게 명중하면 모든 스킬의 재사용 대기시간이 약간 감소합니다.\n- **W 정수의 흐름:** 이즈리얼이 구체를 발사해 처음으로 적중한 챔피언이나 목표물에 남아있게 합니다. 구체에 적중된 적을 공격하면 구체가 폭발하며 피해를 입힙니다.\n- **E 비전 이동:** 이즈리얼이 목표 위치로 순간이동하여 가장 가까운 적을 향해 유도 화살을 발사합니다. 정수의 흐름에 맞은 대상을 우선적으로 공격합니다.\n- **R 정조준 일격:** 이즈리얼이 힘을 모은 후 강력한 에너지를 발사해 관통하는 적 모두에게 큰 피해를 입힙니다. (에픽 몬스터를 제외한 몬스터와 미니언 대상으로는 피해량이 감소합니다.)",
+    "after": "이즈리얼 W 정수의 흐름 구체:\n표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다.\n계수 (추가 공격력): 100%.\n계수 (주문력): 90%. 스킬 적중 시 · 이즈리얼 W 정수의 흐름 구체:\n스킬로 구체를 폭발시키면 해당 스킬의 마나 소모량에 60 마나를 더한 양을 돌려받습니다.",
+    "checks": [
+      {
+        "label": "require:스킬",
+        "pass": true
+      },
+      {
+        "label": "require:마나",
+        "pass": true
+      },
+      {
+        "label": "require:60",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:13bb62b5f7bc4f440203:0",
+    "question": "이즈리얼 W 마나는 언제 돌려받아?",
+    "sources": [
+      {
+        "file": "research/llm-evals/champion-mechanics-v2/full-approval-questions.json",
+        "row": "new-ezreal-refund"
+      }
+    ],
+    "before": "**상대할 때**\nW 구체가 몸에 붙었다면 다음 평타나 스킬이 닿는 순간 추가 피해가 함께 터집니다. 구체가 붙은 상태에서 계속 사거리 안에 머무르면 한 번의 딜 교환이 두 배가 되므로 구체를 맞았으면 짧게라도 사거리 밖으로 빠졌다가 다시 붙습니다.",
+    "after": "이즈리얼 W 정수의 흐름 구체:\n표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다.\n계수 (추가 공격력): 100%.\n계수 (주문력): 90%. 스킬 적중 시 · 이즈리얼 W 정수의 흐름 구체:\n스킬로 구체를 폭발시키면 해당 스킬의 마나 소모량에 60 마나를 더한 양을 돌려받습니다.",
+    "checks": [
+      {
+        "label": "require:스킬",
+        "pass": true
+      },
+      {
+        "label": "require:폭발",
+        "pass": true
+      },
+      {
+        "label": "require:60",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:6d9f6ae8e1d959f2a45f:4",
+    "question": "그럼 공걱속도는?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "user-report"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격 속도 (18레벨)는 문도 박사 1.05 > 오공 1.04입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:6d9f6ae8e1d959f2a45f:5",
+    "question": "문도만 보여줘",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "user-report"
+      }
+    ],
+    "before": "문도 박사 체력 재생 (5초당) (18레벨)는 15.5입니다.",
+    "after": "문도 박사 공격 속도 (18레벨)는 1.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:1f35ca2abb2e70bee759:1",
+    "question": "이동속두는?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "level-and-target"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "이동 속도 (6레벨)는 문도 박사 345 > 오공 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:1f35ca2abb2e70bee759:2",
+    "question": "18레벨은?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "level-and-target"
+      }
+    ],
+    "before": "방어력 (18레벨)는 오공 110.9 > 문도 박사 108.5입니다.",
+    "after": "이동 속도 (18레벨)는 문도 박사 345 > 오공 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:1f35ca2abb2e70bee759:3",
+    "question": "오공만 보여줘",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "level-and-target"
+      }
+    ],
+    "before": "오공 방어력 (18레벨)는 110.9입니다.",
+    "after": "오공 이동 속도 (18레벨)는 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:3a711e9c46aee5e8aaaf:3",
+    "question": "기본 스탯의 체력 재생을 말한 거야",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "spell-vs-stat"
+      }
+    ],
+    "before": "체력 (1레벨)는 문도 박사 640입니다.\n\n체력 재생 (5초당) (1레벨)는 문도 박사 7입니다.\n\n방어력 (1레벨)는 문도 박사 32입니다.\n\n마법 저항력 (1레벨)는 문도 박사 29입니다.\n\n공격력 (1레벨)는 문도 박사 61입니다.\n\n공격 속도 (1레벨)는 문도 박사 0.67입니다.\n\n이동 속도 (1레벨)는 문도 박사 345입니다.",
+    "after": "문도 박사 체력 재생 (5초당) (1레벨)는 7입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:3a711e9c46aee5e8aaaf:4",
+    "question": "18레벨에서는?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "spell-vs-stat"
+      }
+    ],
+    "before": "체력 (18레벨)는 문도 박사 2391입니다.\n\n체력 재생 (5초당) (18레벨)는 문도 박사 15.5입니다.\n\n방어력 (18레벨)는 문도 박사 108.5입니다.\n\n마법 저항력 (18레벨)는 문도 박사 68.1입니다.\n\n공격력 (18레벨)는 문도 박사 103.5입니다.\n\n공격 속도 (18레벨)는 문도 박사 1.05입니다.\n\n이동 속도 (18레벨)는 문도 박사 345입니다.",
+    "after": "문도 박사 체력 재생 (5초당) (18레벨)는 15.5입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:23288963cd648d1c34bb:2",
+    "question": "공격속두는?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "ten-champions"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격 속도 (18레벨)는 문도 박사 1.05 > 오공 1.04 > 제드 1.02 > 럭스 1.01 = 가렌 1.01 > 제이스 0.99 > 조이 0.94 > 아리 0.92 > 벡스 0.78 > 다리우스 0.73입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:23288963cd648d1c34bb:3",
+    "question": "문도만",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "ten-champions"
+      }
+    ],
+    "before": "문도 박사 체력 재생 (5초당) (18레벨)는 15.5입니다.",
+    "after": "문도 박사 공격 속도 (18레벨)는 1.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c8ce3b93b2d3e8d00883:1",
+    "question": "both health regneration please",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "english"
+      }
+    ],
+    "before": "Health (level 11) is Dr. Mundo 1543.83 > Wukong 1478.73.",
+    "after": "Health regen (per 5s) (level 11) is Dr. Mundo 11.39 > Wukong 9.2.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c8ce3b93b2d3e8d00883:2",
+    "question": "level 18?",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "english"
+      }
+    ],
+    "before": "Health (level 18) is Dr. Mundo 2391 > Wukong 2293.",
+    "after": "Health regen (per 5s) (level 18) is Dr. Mundo 15.5 > Wukong 14.55.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c8ce3b93b2d3e8d00883:3",
+    "question": "Dr. Mundo only",
+    "sources": [
+      {
+        "file": "scripts/llm/stat-classifier/conversations.ts",
+        "row": "english"
+      }
+    ],
+    "before": "Dr. Mundo Health (level 18) is 2391.",
+    "after": "Dr. Mundo Health regen (per 5s) (level 18) is 15.5.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:e930642b85c5039fce09:0",
+    "question": "아크샨 평타 세대 챔피언에게 맞추면?",
+    "sources": [
+      {
+        "file": "scripts/llm/passive-rag/cases.ts",
+        "row": "a07"
+      }
+    ],
+    "before": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+    "after": "3회 적중:\n기본 공격 또는 스킬의 세 번째 적중마다 추가 마법 피해를 준다.\n계수 (주문력): 60%. 3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+    "checks": [
+      {
+        "label": "must:마법",
+        "pass": true
+      },
+      {
+        "label": "must:챔피언",
+        "pass": true
+      },
+      {
+        "label": "must:보호막",
+        "pass": true
+      },
+      {
+        "label": "forbid:미니언에게도 보호막",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:7355898d582efa0603f0:0",
+    "question": "아리 체력템 사면 공격력으로 전환돼?",
+    "sources": [
+      {
+        "file": "scripts/llm/passive-rag/cases.ts",
+        "row": "c01"
+      }
+    ],
+    "before": "**플레이할 때**\n상대 회복량 때문에 콤보 한 세트가 지워지면 모렐로노미콘으로 치유를 깎습니다. E는 처음 맞는 대상 하나에만 걸립니다. W는 대상을 자동으로 고르는 스킬이라 우선순위를 알고 써야 합니다.\n\n**상대할 때**\n아리의 주력 피해는 Q 현혹의 구슬, W 여우불과 E 매혹이 마법이므로 마법 저항력이 먼저입니다.",
+    "after": "현재 자료에서 이 스킬의 능력치 전환 효과는 확인할 수 없어요.",
+    "checks": [
+      {
+        "label": "must:확인할 수 없|근거.*없|전환.*않",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:62c23fc329d44c0e6327:0",
+    "question": "아크샨 평타 세대 챔피언에게 맞추면?",
+    "sources": [
+      {
+        "file": "scripts/llm/mechanic-schema/cases.ts",
+        "row": "a07"
+      }
+    ],
+    "before": "3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+    "after": "3회 적중:\n기본 공격 또는 스킬의 세 번째 적중마다 추가 마법 피해를 준다.\n계수 (주문력): 60%. 3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능:\n대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.\n계수 (추가 공격력): 35%.\n지속 시간: 2초.\n재사용 대기시간: 16~4초 (레벨에 따라).",
+    "checks": [
+      {
+        "label": "schema-contract",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:6711e750ed78eec1466e:0",
+    "question": "아리 체력템 사면 공격력으로 전환돼?",
+    "sources": [
+      {
+        "file": "scripts/llm/mechanic-schema/cases.ts",
+        "row": "c01"
+      }
+    ],
+    "before": "**플레이할 때**\n상대 회복량 때문에 콤보 한 세트가 지워지면 모렐로노미콘으로 치유를 깎습니다. E는 처음 맞는 대상 하나에만 걸립니다. W는 대상을 자동으로 고르는 스킬이라 우선순위를 알고 써야 합니다.\n\n**상대할 때**\n아리의 주력 피해는 Q 현혹의 구슬, W 여우불과 E 매혹이 마법이므로 마법 저항력이 먼저입니다.",
+    "after": "현재 자료에서 이 스킬의 능력치 전환 효과는 확인할 수 없어요.",
+    "checks": [
+      {
+        "label": "schema-contract",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:f88da84b6ef9d10cbd18:3",
+    "question": "기본 능력치는 알았으니 오공 스킬 구성 전체를 듣고 싶어",
+    "sources": [
+      {
+        "file": "research/llm-evals/request-classifier/comparison/flows.json",
+        "row": "ko_KR:scope-switch"
+      }
+    ],
+    "before": "체력 (1레벨)는 오공 610입니다.\n\n체력 재생 (5초당) (1레벨)는 오공 3.5입니다.\n\n방어력 (1레벨)는 오공 31입니다.\n\n마법 저항력 (1레벨)는 오공 28입니다.\n\n공격력 (1레벨)는 오공 66입니다.\n\n공격 속도 (1레벨)는 오공 0.69입니다.\n\n이동 속도 (1레벨)는 오공 340입니다.",
+    "after": "오공의 스킬 구성입니다.\n- **P 바위 피부:** 오공이 챔피언 및 몬스터와 싸우는 동안 방어력이 점점 높아지며 최대 체력 재생 효과를 얻습니다.\n- **Q 파쇄격:** 오공의 다음 공격 사거리가 증가하고 추가 피해를 입히며 맞은 대상의 방어력이 몇 초 동안 낮아집니다.\n- **W 분신 전사:** 오공이 잠깐 동안 투명 상태가 되고 지정한 방향으로 돌진하며 근처 적을 공격하는 분신을 남깁니다.\n- **E 근두운 급습:** 오공이 대상에게 돌격하는 동시에 자신의 분신을 만들어 대상 근처에 있는 적들에게 추가 공격을 하여 피해를 줍니다.\n- **R 회전격:** 오공이 여의봉을 늘린 후 빙빙 휘두르며 이동 속도가 증가합니다. 적중당한 적은 피해를 입고 공중에 떠오릅니다.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c4094fba7ba28fc23ff2:0",
+    "question": "How should I sequence Wukong spells during a short trade",
+    "sources": [
+      {
+        "file": "research/llm-evals/request-classifier/comparison/flows.json",
+        "row": "en_US:advice"
+      }
+    ],
+    "before": "**Playing it**\nDash in with E (Nimbus Strike) and buffer Q (Crushing Blow) during the dash. Use W Warrior Trickster immediately after starting R Cyclone.\n\n**Playing against it**\nW (Warrior Trickster) leaves a clone in place while the real Wukong turns invisible and retreats in another direction. E (Nimbus Strike) is a targeted dash, so it cannot be dodged; staying outside its range is the way to prevent Wukong from engaging.",
+    "after": "Wukong's combos by situation. AA means basic attack.\n\n- Dash in with E (Nimbus Strike) and buffer Q (Crushing Blow) during the dash. Because Q empowers your next basic attack, activating it before you arrive lets the attack land immediately; waiting until you arrive delays it.\n- Use W Warrior Trickster immediately after starting R Cyclone. The clone will mimic Cyclone, while Wukong can retreat invisibly and avoid the enemy’s counterattack.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:295c729fdbc29eccb7b9:4",
+    "question": "想同时了解齐天大圣的基本信息和技能概要",
+    "sources": [
+      {
+        "file": "research/llm-evals/request-classifier/comparison/flows.json",
+        "row": "zh_CN:scope-switch"
+      }
+    ],
+    "before": "齐天大圣 的技能构成：\n- **P 金刚不坏:** 孙悟空在与英雄或野怪战斗时，会获得可叠加的护甲和最大生命值回复。\n- **Q 粉碎打击:** 孙悟空的下次攻击获得额外距离，造成额外伤害，并暂时减少敌人的护甲。\n- **W 真假猴王:** 孙悟空变为隐形状态并朝着一个方向突进，同时留下一个会攻击附近敌人的分身。\n- **E 腾云突击:** 孙悟空突进至一名目标敌人处，并放出幻象来攻击他目标附近的敌人，同时对每个被击中的敌人造成伤害。\n- **R 大闹天宫:** 孙悟空伸展金箍棒不断旋转，并获得移动速度。 击中敌人时会造成伤害和击飞效果。",
+    "after": "齐天大圣 · 战士 · 坦克 · 近战\n\n**基础属性（1级）**\n- 生命值: 610\n- 生命回复: 3.5\n- 护甲: 31\n- 魔抗: 28\n- 攻击力: 66\n- 攻速: 0.69\n- 移动速度: 340\n\n**技能**\n- **P 金刚不坏:** 孙悟空在与英雄或野怪战斗时，会获得可叠加的护甲和最大生命值回复。\n- **Q 粉碎打击:** 孙悟空的下次攻击获得额外距离，造成额外伤害，并暂时减少敌人的护甲。\n- **W 真假猴王:** 孙悟空变为隐形状态并朝着一个方向突进，同时留下一个会攻击附近敌人的分身。\n- **E 腾云突击:** 孙悟空突进至一名目标敌人处，并放出幻象来攻击他目标附近的敌人，同时对每个被击中的敌人造成伤害。\n- **R 大闹天宫:** 孙悟空伸展金箍棒不断旋转，并获得移动速度。 击中敌人时会造成伤害和击飞效果。",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:e50b9cdac297e230b29f:0",
+    "question": "齐天大圣短换血时技能应该按什么顺序连起来",
+    "sources": [
+      {
+        "file": "research/llm-evals/request-classifier/comparison/flows.json",
+        "row": "zh_CN:advice"
+      }
+    ],
+    "before": "**使用时**\n进场时用E腾云突击贴近目标，并在突进途中提前按下Q粉碎打击。 开启R大闹天宫后立刻使用W真假猴王，留下的分身会模仿大招，相当于在同一位置再转一次。\n\n**对线时**\n齐天大圣使用W真假猴王时会在原地留下分身，本体隐身后向另一个方向撤退。 E腾云突击是无法躲避的指向性突进，唯一的应对办法是站在其施放距离之外。",
+    "after": "齐天大圣的情境连招。AA表示普攻。\n\n- 进场时用E腾云突击贴近目标，并在突进途中提前按下Q粉碎打击。Q会强化下一次普攻，提前开启就能在抵达时立刻打出强化普攻；等到抵达后再按Q，就会慢一拍。\n- 开启R大闹天宫后立刻使用W真假猴王，留下的分身会模仿大招，相当于在同一位置再转一次。R和W连着用收益最高，齐天大圣还能借W进入隐身状态撤离，躲开对手的反击。",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c677ace9369214eeec22:0",
+    "question": "오공이 가진 능력과 기본 능력치를 같이 소개해 줄래?",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "0"
+      }
+    ],
+    "before": "오공의 스킬 구성입니다.\n- **P 바위 피부:** 오공이 챔피언 및 몬스터와 싸우는 동안 방어력이 점점 높아지며 최대 체력 재생 효과를 얻습니다.\n- **Q 파쇄격:** 오공의 다음 공격 사거리가 증가하고 추가 피해를 입히며 맞은 대상의 방어력이 몇 초 동안 낮아집니다.\n- **W 분신 전사:** 오공이 잠깐 동안 투명 상태가 되고 지정한 방향으로 돌진하며 근처 적을 공격하는 분신을 남깁니다.\n- **E 근두운 급습:** 오공이 대상에게 돌격하는 동시에 자신의 분신을 만들어 대상 근처에 있는 적들에게 추가 공격을 하여 피해를 줍니다.\n- **R 회전격:** 오공이 여의봉을 늘린 후 빙빙 휘두르며 이동 속도가 증가합니다. 적중당한 적은 피해를 입고 공중에 떠오릅니다.",
+    "after": "오공 · 전사 · 탱커 · 근접\n\n**기본 능력치 (1레벨)**\n- 체력: 610\n- 체력 재생: 3.5\n- 방어력: 31\n- 마법 저항력: 28\n- 공격력: 66\n- 공격 속도: 0.69\n- 이동 속도: 340\n\n**스킬**\n- **P 바위 피부:** 오공이 챔피언 및 몬스터와 싸우는 동안 방어력이 점점 높아지며 최대 체력 재생 효과를 얻습니다.\n- **Q 파쇄격:** 오공의 다음 공격 사거리가 증가하고 추가 피해를 입히며 맞은 대상의 방어력이 몇 초 동안 낮아집니다.\n- **W 분신 전사:** 오공이 잠깐 동안 투명 상태가 되고 지정한 방향으로 돌진하며 근처 적을 공격하는 분신을 남깁니다.\n- **E 근두운 급습:** 오공이 대상에게 돌격하는 동시에 자신의 분신을 만들어 대상 근처에 있는 적들에게 추가 공격을 하여 피해를 줍니다.\n- **R 회전격:** 오공이 여의봉을 늘린 후 빙빙 휘두르며 이동 속도가 증가합니다. 적중당한 적은 피해를 입고 공중에 떠오릅니다.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:6eda8385c68eda956ee6:0",
+    "question": "Give me Wukong background basics alongside a rundown of his abilities",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "6"
+      }
+    ],
+    "before": "Wukong's abilities:\n- **P Stone Skin:** Wukong gains stacking armor and max health regeneration while fighting champions and monsters.\n- **Q Crushing Blow:** Wukong's next attack gains attack range, deals bonus damage, and reduces the target's armor for a few seconds.\n- **W Warrior Trickster:** Wukong becomes Invisible and dashes in a direction, leaving behind a clone that will attack nearby enemies.\n- **E Nimbus Strike:** Wukong dashes to a targeted enemy and sends out images to attack enemies near his target, dealing damage to each enemy struck.\n- **R Cyclone:** Wukong's extends his staff and spins it around repeatedly, gaining Move Speed. Enemies struck take damage and are knocked up.",
+    "after": "Wukong · Fighter · Tank · melee\n\n**Base stats (level 1)**\n- Health: 610\n- Health regen: 3.5\n- Armor: 31\n- Magic resist: 28\n- Attack damage: 66\n- Attack speed: 0.69\n- Move speed: 340\n\n**Abilities**\n- **P Stone Skin:** Wukong gains stacking armor and max health regeneration while fighting champions and monsters.\n- **Q Crushing Blow:** Wukong's next attack gains attack range, deals bonus damage, and reduces the target's armor for a few seconds.\n- **W Warrior Trickster:** Wukong becomes Invisible and dashes in a direction, leaving behind a clone that will attack nearby enemies.\n- **E Nimbus Strike:** Wukong dashes to a targeted enemy and sends out images to attack enemies near his target, dealing damage to each enemy struck.\n- **R Cyclone:** Wukong's extends his staff and spins it around repeatedly, gaining Move Speed. Enemies struck take damage and are knocked up.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:84256ac84f90c7c46279:0",
+    "question": "I want every base attribute Wukong starts with in one table",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "9"
+      }
+    ],
+    "before": "Wukong's abilities:\n- **P Stone Skin:** Wukong gains stacking armor and max health regeneration while fighting champions and monsters.\n- **Q Crushing Blow:** Wukong's next attack gains attack range, deals bonus damage, and reduces the target's armor for a few seconds.\n- **W Warrior Trickster:** Wukong becomes Invisible and dashes in a direction, leaving behind a clone that will attack nearby enemies.\n- **E Nimbus Strike:** Wukong dashes to a targeted enemy and sends out images to attack enemies near his target, dealing damage to each enemy struck.\n- **R Cyclone:** Wukong's extends his staff and spins it around repeatedly, gaining Move Speed. Enemies struck take damage and are knocked up.",
+    "after": "Health (level 1) is Wukong 610.\n\nHealth regen (per 5s) (level 1) is Wukong 3.5.\n\nArmor (level 1) is Wukong 31.\n\nMagic resist (level 1) is Wukong 28.\n\nAttack damage (level 1) is Wukong 66.\n\nAttack speed (level 1) is Wukong 0.69.\n\nMove speed (level 1) is Wukong 340.",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:86ac96908d5f720231c2:0",
+    "question": "齐天大圣所有初始属性放在一张表里给我",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "15"
+      }
+    ],
+    "before": "**使用时**\nR大闹天宫旋转期间会提高移动速度，开启后应走向对手聚集的位置，而非站在原地。 W真假猴王会让齐天大圣短暂隐身并突进，同时在原地留下不会移动的分身。\n\n**对线时**\n齐天大圣使用W真假猴王时会在原地留下分身，本体隐身后向另一个方向撤退。 E腾云突击是无法躲避的指向性突进，唯一的应对办法是站在其施放距离之外。",
+    "after": "生命值 (1级)为 齐天大圣 610。\n\n生命回复 (每5秒) (1级)为 齐天大圣 3.5。\n\n护甲 (1级)为 齐天大圣 31。\n\n魔抗 (1级)为 齐天大圣 28。\n\n攻击力 (1级)为 齐天大圣 66。\n\n攻速 (1级)为 齐天大圣 0.69。\n\n移动速度 (1级)为 齐天大圣 340。",
+    "checks": [
+      {
+        "label": "replyScope",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:61ce805ff1c3daba7d31:0",
+    "question": "오공 문도 박사 1레벨 체럭은 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0105"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:fe6309991e579ae9d0b2:0",
+    "question": "그럼 체럭은 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0106"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:9358542215b181a4299b:0",
+    "question": "럭스 1레벨 기본 스탯 체럭은 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0107"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 (1레벨)는 580입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:3c6e9732afcc2e3fbab2:0",
+    "question": "오공 문도 박사 6레벨 최대 체려 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0108"
+      }
+    ],
+    "before": "**조심할 것**\n오공 R 회전격은 여러 명을 한꺼번에 공중에 띄우고 최대 체력 비례 피해를 줍니다. 뭉쳐 서 있으면 그대로 당하므로 오공의 R이 준비된 동안에는 간격을 벌려 섭니다. 재사용으로 한 번 더 돈다는 점, 그리고 분신이 궁을 따라 한다는 점까지 계산해 물러날 거리를 잡습니다.\n\n**아이템**\n오공의 주력 피해는 Q 파쇄격, W 분신 전사와 R 회전격이 물리이므로 방어력이 먼저입니다.\n\n**싸우는 법**\n딜 교환 기본형은 Q로 둔화를 걸고 붙어 → W를 켜고 → E 강화 평타를 넣는 순서입니다. W는 켠 직후 짧은 구간에서 받는 피해를 가장 많이 저장하므로 상대 콤보가 들어오기 직전에 켜야 값이 가장 큽니다. W는 폭발하는 순간 주변에 적 챔피언이 있어야 저장한 회색 체력을 온전히 되돌려 받습니다. 지속시간이 끝나도록 방치하지 말고, 상대가 폭발 범위 안에 들어와 있는 순간을 직접 골라 재사용합니다.",
+    "after": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:b2898b3a536daf5ca863:0",
+    "question": "그럼 최대 체려 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0109"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:331593ebfb7716c3b635:0",
+    "question": "럭스 6레벨 기본 스탯 최대 체려 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0110"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 (6레벨)는 971.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c535b30f650874453f3b:0",
+    "question": "럭스 18레벨 기본 스탯 base HP please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0116"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 (18레벨)는 2263입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:9fc372f7b0e8212a65be:0",
+    "question": "럭스 1레벨 기본 스탯 生命值有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0119"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 (1레벨)는 580입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:f166ef6c82dad7ce4682:0",
+    "question": "오공 문도 박사 6레벨 기본 생명력 수치는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0120"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:810c46a5e9f694737d1c:0",
+    "question": "그럼 기본 생명력 수치는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0121"
+      }
+    ],
+    "before": "### 아이템 등급\n| 등급 | 특징 | 데이터 판정 |\n|---|---|---|\n| 소모품·장신구 | 물약, 와드 | `Consumable`, `Trinket` 태그 |\n| 시작 아이템 | 도란 계열, 정글 아이템, 여신의 눈물 | 이름과 가격, 조합 관계 |\n| 기본 | 조합 재료 | 상위 조합만 있고 하위 조합 없음 |\n| 서사 | 부가 효과가 붙기 시작 | 하위·상위 조합 모두 있음 |\n| 전설 | 최종 아이템 | 상위 조합 없음 |\n| 장화 | 이동 속도 전용 계열 | `Boots` 태그 |\n\n_v26.19_",
+    "after": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:99ff3f7630fffc614924:0",
+    "question": "오공 문도 박사 6레벨 체력 회븍량 수치",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0231"
+      }
+    ],
+    "before": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "after": "체력 재생 (5초당) (6레벨)는 문도 박사 8.98 > 오공 6.07입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:ca2d7b5f61ceca8ce810:0",
+    "question": "그럼 체력 회븍량 수치",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0232"
+      }
+    ],
+    "before": "체력 (6레벨)는 문도 박사 1046.85 > 오공 1001.05입니다.",
+    "after": "체력 재생 (5초당) (6레벨)는 문도 박사 8.98 > 오공 6.07입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c603334e890bfa757641:0",
+    "question": "럭스 6레벨 기본 스탯 체력 회븍량 수치",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0233"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 재생 (5초당) (6레벨)는 7.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c773f057e321f2cb2259:0",
+    "question": "오공 문도 박사 11레벨 체잰이 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0234"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "체력 재생 (5초당) (11레벨)는 문도 박사 11.39 > 오공 9.2입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:09ad2c5c3a3ea77af610:0",
+    "question": "그럼 체잰이 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0235"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "체력 재생 (5초당) (11레벨)는 문도 박사 11.39 > 오공 9.2입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:5bba5563360e4b5f01f8:0",
+    "question": "럭스 11레벨 기본 스탯 체잰이 얼마야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0236"
+      }
+    ],
+    "before": "체력 (11레벨)는 럭스 1448.73입니다.\n\n체력 재생 (5초당) (11레벨)는 럭스 10.33입니다.\n\n방어력 (11레벨)는 럭스 66.63입니다.\n\n마법 저항력 (11레벨)는 럭스 41.41입니다.\n\n공격력 (11레벨)는 럭스 82.96입니다.\n\n공격 속도 (11레벨)는 럭스 0.85입니다.\n\n이동 속도 (11레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 재생 (5초당) (11레벨)는 10.33입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:edba93e6d5682eb5f93a:0",
+    "question": "오공 문도 박사 18레벨 기본 스탯에서 가만히 있을 때 피가 차는 양",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0237"
+      }
+    ],
+    "before": "체력 (18레벨)는 문도 박사 2391 > 오공 2293입니다.\n\n체력 재생 (5초당) (18레벨)는 문도 박사 15.5 > 오공 14.55입니다.\n\n방어력 (18레벨)는 오공 110.9 > 문도 박사 108.5입니다.\n\n마법 저항력 (18레벨)는 문도 박사 68.1 > 오공 62.85입니다.\n\n공격력 (18레벨)는 오공 125.5 > 문도 박사 103.5입니다.\n\n공격 속도 (18레벨)는 문도 박사 1.05 > 오공 1.04입니다.\n\n이동 속도 (18레벨)는 문도 박사 345 > 오공 340입니다.",
+    "after": "체력 재생 (5초당) (18레벨)는 문도 박사 15.5 > 오공 14.55입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:05b3902d35b0dd6116fe:0",
+    "question": "그럼 기본 스탯에서 가만히 있을 때 피가 차는 양",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0238"
+      }
+    ],
+    "before": "체력 (18레벨)는 문도 박사 2391 > 오공 2293입니다.\n\n체력 재생 (5초당) (18레벨)는 문도 박사 15.5 > 오공 14.55입니다.\n\n방어력 (18레벨)는 오공 110.9 > 문도 박사 108.5입니다.\n\n마법 저항력 (18레벨)는 문도 박사 68.1 > 오공 62.85입니다.\n\n공격력 (18레벨)는 오공 125.5 > 문도 박사 103.5입니다.\n\n공격 속도 (18레벨)는 문도 박사 1.05 > 오공 1.04입니다.\n\n이동 속도 (18레벨)는 문도 박사 345 > 오공 340입니다.",
+    "after": "체력 재생 (5초당) (18레벨)는 문도 박사 15.5 > 오공 14.55입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:6d230d7b34609463140e:0",
+    "question": "럭스 18레벨 기본 스탯 기본 스탯에서 가만히 있을 때 피가 차는 양",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0239"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 재생 (5초당) (18레벨)는 14.85입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:f20fc488bdb49020f4eb:0",
+    "question": "오공 문도 박사 1레벨 health regneration please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0240"
+      }
+    ],
+    "before": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.",
+    "after": "체력 재생 (5초당) (1레벨)는 문도 박사 7 > 오공 3.5입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:6cc76b270543f0b8f8fd:0",
+    "question": "그럼 health regneration please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0241"
+      }
+    ],
+    "before": "체력 (1레벨)는 문도 박사 640 > 오공 610입니다.",
+    "after": "체력 재생 (5초당) (1레벨)는 문도 박사 7 > 오공 3.5입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:bc433218a1b9eaaff21f:0",
+    "question": "럭스 1레벨 기본 스탯 health regneration please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0242"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 체력 재생 (5초당) (1레벨)는 5.5입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:21e4567ed1f2e0af10c5:0",
+    "question": "오공 문도 박사 6레벨 기본 방오력 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0354"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "방어력 (6레벨)는 문도 박사 49.78 > 오공 49.57입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:e502f6d6d8b374045fce:0",
+    "question": "그럼 기본 방오력 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0355"
+      }
+    ],
+    "before": "### 아이템 등급\n| 등급 | 특징 | 데이터 판정 |\n|---|---|---|\n| 소모품·장신구 | 물약, 와드 | `Consumable`, `Trinket` 태그 |\n| 시작 아이템 | 도란 계열, 정글 아이템, 여신의 눈물 | 이름과 가격, 조합 관계 |\n| 기본 | 조합 재료 | 상위 조합만 있고 하위 조합 없음 |\n| 서사 | 부가 효과가 붙기 시작 | 하위·상위 조합 모두 있음 |\n| 전설 | 최종 아이템 | 상위 조합 없음 |\n| 장화 | 이동 속도 전용 계열 | `Boots` 태그 |\n\n_v26.19_",
+    "after": "방어력 (6레벨)는 문도 박사 49.78 > 오공 49.57입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:980fcd1bd80cd5ed90ff:0",
+    "question": "럭스 18레벨 기본 스탯 physical armor please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0362"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스 방어력 (18레벨)는 109.4입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:9790c31ecc0364f3fa28:0",
+    "question": "럭스 1레벨 기본 스탯 护甲有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0365"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 방어력 (1레벨)는 21입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c207e2007eb3b37e05cb:0",
+    "question": "오공 문도 박사 1레벨 마법 저향력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0474"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "마법 저항력 (1레벨)는 문도 박사 29 > 오공 28입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:7c39125aec266ff8ee83:0",
+    "question": "그럼 마법 저향력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0475"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "마법 저항력 (1레벨)는 문도 박사 29 > 오공 28입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:28a32fca60e4ad85f49c:0",
+    "question": "럭스 1레벨 기본 스탯 마법 저향력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0476"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 마법 저항력 (1레벨)는 30입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:8d7a7ce551b7126df492:0",
+    "question": "럭스 6레벨 기본 스탯 마법 저항럭 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0479"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 마법 저항력 (6레벨)는 35.14입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:fdec6fe00e0dee38f4ea:0",
+    "question": "오공 문도 박사 18레벨 magic resitance please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0483"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "마법 저항력 (18레벨)는 문도 박사 68.1 > 오공 62.85입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:51c095749f86f217ae5b:0",
+    "question": "그럼 magic resitance please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0484"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "마법 저항력 (18레벨)는 문도 박사 68.1 > 오공 62.85입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:e7fdc0d345b4c4ce2d64:0",
+    "question": "럭스 18레벨 기본 스탯 magic resitance please",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0485"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스 마법 저항력 (18레벨)는 52.1입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:1c20dbe83b954cef4ee4:0",
+    "question": "럭스 6레벨 기본 스탯 기본 마방은 얼마?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0491"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 마법 저항력 (6레벨)는 35.14입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:f34e8144dd215358d346:0",
+    "question": "오공 문도 박사 1레벨 공걱력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0597"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "공격력 (1레벨)는 오공 66 > 문도 박사 61입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:b428dac403ff39dd8f47:0",
+    "question": "그럼 공걱력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0598"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격력 (1레벨)는 오공 66 > 문도 박사 61입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:29bf73fb4c7d2c72248d:0",
+    "question": "럭스 1레벨 기본 스탯 공걱력은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0599"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 공격력 (1레벨)는 54입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:f2c6ef75914bd5d961e2:0",
+    "question": "오공 문도 박사 6레벨 공격럭 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0600"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "공격력 (6레벨)는 오공 79.83 > 문도 박사 70.88입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:ae01b0f91137dca48f73:0",
+    "question": "그럼 공격럭 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0601"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격력 (6레벨)는 오공 79.83 > 문도 박사 70.88입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:6d014c4758e094aae52c:0",
+    "question": "럭스 6레벨 기본 스탯 공격럭 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0602"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 공격력 (6레벨)는 67.03입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:d37491f3529abb53d59a:0",
+    "question": "럭스 1레벨 기본 스탯 攻击力有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0611"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 공격력 (1레벨)는 54입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:b1c2e26aee1fef709481:0",
+    "question": "럭스 6레벨 기본 스탯 AD가 얼마인지 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0614"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 공격력 (6레벨)는 67.03입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:e4d98ae7dfef24ca3fb9:0",
+    "question": "오공 문도 박사 1레벨 공걱속도는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0720"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "공격 속도 (1레벨)는 오공 0.69 > 문도 박사 0.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:ec2b151440f8fcb8aac1:0",
+    "question": "그럼 공걱속도는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0721"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격 속도 (1레벨)는 오공 0.69 > 문도 박사 0.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:74da9bccdd52d41b5551:0",
+    "question": "럭스 1레벨 기본 스탯 공걱속도는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0722"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 공격 속도 (1레벨)는 0.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:d7ee1b38c626a4bc267e:0",
+    "question": "오공 문도 박사 6레벨 공격속두 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0723"
+      }
+    ],
+    "before": "요청한 내용에 맞는 근거를 찾지 못했어요. 내 챔피언과 상대, 궁금한 상황을 한 가지씩 알려 주세요. 예: ‘아리로 제드 상대할 때 E 없이 궁 대응은?’ 또는 ‘오공 1레벨 공속’.",
+    "after": "공격 속도 (6레벨)는 오공 0.77 > 문도 박사 0.76입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:50e5886d9361d80d3d99:0",
+    "question": "그럼 공격속두 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0724"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "공격 속도 (6레벨)는 오공 0.77 > 문도 박사 0.76입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:86cc31b82bb76d3be3c7:0",
+    "question": "럭스 6레벨 기본 스탯 공격속두 알려줘",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0725"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 공격 속도 (6레벨)는 0.75입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:8a61683ae7d6cfcca8d8:0",
+    "question": "럭스 1레벨 기본 스탯 攻击速度有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0734"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 공격 속도 (1레벨)는 0.67입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c0f9d7072d6e7d7c3615:0",
+    "question": "럭스 6레벨 기본 스탯 평타 공격 속도 스탯은?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0737"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "럭스 공격 속도 (6레벨)는 0.75입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:fd2a4bd9817c28201373:0",
+    "question": "오공 문도 박사 1레벨 이동속두는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0843"
+      }
+    ],
+    "before": "**조심할 것**\n오공 R 회전격은 여러 명을 한꺼번에 공중에 띄우고 최대 체력 비례 피해를 줍니다. 뭉쳐 서 있으면 그대로 당하므로 오공의 R이 준비된 동안에는 간격을 벌려 섭니다. 재사용으로 한 번 더 돈다는 점, 그리고 분신이 궁을 따라 한다는 점까지 계산해 물러날 거리를 잡습니다.\n\n**아이템**\n오공의 주력 피해는 Q 파쇄격, W 분신 전사와 R 회전격이 물리이므로 방어력이 먼저입니다.\n\n**싸우는 법**\n딜 교환 기본형은 Q로 둔화를 걸고 붙어 → W를 켜고 → E 강화 평타를 넣는 순서입니다. W는 켠 직후 짧은 구간에서 받는 피해를 가장 많이 저장하므로 상대 콤보가 들어오기 직전에 켜야 값이 가장 큽니다. W는 폭발하는 순간 주변에 적 챔피언이 있어야 저장한 회색 체력을 온전히 되돌려 받습니다. 지속시간이 끝나도록 방치하지 말고, 상대가 폭발 범위 안에 들어와 있는 순간을 직접 골라 재사용합니다.",
+    "after": "이동 속도 (1레벨)는 문도 박사 345 > 오공 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:a5657f44c06790239f70:0",
+    "question": "그럼 이동속두는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0844"
+      }
+    ],
+    "before": "이 요청은 여기서 해결하기 어려워요. 롤 스킬·능력치·룬·아이템 조회와 근거가 있는 상성 조언을 도와줄 수 있어요. 예: ‘오공 공속’, ‘아리로 제드 상대법’. 계정·결제 문제는 공식 고객지원에 문의해 주세요.",
+    "after": "이동 속도 (1레벨)는 문도 박사 345 > 오공 340입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:122e6065a7e9d7a6fe89:0",
+    "question": "럭스 1레벨 기본 스탯 이동속두는?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0845"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 이동 속도 (1레벨)는 330입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:17be4673c137f79ae55e:0",
+    "question": "럭스 1레벨 기본 스탯 移动速度有多少？",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q0857"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스 이동 속도 (1레벨)는 330입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:084ff274372507e3db4f:0",
+    "question": "럭스 1레벨 기본 스탯 궁으로 체력이 얼마나 회복되냐",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1073"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "럭스의 상점 가격은 블루 정수 225 또는 260 RP입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:9cb0a060a894b5fde4ba:0",
+    "question": "럭스 11레벨 기본 스탯 Q 공격 속도 증가량",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1079"
+      }
+    ],
+    "before": "체력 (11레벨)는 럭스 1448.73입니다.\n\n체력 재생 (5초당) (11레벨)는 럭스 10.33입니다.\n\n방어력 (11레벨)는 럭스 66.63입니다.\n\n마법 저항력 (11레벨)는 럭스 41.41입니다.\n\n공격력 (11레벨)는 럭스 82.96입니다.\n\n공격 속도 (11레벨)는 럭스 0.85입니다.\n\n이동 속도 (11레벨)는 럭스 330입니다.",
+    "after": "쿨 10 · 속박 · 주문력 75%",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:d6988eb7bb81445ed3a8:0",
+    "question": "럭스 18레벨 기본 스탯 마나리젠은 얼마야",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1082"
+      }
+    ],
+    "before": "체력 (18레벨)는 럭스 2263입니다.\n\n체력 재생 (5초당) (18레벨)는 럭스 14.85입니다.\n\n방어력 (18레벨)는 럭스 109.4입니다.\n\n마법 저항력 (18레벨)는 럭스 52.1입니다.\n\n공격력 (18레벨)는 럭스 110.1입니다.\n\n공격 속도 (18레벨)는 럭스 1.01입니다.\n\n이동 속도 (18레벨)는 럭스 330입니다.",
+    "after": "럭스의 상점 가격은 블루 정수 225 또는 260 RP입니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:c83e69333332b1340bf9:0",
+    "question": "럭스 1레벨 기본 스탯 피흡이 얼마나 붙어",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1085"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "생명력 흡수 수치는 아직 확인할 수 없어요.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:f3f1125ff801b812def6:0",
+    "question": "럭스 6레벨 기본 스탯 체력 물약 회복량",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1088"
+      }
+    ],
+    "before": "체력 (6레벨)는 럭스 971.05입니다.\n\n체력 재생 (5초당) (6레벨)는 럭스 7.67입니다.\n\n방어력 (6레벨)는 럭스 41.54입니다.\n\n마법 저항력 (6레벨)는 럭스 35.14입니다.\n\n공격력 (6레벨)는 럭스 67.03입니다.\n\n공격 속도 (6레벨)는 럭스 0.75입니다.\n\n이동 속도 (6레벨)는 럭스 330입니다.",
+    "after": "15초에 걸쳐 120의 체력을 회복합니다.\n15초에 걸쳐 120의 체력을 회복합니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:e7c2ea8c65aef057f657:0",
+    "question": "럭스 1레벨 기본 스탯 그거 마법 피해야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1109"
+      }
+    ],
+    "before": "체력 (1레벨)는 럭스 580입니다.\n\n체력 재생 (5초당) (1레벨)는 럭스 5.5입니다.\n\n방어력 (1레벨)는 럭스 21입니다.\n\n마법 저항력 (1레벨)는 럭스 30입니다.\n\n공격력 (1레벨)는 럭스 54입니다.\n\n공격 속도 (1레벨)는 럭스 0.67입니다.\n\n이동 속도 (1레벨)는 럭스 330입니다.",
+    "after": "**플레이할 때**\n패시브 광채는 럭스의 피해 스킬이 남긴 표식을 평타로 터뜨려 추가 마법 피해를 넣습니다. Q 빛의 속박은 처음 맞은 적 둘까지 온전히 속박합니다.\n\n**상대할 때**\nQ 빛의 속박이 럭스 조합의 전부입니다. R 최후의 섬광은 본 빔 전에 붉은 조준선이 먼저 뜹니다.",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:74da65a5c750c91284ef:0",
+    "question": "럭스 11레벨 기본 스탯 회복되는 스킬이 있어?",
+    "sources": [
+      {
+        "file": "research/llm-evals/stat-query/ml/questions.jsonl",
+        "row": "q1115"
+      }
+    ],
+    "before": "체력 (11레벨)는 럭스 1448.73입니다.\n\n체력 재생 (5초당) (11레벨)는 럭스 10.33입니다.\n\n방어력 (11레벨)는 럭스 66.63입니다.\n\n마법 저항력 (11레벨)는 럭스 41.41입니다.\n\n공격력 (11레벨)는 럭스 82.96입니다.\n\n공격 속도 (11레벨)는 럭스 0.85입니다.\n\n이동 속도 (11레벨)는 럭스 330입니다.",
+    "after": "아니요. 럭스에게는 회복 스킬이 없습니다.\n\n_v26.19_",
+    "checks": [
+      {
+        "label": "statQuery",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:3710590e4f1544071803:2",
+    "question": "团战该干什么",
+    "sources": [
+      {
+        "file": "research/llm-evals/kev-agent/a-set.jsonl",
+        "row": "d073"
+      }
+    ],
+    "before": "我是内置于本应用的英雄联盟助手。我依据英雄、技能、装备与判定规则的资料作答。全部在你的设备上运行，对话不会发送到任何地方。",
+    "after": "**团战**\n站在队友身后，用邪恶小法师 E 扭曲空间封住暗黑元首的退路或敌方的突进路线；敌人被困或晕眩时，命中邪恶小法师 W 黑暗物质和 Q 黑暗祭祀。 避开暗黑元首 Q 暗黑法球铺下多个法球的位置，提防暗黑元首 R 能量倾泻；邪恶小法师 R 能量爆裂留给已损失生命值的敌方输出位收尾。",
+    "checks": [
+      {
+        "label": "legacy-target",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:383ba1beca68372aa0e6:1",
+    "question": "团战该干什么",
+    "sources": [
+      {
+        "file": "research/llm-evals/kev-agent/a-set.jsonl",
+        "row": "d082"
+      }
+    ],
+    "before": "我是内置于本应用的英雄联盟助手。我依据英雄、技能、装备与判定规则的资料作答。全部在你的设备上运行，对话不会发送到任何地方。",
+    "after": "**团战**\n从后方用经过未来守护者 E 加速之门加速的未来守护者 Q 电能震荡发起团战。 避开连接山隐之焰 R 熔铸之神的召唤灵体与山隐之焰的直线，只有在敌方阵型散乱时才用锤形态短暂进场。 打完连招后，用未来守护者 R 墨丘利之炮 / 墨丘利之锤切换为炮形态撤退。",
+    "checks": [
+      {
+        "label": "legacy-target",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:ad77ad03b641cb7cdf54:1",
+    "question": "那出装思路是什么",
+    "sources": [
+      {
+        "file": "research/llm-evals/kev-agent/act-test.jsonl",
+        "row": "40"
+      }
+    ],
+    "before": "我是内置于本应用的英雄联盟助手。我依据英雄、技能、装备与判定规则的资料作答。全部在你的设备上运行，对话不会发送到任何地方。",
+    "after": "**出装**\n先堆护甲，应对诺克萨斯之手 P 出血、Q 大杀四方和 W 致残打击的物理伤害。 考虑到诺克萨斯之手 E 无情铁手的护甲穿透和 R 诺克萨斯断头台的真实伤害，也要补充生命值。 如果诺克萨斯之手 Q 大杀四方的回复是问题，就早点买死刑宣告，或提前做出凡性的提醒。",
+    "checks": [
+      {
+        "label": "act-flow",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline:8baf47d394e32712ebd3:1",
+    "question": "你刚说的能再讲细一点吗",
+    "sources": [
+      {
+        "file": "research/llm-evals/kev-agent/act-test.jsonl",
+        "row": "45"
+      }
+    ],
+    "before": "我是内置于本应用的英雄联盟助手。我依据英雄、技能、装备与判定规则的资料作答。全部在你的设备上运行，对话不会发送到任何地方。",
+    "after": "**对线**\n迅捷斥候 E 毒性射击只要命中一次普攻，毒伤就会持续，因此还没准备好贴近时就站在射程之外。 用控制守卫检查视野盲区的草丛，或绕开草丛，等迅捷斥候现身后再反击。\n\n**连招**\n如果破绽出现在侧面或身后，且迅捷斥候 Q 致盲吹箭已交掉，就用无双剑姬 Q 破空斩切入破绽，接普攻和无双剑姬 E 夺命连刺的强化攻击。 如果能用无双剑姬 E 夺命连刺的第二次攻击命中新破绽，就能同时打出暴击和破绽伤害。 如果破绽在正面，先用普攻和无双剑姬 E 夺命连刺处理，把无双剑姬 Q 破空斩留作追击或撤离。\n\n**进场时机**\n趁迅捷斥候 Q 致盲吹箭交掉时切入。 如果迅捷斥候用 W 小莫快跑拉开距离，就不要在他凭借该效果逃跑时勉强追击，等到再次有机会贴近时再用无双剑姬 Q 破空斩。 资料中未提及迅捷斥候拥有可由无双剑姬 W 劳伦特心眼刀格挡并反制眩晕的定身效果，因此把无双剑姬 W 劳伦特心眼刀用于格挡迅捷斥候 Q 致盲吹箭等关键攻击。",
+    "checks": [
+      {
+        "label": "act-flow",
+        "pass": true
+      },
+      {
+        "label": "nonempty",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:f6db0828772aab4bd217:0",
+    "question": "오공 기본 연계 방법 추천",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-test.json",
+        "row": "combo:◇ 기본 연계 방법 추천"
+      }
+    ],
+    "before": "advice",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:d21c056a2d6ea10bc797:0",
+    "question": "앞에서 본 둘 마저만 다시 비교해줄래",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "stats:앞에서 본 둘 마저만 다시 비교해줄래"
+      }
+    ],
+    "before": "other",
+    "after": "stats",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:b4024d5e4d2d0fe83995:0",
+    "question": "오공가 가진 패시브랑 액티브들을 전부 요약해줘",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "skills:◇가 가진 패시브랑 액티브들을 전부 요약해줘"
+      }
+    ],
+    "before": "overview",
+    "after": "skills",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:3b6b9767c1ae7562be18:0",
+    "question": "기본 능력치는 알았으니 오공 스킬 구성 전체를 듣고 싶어",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "skills:기본 능력치는 알았으니 ◇ 스킬 구성 전체를 듣고 싶어"
+      }
+    ],
+    "before": "statsAll",
+    "after": "skills",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:761f367628ab5354b252:0",
+    "question": "오공로 딜교하려면 스킬을 어떤 순서로 이어 써",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "combo:◇로 딜교하려면 스킬을 어떤 순서로 이어 써"
+      }
+    ],
+    "before": "advice",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:c14bffa58afe233cfac8:0",
+    "question": "I'd like to understand Wukong as a character overall",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "overview:I'd like to understand ◇ as a character overall"
+      }
+    ],
+    "before": "counterplay",
+    "after": "overview",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:e8a566de950e8998546f:0",
+    "question": "How should I sequence Wukong spells during a short trade",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "combo:How should I sequence ◇ spells during a short trade"
+      }
+    ],
+    "before": "counterplay",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:91ae89e319dcf29df8f3:0",
+    "question": "Suggest a Wukong combo with auto attacks between spells",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "combo:Suggest a ◇ combo with auto attacks between spells"
+      }
+    ],
+    "before": "counterplay",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:f312a264c281202bfd16:0",
+    "question": "Give me one Wukong combo that uses Flash",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "combo:Give me one ◇ combo that uses Flash"
+      }
+    ],
+    "before": "overview",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:ecbc8492a954035faa06:0",
+    "question": "How am I supposed to use this assistant",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "identity:How am I supposed to use this assistant"
+      }
+    ],
+    "before": "counterplay",
+    "after": "identity",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:8c15eb7299489fb30caa:0",
+    "question": "属性我知道了，想看孙悟空整套技能说明",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "skills:属性我知道了，想看◇整套技能说明"
+      }
+    ],
+    "before": "statsAll",
+    "after": "skills",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:84a572346d13bef99c9b:0",
+    "question": "孙悟空短换血时技能应该按什么顺序连起来",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "combo:◇短换血时技能应该按什么顺序连起来"
+      }
+    ],
+    "before": "skills",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:36f99f64bd74f0c56d91:0",
+    "question": "给一个孙悟空配合闪现的连招吧",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-challenge.json",
+        "row": "combo:给一个◇配合闪现的连招吧"
+      }
+    ],
+    "before": "counterplay",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:58a478a2aa1fac53bdcf:0",
+    "question": "다시 능력치를 나열하지 않아도 돼. 오공 패시브부터 궁까지 듣자",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-negation.json",
+        "row": "skills:다시 능력치를 나열하지 않아도 돼. ◇ 패시브부터 궁까지 듣자"
+      }
+    ],
+    "before": "statsAll",
+    "after": "skills",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:e960488d9bb589548ff3:0",
+    "question": "챔피언을 어떻게 쓰냐는 뜻이 아니었어. 너를 쓰는 방법을 묻는 거야",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-negation.json",
+        "row": "identity:챔피언을 어떻게 쓰냐는 뜻이 아니었어. 너를 쓰는 방법을 묻는 거야"
+      }
+    ],
+    "before": "counterplay",
+    "after": "identity",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:8253d19d4ac77d9ca0ef:0",
+    "question": "You need not list the attributes again. Take me through Wukong passive to ultimate",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-negation.json",
+        "row": "skills:You need not list the attributes again. Take me through ◇ passive to ultimate"
+      }
+    ],
+    "before": "counterplay",
+    "after": "skills",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:4ac4342b92aafd488389:0",
+    "question": "We already covered Wukong starting stats, and I am switching the topic to abilities",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-negation.json",
+        "row": "skills:We already covered ◇ starting stats, and I am switching the topic to abilities"
+      }
+    ],
+    "before": "statsAll",
+    "after": "skills",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:ea3ccc222687622ecb3e:0",
+    "question": "不用再列属性了，带我了解孙悟空从被动到大招的效果",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-negation.json",
+        "row": "skills:不用再列属性了，带我了解◇从被动到大招的效果"
+      }
+    ],
+    "before": "statsAll",
+    "after": "skills",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:619bafe75ffd8ad92779:0",
+    "question": "In a quick exchange, which Wukong buttons should follow each other?",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "combo:In a quick exchange, which Wukong buttons should follow each other?"
+      }
+    ],
+    "before": "advice",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:780273352a4dfbb71f10:0",
+    "question": "把齐天大圣的基础资料和技能概况一起介绍一下",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "overview:把齐天大圣的基础资料和技能概况一起介绍一下"
+      }
+    ],
+    "before": "skills",
+    "after": "overview",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "fast-scope:6b394bf076168092c684:0",
+    "question": "齐天大圣短时间换血时先按哪个再按哪个？",
+    "sources": [
+      {
+        "file": "scripts/llm/offline-classifier/request-scope-holdout.json",
+        "row": "combo:齐天大圣短时间换血时先按哪个再按哪个？"
+      }
+    ],
+    "before": "ability",
+    "after": "combo",
+    "checks": [
+      {
+        "label": "scope",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline-item:c25c49141e12928250de:0",
+    "question": "제어 와드 하위 템 뭐야?",
+    "sources": [
+      {
+        "file": "research/llm-evals/item-aliases/queries.jsonl",
+        "row": "79"
+      }
+    ],
+    "before": "NONE",
+    "after": "2055",
+    "checks": [
+      {
+        "label": "item-id",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline-item:37e2ddcff5078caf349b:0",
+    "question": "what does Youmuu's Ghostblade do?",
+    "sources": [
+      {
+        "file": "research/llm-evals/item-aliases/queries.jsonl",
+        "row": "153"
+      }
+    ],
+    "before": "NONE",
+    "after": "3142",
+    "checks": [
+      {
+        "label": "item-id",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline-item:3694298ade4427764925:0",
+    "question": "破败被动是什么",
+    "sources": [
+      {
+        "file": "research/llm-evals/item-aliases/queries.jsonl",
+        "row": "202"
+      }
+    ],
+    "before": "NONE",
+    "after": "3153",
+    "checks": [
+      {
+        "label": "item-id",
+        "pass": true
+      }
+    ]
+  },
+  {
+    "key": "offline-item:f9e8768be429d282c60c:0",
+    "question": "中亚能挡什么",
+    "sources": [
+      {
+        "file": "research/llm-evals/item-aliases/queries.jsonl",
+        "row": "204"
+      }
+    ],
+    "before": "NONE",
+    "after": "3157",
+    "checks": [
+      {
+        "label": "item-id",
+        "pass": true
+      }
+    ]
+  }
+]

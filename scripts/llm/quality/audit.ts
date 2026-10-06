@@ -13,6 +13,13 @@ export function inventoryChanges(current: Array<{ file: string; localOnly?: bool
     removed: locked.filter(row => !row.localOnly && !present.has(row.file)) };
 }
 
+export function refreshedRecords<T extends { file: string; localOnly?: boolean }>(records: T[], previous: T[]): T[] {
+  const current = new Map(records.map(record => [record.file, record]));
+  const known = new Set(previous.map(record => record.file));
+  return previous.flatMap(record => current.has(record.file) ? [current.get(record.file)!] : record.localOnly ? [record] : [])
+    .concat(records.filter(record => !known.has(record.file)));
+}
+
 export function audit(refresh = false) {
   const bank = buildBank();
   const roots = ["research", "scripts/llm", "tests/unit", "tests/data", "tests/fixtures", "e2e", `${WORKFLOW}/datasets/qa`, `${WORKFLOW}/datasets/archive`];
@@ -28,13 +35,18 @@ export function audit(refresh = false) {
   }
   const unknown = [...new Set(files.filter(file => file.startsWith(`${EVALS}/`)).map(file => file.split("/")[2]))].filter(family => !families[family]);
   if (unknown.length) throw new Error(`Unregistered evaluation families: ${unknown.join(", ")}`);
-  const records = files.map(file => {
+  let records = files.map(file => {
     const role = inputFiles.has(file) ? "registered-input" : /(?:^tests\/|^e2e\/|test_.*\.py$)/.test(file) ? "executable-test"
       : /\.(?:ts|py|sh)$/.test(file) ? "runner-or-support" : /\.(?:md|html|txt)$/.test(file) ? "protocol-or-review"
       : /train|seed|examples|corpus|\.bin$|head\.json|char\.json|context\.json/.test(file) ? "training-or-model-artifact" : "historical-result-or-audit";
     const family = file.startsWith(`${EVALS}/`) ? file.split("/")[2] : file.split("/")[1];
     return { file, sha256: fileHash(file), localOnly: localOnly.has(file), role, workflow: families[family] ?? "node/Python tests or runner dependency" };
   });
+  const target = path.join(ROOT, WORKFLOW, "inventory.json");
+  if (refresh && fs.existsSync(target)) {
+    const previous = JSON.parse(fs.readFileSync(target, "utf8")) as { files: typeof records };
+    records = refreshedRecords(records, previous.files);
+  }
   const trackedManual = archivedInputs(files.filter(file => !localOnly.has(file)), bank);
   const manual = refresh ? archivedInputs(files, bank)
     : readRows(`${WORKFLOW}/datasets/review/archive.jsonl`) as unknown as QualityStory[];
@@ -42,7 +54,6 @@ export function audit(refresh = false) {
     files: records, retired: retiredFiles(), bankHash: digest(bank), manualHash: digest(manual), trackedManualHash: digest(trackedManual),
     automaticStories: bank.filter(story => !story.manual).length, registeredTurns: bank.reduce((sum, story) => sum + story.turns.length, 0),
     manualArchiveStories: manual.length, suites: [...new Set(bank.flatMap(story => story.suites))] };
-  const target = path.join(ROOT, WORKFLOW, "inventory.json");
   if (refresh) {
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, JSON.stringify(result, null, 2) + "\n");

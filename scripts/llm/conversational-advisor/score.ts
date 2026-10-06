@@ -22,6 +22,11 @@ export function matchesTarget(actual: Target, want: Target): boolean {
 }
 
 /** 질문의 checks를 값/주제 검사로 옮긴 것. 이 점수는 정답률 전체나 사실성 평점이 아니다. */
+export function healingDoesNotStack(text: string): boolean {
+  return /중첩.{0,15}(?:않|안|불가)|(?:않|안).{0,15}중첩|합산(?:되지|하지)\s*않/.test(text)
+    && !/(?:중첩|합산)(?:이|은)?\s*(?:됩니다|돼요|된다|가능)|합산하여/.test(text);
+}
+
 export function checksFor(id: string, turn: number): ContentCheck[] {
   const key = `${id}:${turn}`;
   const checks: Record<string, ContentCheck[]> = {
@@ -29,7 +34,7 @@ export function checksFor(id: string, turn: number): ContentCheck[] {
     "s07:0": [includes("12초와 가속 50의 결과는 8초", /8\s*초/)],
     "s08:0": [includes("점멸 기본 300초", /300\s*초/)],
     "s09:0": [includes("점화 시전과 정복자 2중첩", /정복자.*(?:2|두).*중첩/)],
-    "s10:0": [includes("치유 감소율 비중첩", /중첩.{0,15}(?:않|안|불가)|(?:않|안).{0,15}중첩/)],
+    "s10:0": [{ label: "치유 감소율 비중첩", test: healingDoesNotStack }],
     "s11:0": [includes("고정량/퍼센트 구분", /고정/), includes("퍼센트 관통", /퍼센트|비율|%/)],
     "s12:0": [includes("관통 순서", /관통|방어력/), includes("수치 예시 결과 60", /60/)],
     "s13:0": [includes("치유 감소와 보호막 구분", /보호막(?:은|을|도|에는?)?\s*(?:줄|감소|깎).{0,10}(?:않|안)|(?:적용|영향).{0,8}(?:않|없).*보호막|회복.{0,30}보호막.{0,20}별개/)],
@@ -41,7 +46,7 @@ export function checksFor(id: string, turn: number): ContentCheck[] {
     "d05:1": [includes("물리 기본 공격에 관통 적용", /물리|물리 피해/), includes("관통 관계 직답", /적용/)],
     "d05:2": [includes("가렌 R은 고정 피해/관통 무효", /고정/), includes("관통 무효", /늘어나지|적용.{0,8}(?:않|안)|효과.{0,8}(?:없|않)/)],
     "d05:3": [includes("가렌 Q는 물리 관통 적용", /물리.*관통.*적용/)],
-    "d06:3": [includes("치유 감소율 비중첩", /중첩.{0,15}(?:않|안|불가)|(?:않|안).{0,15}중첩/)],
+    "d06:3": [{ label: "치유 감소율 비중첩", test: healingDoesNotStack }],
     "d07:1": [includes("1랭크 R 130초", /130\s*초/)],
     "d07:2": [includes("가속 50 적용 86.67초", /86\.67\s*초/)],
     "d07:3": [includes("가속 100 정정 65초", /65\s*초/)],

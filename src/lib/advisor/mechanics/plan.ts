@@ -17,7 +17,7 @@ export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, 
   let question = normalizeMechanicQuestion(input.text);
   if (memory.mechanic && /(?:패시브|때문에|으로).*오른.*체력/.test(question)) question = question.replace(/오른/g, "증가한");
   const resolved = resolveQuestion(question, data);
-  if (buildItemCard(data, question) || asksSkillHandling(question) || asksScenarioAdvice(question)
+  if (buildItemCard(data, question) || asksSkillHandling(question) && questionTopic(question) !== "resource" || asksScenarioAdvice(question)
     || data.runes.some(rune => rune.name.length > 1 && question.includes(rune.name))
     || data.summoners.some(spell => spell.name.length > 1 && !["회복", "방어막", "부활"].includes(spell.name) && question.includes(spell.name))) return undefined;
   const attackOutcome = /(?:평타|공격|[한두세네1234]\s*(?:대|발))/.test(question) && /취소|쏘|치|맞|적중/.test(question);
@@ -39,10 +39,15 @@ export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, 
   const slot = resolved.slot ?? explicitPassive ?? (remembered && (inherit || topic || /패시브|주문력/.test(question)) ? abilitySlot(remembered.abilityId)
     : topic === "conversion" || attackOutcome || topic === "shield" ? "P" : undefined);
   const conditional = topic === "conversion" || attackOutcome || topic === "shield" && /쿨.*(?:남|안|돌|끝)|아직.*쿨/.test(question);
-  if (!slot || !topic && !resolved.slot && !explicitPassive && !attackOutcome || !conditional && !explicitPassive && resolved.spellFocus?.focus !== undefined && resolved.spellFocus.focus !== "effect"
+  if (!slot || !topic && !resolved.slot && !explicitPassive && !attackOutcome || !conditional && topic !== "resource" && !explicitPassive && resolved.spellFocus?.focus !== undefined && resolved.spellFocus.focus !== "effect"
     || /(?:\d+\s*레벨|능력치|기본\s*스탯)/.test(question) && !resolved.slot && !explicitPassive) return undefined;
   const ability = data.abilityRules.get(`${champion}.${slot}`);
   if (!ability || ability.job.patch !== data.patch || ability.job.slotRole === "interface_only") return undefined;
+  if (topic === "conversion" && /전환|변환|치환|바뀌|공격력|주문력/.test(question)
+    && !ability.draft.rules.some(rule => rule.effects.some(effect => effect.kind === "stat_conversion"))) {
+    return { plan: { type: "code", answer: { kind: "text", text: "현재 자료에서 이 스킬의 능력치 전환 효과는 확인할 수 없어요." } },
+      memory: { abilityId: ability.job.id, sourceHash: ability.job.sourceHash, topic, ruleIndices: [] } };
+  }
   // 변신/무기 선택이 없는 질문에 특정 형태의 효과를 섞지 않는다.
   if (ability.job.variants.some(variant => variant.id !== "base")) return undefined;
   const mentions = resolved.mentions.map(m => question.slice(m.index, m.index + m.length));

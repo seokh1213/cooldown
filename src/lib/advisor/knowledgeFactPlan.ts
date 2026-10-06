@@ -10,6 +10,7 @@ import { buildSpellAnswer } from "./spellAnswer";
 import type { ResolvedQuestion } from "./resolvedQuestion";
 import type { AnswerPlan, PlanContext, ControlContext } from "./planTypes";
 import type { Language } from "@/i18n";
+import { interfaceSlotPlan } from "./abilityBoundaryPlan";
 
 function smiteRestriction(effects: Array<SpellCrowdControl | undefined>, lang: Language): string {
   const i = lang === "ko_KR" ? 0 : lang === "en_US" ? 1 : 2;
@@ -67,6 +68,8 @@ export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, 
   const subject = query ? controlSubject(resolved, ctx, memory) : undefined;
   const champions = subject ? subject.champions.map(id => ctx.data!.cardById.get(id)!).filter(Boolean) : resolved.champions;
   const slot = subject?.slot ?? resolved.slot;
+  const boundary = interfaceSlotPlan({ champions, slot }, ctx);
+  if (boundary) return boundary;
   const contextual = subject ? `${champions.map(card => card.name).join(" ")} ${slot ?? ""} ${resolved.text}` : resolved.text;
   const interaction = curatedInteraction(contextual, ctx, subject);
   if (asksSkillHandling(resolved.text) || asksScenarioAdvice(resolved.text) || resolved.matchup) return undefined;
