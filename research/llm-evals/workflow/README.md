@@ -2,7 +2,7 @@
 
 모델·분류기·문서·대화 규칙을 바꿀 때 이 폴더의 질문 은행과 공통 실행기를 사용한다. 과거 답변을 정답으로 재사용하지 않는다. 앱 전체 검사와 모델 단독 수치 추출 점수는 따로 읽는다.
 
-2026-10-06 최종 조사에서 37개 평가 묶음, 등록된 4,076개 질문 턴과 현행 브랜치 이력의 삭제 기록 83개를 확인했다. 기대값이 없는 과거 질문 1,919개는 별도 의미 검토 은행에 보존한다. 최근 원본·실행 결과는 `inventory.json`과 `reports`에서 확인한다.
+2026-10-06 최종 조사에서 37개 평가 묶음, 등록된 4,076개 질문 턴과 현행 브랜치 이력의 삭제 기록 83개를 확인했다. 기대값이 없는 과거 질문 952개는 별도 의미 검토 은행에 보존한다. 혼합 자료의 train/dev 입력 967개는 평가 수집에서 제외했다. 자동 질문 은행은 유지한다. 최근 원본·실행 결과는 `inventory.json`과 `reports`에서 확인한다.
 
 ## 데이터 구조
 
@@ -49,13 +49,13 @@ pnpm llm:test --profile infrastructure --out research/.cache/quality/infrastruct
 
 CI도 위 baseline 비교 명령을 실행하고 결과·검토 패킷을 14일 보관한다. `advisor-quality.yml`을 PR·브랜치 검사에서 호출하고 master push에서도 실행한다. PR·브랜치의 기존 `test` 작업은 이 회귀 검사를 통과해야 실행된다. master의 검사 결과는 자동 배포 작업과 별개로 보고된다. baseline에는 이미 존재하는 실패도 남긴다. CI는 새로운 회귀를 막는 검사이며, 실패를 포함한 현행 상태를 품질 승인하지 않는다. 자료·질문·채점기를 변경하면 기존 baseline 비교를 거부하므로 변경 이유와 실패 목록을 검토하고 전체 실측으로 기준을 갱신한다.
 
-기준을 갱신할 때는 `--baseline` 없이 전체 회귀를 실행하고 `summary.json`의 `infrastructurePassed: true`, `logs/coverage.json`의 누락 0건, 실패·수동 검토 목록을 확인한다. 기존 실패와 정답 변경 이유를 기록한 뒤 완결된 `results.json`을 `reports/regression/baseline.json`으로 복사한다. 점수만 적거나 중간 저장 파일을 기준으로 삼지 않는다. 모델 비교 기준은 별도의 완결된 `--profile model` 실측이다.
+기준을 갱신할 때는 `--baseline` 없이 전체 회귀를 실행하고 `summary.json`의 `infrastructurePassed: true`, `logs/coverage.json`의 누락 0건, 실패·수동 검토 목록을 확인한다. 기존 실패와 정답 변경 이유를 기록한 뒤 완결된 `results.json`을 `reports/regression/baseline.json`으로 복사하고 같은 실행의 `provenance.json`도 그 폴더에 보존한다. 점수만 적거나 중간 저장 파일을 기준으로 삼지 않는다. 모델 비교 기준은 별도의 완결된 `--profile model` 실측이다.
 
 `infrastructure`는 같은 Node·타입 검사에 Colab 백업·복원·export·학습 도구의 Python 검사와 원격 실행 도구, 생성 결과 재개 검사를 더한다. Python 의존성은 `uv`의 별도 환경을 사용한다.
 
 ## 실제 브라우저 모델 비교
 
-Mac의 설치된 Chrome과 WebGPU를 사용한다. 초기 ONNX 외부 가중치·토크나이저는 모델 설정의 원본 위치에서 내려받으며 Chrome 프로필은 실행 전용 `.cache/quality/browser`다. 이미 사용 중인 포트나 WebGPU 실패를 다른 판정기로 대체하지 않는다.
+Mac의 설치된 Chrome과 WebGPU를 사용한다. 초기 ONNX 외부 가중치·토크나이저는 모델 설정의 원본 위치에서 내려받으며 Chrome 프로필은 각 체크아웃의 실행 전용 `.cache/quality/browser`다. 실행기가 필요한 ORT 파일을 준비하고 빈 포트를 사용하며 모델 동시 비교는 서로 다른 동결 체크아웃에서 실행한다. 이미 사용 중인 포트나 WebGPU 실패를 다른 판정기로 대체하지 않는다.
 
 ```sh
 pnpm llm:test --profile model \
@@ -69,7 +69,7 @@ pnpm llm:test --profile model \
 
 두 실행 사이에 질문·데이터·채점기를 바꾸면 비교를 거부한다. 앱 코드 변경 자체의 비교는 가능하지만 데이터와 채점기는 고정해야 한다. 원본 그래프에는 QA gate가 없으므로 `--base-weights`가 필요하다. 두 실행 모두 현행 앱 코드를 쓰며, 과거 master 앱 전체와의 비교로 해석하면 안 된다.
 
-분류기와 앱 경로를 함께 바꿀 때는 새 채점기·은행을 동결한 master 앱에도 적용해 대조군을 먼저 재측정한다. 후보 실행에 `--pipeline-baseline MASTER_RESULTS_JSON`을 사용하면 게임 데이터·QA 웨이트를 고정하고 `public/models/offline/request-v1.bin`과 `.json`의 교체만 허용한다. 출처 목록이 실측 해시와 다르거나 다른 데이터가 변하면 거부하며 허용한 두 파일의 해시 차이를 비교 결과에 명시한다. `--baseline`의 엄격한 동일 데이터 조건은 바꾸지 않는다. 상세 수정과 미해결 실패는 [요청 분류·답변 회귀 수정 기록](reports/repair-2026-10-06/README.md)을 따른다.
+분류기와 앱 경로를 함께 바꿀 때는 새 채점기·은행을 동결한 master 앱에도 적용해 대조군을 먼저 재측정한다. 후보 실행에 `--pipeline-baseline MASTER_RESULTS_JSON`을 사용하면 게임 데이터·QA 웨이트를 고정하고 `public/models/offline/request-v1.bin`과 `.json`의 교체, `public/models/offline/stat-v1.json`의 추가·교체만 허용한다. 출처 목록이 실측 해시와 다르거나 다른 데이터가 변하면 거부하며 허용한 파일의 해시 차이를 비교 결과에 명시한다. `--baseline`의 엄격한 동일 데이터 조건은 바꾸지 않는다. 상세 수정과 미해결 실패는 [요청 분류·답변 회귀 수정 기록](reports/repair-2026-10-06/README.md)을 따른다.
 
 교체 그래프는 파일 내용의 SHA-256마다 다른 주소로 제공한다. 같은 Chrome 캐시에서 원본과 후보를 차례로 실행해도 이전 그래프를 재사용하지 않는다. 실행 도중 그래프 파일이 바뀌면 실패한다.
 
@@ -157,3 +157,5 @@ pnpm llm:test:ui --out research/.cache/quality/ui
 새 실행기가 대체한 `evaluate_combined_qa.ts`, `evaluate_legacy_conversation.ts`와 단순 re-export `app_sft_evidence.ts`는 제거했다. 앱과 학습 근거 선택 모두 `src/lib/advisor/answerEvidence.ts`를 사용한다. 기존 개별 연구 실행기는 독자적인 학습·export·분석 목적이 있어 유지하며, 옛 결과와 삭제된 파일의 커밋은 `inventory.json`에서 찾는다.
 
 실행 기록·체크포인트·브라우저 캐시는 `.cache`에 보관하고 모델·인증·런타임 정보를 질문 은행이나 Vault에 넣지 않는다. 완료한 작업의 전용 프로세스·브라우저·서버만 회수하며 공용 Ollama·사용자 브라우저·다른 실험은 종료하지 않는다.
+
+2026-10-07 후속 수정은 [공통 능력치 분류·승인 근거와 남은 실패 추적](reports/completion-2026-10-07/README.md)을 따른다. 전체 회귀 279개와 실제 WebGPU 22개가 개선됐고 회귀는 0개지만 실패 816개·수동 20개는 남아 있다. Qwen 웨이트를 다시 학습한 결과가 아니다.
