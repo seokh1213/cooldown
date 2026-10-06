@@ -18,6 +18,7 @@ import { classifyRequestInput } from "./classifyRequestInput";
 import { requestIntentPlan } from "./requestIntentPlan";
 import { answerChampionIds } from "./answer";
 import { statQueryFromAnswer } from "./statQuery";
+import { mechanicsContinuation } from "./mechanicsContinuation";
 
 export type { DialogueVariant } from "./dialogueRequest";
 export { splitDialogueQuestions } from "./dialogueRequest";
@@ -50,7 +51,7 @@ export async function planPreparedDialogue(request: DialogueRequest, ctx: PlanCo
     return { parts: [{ question: typeof input === "string" ? input : input.text, plan: await planAnswer(input, ctx, deps) }], memory };
   }
   for (const input of request.questions) {
-    const resolved = await classifyRequestInput(resolveQuestion(input, ctx.data), deps);
+    const resolved = mechanicsContinuation(await classifyRequestInput(resolveQuestion(input, ctx.data), deps), memory, ctx);
     const question = resolved.text;
     const prior = priorMatchup(resolved, request.memory);
     if (prior) {

@@ -16,6 +16,7 @@ export function loadMechanicsNotes(patch = resolvePatchVersion()): MechanicsInde
   for (const note of data.notes) {
     if (seen.has(note.id) || !note.sources?.length || !note.reviewedAt || !note.questionGroups?.length
       || note.questionGroups.some(group => !group.length) || !note.localized?.en_US || !note.localized.zh_CN
+      || note.topic && (!note.topic.id || !note.topic.terms.length || note.topic.terms.some(term => !term))
       || note.controls?.some(type => !(type in CROWD_CONTROL))
       || note.subjects?.some(subject => !subject.champion || !/^[PQWER]$/.test(subject.slot))) {
       throw new Error(`Invalid mechanics note: ${note.id}`);

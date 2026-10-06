@@ -38,7 +38,7 @@ export interface DialogueMemory {
   compared?: string[];
   stat?: ChampionStatQuery;
   item?: string;
-  rule?: { id?: string; title: string; text: string };
+  rule?: { id?: string; title: string; text: string; context?: Pick<ControlContext, "champions" | "slot"> };
   numeric?: { haste?: number; rank?: number };
   /** 승인 규칙의 주제·사용자가 제시한 수치/조건. 출처가 바뀌면 이어 쓰지 않는다. */
   mechanic?: MechanicMemory;
@@ -66,6 +66,10 @@ function validMemory(memory: DialogueMemory, data: AdvisorData): boolean {
   if (memory.matchups && (!Array.isArray(memory.matchups) || memory.matchups.some(pair => !data.cardById.has(pair.mine) || !data.cardById.has(pair.enemy) || !Array.isArray(pair.conditions)))) return false;
   if (memory.matchupGroup && (!Array.isArray(memory.matchupGroup) || memory.matchupGroup.some(pair => !data.cardById.has(pair.mine) || !data.cardById.has(pair.enemy)))) return false;
   if (memory.champion && !data.cardById.has(memory.champion)) return false;
+  const ruleContext = memory.rule?.context;
+  if (ruleContext && (!Array.isArray(ruleContext.champions)
+    || ruleContext.champions.some(id => !data.cardById.has(id))
+    || ruleContext.slot && !/^[PQWER]$/.test(ruleContext.slot))) return false;
   if (memory.combo && (!data.cardById.has(memory.combo.champion) || !Array.isArray(memory.combo.unavailable)
     || memory.combo.unavailable.some(slot => !["Q", "W", "E", "R", "점멸"].includes(slot)))) return false;
   if (memory.spell && !data.cardById.get(memory.spell.champion)?.spells.some(s => s.slot === memory.spell!.slot)) return false;
@@ -175,7 +179,8 @@ function rememberPlan(memory: DialogueMemory, plan: AnswerPlan): DialogueMemory 
   if (plan.type === "card" || (plan.type === "code" && typeof plan.answer !== "string")) return rememberAnswer(memory, plan.answer as Exclude<typeof plan.answer, string>);
   if (plan.type === "code" && typeof plan.answer === "string") {
     const title = plan.knowledge?.title ?? /^###\s+([^\n]+)/.exec(plan.answer)?.[1];
-    if (title) return { ...memory, active: "rule", rule: { id: plan.knowledge?.id, title, text: plan.answer } };
+    if (title) return { ...memory, active: "rule", rule: { id: plan.knowledge?.id, title, text: plan.answer,
+      context: plan.knowledge?.context ? structuredClone(plan.knowledge.context) : undefined } };
   }
   return memory;
 }

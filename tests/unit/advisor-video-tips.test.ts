@@ -4,6 +4,7 @@ import fs from "node:fs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import fixtures from "../../research/video-notes/mangdasu-20261006/questions.json";
+import coverage from "../../research/video-notes/mangdasu-20261006/coverage-questions.json";
 import source from "../../research/video-notes/mangdasu-20261006/extracted.json";
 import collection from "../../knowledge/video-tips.json";
 import { loadMechanicsNotes } from "../../scripts/llm/lib/mechanicsNotes";
@@ -33,12 +34,12 @@ function check(text: string, fixture: { expected: string[]; forbidden?: string[]
   assert.doesNotMatch(html, /https?:|youtube|mangdasu|wiki\.league|참고 자료|출처/);
 }
 
-for (const fixture of fixtures.cases) test(`영상 팁 실제 대화: ${fixture.lang} ${fixture.question}`, async () => {
+for (const fixture of [...fixtures.cases, ...coverage.cases]) test(`영상 팁 실제 대화: ${fixture.lang} ${fixture.question}`, async () => {
   const { reply } = await answerDialogue(fixture.question, context(fixture.lang as Lang), deps);
   check(reply.text, fixture);
 });
 
-for (const session of fixtures.sessions) test(`팁 후속 질문과 저장 복원: ${session.id}`, async () => {
+for (const session of [...fixtures.sessions, ...coverage.sessions]) test(`팁 후속 질문과 저장 복원: ${session.id}`, async () => {
   const ctx = context(session.lang as Lang);
   for (const turn of session.turns) {
     const { reply } = await answerDialogue(turn.question, ctx, deps);
@@ -68,6 +69,10 @@ test("영상별 주장과 분리 검수한 판정의 포함·보류 상태와 �
   }
   assert.ok(loadMechanicsNotes("26.19").some(note => note.evidence));
   assert.ok(!loadMechanicsNotes("26.20").some(note => note.evidence));
+  const covered = new Set(coverage.cases.flatMap(fixture => fixture.claimIds));
+  for (const review of collection.claimReviews.filter(review => review.status === "included")) {
+    assert.ok(covered.has(review.claimId), `Untested adopted claim: ${review.claimId}`);
+  }
 });
 
 test("동일 대화 코드에서 노트 추가 효과를 측정한다", async () => {

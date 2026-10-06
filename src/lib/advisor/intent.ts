@@ -77,7 +77,7 @@ const HANGUL_NAME_END =
  *
  * 돌려주는 것은 [시작, 길이] 다. 못 찾으면 undefined.
  */
-function locate(text: string, name: string, wordStart = false, isAlias = false): [number, number] | undefined {
+function locate(text: string, name: string, wordStart = false): [number, number] | undefined {
   if (/^[ -~]+$/.test(name)) {
     const chunks = name.split(/[\s'.]+/).filter(Boolean).map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
     if (!chunks.length) return undefined;
@@ -85,9 +85,8 @@ function locate(text: string, name: string, wordStart = false, isAlias = false):
     const found = new RegExp(`(?<![A-Za-z])${chunks.join("[\\s'.]*")}(?:'?s)?(?![A-Za-z])`, "i").exec(text);
     return found ? [found.index, found[0].length] : undefined;
   }
-  // 한 글자 이름(렐·진·퀸)과 두 글자 이름(오른·아리)은 앞뒤 경계를 모두 본다.
-  // "진짜" 의 진, "오른쪽" 의 오른, "메아리" 의 아리가 이름으로 잡혔다.
-  if (/^[가-힣]$/.test(name) || (wordStart && /^[가-힣]{2}$/.test(name) && !isAlias)) {
+  // 짧은 이름과 두 글자 별명은 뒤 경계도 본다. '마이너스'의 '마이'를 이름으로 읽지 않는다.
+  if (/^[가-힣]$/.test(name) || (wordStart && /^[가-힣]{2}$/.test(name))) {
     const found = new RegExp(`(?<![가-힣])${name}(?=${HANGUL_NAME_END})`).exec(text);
     return found ? [found.index, name.length] : undefined;
   }
@@ -167,7 +166,7 @@ function findMentions(data: AdvisorData, text: string): ChampionMention[] {
   const nickEntries = [...nicknames(data.cards)].sort((a, b) => b[0].length - a[0].length);
   for (const [nick, card] of nickEntries) {
     if (mentions.some((m) => m.card.id === card.id)) continue;
-    take(card, locate(masked, nick, true, true));
+    take(card, locate(masked, nick, true));
   }
 
   /*
@@ -183,7 +182,7 @@ function findMentions(data: AdvisorData, text: string): ChampionMention[] {
     if (mentions.some((m) => m.card.id === id)) continue;
     const card = data.cardById.get(id);
     // 아이템 이름을 가린 글에서 찾는다. "破败王"(비에고)이 "破败王者之刃"(몰락한 왕의 검) 안에서 잡히지 않게.
-    if (card) take(card, locate(masked, alias, true, true));
+    if (card) take(card, locate(masked, alias, true));
   }
 
   /*

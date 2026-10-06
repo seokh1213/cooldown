@@ -35,6 +35,7 @@ export interface MechanicsSection {
   sources?: string[];
   reviewedAt?: string;
   tags?: string[];
+  topic?: { id: string; terms: string[] };
   evidence?: { collection: string; claimIds: string[]; patch: string };
   localized?: Partial<Record<"en_US" | "zh_CN", { title: string; text: string }>>;
 }

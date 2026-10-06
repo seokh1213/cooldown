@@ -26,7 +26,7 @@ export type AnswerPlan = (
    * `pending` 이면 오타 후보를 물은 것이라 고르면 이 질문을 고쳐 다시 묻는다.
    * `knowledge` 는 본문 서식에 제목이 없어도 자료의 주제를 기억하는 데 쓴다.
    */
-  | { type: "code"; answer: AdvisorAnswer | string; knowledge?: { id: string; title: string }; notice?: string; related?: Array<{ id: string; title: string }>; pending?: true }
+  | { type: "code"; answer: AdvisorAnswer | string; knowledge?: { id: string; title: string; context?: Pick<ControlContext, "champions" | "slot"> }; notice?: string; related?: Array<{ id: string; title: string }>; pending?: true }
   /** 오타 하나를 고쳐 다시 묻는다 */
   | { type: "retry"; question: string; notice?: string }
   /** 모델에게 넘긴다(`respond`) */

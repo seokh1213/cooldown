@@ -8,8 +8,11 @@ async function openAdvisor(page: Page) {
   await expect(input.or(skip)).toBeVisible();
   if (await skip.isVisible()) await skip.click();
   return async (question: string) => {
+    const copies = page.getByRole("button", { name: "답변 복사", exact: true });
+    const previous = await copies.count();
     await input.fill(question);
     await page.getByRole("button", { name: "보내기", exact: true }).click();
+    await expect(copies).toHaveCount(previous + 1);
     await expect(page.getByRole("button", { name: "중단", exact: true })).toBeHidden();
   };
 }
@@ -29,6 +32,16 @@ for (const width of [390, 1280]) {
       ["그럼 두꺼운 벽도 돼?", "벽 두께"],
       ["다리우스 W는 치명타 터져 안 터져?", "W의 추가 피해"],
       ["갈리오 평타는 피흡이 적용돼 안 돼?", "갈리오 P"],
+      ["워윅 R에도 피흡 적용돼?", "생명력 흡수 적용"],
+      ["잭스 W 추가 마법 피해도 피흡 돼?", "적용되지 않습니다"],
+      ["그럼 기본 평타 부분은?", "기본 공격 본체"],
+      ["카밀 Q 2타 고정 피해 피흡 돼?", "생명력 흡수가 적용됩니다"],
+      ["마이 E 고정 피해는?", "생명력 흡수 대상이 아닙니다"],
+      ["리븐 P 치명타 판정은 툴팁에 있어?", "툴팁"],
+      ["아리 E 맞으면 이속은?", "65%"],
+      ["그럼 룰루 W 변이는?", "60만큼 감소"],
+      ["가렌 Q로 벽 넘을 때 고연포 사거리 아이템이 도움 돼?", "사거리 증가"],
+      ["고정 마관 효율은 상대 마저가 낮을 때 더 좋아?", "낮을수록"],
     ]) {
       await ask(question);
       await copy.click();
