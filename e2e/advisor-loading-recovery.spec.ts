@@ -22,6 +22,28 @@ test("늦은 기기 확인이 모델 없이 시작한 채팅 입력창을 없애
 
 test.use({ serviceWorkers: "block" });
 
+test("기기 확인 뒤 모델을 지원하지 않아도 키보드 포커스를 유지한다", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "gpu", { value: { requestAdapter: () => new Promise(resolve => {
+      Object.assign(window, { finishUnsupportedCheck: () => resolve(null) });
+    }) } });
+  });
+  await page.goto("./");
+  const trigger = page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true });
+  await trigger.focus();
+  await page.keyboard.press("Enter");
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await expect.poll(() => dialog.evaluate(node => node.contains(document.activeElement))).toBe(true);
+  await page.evaluate(() => (window as unknown as { finishUnsupportedCheck(): void }).finishUnsupportedCheck());
+  await expect(page.getByRole("textbox", { name: "롤 질문 입력", exact: true })).toBeVisible();
+  await expect.poll(() => dialog.evaluate(node => node.contains(document.activeElement))).toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+});
+
 const widgetModule = /\/AdvisorWidget(?:-[^/]+\.js|\.tsx)(?:\?.*)?$/;
 const launcher = "롤 지식 도우미 열기";
 const questionLabel = "롤 질문 입력";

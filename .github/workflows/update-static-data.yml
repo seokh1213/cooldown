@@ -231,7 +231,7 @@ jobs:
 
       - name: Run browser smoke tests
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
-        run: npm run test:e2e
+        run: npm run test:e2e -- --workers=2
 
       # 성공한 회차의 보고서는 볼 일이 없다. 실패했을 때만 남긴다.
       - name: Upload visual regression report
