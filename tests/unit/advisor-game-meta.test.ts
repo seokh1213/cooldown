@@ -3,7 +3,7 @@
  */
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { championPriceAnswer, findGameMeta, gameMetaAnswer } from "../../src/lib/advisor/gameMeta";
+import { championPriceAnswer, findGameMeta, gameMetaAnswer, gameMetaById } from "../../src/lib/advisor/gameMeta";
 
 for (const [q, id] of [
   ["what minute can we ff?", "surrender"],
@@ -11,6 +11,7 @@ for (const [q, id] of [
   ["첫 드래곤 언제 나와", "dragon"],
   ["장로 드래곤 언제 나와?", "elder"], ["바론 몇 분에 나와", "baron"],
   ["공허 유충 몇 분에 나와?", "voidgrubs"], ["협곡의 전령 몇 분에 나와?", "herald"], ["아타칸 언제 나와?", "atakhan"],
+  ["厄塔汗现在还在游戏里吗？", "atakhan"],
   ["포탑 방패 몇 분에 없어져?", "plating"],
   ["억제기 몇 분에 다시 살아나?", "inhibitor"], ["미니언 웨이브 몇 초마다 와?", "minion-waves"],
   ["킬 골드 얼마야?", "kill-gold"],
@@ -42,4 +43,19 @@ test("챔피언 가격 답", () => {
 test("게임 메타 답", () => {
   assert.match(gameMetaAnswer("챔피언 가격 얼마야?", "ko_KR") ?? "", /225 · 675 · 1,575 · 2,400 · 3,150/);
   assert.match(gameMetaAnswer("几分钟能投降啊", "zh_CN") ?? "", /15 分钟起可以发起投降/);
+});
+
+for (const [lang, question, expected] of [
+  ["ko_KR", "바론 공격력 얼마야?", /검수된 자료가 없어/],
+  ["en_US", "Baron attack damage?", /Reviewed data.*not available/],
+  ["zh_CN", "大龙的攻击力是多少？", /还没有经过核实/],
+] as const) test(`${lang} 미검수 상세 질문에는 생성 시간으로 대신 답하지 않는다`, () => {
+  assert.match(gameMetaAnswer(question, lang)!, expected);
+  assert.match(gameMetaById("meta:baron", lang, question)!, expected);
+});
+
+test("생성 시간은 계속 답하고 제거된 오브젝트는 상세 질문에도 제거 상태가 우선이다", () => {
+  assert.match(gameMetaAnswer("바론 몇 분에 나와?", "ko_KR")!, /20분/);
+  assert.match(gameMetaAnswer("유충 스킬 알려줘", "ko_KR")!, /검수된 자료가 없어/);
+  assert.match(gameMetaAnswer("아타칸 공격력 얼마야?", "ko_KR")!, /현재.*제거.*26\.1 패치/);
 });

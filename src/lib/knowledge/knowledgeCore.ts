@@ -1,6 +1,8 @@
+import type { NoteVersion } from "./noteVersion";
 export type TipPerspective = "playing" | "against";
 
 export interface CuratedTip {
+  version?: NoteVersion;
   id: string;
   /** 이 팁의 주체 챔피언 id (예: MonkeyKing) */
   champion: string;

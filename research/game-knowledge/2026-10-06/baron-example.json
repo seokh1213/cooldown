@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "kind": "unapproved-structure-example",
+  "note": "Raw fields are observations, not proof of live invocation. Candidate facts are not exported to the app. Last changed and verified through remain unknown until relevant official changes are reviewed.",
+  "sources": [
+    {
+      "id": "wiki",
+      "url": "https://wiki.leagueoflegends.com/en-us/Baron_Nashor",
+      "revision": 4068963,
+      "renderedResponseHash": "8a3f141e24928795b61df656eb6d128c7356b1bffcd5f2e2508c99c9a3ed6350",
+      "rawWikitextHash": "ad2075160250efabdc1a8cac01b874823b2906c25e98e0918cfd623ee8c33d1f"
+    },
+    {
+      "id": "official:26.1",
+      "url": "https://www.leagueoflegends.com/en-us/news/game-updates/patch-26-1-notes/",
+      "section": "Baron Nashor",
+      "snapshotHash": "f4bf41832279a42f396e10142434cc8919163f5319f6bbe43c56df4a0854ecb0"
+    },
+    {
+      "id": "cdragon",
+      "url": "https://raw.communitydragon.org/16.19/game/data/characters/sru_baron/sru_baron.bin.json",
+      "snapshotHash": "d4aa8b2a65e4a4f48e38c954cf111e418ae2aa2b84036302df4f5086127fcf23",
+      "appPatch": "26.19",
+      "sourcePatch": "16.19"
+    }
+  ],
+  "rawObservations": {
+    "Characters/SRU_Baron/CharacterRecords/Root/baseHPModifiable": {
+      "baseValue": 16300.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/hpPerLevelModifiable": {
+      "baseValue": 170.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/baseDamageModifiable": {
+      "baseValue": 175.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/damagePerLevelModifiable": {
+      "baseValue": 20.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/baseArmorModifiable": {
+      "baseValue": 34.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/armorPerLevelModifiable": {
+      "baseValue": 8.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/baseMR": {
+      "baseValue": 32.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/mrPerLevel": {
+      "baseValue": 4.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/attackSpeedModifiable": {
+      "baseValue": 0.625,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/attackRangeModifiable": {
+      "baseValue": 900.0,
+      "__type": "ModifiableFloat"
+    },
+    "Characters/SRU_Baron/CharacterRecords/Root/globalGoldGivenOnDeath": 150.0,
+    "Characters/SRU_Baron/CharacterRecords/Root/goldGivenOnDeath": 100.0,
+    "Characters/SRU_Baron/CharacterRecords/Root/globalExpGivenOnDeath": 650.0
+  },
+  "facts": [
+    {
+      "id": "baron.spawn.initial",
+      "entity": "baron",
+      "property": "spawn.initial",
+      "scope": {
+        "game": "league-of-legends-pc",
+        "map": "summoners-rift",
+        "modes": [
+          "normal-draft",
+          "ranked-solo-duo",
+          "ranked-flex"
+        ]
+      },
+      "value": {
+        "amount": 1200,
+        "unit": "seconds-after-match-start"
+      },
+      "evidence": [
+        "wiki:Spawn",
+        "official:26.1/Baron Nashor"
+      ],
+      "conflicts": [],
+      "lastChangedPatch": null,
+      "verifiedThroughPatch": null,
+      "baselinePatch": "26.19",
+      "lifecycle": {
+        "state": "active",
+        "basis": "inventory"
+      },
+      "reviewStatus": "candidate",
+      "eligibleForRuntime": false
+    },
+    {
+      "id": "baron.spawn.respawn",
+      "entity": "baron",
+      "property": "spawn.respawn",
+      "scope": {
+        "game": "league-of-legends-pc",
+        "map": "summoners-rift",
+        "modes": [
+          "normal-draft",
+          "ranked-solo-duo",
+          "ranked-flex"
+        ]
+      },
+      "value": {
+        "amount": 360,
+        "unit": "seconds-after-death"
+      },
+      "evidence": [
+        "wiki:Infobox"
+      ],
+      "conflicts": [],
+      "lastChangedPatch": null,
+      "verifiedThroughPatch": null,
+      "baselinePatch": "26.19",
+      "lifecycle": {
+        "state": "active",
+        "basis": "inventory"
+      },
+      "reviewStatus": "candidate",
+      "eligibleForRuntime": false
+    },
+    {
+      "id": "baron.stats.attack-damage",
+      "entity": "baron",
+      "property": "stats.attackDamage",
+      "scope": {
+        "game": "league-of-legends-pc",
+        "map": "summoners-rift",
+        "modes": [
+          "normal-draft",
+          "ranked-solo-duo",
+          "ranked-flex"
+        ]
+      },
+      "value": {
+        "base": 175,
+        "growth": 20,
+        "unit": "attack-damage",
+        "scalesWith": "monster-level",
+        "levelBounds": [
+          11,
+          18
+        ],
+        "formula": "175 + 20 * (L - 1) * (0.7025 + 0.0175 * L)",
+        "examples": [
+          {
+            "level": 11,
+            "amount": 350.5
+          },
+          {
+            "level": 18,
+            "amount": 515
+          }
+        ]
+      },
+      "evidence": [
+        "cdragon:baseDamageModifiable",
+        "cdragon:damagePerLevelModifiable",
+        "wiki:Infobox",
+        "official:26.1/Baron Nashor"
+      ],
+      "conflicts": [],
+      "lastChangedPatch": null,
+      "verifiedThroughPatch": null,
+      "baselinePatch": "26.19",
+      "lifecycle": {
+        "state": "active",
+        "basis": "inventory"
+      },
+      "reviewStatus": "candidate",
+      "eligibleForRuntime": false
+    },
+    {
+      "id": "baron.territorial.damage",
+      "entity": "baron",
+      "property": "abilities.territorial.damage",
+      "scope": {
+        "game": "league-of-legends-pc",
+        "map": "summoners-rift",
+        "modes": [
+          "normal-draft",
+          "ranked-solo-duo",
+          "ranked-flex"
+        ]
+      },
+      "value": null,
+      "evidence": [
+        "wiki:Abilities",
+        "official:26.1/Baron Nashor",
+        "cdragon:BaronPullSpellBase.TotalDamage"
+      ],
+      "conflicts": [
+        {
+          "source": "official:26.1",
+          "coefficientOfTotalAD": 1.0
+        },
+        {
+          "source": "wiki",
+          "coefficientOfTotalAD": 1.4
+        },
+        {
+          "source": "cdragon",
+          "observedCoefficient": 1.0,
+          "runtimeInvocationVerified": false
+        }
+      ],
+      "lastChangedPatch": null,
+      "verifiedThroughPatch": null,
+      "baselinePatch": "26.19",
+      "lifecycle": {
+        "state": "active",
+        "basis": "inventory"
+      },
+      "reviewStatus": "conflict",
+      "eligibleForRuntime": false
+    },
+    {
+      "id": "baron.all-seeing.damage",
+      "entity": "baron",
+      "property": "abilities.allSeeing.totalDamage",
+      "scope": {
+        "game": "league-of-legends-pc",
+        "map": "summoners-rift",
+        "modes": [
+          "normal-draft",
+          "ranked-solo-duo",
+          "ranked-flex"
+        ]
+      },
+      "value": null,
+      "evidence": [
+        "wiki:Abilities",
+        "official:26.1/Baron Nashor",
+        "cdragon:BaronLineMissile"
+      ],
+      "conflicts": [
+        {
+          "source": "official:26.1",
+          "coefficientOfTotalAD": 1.4
+        },
+        {
+          "source": "wiki",
+          "flatMagicDamage": 1000
+        },
+        {
+          "source": "cdragon",
+          "tickCoefficientOfTotalAD": 0.07000000029802322,
+          "initialTickMultiplier": 3,
+          "serverTickCountVerified": false
+        }
+      ],
+      "lastChangedPatch": null,
+      "verifiedThroughPatch": null,
+      "baselinePatch": "26.19",
+      "lifecycle": {
+        "state": "active",
+        "basis": "inventory"
+      },
+      "reviewStatus": "conflict",
+      "eligibleForRuntime": false
+    },
+    {
+      "id": "baron.stats.range",
+      "entity": "baron",
+      "property": "stats.attackRange",
+      "scope": {
+        "game": "league-of-legends-pc",
+        "map": "summoners-rift",
+        "modes": [
+          "normal-draft",
+          "ranked-solo-duo",
+          "ranked-flex"
+        ]
+      },
+      "value": null,
+      "evidence": [
+        "wiki:Infobox",
+        "cdragon:attackRangeModifiable"
+      ],
+      "conflicts": [
+        {
+          "source": "wiki",
+          "amount": 955
+        },
+        {
+          "source": "cdragon",
+          "amount": 900,
+          "measurementConventionVerified": false
+        }
+      ],
+      "lastChangedPatch": null,
+      "verifiedThroughPatch": null,
+      "baselinePatch": "26.19",
+      "lifecycle": {
+        "state": "active",
+        "basis": "inventory"
+      },
+      "reviewStatus": "conflict",
+      "eligibleForRuntime": false
+    },
+    {
+      "id": "baron.aura.passive-shred",
+      "entity": "baron",
+      "property": "passives.aura.ambientShred",
+      "scope": {
+        "game": "league-of-legends-pc",
+        "map": "summoners-rift",
+        "modes": [
+          "normal-draft",
+          "ranked-solo-duo",
+          "ranked-flex"
+        ]
+      },
+      "value": null,
+      "evidence": [
+        "official:26.1/Baron Nashor",
+        "wiki:Patch History/V26.01 comment"
+      ],
+      "conflicts": [
+        {
+          "source": "official:26.1",
+          "armorAndMRPerSecond": 0.5,
+          "target": "all-nearby-enemies"
+        },
+        {
+          "source": "wiki-comment",
+          "claim": "implementation-disputed",
+          "gameplayReproductionVerified": false
+        }
+      ],
+      "lastChangedPatch": null,
+      "verifiedThroughPatch": null,
+      "baselinePatch": "26.19",
+      "lifecycle": {
+        "state": "active",
+        "basis": "inventory"
+      },
+      "reviewStatus": "conflict",
+      "eligibleForRuntime": false
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 /**
- * LoL Fandom 위키에서 챔피언 스킬 이름과 계수를 읽는다.
+ * LoL Wiki에서 챔피언 스킬 이름과 계수를 읽는다.
  *
  * Riot 데이터를 기계로 읽는 우리 파이프라인과 달리 사람이 손으로 적고 검증한
  * 문서라, 원본을 같은 방식으로 잘못 읽는 종류의 오류를 잡아 준다.
@@ -12,7 +12,7 @@
  * 위키 문서는 CC BY-SA 라 대조 용도로만 쓰고 앱에 싣지 않는다.
  * 지금은 `fetch-wiki-dashes.ts` 가 이동기 판정 재료로 쓴다.
  */
-const API = "https://leagueoflegends.fandom.com/api.php";
+const API = "https://wiki.leagueoflegends.com/en-us/api.php";
 const USER_AGENT = "cooldown-wiki-research/1.0 (ability verification)";
 
 /** 한 번에 넘길 수 있는 문서 수 (MediaWiki 기본 상한) */
@@ -46,7 +46,7 @@ async function queryPages(titles: string[]): Promise<Map<string, string>> {
 
     const response = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
     if (!response.ok) {
-      throw new Error(`Fandom API ${response.status} ${response.statusText}`);
+      throw new Error(`LoL Wiki API ${response.status} ${response.statusText}`);
     }
     const payload = (await response.json()) as {
       query?: { pages?: RevisionPage[]; normalized?: { from: string; to: string }[] };

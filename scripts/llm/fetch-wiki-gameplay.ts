@@ -18,7 +18,7 @@ import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import type { RuleNotes } from "../../src/lib/knowledge/rules";
 
-const API = "https://leagueoflegends.fandom.com/api.php";
+const API = "https://wiki.leagueoflegends.com/en-us/api.php";
 const USER_AGENT = "cooldown-knowledge/1.0 (gameplay reference)";
 
 /**
@@ -31,7 +31,7 @@ const USER_AGENT = "cooldown-knowledge/1.0 (gameplay reference)";
  * 질문과 닿지 않는 세부 규칙이고, 군중 제어는 스킬 효과 태그가 이미 덮는다.
  */
 const PAGES: Array<{ page: string; name: string }> = [
-  { page: "Minion (League of Legends)", name: "미니언" },
+  { page: "Minion", name: "미니언" },
   { page: "Ward", name: "와드" },
   { page: "Brush", name: "덤불" },
   { page: "Turret", name: "포탑" },
@@ -121,7 +121,7 @@ async function fetchPages(titles: string[]): Promise<Map<string, string>> {
   url.searchParams.set("formatversion", "2");
   url.searchParams.set("titles", titles.join("|"));
   const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
-  if (!res.ok) throw new Error(`Fandom API ${res.status}`);
+  if (!res.ok) throw new Error(`LoL Wiki API ${res.status}`);
   const payload = (await res.json()) as {
     query?: {
       pages?: Array<{ title: string; missing?: boolean; revisions?: Array<{ slots: { main: { content?: string } } }> }>;
@@ -193,7 +193,7 @@ async function main(): Promise<void> {
   const file = path.join(PUBLIC_DATA_ROOT, patch, "llm", "rule-notes.json");
   const existing = fs.existsSync(file)
     ? (JSON.parse(fs.readFileSync(file, "utf8")) as { rules: RuleNotes[] } & Record<string, unknown>)
-    : { schemaVersion: 1, patch, source: "https://leagueoflegends.fandom.com/", license: "CC BY-SA 3.0", rules: [] };
+    : { schemaVersion: 1, patch, source: "https://wiki.leagueoflegends.com/en-us/", license: "CC BY-SA 3.0", rules: [] };
 
   const kept = existing.rules.filter((r) => r.subject !== "gameplay");
   const added: RuleNotes[] = docs

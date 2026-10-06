@@ -19,8 +19,10 @@
 import { askedRuleKinds } from "./rules";
 import { aliasAt, aliasesOf } from "./searchAliases";
 import type { CrowdControlType } from "./crowdControl";
+import type { NoteVersion } from "./noteVersion";
 
 export interface MechanicsSection {
+  version?: NoteVersion;
   id: string;
   title: string;
   /** 이 절을 가리키는 말들. 문서에서 뽑는다. */
