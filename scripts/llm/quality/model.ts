@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { chromium, type BrowserContext } from "@playwright/test";
 import { createServer, type ViteDevServer } from "vite";
 import { ROOT } from "./bank";
@@ -26,11 +27,12 @@ export async function openModel(options: { graph?: string; headless?: boolean; c
   options.onCloseReady?.(close);
   try {
     options.signal?.throwIfAborted();
+    execFileSync(process.execPath, ["--import", "tsx", path.join(ROOT, "scripts/prepare-ort.ts")], { cwd: ROOT, stdio: "pipe" });
     const graph = options.graph ? path.resolve(ROOT, options.graph) : undefined;
     if (graph && !fs.existsSync(graph)) throw new Error("Candidate graph does not exist");
     const graphUrl = graph ? graphRoute(graph) : undefined;
     server = await createServer({ root: ROOT, configFile: false, base: "/", logLevel: "error",
-      server: { host: "127.0.0.1", port: 53677, strictPort: true }, worker: { format: "es" }, plugins: [{ name: "quality-fixture", configureServer(vite) {
+      server: { host: "127.0.0.1", port: 0, strictPort: true }, worker: { format: "es" }, plugins: [{ name: "quality-fixture", configureServer(vite) {
         vite.middlewares.use((req, res, next) => {
           if (req.url?.split("?")[0] === "/quality-fixture") {
             res.setHeader("Content-Type", "text/html");

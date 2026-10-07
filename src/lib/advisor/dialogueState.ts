@@ -7,6 +7,7 @@ import type { FactResolution } from "./dialogueFacts";
 import { statQueryFromAnswer, isStatLevel, validStatFields, type ChampionStatQuery } from "./statQuery";
 import { CROWD_CONTROL } from "@/lib/knowledge/crowdControl";
 import { validMechanicMemory, type MechanicMemory } from "./mechanics/types";
+import type { ContextFrame } from "./contextFrameTypes";
 export { scenarioConditions } from "./scenarioConditions";
 
 export interface SpellReference { champion: string; slot: string; focus?: SpellFocus; relation?: "penetration" }
@@ -25,6 +26,8 @@ export interface MatchupContext {
   conditions: ScenarioCondition[];
 }
 export interface DialogueMemory {
+  contextFrames?: ContextFrame[];
+  contextPending?: string[];
   patch: string;
   active?: "matchup" | "champion" | "spell" | "compare" | "stat" | "item" | "rule";
   champion?: string;

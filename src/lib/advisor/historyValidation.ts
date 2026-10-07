@@ -1,4 +1,5 @@
 import type { StoredAnswer, StoredTurn } from "./history";
+import { MAX_CONTEXT_FRAMES } from "./contextFrameTypes";
 
 type RecordValue = Record<string, unknown>;
 type Validator = (value: unknown) => boolean;
@@ -133,6 +134,8 @@ function mechanic(value: unknown): boolean {
 
 function memory(value: unknown): boolean {
   return record(value) && string(value.patch)
+    && optional(value.contextFrames, entries => array(entries, contextFrame) && (entries as unknown[]).length <= MAX_CONTEXT_FRAMES)
+    && optional(value.contextPending, entries => strings(entries) && (entries as string[]).length <= MAX_CONTEXT_FRAMES)
     && optional(value.active, entry => oneOf(entry, ["matchup", "champion", "spell", "compare", "stat", "item", "rule"]))
     && optional(value.champion, string) && optional(value.matchup, pair)
     && optional(value.matchups, entries => array(entries, entry => pair(entry)
@@ -149,6 +152,18 @@ function memory(value: unknown): boolean {
     && optional(value.pending, pending => record(pending) && string(pending.slot)
       && optional(pending.focus, focus) && strings(pending.candidates))
     && optional(value.lastReply, reply => record(reply) && string(reply.question) && string(reply.text) && optional(reply.focus, string));
+}
+
+function contextFrame(value: unknown): boolean {
+  if (!record(value) || !string(value.key) || !string(value.patch) || !integer(value.turn)
+    || !record(value.state) || value.state.contextFrames !== undefined || value.state.contextPending !== undefined
+    || value.state.lastReply !== undefined || value.state.patch !== undefined || value.kind !== value.state.active) return false;
+  const allowed = ["active", "champion", "spell", "stat", "compared", "item", "matchup", "matchups", "matchupGroup", "matchupScope",
+    "conditions", "numeric", "mechanic", "control", "combo", "rule"];
+  if (Object.keys(value.state).some(key => !allowed.includes(key))) return false;
+  const rule = value.state.rule;
+  if (rule !== undefined && (!record(rule) || rule.text !== undefined)) return false;
+  return memory({ ...value.state, patch: value.patch, rule: rule ? { ...rule as RecordValue, text: "" } : undefined });
 }
 
 function requestContract(value: unknown): boolean {

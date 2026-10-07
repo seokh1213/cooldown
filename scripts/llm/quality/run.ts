@@ -3,6 +3,7 @@ import path from "node:path";
 import { spawn, execFileSync } from "node:child_process";
 import { parseArgs } from "node:util";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
+import { DEFAULT_CONTEXT_LIMIT, DEFAULT_CONTEXT_POLICY } from "../../../src/lib/advisor/contextFrameTypes";
 import { audit } from "./audit";
 import { ROOT, WORKFLOW, buildBank, digest, readRows } from "./bank";
 import { fileHash, filesUnder } from "./archive";
@@ -79,10 +80,13 @@ try {
   report.checks.push({ name: "split-separation", pass: !splitErrors.length, log: "logs/splits.json" });
   fs.writeFileSync(path.join(output, "logs/splits.json"), JSON.stringify(splitErrors));
   if (profile !== "model") {
-    const tests = [...filesUnder("tests/unit"), ...filesUnder("tests/data")].filter(file => /(?:advisor|request|generation|lora|retrieval|evaluation|sft|llm-script|quality|knowledge|mechanic|claim|passive|stat-ranking|rule).*\.test\.ts$/.test(path.basename(file)));
+    const tests = [...filesUnder("tests/unit"), ...filesUnder("tests/data")].filter(file => /(?:advisor|context-frames|request|generation|lora|retrieval|evaluation|sft|llm-script|quality|knowledge|mechanic|claim|passive|stat-ranking|rule).*\.test\.ts$/.test(path.basename(file)));
     await check("node-regression", process.execPath, ["--import", "tsx", "--test", ...tests]);
     await check("types", "npx", ["tsc", "-p", "tsconfig.scripts.json", "--pretty", "false"]);
     await check("mechanics-answer", "npx", ["tsx", "scripts/llm/champion-mechanics/evaluate.ts", path.join(output, "mechanics-answer.json"), "--check"]);
+    const contexts = path.join(output, "context-frames");
+    await check("context-window", "npx", ["tsx", "scripts/llm/context-frames/evaluate.ts", "--split", "all", "--configs", `legacy,${DEFAULT_CONTEXT_POLICY}:${DEFAULT_CONTEXT_LIMIT}`, "--out", contexts]);
+    await check("context-comparison", "npx", ["tsx", "scripts/llm/context-frames/compare.ts", "--directory", contexts, "--require", `${DEFAULT_CONTEXT_POLICY}-${DEFAULT_CONTEXT_LIMIT}`]);
   }
   if (profile === "infrastructure" || profile === "quality") {
     await check("generation-recovery", "python3", ["-m", "unittest", "discover", "-s", "scripts/llm/quality", "-p", "test_*.py"]);

@@ -9,8 +9,26 @@ import { planPreparedDialogue } from "./dialoguePlanner";
 import { summarizeGroundedReply, type SummaryExperiment } from "./groundedSummary";
 import { assembleDialogueReply } from "./dialogueReply";
 import { answerGroundedNumeric } from "./groundedNumeric";
+import { withContextFrames } from "./contextDialogue";
+import type { DialoguePlan } from "./dialoguePlanner";
+import type { DialogueReply } from "./dialogueReply";
+import { DEFAULT_CONTEXT_LIMIT, DEFAULT_CONTEXT_POLICY, type ContextDecision } from "./contextFrameTypes";
 
-export async function answerDialogue(question: string, ctx: PlanContext, deps: PlanDeps, summary?: SummaryExperiment) {
+export interface DialogueOutput {
+  dialogue: DialoguePlan;
+  reply: DialogueReply;
+  numericAttempt?: { accepted: boolean; reason: string; raw?: string };
+  contextDecision?: ContextDecision;
+}
+
+export async function answerDialogue(question: string, ctx: PlanContext, deps: PlanDeps, summary?: SummaryExperiment): Promise<DialogueOutput> {
+  const context = { ...ctx, contextPolicy: ctx.contextPolicy ?? DEFAULT_CONTEXT_POLICY, contextLimit: ctx.contextLimit ?? DEFAULT_CONTEXT_LIMIT };
+  if (context.contextPolicy !== "legacy") return withContextFrames(question, context,
+    (scoped, input) => answerCurrentDialogue(input, scoped, deps, summary), deps.rankContexts);
+  return answerCurrentDialogue(question, context, deps, summary);
+}
+
+async function answerCurrentDialogue(question: string, ctx: PlanContext, deps: PlanDeps, summary?: SummaryExperiment): Promise<DialogueOutput> {
   const request = prepareDialogueRequest(question, ctx, "combined");
   const dialogue = await planPreparedDialogue(request, ctx, deps);
   const reply = await assembleDialogueReply(dialogue, ctx.data, ctx.lang);

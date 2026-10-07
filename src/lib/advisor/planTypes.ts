@@ -14,6 +14,7 @@ import type { ChampionStatQuery } from "./statQuery";
 import type { CrowdControlType } from "@/lib/knowledge/crowdControl";
 import type { RequestIntent } from "./requestIntent";
 import type { NumericGenerator } from "./groundedNumeric";
+import type { ContextPolicy, ContextFrame, ContextDecision } from "./contextFrameTypes";
 
 /** 자료 조회·상성·확인·생성 중 질문 하나를 답할 계획. 조립 단계가 실행한다. */
 export interface ControlContext { champions: string[]; slot?: string; types?: CrowdControlType[] }
@@ -49,6 +50,9 @@ export type JudgeTier = "model" | "offline" | "none";
 
 /** 질문을 받은 그 순간의 화면·대화 */
 export interface PlanContext {
+  contextPolicy?: ContextPolicy;
+  contextLimit?: number;
+  resumedSpell?: DialogueMemory["spell"];
   /** 챔피언·규칙 자료. 아직 없으면 모델만으로 답한다. */
   data: AdvisorData | null;
   lang: Language;
@@ -68,6 +72,7 @@ export interface PlanContext {
 }
 
 export interface PlanDeps {
+  rankContexts?: (question: ResolvedQuestion, frames: ContextFrame[], ctx: PlanContext) => ContextDecision;
   generateNumeric?: NumericGenerator;
   classifyRequest?: (question: ResolvedQuestion) => Promise<RequestIntent | undefined>;
   /** 실험용 능력치 판정. 명확한 규칙 조회가 실패한 경우에만 호출한다. */

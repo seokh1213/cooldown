@@ -61,7 +61,9 @@ export function prepareDialogueRequest(question: string, ctx: PlanContext, varia
   const split = ctx.data && (variant === "decompose" || variant === "combined");
   if (!ctx.data) return { questions: [question], memory, variant };
   const pieces = (split ? splitDialogueQuestions(question, ctx.data) : [question]).map(q => {
-    const resolved = resolveQuestion(q, ctx.data!);
+    const input = resolveQuestion(q, ctx.data!);
+    const resolved = ctx.resumedSpell && !input.champions.length && !input.slot
+      ? { ...input, slot: ctx.resumedSpell.slot } : input;
     // 이름이 있는 스킬 질문을 '누구의 스킬?' 확인 단계가 먼저 가로채지 않게 한다.
     const partialComparison = resolved.champions.length === 1 && /비교|둘\s*중|중\s*\d+\s*레벨|\bcompare\b|比较/i.test(q);
     if (!partialComparison && (resolved.champions.length || !resolved.slot)) return resolved;
