@@ -1,5 +1,6 @@
 import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test, type Page } from "@playwright/test";
+import { IMAGE_VERSION } from "../src/data/generated/assetVersion";
 
 async function openAdvisor(page: Page) {
   await page.goto("./");
@@ -76,7 +77,7 @@ for (const width of [390, 1280]) {
     await expect(icon).toHaveAttribute("aria-label", /A 생선대가리 · B 빵야빵야/);
     await expect(icon.locator("[data-form-half]")).toHaveCount(2);
     for (const half of await icon.locator("img").all()) {
-      await expect(half).toHaveAttribute("src", /\/img\/16\.19\.1\/form\/assets-characters-jinx-hud-icons2d-jinx-q[12]\.webp/);
+      await expect(half).toHaveAttribute("src", new RegExp(`/img/${IMAGE_VERSION.replaceAll('.', '\\.')}/form/assets-characters-jinx-hud-icons2d-jinx-q[12]\\.webp`));
       expect(await half.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
     }
     await icon.scrollIntoViewIfNeeded();

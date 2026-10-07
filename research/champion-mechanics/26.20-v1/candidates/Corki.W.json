@@ -1,0 +1,167 @@
+{
+  "summary": "코르키가 비행하며 경로를 불태웁니다. 불길 속 적은 지속시간에 걸쳐 최대 마법 피해를 받습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "코르키가목표위치로비행하며폭탄으로불타는경로를남깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Corki flies over and scorches a path, burning it for 2.5 seconds."
+        },
+        {
+          "sourceId": "ko:summary",
+          "quote": "코르키가 목표 위치로 비행하며 폭탄을 투하하여 불타는 흔적을 남겨"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "비행 경로를 2.5초 동안 불태운다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Corki flies over and scorches a path, burning it for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "불길 속에 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "이2.5초불길안에머무는적은그지속시간에걸쳐최대150/225/300/375/450+주문력150%+추가공격력200%마법피해를받습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies in the fire take up to (150/225/300/375/450 + (150% Ability Power) + (200% bonus Attack Damage)) magic damage over the duration."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Corki flies over and scorches a path, burning it for 2.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "up to는불길에머무는동안누적피해가최대식까지발생함을보존한다.정확한틱간격이나머무는시간별피해계산식은공급본문에미명시다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies in the fire take up to (150/225/300/375/450 + (150% Ability Power) + (200% bonus Attack Damage)) magic damage over the duration."
+        }
+      ]
+    }
+  ]
+}

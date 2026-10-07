@@ -1,0 +1,485 @@
+{
+  "summary": "로크가 지정한 위치에 유물을 던져 범위 내 적에게 마법 피해와 둔화를 적용하고 적중한 적에게 표식을 남깁니다. 표식이 있는 적 챔피언의 체력이 처형 기준치 아래로 떨어지면 봉인됩니다. 표식 지속시간이 끝난 뒤 챔피언을 하나 이상 봉인했다면 유물이 땅에 떨어지며, 로크가 주우면 봉인한 챔피언 수에 따라 처형 기준치가 영구 증가하고 전체 재사용 대기시간 일부를 돌려받습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "지정한 위치에 유물을 던져 범위 내 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Locke throws a binding artifact to a location, dealing (150/225/300 + (60% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Locke throws a binding artifact to a location, dealing (150/225/300 + (60% Ability Power)) magic damage and Slowing enemies in the area by 99%, decaying over 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "범위 내 적을 둔화시킵니다. 둔화 효과는 시간이 지나며 감소합니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and Slowing enemies in the area by 99%, decaying over 2 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Locke throws a binding artifact to a location, dealing (150/225/300 + (60% Ability Power)) magic damage and Slowing enemies in the area by 99%, decaying over 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "유물에 적중한 적에게 표식을 남깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The artifact marks enemies hit for 5 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The artifact marks enemies hit for 5 seconds, sealing away marked enemy champions brought below 10.5/11.5/12.5%, and resetting the duration of the mark on other affected champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 유물의 표식"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "text",
+            "value": "스킬 랭크 및 영구 증가량에 따른 현재 처형 체력 비율 기준치"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "표식이 있는 적 챔피언의 체력이 처형 기준치 아래로 떨어지면 봉인합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "sealing away marked enemy champions brought below 10.5/11.5/12.5%"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The artifact marks enemies hit for 5 seconds, sealing away marked enemy champions brought below 10.5/11.5/12.5%, and resetting the duration of the mark on other affected champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 유물에 의해 봉인된 챔피언"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "secondary_targets",
+          "text": "다른 영향을 받은 챔피언의 표식 지속시간을 초기화합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "resetting the duration of the mark on other affected champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "entity_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n10"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 유물이 봉인한 챔피언의 수"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "표식 지속시간이 끝난 뒤 챔피언을 하나 이상 봉인했다면 유물이 땅에 떨어집니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After the duration ends, if at least one champion was sealed, the artifact lands on the ground."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "유물을 획득"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "entity_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n10"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 유물이 봉인한 챔피언의 수"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "유물을 획득하면 봉인한 챔피언마다 처형 체력 기준치가 영구적으로 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "유물을 획득하면 봉인한 챔피언마다 이 스킬의 전체 재사용 대기시간의 일부를 돌려받는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_refund",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Locke can pick up the artifact to permanently increase its execution threshold by 0.5%, and refund 20% of his total Cooldown, for each champion sealed."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "After the duration ends, if at least one champion was sealed, the artifact lands on the ground."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "unknown"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "봉인 시점"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "유물은 봉인 시점의 스킬 재사용 대기시간 동안 땅에 남아 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The artifact will linger on the ground for this Ability's current Cooldown at the time of sealing."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Locke throws a binding artifact to a location, dealing (150/225/300 + (60% Ability Power)) magic damage and Slowing enemies in the area by 99%, decaying over 2 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "유물이 땅에 남아 있는 시간은 봉인 시점의 현재 재사용 대기시간으로 표현되며, 입력의 number 목록에 재사용 대기시간 수치가 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The artifact will linger on the ground for this Ability's current Cooldown at the time of sealing."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "처형 임계치 증가 효과의 stat 필드와 전체 재사용 대기시간 환급을 수치로 표현할 수 있는 입력 통계 항목이 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Locke can pick up the artifact to permanently increase its execution threshold by 0.5%, and refund 20% of his total Cooldown, for each champion sealed."
+        }
+      ]
+    }
+  ]
+}

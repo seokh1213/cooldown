@@ -1,0 +1,252 @@
+{
+  "summary": "사냥 대상으로 지정된 적의 처치에 관여하면 표식을 얻어 기본 스킬이 강화됩니다. 표식 누적에 따라 공격 사거리도 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "takedown",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "사냥 대상으로 지정된 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "사냥 대상 처치에 관여하면 표식을 얻고 기본 스킬이 강화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Getting a takedown on a hunted target grants Kindred a Mark, empowering them."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "stat_gain",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "표식4개에도달할때공격사거리가75증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After 4 Marks, Kindred gains 75 Attack Range."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "stat_gain",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "네 번째 표식 이후 표식을 3개 더 얻을 때마다"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "네번째표식이후3개를더획득할때마다공격사거리가25증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 3 Marks after the fourth grants a further 25 Attack Range."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "인벤토리위초상화클릭으로사냥챔피언을지정하며특정정글몬스터는미니맵아이콘으로자동지정한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred can designate a champion to hunt by clicking their portrait above their inventory. They also designate certain jungle monsters to hunt with an icon on the minimap automatically."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "표식은기본스킬을강화한다: 화살세례AS추가5%,늑대의광기현재체력피해추가1%,차오르는공포잃은체력피해추가0.5%.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Marks empower Kindred's basic Abilities:Dance of Arrows grants an additional 5% Attack SpeedWolf's Frenzy deal an additional 1% current Health damage.Mounting Dread deal an additional 0.5% missing Health damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "스키마에 사냥 대상 지정 여부를 직접 나타내는 조건이 없어, 대상이 사냥 대상으로 지정됐다는 조건은 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Getting a takedown on a hunted target grants Kindred a Mark, empowering them."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "표식 수 조건은 mark 필드로 표현했지만, 네 번째 표식 이후 3개씩 추가될 때마다 반복 적용되는 조건을 스키마 조건 필드로 정확히 표현할 수 없어 텍스트에 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every 3 Marks after the fourth grants a further 25 Attack Range."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "영문요약매4회완료사거리증가는본문처음4표식75/이후3마다25와다르므로구체본문을우선했다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Every 4 hunts completed also increases Kindred's basic attack range."
+        }
+      ]
+    }
+  ]
+}

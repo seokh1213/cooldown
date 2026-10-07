@@ -58,6 +58,15 @@ test("변경이 없으면 주기적 실행에서 새 변경으로 알리지 않�
   assert.equal(report.hasChanges, false);
   assert.equal(report.counts.regenerate, 0);
 });
+test("폼 아이콘 판본만 변경되면 재사용하되 폼 수치 변경은 검수를 제거한다", () => {
+  const baseline = fixture(), old = baseline.jobs[0];
+  old.facts.forms = [{ key: "melee", iconVersion: "16.19", cooldownSeconds: [10] }];
+  const next = structuredClone(old);
+  next.facts.forms = [{ key: "melee", iconVersion: "16.20", cooldownSeconds: [10] }];
+  assert.equal(semanticFingerprint(old), semanticFingerprint(next));
+  next.facts.forms = [{ key: "melee", iconVersion: "16.20", cooldownSeconds: [9] }];
+  assert.notEqual(semanticFingerprint(old), semanticFingerprint(next));
+});
 test("스킬이 그대로여도 같은 패치의 공통 스탯 변경을 감지해 코드 갱신을 준비한다", () => {
   const baseline = fixture();
   baseline.overview = new Map([["Example.common", { sourceHash: "old-stats" }]]);
@@ -121,6 +130,27 @@ test("새 패치에서 변경된 Q만 비워 두고 승인 P와 나머지 초안
   const exported = await exportRecords(next, root);
   assert.equal(exported.reviewed, 1);
   assert.equal(exported.pendingSemanticReview, 4);
+});
+
+test("현재 포인터를 옮기기 전에도 동일 의미의 승인 규칙만 현재 패치 입력으로 반환한다", async t => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "mechanics-reuse-test-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  await sourceFixture(root, "26.19");
+  const directory = path.join(root, "research/champion-mechanics/previous");
+  await prepare(directory, root);
+  const current = await buildInventory(root), draft = fixture().drafts.get("Example.P")!;
+  const jobs = current.jobs.filter(job => ["P", "Q"].includes(job.slot));
+  for (const job of jobs) await writeFile(path.join(directory, "candidates", `${job.id}.json`), JSON.stringify(draft));
+  await writeFile(path.join(directory, "review-ledger.json"), JSON.stringify({ decisions: jobs.map(job => ({
+    id: job.id, sourceHash: job.sourceHash, candidateHash: digest(draft), verdict: "accepted", checks: [], notes: [],
+  })) }));
+  await writeFile(path.join(root, "research/champion-mechanics/current.json"), JSON.stringify({ directory: "previous" }));
+  assert.equal((await reviewedAbilities(root)).size, 2);
+  await sourceFixture(root, "26.20", true);
+  const reused = await reviewedAbilities(root);
+  assert.deepEqual([...reused.keys()], ["Example.P"]);
+  assert.equal(reused.get("Example.P")!.job.patch, "26.20");
+  assert.notEqual(reused.get("Example.P")!.job.sourceHash, jobs[0].sourceHash);
 });
 
 test("이전 스키마의 정상 후보를 손상으로 오인하지 않고 새 계약으로 전부 재작성한다", async t => {

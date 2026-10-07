@@ -1,0 +1,459 @@
+{
+  "summary": "덱을 섞은 뒤 재사용해 카드 한 장을 선택하면 다음 기본 공격이 강화됩니다. 카드마다 피해와 부가 효과가 다릅니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "덱을 섞기 시작한 뒤 카드 선택 재사용"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_followup",
+          "subject": "caster",
+          "text": "세 카드 중 하나를 선택해 다음 기본 공격을 강화합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Twisted Fate begins shuffling his deck, allowing him to Recast to lock in one of three cards and enhance his next Attack."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Blue Card"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "푸른색 카드의 단일 마법 피해는 기본 피해 + 공격력 100% + 주문력 100% + 치명타 확률 계수 2300/3450/4600/5750/6900%다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": "critChance",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "마나를 회복시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Red Card"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "nearby_enemies",
+          "text": "붉은색 카드가 주변 적에게 기본 피해 + 공격력 100% + 주문력 70% + 치명타 확률 계수 1050/1575/2100/2625/3150%의 피해를 입힌다. 피해 유형은 원문에 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n26",
+                "en:body:n27",
+                "en:body:n28",
+                "en:body:n29",
+                "en:body:n30"
+              ],
+              "stat": "critChance",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "주변 적을 30/35/40/45/50%만큼 2.5초 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n31",
+                "en:body:n32",
+                "en:body:n33",
+                "en:body:n34",
+                "en:body:n35"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n36"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Gold Card"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "황금색 카드가 기본 피해 + 공격력 100% + 주문력 50% + 치명타 확률 계수 375/562.5/750/937.5/1125%의 피해를 입힌다. 피해 유형은 원문에 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n37",
+                "en:body:n38",
+                "en:body:n39",
+                "en:body:n40",
+                "en:body:n41"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n42"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n43"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n44",
+                "en:body:n45",
+                "en:body:n46",
+                "en:body:n47",
+                "en:body:n48"
+              ],
+              "stat": "critChance",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 기절시킵니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n49",
+                "en:body:n50",
+                "en:body:n51",
+                "en:body:n52",
+                "en:body:n53"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The Blue Card deals (40/60/80/100/120 + (100% Attack Damage) + (100% Ability Power) + (2300/3450/4600/5750/6900% Critical Strike Chance)) magic damage and restores 70/90/110/130/150 Mana.The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds.The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "붉은색 카드의 피해 유형이 영어 본문에 명시되어 있지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Red Card deals (30/45/60/75/90 + (100% Attack Damage) + (70% Ability Power) + (1050/1575/2100/2625/3150% Critical Strike Chance)) to nearby enemies and Slows by 30/35/40/45/50% for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "황금색 카드의 피해 유형이 영어 본문에 명시되어 있지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Gold Card deals (15/22.5/30/37.5/45 + (100% Attack Damage) + (50% Ability Power) + (375/562.5/750/937.5/1125% Critical Strike Chance)) and Stuns for 1/1.25/1.5/1.75/2 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "슬래시로 나열된 치명타 확률 계수와 둔화 수치의 앞 항목은 frozen lexical 숫자표에서 percent=false다. 모든 항목이 실제 퍼센트임을 효과 문장에 명시했으며 lexical 숫자표만으로 단위를 실행하지 말 것.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(2300/3450/4600/5750/6900% Critical Strike Chance)"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Slows by 30/35/40/45/50% for 2.5 seconds."
+        }
+      ]
+    }
+  ]
+}

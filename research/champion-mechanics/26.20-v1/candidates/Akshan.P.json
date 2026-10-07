@@ -1,0 +1,347 @@
+{
+  "summary": "아크샨은 기본 공격을 시작한 뒤 추가 공격을 발사하고, 이를 취소하면 잠시 이동 속도를 얻는다. 기본 공격 또는 스킬이 세 번째로 적중할 때마다 추가 마법 피해를 주며, 대상이 챔피언이면 보호막을 얻는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_followup",
+          "subject": "target",
+          "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After launching an Attack, Akshan will fire an additional shot for (50% Attack Damage) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "fired"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "추가 공격이 적중하면 공격력 비례 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "totalAttackDamage",
+              "shape": "scalar",
+              "statSubject": "caster"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After launching an Attack, Akshan will fire an additional shot for (50% Attack Damage) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_cancelled",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "cancelled"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "추가 공격을 취소하면 (20~75) Move Speed × (1 + 100% bonus Attack Speed)에 해당하는 이동 속도를 얻고 1초에 걸쳐 감소합니다. 식은 기본 이동 속도 계수와 공격 속도 계수의 곱입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": "moveSpeed",
+              "shape": "level_range",
+              "statSubject": "caster"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusAttackSpeed",
+              "shape": "scalar",
+              "statSubject": "caster"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "shape": "scalar",
+              "statSubject": null
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He can cancel this shot to instead gain (20 ~ 75) × (1 + 100% bonus Attack Speed) Move Speed decaying over 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n6"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 공격 또는 스킬의 세 번째 적중마다 추가 마법 피해를 준다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "shape": "level_range",
+              "statSubject": null
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "abilityPower",
+              "shape": "scalar",
+              "statSubject": "caster"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every three hits from Attacks or Abilities deals an additional ((15 ~ 150) + (60% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n6"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "shield_ready",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "ready"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "shape": "level_range",
+              "statSubject": null
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "shape": "scalar",
+              "statSubject": "caster"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "shape": "scalar",
+              "statSubject": null
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": null,
+              "shape": "level_range",
+              "statSubject": null
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every three hits from Attacks or Abilities deals an additional ((15 ~ 150) + (60% Ability Power)) magic damage. Against champions, Akshan also gains ((40 ~ 280) + (35% bonus Attack Damage)) Shield for 2 seconds ((16 ~ 4) second Cooldown)."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "Tooltip gives the shield's cooldown range but does not state precisely when the cooldown starts or how it interacts with repeated third-hit procs. The tooltip does not specify whether proc counting requires repeated hits on the same target, so no same-target condition is inferred.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Against champions, Akshan also gains ((40 ~ 280) + (35% bonus Attack Damage)) Shield for 2 seconds ((16 ~ 4) second Cooldown)."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "The Korean summary describes the every-third-hit bonus damage as physical, while both English and Korean tooltips identify it as magic damage. The rules follow the tooltip wording and retain the summary conflict here.",
+      "evidence": [
+        {
+          "sourceId": "ko:summary",
+          "quote": "아크샨의 기본 공격 및 스킬이 세 번 적중할 때마다 추가 물리 피해를 입힙니다."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Every three hits from Attacks or Abilities deals an additional ((15 ~ 150) + (60% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "기본 공격 또는 스킬이 세 번째로 적중할 때마다 ((15 ~ 150) + (60% 주문력))의 마법 피해를 추가로 입힙니다."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "기본 이동 속도 범위와 (1 + 추가 공격 속도 계수)의 곱을 실행 가능한 복합 수식으로 표현할 수 없으므로 식은 텍스트로 보존했습니다. 레벨 범위의 중간값은 추정하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He can cancel this shot to instead gain (20 ~ 75) × (1 + 100% bonus Attack Speed) Move Speed decaying over 1 second."
+        }
+      ]
+    }
+  ]
+}

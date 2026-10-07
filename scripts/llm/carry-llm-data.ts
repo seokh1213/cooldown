@@ -14,7 +14,7 @@
  *       npm run llm:carry -- --force (표시 없이 다시 짓기)
  *       npm run llm:carry -- --force --matchups-only (미리 쓴 답만 새 재료에 맞대 거르기)
  */
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
@@ -33,6 +33,7 @@ async function main() {
     return;
   }
   const from = fs.existsSync(marker) ? fs.readFileSync(marker, "utf8").trim() : patch;
+  const previousCards = path.resolve("research/.cache/combo-drift/previous-cards.json");
   console.log(`도우미 자료 ${from} → ${patch} 다시 짓기`);
   const run = (cmd: string) => {
     console.log(`$ ${cmd}`);
@@ -41,10 +42,13 @@ async function main() {
   // --matchups-only: 카드·묶음은 이미 새 자료로 지어져 있고 미리 쓴 상성 답만 새 재료에 맞대 거른다
   // (옛 패치에서 새로 써 온 쌍을 들일 때)
   if (!process.argv.includes("--matchups-only")) {
+    fs.mkdirSync(path.dirname(previousCards), { recursive: true });
+    fs.copyFileSync(path.join(llmDir, "champion-cards-ko_KR.json"), previousCards);
     // 사거리는 패치마다 바뀌는 BIN 값이라 옮겨 온 옛 파일을 쓰지 않고 새로 받는다
     run("npm run --silent llm:fetch-ranges");
     for (const lang of ["ko_KR", "en_US", "zh_CN"]) run(`npm run --silent llm:build -- --lang ${lang}`);
     run("npm run --silent llm:names");
+    execFileSync(process.execPath, ["--import", "tsx", "scripts/llm/report-combo-drift.ts", "--previous", previousCards], { stdio: "inherit" });
     run("npm run --silent llm:bundle");
     run("npm run --silent llm:note-tr");
   }

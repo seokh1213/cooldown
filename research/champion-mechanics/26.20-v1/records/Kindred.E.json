@@ -1,0 +1,793 @@
+{
+  "schemaVersion": 2,
+  "id": "Kindred.E",
+  "champion": "Kindred",
+  "slot": "E",
+  "patch": "26.20",
+  "sourceHash": "555d3fa36bdfe90123fc76b32a5398cbdfdb4abe4713aa00a6efa088d97614a6",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Mounting Dread",
+      "ko": "차오르는 공포"
+    },
+    "cooldownSeconds": [
+      14,
+      12.5,
+      11,
+      9.5,
+      8
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      500,
+      500,
+      500,
+      500,
+      500
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "80/110/140/170/200"
+      },
+      {
+        "label": "Cooldown",
+        "values": "14/12.5/11/9.5/8"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:BaseBiteDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "expression",
+      "expression": {
+        "id": "BaseBiteDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "root": {
+          "kind": "product",
+          "parts": [
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      80,
+                      110,
+                      140,
+                      170,
+                      200
+                    ]
+                  }
+                },
+                {
+                  "kind": "stat",
+                  "stat": "bonusAttackDamage",
+                  "coefficient": {
+                    "byRank": [
+                      1,
+                      1,
+                      1,
+                      1,
+                      1
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      1,
+                      1,
+                      1,
+                      1,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "kind": "product",
+                  "parts": [
+                    {
+                      "kind": "stat",
+                      "stat": "critChance",
+                      "coefficient": {
+                        "byRank": [
+                          0.5,
+                          0.5,
+                          0.5,
+                          0.5,
+                          0.5
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "sum",
+                      "parts": [
+                        {
+                          "kind": "stat",
+                          "stat": "critDamage",
+                          "coefficient": {
+                            "byRank": [
+                              1,
+                              1,
+                              1,
+                              1,
+                              1
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "value",
+                          "value": {
+                            "byRank": [
+                              -1,
+                              -1,
+                              -1,
+                              -1,
+                              -1
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "requiresBuffStacks": false
+      },
+      "unsupportedPartTypes": [
+        "BuffCounterByCoefficientCalculationPart",
+        "nonlinear-product"
+      ]
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Kindred.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Kindred.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Lamb fires a carefully placed shot, slowing the target. If Lamb attacks the target two more times, her third attack instead directs Wolf to pounce on the enemy, savaging them for massive damage.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Kindred weakens an enemy, Slowing them by (30 + (5% Ability Power))for 1.5 second. Kindred's third Attack against the target within 4 seconds of each other directs Wolf to pounce on the enemy, dealing an additional (80/110/140/170/200 + (100% bonus Attack Damage)) plus 5.5% missing Health physical damage. Damage is increased by Critical Strike Chance and Damage at 50% effectiveness. Missing health damage is capped at 200 against jungle monsters.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "양이 신중하게 화살을 발사해 대상의 속도를 늦춥니다. 양이 대상을 두 번 더 공격하면 세 번째 공격 시 늑대가 적을 덮치게 만들어, 흉포한 공격으로 큰 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "킨드레드가 적을 약화시켜 1.5초 동안 (30 + (5% 주문력))둔화시킵니다. 4초 내에 대상을 세 번 공격하면 늑대가 적을 덮쳐 추가로 (80/110/140/170/200 + (100% 추가 공격력))+적이 잃은 체력의 5.5%에 해당하는 물리 피해를 입힙니다. 피해량은 치명타 확률 및 치명타 피해량에 비례해 50%만큼 증가합니다. 정글 몬스터를 상대로는 잃은 체력 비례 피해가 200까지 적용됩니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "two",
+      "value": 2,
+      "percent": false,
+      "start": 83,
+      "end": 86
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 43,
+      "end": 45
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 49,
+      "end": 51
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 71,
+      "end": 74
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 132,
+      "end": 133
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 216,
+      "end": 218
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 219,
+      "end": 222
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 223,
+      "end": 226
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 227,
+      "end": 230
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 231,
+      "end": 234
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 238,
+      "end": 242
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "5.5%",
+      "value": 5.5,
+      "percent": true,
+      "start": 270,
+      "end": 274
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 367,
+      "end": 370
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 421,
+      "end": 424
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 14,
+      "end": 17
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 23,
+      "end": 25
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 29,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 45,
+      "end": 46
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 79,
+      "end": 81
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 82,
+      "end": 85
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 86,
+      "end": 89
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 90,
+      "end": 93
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 94,
+      "end": 97
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 101,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "5.5%",
+      "value": 5.5,
+      "percent": true,
+      "start": 125,
+      "end": 129
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 176,
+      "end": 179
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 215,
+      "end": 218
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "적을 약화시켜 둔화시킵니다. 같은 대상을 향한 세 번째 공격이 앞선 두 공격 각각 4초 이내에 적중하면 늑대가 덮쳐 추가 물리 피해를 입힙니다.",
+  "rules": [
+    {
+      "id": "08b4ad1063465a252234",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "적을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred weakens an enemy, Slowing them by (30 + (5% Ability Power))for 1.5 second."
+        }
+      ]
+    },
+    {
+      "id": "2434a36a348c29dd7714",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 세 번째 기본 공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "같은 대상에 대한 선행 두 공격과 각 공격 사이 4초 이내"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "늑대가 덮쳐 추가 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred's third Attack against the target within 4 seconds of each other directs Wolf to pounce on the enemy, dealing an additional (80/110/140/170/200 + (100% bonus Attack Damage)) plus 5.5% missing Health physical damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "If Lamb attacks the target two more times, her third attack instead directs Wolf to pounce on the enemy, savaging them for massive damage."
+        }
+      ]
+    },
+    {
+      "id": "5e12d226be5821e56a39",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 세 번째 기본 공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "같은 대상에 대한 선행 두 공격과 각 공격 사이 4초 이내"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "정글 몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "정글 몬스터에게 입히는 잃은 체력 비례 피해량이 제한됩니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Missing health damage is capped at 200 against jungle monsters."
+        }
+      ]
+    },
+    {
+      "id": "7c2dcc570f391113e1c0",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 세 번째 기본 공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "같은 대상에 대한 선행 두 공격과 각 공격 사이 4초 이내"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "이추가피해는자신의치명타확률과치명타피해로50%효율증가한다.구체대응식은본문에없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred's third Attack against the target within 4 seconds of each other directs Wolf to pounce on the enemy, dealing an additional (80/110/140/170/200 + (100% bonus Attack Damage)) plus 5.5% missing Health physical damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "If Lamb attacks the target two more times, her third attack instead directs Wolf to pounce on the enemy, savaging them for massive damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Damage is increased by Critical Strike Chance and Damage at 50% effectiveness."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "원문은 세 번째 공격과 앞선 공격 간 간격을 설명하지만, 스키마의 단일 time 조건으로 각 공격 간 4초 이내 조건을 모두 표현할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Kindred's third Attack against the target within 4 seconds of each other"
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "피해량은 치명타 확률과 치명타 피해량에 의해 50% 효율로 증가하지만 구체적인 계산식은 제시되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage is increased by Critical Strike Chance and Damage at 50% effectiveness."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "잃은 체력 비례 피해의 기준 스탯 소유자를 허용된 stat 값으로 특정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "plus 5.5% missing Health physical damage."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "42b8b26ae704314ba09970453033b44ed4a756f80bbe5f8c7cd29d34fdb35cfd"
+}

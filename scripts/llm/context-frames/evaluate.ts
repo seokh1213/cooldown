@@ -15,6 +15,7 @@ import type { QualityStory, QualityRow, QualityReport } from "../quality/types";
 import { contextChecks } from "./checks";
 import { learnedContextRanker, type ContextRankModel } from "../../../src/lib/advisor/contextRanker";
 import { TURN_LIMIT, dehydrateTurn } from "../../../src/lib/advisor/history";
+import { guardedResidual } from "./hybrid";
 
 const { values } = parseArgs({ options: {
   policy: { type: "string", default: "all" }, mode: { type: "string", default: "offline" },
@@ -22,11 +23,14 @@ const { values } = parseArgs({ options: {
   out: { type: "string" }, resume: { type: "boolean", default: false },
   limit: { type: "string", default: "all" },
   configs: { type: "string" },
+  "rank-model": { type: "string", default: "research/llm-evals/workflow/models/context-selector.json" },
+  "rank-policy": { type: "string", default: "pure" },
 } });
 const policies: ContextPolicy[] = values.policy === "all" ? [...CONTEXT_POLICIES] : [values.policy as ContextPolicy];
 if (policies.some(policy => !CONTEXT_POLICIES.includes(policy))) throw new Error("Unknown context policy");
 if (!["none", "offline", "model"].includes(values.mode!)) throw new Error("Unknown backend");
 if (!["context", "stress", "regression"].includes(values.bank!)) throw new Error("Unknown bank");
+if (!["pure", "guarded-residual"].includes(values["rank-policy"]!)) throw new Error("Unknown rank policy");
 if (!["development", "validation", "all"].includes(values.split!)) throw new Error("Unknown split");
 const mode = values.mode as "none" | "offline" | "model";
 const limits = values.limit === "all" ? [...CONTEXT_LIMITS] : [Number(values.limit)];
@@ -47,7 +51,7 @@ const bank = values.bank === "regression" ? buildBank().filter(story => !story.s
 const sources = [...filesUnder("src/lib/advisor"), ...filesUnder("src/lib/knowledge"), ...filesUnder("src/workers"),
   ...filesUnder("scripts/llm/quality"), ...filesUnder("scripts/llm/context-frames"), ...filesUnder("scripts/llm/lib"),
   ...filesUnder("src/data/contracts"), ...filesUnder("src/i18n"), "scripts/llm/kev-agent/lib.ts", "scripts/prepare-ort.ts", "package-lock.json"];
-const modelFile = "research/llm-evals/workflow/models/context-selector.json";
+const modelFile = values["rank-model"]!;
 const data = ["public/data/version.json", ...filesUnder(currentDataDirectory()).filter(file => file.endsWith(".json")), ...filesUnder("public/models/offline"),
   ...filesUnder("public/models/judge"), ...filesUnder("knowledge").filter(file => file.endsWith(".json"))];
 if (fs.existsSync(path.join(ROOT, modelFile))) data.push(modelFile);
@@ -55,9 +59,12 @@ const hashes = {
   caseHash: digest(bank), sourceHash: digest(sources.map(file => [file, fileHash(file)])), dataHash: digest(data.map(file => [file, fileHash(file)])),
   scorerHash: digest(["scripts/llm/quality/checks.ts", "scripts/llm/conversational-advisor/score.ts", "scripts/llm/context-frames/checks.ts"].map(file => [file, fileHash(file)])),
   graphHash: fileHash(`public/${ADVISOR_MODEL.graph}`),
+  selectorHash: digest({ model: fs.existsSync(path.resolve(ROOT, modelFile)) ? fileHash(modelFile) : null, policy: values["rank-policy"] }),
 };
-const ranker = configs.some(config => config.policy === "learned") ? learnedContextRanker(JSON.parse(fs.readFileSync(path.join(ROOT, modelFile), "utf8")) as ContextRankModel) : undefined;
+const rawRanker = configs.some(config => config.policy === "learned") ? learnedContextRanker(JSON.parse(fs.readFileSync(path.resolve(ROOT, modelFile), "utf8")) as ContextRankModel) : undefined;
+const ranker = rawRanker && values["rank-policy"] === "guarded-residual" ? guardedResidual(rawRanker) : rawRanker;
 fs.writeFileSync(path.join(output, "provenance.json"), JSON.stringify({ ...hashes, configs, mode, bank: values.bank, split: values.split,
+  rankModel: modelFile, rankPolicy: values["rank-policy"],
   restoredHistoryLimit: values.bank === "stress" ? TURN_LIMIT : null,
   sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim(),
   sources: sources.map(file => [file, fileHash(file)]), data: data.map(file => [file, fileHash(file)]) }, null, 2));

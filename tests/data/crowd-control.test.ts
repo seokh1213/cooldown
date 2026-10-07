@@ -61,13 +61,17 @@ test("조건부 CC와 복사/반사에 따라 달라지는 효과는 CC 없음�
   for (const key of ["Sylas:R", "Viego:P", "Mel:W"]) assert.equal(get(key).status, "borrowed");
   assert.doesNotMatch(controlText(get("Sylas:R"), "ko_KR"), /CC 없음/);
 });
-test("패치나 툴팁이 달라지면 검증된 판정으로 표시하지 않는다", () => {
+test("패치가 달라도 정확히 같은 툴팁은 재사용하고 바뀐 툴팁은 검증 판정에서 제외한다", () => {
   const changed = structuredClone(korean);
   changed[0].spells[0].text = "아예 다른 효과를 가진 새 스킬입니다.";
   attachCrowdControl(changed, patch);
   assert.equal(changed[0].spells[0].crowdControl?.status, "inferred");
   attachCrowdControl(changed, "future");
-  assert.ok(changed.every(c => c.spells.every(s => s.crowdControl?.status === "inferred")));
+  assert.equal(changed[0].spells[0].crowdControl?.status, "inferred");
+  for (const [i, card] of changed.entries()) for (const [j, spell] of card.spells.entries()) {
+    if (i === 0 && j === 0) continue;
+    assert.deepEqual(spell.crowdControl, korean[i].spells[j].crowdControl);
+  }
 });
 test("추가 판정 노트는 출처·검토일·세 언어와 구체적인 질문 조건을 가진다", () => {
   const notes = loadMechanicsNotes();

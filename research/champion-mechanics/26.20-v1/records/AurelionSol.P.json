@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 2,
+  "id": "AurelionSol.P",
+  "champion": "AurelionSol",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "9155a9d763a504e90e9e093c663a7c64689b4f30d72809532ee0248f201051da",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Cosmic Creator",
+      "ko": "우주의 창조자"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/AurelionSol.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Aurelion Sol's damaging Abilities break down enemies into stacks of Stardust, which permanently improves each of his abilities.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Cosmic CreatorAurelion Sol has acquired ? Stardust",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "아우렐리온 솔이 스킬로 피해를 입히면 각 스킬을 영구히 강화하는 별가루를 획득합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "우주의 창조자아우렐리온 솔이 별가루 ?개 획득",
+      "variant": null
+    }
+  ],
+  "numbers": [],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "스킬로 피해를 입히면 별가루를 얻으며, 별가루는 각 스킬을 영구히 강화합니다.",
+  "rules": [
+    {
+      "id": "0198bb8b9948f043736b",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아우렐리온 솔의 스킬이 적에게 피해를 입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "피해를 입힌 스킬이 별가루를 부여하고, 별가루는 각 스킬을 영구히 강화합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Aurelion Sol's damaging Abilities break down enemies into stacks of Stardust, which permanently improves each of his abilities."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "본문의 획득 별가루 수는 ? 동적 자리표시자로 제공되어 확정할 수 없다. 패시브의 공통 획득량도 summary에 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cosmic CreatorAurelion Sol has acquired ? Stardust"
+        }
+      ]
+    }
+  ],
+  "candidateHash": "98e290913f889445d1f8b93fbb5556b5651c0d7789d4155da5d7f14f1230a2ac"
+}

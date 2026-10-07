@@ -1,0 +1,147 @@
+{
+  "summary": "모데카이저가 지면을 내리쳐 적중한 적에게 마법 피해를 입힙니다. 적 하나만 적중하면 피해가 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 피해에 추가되는 0~63의 레벨 범위 피해 항목이 더해집니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Mordekaiser smashes the ground with Nightfall dealing (80/115/150/185/220 + (0 ~ 63) + (120% bonus Attack Damage) + (70% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Mordekaiser smashes the ground with Nightfall dealing (80/115/150/185/220 + (0 ~ 63) + (120% bonus Attack Damage) + (70% Ability Power)) magic damage, increased to (80/115/150/185/220 + (0 ~ 63) + (120% bonus Attack Damage) + (70% Ability Power)) × 1.3/1.35/1.4/1.45/1.5 if it hits only a single enemy."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "entity_count",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "정확히 한 명의 적에게만 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "정확히 한 명의 적에게만 적중하면 일반 Q 피해 결과를 대체해 해당 피해 공식에 스킬 등급별 배율을 적용합니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "increased to (80/115/150/185/220 + (0 ~ 63) + (120% bonus Attack Damage) + (70% Ability Power)) × 1.3/1.35/1.4/1.45/1.5 if it hits only a single enemy."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Mordekaiser smashes the ground with Nightfall dealing (80/115/150/185/220 + (0 ~ 63) + (120% bonus Attack Damage) + (70% Ability Power)) magic damage, increased to (80/115/150/185/220 + (0 ~ 63) + (120% bonus Attack Damage) + (70% Ability Power)) × 1.3/1.35/1.4/1.45/1.5 if it hits only a single enemy."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "추가 0~63 피해가 레벨에 따라 달라지지만 중간 레벨의 정확한 값 또는 보간식은 원문에 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(80/115/150/185/220 + (0 ~ 63) + (120% bonus Attack Damage) + (70% Ability Power)) magic damage"
+        }
+      ]
+    }
+  ]
+}

@@ -150,7 +150,21 @@ pnpm llm:test:ui --out research/.cache/quality/ui
 
 ## 현재 지식 원문 변경
 
+2026-10-07 로컬 26.20 갱신은 [패치·자동 회귀 기록](reports/patch-26.20/README.md)에 있다. 변경 전후 자동 회귀는 `--patch-baseline BEFORE_RESULTS_JSON`으로 비교한다. 질문·채점기·앱 코드·모델은 같아야 하며 게임/지식 데이터만 바뀔 수 있다. 이전 통과 행이나 통과 하위 검사가 사라지면 실패한다. 소스 갱신 CI가 이 전후 측정과 검토 HTML 생성을 수행하고 결과를 14일 보관한다. 실제 바뀐 콤보·스킬 지식의 의미 검수는 자동 승인하지 않는다. 이 워크플로 변경은 아직 GitHub에서 실행되지 않았다.
+
+참조만 담은 평가 초기 문맥은 현재 패치에 맞춰 재생한다. 답변·계산 조건·문맥 프레임·기타 사실이 들어 있는 초기 문맥과 실제 사용자 저장 기록은 패치 값을 바꾸지 않는다. 과거 mechanic-schema 입력 두 개는 별도 연구 fixture에 동결해 배포 데이터 정리와 독립적으로 재현한다.
+
 2026-10-06 후속 검수 `5c53aa957`에서 Kled Q/E/R, RekSai Q/W/E, Rell W 7개를 재검수했다. 최종 통합 시 승인 스킬 규칙은 865개이며 `research/champion-mechanics/reports/drift.json`의 regenerate·removed·metadata는 모두 0개다. 이전 858개·변경 7개는 후속 검수 전의 상태다. `pnpm llm:mechanics-drift`의 최신 변경 기록과 검토 절차를 따르며 원문이 다시 바뀌면 자동 승인하지 않는다. 테스트는 고정된 과거 개수보다 현재 유효한 승인 목록의 ID·원문 해시가 앱에 빠짐없이 적재되는지 검사한다.
+
+## 브라우저에서 사람 판정하기
+
+`npm run llm:review`는 [41문항 HTML](reports/review-20261007/review.html)을 만든다. 의도 분류 실패 31개와 과거 상성 질문 10개이며, 상성의 none/offline 중복 측정 20건을 10개 질문으로 묶었다. HTML은 서버 없이 열 수 있고 판정·의도·메모를 저장하며 결과 JSON 복사/다운로드/불러오기를 지원한다. 입력 해시가 다른 JSON은 거부한다. `npm run llm:test:review`로 실제 Chrome의 모바일/데스크톱·밝은/어두운 화면과 판정 동작을 검사한다. [검토 방법](reports/review-20261007/README.md)을 따른다. 사용자 판정을 학습 정답이나 배포 승인으로 자동 전환하지 않는다.
+
+## 후속 실험 결과
+
+새 [숫자·단위 span 후보 네 개](reports/span-ranker-20261007/README.md)는 같은 132개 앱 근거에서 기존 학습 Qwen 92개보다 모두 낮아 채택하지 않았다. 기존 92개는 92%나 현행 웹의 전체 정확도가 아니다.
+
+[문맥 후보 실험](reports/context-selector-20261007/README.md)은 중복 제거 학습과 guarded-residual 조합을 추가했다. 실제 WebGPU 250턴에서 현행 guarded 250개, 기존/새 순수 학습형 각각 249개, 조합 250개로 개선 근거가 없어 기본값을 유지한다. 최종 자료의 offline 250턴과 792턴 overflow 승인도 별도로 확인했다. 실험 모델과 결과는 연구 경로에 보존하고 기본 문맥은 `guarded:32` 리스트를 유지한다.
 
 ## 코드·기록 정리 정책
 

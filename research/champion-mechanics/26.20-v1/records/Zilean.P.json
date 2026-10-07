@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 2,
+  "id": "Zilean.P",
+  "champion": "Zilean",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "06055e0334874b146566e56f0e22fa5cf080a1d9a9bbda3f6a4f60c4d6184962",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Time In A Bottle",
+      "ko": "시간의 유리병"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Zilean.json",
+      "provider": "ddragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Zilean stores time as Experience and can grant it to his allies. When he has enough Experience to finish an ally's level up, he can right-click them to impart it. Zilean receives as much Experience as he gives.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "질리언은 시간을 경험치의 형태로 보존하여 아군에게 줄 수 있습니다. 아군의 레벨을 올려줄 수 있을 만큼 경험치가 모이면 해당 아군을 우클릭하여 건네줄 수 있습니다. 질리언 역시 아군에게 준 만큼의 경험치를 얻습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:body",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "질리언은 경험치를 보존하고, 아군의 레벨을 올릴 만큼 모이면 우클릭으로 아군에게 전달한다. 전달한 만큼의 경험치를 질리언도 얻는다.",
+  "rules": [
+    {
+      "id": "3bc642b7ed7a7570db5c",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "시간을 경험치 형태로 보존해 아군에게 건넬 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zilean stores time as Experience and can grant it to his allies."
+        }
+      ]
+    },
+    {
+      "id": "4c45c087bb1e67b68101",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "resource",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아군의 레벨을 마칠 만큼 보존 경험치가 충분함"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "경험치를 건넬 아군을 우클릭"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "ally",
+          "text": "질리언이 우클릭한 아군에게 보존한 경험치를 전달한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "질리언은 아군에게 전달한 만큼의 경험치를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When he has enough Experience to finish an ally's level up, he can right-click them to impart it. Zilean receives as much Experience as he gives."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "853b57344245bbd2ca8f9ee6ef5770892cb4ff19c2b5191daa42cb871c2b256f"
+}

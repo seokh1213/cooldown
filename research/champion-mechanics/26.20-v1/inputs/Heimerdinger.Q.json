@@ -1,0 +1,553 @@
+{
+  "champion": "Heimerdinger",
+  "slot": "Q",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Heimerdinger lays down a rapid-fire cannon turret equipped with a secondary pass-through beam attack (turrets deal half damage to towers).",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Heimerdinger constructs a Turret that attacks nearby enemies. Heimerdinger can have 3 turrets active at once. Turrets slowly build up charge. At max charge, they fire a stronger attack. If Heimerdinger gets too far away, his Turrets will deactivate after 8 seconds. This Ability has 3 charges. Turrets prioritize attacking enemies Heimerdinger has recently damaged and enemies attacking Heimerdinger. Turret Stats: ((130 ~ 640) + ((5% ~ 45%) Ability Power)) Health (7/11/15/19/23 + (35% Ability Power)) magic damage per regular shot (40/60/80/100/120 + (55% Ability Power)) magic damage per charged shot",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "하이머딩거가 관통 광선 공격이 추가된 속사포 포탑을 설치합니다. (하이머딩거의 포탑은 적 포탑에 절반의 피해만 줍니다.)",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "하이머딩거가 근처 적을 공격하는 포탑을 세웁니다. 포탑은 한 번에 3개까지 세울 수 있으며 천천히 충전됩니다. 최대로 충전되면 더 강력한 공격을 가합니다. 하이머딩거가 너무 멀리 떨어지면 포탑은 8초 후 작동을 멈춥니다. 이 스킬은 3회까지 충전됩니다. 포탑이 최근 하이머딩거에 의해 피해를 입은 적과 하이머딩거를 공격하는 적을 우선적으로 공격합니다. 포탑 능력치: 체력 ((130 ~ 640) + ((5% ~ 45%) 주문력)) 기본 사격마다 (7/11/15/19/23 + (35% 주문력))의 마법 피해 충전 사격마다 (40/60/80/100/120 + (55% 주문력))의 마법 피해",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "H-28 G Evolution Turret",
+      "ko": "H-28 G 진화형 포탑"
+    },
+    "cooldownSeconds": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "rechargeSeconds": [
+      20,
+      20,
+      20,
+      20,
+      20
+    ],
+    "maxCharges": 3,
+    "range": [
+      350,
+      350,
+      350,
+      350,
+      350
+    ],
+    "cost": {
+      "values": [
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cannon Damage",
+        "values": "7/11/15/19/23"
+      },
+      {
+        "label": "Beam Damage",
+        "values": "40/60/80/100/120"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          130,
+          160,
+          190,
+          220,
+          250,
+          280,
+          310,
+          340,
+          370,
+          400,
+          430,
+          460,
+          490,
+          520,
+          550,
+          580,
+          610,
+          640,
+          640,
+          640
+        ],
+        "digits": 0
+      },
+      {
+        "values": [
+          5,
+          5.5,
+          6,
+          6.5,
+          7,
+          7.5,
+          8,
+          8.5,
+          9,
+          13,
+          17,
+          21,
+          25,
+          29,
+          33,
+          37,
+          41,
+          45,
+          49,
+          53
+        ],
+        "digits": 2,
+        "trimZeros": true,
+        "percent": true
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:TurretHealth"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "Damage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          7,
+          11,
+          15,
+          19,
+          23
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.3499999940395355,
+              0.3499999940395355,
+              0.3499999940395355,
+              0.3499999940395355,
+              0.3499999940395355
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Heimerdinger.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Heimerdinger.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 84,
+      "end": 85
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 255,
+      "end": 256
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 283,
+      "end": 284
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 417,
+      "end": 420
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "640",
+      "value": 640,
+      "percent": false,
+      "start": 423,
+      "end": 426
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 432,
+      "end": 434
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 437,
+      "end": 440
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 466,
+      "end": 467
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "11",
+      "value": 11,
+      "percent": false,
+      "start": 468,
+      "end": 470
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 471,
+      "end": 473
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "19",
+      "value": 19,
+      "percent": false,
+      "start": 474,
+      "end": 476
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "23",
+      "value": 23,
+      "percent": false,
+      "start": 477,
+      "end": 479
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 483,
+      "end": 486
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 534,
+      "end": 536
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 537,
+      "end": 539
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 540,
+      "end": 542
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 543,
+      "end": 546
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 547,
+      "end": 550
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "55%",
+      "value": 55,
+      "percent": true,
+      "start": 554,
+      "end": 557
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 37,
+      "end": 38
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 109,
+      "end": 110
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 130,
+      "end": 131
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 210,
+      "end": 213
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "640",
+      "value": 640,
+      "percent": false,
+      "start": 216,
+      "end": 219
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 225,
+      "end": 227
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 230,
+      "end": 233
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 250,
+      "end": 251
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "11",
+      "value": 11,
+      "percent": false,
+      "start": 252,
+      "end": 254
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 255,
+      "end": 257
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "19",
+      "value": 19,
+      "percent": false,
+      "start": 258,
+      "end": 260
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "23",
+      "value": 23,
+      "percent": false,
+      "start": 261,
+      "end": 263
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 267,
+      "end": 270
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 293,
+      "end": 295
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 296,
+      "end": 298
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 299,
+      "end": 301
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 302,
+      "end": 305
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 306,
+      "end": 309
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "55%",
+      "value": 55,
+      "percent": true,
+      "start": 313,
+      "end": 316
+    }
+  ],
+  "sourceHash": "62c44b233371ef52bb3a8dbd1dfbcf5f1e02e7c9fc5eb2d72abe66d6208948d6",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

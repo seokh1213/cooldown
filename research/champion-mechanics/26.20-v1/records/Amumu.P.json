@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 2,
+  "id": "Amumu.P",
+  "champion": "Amumu",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "bc815038b020f6d58e9db5e1e9f82632b5b16e7f0f6e3354c763456f456c0978",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Cursed Touch",
+      "ko": "저주의 손길"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Amumu.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Amumu's basic attacks Curse his enemies, causing them to take bonus true damage from incoming magic damage.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Amumu's Attacks Curse his enemies for 3 seconds, causing them to take an additional 10% true damage from all magic damage they take.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "아무무의 기본 공격을 받은 대상은 저주에 걸려 마법 피해를 입을 때마다 추가 고정 피해를 받습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "아무무의 기본 공격을 받은 대상은 3초 동안 저주에 걸려 마법 피해를 입을 때마다 10%의 고정 피해를 추가로 받습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 38,
+      "end": 39
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 84,
+      "end": 87
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 19,
+      "end": 20
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 46,
+      "end": 49
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "아무무의 공격은 적을 저주하며, 저주받은 적은 마법 피해를 받을 때마다 추가 고정 피해를 받습니다.",
+  "rules": [
+    {
+      "id": "0d78e19ea4b28e7e707c",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "기본 공격을 받은 적에게 저주를 겁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Amumu's Attacks Curse his enemies for 3 seconds, causing them to take an additional 10% true damage from all magic damage they take."
+        }
+      ]
+    },
+    {
+      "id": "b13ad3fb9c7062b6029d",
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아무무의 저주"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "마법 피해를 받음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "아무무의 저주에 걸린 대상이 받은 마법 피해의 10%를 추가 고정 피해로 받습니다.",
+          "damageType": "true",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Amumu's Attacks Curse his enemies for 3 seconds, causing them to take an additional 10% true damage from all magic damage they take."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "697aaac500a38d5df6730122fe0cd31531c3a25befe9f16cab6165b3a7b322a0"
+}

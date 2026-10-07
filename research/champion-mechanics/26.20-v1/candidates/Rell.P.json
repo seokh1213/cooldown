@@ -1,0 +1,224 @@
+{
+  "summary": "렐의 기본 공격과 스킬이 적중하면 렐이 대상의 방어력과 마법 저항력을 훔친다. 기본 공격은 방어력과 마법 저항력에 비례한 추가 마법 피해를 입힌다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "렐이 적중 대상의 방어력과 마법 저항력을 훔친다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "armor",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "magicResist",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "target",
+          "text": "훔치는 동안 적중 대상의 방어력과 마법 저항력은 각각3% 감소하며 렐이 해당 수치를 얻는다. 효과는5초이다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "armor",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "magicResist",
+              "statSubject": "target",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rell's Attacks and Abilities steal 3% Armor and 3% Magic Resist for 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "훔친 방어력과 마법 저항력에는 최대치가 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Max: 15%."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기본 공격 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 공격 적중 시 방어력5%와 마법 저항력5%를 더한 마법 피해를 입힌다. 소유자를 본문에서 직접 명시하지 않아 unknown으로 보존한다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "armor",
+              "statSubject": "unknown",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "magicResist",
+              "statSubject": "unknown",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Basic attacks deal ((5% Armor) + (5% Magic Resist)) magic damage on-hit."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문은 최대치가 방어력과 마법 저항력 각각에 적용되는지, 두 수치의 합계에 적용되는지 밝히지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rell's Attacks and Abilities steal 3% Armor and 3% Magic Resist for 5 seconds. Max: 15%."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "추가magicdamage의Armor/MR계수주인은직접명시되지않아unknown으로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Basic attacks deal ((5% Armor) + (5% Magic Resist)) magic damage on-hit."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "summary는AttacksandAbilities추가magic이라하지만본문피해문장은Basicattacksonly다.본문을우선하여추가magic은기본공격에만표현한다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Rell's Attacks and Abilities deal additional magic damage and steal Armor and Magic Resist on hit."
+        }
+      ]
+    }
+  ]
+}

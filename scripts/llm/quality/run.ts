@@ -14,15 +14,17 @@ import { openModel } from "./model";
 import { compareReports, verifyReview, reviewPacket, saveReport } from "./report";
 import { comparePipelineReports, type DataProvenance } from "./pipelineComparison";
 import type { QualityStory, QualityRow, QualityReport } from "./types";
+import { comparePatchReports } from "./patchComparison";
 
 const { values } = parseArgs({ options: {
   profile: { type: "string", default: "regression" }, out: { type: "string" }, baseline: { type: "string" }, review: { type: "string" },
   graph: { type: "string" }, suite: { type: "string" }, resume: { type: "boolean", default: false },
   "pipeline-baseline": { type: "string" },
+  "patch-baseline": { type: "string" },
   headless: { type: "boolean", default: false }, "base-weights": { type: "boolean", default: false },
 } });
 const profile = values.profile!;
-if (values.baseline && values["pipeline-baseline"]) throw new Error("Choose baseline or pipeline-baseline");
+if ([values.baseline, values["pipeline-baseline"], values["patch-baseline"]].filter(Boolean).length > 1) throw new Error("Choose one comparison mode");
 if (!["regression", "model", "quality", "infrastructure", "ui"].includes(profile)) throw new Error("Profiles: regression, model, quality, infrastructure, ui");
 const output = path.resolve(ROOT, values.out ?? `research/.cache/quality/${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}`);
 fs.mkdirSync(path.join(output, "logs"), { recursive: true });
@@ -137,6 +139,10 @@ try {
   report.checks.push({ name: "complete-coverage", pass: !missingKeys.length && rows.size === new Set(expectedKeys).size, log: "logs/coverage.json" });
   fs.writeFileSync(path.join(output, "logs/coverage.json"), JSON.stringify({ expected: expectedKeys.length, measured: rows.size, missingKeys }));
   if (values.baseline) comparison = compareReports(report, JSON.parse(fs.readFileSync(path.resolve(ROOT, values.baseline), "utf8")) as QualityReport);
+  if (values["patch-baseline"]) {
+    comparison = comparePatchReports(report, JSON.parse(fs.readFileSync(path.resolve(ROOT, values["patch-baseline"]), "utf8")) as QualityReport);
+    fs.writeFileSync(path.join(output, "patch-comparison.json"), JSON.stringify(comparison, null, 2) + "\n");
+  }
   if (values["pipeline-baseline"]) {
     const baselineFile = path.resolve(ROOT, values["pipeline-baseline"]);
     comparison = comparePipelineReports(report, JSON.parse(fs.readFileSync(baselineFile, "utf8")) as QualityReport, {

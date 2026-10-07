@@ -1,0 +1,268 @@
+{
+  "summary": "승화하며 정신을 집중하는 동안 재사용해 비전 포격을 발사할 수 있습니다. 한 번도 재사용하지 않으면 재사용 대기시간이 줄어듭니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "순수한 모습으로 승화하여 10초 정신 집중하며 이 동안 최대 4/5/6회 재사용할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "정신 집중 중 제라스는 이동할 수 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Xerath ascends to his true form and channels for 10 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "During this time he may Recast up to 4/5/6 times."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Xerath immobilizes himself and gains numerous long-range barrages."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "10초 정신 집중 중 최대 4/5/6회 재사용 가능한 포격을 발사하여 적중한 경우"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "비전 포격을 발사해 적중한 대상에게 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "During this time he may Recast up to 4/5/6 times. Recast: Xerath launches a magical artillery, dealing (170/220/270 + (45% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Xerath ascends to his true form and channels for 10 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "정신 집중 중 재사용한 비전 포격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "포격이 챔피언을 적중할 때마다 20/25/30 + 제라스 주문력의 5% 추가 마법 피해라는 효과가 적용됩니다. 누적 피해의 시간 범위는 공급 원문만으로 확정하지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "For each champion hit, the artillery deals an additional (20/25/30 + (5% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Xerath ascends to his true form and channels for 10 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 정신 집중 동안 스킬을 한 번도 재사용하지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "한 번도 재사용하지 않으면 이 스킬의 재사용 대기시간이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Xerath does not Recast at all, this Ability's Cooldown is reduced by 50%."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "During this time he may Recast up to 4/5/6 times."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "각 챔피언 적중마다 추가 피해라는 원문은 보존했으나, 증가분이 현재 포격·다음 포격 중 언제 적용되고 언제까지 누적되는지는 공급 문구가 특정하지 않는다. 임의 중첩·초기화 조건을 만들지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "For each champion hit, the artillery deals an additional (20/25/30 + (5% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,610 @@
+{
+  "champion": "Tristana",
+  "slot": "E",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "When Tristana kills a unit, her cannonballs burst into shrapnel, dealing damage to surrounding enemies. Can be activated to place a bomb on a target enemy that explodes after a short duration dealing damage to surrounding units.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive: Tristana's Attacks that kill enemies deal (45/60/75/90/105 + (25% Ability Power)) magic damage to surrounding enemies. Active: Tristana attaches a bomb to an enemy or turret that deals (60/85/110/135/160 + (80% bonus Attack Damage) + (50% Ability Power)) physical damage to surrounding enemies after 4 seconds. The damage is increased by 25% each time Tristana hits an Attack or Ability (max 4 stacks). At 4 stacks, the bomb explodes immediately (max (120/170/220/270/320 + (160% bonus Attack Damage) + (100% Ability Power)) physical damage). Active damage is increased by Critical Strike Chance and Critical Strike Damage at 40% effectiveness. The detonation radius is twice as large if used on a turret.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "트리스타나가 적을 처치할 때마다 대포알이 조각 조각 터지면서 주변 적에게 피해를 입힙니다. 스킬을 활성화하면 대상 적에게 폭탄을 부착하여, 잠시 후 터지면서 주위 유닛들에게도 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과: 트리스타나가 기본 공격으로 적을 처치하면 주변 적에게 (45/60/75/90/105 + (25% 주문력))의 마법 피해를 입힙니다. 사용 시: 트리스타나가 적이나 포탑에 폭탄을 부착해 4초 후 주변 적에게 (60/85/110/135/160 + (80% 추가 공격력) + (50% 주문력))의 물리 피해를 입힙니다. 폭탄이 부착된 대상을 기본 공격이나 스킬로 공격할 때마다 피해량이 25%씩 증가합니다. (이 효과는 최대 4번까지 중첩됩니다.) 4번 중첩되면 폭탄이 즉시 폭발합니다. (최대 (120/170/220/270/320 + (160% 추가 공격력) + (100% 주문력))의 물리 피해) 사용 시 피해량은 치명타 확률 및 치명타 피해량에 따라 40%만큼 증가합니다. 포탑에 사용할 경우 폭발 반경이 두 배로 늘어납니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Explosive Charge",
+      "ko": "폭발 화약"
+    },
+    "cooldownSeconds": [
+      16,
+      15.5,
+      15,
+      14.5,
+      14
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      550,
+      550,
+      550,
+      550,
+      550
+    ],
+    "cost": {
+      "values": [
+        50,
+        55,
+        60,
+        65,
+        70
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Passive Explosion Damage",
+        "values": "45/60/75/90/105"
+      },
+      {
+        "label": "Base Charge Damage",
+        "values": "60/85/110/135/160"
+      },
+      {
+        "label": "Cooldown",
+        "values": "16/15.5/15/14.5/14"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "50/55/60/65/70"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:PassiveDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "PassiveDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          45,
+          60,
+          75,
+          90,
+          105
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Tristana.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Tristana.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 52,
+      "end": 54
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 55,
+      "end": 57
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 58,
+      "end": 60
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 61,
+      "end": 63
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 64,
+      "end": 67
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 71,
+      "end": 74
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 195,
+      "end": 197
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 198,
+      "end": 200
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 201,
+      "end": 204
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 205,
+      "end": 208
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 209,
+      "end": 212
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 216,
+      "end": 219
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 244,
+      "end": 247
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 309,
+      "end": 310
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 347,
+      "end": 350
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 401,
+      "end": 402
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 415,
+      "end": 416
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 461,
+      "end": 464
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 465,
+      "end": 468
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "220",
+      "value": 220,
+      "percent": false,
+      "start": 469,
+      "end": 472
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "270",
+      "value": 270,
+      "percent": false,
+      "start": 473,
+      "end": 476
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "320",
+      "value": 320,
+      "percent": false,
+      "start": 477,
+      "end": 480
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "160%",
+      "value": 160,
+      "percent": true,
+      "start": 484,
+      "end": 488
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 513,
+      "end": 517
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 635,
+      "end": 638
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 41,
+      "end": 43
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 44,
+      "end": 46
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 47,
+      "end": 49
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 50,
+      "end": 52
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 53,
+      "end": 56
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 60,
+      "end": 63
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 113,
+      "end": 114
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 126,
+      "end": 128
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 129,
+      "end": 131
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 132,
+      "end": 135
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 136,
+      "end": 139
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 140,
+      "end": 143
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 147,
+      "end": 150
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 162,
+      "end": 165
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 223,
+      "end": 226
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 245,
+      "end": 246
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 258,
+      "end": 259
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 285,
+      "end": 288
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 289,
+      "end": 292
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "220",
+      "value": 220,
+      "percent": false,
+      "start": 293,
+      "end": 296
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "270",
+      "value": 270,
+      "percent": false,
+      "start": 297,
+      "end": 300
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "320",
+      "value": 320,
+      "percent": false,
+      "start": 301,
+      "end": 304
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "160%",
+      "value": 160,
+      "percent": true,
+      "start": 308,
+      "end": 312
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 324,
+      "end": 328
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 374,
+      "end": 377
+    }
+  ],
+  "sourceHash": "bb8fb2dbb938d094c5df68e3274b8b402490d3765091ab68c7441d681fb3b387",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

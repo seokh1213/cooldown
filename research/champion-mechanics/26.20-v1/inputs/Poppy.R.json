@@ -1,0 +1,359 @@
+{
+  "champion": "Poppy",
+  "slot": "R",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Poppy channels a hammer strike that knocks enemies very far away.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Begin Casting: Poppy begins charging her hammer for up to 4 seconds, Slowing herself by 15%. Release: Poppy smashes the ground, creating a shockwave that deals (200/300/400 + (90% bonus Attack Damage)) physical damage to the first champion hit and surrounding enemies, Knocks them Back towards their Nexus, and makes them Untargetable while they fly. The range and Knock Back distance increase with charge duration. An uncharged swing deals (100/150/200 + (45% bonus Attack Damage)) physical damage and Knocks Up for 1 seconds. Untargetable units won't be affected by enemy Attacks or Abilities unless they've already been hit by them.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "뽀삐가 잠시 정신을 집중한 뒤 망치를 휘둘러 피해를 입히고 적을 굉장히 멀리 날려버립니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "충전 시작 시: 뽀삐가 최대 4초 동안 망치를 충전하고 15% 둔화됩니다. 사용 시: 뽀삐가 지면에 강력한 일격을 날려 균열을 일으킵니다. 처음 적중한 적 챔피언과 주변 적은 (200/300/400 + (90% 추가 공격력))의 물리 피해를 입고 모두 넥서스 쪽으로 밀려나고 공중에 떠오른 적은 대상으로 지정할 수 없게 됩니다. 균열의 길이와 적을 밀어내는 거리는 정신을 충전 시간에 비례합니다. 충전하지 않고 바로 사용할 경우 (100/150/200 + (45% 추가 공격력))의 물리 피해를 입히고 적을 1초 동안 공중으로 띄워 올립니다. 대상으로 지정할 수 없는 유닛은 이미 적중당한 상태가 아닌 한 적의 기본 공격이나 스킬에 영향을 받지 않습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Keeper's Verdict",
+      "ko": "수호자의 심판"
+    },
+    "cooldownSeconds": [
+      140,
+      120,
+      100
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      500,
+      500,
+      500
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "200/300/400"
+      },
+      {
+        "label": "Cooldown",
+        "values": "140/120/100"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:Damage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "Damage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          200,
+          300,
+          400
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.8999999761581421,
+              0.8999999761581421,
+              0.8999999761581421
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "self",
+          "source": "https://wiki.leagueoflegends.com/en-us/Poppy",
+          "condition": "충전 중"
+        },
+        {
+          "type": "knockup",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Poppy",
+          "condition": "짧게 사용"
+        },
+        {
+          "type": "knockback",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Poppy",
+          "condition": "충전해 사용"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Poppy.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Poppy.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 58,
+      "end": 59
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 88,
+      "end": 91
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 161,
+      "end": 164
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 165,
+      "end": 168
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 169,
+      "end": 172
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 176,
+      "end": 179
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 442,
+      "end": 445
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 446,
+      "end": 449
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 450,
+      "end": 453
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 457,
+      "end": 460
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 517,
+      "end": 518
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 16,
+      "end": 17
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 31,
+      "end": 34
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 99,
+      "end": 102
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 103,
+      "end": 106
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 107,
+      "end": 110
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 114,
+      "end": 117
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 241,
+      "end": 244
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 245,
+      "end": 248
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 249,
+      "end": 252
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 256,
+      "end": 259
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 284,
+      "end": 285
+    }
+  ],
+  "sourceHash": "7160fbb58aab441a8fec4404e9b7babbbe8b03878d54b44d9e6f6e099ad95a96",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

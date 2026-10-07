@@ -1,0 +1,530 @@
+{
+  "champion": "Nautilus",
+  "slot": "E",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Nautilus creates three exploding waves around himself. Each explosion damages and slows enemies.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Nautilus creates three exploding waves around himself, each dealing (55/90/125/160/195 + (50% Ability Power)) magic damage to enemies in the area and Slows them by 30/35/40/45/50% decaying over 1.25 seconds. Waves deal 50% less damage after the first. This Ability deals (125/165/205/245/285 + (50% Ability Power)) bonus damage to jungle monsters the first time it hits.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "노틸러스가 주위에 세 번의 폭발을 일으킵니다. 폭발할 때마다 적에게 피해를 입히고 둔화시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "노틸러스가 주위에 세 번의 폭발을 일으킵니다. 폭발할 때마다 범위 내의 모든 적에게 (55/90/125/160/195 + (50% 주문력))의 마법 피해를 입히고 1.25초 동안 30/35/40/45/50% 둔화시킵니다. 둔화 효과는 시간이 지나면 사라집니다. 두 번째 폭발부터 피해량이 50% 감소합니다. 이 스킬이 정글 몬스터에게 처음 적중할 때 (125/165/205/245/285 + (50% 주문력))의 추가 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Riptide",
+      "ko": "역조"
+    },
+    "cooldownSeconds": [
+      7,
+      6.5,
+      6,
+      5.5,
+      5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      600,
+      600,
+      600,
+      600,
+      600
+    ],
+    "cost": {
+      "values": [
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "7/6.5/6/5.5/5"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "50/60/70/80/90"
+      },
+      {
+        "label": "Damage",
+        "values": "55/90/125/160/195"
+      },
+      {
+        "label": "Monster Damage",
+        "values": "125/165/205/245/285"
+      },
+      {
+        "label": "Slow",
+        "values": "30%/35%/40%/45%/50%"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:DamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "DamageCalc",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          55,
+          90,
+          125,
+          160,
+          195
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Nautilus.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Nautilus.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Nautilus.E",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "three",
+      "value": 3,
+      "percent": false,
+      "start": 17,
+      "end": 22
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "three",
+      "value": 3,
+      "percent": false,
+      "start": 17,
+      "end": 22
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 69,
+      "end": 71
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 72,
+      "end": 74
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 75,
+      "end": 78
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 79,
+      "end": 82
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "195",
+      "value": 195,
+      "percent": false,
+      "start": 83,
+      "end": 86
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 90,
+      "end": 93
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 164,
+      "end": 166
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 167,
+      "end": 169
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 170,
+      "end": 172
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 173,
+      "end": 175
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 176,
+      "end": 179
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 194,
+      "end": 198
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 219,
+      "end": 222
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 272,
+      "end": 275
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 276,
+      "end": 279
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "205",
+      "value": 205,
+      "percent": false,
+      "start": 280,
+      "end": 283
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "245",
+      "value": 245,
+      "percent": false,
+      "start": 284,
+      "end": 287
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "285",
+      "value": 285,
+      "percent": false,
+      "start": 288,
+      "end": 291
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 295,
+      "end": 298
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 51,
+      "end": 53
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 54,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 58,
+      "end": 61
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "195",
+      "value": 195,
+      "percent": false,
+      "start": 62,
+      "end": 65
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 69,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 91,
+      "end": 95
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 100,
+      "end": 102
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 103,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 106,
+      "end": 108
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 109,
+      "end": 111
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 112,
+      "end": 115
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 161,
+      "end": 164
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 197,
+      "end": 200
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "165",
+      "value": 165,
+      "percent": false,
+      "start": 201,
+      "end": 204
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "205",
+      "value": 205,
+      "percent": false,
+      "start": 205,
+      "end": 208
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "245",
+      "value": 245,
+      "percent": false,
+      "start": 209,
+      "end": 212
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "285",
+      "value": 285,
+      "percent": false,
+      "start": 213,
+      "end": 216
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 220,
+      "end": 223
+    }
+  ],
+  "sourceHash": "183e5a77d37dd206f8872e1f8507c6392e6946b23aa1ac2439b909b06683e7f8",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

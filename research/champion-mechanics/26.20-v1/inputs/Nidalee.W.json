@@ -1,0 +1,678 @@
+{
+  "champion": "Nidalee",
+  "slot": "W",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "In human form, Nidalee lays a trap for unwary opponents that, when sprung, damages and reveals its target. As a cougar, she jumps in a direction, dealing damage in an area where she lands.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Human Form: Nidalee places an invisible trap for 2 minutes. When an enemy walks over it, they are dealt (10/20/30/40/50 + (5% Ability Power)) magic damage per second for 4 seconds. (4 ~ 10) traps may be active at once.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "인간 모습일 때 - 니달리가 적이 밟으면 피해를 입히며 모습을 드러내는 함정을 깝니다. 쿠거 모습일 때 - 앞으로 살짝 뛰어오르며 착지 시 주위에 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "인간 형태: 니달리가 2분 동안 유지되는 투명한 덫을 설치합니다. 적이 덫을 밟으면 4초 동안 초당 (10/20/30/40/50 + (5% 주문력))의 마법 피해를 입습니다. 한 번에 (4 ~ 10)개의 덫만 설치할 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "form:A:en",
+      "text": "Human Form: Nidalee places an invisible trap for 2 minutes. When an enemy walks over it, they are dealt (10/20/30/40/50 + (5% Ability Power)) magic damage per second for 4 seconds. (4 ~ 10) traps may be active at once.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:A"
+    },
+    {
+      "id": "form:B:en",
+      "text": "Cougar Form: Nidalee pounces, dealing (55/100/145/190 + (50% bonus Attack Damage) + (30% Ability Power)) magic damage to enemies surrounding where she lands. Killing a unit in Cougar Form reduces this Ability's Cooldown to 3/2.5/2/1.5 seconds. Pouncing at a Hunted enemy can be done from a greater distance and reduces this Ability's Cooldown to 3/2.5/2/1.5 seconds.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:B"
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    },
+    {
+      "id": "form:A",
+      "label": "Human",
+      "sourceIds": [
+        "form:A:en"
+      ]
+    },
+    {
+      "id": "form:B",
+      "label": "Cougar",
+      "sourceIds": [
+        "form:B:en"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Bushwhack / Pounce",
+      "ko": "매복 덫 / 급습"
+    },
+    "cooldownSeconds": [
+      13,
+      12,
+      11,
+      10,
+      9
+    ],
+    "rechargeSeconds": [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "maxCharges": null,
+    "range": [
+      900,
+      900,
+      900,
+      900,
+      900
+    ],
+    "cost": {
+      "values": [
+        30,
+        35,
+        40,
+        45,
+        50
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Trap Damage",
+        "values": "40/80/120/160/200"
+      },
+      {
+        "label": "Trap Cooldown",
+        "values": "13/12/11/10/9"
+      },
+      {
+        "label": "Trap Mana Cost",
+        "values": "30/35/40/45/50"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          6,
+          6,
+          6,
+          6,
+          6,
+          8,
+          8,
+          8,
+          8,
+          8,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:MaxTraps"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "DamagePerSecond",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          10,
+          20,
+          30,
+          40,
+          50
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.05000000074505806,
+              0.05000000074505806,
+              0.05000000074505806,
+              0.05000000074505806,
+              0.05000000074505806
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [
+      {
+        "key": "A",
+        "label": "Human",
+        "id": "Bushwhack",
+        "name": "Bushwhack",
+        "iconPath": "assets/characters/nidalee/hud/icons2d/nidalee_w1.png",
+        "iconVersion": "16.20",
+        "levelValues": [
+          {
+            "values": [
+              4,
+              4,
+              4,
+              4,
+              4,
+              6,
+              6,
+              6,
+              6,
+              6,
+              8,
+              8,
+              8,
+              8,
+              8,
+              10,
+              10,
+              10,
+              10,
+              10
+            ],
+            "digits": 0
+          }
+        ],
+        "cooldownSeconds": [
+          13,
+          12,
+          11,
+          10,
+          9
+        ],
+        "tooltipRankSource": "W",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      {
+        "key": "B",
+        "label": "Cougar",
+        "id": "Pounce",
+        "name": "Pounce",
+        "iconPath": "assets/characters/nidalee/hud/icons2d/nidalee_w2.png",
+        "iconVersion": "16.20",
+        "cooldownSeconds": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "tooltipRankSource": "R",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    ],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Nidalee.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Nidalee.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 49,
+      "end": 50
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 105,
+      "end": 107
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 108,
+      "end": 110
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 111,
+      "end": 113
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 114,
+      "end": 116
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 117,
+      "end": 119
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 123,
+      "end": 125
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 170,
+      "end": 171
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 182,
+      "end": 183
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 186,
+      "end": 188
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 12,
+      "end": 13
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 47,
+      "end": 48
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 57,
+      "end": 59
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 60,
+      "end": 62
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 63,
+      "end": 65
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 66,
+      "end": 68
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 69,
+      "end": 71
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 75,
+      "end": 77
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 104,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 108,
+      "end": 110
+    },
+    {
+      "id": "form:A:en:n0",
+      "sourceId": "form:A:en",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 49,
+      "end": 50
+    },
+    {
+      "id": "form:A:en:n1",
+      "sourceId": "form:A:en",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 105,
+      "end": 107
+    },
+    {
+      "id": "form:A:en:n2",
+      "sourceId": "form:A:en",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 108,
+      "end": 110
+    },
+    {
+      "id": "form:A:en:n3",
+      "sourceId": "form:A:en",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 111,
+      "end": 113
+    },
+    {
+      "id": "form:A:en:n4",
+      "sourceId": "form:A:en",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 114,
+      "end": 116
+    },
+    {
+      "id": "form:A:en:n5",
+      "sourceId": "form:A:en",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 117,
+      "end": 119
+    },
+    {
+      "id": "form:A:en:n6",
+      "sourceId": "form:A:en",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 123,
+      "end": 125
+    },
+    {
+      "id": "form:A:en:n7",
+      "sourceId": "form:A:en",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 170,
+      "end": 171
+    },
+    {
+      "id": "form:A:en:n8",
+      "sourceId": "form:A:en",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 182,
+      "end": 183
+    },
+    {
+      "id": "form:A:en:n9",
+      "sourceId": "form:A:en",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 186,
+      "end": 188
+    },
+    {
+      "id": "form:B:en:n0",
+      "sourceId": "form:B:en",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 39,
+      "end": 41
+    },
+    {
+      "id": "form:B:en:n1",
+      "sourceId": "form:B:en",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "form:B:en:n2",
+      "sourceId": "form:B:en",
+      "raw": "145",
+      "value": 145,
+      "percent": false,
+      "start": 46,
+      "end": 49
+    },
+    {
+      "id": "form:B:en:n3",
+      "sourceId": "form:B:en",
+      "raw": "190",
+      "value": 190,
+      "percent": false,
+      "start": 50,
+      "end": 53
+    },
+    {
+      "id": "form:B:en:n4",
+      "sourceId": "form:B:en",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "form:B:en:n5",
+      "sourceId": "form:B:en",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 85,
+      "end": 88
+    },
+    {
+      "id": "form:B:en:n6",
+      "sourceId": "form:B:en",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 223,
+      "end": 224
+    },
+    {
+      "id": "form:B:en:n7",
+      "sourceId": "form:B:en",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 225,
+      "end": 228
+    },
+    {
+      "id": "form:B:en:n8",
+      "sourceId": "form:B:en",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 229,
+      "end": 230
+    },
+    {
+      "id": "form:B:en:n9",
+      "sourceId": "form:B:en",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 231,
+      "end": 234
+    },
+    {
+      "id": "form:B:en:n10",
+      "sourceId": "form:B:en",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 346,
+      "end": 347
+    },
+    {
+      "id": "form:B:en:n11",
+      "sourceId": "form:B:en",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 348,
+      "end": 351
+    },
+    {
+      "id": "form:B:en:n12",
+      "sourceId": "form:B:en",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 352,
+      "end": 353
+    },
+    {
+      "id": "form:B:en:n13",
+      "sourceId": "form:B:en",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 354,
+      "end": 357
+    }
+  ],
+  "sourceHash": "ef5ca5e75d7ca6f01167b3bc6fbc37eed414b81b0d17adc96d187c1834069ec6",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

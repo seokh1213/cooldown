@@ -1,0 +1,126 @@
+{
+  "summary": "추가 체력과 주문력을 서로 전환해 얻습니다. 두 전환 효과는 서로 중첩되지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_conversion",
+          "subject": "caster",
+          "text": "추가 체력을 주문력으로 비례하여 추가로 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": "bonusHealth",
+          "statTo": "abilityPower",
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vladimir gains 1 Ability Power for every 30 bonus Health."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Every 30 points of bonus Health gives Vladimir 1 Ability Power and every 1 point of Ability Power gives Vladimir 1.6 bonus Health (does not stack with itself)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "두 전환 효과로 얻은 스탯은 서로 다시 중첩되지 않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_conversion",
+          "subject": "caster",
+          "text": "주문력을 최대 체력으로 비례하여 추가로 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": "abilityPower",
+          "statTo": "maxHealth",
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He also gains 1.6 max Health per 1 Ability Power."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Every 30 points of bonus Health gives Vladimir 1 Ability Power and every 1 point of Ability Power gives Vladimir 1.6 bonus Health (does not stack with itself)."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

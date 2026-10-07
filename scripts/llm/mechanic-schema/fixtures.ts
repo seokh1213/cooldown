@@ -8,7 +8,7 @@ import type { MechanicRecord } from "./types";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
 export const PATCH = "26.19";
-export const SOURCE_FILE = `public/data/${PATCH}/llm/champion-cards-en_US.json`;
+export const SOURCE_FILE = `research/llm-evals/mechanic-schema/source-cards-${PATCH}.json`;
 const cards = (JSON.parse(readFileSync(path.join(ROOT, SOURCE_FILE), "utf8")) as { cards: ChampionCard[] }).cards;
 export const sourceCard = (champion: string): ChampionCard => {
   const card = cards.find(card => card.id === champion);

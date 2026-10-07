@@ -1,0 +1,648 @@
+{
+  "champion": "Jax",
+  "slot": "R",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Every third consecutive attack deals additional Magic Damage. Additionally, Jax can activate this ability to deal damage around himself and strengthen his resolve, increasing his Armor and Magic Resist for a short duration.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Passive: Every third Attack within 2.5 seconds deals an additional (75/130/185 + (60% Ability Power)) magic damage. Active: Jax slams his lantern down, dealing (100/175/250 + (100% bonus Ability Power)) magic damage to nearby enemies. If he hits a champion he gains (45/60/75 + (40% bonus Attack Damage)) Armor and (27/36/45 + (24% bonus Attack Damage)) Magic Resist plus (20/25/30 + (10% bonus Attack Damage)) Armor and (12/15/18 + (6% bonus Attack Damage)) Magic Resist per additional champion hit for 8 seconds. During this time every second Attack deals additional magic damage instead of every third. Deals 50% damage to structures.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "매 세 번째 연속 공격마다 추가 마법 피해를 줍니다. 또 잭스는 이 스킬을 통해 자신의 주변에 피해를 입히고 결의를 다져, 잠깐 동안 방어력과 마법 저항력이 상승합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "기본 지속 효과: 2.5초 안에 세 번째 공격을 할 때마다 (75/130/185 + (60% 주문력))의 마법 피해를 추가로 입힙니다. 사용 시: 잭스가 가로등을 내리쳐 주변 적에게 (100/175/250 + (100% 추가 주문력))의 마법 피해를 입힙니다. 챔피언을 맞히면 방어력이 (45/60/75 + (40% 추가 공격력)), 마법 저항력이 (27/36/45 + (24% 추가 공격력)) 증가하며 다음 8초 안에 맞힌 챔피언 하나당 방어력이 (20/25/30 + (10% 추가 공격력)), 마법 저항력이 (12/15/18 + (6% 추가 공격력))씩 추가로 증가합니다. 이때 세 번째가 아닌 두 번째 기본 공격마다 마법 피해를 추가로 입힙니다. 구조물에 50%의 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Grandmaster-at-Arms",
+      "ko": "무기의 달인"
+    },
+    "cooldownSeconds": [
+      110,
+      100,
+      90
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      260,
+      260,
+      260
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Passive Damage",
+        "values": "75/130/185"
+      },
+      {
+        "label": "Active Damage",
+        "values": "100/175/250"
+      },
+      {
+        "label": "Base Armor",
+        "values": "45/60/75"
+      },
+      {
+        "label": "Base Magic Resist",
+        "values": "27/36/45"
+      },
+      {
+        "label": "Armor per Additional Champion",
+        "values": "20/25/30"
+      },
+      {
+        "label": "Magic Resist per Additional Champion",
+        "values": "12/15/18"
+      },
+      {
+        "label": "Cooldown",
+        "values": "110/100/90"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:OnHitDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "OnHitDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          75,
+          130,
+          185
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Jax.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Jax.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 35,
+      "end": 38
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 68,
+      "end": 70
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 71,
+      "end": 74
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "185",
+      "value": 185,
+      "percent": false,
+      "start": 75,
+      "end": 78
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 82,
+      "end": 85
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 161,
+      "end": 164
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 165,
+      "end": 168
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 169,
+      "end": 172
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 176,
+      "end": 180
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 267,
+      "end": 269
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 270,
+      "end": 272
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 273,
+      "end": 275
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 279,
+      "end": 282
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "27",
+      "value": 27,
+      "percent": false,
+      "start": 316,
+      "end": 318
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "36",
+      "value": 36,
+      "percent": false,
+      "start": 319,
+      "end": 321
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 322,
+      "end": 324
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "24%",
+      "value": 24,
+      "percent": true,
+      "start": 328,
+      "end": 331
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 373,
+      "end": 375
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 376,
+      "end": 378
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 379,
+      "end": 381
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 385,
+      "end": 388
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "12",
+      "value": 12,
+      "percent": false,
+      "start": 422,
+      "end": 424
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 425,
+      "end": 427
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 428,
+      "end": 430
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 434,
+      "end": 436
+    },
+    {
+      "id": "en:body:n25",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 504,
+      "end": 505
+    },
+    {
+      "id": "en:body:n26",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 612,
+      "end": 615
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 10,
+      "end": 13
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 34,
+      "end": 36
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 37,
+      "end": 40
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "185",
+      "value": 185,
+      "percent": false,
+      "start": 41,
+      "end": 44
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 103,
+      "end": 106
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 107,
+      "end": 110
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "250",
+      "value": 250,
+      "percent": false,
+      "start": 111,
+      "end": 114
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 118,
+      "end": 122
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 161,
+      "end": 163
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 164,
+      "end": 166
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 167,
+      "end": 169
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 173,
+      "end": 176
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "27",
+      "value": 27,
+      "percent": false,
+      "start": 196,
+      "end": 198
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "36",
+      "value": 36,
+      "percent": false,
+      "start": 199,
+      "end": 201
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 202,
+      "end": 204
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "24%",
+      "value": 24,
+      "percent": true,
+      "start": 208,
+      "end": 211
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 229,
+      "end": 230
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 252,
+      "end": 254
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 255,
+      "end": 257
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 258,
+      "end": 260
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 264,
+      "end": 267
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "12",
+      "value": 12,
+      "percent": false,
+      "start": 287,
+      "end": 289
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 290,
+      "end": 292
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 293,
+      "end": 295
+    },
+    {
+      "id": "ko:body:n25",
+      "sourceId": "ko:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 299,
+      "end": 301
+    },
+    {
+      "id": "ko:body:n26",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 370,
+      "end": 373
+    }
+  ],
+  "sourceHash": "7f6fd92f5ed6c678105a3971d7c45ff80887c852b4a200ebddd9847a28eaab93",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

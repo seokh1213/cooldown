@@ -70,8 +70,8 @@ const CATEGORY: Record<string, string> = {
 };
 
 /** 재료. 모델이 쓸 수 있는 사실은 이것뿐이고, 검증도 이것에 맞댄다. */
-export function material(me: ChampionCard, enemy: ChampionCard): string {
-  const notes = matchupNotes(data, me, enemy, "ko_KR");
+export function material(me: ChampionCard, enemy: ChampionCard, source: AdvisorData = data): string {
+  const notes = matchupNotes(source, me, enemy, "ko_KR");
   const plan = notes.plan!;
   const spells = (card: ChampionCard) =>
     card.spells.map((spell) => `- ${card.name} ${spell.slot} ${spell.name}${spell.effects.length ? `: ${spell.effects.map((t) => translateTag(t, "ko_KR")).join(", ")}` : ""}`);

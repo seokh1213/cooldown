@@ -75,8 +75,9 @@ test("영상별 주장과 분리 검수한 판정의 포함·보류 상태와 �
       assert.ok(!["conflict", "bug_report_unreproduced", "needs_review"].includes(claim.reviewStatus));
     }
   }
-  assert.ok(loadMechanicsNotes("26.19").some(note => note.evidence));
-  assert.ok(!loadMechanicsNotes("26.20").some(note => note.evidence));
+  assert.ok(loadMechanicsNotes(collection.patch).some(note => note.evidence));
+  const [major, minor] = collection.patch.split('.').map(Number);
+  assert.ok(!loadMechanicsNotes(`${major}.${minor+1}`).some(note => note.evidence));
   const covered = new Set(coverage.cases.flatMap(fixture => fixture.claimIds));
   for (const review of collection.claimReviews.filter(review => review.status === "included")) {
     assert.ok(covered.has(review.claimId), `Untested adopted claim: ${review.claimId}`);

@@ -1,0 +1,301 @@
+{
+  "summary": "다음 기본 공격 시 대상에게 도약해 최대 체력 비례 물리 피해를 추가로 입힙니다. 일라오이가 공격하면 근처 촉수도 해당 대상을 후려칩니다. 체력 비례 피해에는 최소 피해량이 적용되며, 정글 몬스터 대상 피해는 상한이 있습니다. 피해를 입히면 스킬 효과가 발동합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "대상에게 도약합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "다음 W 강화 평타는(랭크3~5% + 공격력100당3.5%)×최대체력추가물리피해입니다. 최대체력소유자는미명시입니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "unknown",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Illaoi's next Attack causes her to leap at the target, dealing an additional (3/3.5/4/4.5/5% + (3.5% per 100 Attack Damage)) max Health physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "summon",
+          "text": "일라오이가 공격하면 근처 촉수가 대상에게 후려칩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When she strikes, nearby Tentacles will Slam at the target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "체력 비례 피해에는 최소 피해량이 적용됩니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The percent Health damage does a minimum of 20/30/40/50/60."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "정글 몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "정글 몬스터 대상 피해량에는 상한이 적용됩니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Against jungle monsters the damage is capped at 300."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "이 스킬은 피해를 입힐 때 스킬 효과를 발동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability triggers spell effects upon dealing damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "원문의 최대 체력 비례 피해 식은 공격력에 따른 추가 비율의 결합 방식을 고정된 parameters 구조로 완전히 표현할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Illaoi's next Attack causes her to leap at the target, dealing an additional (3/3.5/4/4.5/5% + (3.5% per 100 Attack Damage)) max Health physical damage."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "원문은 정글 몬스터 대상 상한과 최소 피해를 각각 설명하지만, 두 값의 적용 순서는 밝히지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The percent Health damage does a minimum of 20/30/40/50/60. Against jungle monsters the damage is capped at 300."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "최대체력소유자가본문/요약에미명시이므로unknown.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Illaoi's next Attack causes her to leap at the target, dealing an additional (3/3.5/4/4.5/5% + (3.5% per 100 Attack Damage)) max Health physical damage."
+        }
+      ]
+    }
+  ]
+}

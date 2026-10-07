@@ -1,0 +1,302 @@
+{
+  "summary": "활성화하면 신지드가 독성 흔적을 남긴다. 흔적은 적에게 초당 마법 피해를 주며, 툴팁에는 구름 지속시간, 독 지속시간, 예상 총 피해량이 별도로 제시된다. 독의 영향을 받는 동안 미니언이 미니언 피해로 죽으면 신지드가 처치한 것으로 간주된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "토글을 활성화하면 신지드가 독성 흔적을 남기며, 토글 상태를 전환할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Toggle: Singed lays a poisonous trail"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "독 자취 경로에 노출되거나 그 자취에 중독된 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "독성 흔적이 적에게 초당 마법 피해를 준다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Toggle: Singed lays a poisonous trail that deals (20/30/40/50/60 + (42.5% Ability Power)) magic damage per second."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Leaves a trail of poison behind Singed, dealing damage to enemies caught in the path."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "unknown"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "unknown",
+          "text": "독성 흔적의 구름 지속시간이 제시되어 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cloud duration: 3.25 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "독 자취 경로에 걸린 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "독 상태가 적용된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Poison duration: 2 seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Leaves a trail of poison behind Singed, dealing damage to enemies caught in the path."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "unknown"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "unknown",
+          "text": "초당 피해와 별도로 예상 총 피해량이 제시되어 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Approximate total damage: (95/142.5/190/237.5/285 + (201.875% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "독 자취의 영향을 받는 동안 미니언 피해로 죽음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "독 자취의 영향을 받는 미니언이 미니언 피해로 죽으면 신지드가 대신 처치자로 인정된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If a minion would be killed by minion damage while under the effects of Poison Trail, Singed claims the kill credit instead."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "독 경로에 걸린 적에게 적용되는 중독2초와 구름3.25초를 보존했다. 중독 재갱신 방식 및 경로 이탈 후 남은 시간 계산은 제공되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Poison duration: 2 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "초당 피해는 명시하지만 실제 피해 tick 간격과 예상 총 피해의 계산·노출 시간 가정은 제공되지 않았다. 예상 총 피해는 별도 실제 피해로 실행하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Toggle: Singed lays a poisonous trail that deals (20/30/40/50/60 + (42.5% Ability Power)) magic damage per second."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,322 @@
+{
+  "summary": "기본 지속 효과로 입히거나 받는 피해 일부를 저장합니다. 사용하면 저장된 피해량을 보호막으로 얻고, 재사용하면 남은 보호막 일부를 체력으로 회복하면서 남은 보호막을 소비합니다. 보호막은 시간에 따라 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "모데카이저가 받은 피해 일부를 축적합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Mordekaiser stores 45% of the damage he deals and 7.5% of the damage he takes."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "모데카이저가 입힌 피해 일부를 축적합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Mordekaiser stores 45% of the damage he deals and 7.5% of the damage he takes."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "모데카이저가 축적한 피해량을 보호막으로 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Mordekaiser gains the stored damage as Shield."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "모데카이저가 남은 보호막 일부를 체력으로 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "재사용하면 회복과 함께 남아 있는 보호막을 소비합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "He may Recast this Ability to restore 35/37.5/40/42.5/45% of the remaining Shield as Health."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "He may consume the shield to heal."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "보호막 흡수량에는 최소치와 최대치가 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Minimum Shield: (5% Health) Maximum Shield: (30% Health)"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Minimum Shield: (5% Health) Maximum Shield: (30% Health) Shield decays over time."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "보호막은 시간에 따라 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shield decays over time."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "damage_taken",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "비챔피언 출처에서 받은 피해로 저장될 양은 정상 저장량에서 75% 감소합니다. 남은 비율만 저장됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage stored from non-champion sources reduced by 75%."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "툴팁은 비챔피언 출처의 피해 저장량이 75% 감소한다고 하지만 어떤 비챔피언 피해 원천이 포함되는지 더 세부적인 판정은 설명하지 않습니다. 일반 저장량 대비 75% 감소 및 나머지 부분을 텍스트로 보존합니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage stored from non-champion sources reduced by 75%."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "보호막이 시간에 따라 감소한다고만 되어 있으며 감소 속도는 주어지지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shield decays over time."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "원문은 비챔피언 출처 피해의 저장량이 75% 감소한다고만 합니다. 저장되는 잔여 비율은 명시적 숫자로 주어지지 않으므로 75%를 damage_multiplier로 해석하거나 잔여 25%를 추측하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage stored from non-champion sources reduced by 75%."
+        }
+      ]
+    }
+  ]
+}

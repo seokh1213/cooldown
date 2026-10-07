@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 2,
+  "id": "Yunara.R",
+  "champion": "Yunara",
+  "slot": "R",
+  "patch": "26.20",
+  "sourceHash": "903041d3032dfc4e4aca1e1c6ca22ed03173016354efbb32deedc224305882aa",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Transcend One's Self",
+      "ko": "자기 초월"
+    },
+    "cooldownSeconds": [
+      100,
+      90,
+      80
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      0,
+      0,
+      0
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "100/90/80"
+      },
+      {
+        "label": "Arc of Ruin | Damage",
+        "values": "160/320/480"
+      },
+      {
+        "label": "Untouchable Shadow | Dash Speed",
+        "values": "1350/1500/1650"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:Calc_RW_Damage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "Calc_RW_Damage",
+        "kind": "damage",
+        "damageType": "unknown",
+        "baseByRank": [
+          160,
+          320,
+          480
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              1.2000000476837158,
+              1.2000000476837158,
+              1.2000000476837158
+            ]
+          },
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.75,
+              0.75,
+              0.75
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Yunara.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Yunara enters a Transcendent State that upgrades her basic Abilities.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Yunara enters a Transcendent State for 15 seconds upgrading her basic Abilities for the duration.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "유나라가 초월 상태에 돌입해 기본 스킬을 강화합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "유나라가 15초 동안 초월 상태에 돌입해 지속시간 동안 기본 스킬을 강화합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 39,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "15",
+      "value": 15,
+      "percent": false,
+      "start": 5,
+      "end": 7
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "유나라는 15초 동안 초월 상태에 돌입해 지속시간 동안 기본 스킬을 강화합니다.",
+  "rules": [
+    {
+      "id": "2def1599702b697fc4ce",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "초월 상태에 돌입해 기본 스킬을 강화합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yunara enters a Transcendent State for 15 seconds upgrading her basic Abilities for the duration."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "c770644e08c1b1605cd026ccf40fc4ab7811aa5f9f4e4cadfbd79b8855821836"
+}

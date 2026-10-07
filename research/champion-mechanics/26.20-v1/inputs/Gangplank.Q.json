@@ -1,0 +1,880 @@
+{
+  "champion": "Gangplank",
+  "slot": "Q",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Shoots target, plundering Gold for each enemy unit killed.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Gangplank fires a bullet dealing (10/40/70/100/130 + (100% Attack Damage)) physical damage. If this kills the target, Gangplank gains an additional 3/4/5/6/7 Gold and 4/5/6/7/8 Silver Serpents. Gangplank can spend Silver Serpents in the shop to upgrade Cannon Barrage. Gangplank fires a bullet dealing (10/40/70/100/130 + (100% Attack Damage)) physical damage. Against Champions, Gangplank earns 7% of the damage dealt as Gold and Silver Serpents. If this kills the target, Gangplank gains an additional 3/4/5/6/7 Gold and 4/5/6/7/8 Silver Serpents. Gangplank can spend Silver Serpents in the shop to upgrade Cannon Barrage. The shot applies On-Hit effects (other than Trial by Fire) and can critically strike for (10/40/70/100/130 + (100% Attack Damage)) × (100% Critical Strike Damage) physical damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "대상에게 총을 발사해 처치한 적 유닛마다 골드를 약탈합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "갱플랭크가 총알을 발사해 (10/40/70/100/130 + (100% 공격력))의 물리 피해를 입힙니다. 이 공격으로 대상을 처치할 경우 3/4/5/6/7골드와 바다뱀 은화 4/5/6/7/8개를 추가로 얻습니다. 상점에서 바다뱀 은화를 써서 포탄 세례 스킬을 업그레이드할 수 있습니다. 갱플랭크가 총알을 발사해 (10/40/70/100/130 + (100% 공격력))의 물리 피해를 입힙니다. 적 챔피언에게 입힌 피해량의 7%만큼 갱플랭크가 골드와 바다뱀 은화를 얻습니다. 이 공격으로 대상을 처치할 경우 3/4/5/6/7골드와 4/5/6/7/8바다뱀 은화를 추가로 얻습니다. 갱플랭크는 상점에서 바다뱀 은화를 써서 포탄 세례 스킬을 업그레이드할 수 있습니다. 이 공격은 적중 시 효과(불의 심판 제외)가 적용되며 치명타가 적용될 수 있고 치명타 적용 시 (10/40/70/100/130 + (100% 공격력)) × (100% 치명타 피해량)의 물리 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Parrrley",
+      "ko": "혀어어어업상"
+    },
+    "cooldownSeconds": [
+      4.5,
+      4.5,
+      4.5,
+      4.5,
+      4.5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      625,
+      625,
+      625,
+      625,
+      625
+    ],
+    "cost": {
+      "values": [
+        50,
+        45,
+        40,
+        35,
+        30
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "10/40/70/100/130"
+      },
+      {
+        "label": "Plunder Gold",
+        "values": "3/4/5/6/7"
+      },
+      {
+        "label": "Plunder Silver Serpents",
+        "values": "4/5/6/7/8"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "50/45/40/35/30"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:ShotDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "ShotDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          10,
+          40,
+          70,
+          100,
+          130
+        ],
+        "terms": [
+          {
+            "stat": "totalAttackDamage",
+            "coefficientsByRank": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Gangplank.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Gangplank.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 34,
+      "end": 36
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 37,
+      "end": 39
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 40,
+      "end": 42
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 43,
+      "end": 46
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 47,
+      "end": 50
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 54,
+      "end": 58
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 148,
+      "end": 149
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 150,
+      "end": 151
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 152,
+      "end": 153
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 154,
+      "end": 155
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 156,
+      "end": 157
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 167,
+      "end": 168
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 169,
+      "end": 170
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 171,
+      "end": 172
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 173,
+      "end": 174
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 175,
+      "end": 176
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 303,
+      "end": 305
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 306,
+      "end": 308
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 309,
+      "end": 311
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 312,
+      "end": 315
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 316,
+      "end": 319
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 323,
+      "end": 327
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "7%",
+      "value": 7,
+      "percent": true,
+      "start": 396,
+      "end": 398
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 504,
+      "end": 505
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 506,
+      "end": 507
+    },
+    {
+      "id": "en:body:n25",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 508,
+      "end": 509
+    },
+    {
+      "id": "en:body:n26",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 510,
+      "end": 511
+    },
+    {
+      "id": "en:body:n27",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 512,
+      "end": 513
+    },
+    {
+      "id": "en:body:n28",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 523,
+      "end": 524
+    },
+    {
+      "id": "en:body:n29",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 525,
+      "end": 526
+    },
+    {
+      "id": "en:body:n30",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 527,
+      "end": 528
+    },
+    {
+      "id": "en:body:n31",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 529,
+      "end": 530
+    },
+    {
+      "id": "en:body:n32",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 531,
+      "end": 532
+    },
+    {
+      "id": "en:body:n33",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 715,
+      "end": 717
+    },
+    {
+      "id": "en:body:n34",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 718,
+      "end": 720
+    },
+    {
+      "id": "en:body:n35",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 721,
+      "end": 723
+    },
+    {
+      "id": "en:body:n36",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 724,
+      "end": 727
+    },
+    {
+      "id": "en:body:n37",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 728,
+      "end": 731
+    },
+    {
+      "id": "en:body:n38",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 735,
+      "end": 739
+    },
+    {
+      "id": "en:body:n39",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 759,
+      "end": 763
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 15,
+      "end": 17
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 18,
+      "end": 20
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 21,
+      "end": 23
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 24,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 28,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 35,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 78,
+      "end": 79
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 80,
+      "end": 81
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 82,
+      "end": 83
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 84,
+      "end": 85
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 86,
+      "end": 87
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 98,
+      "end": 99
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 100,
+      "end": 101
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 102,
+      "end": 103
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 104,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 106,
+      "end": 107
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 176,
+      "end": 178
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 179,
+      "end": 181
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 182,
+      "end": 184
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 185,
+      "end": 188
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 189,
+      "end": 192
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 196,
+      "end": 200
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "7%",
+      "value": 7,
+      "percent": true,
+      "start": 237,
+      "end": 239
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 284,
+      "end": 285
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 286,
+      "end": 287
+    },
+    {
+      "id": "ko:body:n25",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 288,
+      "end": 289
+    },
+    {
+      "id": "ko:body:n26",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 290,
+      "end": 291
+    },
+    {
+      "id": "ko:body:n27",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 292,
+      "end": 293
+    },
+    {
+      "id": "ko:body:n28",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 297,
+      "end": 298
+    },
+    {
+      "id": "ko:body:n29",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 299,
+      "end": 300
+    },
+    {
+      "id": "ko:body:n30",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 301,
+      "end": 302
+    },
+    {
+      "id": "ko:body:n31",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 303,
+      "end": 304
+    },
+    {
+      "id": "ko:body:n32",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 305,
+      "end": 306
+    },
+    {
+      "id": "ko:body:n33",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 425,
+      "end": 427
+    },
+    {
+      "id": "ko:body:n34",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 428,
+      "end": 430
+    },
+    {
+      "id": "ko:body:n35",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 431,
+      "end": 433
+    },
+    {
+      "id": "ko:body:n36",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 434,
+      "end": 437
+    },
+    {
+      "id": "ko:body:n37",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 438,
+      "end": 441
+    },
+    {
+      "id": "ko:body:n38",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 445,
+      "end": 449
+    },
+    {
+      "id": "ko:body:n39",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 459,
+      "end": 463
+    }
+  ],
+  "sourceHash": "ece666b28a5a5fe1e40bf998c24c5eec5da30c1a6d3d94f514378e466ab951d2",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

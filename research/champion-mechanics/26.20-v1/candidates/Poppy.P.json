@@ -1,0 +1,245 @@
+{
+  "summary": "주기적으로 다음 기본 공격이 방패를 던져 사거리가 증가하고 추가 마법 피해를 준다. 방패는 대상에게 맞은 뒤 근처에 떨어지며, 뽀삐가 주우면 체력에 비례한 보호막을 얻는다. 방패가 대상을 처치하면 뽀삐에게 돌아온다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "주기적으로 다음 기본 공격이 방패를 던져 사거리가 증가하고 추가 마법 피해를 준다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "distance_units",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "방패 기본 공격이20~180의 추가 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every (16 ~ 8) seconds, Poppy's next Attack throws her buckler, gaining 350 range and dealing an additional (20 ~ 180) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "방패가 대상에게 맞고 튕겨나가 근처에 떨어진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The buckler ricochets off the target, landing nearby."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "땅에 떨어진 이 방패를 주움"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "방패를 주우면 체력의11~20%에 해당하는 일시적 보호막을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Poppy can pick it up to gain ((11% ~ 20%) Health) Shield, and enemies can step on it to destroy it."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "던진 방패 공격으로 처치됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "방패가 대상을 처치하면 뽀삐에게 자동으로 돌아온다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The buckler automatically returns to Poppy if it kills the target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 방패를 밟음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "적이 땅의 방패를 밟으면 방패가 파괴됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and enemies can step on it to destroy it."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "보호막의 기준인 Health가 최대 체력인지 현재 체력인지 원문에 명시되지 않아 체력 통계를 지정하지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Poppy can pick it up to gain ((11% ~ 20%) Health) Shield"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "16~8초,20~180피해,11~20%보호막의 변화 기준과 보호막 지속시간이 본문에 없어 레벨 범위/지속초를 확정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every (16 ~ 8) seconds, Poppy's next Attack throws her buckler, gaining 350 range and dealing an additional (20 ~ 180) magic damage."
+        }
+      ]
+    }
+  ]
+}

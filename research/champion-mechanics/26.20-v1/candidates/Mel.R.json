@@ -1,0 +1,182 @@
+{
+  "summary": "기본 지속 효과는 압도 피해를 증가시킨다. 사용 시 압도가 적용된 모든 적에게 피해를 주며, 적 챔피언에게 압도가 적용되어 있어야 시전할 수 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "압도의 비축 마법 피해식을 (60/70/80+AP10%) + 중첩수×(3/4/5+AP0.75%)로 변경합니다. 별도 즉시 피해가 아닙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Overwhelm damage is increased to (60/70/80 + (10% Ability Power)) magic damage plus (3/4/5 + (0.75% Ability Power)) magic damage per stack."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "압도가 적용된 적 챔피언이 적어도 하나 존재"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "피해 받는 각 적에게 압도 중첩이 적용됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "거리와 무관하게 압도가 적용된 모든 적에게 (125/200/275+AP30%) + 해당 적 압도중첩수×(4/7/10+AP4%)의 마법 피해를 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Mel unleashes her power on all enemies affected by Overwhelm, dealing (125/200/275 + (30% Ability Power)) magic damage plus (4/7/10 + (4% Ability Power)) magic damage per Overwhelm stack. Can only be cast when an enemy champion is affected by Overwhelm."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Mel strikes all enemies marked with Overwhelm regardless of their distance from her, dealing additional damage for each stack of Overwhelm."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "압도 비축식과R피해식 모두 중첩수 곱셈이 포함된다. 숫자표를 모든 항의 단순합으로 실행하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Mel unleashes her power on all enemies affected by Overwhelm, dealing (125/200/275 + (30% Ability Power)) magic damage plus (4/7/10 + (4% Ability Power)) magic damage per Overwhelm stack. Can only be cast when an enemy champion is affected by Overwhelm."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Mel strikes all enemies marked with Overwhelm regardless of their distance from her, dealing additional damage for each stack of Overwhelm."
+        }
+      ]
+    }
+  ]
+}

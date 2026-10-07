@@ -1,0 +1,461 @@
+{
+  "summary": "달빛 폭발은 적 챔피언 적중 시 주변 적에게 피해를 주고 적중한 챔피언을 주 무기로 공격한다. 주 무기에 따라 추가 효과가 적용된다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "달빛 폭발이 챔피언에게 적중하면 주변 적에게 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Aphelios fires a concentrated blast of moonlight that explodes when it hits a champion, dealing (125/175/225 + (20% bonus Attack Damage) + (100% Ability Power)) physical damage to surrounding enemies. Then, Aphelios attacks all champions hit with his main-hand weapon."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The Attacks apply on-hits. Critical strikes deal 100% of normal damage instead."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "달빛 폭발에 적중한 모든 챔피언을 주 무기로 공격합니다. 이 공격은 적중 시 효과를 적용하며 치명타는 일반 피해량의 100%만큼 피해를 줍니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Then, Aphelios attacks all champions hit with his main-hand weapon."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The Attacks apply on-hits. Critical strikes deal 100% of normal damage instead."
+        }
+      ]
+    },
+    {
+      "variant": "Calibrum",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "이 방식으로 남긴 표식을 소모할 때 추가 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:Calibrum:en:n0",
+                "variant:Calibrum:en:n1",
+                "variant:Calibrum:en:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:Calibrum:en",
+          "quote": "Calibrum Bonus: Marks added this way deal an additional 50/80/110 physical damage each when consumed."
+        }
+      ]
+    },
+    {
+      "variant": "Severum",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:Severum:en:n0",
+                "variant:Severum:en:n1",
+                "variant:Severum:en:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:Severum:en",
+          "quote": "Severum Bonus: Aphelios restores 250/350/450 Health."
+        }
+      ]
+    },
+    {
+      "variant": "Infernum",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "달빛 폭발이 챔피언에게 적중하면 추가 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:Infernum:en:n0",
+                "variant:Infernum:en:n1",
+                "variant:Infernum:en:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "variant:Infernum:en:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:Infernum:en",
+          "quote": "Infernum Bonus: The moonlight blast deals an additional (50/100/150 + (25% bonus Attack Damage)) physical damage, and the subsequent Attacks explode, each dealing 90% of their damage to surrounding targets."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Aphelios fires a concentrated blast of moonlight that explodes when it hits a champion, dealing (125/175/225 + (20% bonus Attack Damage) + (100% Ability Power)) physical damage to surrounding enemies. Then, Aphelios attacks all champions hit with his main-hand weapon."
+        }
+      ]
+    },
+    {
+      "variant": "Infernum",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "secondary_targets",
+          "text": "각 후속 공격은 주변 대상에게 해당 공격 피해의 90%를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "variant:Infernum:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:Infernum:en",
+          "quote": "and the subsequent Attacks explode, each dealing 90% of their damage to surrounding targets."
+        }
+      ]
+    },
+    {
+      "variant": "Crescendum",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "추가 거울 반월검을 소환한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "variant:Crescendum:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:Crescendum:en",
+          "quote": "Crescendum Bonus: Summons an additional 5 mirror Chakram."
+        }
+      ]
+    },
+    {
+      "variant": "Gravitum",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "중력포 추가 효과가 적중한 대상에게 둔화 강도 99%를 적용합니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:Gravitum:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:Gravitum:en",
+          "quote": "Gravitum Bonus: Slow strength increased to 99%. Binding Eclipse's Root effect is increased to 1.35 seconds against these targets."
+        }
+      ]
+    },
+    {
+      "variant": "Gravitum",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Binding Eclipse root affects a target of the Gravitum Bonus"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "enemy",
+          "text": "Binding Eclipse가 이 Gravitum 추가 효과의 대상에게 적용되면 속박 지속시간을 1.35초로 늘립니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "variant:Gravitum:en:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:Gravitum:en",
+          "quote": "Gravitum Bonus: Slow strength increased to 99%. Binding Eclipse's Root effect is increased to 1.35 seconds against these targets."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "The tooltip does not fully specify how all weapon-specific ultimate bonuses interact with the generic hit/attack sequence; bonus effects are kept as separate variant rules.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Then, Aphelios attacks all champions hit with his main-hand weapon."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "본문의 후속 공격 on-hit/치명타 문장은 주 무기 공격 시퀀스에 이어서 나오며 공통 공격 효과로 두었습니다. 개별 무기별 상호작용은 본문이 더 구체적으로 분해하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Then, Aphelios attacks all champions hit with his main-hand weapon."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The Attacks apply on-hits. Critical strikes deal 100% of normal damage instead."
+        }
+      ]
+    }
+  ]
+}

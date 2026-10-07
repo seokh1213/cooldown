@@ -1,0 +1,107 @@
+{
+  "summary": "나서스가 적 챔피언을 둔화시키고 공격 속도를 감소시킵니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "챔피언을 둔화시키며 둔화 효과는 지속 시간 동안 증가합니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "target",
+          "text": "대상의 공격 속도 감소율은 이 스킬의 현재 둔화율의75%이다. 공격 속도를 직접75% 감소시키는 효과가 아니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nasus ages a champion, Slowing them by 35%, increasing to 47/59/71/83/95% over 5 seconds. Their Attack Speed is also reduced by 75% of the Slow."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "둔화는35%에서5초 동안 랭크별 상한47/59/71/83/95%로 증가하지만 시간별 정확한 증가 함수는 제공되지 않았다. 공격 속도 감소는 그때의 둔화율에0.75를 곱하므로75% 직접 감소로 실행하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nasus ages a champion, Slowing them by 35%, increasing to 47/59/71/83/95% over 5 seconds. Their Attack Speed is also reduced by 75% of the Slow."
+        }
+      ]
+    }
+  ]
+}

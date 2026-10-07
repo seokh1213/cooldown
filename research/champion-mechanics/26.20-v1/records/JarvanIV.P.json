@@ -1,0 +1,297 @@
+{
+  "schemaVersion": 2,
+  "id": "JarvanIV.P",
+  "champion": "JarvanIV",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "2e406bd011aaf501895bc5119eabf517dc88e6ca20126646dda1fd73668dad5d",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Martial Cadence",
+      "ko": "전장의 군가"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          6,
+          6,
+          6,
+          6,
+          6,
+          5,
+          5,
+          5,
+          5,
+          5,
+          4,
+          4,
+          4,
+          4,
+          4,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/JarvanIV.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Jarvan's first basic attack on an enemy deals bonus physical damage based on their current Health. This effect cannot occur again on the same enemy for a few seconds.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Jarvan's Attacks deal an additional 8% current Health physical damage. This effect has a (6 ~ 3) second Cooldown per target.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "자르반의 첫 기본 공격이 적의 현재 체력에 비례하여 추가 물리 피해를 입힙니다. 이 효과에 이미 당한 적은 몇 초 동안 이 효과로 인한 피해를 다시 받지 않습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "자르반 4세의 기본 공격이 대상 현재 체력의 8%에 해당하는 물리 피해를 추가로 입힙니다. 같은 대상에게는 (6 ~ 3)초마다 한 번씩 효과가 발휘됩니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "8%",
+      "value": 8,
+      "percent": true,
+      "start": 36,
+      "end": 38
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 90,
+      "end": 91
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 94,
+      "end": 95
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 4,
+      "end": 5
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "8%",
+      "value": 8,
+      "percent": true,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 61,
+      "end": 62
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 65,
+      "end": 66
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "적에게 기본 공격을 하면 대상의 현재 체력에 비례한 추가 물리 피해를 입힙니다. 효과는 대상별 재사용 대기시간이 있습니다.",
+  "rules": [
+    {
+      "id": "665fed845718fc8424f0",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이적대상에대한패시브가아직발동하지않았거나대상별6~3초쿨타임이완료된상태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "효과가준비된적을기본공격하면그대상의현재체력8%추가물리피해를입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Jarvan's Attacks deal an additional 8% current Health physical damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Jarvan's first basic attack on an enemy deals bonus physical damage based on their current Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This effect has a (6 ~ 3) second Cooldown per target."
+        }
+      ]
+    },
+    {
+      "id": "a9d28a68fee29b180186",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이적대상에대한패시브가아직발동하지않았거나대상별6~3초쿨타임이완료된상태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "target",
+          "text": "이패시브가발동한대상에대해레벨별6~3초재사용대기시간이시작됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This effect has a (6 ~ 3) second Cooldown per target."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "피해 비율의 기준은 대상의 현재 체력이지만, 허용된 stat 목록에 현재 체력이 없어 이를 stat으로 구조화하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Jarvan's Attacks deal an additional 8% current Health physical damage."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "e79caede26d7930d8f9598d0cb481ced83df6a10271f5ad9df9e72e960a40a43"
+}

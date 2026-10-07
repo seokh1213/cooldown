@@ -1,0 +1,491 @@
+{
+  "champion": "Camille",
+  "slot": "W",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Camille blasts in a cone after a delay, dealing damage. Enemies in the outer half are slowed and take extra damage, while also healing Camille.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Camille winds up and slices, dealing (60/85/110/135/160 + (60% bonus Attack Damage)) physical damage. Enemies hit by the outer half are Slowed by 80% decaying over 2 seconds, and they take an additional (7/7.5/8/8.5/9% + (2.5% per 100 bonus Attack Damage)) max Health physical damage. Camille restores 100% of the bonus damage dealt to champions as Health. This Ability does 50% less damage to non-epic jungle monsters. Max health damage is capped at 300 against jungle monsters.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "카밀이 잠시 후 전방을 원뿔형으로 휩쓸어 피해를 입힙니다. 원뿔의 바깥쪽 절반에 있는 적은 이동 속도가 느려지고 추가 피해를 입으며, 카밀의 체력을 회복시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "카밀이 다리를 감아올려 휩쓸며 (60/85/110/135/160 + (60% 추가 공격력))의 물리 피해를 입힙니다. 바깥쪽 절반에서 맞은 적은 이동 속도가 80% 느려졌다가 2초에 걸쳐 원래대로 돌아오며, 추가로 최대 체력에 비례해 (7/7.5/8/8.5/9% + (추가 공격력 100당 2.5%))의 물리 피해를 입습니다. 이때 카밀은 챔피언에게 입힌 추가 피해량의 100%만큼 체력을 회복합니다. 대상이 에픽 정글 몬스터가 아닐 경우, 피해량이 50% 감소합니다. 정글 몬스터의 경우 최대 체력 비례 피해는 300까지만 입힐 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Tactical Sweep",
+      "ko": "전술적 휩쓸기"
+    },
+    "cooldownSeconds": [
+      12,
+      11.5,
+      11,
+      10.5,
+      10
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      610,
+      610,
+      610,
+      610,
+      610
+    ],
+    "cost": {
+      "values": [
+        50,
+        55,
+        60,
+        65,
+        70
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Mana Cost",
+        "values": "50/55/60/65/70"
+      },
+      {
+        "label": "Damage",
+        "values": "60/85/110/135/160"
+      },
+      {
+        "label": "Maximum Health Damage",
+        "values": "7%/7.5%/8%/8.5%/9%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "12/11.5/11/10.5/10"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:OuterEdgeTooltip"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "BaseDamageTotal",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          60,
+          85,
+          110,
+          135,
+          160
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Camille",
+          "condition": "바깥쪽 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Camille.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Camille.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 38,
+      "end": 40
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 41,
+      "end": 43
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 44,
+      "end": 47
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 52,
+      "end": 55
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 146,
+      "end": 149
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 164,
+      "end": 165
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": true,
+      "start": 204,
+      "end": 205
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "7.5",
+      "value": 7.5,
+      "percent": true,
+      "start": 206,
+      "end": 209
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": true,
+      "start": 210,
+      "end": 211
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "8.5",
+      "value": 8.5,
+      "percent": true,
+      "start": 212,
+      "end": 215
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "9%",
+      "value": 9,
+      "percent": true,
+      "start": 216,
+      "end": 218
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "2.5%",
+      "value": 2.5,
+      "percent": true,
+      "start": 222,
+      "end": 226
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 231,
+      "end": 234
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 302,
+      "end": 306
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 375,
+      "end": 378
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 451,
+      "end": 454
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 18,
+      "end": 20
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "85",
+      "value": 85,
+      "percent": false,
+      "start": 21,
+      "end": 23
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 24,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "135",
+      "value": 135,
+      "percent": false,
+      "start": 28,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 32,
+      "end": 35
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 39,
+      "end": 42
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 88,
+      "end": 91
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 98,
+      "end": 99
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": true,
+      "start": 132,
+      "end": 133
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "7.5",
+      "value": 7.5,
+      "percent": true,
+      "start": 134,
+      "end": 137
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": true,
+      "start": 138,
+      "end": 139
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "8.5",
+      "value": 8.5,
+      "percent": true,
+      "start": 140,
+      "end": 143
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "9%",
+      "value": 9,
+      "percent": true,
+      "start": 144,
+      "end": 146
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 157,
+      "end": 160
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "2.5%",
+      "value": 2.5,
+      "percent": true,
+      "start": 162,
+      "end": 166
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 207,
+      "end": 211
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 252,
+      "end": 255
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 287,
+      "end": 290
+    }
+  ],
+  "sourceHash": "bf13af37d01ea67f50b0ffb10dbc1bb1e82ec0bbb979b46c164034d12a441ebd",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

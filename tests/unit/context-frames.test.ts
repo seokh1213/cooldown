@@ -257,3 +257,18 @@ test("the stress gate protects calculation results beyond the spell owner's iden
   row.text = "추가 공격력 62입니다.";
   assert.throws(() => checkApprovedContexts(report, approval), /numeric answer/);
 });
+
+test("experimental residual keeps ambiguity and explicit ownership despite an overconfident ranker", async () => {
+  const { guardedResidual } = await import("../../scripts/llm/context-frames/hybrid");
+  const ctx = qualityContext("ko_KR", "none"); ctx.contextPolicy = "learned";
+  const experimental = { ...deps, rankContexts: guardedResidual((_question, frames) => ({
+    policy: "learned", action: "resume", selected: frames[0]?.key, candidates: frames.map(frame => frame.key),
+  })) } as const;
+  for (const q of ["가렌 Q 쿨타임은?", "아리 Q 쿨타임은?", "장화 가격은?"]) {
+    const output = await answerDialogue(q, ctx, experimental); restoreReply(ctx, q, output.reply);
+  }
+  const ambiguous = await answerDialogue("그 스킬 쿨타임은?", ctx, experimental);
+  assert.equal(ambiguous.contextDecision?.action, "clarify");
+  const explicit = await answerDialogue("아리 Q 쿨타임은?", ctx, experimental);
+  assert.equal(explicit.reply.memory.spell?.champion, "Ahri");
+});

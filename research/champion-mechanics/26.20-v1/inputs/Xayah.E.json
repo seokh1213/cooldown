@@ -1,0 +1,459 @@
+{
+  "champion": "Xayah",
+  "slot": "E",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Xayah calls back all her dropped Feathers dealing damage and rooting enemies.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Xayah calls all Feathers back to her, dealing (50/65/80/95/110 + (40% bonus Attack Damage)) physical damage each. If 3 or more Feathers hit an enemy, they are Rooted for 1.25 seconds. Damage scales with Critical Strike Chance and Critical Strike Damage at 50% effectiveness. Minions take 50% damage from this Ability. Enemies take 5% less damage per feather hit, to a minimum of 10% damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "모든 깃털을 자신에게로 불러들여 경로에 있는 적에게 피해를 입히고 속박시킵니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "자야가 모든 깃털을 불러들여 각 깃털로 (50/65/80/95/110 + (40% 추가 공격력))의 물리 피해를 입힙니다. 적이 3개 이상의 깃털에 맞으면 1.25초 동안 속박됩니다. 피해량은 치명타 확률과 치명타 피해량에 따라 50% 만큼 증가합니다. 미니언 상대로는 50%의 피해를 입힙니다. 적은 깃털에 맞을 때마다 받는 피해가 5%씩 감소하여 최소 10%의 피해를 받습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Bladecaller",
+      "ko": "깃부르미"
+    },
+    "cooldownSeconds": [
+      12,
+      11,
+      10,
+      9,
+      8
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      2000,
+      2000,
+      2000,
+      2000,
+      2000
+    ],
+    "cost": {
+      "values": [
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "50/65/80/95/110"
+      },
+      {
+        "label": "Cooldown",
+        "values": "12/11/10/9/8"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:FeatherDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "expression",
+      "expression": {
+        "id": "FeatherDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "root": {
+          "kind": "product",
+          "parts": [
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      50,
+                      65,
+                      80,
+                      95,
+                      110
+                    ]
+                  }
+                },
+                {
+                  "kind": "stat",
+                  "stat": "bonusAttackDamage",
+                  "coefficient": {
+                    "byRank": [
+                      0.4000000059604645,
+                      0.4000000059604645,
+                      0.4000000059604645,
+                      0.4000000059604645,
+                      0.4000000059604645
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      1,
+                      1,
+                      1,
+                      1,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "kind": "product",
+                  "parts": [
+                    {
+                      "kind": "stat",
+                      "stat": "critChance",
+                      "coefficient": {
+                        "byRank": [
+                          0.5,
+                          0.5,
+                          0.5,
+                          0.5,
+                          0.5
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "sum",
+                      "parts": [
+                        {
+                          "kind": "stat",
+                          "stat": "critDamage",
+                          "coefficient": {
+                            "byRank": [
+                              1,
+                              1,
+                              1,
+                              1,
+                              1
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "value",
+                          "value": {
+                            "byRank": [
+                              -1,
+                              -1,
+                              -1,
+                              -1,
+                              -1
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "requiresBuffStacks": false
+      },
+      "unsupportedPartTypes": [
+        "nonlinear-product"
+      ]
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "root",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Xayah.json",
+          "condition": "깃털 3개 이상 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Xayah.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Xayah.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 47,
+      "end": 49
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 50,
+      "end": 52
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 53,
+      "end": 55
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 56,
+      "end": 58
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 66,
+      "end": 69
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 117,
+      "end": 118
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 170,
+      "end": 174
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 256,
+      "end": 259
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 288,
+      "end": 291
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 331,
+      "end": 333
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 379,
+      "end": 382
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 23,
+      "end": 25
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 26,
+      "end": 28
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 29,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 32,
+      "end": 34
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 35,
+      "end": 38
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 42,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 72,
+      "end": 73
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "1.25",
+      "value": 1.25,
+      "percent": false,
+      "start": 87,
+      "end": 91
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 128,
+      "end": 131
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 151,
+      "end": 154
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 187,
+      "end": 189
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 199,
+      "end": 202
+    }
+  ],
+  "sourceHash": "ff0e3fa918903ea5c2a3f5c029455a9cd5b9254530f339d83253ddaa1fb3108c",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

@@ -1,0 +1,970 @@
+{
+  "schemaVersion": 2,
+  "id": "Vladimir.E",
+  "champion": "Vladimir",
+  "slot": "E",
+  "patch": "26.20",
+  "sourceHash": "de38f1c029e1d2e237013b3bd5977682bda25841a33a2ac3f921d8481f23b96b",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Tides of Blood",
+      "ko": "선혈의 파도"
+    },
+    "cooldownSeconds": [
+      13,
+      11,
+      9,
+      7,
+      5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      600,
+      600,
+      600,
+      600,
+      600
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Minimum Damage",
+        "values": "30/45/60/75/90"
+      },
+      {
+        "label": "Maximum Damage",
+        "values": "60/90/120/150/180"
+      },
+      {
+        "label": "Slow",
+        "values": "40%/45%/50%/55%/60%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "13/11/9/7/5"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:MinDamageTooltip"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "MinDamageTooltip",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          30,
+          45,
+          60,
+          75,
+          90
+        ],
+        "terms": [
+          {
+            "stat": "maxHealth",
+            "coefficientsByRank": [
+              0.014999999664723873,
+              0.014999999664723873,
+              0.014999999664723873,
+              0.014999999664723873,
+              0.014999999664723873
+            ]
+          },
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.3499999940395355,
+              0.3499999940395355,
+              0.3499999940395355,
+              0.3499999940395355,
+              0.3499999940395355
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Vladimir.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Vladimir.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Vladimir pays his own health to charge up a reservoir of blood which, when released, deals damage in the area around him but can be blocked by enemy units.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Begin Charging: Vladimir charges up a reservoir of blood, spending up to (8% Health) Health. While at full charge, Vladimir is Slowed by 20%. Release: Vladimir unleashes a torrent of blood missiles at surrounding enemies, dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time. If this Ability was charged for at least 1 second, it also Slows targets by 40/45/50/55/60% for 0.5 seconds. This Ability releases automatically after 1.5 seconds. Enemies can be hit by multiple blood missiles, but take no damage after the first.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "블라디미르가 자신의 체력을 희생해 피의 웅덩이를 채웁니다. 웅덩이가 파도를 방출하면 주변 지역에 피해를 입히지만 적 유닛이 파도를 가로막을 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "충전 시작: 블라디미르가 체력을 (8% 체력)까지 희생해 피의 웅덩이를 채웁니다. 웅덩이가 가득 차면 블라디미르의 이동 속도가 20% 둔화됩니다. 발사: 주변의 적에게 투사체를 급류처럼 방출해 충전 시간에 비례하여 (30/45/60/75/90 + (1.5% 체력) + (35% 주문력)) ~ (60/90/120/150/180 + (6% 체력) + (80% 주문력))의 마법 피해를 입힙니다. 스킬을 1초 이상 충전했을 경우 대상을 0.5초 동안 40/45/50/55/60% 둔화시킵니다. 이 스킬은 1.5초가 지나면 자동으로 방출됩니다. 적은 여러 투사체에 맞아도 첫 번째 투사체로부터만 피해를 입습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "8%",
+      "value": 8,
+      "percent": true,
+      "start": 74,
+      "end": 76
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 137,
+      "end": 140
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 239,
+      "end": 241
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 242,
+      "end": 244
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 245,
+      "end": 247
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 248,
+      "end": 250
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 251,
+      "end": 253
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 257,
+      "end": 261
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 273,
+      "end": 276
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 298,
+      "end": 300
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 301,
+      "end": 303
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 304,
+      "end": 307
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 308,
+      "end": 311
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 312,
+      "end": 315
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 319,
+      "end": 321
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 333,
+      "end": 336
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 429,
+      "end": 430
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 464,
+      "end": 466
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 467,
+      "end": 469
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": true,
+      "start": 470,
+      "end": 472
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "55",
+      "value": 55,
+      "percent": true,
+      "start": 473,
+      "end": 475
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 476,
+      "end": 479
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 484,
+      "end": 487
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 539,
+      "end": 542
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "8%",
+      "value": 8,
+      "percent": true,
+      "start": 19,
+      "end": 21
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 71,
+      "end": 74
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 121,
+      "end": 123
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 124,
+      "end": 126
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 127,
+      "end": 129
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": false,
+      "start": 130,
+      "end": 132
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 133,
+      "end": 135
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "1.5%",
+      "value": 1.5,
+      "percent": true,
+      "start": 139,
+      "end": 143
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 151,
+      "end": 154
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 164,
+      "end": 166
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 167,
+      "end": 169
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 170,
+      "end": 173
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 174,
+      "end": 177
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 178,
+      "end": 181
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "6%",
+      "value": 6,
+      "percent": true,
+      "start": 185,
+      "end": 187
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "80%",
+      "value": 80,
+      "percent": true,
+      "start": 195,
+      "end": 198
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 223,
+      "end": 224
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 241,
+      "end": 244
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 249,
+      "end": 251
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 252,
+      "end": 254
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": true,
+      "start": 255,
+      "end": 257
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "55",
+      "value": 55,
+      "percent": true,
+      "start": 258,
+      "end": 260
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 261,
+      "end": 264
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 279,
+      "end": 282
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "충전하며 체력을 소모하고, 완전히 충전된 동안 이동 속도가 감소합니다. 방출 시 충전 시간에 따라 주변 적에게 피해를 주며, 일정 시간 이상 충전했다면 적을 둔화시킵니다. 적 하나는 여러 투사체에 맞아도 첫 투사체 피해만 받습니다.",
+  "rules": [
+    {
+      "id": "36971936df7344a942e3",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "충전하며 시전자 체력 기준 최대 8%의 체력을 소모합니다. Health의 정확한 통계는 원문에 없습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Begin Charging: Vladimir charges up a reservoir of blood, spending up to (8% Health) Health."
+        }
+      ]
+    },
+    {
+      "id": "e7d30e560d06c38a108d",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "full charge"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "caster",
+          "text": "완전히 충전된 동안 자신을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "While at full charge, Vladimir is Slowed by 20%."
+        }
+      ]
+    },
+    {
+      "id": "9300d663ae23fd9e1913",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "충전 해제하여 방출"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 방출에서 대상별 첫 투사체 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "방출 시 충전 시간에 따른 최소식 (기본 피해 + 1.5% Health + 35% AP)부터 최대식 (기본 피해 + 6% Health + 80% AP)의 마법 피해를 줍니다. 한 대상은 첫 투사체에만 피해를 받으며 적 유닛이 투사체를 막을 수 있습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies can be hit by multiple blood missiles, but take no damage after the first."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Release: Vladimir unleashes a torrent of blood missiles at surrounding enemies, dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Vladimir pays his own health to charge up a reservoir of blood which, when released, deals damage in the area around him but can be blocked by enemy units."
+        }
+      ]
+    },
+    {
+      "id": "478123d44b520d8feafe",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n16"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "충전 해제하여 방출"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "1초 이상 충전한 뒤 방출 시 대상을 40/45/50/55/60% 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this Ability was charged for at least 1 second, it also Slows targets by 40/45/50/55/60% for 0.5 seconds."
+        }
+      ]
+    },
+    {
+      "id": "e53282d34f03e8871a42",
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n23"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "충전이 일정 시간 지나면 스킬이 자동으로 방출됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability releases automatically after 1.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "지출 상한·피해식의 Health는 구체 체력 스탯이 아니므로 maxHealth 단정을 제거; 시전자 체력 기준을 수식 구성요소로 보존.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(1.5% Health)"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Begin Charging: Vladimir charges up a reservoir of blood, spending up to (8% Health) Health."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "충전 시간별 최소/최대식의 계수는 각 끝점 식에만 속하며 모두 합산하는 선형식이 아님. 중간 충전 보간은 원문에 없음.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies can be hit by multiple blood missiles, but take no damage after the first."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Release: Vladimir unleashes a torrent of blood missiles at surrounding enemies, dealing between (30/45/60/75/90 + (1.5% Health) + (35% Ability Power)) and (60/90/120/150/180 + (6% Health) + (80% Ability Power)) magic damage based on charge time."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Vladimir pays his own health to charge up a reservoir of blood which, when released, deals damage in the area around him but can be blocked by enemy units."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "376d89e5ff0f743aa29515f7c1d64be06c080566d5395e5d149a575bec0d7e81"
+}

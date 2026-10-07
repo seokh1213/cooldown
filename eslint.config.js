@@ -45,6 +45,13 @@ export default tseslint.config(
     },
   },
   {
+    files: ['scripts/llm/review/app.js'],
+    languageOptions: { globals: {
+      document: 'readonly', navigator: 'readonly', localStorage: 'readonly', Option: 'readonly',
+      URL: 'readonly', Blob: 'readonly', setTimeout: 'readonly',
+    } },
+  },
+  {
     // CI 판단기는 의존성 없이 Node 런타임에서 바로 돈다
     files: ['scripts/ci/*.mjs'],
     languageOptions: {

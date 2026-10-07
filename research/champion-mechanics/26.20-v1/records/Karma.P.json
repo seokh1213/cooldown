@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 2,
+  "id": "Karma.P",
+  "champion": "Karma",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "b864aca4e394deec9e5dc07cf9a0ad3e9ee2d7cf9c6fad0eb1f5b7ad20f57d13",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Gathering Fire",
+      "ko": "열정 응집"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Karma.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Karma's damaging abilities will reduce the cooldown of Mantra.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Karma begins the game with a point in Mantra. She reduces the Cooldown of Mantra by 4 seconds when she damages a champion with an Ability.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "카르마가 스킬로 피해를 입히면 만트라의 재사용 대기시간이 감소합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "카르마는 만트라 스킬을 가지고 게임을 시작합니다. 챔피언에게 스킬로 피해를 입히면 만트라의 재사용 대기시간이 4초 줄어듭니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 84,
+      "end": 85
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 61,
+      "end": 62
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "스킬로 챔피언에게 피해를 입히면 만트라의 재사용 대기시간이 감소합니다. 게임을 만트라를 가진 상태로 시작합니다.",
+  "rules": [
+    {
+      "id": "c7a4ad94e39645b5c2c0",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언에게 스킬로 실제 피해를 가함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "스킬로 챔피언에게 피해를 입히면 만트라의 재사용 대기시간이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "She reduces the Cooldown of Mantra by 4 seconds when she damages a champion with an Ability."
+        }
+      ]
+    },
+    {
+      "id": "595493620a7f11fea540",
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "게임을 시작할 때 만트라를 가지고 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Karma begins the game with a point in Mantra."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "393b3da46be66e37fb726187e135c36e4720d8385cf36f2d59e0481beb07520c"
+}

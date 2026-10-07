@@ -1,0 +1,96 @@
+{
+  "summary": "노틸러스의 각 대상에 대한 첫 기본 공격이 강화되어 물리 피해를 주고 속박합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 대상에 대한 노틸러스의 첫 기본 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "각 대상에 대한 첫 공격 전체가14~116 + 시전자 총AD100% 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "같은 첫 공격 대상에게0.75~1.50초 속박을 적용합니다.",
+          "damageType": null,
+          "crowdControl": "root",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nautilus' first Attack against a target deals ((14 ~ 116) + (100% Attack Damage)) physical damage and Roots them for (0.75 ~ 1.50) seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "피해/속박범위의변화기준및대상별첫공격의재활성화주기는공급되지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nautilus' first Attack against a target deals ((14 ~ 116) + (100% Attack Damage)) physical damage and Roots them for (0.75 ~ 1.50) seconds."
+        }
+      ]
+    }
+  ]
+}

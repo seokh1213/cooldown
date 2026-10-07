@@ -13,7 +13,8 @@ import { emptyScenario, type Memory } from "../../scripts/llm/mechanic-schema/ty
 const records = loadReviewedRecords();
 const pyke = records.find(record => record.champion === "Pyke")!;
 const akshan = records.find(record => record.champion === "Akshan")!;
-const data = loadData("ko_KR");
+// This archived experiment tests its reviewed 26.19 fixture, not current-patch promotion.
+const data = { ...loadData("ko_KR"), patch: PATCH };
 function memory(champion: string, question: string, previous?: Memory): Memory {
   return updateMemory(previous, parseQuery(cueQuery(question, previous)), { champion, patch: PATCH });
 }

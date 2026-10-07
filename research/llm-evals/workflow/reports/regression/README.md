@@ -18,6 +18,7 @@ Automatic contracts are separate from semantic review. Historical answers are ne
 | champion-mechanics-v2/pyke-akshan-questions / none | 32/32 | 0 |
 | champion-mechanics-v2/variations-v1-questions / none | 59/59 | 0 |
 | atoms/action-conditions/questions / none | 52/52 | 0 |
+| champion-mechanics-v2/live-web-questions / none | 17/17 | 0 |
 | atoms/action-conditions/holdout / none | 18/18 | 0 |
 | atoms/answer-quality/questions / none | 20/20 | 0 |
 | atoms/broad-replay/questions / none | 84/84 | 0 |
@@ -50,6 +51,7 @@ Automatic contracts are separate from semantic review. Historical answers are ne
 | champion-mechanics-v2/pyke-akshan-questions / offline | 32/32 | 0 |
 | champion-mechanics-v2/variations-v1-questions / offline | 59/59 | 0 |
 | atoms/action-conditions/questions / offline | 52/52 | 0 |
+| champion-mechanics-v2/live-web-questions / offline | 17/17 | 0 |
 | atoms/action-conditions/holdout / offline | 18/18 | 0 |
 | atoms/answer-quality/questions / offline | 20/20 | 0 |
 | atoms/broad-replay/questions / offline | 84/84 | 0 |
@@ -76,7 +78,9 @@ Automatic contracts are separate from semantic review. Historical answers are ne
 | item-alias / offline-item | 299/299 | 0 |
 
 Accepted wrong numeric answers: 0.
-Infrastructure checks: 7/7.
-Gains: 769. Regressions: 0.
+Infrastructure checks: 12/12.
+Local 26.20 reference: 5,758 passing contracts, 31 existing classifier failures, 20 manual measurements. Historical 26.19 contract comparison: 0 lost passing rows or subchecks. See ../patch-26.20/contract-diagnostic.json; changed code/data prevents interpreting this as a controlled model comparison.
 
-Detailed rows: results.json. Semantic review: review-packet.json. Failed checks: logs/.
+Detailed rows: baseline.json. Source snapshot: provenance.json. Human review: ../review-20261007/review.html. Full execution checks/logs: research/.cache/quality/patch-26.20-final-corrected/. The pending semantic cases remain unresolved; this baseline refresh does not approve them.
+
+The previous 26.19 baseline is preserved in Git at 6c0d126eec8783ae009b23286da8f928596d7fff, SHA-256 930ce724128ff3d1ef115bba4420ab6eaff3318462f7336c04006cf6d2b77a65. Case and scorer hashes are unchanged. Reference-only fixture patch binding changed the evaluation harness, not question/gold rows or production history.

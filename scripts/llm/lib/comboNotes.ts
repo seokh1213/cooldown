@@ -33,10 +33,10 @@ export function compileComboNotes(guides: ComboGuideFile, cards: ChampionCard[])
     }
     const entries: PlaybookEntry[] = guide.patterns.map(pattern => ({
       id: pattern.id, category: "combo", text: renderComboPattern(pattern), combo: pattern,
-      source: pattern.sourceUrl, verifiedPatch: guides.patch,
+      source: pattern.sourceUrl, verifiedPatch: guide.reviewedPatch ?? guides.patch,
     }));
     if (guide.laning) entries.push({ id: `${guide.champion.toLowerCase()}-web-laning`, category: "laning",
-      text: guide.laning.text, source: guide.laning.sourceUrl, verifiedPatch: guides.patch });
+      text: guide.laning.text, source: guide.laning.sourceUrl, verifiedPatch: guide.reviewedPatch ?? guides.patch });
     notes.set(guide.champion, entries);
   }
   return notes;

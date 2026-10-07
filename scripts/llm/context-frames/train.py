@@ -1,5 +1,6 @@
 import json
 import hashlib
+import argparse
 from pathlib import Path
 from collections import defaultdict
 
@@ -8,7 +9,11 @@ from scipy.sparse import csr_matrix
 from sklearn.linear_model import LogisticRegression
 
 ROOT = Path(__file__).resolve().parents[3]
-CACHE = ROOT / "research/.cache/context-frames/20261007/training"
+parser = argparse.ArgumentParser()
+parser.add_argument("--cache", default="research/.cache/context-frames/20261007/training")
+parser.add_argument("--out", default="research/llm-evals/workflow/models/context-selector.json")
+options = parser.parse_args()
+CACHE = ROOT / options.cache
 DIMENSION = 4096 * 7 + 8
 
 
@@ -64,7 +69,7 @@ for regularization in [1, 10, 100]:
 _, model, selection, probabilities = best
 artifact = dict(featureVersion=1, weights=model.coef_[0].tolist(), intercept=float(model.intercept_[0]),
                 confidence=selection["confidence"], margin=selection["margin"])
-target = ROOT / "research/llm-evals/workflow/models/context-selector.json"
+target = ROOT / options.out
 target.parent.mkdir(parents=True, exist_ok=True)
 target.write_text(json.dumps(artifact, separators=(",", ":")) + "\n")
 parity = [{"features": row["features"], "probability": float(probability)}

@@ -1,0 +1,186 @@
+{
+  "summary": "오른은 어디서든 소모품이 아닌 아이템을 제작하고, 레벨에 따라 자신과 아군의 전설급 아이템을 걸작 아이템으로 업그레이드합니다. 모든 출처에서 얻는 추가 체력·방어력·마법 저항력이 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "골드를 사용해 어디서든 소모품이 아닌 아이템을 제작할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "레벨 13이 되면 자신의 전설급 아이템 하나를 걸작 아이템으로 업그레이드합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "ally",
+          "text": "레벨 13 이후 레벨이 오를 때마다 근처의 아군을 클릭해 그 아군의 전설급 아이템을 업그레이드할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "모든출처의bonusHealth가10%증가하고업그레이드한전설아이템당해당추가스탯4%만큼증가율이더해진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": "bonusHealth",
+          "statTo": "bonusHealth",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusHealth",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "모든출처의bonusArmor가10%증가하고업그레이드한전설아이템당해당추가스탯4%만큼증가율이더해진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": "bonusArmor",
+          "statTo": "bonusArmor",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusArmor",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusArmor",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "모든출처의bonusMagicResist가10%증가하고업그레이드한전설아이템당해당추가스탯4%만큼증가율이더해진다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": "bonusMagicResist",
+          "statTo": "bonusMagicResist",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusMagicResist",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusMagicResist",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Ornn reaches level 13, he will upgrade one of his Legendary items into a Masterwork Item."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "For each level after 13, Ornn can upgrade an ally's Legendary Item by clicking on them while nearby."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Ornn gains an additional 10% bonus Health, Armor, and Magic Resist from all sources. This value increases by 4% of these bonus stats per Legendary item Ornn upgrades."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Ornn can spend gold to forge non-consumable items anywhere."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

@@ -1,0 +1,348 @@
+{
+  "summary": "밀리오가 불꽃 공을 차 처음 맞힌 적을 밀쳐낸다. 적중하면 공이 그 적을 지나 튕겨 폭발해 주변 적에게 피해를 주고 둔화시킨다. 적 챔피언을 한 명 이상 맞히면 마나 일부를 돌려받는다. 미니언과 몬스터는 더 멀리 밀려나고 더 큰 폭발을 일으킨다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 불꽃공의 첫 적중적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "처음 맞힌 적을 밀쳐낸다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Milio kicks a fireball, Knocking Back the first enemy hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번공이 적에게처음적중해 그적을지나튀고 폭발함"
+          }
+        },
+        {
+          "subject": "nearby_enemies",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "그 폭발의 주변 적들"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "공이 적중해 튕겨 폭발하면 주변 적에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "nearby_enemies",
+          "text": "폭발주변적을1.5초동안(40/45/50/55/60)%+(밀리오AP/100)×5% 둔화합니다.5%계수의100당 분모를생략하지않습니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If it hits, the ball bounces past them and explodes, dealing (80/140/200/260/320 + (120% Ability Power)) magic damage to surrounding enemies and Slowing them by (40/45/50/55/60% + (5% per 100 Ability Power)) for 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "entity_count",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n14"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "entity_count",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 초특급불꽃킥에 적중한 서로다른 적챔피언수"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 Q사용으로 아직마나환급하지않음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "이번 Q에 적챔피언을한명이상적중시키면 이번Q소모마나의50%를 돌려받습니다. 마나전체의50%나 적마다별도50%가 아닙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_refund",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting at least one enemy champion with Ultra Mega Fire Kick refunds 50% of it's Mana cost."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 불꽃공의 첫적중으로 밀쳐지는 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "enemy",
+          "text": "미니언은 더 멀리 밀려나고 더 큰 폭발을 일으킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Minions and monsters are knocked further and create a larger explosion."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Milio kicks a fireball, Knocking Back the first enemy hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 불꽃공의 첫적중으로 밀쳐지는 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "enemy",
+          "text": "몬스터는 더 멀리 밀려나고 더 큰 폭발을 일으킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Minions and monsters are knocked further and create a larger explosion."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Milio kicks a fireball, Knocking Back the first enemy hit."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "둔화AP100당5%분모는원문에따라text/구성요소로 보존했다. 정확한폭발범위/미니언몬스터추가밀침거리/커진폭발수치 및환급절대량을위한Q초기마나비용은 이본문이제공하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Slowing them by (40/45/50/55/60% + (5% per 100 Ability Power)) for 1.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting at least one enemy champion with Ultra Mega Fire Kick refunds 50% of it's Mana cost."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Minions and monsters are knocked further and create a larger explosion."
+        }
+      ]
+    }
+  ]
+}

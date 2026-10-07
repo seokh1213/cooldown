@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 2,
+  "id": "Pyke.W",
+  "champion": "Pyke",
+  "slot": "W",
+  "patch": "26.20",
+  "sourceHash": "824e75abac565abe2ee11d618d881f554f4b551b668a37c007116a69bdf27216",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Ghostwater Dive",
+      "ko": "유령 잠수"
+    },
+    "cooldownSeconds": [
+      14,
+      13,
+      12,
+      11,
+      10
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      600,
+      600,
+      600,
+      600,
+      600
+    ],
+    "cost": {
+      "values": [
+        65,
+        65,
+        65,
+        65,
+        65
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "14/13/12/11/10"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:{601654a1}"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Pyke.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Pyke enters Camouflage and gains significant Move Speed that decays over time.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Pyke gains Camouflage and (45 + (200% Lethality))Move Speed decaying over 5 seconds. Move Speed scales with Lethality. Camouflaged units cannot be seen unless an enemy champion is inside their detection radius.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "파이크가 위장 상태가 되며 이동 속도가 크게 증가합니다. 이동 속도는 시간이 지남에 따라 원래대로 감소합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "파이크가 위장 상태에 돌입하고 이동 속도가 (45 + (200% 물리 관통력)) 증가합니다. 이동 속도는 5초에 걸쳐 원래대로 돌아옵니다. 이동 속도는 물리 관통력에 비례합니다. 위장 상태일 때는 적 챔피언의 감지 범위 안에 들어가지 않는 한 시야에 보이지 않습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 27,
+      "end": 29
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "200%",
+      "value": 200,
+      "percent": true,
+      "start": 33,
+      "end": 37
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 74,
+      "end": 75
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "200%",
+      "value": 200,
+      "percent": true,
+      "start": 31,
+      "end": 35
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 59,
+      "end": 60
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "위장 상태가 되고 이동 속도가 증가하며, 증가량은 시간이 지나면서 감소합니다. 적 챔피언의 감지 범위 안에 있으면 위장 상태에서도 보입니다.",
+  "rules": [
+    {
+      "id": "f5ab271e427c714622f7",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "위장 상태가 됩니다. 적 챔피언이 감지 범위 안에 있으면 위장 상태인 유닛도 보입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Pyke gains Camouflage and (45 + (200% Lethality))Move Speed decaying over 5 seconds. Move Speed scales with Lethality. Camouflaged units cannot be seen unless an enemy champion is inside their detection radius."
+        }
+      ]
+    },
+    {
+      "id": "2f0eff88e1a4606d1be4",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이동 속도가 증가하고, 시간이 지나면서 증가량이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "lethality",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Pyke gains Camouflage and (45 + (200% Lethality))Move Speed decaying over 5 seconds. Move Speed scales with Lethality."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "637e1ed2be808cf299f2305aa32a73218985b800e1b91a8ae80e13c32cc86fdb"
+}

@@ -1,0 +1,439 @@
+{
+  "summary": "유미가 처음 적중한 적에게 마법 피해와 둔화를 주는 미사일을 발사합니다. 밀착 상태에서 발사한 미사일을 잠시 조종할 수 있고, 가속되면 피해와 둔화가 강화됩니다. 단짝에게 밀착하면 둔화가 항상 강화되며, 적 챔피언 적중 시 단짝에게 추가 적중 피해를 부여합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "미사일은 처음 적중한 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yuumi summons an errant missile that deals (60/95/130/165/200/235 + (20% Ability Power)) magic damage to the first enemy and Slows the target for 20%."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "미사일이1.35초 이상 날아가 가속된 뒤 대상 적중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "가속된 미사일은 첫 적중 대상에게 대신 증가한 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "가속된 미사일은 대상을 더 강하게 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If cast while Attached, Yuumi can control the missile using her mouse for a short period before it accelerates in a straight line. The accelerated missile deals (80/135/190/245/300/355 + (30% Ability Power)) magic damage and Slows the target for 50/53/56/59/62/65% for 2 seconds, instead."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "It deals bonus damage and an enchanced slow if it takes at least 1.35 seconds to get to its target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Yuumi summons an errant missile that deals (60/95/130/165/200/235 + (20% Ability Power)) magic damage to the first enemy and Slows the target for 20%."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "유미가 단짝에게 밀착 중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "단짝 효과로 둔화가 항상 강화됩니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Best Friend Bonus: Prowling Projectile's Slow will always be enhanced and hitting an enemy champion also grants them (10/12/14/16/18/20 + (5% Ability Power)) magic damage On-Hit for 5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The accelerated missile deals (80/135/190/245/300/355 + (30% Ability Power)) magic damage and Slows the target for 50/53/56/59/62/65% for 2 seconds, instead."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Yuumi summons an errant missile that deals (60/95/130/165/200/235 + (20% Ability Power)) magic damage to the first enemy and Slows the target for 20%."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "유미가 단짝에게 밀착 중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "ally",
+          "text": "Q가 적 챔피언에게 적중하면 단짝에게5초간 추가 마법온힛 피해를 부여한다. 기본10~20+유미AP5%, 단짝치명확률에 따라 최대75%까지 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n22",
+                "en:body:n23",
+                "en:body:n24",
+                "en:body:n25",
+                "en:body:n26",
+                "en:body:n27"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n28"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n29"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n30"
+              ],
+              "stat": "critChance",
+              "statSubject": "ally",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Best Friend Bonus: Prowling Projectile's Slow will always be enhanced and hitting an enemy champion also grants them (10/12/14/16/18/20 + (5% Ability Power)) magic damage On-Hit for 5 seconds. The bonus On-Hit damage can be increased by 75% based her ally's Critical Strike Chance."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아군에게 밀착한 상태에서 Q시전"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "미사일을 잠시 마우스로 조종할 수 있다. 이후 가속해 직선으로 나가며 더 이상 조종할 수 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If cast while Attached, Yuumi can control the missile using her mouse for a short period before it accelerates in a straight line."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "일단 속도가 붙은 미사일은 조종할 수 없고 직선으로 날아가며"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "영문 툴팁은 조종 후 미사일 가속을 설명하지만 가속 전환 시점을 지정하지 않습니다. 요약 출처의 1.35초 조건을 적용했으며, 본문과 요약의 조건 범위가 완전히 일치하는지 확인할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "It deals bonus damage and an enchanced slow if it takes at least 1.35 seconds to get to its target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If cast while Attached, Yuumi can control the missile using her mouse for a short period before it accelerates in a straight line."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "단짝 치명타확률에 따른 온힛증가75%는 증가효율이며 고정 피해배율0.75가 아니다. 정확한 합성식은 구성요소로 보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The bonus On-Hit damage can be increased by 75% based her ally's Critical Strike Chance."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "summary": "타릭은 자신의 방어력을 높이며, 연결 아군과 가까이 있으면 아군의 방어력도 높이고 양쪽에서 스킬을 발동합니다. 사용 시 아군 한 명과 연결해 2.5초 보호막을 부여하며 모방 효과는 중첩되지 않습니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "타릭이 방어력의 6/7/8/9/10%만큼 추가 방어력을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": "armor",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Taric gains (6/7/8/9/10% Armor) Armor and forms a tether between him and the ally bound by this Ability."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "수호의 고리로 연결된 아군"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "타릭과 연결 아군이 서로 가까이 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "가까이 있는 연결 아군이 방어력의 6/7/8/9/10%만큼 추가 방어력을 얻습니다. 계수 입력 방어력의 소유자는 공급문에서 명시되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9"
+              ],
+              "stat": "armor",
+              "statSubject": "unknown",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "As long as they are near each other, the ally gains (6/7/8/9/10% Armor) Armor and Taric casts all his Abilities from both himself and his linked ally."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "수호의 고리로 연결된 아군"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "타릭과 연결 아군이 서로 가까이 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "ally",
+          "text": "타릭의 모든 스킬이 타릭과 연결된 아군 양쪽에서 발동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "As long as they are near each other, the ally gains (6/7/8/9/10% Armor) Armor and Taric casts all his Abilities from both himself and his linked ally."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "연결할 아군 챔피언"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "ally",
+          "text": "아군 챔피언에게 최대 체력의 7/8/9/10/11%에 해당하는 보호막을 2.5초 부여합니다. 입력 최대 체력 소유자는 공급문에 명시되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "unknown",
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Taric binds to an ally champion, granting a 7/8/9/10/11% max Health Shield for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "ally",
+          "text": "타릭이 아군 챔피언과 연결됩니다. 한 번에 한 아군만 연결할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "모방한 스킬 효과는 중첩되지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Mimicked spell effects do not stack. Only one ally can be bound at a time."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Taric binds to an ally champion, granting a 7/8/9/10/11% max Health Shield for 2.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "아군 방어력 증가의 입력 Armor와 보호막의 max Health가 타릭/아군 중 누구의 값인지 공급문이 명시하지 않아 unknown으로 보존했습니다. 각 slash 수치에는 공통 퍼센트 단위가 적용되며 lexical 숫자표의 percent=false를 절대값으로 실행하지 말아야 합니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "As long as they are near each other, the ally gains (6/7/8/9/10% Armor) Armor and Taric casts all his Abilities from both himself and his linked ally."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Taric binds to an ally champion, granting a 7/8/9/10/11% max Health Shield for 2.5 seconds."
+        }
+      ]
+    }
+  ]
+}

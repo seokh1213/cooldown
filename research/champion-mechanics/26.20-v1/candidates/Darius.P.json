@@ -1,0 +1,264 @@
+{
+  "summary": "기본 공격과 피해를 주는 스킬이 대상에게 과다출혈을 적용해 지속 피해를 입힌다. 대상이 최대 중첩에 도달하거나 녹서스의 단두대에 처치되면 다리우스가 일시적으로 공격력을 얻고, 기본 공격과 피해를 주는 스킬 적중 시 과다출혈을 최대로 적용한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "target"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "과다출혈을 적용해 지속 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Darius' Attacks and damaging Abilities cause the target to Hemorrhage, dealing ((13 ~ 30) + (30% bonus Attack Damage)) physical damage over 5 seconds, stacking up to 5 times."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Hemorrhage 최대 중첩 상태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "적이 과다출혈 최대 중첩 상태에 도달하면 다리우스가 추가 공격력을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When an enemy reaches max stacks or is killed by Noxian Guillotine, Darius gains an additional (30 ~ 230) Attack Damage and applies 5 Hemorrhage stacks on all Attack or damaging Ability hits for 5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Darius' Attacks and damaging Abilities cause the target to Hemorrhage, dealing ((13 ~ 30) + (30% bonus Attack Damage)) physical damage over 5 seconds, stacking up to 5 times."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "녹서스의 단두대가 적을 처치함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "녹서스의 단두대가 적을 처치하면 다리우스가 추가 공격력을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When an enemy reaches max stacks or is killed by Noxian Guillotine, Darius gains an additional (30 ~ 230) Attack Damage and applies 5 Hemorrhage stacks on all Attack or damaging Ability hits for 5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Darius' Attacks and damaging Abilities cause the target to Hemorrhage, dealing ((13 ~ 30) + (30% bonus Attack Damage)) physical damage over 5 seconds, stacking up to 5 times."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Noxian Might 추가 공격력 강화 효과 활성화됨. 효과는 과다출혈 최대 중첩 도달 또는 녹서스의 단두대 처치로 얻을 수 있음."
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "이 추가 공격력 강화 효과가 활성화된 동안 기본 공격 또는 피해를 주는 스킬 적중 시 대상에게 과다출혈 5중첩을 적용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When an enemy reaches max stacks or is killed by Noxian Guillotine, Darius gains an additional (30 ~ 230) Attack Damage and applies 5 Hemorrhage stacks on all Attack or damaging Ability hits for 5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

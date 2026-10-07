@@ -1,0 +1,165 @@
+{
+  "summary": "모데카이저와 대상 챔피언을 죽음의 세계로 7초 동안 추방하고, 대상의 주요 능력치 10%를 대상에게서 빼앗아 모데카이저에게 얻습니다. 죽음의 세계에서 대상을 처치하면 대상이 부활할 때까지 훔친 능력치를 유지합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "transform",
+          "subject": "target",
+          "text": "대상 챔피언을 모데카이저와 함께 죽음의 세계로 추방합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "shape": "scalar",
+              "statSubject": null
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "죽음의 세계에 있는 동안 대상의 주문력, 공격력, 공격 속도, 방어력, 마법 저항력, 최대 체력 중 10%를 모데카이저가 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "shape": "scalar",
+              "statSubject": null
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "shape": "scalar",
+              "statSubject": null
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "target",
+          "text": "죽음의 세계에 있는 동안 대상은 주문력, 공격력, 공격 속도, 방어력, 마법 저항력, 최대 체력 중 10%를 빼앗깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "shape": "scalar",
+              "statSubject": null
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "shape": "scalar",
+              "statSubject": null
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Mordekaiser banishes a champion to the Death Realm with him for 7s, stealing 10% of their core stats for the duration."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Core stats stolen include: Ability Power, Attack Damage, Attack Speed, Armor, Magic Resist, and Maximum Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Death Realm"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "죽음의 세계에서 해당 적을 처치하면 훔친 능력치를 대상이 부활할 때까지 유지합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Mordekaiser kills that enemy in the Death Realm he consumes their soul, keeping the stats he stole until the target respawns."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "툴팁상 훔치기는 모데카이저가 능력치를 얻고 대상이 해당 능력치를 잃는 효과입니다. 다만 각 능력치의 정확한 계산 및 적용 방식은 설명되지 않으므로 세부 계산식은 미확정입니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "stealing 10% of their core stats for the duration."
+        }
+      ]
+    }
+  ]
+}

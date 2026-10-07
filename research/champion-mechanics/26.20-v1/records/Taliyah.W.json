@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 2,
+  "id": "Taliyah.W",
+  "champion": "Taliyah",
+  "slot": "W",
+  "patch": "26.20",
+  "sourceHash": "6fba447c060225d1b1a1b952b15dcdb5d5773c0aa874d71f349c120023b2e690",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Seismic Shove",
+      "ko": "지각변동"
+    },
+    "cooldownSeconds": [
+      14,
+      12.5,
+      11,
+      9.5,
+      8
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      900,
+      900,
+      900,
+      900,
+      900
+    ],
+    "cost": {
+      "values": [
+        40,
+        30,
+        20,
+        10,
+        0
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "14/12.5/11/9.5/8"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "40/30/20/10/0"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "knockup",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Taliyah.json"
+        },
+        {
+          "type": "knockback",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Taliyah.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Taliyah.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Taliyah causes an area of ground to erupt and throws enemies within it in a direction of her choosing.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Taliyah quakes the earth, Knocking enemies in an area in the chosen direction.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "탈리야가 특정 지점을 솟구치게 만들어 탈리야가 선택한 방향으로 적을 띄워 올립니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "탈리야가 땅을 흔들어 일정 지역에 있는 적을 선택한 방향으로 밀어냅니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "지정한 방향으로 지역 내 적을 밀어냅니다.",
+  "rules": [
+    {
+      "id": "30d076c941bbd6165f49",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "지역 내 적을 탈리야가 선택한 방향으로 밀어냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Taliyah quakes the earth, Knocking enemies in an area in the chosen direction."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "e3477f174bd5022dc11dfd2d1eb9f82aca2754453c6129a77bc9944aa8f83b5a"
+}

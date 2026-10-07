@@ -1,0 +1,509 @@
+{
+  "summary": "쉔이 기의 검을 불러냅니다. 검에 맞은 적은 쉔에게서 멀어지는 동안 둔화됩니다. 다음 세 번의 공격은 추가 마법 피해를 입히며, 검이 적 챔피언에게 맞으면 추가 피해와 공격 속도 증가 효과가 강화됩니다. 정글 몬스터와 구조물에 대한 공격에는 별도 피해 규칙이 적용됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기의 검 회수 경로에 부딪힌 적이 이후2초 동안 쉔으로부터 멀어지는 방향으로 이동할 때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "기의 검 회수 경로에 맞은 적은 이후2초 동안 쉔으로부터 멀어질 때25/30/35/40/45% 둔화됩니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies hit by the pull are Slowed by 25/30/35/40/45% while moving away from Shen for the next 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기의 검을 불러낸 뒤 다음 3회 공격 중"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "회수한 기의 검이 적 챔피언에게 부딪히지 않은 경우"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기의 검 회수 후 다음3회 기본 공격은10~40 + 대상최대체력×(2/2.5/3/3.5/4% + 1.5%×자신의주문력/100)의 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Additionally, Shen's next 3 Attacks deal an additional (10 ~ 40) plus (2/2.5/3/3.5/4% + (1.5% per 100 Ability Power)) max Health magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "followup_status",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "기의 검을 불러낸 뒤 다음 3회 공격 중"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "회수한 기의 검이 적 챔피언에게 부딪힌 경우"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기의 검이 적 챔피언에 부딪혔으면 같은다음3회 기본공격의 추가피해가10~40 + 대상최대체력×(5/5.5/6/6.5/7% + 2%×자신의주문력/100)의 마법 피해로 대체됩니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n23",
+                "en:body:n24"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Shen hit an enemy champion with the Spirit Blade, the damage is increased to (10 ~ 40) plus (5/5.5/6/6.5/7% + (2% per 100 Ability Power)) max Health magic damage and he gains 50% Attack Speed for those Attacks."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Additionally, Shen's next 3 Attacks deal an additional (10 ~ 40) plus (2/2.5/3/3.5/4% + (1.5% per 100 Ability Power)) max Health magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기의 검을 불러낸 뒤 다음3회 기본 공격 중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "정글몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "다음3회 강화공격의 정글 몬스터 대상피해는100% 증가(기본의200%)하며 최대100/125/150/175/200 제한이 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n26"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n27",
+                "en:body:n28",
+                "en:body:n29",
+                "en:body:n30",
+                "en:body:n31"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each Attack deals 100% increased damage to jungle monsters (max 100/125/150/175/200 damage)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "기의 검을 불러낸 뒤 다음3회 기본 공격 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "구조물에 공격하면 피해를 입힙니다. 원문에는 피해 유형이 명시되어 있지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n32",
+                "en:body:n33"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks against structures deal (10 ~ 40) damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "summon",
+          "text": "기의 검을 쉔에게 회수합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "attack_followup",
+          "subject": "caster",
+          "text": "회수 뒤 다음3회 기본 공격이 강화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shen recalls his Spirit Blade."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Additionally, Shen's next 3 Attacks deal an additional (10 ~ 40) plus (2/2.5/3/3.5/4% + (1.5% per 100 Ability Power)) max Health magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "회수하는기의검에적챔피언이부딪힌경우"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "회수하는기의검이적챔피언에게부딪히면다음3회기본공격동안공격속도가50%증가합니다.구조물상대공격도이상태를사용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Shen hit an enemy champion with the Spirit Blade, the damage is increased to (10 ~ 40) plus (5/5.5/6/6.5/7% + (2% per 100 Ability Power)) max Health magic damage and he gains 50% Attack Speed for those Attacks."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Additionally, Shen's next 3 Attacks deal an additional (10 ~ 40) plus (2/2.5/3/3.5/4% + (1.5% per 100 Ability Power)) max Health magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "기의검의적챔피언충돌은 이후다음3회 공격을 강화하는 시전자상태이며 실제공격대상을 그충돌챔피언으로 제한하지않는다. 지속시간이나 더세부적인 상태필드는 본문에미명시다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Shen hit an enemy champion with the Spirit Blade, the damage is increased to (10 ~ 40) plus (5/5.5/6/6.5/7% + (2% per 100 Ability Power)) max Health magic damage and he gains 50% Attack Speed for those Attacks."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "퍼센트랭크2/2.5/3/3.5/4%,5/5.5/6/6.5/7%,25/30/35/40/45%는frozen숫자표에마지막값만percent=true이다. 전체%단위와maxHP×(랭크%+AP/100비율)복합식을텍스트/formula_components에보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(2/2.5/3/3.5/4% + (1.5% per 100 Ability Power)) max Health"
+        }
+      ]
+    }
+  ]
+}

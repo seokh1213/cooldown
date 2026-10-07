@@ -1,0 +1,156 @@
+{
+  "summary": "카타리나가 최근 피해를 입힌 적 챔피언이 죽으면 스킬 재사용 대기시간이 감소합니다. 단검을 주우면 주변 적을 베어 마법 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "time",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "죽은 이 적챔피언에게 카타리나가 마지막으로 피해를 준 뒤3초 이내"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "해당 적챔피언이 사망하면 카타리나의 스킬쿨타임을15초 줄입니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Whenever an enemy champion dies that Katarina has damaged in the last 3 seconds, her Ability Cooldowns are reduced by 15 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "단검 획득"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "단검을 주우면 카타리나 주변 모든 적에게(68~240+60%추가AD+(70~100)%AP)의 마법피해를 줍니다. 범위의 변화 기준은 공급원문에 없습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Katarina picks up a Dagger, she uses it to slash through all nearby enemies, dealing ((68 ~ 240) + (60% bonus Attack Damage) + ((70% ~ 100%) Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "68~240 기본피해와70~100%AP 범위의 변화 기준/중간 산식이 본문·요약에 없어 레벨비례를 단정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "((68 ~ 240) + (60% bonus Attack Damage) + ((70% ~ 100%) Ability Power)) magic damage."
+        }
+      ]
+    }
+  ]
+}

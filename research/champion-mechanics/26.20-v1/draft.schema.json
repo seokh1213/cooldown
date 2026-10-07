@@ -1,0 +1,630 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "variant": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trigger": {
+            "type": "object",
+            "properties": {
+              "event": {
+                "type": "string",
+                "enum": [
+                  "passive",
+                  "cast",
+                  "recast",
+                  "attack",
+                  "followup_attack",
+                  "attack_cancelled",
+                  "attack_or_ability_hit",
+                  "ability_hit",
+                  "damage_taken",
+                  "stat_gain",
+                  "takedown",
+                  "kill",
+                  "death",
+                  "expiry",
+                  "leave_vision",
+                  "enter_area",
+                  "transform",
+                  "resource_depleted",
+                  "other"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "enum": [
+                  "caster",
+                  "target",
+                  "ally",
+                  "enemy",
+                  "nearby_enemies",
+                  "secondary_targets",
+                  "summon",
+                  "unknown"
+                ]
+              }
+            },
+            "required": [
+              "event",
+              "subject"
+            ],
+            "additionalProperties": false
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "subject": {
+                  "type": "string",
+                  "enum": [
+                    "caster",
+                    "target",
+                    "ally",
+                    "enemy",
+                    "nearby_enemies",
+                    "secondary_targets",
+                    "summon",
+                    "unknown"
+                  ]
+                },
+                "field": {
+                  "type": "string",
+                  "enum": [
+                    "target_type",
+                    "hit_count",
+                    "followup_status",
+                    "visibility",
+                    "stat_scope",
+                    "spell_ready",
+                    "shield_ready",
+                    "health_threshold",
+                    "distance",
+                    "mark",
+                    "resource",
+                    "form",
+                    "weapon",
+                    "time",
+                    "entity_count",
+                    "hit_order",
+                    "activation",
+                    "other"
+                  ]
+                },
+                "operator": {
+                  "type": "string",
+                  "enum": [
+                    "eq",
+                    "neq",
+                    "lt",
+                    "lte",
+                    "gt",
+                    "gte",
+                    "present",
+                    "absent"
+                  ]
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "enum"
+                        },
+                        "value": {
+                          "type": "string",
+                          "enum": [
+                            "champion",
+                            "minion",
+                            "monster",
+                            "structure",
+                            "any",
+                            "base",
+                            "bonus",
+                            "total",
+                            "cancelled",
+                            "fired",
+                            "visible",
+                            "unseen",
+                            "ready",
+                            "down",
+                            "same_target",
+                            "isolated",
+                            "immobilized",
+                            "first",
+                            "empowered"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "boolean"
+                        },
+                        "value": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "number_ref"
+                        },
+                        "ref": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "ref"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "text"
+                        },
+                        "value": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "value"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "subject",
+                "field",
+                "operator",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "damage",
+                    "heal",
+                    "shield",
+                    "stat_modifier",
+                    "stat_conversion",
+                    "crowd_control",
+                    "movement",
+                    "resource_change",
+                    "cooldown_change",
+                    "attack_followup",
+                    "attack_modifier",
+                    "summon",
+                    "transform",
+                    "revive",
+                    "execute",
+                    "visibility",
+                    "mark",
+                    "ui_information",
+                    "other"
+                  ]
+                },
+                "subject": {
+                  "type": "string",
+                  "enum": [
+                    "caster",
+                    "target",
+                    "ally",
+                    "enemy",
+                    "nearby_enemies",
+                    "secondary_targets",
+                    "summon",
+                    "unknown"
+                  ]
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "damageType": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "physical",
+                        "magic",
+                        "true"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "crowdControl": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "stun",
+                        "root",
+                        "knockup",
+                        "knockback",
+                        "pull",
+                        "fear",
+                        "charm",
+                        "taunt",
+                        "silence",
+                        "slow",
+                        "suppression",
+                        "stasis",
+                        "sleep",
+                        "drowsy",
+                        "polymorph",
+                        "blind",
+                        "nearsight",
+                        "ground",
+                        "cripple",
+                        "berserk",
+                        "suspension",
+                        "knockdown",
+                        "disarm",
+                        "disrupt",
+                        "kinematics"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "statFrom": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "baseHealth",
+                        "maxHealth",
+                        "bonusHealth",
+                        "healthRegen",
+                        "totalAttackDamage",
+                        "baseAttackDamage",
+                        "bonusAttackDamage",
+                        "abilityPower",
+                        "armor",
+                        "bonusArmor",
+                        "magicResist",
+                        "bonusMagicResist",
+                        "maxMana",
+                        "bonusMana",
+                        "attackSpeed",
+                        "bonusAttackSpeed",
+                        "moveSpeed",
+                        "critChance",
+                        "critDamage",
+                        "lifeSteal",
+                        "lethality",
+                        "abilityHaste",
+                        "armorPenetration",
+                        "magicPenetration"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "statTo": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "baseHealth",
+                        "maxHealth",
+                        "bonusHealth",
+                        "healthRegen",
+                        "totalAttackDamage",
+                        "baseAttackDamage",
+                        "bonusAttackDamage",
+                        "abilityPower",
+                        "armor",
+                        "bonusArmor",
+                        "magicResist",
+                        "bonusMagicResist",
+                        "maxMana",
+                        "bonusMana",
+                        "attackSpeed",
+                        "bonusAttackSpeed",
+                        "moveSpeed",
+                        "critChance",
+                        "critDamage",
+                        "lifeSteal",
+                        "lethality",
+                        "abilityHaste",
+                        "armorPenetration",
+                        "magicPenetration"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "parameters": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "role": {
+                        "type": "string",
+                        "enum": [
+                          "amount",
+                          "min_amount",
+                          "max_amount",
+                          "duration_seconds",
+                          "cooldown_seconds",
+                          "distance_units",
+                          "count",
+                          "ratio_input",
+                          "ratio_output",
+                          "stat_coefficient",
+                          "damage_multiplier",
+                          "resource_cost",
+                          "resource_refund",
+                          "storage_cap",
+                          "other"
+                        ]
+                      },
+                      "numberRefs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 1
+                      },
+                      "stat": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "baseHealth",
+                              "maxHealth",
+                              "bonusHealth",
+                              "healthRegen",
+                              "totalAttackDamage",
+                              "baseAttackDamage",
+                              "bonusAttackDamage",
+                              "abilityPower",
+                              "armor",
+                              "bonusArmor",
+                              "magicResist",
+                              "bonusMagicResist",
+                              "maxMana",
+                              "bonusMana",
+                              "attackSpeed",
+                              "bonusAttackSpeed",
+                              "moveSpeed",
+                              "critChance",
+                              "critDamage",
+                              "lifeSteal",
+                              "lethality",
+                              "abilityHaste",
+                              "armorPenetration",
+                              "magicPenetration"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "statSubject": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "caster",
+                              "target",
+                              "ally",
+                              "enemy",
+                              "nearby_enemies",
+                              "secondary_targets",
+                              "summon",
+                              "unknown"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "shape": {
+                        "type": "string",
+                        "enum": [
+                          "scalar",
+                          "rank_values",
+                          "level_range",
+                          "formula_components",
+                          "unknown"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "role",
+                      "numberRefs",
+                      "stat",
+                      "statSubject",
+                      "shape"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0
+                },
+                "flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "replace_input",
+                      "replaces_base",
+                      "decays",
+                      "per_target",
+                      "unknown"
+                    ]
+                  },
+                  "minItems": 0,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "kind",
+                "subject",
+                "text",
+                "damageType",
+                "crowdControl",
+                "statFrom",
+                "statTo",
+                "parameters",
+                "flags"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sourceId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "quote": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "sourceId",
+                "quote"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "variant",
+          "trigger",
+          "conditions",
+          "effects",
+          "evidence"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "missing_source",
+              "source_conflict",
+              "unresolved_number",
+              "unresolved_condition",
+              "unsupported_formula",
+              "missing_variant",
+              "scope_ambiguous"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sourceId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "quote": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "sourceId",
+                "quote"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "reason",
+          "detail",
+          "evidence"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "summary",
+    "rules",
+    "gaps"
+  ],
+  "additionalProperties": false
+}

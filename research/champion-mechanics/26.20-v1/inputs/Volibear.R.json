@@ -1,0 +1,524 @@
+{
+  "champion": "Volibear",
+  "slot": "R",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Volibear leaps to a target location, Slowing and damaging enemies beneath him while gaining bonus Health. Enemy towers near his landing location become temporarily disabled.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Volibear transforms and leaps, gaining 175/350/525 Health and 50 Attack Range for the next 12 seconds. Upon landing, Volibear cracks the earth, Disabling nearby towers for 2/3/4 seconds and dealing (300/500/700 + (125% Ability Power) + (250% bonus Attack Damage)) physical damage to them. Nearby enemies are Slowed by 50%, decaying over 1 second. Enemies directly underneath Volibear suffer (300/500/700 + (125% Ability Power) + (250% bonus Attack Damage)) physical damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "볼리베어가 지정한 위치로 도약하여 아래에 있는 적을 둔화시키고 피해를 입히며 추가 체력을 얻습니다. 볼리베어가 착지한 곳 근처에 있는 포탑은 일시적으로 비활성화됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "볼리베어가 변신 후 지정한 위치로 도약합니다. 12초 동안 체력이 175/350/525, 공격 사거리가 50 증가합니다. 볼리베어가 착지 시 땅에 균열이 생겨 근처 적 포탑이 2/3/4초 동안 비활성화되며 (300/500/700 + (125% 주문력) + (250% 추가 공격력))의 물리 피해를 입습니다. 근처 적들은 50% 둔화했다가 1초에 걸쳐 원래대로 돌아옵니다. 볼리베어 바로 아래에 있는 적들은 (300/500/700 + (125% 주문력) + (250% 추가 공격력))의 물리 피해를 입습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Stormbringer",
+      "ko": "폭풍을 부르는 자"
+    },
+    "cooldownSeconds": [
+      160,
+      135,
+      110
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      550,
+      550,
+      550
+    ],
+    "cost": {
+      "values": [
+        100,
+        100,
+        100
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "300/500/700"
+      },
+      {
+        "label": "Bonus Health",
+        "values": "175/350/525"
+      },
+      {
+        "label": "Tower Disable Duration",
+        "values": "2/3/4"
+      },
+      {
+        "label": "Cooldown",
+        "values": "160/135/110"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "R Scaling",
+        "labelKo": "R 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "3:ADRatio"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TowerDamageTooltip",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          300,
+          500,
+          700
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              1.25,
+              1.25,
+              1.25
+            ]
+          },
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              2.5,
+              2.5,
+              2.5
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Volibear.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Volibear.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Volibear.R",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 39,
+      "end": 42
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 43,
+      "end": 46
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "525",
+      "value": 525,
+      "percent": false,
+      "start": 47,
+      "end": 50
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 62,
+      "end": 64
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "12",
+      "value": 12,
+      "percent": false,
+      "start": 91,
+      "end": 93
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 172,
+      "end": 173
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 174,
+      "end": 175
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 176,
+      "end": 177
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 199,
+      "end": 202
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "500",
+      "value": 500,
+      "percent": false,
+      "start": 203,
+      "end": 206
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "700",
+      "value": 700,
+      "percent": false,
+      "start": 207,
+      "end": 210
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "125%",
+      "value": 125,
+      "percent": true,
+      "start": 214,
+      "end": 218
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "250%",
+      "value": 250,
+      "percent": true,
+      "start": 237,
+      "end": 241
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 318,
+      "end": 321
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 337,
+      "end": 338
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 392,
+      "end": 395
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "500",
+      "value": 500,
+      "percent": false,
+      "start": 396,
+      "end": 399
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "700",
+      "value": 700,
+      "percent": false,
+      "start": 400,
+      "end": 403
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "125%",
+      "value": 125,
+      "percent": true,
+      "start": 407,
+      "end": 411
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "250%",
+      "value": 250,
+      "percent": true,
+      "start": 430,
+      "end": 434
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "12",
+      "value": 12,
+      "percent": false,
+      "start": 26,
+      "end": 28
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "175",
+      "value": 175,
+      "percent": false,
+      "start": 37,
+      "end": 40
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 41,
+      "end": 44
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "525",
+      "value": 525,
+      "percent": false,
+      "start": 45,
+      "end": 48
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 58,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 98,
+      "end": 99
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 100,
+      "end": 101
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 102,
+      "end": 103
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 116,
+      "end": 119
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "500",
+      "value": 500,
+      "percent": false,
+      "start": 120,
+      "end": 123
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "700",
+      "value": 700,
+      "percent": false,
+      "start": 124,
+      "end": 127
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "125%",
+      "value": 125,
+      "percent": true,
+      "start": 131,
+      "end": 135
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "250%",
+      "value": 250,
+      "percent": true,
+      "start": 144,
+      "end": 148
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 179,
+      "end": 182
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 189,
+      "end": 190
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "300",
+      "value": 300,
+      "percent": false,
+      "start": 228,
+      "end": 231
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "500",
+      "value": 500,
+      "percent": false,
+      "start": 232,
+      "end": 235
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "700",
+      "value": 700,
+      "percent": false,
+      "start": 236,
+      "end": 239
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "125%",
+      "value": 125,
+      "percent": true,
+      "start": 243,
+      "end": 247
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "250%",
+      "value": 250,
+      "percent": true,
+      "start": 256,
+      "end": 260
+    }
+  ],
+  "sourceHash": "7d7afbeef73f800a198c47a4582549d152c1860e63701883380edc9d406873cb",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

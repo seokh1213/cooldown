@@ -1,0 +1,474 @@
+{
+  "champion": "Vex",
+  "slot": "E",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Summon a damaging and slowing zone that applies Gloom to enemies.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Vex commands Shadow to fly to a location, increasing in size as it travels. Upon arriving, it deals (50/70/90/110/130 + (40/45/50/55/60% Ability Power)) magic damage and Slows by 30/35/40/45/50% for 2 seconds. Killing an enemy with this ability reduces Doom'n Gloom's Cooldown by 10%. Applies Gloom to enemies hit.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "피해를 입히고 둔화시키는 영역을 소환하며 적에게 우울을 적용합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "벡스가 지정한 위치로 그림자가 날아가도록 명령합니다. 그림자는 날아가는 동안 크기가 커집니다. 도착 시 (50/70/90/110/130 + (40/45/50/55/60% 주문력))의 마법 피해를 입히고 2초 동안 30/35/40/45/50% 둔화시킵니다. 이 스킬로 적을 처치하면 파멸과 우울의 재사용 대기시간이 10% 감소합니다. 적중한 적에게 우울을 적용합니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Looming Darkness",
+      "ko": "커지는 어둠"
+    },
+    "cooldownSeconds": [
+      12,
+      12,
+      12,
+      12,
+      12
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      800,
+      800,
+      800,
+      800,
+      800
+    ],
+    "cost": {
+      "values": [
+        70,
+        80,
+        90,
+        100,
+        110
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "50/70/90/110/130"
+      },
+      {
+        "label": "Slow",
+        "values": "30%/35%/40%/45%/50%"
+      },
+      {
+        "label": "Total AP Ratio",
+        "values": "40%/45%/50%/55%/60%"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:EDamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "EDamageCalc",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          50,
+          70,
+          90,
+          110,
+          130
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.4000000059604645,
+              0.44999998807907104,
+              0.5,
+              0.550000011920929,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Vex"
+        },
+        {
+          "type": "fear",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Vex",
+          "condition": "파멸 준비 상태"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Vex.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Vex.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 101,
+      "end": 103
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 104,
+      "end": 106
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 107,
+      "end": 109
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 110,
+      "end": 113
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 114,
+      "end": 117
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 121,
+      "end": 123
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 124,
+      "end": 126
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": true,
+      "start": 127,
+      "end": 129
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "55",
+      "value": 55,
+      "percent": true,
+      "start": 130,
+      "end": 132
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 133,
+      "end": 136
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 179,
+      "end": 181
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 182,
+      "end": 184
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 185,
+      "end": 187
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 188,
+      "end": 190
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 191,
+      "end": 194
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 199,
+      "end": 200
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 280,
+      "end": 283
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 59,
+      "end": 61
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 62,
+      "end": 64
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 65,
+      "end": 67
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 68,
+      "end": 71
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 72,
+      "end": 75
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 79,
+      "end": 81
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 82,
+      "end": 84
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": true,
+      "start": 85,
+      "end": 87
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "55",
+      "value": 55,
+      "percent": true,
+      "start": 88,
+      "end": 90
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 91,
+      "end": 94
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 113,
+      "end": 114
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 119,
+      "end": 121
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 122,
+      "end": 124
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 125,
+      "end": 127
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 128,
+      "end": 130
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 131,
+      "end": 134
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 175,
+      "end": 178
+    }
+  ],
+  "sourceHash": "60b81e0bb73656ab23f9650cf72ce6c42f8a2d0345041000a4f9a4d4abcaa129",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}
