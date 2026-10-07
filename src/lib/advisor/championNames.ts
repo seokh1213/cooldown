@@ -27,4 +27,3 @@ export function correctNames(question: string, data: AdvisorData) {
   }
   return { text, changes };
 }
-

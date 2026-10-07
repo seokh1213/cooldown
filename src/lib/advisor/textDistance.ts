@@ -47,4 +47,3 @@ export function editDistance(a: string, b: string): number {
   }
   return dp[cols - 1];
 }
-
