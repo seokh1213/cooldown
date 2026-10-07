@@ -16,9 +16,10 @@ import { correctNames } from "./championNames";
 import { championFreeText, resolveQuestion } from "./resolvedQuestion";
 import { CROWD_CONTROL } from "@/lib/knowledge/crowdControl";
 import { questionState } from "./mechanics/question";
+import { championTypoPlan } from "./championTypoPlan";
 
 const OTHER_QUERY = /스킬|패시브|궁(?=[\s을은이의으로에만도]|$)|쿨|사거리|피해량|계수|(?<!얼)마나|소모|아이템|룬|회복\s*물약|가속|랭크|(?<![A-Za-z])[PQWER](?![A-Za-z])|\b(?:ability|abilities|skill|passive|ult|cooldown|range|ratio|mana|item|rune|haste|rank)\b|技能|被动|冷却|射程|法力|装备|符文/i;
-const ADVICE = /상대법|상대할|카운터|싸우|싸워|교환|진입|템|빌드|추천|올려|사면|사야|맞춰|무빙\s*팁|어떻게\s*(?:싸|버|이|피|굴)|\b(?:counter|fight|engage|build|recommend|buy)\b|how.*\b(?:survive|play|respond|deal with)\b|怎么打|出装|出护甲|出魔抗|推荐/i;
+const ADVICE = /상대법|상대할|카운터|싸우|싸워|교환|진입|템|빌드|추천|올려|사면|사야|맞춰|무빙\s*팁|어떻게\s*(?:싸|버|이|피|굴)|\b(?:counter|fight|engage|build|recommend|buy)\b|how.*\b(?:survive|play|lane|respond|deal with)\b|怎么打|出装|出护甲|出魔抗|推荐/i;
 const HEALING = /회복량|재생량|\b(?:regen|regeneration|recovery)\b|回复量|恢复量/i;
 const STAT_CONTEXT = /스탯|능력치|기본|스킬\s*말고|패시브\s*말고|\b(?:base|stats?)\b|基础|属性/i;
 type StatResolution = ChampionStatQuery | { kind: "unsupportedStatLevel"; level: number } | { kind: "emptyStatSelection" };
@@ -74,6 +75,10 @@ export function resolveStatQuery(resolved: ResolvedQuestion, memory: DialogueMem
 export function dialogueStatPlan(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext): AnswerPlan | undefined {
   const query = resolveStatQuery(resolved, memory, ctx);
   if (!query || !ctx.data) return undefined;
+  if (!resolved.champions.length) {
+    const typo = championTypoPlan(resolved.text, ctx.data, { champions: [], inMatchup: false });
+    if (typo?.type === "code") return typo;
+  }
   if (query.kind === "emptyStatSelection") {
     const text = ctx.lang === "ko_KR" ? "조회할 대상이나 항목이 남지 않았어요. 예: ‘오공 체력’, ‘아리 마저’처럼 다시 알려 주세요."
       : ctx.lang === "en_US" ? "No targets or stats remain. Try ‘Wukong health’ or ‘Ahri magic resist’."

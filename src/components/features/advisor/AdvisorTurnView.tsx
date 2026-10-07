@@ -300,8 +300,6 @@ function ReferenceDigest({ answer }: { answer: AdvisorAnswer }) {
         <p className="text-[13px] leading-relaxed">{spellSummary(answer.spell)}</p>
       )}
       {answer.kind === "item" && (
-        // A3: 판정이 있으면 그것이 답이고, 없으면 효과 이름 한 줄 + 설명.
-        // 능력치 표와 가격은 카드에 있다.
         <div className="space-y-2">
           {/* 다른 답의 헤드라인과 같은 꼴 — 세로선 하나와 굵기로 짚는다. */}
           {answer.verdicts.map((verdict) => (
@@ -317,7 +315,8 @@ function ReferenceDigest({ answer }: { answer: AdvisorAnswer }) {
           {answer.verdicts.length === 0 && (
             <>
               <div className="border-l-2 border-foreground pl-2.5">
-                <div className="text-[15px] font-semibold">{itemHeadline(answer)}</div>
+                <div className="text-[15px] font-semibold">{answer.askedPrice && answer.price !== undefined
+                  ? fill(copy.card.itemPrice, { price: answer.price }) : itemHeadline(answer)}</div>
                 <div className="text-[11px] text-muted-foreground">
                   {fill(copy.card.itemEffectCount, { name: answer.itemName, n: answer.effects.length })}
                 </div>

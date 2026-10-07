@@ -16,9 +16,9 @@ export function AdvisorSkillTrigger({ championId, championName, spell, skill: fu
     id: `${championId}${spell.slot}`, name: spell.name, maxrank: Math.max(1, cooldown.length),
     cooldown, description: spell.summary, tooltip: spell.text,
   };
-  return <TooltipProvider delayDuration={0} skipDelayDuration={150}><SkillTooltip skill={skill} passive={passive ?? (spell.slot === "P" ? {
-    name: spell.name, description: spell.text, image: { full: "" },
-  } : undefined)} skillIdx={["Q", "W", "E", "R"].indexOf(spell.slot)}
+  return <TooltipProvider delayDuration={0} skipDelayDuration={150}><SkillTooltip skill={skill} passive={spell.slot === "P" ? {
+    ...passive, name: spell.name, description: spell.text || passive?.description || "", image: passive?.image ?? { full: "" },
+  } : undefined} skillIdx={["Q", "W", "E", "R"].indexOf(spell.slot)}
     patchVersion={patch} ddragonVersion={ddragonVersion} headerIcon={icon("size-12")} dialogClassName="h-auto max-h-[70dvh]"
     triggerClassName="min-h-11 flex-row gap-2 rounded-md text-left focus-visible:outline-2 focus-visible:outline-ring">
     {icon("size-8")}<span className="min-w-0 leading-snug">{spell.slot} {spell.name}</span>

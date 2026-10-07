@@ -26,7 +26,7 @@ export function correctedQuestion(question: string): string {
 }
 export function isMechanicFollowup(question: string): boolean {
   const text = correctedQuestion(question);
-  return /^(?:그럼|아니|그거|그건|그때|아\s*\d)/.test(text)
+  return /^(?:그럼|(?:아\s*)?아니|그거|그건|그때|아\s*\d)/.test(text)
     || /^(?:한|두|세|네|\d+)\s*(?:대|번|발)/.test(text)
     || /^\d+(?:\.\d+)?\s*(?:짜리|체력)?\s*(?:은|는|이면|면|일 때|로|으로)[?？\s가-힣]*$/.test(text)
     || /^(?:쿨|재사용\s*대기시간|두\s*번째|추가\s*공격|미니언|몬스터|챔피언)/.test(text);
@@ -90,6 +90,8 @@ export function questionState(question: string, previous?: MechanicMemory): Ques
     state.spellReady = cooldown ? "down" : "ready";
   }
   const hits = countOf(text, "(?:대|번|발)");
+  // 새 적중 횟수는 이전 추가 공격의 발사 여부와 별개의 조건이다.
+  if (hits !== undefined && !extra) delete state.followupStatus;
   if (hits !== undefined) state.hitCount = previous?.hitCount !== undefined && /(?:이미|앞서|더|다음|한\s*번\s*더)/.test(text)
     ? previous.hitCount + hits : hits;
   return state;

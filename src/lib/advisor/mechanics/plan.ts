@@ -67,7 +67,7 @@ export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, 
   if (ability.job.variants.some(variant => variant.id !== "base")) return undefined;
   const mentions = resolved.mentions.map(m => question.slice(m.index, m.index + m.length));
   const state = questionState(question, remembered?.abilityId === ability.job.id ? remembered : undefined);
-  const rules = selectRules(ability, question, topic, { championMentions: mentions, state });
+  const rules = selectRules(ability, question, topic, { championMentions: mentions, state, followup: Boolean(remembered) && inherit });
   if (!rules.length) return undefined;
   const card = data.cardById.get(champion), spell = card?.spells.find(item => item.slot === slot);
   if (!card || !spell) return undefined;

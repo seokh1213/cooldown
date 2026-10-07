@@ -4,6 +4,7 @@ export const dialogueSources = [
   "champion-mechanics-v2/questions.json", "champion-mechanics-v2/full-approval-questions.json",
   "champion-mechanics-v2/integrated-fresh-questions.json", "champion-mechanics-v2/pyke-akshan-questions.json",
   "champion-mechanics-v2/variations-v1-questions.json", "atoms/action-conditions/questions.json",
+  "champion-mechanics-v2/live-web-questions.json",
   "atoms/action-conditions/holdout.json", "atoms/answer-quality/questions.json", "atoms/broad-replay/questions.json",
   "atoms/conditional-fiora/questions.json", "atoms/conditional-fiora/holdout.json", "atoms/context-replay/questions.json",
 ];

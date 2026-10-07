@@ -43,7 +43,7 @@ function percentageReferences(ability: Ability, question: string): Rule[] {
   return ability.draft.rules.filter(rule => rule.effects.some(effect => effect.parameters.some(parameter => parameter.numberRefs.some(ref => refs.has(ref)))));
 }
 
-export function selectRules(ability: Ability, question: string, topic?: Topic, context: { championMentions?: readonly string[]; state?: QuestionState } = {}): Rule[] {
+export function selectRules(ability: Ability, question: string, topic?: Topic, context: { championMentions?: readonly string[]; state?: QuestionState; followup?: boolean } = {}): Rule[] {
   question = normalizeMechanicQuestion(question);
   const wanted = TOPICS.find(([name]) => name === topic)?.[2] as readonly string[] | undefined;
   const names = ability.job.facts.name as { en?: string; ko?: string } | undefined;
@@ -82,7 +82,7 @@ export function selectRules(ability: Ability, question: string, topic?: Topic, c
     const shieldAndDamage = ["shield", "damage"].every(kind => hitRules.some(item => item.rule.effects.some(effect => effect.kind === kind)));
     const reached = hitRules.some(item => item.rule.conditions.some(condition => condition.field === "hit_count"
       && matchesNumericCondition(condition, ability.job, hits) === true));
-    if (hitRules.length && (topic === "movement" ? reached && !state.followupStatus : shieldAndDamage)) return hitRules.slice(0, 3).map(item => item.rule);
+    if (hitRules.length && (topic === "movement" ? !state.followupStatus && (reached || context.followup) : shieldAndDamage)) return hitRules.slice(0, 3).map(item => item.rule);
   }
   if (!topic && hits === undefined && /설명|소개|어떻게\s*(?:돼|되)|켜|꺼|계속|활성화|비활성화/.test(question)) return ability.draft.rules;
   const enemy = /적\s*챔피언.*(?:밟|줍|먹)/.test(question) ? scored.filter(item => item.rule.trigger.subject === "enemy") : [];

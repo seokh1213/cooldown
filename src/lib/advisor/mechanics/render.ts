@@ -6,6 +6,11 @@ const labels: Record<string, string> = { champion: "챔피언", minion: "미니�
   ready: "사용 가능", down: "재사용 대기 중", base: "기본", bonus: "추가", total: "전체", cancelled: "취소", fired: "발사",
   first: "첫 번째", empowered: "강화", unseen: "보이지 않음", visible: "보임", any: "모든 유닛" };
 const stats: Record<string, string> = { bonusHealth: "추가 체력", maxHealth: "최대 체력", bonusAttackDamage: "추가 공격력", abilityPower: "주문력", totalAttackDamage: "공격력", bonusAttackSpeed: "추가 공격 속도" };
+function localizedEffect(text: string): string {
+  const terms: Record<string, string> = { "bonus Attack Speed": "추가 공격 속도", "bonus Attack Damage": "추가 공격력",
+    "Attack Damage": "공격력", "Ability Power": "주문력", "Move Speed": "이동 속도", "maximum Health": "최대 체력", "bonus Health": "추가 체력" };
+  return Object.entries(terms).reduce((result, [term, label]) => result.replace(new RegExp(`\\b${term}\\b`, "gi"), label), text);
+}
 function conditionText(condition: Condition, job: AbilityJob): string {
   const predicate = condition.value;
   if (condition.field === "activation" && predicate.kind === "boolean") return predicate.value ? "활성화 상태" : "비활성화 상태";
@@ -105,7 +110,7 @@ export function renderRules(job: AbilityJob, rules: Rule[], question: string, st
     const header = [phase, ...conditions].filter(Boolean).join(" · ");
     const excluded = excludedCondition(rule, job, state);
     if (excluded) return [excluded, header ? `발동 조건: ${header}.` : undefined].filter(Boolean).join("\n");
-    const effects = rule.effects.flatMap(effect => [effect.text,
+    const effects = rule.effects.flatMap(effect => [localizedEffect(effect.text),
       effect.kind === "damage" && effect.damageType && !effect.text.includes(({ physical: "물리", magic: "마법", true: "고정" })[effect.damageType])
         ? `${({ physical: "물리", magic: "마법", true: "고정" })[effect.damageType]} 피해입니다.` : undefined,
       ...parameterDetails(effect, job),

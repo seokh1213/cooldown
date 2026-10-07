@@ -207,7 +207,8 @@ export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang 
 export const CARD_STATS: StatName[] = ["health", "armor", "magicResist", "attackDamage", "moveSpeed"];
 
 /** 스킬 한 줄 요약. 요약이 없으면 본문 첫 문장. */
-export function spellSummary(spell: SpellFact): string {
+export function spellSummary(spell: SpellFact, preferTooltip = false): string {
+  if (preferTooltip && spell.text) return splitSentences(spell.text)[0] ?? spell.text;
   return spell.summary ?? splitSentences(spell.text)[0] ?? "";
 }
 

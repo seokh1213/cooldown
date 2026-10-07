@@ -24,7 +24,7 @@ export function ChampionReferenceSkills({ answer, detail, selectedSpell, patch, 
     hit: spell.slot === focused,
     value: <>
       {answer.focus && <div className="mb-1 font-semibold">{focusLabel(answer.focus, lang)}: {spellFocusValue(spell, answer.focus, lang) || "—"}</div>}
-      <div>{answer.view || answer.focus ? spellSummary(spell) : spellOneLiner(spell, lang)}</div>
+      <div>{answer.view || answer.focus ? spellSummary(spell, true) : spellOneLiner(spell, lang)}</div>
       <SkillDetails spell={spell} facts={spellFacts(spell, lang)}
         selected={spell.slot === focused ? selectedSpell : undefined} />
     </>,
