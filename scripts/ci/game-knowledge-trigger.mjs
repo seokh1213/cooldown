@@ -1,8 +1,11 @@
 import { appendFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { readHealth } from "./source-health.mjs";
 
-export function shouldWatch(event, jobs = []) {
+export function shouldWatch(event, jobs = [], schedule) {
+  if (event === "schedule" && schedule) return schedule.health?.status !== "available"
+    || schedule.health.lastSuccessAt?.slice(0, 10) !== schedule.now.toISOString().slice(0, 10);
   return event !== "workflow_run" || jobs.some(job => job.name === "update-data" && job.conclusion === "success"
     && job.steps?.some(step => step.name === "Generate static data" && step.conclusion === "success"));
 }
@@ -17,8 +20,9 @@ async function main() {
     jobs = (await response.json()).jobs;
     if (!Array.isArray(jobs)) throw new Error("Static-data job list missing");
   }
-  const run = shouldWatch(event, jobs);
-  console.log(`Game knowledge check: ${run ? "run" : "skip (static data was not generated)"}`);
+  const health = readHealth(process.env.SOURCE_HEALTH_FILE ?? "research/.cache/source-health/knowledge.json");
+  const run = shouldWatch(event, jobs, { now: new Date(), health });
+  console.log(`Game knowledge check: ${run ? "run" : "skip (daily scan not due; static data was not generated)"}`);
   appendFileSync(process.env.GITHUB_OUTPUT, `run=${run}\n`);
 }
 

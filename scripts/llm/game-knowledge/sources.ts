@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { setTimeout as delay } from "node:timers/promises";
+import { isTransientError, SourceHttpError } from "../../ci/source-health.mjs";
 
 export const WIKI_API = "https://wiki.leagueoflegends.com/en-us/api.php";
 export const SITEMAP = "https://www.leagueoflegends.com/en-us/sitemap_loc.xml";
@@ -8,15 +9,6 @@ export interface Source { id: string; kind: "wiki" | "official" | "cdragon"; url
 export interface Snapshot { id: string; kind: Source["kind"]; url: string; hash: string; revision?: number }
 export const sha256 = (text: string) => createHash("sha256").update(text).digest("hex");
 
-class SourceHttpError extends Error {
-  constructor(readonly status: number, url: string) { super(`HTTP ${status}: ${url}`); }
-}
-
-function retryable(error: unknown): boolean {
-  return error instanceof SourceHttpError ? error.status === 429 || error.status >= 500
-    : error instanceof Error && ["TypeError", "TimeoutError", "AbortError"].includes(error.name);
-}
-
 export async function getText(url: string): Promise<string> {
   for (let attempt = 0; ; attempt++) {
     try {
@@ -24,7 +16,7 @@ export async function getText(url: string): Promise<string> {
       if (!response.ok) throw new SourceHttpError(response.status, url);
       return await response.text();
     } catch (error) {
-      if (attempt === 2 || !retryable(error)) throw error;
+      if (attempt === 2 || !isTransientError(error)) throw error;
       await delay(500 * (attempt + 1));
     }
   }

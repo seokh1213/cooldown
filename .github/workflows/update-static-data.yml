@@ -44,11 +44,35 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Decide whether to run
+      - name: Restore source outage start time
+        uses: actions/cache/restore@v6
+        with:
+          path: research/.cache/source-health/static.json
+          key: static-source-health-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: static-source-health-v1-
+
+      - name: Check source availability and changes
         id: decide
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: node scripts/ci/upstream-changed.mjs
+
+      - name: Save source availability across retries
+        if: always() && steps.decide.outputs.health_checked == 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: research/.cache/source-health/static.json
+          key: static-source-health-v1-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Preserve source availability report
+        if: always() && steps.decide.outputs.health_checked == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: static-source-health
+          path: research/.cache/source-health/static.json*
+          retention-days: 14
+          if-no-files-found: error
+          include-hidden-files: true
 
   update-data:
     needs: check
