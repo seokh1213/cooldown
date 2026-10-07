@@ -1,0 +1,742 @@
+{
+  "champion": "Briar",
+  "slot": "W",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Briar leaps forward and shatters her pillory, entering a Blood Frenzy that causes her to relentlessly pursue the nearest enemy (prioritizing champions). While frenzied, she gains increased Attack Speed and Move Speed, and her attacks deal damage in an area around her target. Briar can reactivate this ability while frenzied to take a CHOMP out of her target on her next attack, dealing additional damage based on their missing Health, and healing Briar based on the damage she deals.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Briar leaps and enters a Blood Frenzy, self-taunting to the nearest enemy for 5 seconds, prioritizing Champions. While in Blood Frenzy she gains 55/65/75/85/95% Attack Speed and 24/33/42/51/60% Move Speed, and her Attacks deal (60/70/80/90/100% Attack Damage) physical damage to enemies surrounding her target. Briar can Recast this Ability to empower her next Attack. It deals (5/20/35/50/65 + (105% Attack Damage)) + (9 + (2.5% bonus Attack Damage))missing Health physical damage and heals Briar for (5% Health) + 24/28/32/36/40% of the damage dealt. The bite deals 10% increased damage to minions and monsters (Max 400 missing health damage). This ability does not remove or replace Certain Death's empowered Blood Frenzy.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "브라이어가 앞으로 도약해 족쇄를 깨부수고 핏빛 광분 상태에 들어가 가장 가까운 적을 가차 없이 추격합니다. (챔피언 우선) 핏빛 광분 상태에서 공격 속도와 이동 속도가 상승하며 기본 공격으로 대상 주변에 피해를 입힙니다. 이 스킬을 핏빛 광분 상태에서 재사용하면 다음 기본 공격 시 적을 베어 먹어 대상이 잃은 체력에 비례해 추가 피해를 입히고 피해량에 비례해 체력을 회복합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "브라이어가 도약해 핏빛 광분 상태에 들어가고 5초간 가장 가까운 적에게 도발됩니다. (챔피언 우선) 핏빛 광분 상태에서 공격 속도가 55/65/75/85/95%, 이동 속도가 24/33/42/51/60% 상승하며 기본 공격으로 대상 주변 적에게 (60/70/80/90/100% 공격력)의 물리 피해를 입힙니다. 이 스킬을 재사용해 다음 기본 공격을 강화할 수 있습니다. 강화된 기본 공격으로 (5/20/35/50/65 + (105% 공격력)) + 잃은 체력의 (9 + (2.5% 추가 공격력))에 해당하는 물리 피해를 입히며, 피해량의 (5% 체력) + 24/28/32/36/40%만큼 체력을 회복합니다. 베어 먹기 공격은 미니언과 몬스터 상대로 피해량이 10% 증가합니다. (잃은 체력 비례 피해 최대 400) 이 스킬을 사용해도 불가항력적 죽음의 강화된 핏빛 광분 효과는 없어지지 않습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Blood Frenzy / Snack Attack",
+      "ko": "핏빛 광분 / 식욕 폭발"
+    },
+    "cooldownSeconds": [
+      14,
+      13,
+      12,
+      11,
+      10
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      350,
+      350,
+      350,
+      350,
+      350
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Attack Speed",
+        "values": "55%/65%/75%/85%/95%"
+      },
+      {
+        "label": "Move Speed",
+        "values": "24%/33%/42%/51%/60%"
+      },
+      {
+        "label": "Area Damage AD Ratio",
+        "values": "60%/70%/80%/90%/100%"
+      },
+      {
+        "label": "Damage",
+        "values": "5/20/35/50/65"
+      },
+      {
+        "label": "Healing",
+        "values": "24%/28%/32%/36%/40%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "14/13/12/11/10"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:TotalAttackBonusDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalAoEDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "terms": [
+          {
+            "stat": "totalAttackDamage",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.699999988079071,
+              0.800000011920929,
+              0.8999999761581421,
+              1
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "taunt",
+          "target": "self",
+          "source": "https://wiki.leagueoflegends.com/en-us/Briar",
+          "condition": "핏빛 광분"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Briar.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Briar.W",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 78,
+      "end": 79
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "55",
+      "value": 55,
+      "percent": true,
+      "start": 145,
+      "end": 147
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "65",
+      "value": 65,
+      "percent": true,
+      "start": 148,
+      "end": 150
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "75",
+      "value": 75,
+      "percent": true,
+      "start": 151,
+      "end": 153
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "85",
+      "value": 85,
+      "percent": true,
+      "start": 154,
+      "end": 156
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "95%",
+      "value": 95,
+      "percent": true,
+      "start": 157,
+      "end": 160
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "24",
+      "value": 24,
+      "percent": true,
+      "start": 178,
+      "end": 180
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "33",
+      "value": 33,
+      "percent": true,
+      "start": 181,
+      "end": 183
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "42",
+      "value": 42,
+      "percent": true,
+      "start": 184,
+      "end": 186
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "51",
+      "value": 51,
+      "percent": true,
+      "start": 187,
+      "end": 189
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 190,
+      "end": 193
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": true,
+      "start": 228,
+      "end": 230
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": true,
+      "start": 231,
+      "end": 233
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": true,
+      "start": 234,
+      "end": 236
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": true,
+      "start": 237,
+      "end": 239
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 240,
+      "end": 244
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 379,
+      "end": 380
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 381,
+      "end": 383
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 384,
+      "end": 386
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 387,
+      "end": 389
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 390,
+      "end": 392
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "105%",
+      "value": 105,
+      "percent": true,
+      "start": 396,
+      "end": 400
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "9",
+      "value": 9,
+      "percent": false,
+      "start": 420,
+      "end": 421
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "2.5%",
+      "value": 2.5,
+      "percent": true,
+      "start": 425,
+      "end": 429
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 503,
+      "end": 505
+    },
+    {
+      "id": "en:body:n25",
+      "sourceId": "en:body",
+      "raw": "24",
+      "value": 24,
+      "percent": true,
+      "start": 516,
+      "end": 518
+    },
+    {
+      "id": "en:body:n26",
+      "sourceId": "en:body",
+      "raw": "28",
+      "value": 28,
+      "percent": true,
+      "start": 519,
+      "end": 521
+    },
+    {
+      "id": "en:body:n27",
+      "sourceId": "en:body",
+      "raw": "32",
+      "value": 32,
+      "percent": true,
+      "start": 522,
+      "end": 524
+    },
+    {
+      "id": "en:body:n28",
+      "sourceId": "en:body",
+      "raw": "36",
+      "value": 36,
+      "percent": true,
+      "start": 525,
+      "end": 527
+    },
+    {
+      "id": "en:body:n29",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 528,
+      "end": 531
+    },
+    {
+      "id": "en:body:n30",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 568,
+      "end": 571
+    },
+    {
+      "id": "en:body:n31",
+      "sourceId": "en:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 618,
+      "end": 621
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 25,
+      "end": 26
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "55",
+      "value": 55,
+      "percent": true,
+      "start": 74,
+      "end": 76
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "65",
+      "value": 65,
+      "percent": true,
+      "start": 77,
+      "end": 79
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "75",
+      "value": 75,
+      "percent": true,
+      "start": 80,
+      "end": 82
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "85",
+      "value": 85,
+      "percent": true,
+      "start": 83,
+      "end": 85
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "95%",
+      "value": 95,
+      "percent": true,
+      "start": 86,
+      "end": 89
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "24",
+      "value": 24,
+      "percent": true,
+      "start": 98,
+      "end": 100
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "33",
+      "value": 33,
+      "percent": true,
+      "start": 101,
+      "end": 103
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "42",
+      "value": 42,
+      "percent": true,
+      "start": 104,
+      "end": 106
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "51",
+      "value": 51,
+      "percent": true,
+      "start": 107,
+      "end": 109
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 110,
+      "end": 113
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": true,
+      "start": 138,
+      "end": 140
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": true,
+      "start": 141,
+      "end": 143
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": true,
+      "start": 144,
+      "end": 146
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": true,
+      "start": 147,
+      "end": 149
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 150,
+      "end": 154
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 220,
+      "end": 221
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 222,
+      "end": 224
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 225,
+      "end": 227
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 228,
+      "end": 230
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 231,
+      "end": 233
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "105%",
+      "value": 105,
+      "percent": true,
+      "start": 237,
+      "end": 241
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "9",
+      "value": 9,
+      "percent": false,
+      "start": 258,
+      "end": 259
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "2.5%",
+      "value": 2.5,
+      "percent": true,
+      "start": 263,
+      "end": 267
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "5%",
+      "value": 5,
+      "percent": true,
+      "start": 301,
+      "end": 303
+    },
+    {
+      "id": "ko:body:n25",
+      "sourceId": "ko:body",
+      "raw": "24",
+      "value": 24,
+      "percent": true,
+      "start": 310,
+      "end": 312
+    },
+    {
+      "id": "ko:body:n26",
+      "sourceId": "ko:body",
+      "raw": "28",
+      "value": 28,
+      "percent": true,
+      "start": 313,
+      "end": 315
+    },
+    {
+      "id": "ko:body:n27",
+      "sourceId": "ko:body",
+      "raw": "32",
+      "value": 32,
+      "percent": true,
+      "start": 316,
+      "end": 318
+    },
+    {
+      "id": "ko:body:n28",
+      "sourceId": "ko:body",
+      "raw": "36",
+      "value": 36,
+      "percent": true,
+      "start": 319,
+      "end": 321
+    },
+    {
+      "id": "ko:body:n29",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 322,
+      "end": 325
+    },
+    {
+      "id": "ko:body:n30",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 367,
+      "end": 370
+    },
+    {
+      "id": "ko:body:n31",
+      "sourceId": "ko:body",
+      "raw": "400",
+      "value": 400,
+      "percent": false,
+      "start": 394,
+      "end": 397
+    }
+  ],
+  "sourceHash": "8422297112566c3f5933e85ab9bdf5d93653fac4f9af1b818f68f98daeeac57f",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

@@ -1,0 +1,276 @@
+{
+  "summary": "해머 형태에서는 대상을 밀쳐내고 피해를 입히며, 정글 몬스터 대상 피해에는 최대치가 있습니다. 캐논 형태에서는 가속 관문을 설치하고 통과한 아군 챔피언의 이동 속도를 높입니다.",
+  "rules": [
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Hammer"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "대상을 뒤로 밀쳐냅니다.",
+          "damageType": null,
+          "crowdControl": "knockback",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상에게 추가 공격력과 대상 최대 체력에 따른 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n0"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n1",
+                "form:A:en:n2",
+                "form:A:en:n3",
+                "form:A:en:n4",
+                "form:A:en:n5",
+                "form:A:en:n6"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Hammer Form: Jayce swings his hammer, Knocking Back his target and dealing (100% bonus Attack Damage) plus 8/10.8/13.6/16.4/19.2/22% max Health magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Hammer"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "정글 몬스터 대상 해머 공격 피해에 최대 피해 한도가 적용됩니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "form:A:en:n7",
+                "form:A:en:n8",
+                "form:A:en:n9",
+                "form:A:en:n10",
+                "form:A:en:n11",
+                "form:A:en:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Hammer swing does a max of 200/300/400/500/600/700 magic damage against jungle monsters."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Cannon"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "unknown",
+          "text": "가속 관문을 설치합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:B:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Mercury Cannon: Jayce deploys an acceleration gate for 4 seconds that grants 35/40/45/50/55/60% Move Speed decaying over 3 seconds to allied champions that pass through it."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Cannon"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "가속 관문을 통과함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "ally",
+          "text": "가속 관문을 통과한 아군 챔피언의 이동 속도가 증가하고 3초에 걸쳐 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n1",
+                "form:B:en:n2",
+                "form:B:en:n3",
+                "form:B:en:n4",
+                "form:B:en:n5",
+                "form:B:en:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:B:en:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Mercury Cannon: Jayce deploys an acceleration gate for 4 seconds that grants 35/40/45/50/55/60% Move Speed decaying over 3 seconds to allied champions that pass through it."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

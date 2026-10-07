@@ -1,0 +1,114 @@
+{
+  "summary": "잭스가 아군 또는 적 유닛이나 와드로 도약합니다. 대상이 적이면 물리 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "아군 또는 적 유닛이나 와드를 향해 도약합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Jax leaps to a friendly or enemy unit or ward, dealing (65/105/145/185/225 + (100% bonus Attack Damage)) physical damage if it is an enemy."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "enemy"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적 대상에게 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Jax leaps to a friendly or enemy unit or ward, dealing (65/105/145/185/225 + (100% bonus Attack Damage)) physical damage if it is an enemy."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "대상을 적으로 특정하는 조건은 원문에 있으나, 허용된 target_type 열거값에는 enemy가 없어 조건값을 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "if it is an enemy"
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "적 대상 조건은 명시되어 있으나, 적의 분류 범위는 원문에서 더 구체적으로 나뉘지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "if it is an enemy"
+        }
+      ]
+    }
+  ]
+}

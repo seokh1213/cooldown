@@ -1,0 +1,416 @@
+{
+  "summary": "진은 보이지 않는 연꽃 함정을 설치한다. 적이 밟으면 둔화되고, 2초 후 폭발해 마법 피해를 입힌다. 적 챔피언 처치 시 해당 위치에 함정이 생겨 폭발한다. 미니언과 최근 다른 연꽃 함정에 맞은 적은 함정 피해를 덜 받는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "진이 적 챔피언을 처치하면 해당 위치에 연꽃 함정이 생겨 폭발한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Champions Jhin kills will create and detonate a Lotus Trap at their location."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "3분 동안 유지되는 보이지 않는 연꽃 함정을 하나 설치합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jhin places an invisible Lotus Trap for 3 minutes"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This ability has 2 charges (24/21.5/19/16.5/14 second refresh)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jhin places an invisible Lotus Trap for 3 minutes that creates a zone that Slows by 35% when stepped on by an enemy."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "After 2 seconds, the trap detonates, dealing (20/80/140/200/260 + (120% Attack Damage) + (100% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "enemy"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "적이 함정을 밟으면 둔화된다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "that creates a zone that Slows by 35% when stepped on by an enemy."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jhin places an invisible Lotus Trap for 3 minutes that creates a zone that Slows by 35% when stepped on by an enemy."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n2"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적이 밟아 발동한 뒤"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "unknown",
+          "text": "함정이 폭발해 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After 2 seconds, the trap detonates, dealing (20/80/140/200/260 + (120% Attack Damage) + (100% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "연꽃 함정은 미니언에게 감소한 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lotus Trap hits deal 65% damage to minions"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lotus Trap hits deal 65% damage to minions, and enemies recently hit by another Lotus Trap."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "최근에 다른 연꽃 함정에 적중한 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "최근 다른 연꽃 함정에 맞은 적은 연꽃 함정 피해를 덜 받는다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and enemies recently hit by another Lotus Trap."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lotus Trap hits deal 65% damage to minions, and enemies recently hit by another Lotus Trap."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "이 스킬은 최대2회 충전을 보유하며 24/21.5/19/16.5/14초마다 충전됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jhin places an invisible Lotus Trap for 3 minutes"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This ability has 2 charges (24/21.5/19/16.5/14 second refresh)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jhin places an invisible Lotus Trap for 3 minutes that creates a zone that Slows by 35% when stepped on by an enemy."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "After 2 seconds, the trap detonates, dealing (20/80/140/200/260 + (120% Attack Damage) + (100% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "최근 다른 연꽃 함정 적중의 최근성 시간창과 동일 대상 감소의 중복 적용 방식은 원문 미명시; 감소율 자체는 두 대상군에 모두65%.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "and enemies recently hit by another Lotus Trap."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lotus Trap hits deal 65% damage to minions, and enemies recently hit by another Lotus Trap."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "함정을 밟은 적의 둔화 지속시간은 제시되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Slows by 35% when stepped on by an enemy."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "함정 수명3은 분 단위이므로 duration_seconds로 실행하지 않고 3분 텍스트 보존. 폭발 피해 대상 범위는 본문에 미명시하여 unknown.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jhin places an invisible Lotus Trap for 3 minutes"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This ability has 2 charges (24/21.5/19/16.5/14 second refresh)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jhin places an invisible Lotus Trap for 3 minutes that creates a zone that Slows by 35% when stepped on by an enemy."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "After 2 seconds, the trap detonates, dealing (20/80/140/200/260 + (120% Attack Damage) + (100% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ]
+}

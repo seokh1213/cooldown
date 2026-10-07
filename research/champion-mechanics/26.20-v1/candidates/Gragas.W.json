@@ -1,0 +1,403 @@
+{
+  "summary": "그라가스가 술을 맛보고 일정 시간 동안 받는 피해를 줄입니다. 다음 기본 공격이 강화되어 대상과 주변 적에게 추가 마법 피해를 입힙니다. 정글 몬스터에게 주는 최대 체력 비례 피해에는 상한이 있으며, 구조물에는 피해가 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "2.5초 동안 받는 피해가10/14/18/22/26% + 시전자AP100당4% 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas samples his brew, reducing incoming damage by (10/14/18/22/26% + (4% per 100 Ability Power)) for 2.5 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas samples his brew, reducing incoming damage by (10/14/18/22/26% + (4% per 100 Ability Power)) for 2.5 seconds and empowering his next Attack to deal an additional (20/50/80/110/140 + (70% Ability Power)) plus 7% max Health magic damage to the target and surrounding enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이W 사용 후 다음 강화 기본 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "강화된 다음 공격이 대상에게 추가 마법 피해를 입힙니다. 최대 체력 비례 피해의 기준이 되는 체력 소유자는 원문에서 특정되지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "unknown",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "empowering his next Attack to deal an additional (20/50/80/110/140 + (70% Ability Power)) plus 7% max Health magic damage to the target and surrounding enemies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas samples his brew, reducing incoming damage by (10/14/18/22/26% + (4% per 100 Ability Power)) for 2.5 seconds and empowering his next Attack to deal an additional (20/50/80/110/140 + (70% Ability Power)) plus 7% max Health magic damage to the target and surrounding enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이W 사용 후 다음 강화 기본 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "강화된 다음 공격은 주변 적에게 추가 마법 피해를 입힙니다. 최대 체력 비례 피해의 기준이 되는 체력 소유자는 원문에서 특정되지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n13"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "unknown",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "empowering his next Attack to deal an additional (20/50/80/110/140 + (70% Ability Power)) plus 7% max Health magic damage to the target and surrounding enemies."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Gragas samples his brew, reducing incoming damage by (10/14/18/22/26% + (4% per 100 Ability Power)) for 2.5 seconds and empowering his next Attack to deal an additional (20/50/80/110/140 + (70% Ability Power)) plus 7% max Health magic damage to the target and surrounding enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "정글 몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "정글 몬스터에게 주는 최대 체력 비례 피해는 상한이 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Max Health damage is capped at 300 versus jungle monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "empowered"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "이W의 구조물 대상 피해에는50% 배율이 적용됩니다. 기본 공격 전체를 이 값으로 대체한다고 확정하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals 50% damage to structures."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "1초 동안 술을 맛봅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:summary:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Gragas samples his latest brew for 1 second."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "최대 체력 비례 피해의 기준이 되는 체력 소유자를 원문에서 특정하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "plus 7% max Health magic damage to the target and surrounding enemies."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "구조물 대상 50% 피해 문구가 강화 공격의 추가 피해 전체에 적용되는지, 그중 일부에 적용되는지 원문에서 더 구체적으로 구분되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals 50% damage to structures."
+        }
+      ]
+    }
+  ]
+}

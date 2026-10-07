@@ -13,7 +13,7 @@ export const TOPICS = [
   ["shield", /보호막|쉴드|실드/i, ["shield"]],
   ["summon", /소환|(?:정령|영혼).*(?:나오|생겨|생기|풀려|제령)/i, ["summon"]],
   ["movement", /이속|이동\s*속도|취소|한\s*대|1\s*대|두\s*발|두\s*대|두\s*번째/i, ["movement", "attack_followup"]],
-  ["control", /군중\s*제어|CC|속박|기절|에어본|띄우|밀치|넉백|공포|매혹/i, ["crowd_control"]],
+  ["control", /군중\s*제어|CC|속박|기절|에어본|띄우|밀치|넉백|공포|매혹|수면|졸음/i, ["crowd_control"]],
   ["heal", /회복|재생|체젠|피가\s*차|시야.*(?:보이|없)|성소|통.*(?:줍|밟|먹)/i, ["heal"]],
   ["stats", /스탯|능력치|빼앗|훔친/i, ["stat_modifier"]],
   ["stack", /중첩|스택|처치|죽이면|먹으면|죽으면|부활/i, ["resource_change", "stat_modifier", "revive"]],

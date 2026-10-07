@@ -1,0 +1,294 @@
+{
+  "summary": "소라카가 다른 아군 챔피언을 회복시킨다. 소라카가 별의 가호를 받고 있으면 체력 소모량이 감소하고 대상도 별의 가호를 얻는다. 소라카의 체력이 기준치 미만이면 사용할 수 없다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "소라카 자신이 아닌 아군 챔피언"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n12"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "target",
+          "text": "다른 아군 챔피언의 체력을 회복시킨다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Soraka restores (90/110/130/150/170 + (50% Ability Power)) Health to another allied champion."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability cannot be used if Soraka is below (5% Health) Health ."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Rejuvenation"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "소라카 자신이 아닌 아군 챔피언"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n12"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "별의 가호를 받는 동안 이 스킬의 자기 체력 비용이80/85/90/95/100%감소한다. 이 수치는 남은 체력비용이나 환급량이 아닌 감소율이다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "대상이 별의 가호를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Soraka is affected by Rejuvenation, the Health cost will be reduced by 80/85/90/95/100%, and the target will gain Rejuvenation for 2.5 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability cannot be used if Soraka is below (5% Health) Health ."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n12"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "이 능력을 사용할 수 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability cannot be used if Soraka is below (5% Health) Health ."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "소라카 자신이 아닌 아군 챔피언"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "health_threshold",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n12"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "아군을 회복시키기 위해 소라카 자신의 체력 일부를 소모한다. 기본 체력 소모량은 미제공이다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Soraka sacrifices a portion of her own health to heal another friendly champion."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability cannot be used if Soraka is below (5% Health) Health ."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "기본 체력 소모량이 제시되지 않아 소모량과 감소 후 소모량을 수치화할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Soraka is affected by Rejuvenation, the Health cost will be reduced by 80/85/90/95/100%"
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "영문은below5%일때사용불가(5%이상사용가능),한글은5%이하사용불가로 경계가 충돌한다.영문 조건을 보존하고 정확히5%에서의 판정은 출처 충돌로 남긴다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability cannot be used if Soraka is below (5% Health) Health ."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "소라카의 체력이 (5% 체력) 이하일 때는 사용할 수 없습니다."
+        }
+      ]
+    }
+  ]
+}

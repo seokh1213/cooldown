@@ -1,0 +1,632 @@
+{
+  "champion": "RekSai",
+  "slot": "E",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Rek'Sai bites her target, dealing physical damage, or bonus true damage if she has max Fury. While Burrowed, Rek'Sai creates a re-usable, long lasting tunnel. Enemies can destroy it by standing on top of either entrance.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Unburrowed: Rek'Sai bites a target, dealing (70/95/120/145/170 + (60% bonus Attack Damage)) physical damage. At max Fury, the bite deals (84/114/144/174/204 + (72% bonus Attack Damage)) true damage instead.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "렉사이가 대상을 물어뜯어 물리 피해를 입힙니다. 분노가 최대치일 때는 추가 고정 피해를 입힙니다. 매복 상태일 때 렉사이가 재사용 가능하며 오래 지속되는 땅굴을 만듭니다. 적이 이 땅굴 입구에 올라서면 파괴됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "돌출 상태: 렉사이가 대상을 물어뜯어 (70/95/120/145/170 + (60% 추가 공격력))의 물리 피해를 입힙니다. 분노가 최대치일 경우 대신 (84/114/144/174/204 + (72% 추가 공격력))의 고정 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "form:A:en",
+      "text": "No Cost Unburrowed: Rek'Sai bites a target, dealing (70/95/120/145/170 + (60% bonus Attack Damage)) physical damage. At max Fury, the bite deals (84/114/144/174/204 + (72% bonus Attack Damage)) true damage instead.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:A"
+    },
+    {
+      "id": "form:B:en",
+      "text": "No Cost Burrowed: Rek'Sai tunnels forward, leaving two connected tunnel entrances for 10 minutes. Rek'Sai can click on one of the entrances to tunnel to the other one, and tunnels each have a 6/5/4/3/2 second Cooldown between uses. Rek'Sai can have up to 8 tunnels at once. Tunnels can be destroyed by enemies standing on them.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:B"
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    },
+    {
+      "id": "form:A",
+      "label": "Unburrowed",
+      "sourceIds": [
+        "form:A:en"
+      ]
+    },
+    {
+      "id": "form:B",
+      "label": "Burrowed",
+      "sourceIds": [
+        "form:B:en"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Furious Bite / Tunnel",
+      "ko": "성난 이빨 / 땅굴 파기"
+    },
+    "cooldownSeconds": [
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      250,
+      250,
+      250,
+      250,
+      250
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Base Damage",
+        "values": "70/95/120/145/170"
+      },
+      {
+        "label": "Empowered Damage",
+        "values": "84/114/144/174/204"
+      },
+      {
+        "label": "Tunnel Cast Cooldown",
+        "values": "18/17/16/15/14"
+      },
+      {
+        "label": "Tunnel Use Cooldown",
+        "values": "6/5/4/3/2"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:BaseDamageCalculation"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "BaseDamageCalculation",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          70,
+          95,
+          120,
+          145,
+          170
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [
+      {
+        "key": "A",
+        "label": "Unburrowed",
+        "id": "RekSaiE",
+        "name": "Furious Bite",
+        "iconPath": "assets/characters/reksai/hud/icons2d/reksai_e1.png",
+        "iconVersion": "16.20",
+        "cooldownSeconds": [
+          6,
+          6,
+          6,
+          6,
+          6
+        ],
+        "tooltipRankSource": "E",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      {
+        "key": "B",
+        "label": "Burrowed",
+        "id": "RekSaiEBurrowed",
+        "name": "Tunnel",
+        "iconPath": "assets/characters/reksai/hud/icons2d/reksai_e2.png",
+        "iconVersion": "16.20",
+        "cooldownSeconds": [
+          18,
+          17,
+          16,
+          15,
+          14
+        ],
+        "tooltipRankSource": "E",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    ],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/RekSai.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "RekSai.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 51,
+      "end": 54
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "145",
+      "value": 145,
+      "percent": false,
+      "start": 55,
+      "end": 58
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 66,
+      "end": 69
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "84",
+      "value": 84,
+      "percent": false,
+      "start": 138,
+      "end": 140
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "114",
+      "value": 114,
+      "percent": false,
+      "start": 141,
+      "end": 144
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "144",
+      "value": 144,
+      "percent": false,
+      "start": 145,
+      "end": 148
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "174",
+      "value": 174,
+      "percent": false,
+      "start": 149,
+      "end": 152
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "204",
+      "value": 204,
+      "percent": false,
+      "start": 153,
+      "end": 156
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "72%",
+      "value": 72,
+      "percent": true,
+      "start": 160,
+      "end": 163
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 22,
+      "end": 24
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 28,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "145",
+      "value": 145,
+      "percent": false,
+      "start": 32,
+      "end": 35
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 36,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 43,
+      "end": 46
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "84",
+      "value": 84,
+      "percent": false,
+      "start": 86,
+      "end": 88
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "114",
+      "value": 114,
+      "percent": false,
+      "start": 89,
+      "end": 92
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "144",
+      "value": 144,
+      "percent": false,
+      "start": 93,
+      "end": 96
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "174",
+      "value": 174,
+      "percent": false,
+      "start": 97,
+      "end": 100
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "204",
+      "value": 204,
+      "percent": false,
+      "start": 101,
+      "end": 104
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "72%",
+      "value": 72,
+      "percent": true,
+      "start": 108,
+      "end": 111
+    },
+    {
+      "id": "form:A:en:n0",
+      "sourceId": "form:A:en",
+      "raw": "70",
+      "value": 70,
+      "percent": false,
+      "start": 53,
+      "end": 55
+    },
+    {
+      "id": "form:A:en:n1",
+      "sourceId": "form:A:en",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 56,
+      "end": 58
+    },
+    {
+      "id": "form:A:en:n2",
+      "sourceId": "form:A:en",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 59,
+      "end": 62
+    },
+    {
+      "id": "form:A:en:n3",
+      "sourceId": "form:A:en",
+      "raw": "145",
+      "value": 145,
+      "percent": false,
+      "start": 63,
+      "end": 66
+    },
+    {
+      "id": "form:A:en:n4",
+      "sourceId": "form:A:en",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 67,
+      "end": 70
+    },
+    {
+      "id": "form:A:en:n5",
+      "sourceId": "form:A:en",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 74,
+      "end": 77
+    },
+    {
+      "id": "form:A:en:n6",
+      "sourceId": "form:A:en",
+      "raw": "84",
+      "value": 84,
+      "percent": false,
+      "start": 146,
+      "end": 148
+    },
+    {
+      "id": "form:A:en:n7",
+      "sourceId": "form:A:en",
+      "raw": "114",
+      "value": 114,
+      "percent": false,
+      "start": 149,
+      "end": 152
+    },
+    {
+      "id": "form:A:en:n8",
+      "sourceId": "form:A:en",
+      "raw": "144",
+      "value": 144,
+      "percent": false,
+      "start": 153,
+      "end": 156
+    },
+    {
+      "id": "form:A:en:n9",
+      "sourceId": "form:A:en",
+      "raw": "174",
+      "value": 174,
+      "percent": false,
+      "start": 157,
+      "end": 160
+    },
+    {
+      "id": "form:A:en:n10",
+      "sourceId": "form:A:en",
+      "raw": "204",
+      "value": 204,
+      "percent": false,
+      "start": 161,
+      "end": 164
+    },
+    {
+      "id": "form:A:en:n11",
+      "sourceId": "form:A:en",
+      "raw": "72%",
+      "value": 72,
+      "percent": true,
+      "start": 168,
+      "end": 171
+    },
+    {
+      "id": "form:B:en:n0",
+      "sourceId": "form:B:en",
+      "raw": "two",
+      "value": 2,
+      "percent": false,
+      "start": 51,
+      "end": 54
+    },
+    {
+      "id": "form:B:en:n1",
+      "sourceId": "form:B:en",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 86,
+      "end": 88
+    },
+    {
+      "id": "form:B:en:n2",
+      "sourceId": "form:B:en",
+      "raw": "one",
+      "value": 1,
+      "percent": false,
+      "start": 119,
+      "end": 122
+    },
+    {
+      "id": "form:B:en:n3",
+      "sourceId": "form:B:en",
+      "raw": "one",
+      "value": 1,
+      "percent": false,
+      "start": 163,
+      "end": 166
+    },
+    {
+      "id": "form:B:en:n4",
+      "sourceId": "form:B:en",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 192,
+      "end": 193
+    },
+    {
+      "id": "form:B:en:n5",
+      "sourceId": "form:B:en",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 194,
+      "end": 195
+    },
+    {
+      "id": "form:B:en:n6",
+      "sourceId": "form:B:en",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 196,
+      "end": 197
+    },
+    {
+      "id": "form:B:en:n7",
+      "sourceId": "form:B:en",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 198,
+      "end": 199
+    },
+    {
+      "id": "form:B:en:n8",
+      "sourceId": "form:B:en",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 200,
+      "end": 201
+    },
+    {
+      "id": "form:B:en:n9",
+      "sourceId": "form:B:en",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 255,
+      "end": 256
+    }
+  ],
+  "sourceHash": "24769679b26a82233424bc9c0d30877ab4faca99260c11fb23498d4c0010ffbb",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

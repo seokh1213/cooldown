@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 2,
+  "id": "Nasus.Q",
+  "champion": "Nasus",
+  "slot": "Q",
+  "patch": "26.20",
+  "sourceHash": "9eabf2147b54320a42200ac1ac75cb053cc2b29011adcf0b61a811df895753e8",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Siphoning Strike",
+      "ko": "흡수의 일격"
+    },
+    "cooldownSeconds": [
+      7.5,
+      6.5,
+      5.5,
+      4.5,
+      3.5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      255,
+      255,
+      255,
+      255,
+      255
+    ],
+    "cost": {
+      "values": [
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Base Damage",
+        "values": "30/50/70/90/110"
+      },
+      {
+        "label": "Cooldown",
+        "values": "7.5/6.5/5.5/4.5/3.5"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "expression",
+      "expression": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "root": {
+          "kind": "sum",
+          "parts": [
+            {
+              "kind": "value",
+              "value": {
+                "byRank": [
+                  30,
+                  50,
+                  70,
+                  90,
+                  110
+                ]
+              }
+            },
+            {
+              "kind": "stat",
+              "stat": "totalAttackDamage",
+              "coefficient": {
+                "byRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              }
+            },
+            {
+              "kind": "buffStacks",
+              "buff": "{1b1d7345}",
+              "coefficient": {
+                "byRank": [
+                  1,
+                  1,
+                  1,
+                  1,
+                  1
+                ]
+              },
+              "stackSource": "Q"
+            }
+          ]
+        },
+        "requiresBuffStacks": true
+      },
+      "unsupportedPartTypes": [
+        "BuffCounterByCoefficientCalculationPart",
+        "nonlinear-product"
+      ]
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Nasus.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Nasus strikes his foe, dealing damage and increasing the power of his future Siphoning Strikes if he slays his target.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Nasus' next Attack deals (31/51/71/91/111 + (100% Attack Damage)) physical damage. Killing an enemy with this Attack permanently increases its damage by 4, increased to 10 against champions, large minions and large jungle monsters. This Ability triggers spell effects upon dealing damage. This Ability can critically strike for 1 physical damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "나서스가 적을 공격하여 피해를 입힙니다. 흡수의 일격으로 대상을 처치할 경우 흡수의 일격 스킬이 강화됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "나서스의 다음 기본 공격이 (31/51/71/91/111 + (100% 공격력))의 물리 피해를 입힙니다. 이 스킬로 적을 처치하면 영구적으로 피해량이 4만큼 증가하고 챔피언, 대형 미니언, 대형 정글 몬스터를 대상으로는 10만큼 증가합니다. 이 스킬은 피해를 입힐 때 효과가 발동합니다. 이 스킬에는 치명타가 적용될 수 있으며, 이 경우 1의 물리 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "31",
+      "value": 31,
+      "percent": false,
+      "start": 26,
+      "end": 28
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "51",
+      "value": 51,
+      "percent": false,
+      "start": 29,
+      "end": 31
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "71",
+      "value": 71,
+      "percent": false,
+      "start": 32,
+      "end": 34
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "91",
+      "value": 91,
+      "percent": false,
+      "start": 35,
+      "end": 37
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "111",
+      "value": 111,
+      "percent": false,
+      "start": 38,
+      "end": 41
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 45,
+      "end": 49
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 153,
+      "end": 154
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 169,
+      "end": 171
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 328,
+      "end": 329
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "31",
+      "value": 31,
+      "percent": false,
+      "start": 16,
+      "end": 18
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "51",
+      "value": 51,
+      "percent": false,
+      "start": 19,
+      "end": 21
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "71",
+      "value": 71,
+      "percent": false,
+      "start": 22,
+      "end": 24
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "91",
+      "value": 91,
+      "percent": false,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "111",
+      "value": 111,
+      "percent": false,
+      "start": 28,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 35,
+      "end": 39
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 85,
+      "end": 86
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 124,
+      "end": 126
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 190,
+      "end": 191
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "나서스의 다음 기본 공격이 강화되어 물리 피해를 입힙니다. 이 공격으로 적을 처치하면 피해량이 영구적으로 증가합니다.",
+  "rules": [
+    {
+      "id": "201ef5bb271a5a30f1f5",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "나서스의 다음 기본 공격을 준비한다. 그 공격은31/51/71/91/111+총공격력100%의 전체 물리 피해를 입힌다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Nasus' next Attack deals (31/51/71/91/111 + (100% Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "id": "370ab97ee27554f8f43b",
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 다음 강화 기본 공격으로 적을 처치"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언, 대형 미니언, 대형 정글 몬스터가 아닌 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "이 공격으로 적을 처치하면 흡수의 일격 피해량이 영구적으로 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Killing an enemy with this Attack permanently increases its damage by 4, increased to 10 against champions, large minions and large jungle monsters."
+        }
+      ]
+    },
+    {
+      "id": "b6f4fb83b1cb5bd37bee",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 강화 기본 공격이 피해를 입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "피해를 입힐 때 주문 효과를 발동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability triggers spell effects upon dealing damage."
+        }
+      ]
+    },
+    {
+      "id": "203d619fcf5ecbd7459b",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 강화 기본 공격에 치명타가 적용됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "원문은 이 스킬에 치명타가 적용될 수 있으며 그 경우1의 물리 피해를 입힌다고 명시한다. 이1과 정상 강화 공격 피해의 관계는 확정하지 않는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability can critically strike for 1 physical damage."
+        }
+      ]
+    },
+    {
+      "id": "515f010650a2c96fd8c2",
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 다음 강화 기본 공격으로 적을 처치"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언 또는 대형 미니언 또는 대형 정글 몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "해당 특수 대상 처치 시 Q의 영구 피해 증가량은4대신10이다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Killing an enemy with this Attack permanently increases its damage by 4, increased to 10 against champions, large minions and large jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "양언어 본문이 치명타 적용 시1물리 피해라고 제공하지만 앞의 강화 공격 피해와 어떤 관계인지 설명하지 않는다. 이1을 정상 총피해 또는 별도 추가 피해로 실행하지 않고 원문 문구만 보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability can critically strike for 1 physical damage."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "8ecad6770eb71fac9d62858d601f95a504a2e368e0cc134c2fb0a58672bf128a"
+}

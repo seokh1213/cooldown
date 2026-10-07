@@ -1,0 +1,145 @@
+{
+  "summary": "럼블은 로켓을 일직선으로 발사해 4.5초 동안 지속되는 불타는 궤적을 만든다. 궤적은 적을 둔화시키고 초당 마법 피해를 입힌다. 시전 중 클릭하고 드래그하여 궤적의 방향을 지정할 수 있다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "로켓이 불타는 궤적을 만들며, 시전 중 클릭하고 드래그하여 궤적의 방향을 조절할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Rumble launches a line of rockets, creating a burning trail that lasts 4.5 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rumble can control the direction of the trail by clicking and dragging while casting this Ability."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rumble launches a line of rockets, creating a burning trail that lasts 4.5 seconds, Slowing by 35% and dealing (120/200/280 + (35% Ability Power)) magic damage per second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "현재 불타는 궤적 위에 있음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "불타는 궤적 위의 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "불타는 궤적 위의 적에게 초당 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "creating a burning trail that lasts 4.5 seconds, Slowing by 35% and dealing (120/200/280 + (35% Ability Power)) magic damage per second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Rumble launches a line of rockets, creating a burning trail that lasts 4.5 seconds, Slowing by 35% and dealing (120/200/280 + (35% Ability Power)) magic damage per second."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "본문은 궤적이 지속되는 시간은 밝히지만 둔화가 적용되는 구체적인 시점·지속 시간은 명시하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "creating a burning trail that lasts 4.5 seconds, Slowing by 35%"
+        }
+      ]
+    }
+  ]
+}

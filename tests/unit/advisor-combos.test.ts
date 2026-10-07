@@ -120,6 +120,19 @@ test("콤보 유무와 스킬 상태를 구분하고 다른 스킬의 정정도 
   assert.match(corrected.text, /짧은 딜교/);
 });
 
+test("개별 재검수 패치는 해당 챔피언의 콤보와 라인전에만 적용한다", () => {
+  const guides = JSON.parse(readFileSync("knowledge/combo-guides.json", "utf8")) as ComboGuideFile;
+  const [reviewed, previous] = guides.champions;
+  guides.patch = "26.18";
+  reviewed.verifiedPatch = "26.20";
+  delete previous.verifiedPatch;
+  reviewed.laning = { text: "개별 재검수한 라인전 조건", sourceUrl: reviewed.patterns[0].sourceUrl };
+  const notes = compileComboNotes(guides, data.cards);
+  assert.ok(notes.get(reviewed.champion)!.every(entry => entry.verifiedPatch === "26.20"));
+  assert.ok(notes.get(previous.champion)!.every(entry => entry.verifiedPatch === "26.18"));
+  assert.ok(notes.get(reviewed.champion)!.some(entry => entry.category === "laning"));
+});
+
 test("출처의 스킬 본문이 바뀌면 새 패치에 같은 콤보를 자동 승인하지 않는다", () => {
   const guides = JSON.parse(readFileSync("knowledge/combo-guides.json", "utf8")) as ComboGuideFile;
   for (const [champion, slot] of [["Zaahen", "Q"], ["Kled", "E"]]) {
@@ -127,4 +140,8 @@ test("출처의 스킬 본문이 바뀌면 새 패치에 같은 콤보를 자동
     cards.find(card => card.id === champion)!.spells.find(spell => spell.slot === slot)!.text += " 스킬이 변경됨";
     assert.throws(() => compileComboNotes(guides, cards), new RegExp(`${champion}.*다시 검수`));
   }
+  const changed = structuredClone(data.cards);
+  for (const champion of ["Zaahen", "Kled"]) changed.find(card => card.id === champion)!.spells[0].text += " 새 본문";
+  assert.throws(() => compileComboNotes(guides, changed), error => error instanceof Error
+    && error.message.includes("Zaahen") && error.message.includes("Kled") && error.message.includes("다시 검수"));
 });

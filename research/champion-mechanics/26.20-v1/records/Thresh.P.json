@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 2,
+  "id": "Thresh.P",
+  "champion": "Thresh",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "2a3786fcb0d4f3cd009544bf1b2f08249f45774140697950fd31143cff1ed899",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Damnation",
+      "ko": "지옥살이"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Thresh.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Thresh can harvest the souls of enemies that die near him, permanently granting him Armor and Ability Power.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Thresh collects the Souls of dead enemies by walking near them. Each Soul grants him 1 Armor and 1 Ability Power.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "쓰레쉬는 근처에서 처치된 적의 영혼을 포획해 방어력과 주문력을 영구적으로 올릴 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "쓰레쉬가 처치된 적 근처로 지나가면 적의 영혼을 흡수합니다. 흡수된 영혼은 영구적으로 쓰레쉬의 방어력을 1, 주문력을 1만큼 올려줍니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 85,
+      "end": 86
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 97,
+      "end": 98
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 58,
+      "end": 59
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 66,
+      "end": 67
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "쓰레쉬는 근처에서 죽은 적의 영혼을 획득해 방어력과 주문력을 영구적으로 얻습니다.",
+  "rules": [
+    {
+      "id": "d0727cec0c37b4f41dab",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "죽은 적 근처로 걸어가 영혼을 하나 수집함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "수집한 영혼 하나마다 쓰레쉬 방어력이 영구적으로 1 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "armor",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "수집한 영혼 하나마다 쓰레쉬 주문력이 영구적으로 1 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "abilityPower",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Thresh collects the Souls of dead enemies by walking near them. Each Soul grants him 1 Armor and 1 Ability Power."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "permanently granting him Armor and Ability Power."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "e9deddda9d4d1d4aba099e5537b9eb78e31382a1fbdccc1ca5be2e3f56886bea"
+}

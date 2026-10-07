@@ -1,0 +1,77 @@
+{
+  "summary": "챔피언을 기본 공격하면 피해 유형에 맞는 보호막을 얻는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "shield",
+          "subject": "caster",
+          "text": "대상의 피해 유형에 맞는 보호막을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "caster",
+              "shape": "level_range"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Camille's Attacks on champions grant ((10% ~ 20%) Health) Shield against their damage type (Physical or Magic) for 2 seconds. This effect has a (14 ~ 8) second Cooldown."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "a percentage of Camille's maximum health"
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

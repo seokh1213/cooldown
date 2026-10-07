@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 2,
+  "id": "Lux.P",
+  "champion": "Lux",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "4ff69401f32b1bfe4912ca3acb86f55c258a15de382d3320aaae16fa29630a89",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Illumination",
+      "ko": "광채"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          30,
+          40,
+          50,
+          60,
+          70,
+          80,
+          90,
+          100,
+          110,
+          120,
+          130,
+          140,
+          150,
+          160,
+          170,
+          180,
+          190,
+          200,
+          210,
+          220
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Lux.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Lux's damaging spells charge the target with energy for a few seconds. Lux's next attack ignites the energy, dealing bonus magic damage (depending on Lux's level) to the target.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Lux's damaging Abilities mark enemies for 6 seconds. Lux's Attacks consume the mark, dealing ((30 ~ 200) + (35% Ability Power)) magic damage. Final Spark will consume marks on enemies it hits and refresh them.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "럭스의 공격 스킬은 몇 초 동안 적을 빛의 에너지로 가득 채웁니다. 럭스의 기본 공격으로 이 에너지를 불태우면 적은 럭스의 레벨에 비례하는 추가 마법 피해를 받습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "럭스의 피해를 주는 스킬이 적에게 6초 동안 표식을 남깁니다. 럭스의 기본 공격은 이 표식을 소모해 ((30 ~ 200) + (35% 주문력))의 마법 피해를 입힙니다. 최후의 섬광은 적중 시 표식을 소모한 후 재적용합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 42,
+      "end": 43
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 95,
+      "end": 97
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 100,
+      "end": 103
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 108,
+      "end": 111
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 19,
+      "end": 20
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 58,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 63,
+      "end": 66
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 71,
+      "end": 74
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "피해를 주는 스킬은 적에게6초 표식을 남깁니다. 기본공격은 표식을 소모해 레벨에따른30~200+35%AP 추가마법피해를 줍니다. 최후의섬광은 기존표식을 소모한 뒤 다시 적용합니다.",
+  "rules": [
+    {
+      "id": "896ce8e54491e94aea3b",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "피해를 주는 럭스 스킬 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "럭스의 피해를 주는 스킬이 적에게 표식을 남깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lux's damaging Abilities mark enemies for 6 seconds."
+        }
+      ]
+    },
+    {
+      "id": "f465ce79afba4a4ab81c",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "럭스 광채 표식"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "럭스의 공격은 표식을 소모해 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "이 기본공격은 대상의 기존 광채 표식을 소모합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lux's Attacks consume the mark, dealing ((30 ~ 200) + (35% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Lux's next attack ignites the energy, dealing bonus magic damage (depending on Lux's level) to the target."
+        }
+      ]
+    },
+    {
+      "id": "ab0d8f3da51352becba2",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Final Spark"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "최후의섬광에 적중한 대상에 기존 광채 표식이 있으면 그 표식을 소모합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "최후의섬광 적중 후 광채 표식을 다시 적용하여 갱신합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Final Spark will consume marks on enemies it hits and refresh them."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "표식 부여 대상은 enemies로만 서술되어 구체적인 대상 유형을 특정할 수 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lux's damaging Abilities mark enemies for 6 seconds."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "2efc542c4d4f204c8eab474e313baad11b62a4a2026aec293b92a8558894ebff"
+}

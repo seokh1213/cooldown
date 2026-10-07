@@ -1,0 +1,428 @@
+{
+  "summary": "나피리는 칼날을 던져 물리 피해와 출혈 피해를 입힌다. 이 스킬로 출혈 중인 적에게 이 스킬이 적중하면 남은 출혈 피해와 잃은 체력에 따라 추가 피해를 입힌다. 대상이 챔피언 또는 대형 몬스터이면 체력을 회복한다. 무리는 처음 적중한 챔피언 또는 몬스터에게 도약해 공격한다. 체력이 기준 미만인 공격로 미니언과 비에픽 몬스터를 처형한다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "칼날 적중 시 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "칼날은 출혈을 일으켜5초에걸쳐별도의총물리피해를입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Naafiri hurls Darkin-tainted blades, dealing (35/40/45/50/55 + (20% bonus Attack Damage)) physical damage and inflicting a bleed, dealing (35/60/85/110/135 + (80% bonus Attack Damage)) physical damage over 5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이미 이 스킬로 인한 출혈 상태이며, 이 스킬에 다시 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "대상이 이 스킬로 인한 출혈 상태라면 남은 출혈 피해에 더해 잃은 체력에 따라 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n19",
+                "en:body:n20",
+                "en:body:n21",
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If enemies hit are already bleeding from this Ability, it instead deals the remaining bleed damage plus between (30/42.5/55/67.5/80 + (40% bonus Attack Damage)) and (60/85/110/135/160 + (140% bonus Attack Damage)) physical damage, based on their missing Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이미 이 Q로 출혈 중이며 이 Q가 다시 적중한 챔피언 또는 대형 몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "대상이 이 스킬로 인한 출혈 상태이고 챔피언 또는 대형 몬스터이면 나피리가 체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n25",
+                "en:body:n26",
+                "en:body:n27",
+                "en:body:n28",
+                "en:body:n29"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n30"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If that target was a champion or large monster, Naafiri restores (45/60/75/90/105 + (40% bonus Attack Damage)) Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If enemies hit are already bleeding from this Ability, it instead deals the remaining bleed damage plus between (30/42.5/55/67.5/80 + (40% bonus Attack Damage)) and (60/85/110/135/160 + (140% bonus Attack Damage)) physical damage, based on their missing Health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 Q에 처음 적중한 챔피언 또는 몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "summon",
+          "text": "무리가 스킬에 처음 적중한 챔피언 또는 몬스터에게 도약한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "attack_followup",
+          "subject": "summon",
+          "text": "무리가 해당 대상에게 공격을 이어간다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n31"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Packmates will leap at the first champion or monster hit and attack them for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "공격로 미니언 또는 비에픽 몬스터"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "health_threshold",
+          "operator": "lt",
+          "value": {
+            "kind": "text",
+            "value": "현재체력이(30~70)health처형기준미만"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "execute",
+          "subject": "target",
+          "text": "기준 체력 미만인 공격로 미니언과 비에픽 몬스터를 처형한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n32",
+                "en:body:n33"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Executes lane minions and non-epic monsters below (30 ~ 70) health."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "이 스킬은 재사용하여 최대두개의칼날을던질수있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Naafiri can Recast this Ability."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Naafiri hurls up to two daggers"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "처형 대상에는 공격로 미니언과 비에픽 몬스터가 포함되지만, 단일 target_type 조건으로 두 유형을 별도로 표현할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Executes lane minions and non-epic monsters below (30 ~ 70) health."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "회복 및 무리 도약 조건은 챔피언과 대형 몬스터 또는 몬스터의 선택 대상 관계이나, 단일 target_type 값으로 그 범위를 완전히 표시하기 어렵다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If that target was a champion or large monster, Naafiri restores (45/60/75/90/105 + (40% bonus Attack Damage)) Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Packmates will leap at the first champion or monster hit and attack them for 2 seconds."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "their missingHealth는피해대상의잃은체력을뜻하지만,스키마에missingHealth가없고최저/최대사이의정확한증가함수가명시되지않는다. 잔여출혈피해와가산피해끝식을구성요소로보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "based on their missing Health."
+        }
+      ]
+    }
+  ]
+}

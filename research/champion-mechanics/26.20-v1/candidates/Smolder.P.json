@@ -1,0 +1,238 @@
+{
+  "summary": "스킬로 챔피언을 맞히거나 초강력 화염 숨결로 적을 처치하면 용 훈련 중첩을 얻습니다. 중첩은 기본 스킬을 강화합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "용 훈련 중첩을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting champions with Abilities and killing enemies with Super Scorcher Breath grants a stack of Dragon Practice, which improves Smolder's basic Abilities."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "초강력 화염 숨결로 적 처치"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "초강력 화염 숨결로 적을 처치하면 용 훈련 중첩을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting champions with Abilities and killing enemies with Super Scorcher Breath grants a stack of Dragon Practice, which improves Smolder's basic Abilities."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "용 훈련 중첩이 초강력 화염 숨결의 추가 마법 피해를 높입니다. 25/125/225 중첩에 새 효과를 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Super Scorcher Breath: Deal an additional 0.25 magic damage and gain new effects at 25, 125, and 225 stacks."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Super Scorcher Breath: Deal an additional 0.25 magic damage and gain new effects at 25, 125, and 225 stacks.Achooo!: Explosions deal an additional 0.55 magic damage.Flap, Flap, Flap: Each hit deals an additional 0.08 magic damage and gain an extra bolt every 100 stacks."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "에취!의 폭발은 마법 피해를 추가로 입힙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Achooo!: Explosions deal an additional 0.55 magic damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Super Scorcher Breath: Deal an additional 0.25 magic damage and gain new effects at 25, 125, and 225 stacks.Achooo!: Explosions deal an additional 0.55 magic damage.Flap, Flap, Flap: Each hit deals an additional 0.08 magic damage and gain an extra bolt every 100 stacks."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "펄럭펄럭은 적중할 때마다 마법 피해를 추가로 입히며, 용 훈련 중첩이 100회 쌓일 때마다 추가 탄환을 얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "ratio_input",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Flap, Flap, Flap: Each hit deals an additional 0.08 magic damage and gain an extra bolt every 100 stacks."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Super Scorcher Breath: Deal an additional 0.25 magic damage and gain new effects at 25, 125, and 225 stacks.Achooo!: Explosions deal an additional 0.55 magic damage.Flap, Flap, Flap: Each hit deals an additional 0.08 magic damage and gain an extra bolt every 100 stacks."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "스키마의 조건 필드에 용 훈련 중첩 수를 나타내는 항목이 없습니다. 25·125·225 중첩 효과와 100 중첩마다 추가 탄환 효과를 정확한 조건으로 표현할 수 없어 원문 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Super Scorcher Breath: Deal an additional 0.25 magic damage and gain new effects at 25, 125, and 225 stacks."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Flap, Flap, Flap: Each hit deals an additional 0.08 magic damage and gain an extra bolt every 100 stacks."
+        }
+      ]
+    }
+  ]
+}

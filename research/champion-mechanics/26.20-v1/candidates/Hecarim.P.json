@@ -1,0 +1,55 @@
+{
+  "summary": "헤카림의 추가 이동 속도 일부가 공격력으로 전환됩니다. 전환 비율은 레벨에 따라 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "레벨에 따라 자신의 추가 이동 속도의12%~24%만큼 공격력을 추가로 얻습니다. 입력 이동 속도는 소비하거나 대체하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "totalAttackDamage",
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hecarim gains ((12% ~ 24%) bonus Movement Speed) Attack Damage, increasing based on level."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "스키마에는 bonus movement speed 입력 스탯이 없다. 전체 moveSpeed로 대체하지 않고 효과 텍스트와12%~24% 계수로 보존하므로 단순 구조화된 선형 스탯 계산은 불가하다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "((12% ~ 24%) bonus Movement Speed)"
+        }
+      ]
+    }
+  ]
+}

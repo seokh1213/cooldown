@@ -1,0 +1,915 @@
+{
+  "champion": "Kled",
+  "slot": "Q",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Kled throws a bear trap that damages and hooks an enemy champion. If shackled for a short duration, the target takes additional physical damage and is yanked toward Kled. When dismounted, this ability is replaced by Pocket Pistol, a ranged gun blast that knocks back Kled and restores courage.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Mounted: Kled throws a bear trap that deals (30/55/80/105/130 + (60% bonus Attack Damage)) physical damage and hooks onto the first enemy champion or large jungle monster hit. If Kled stays near a hooked enemy for 1.75 seconds, he yanks out the trap, dealing (60/110/160/210/260 + (120% bonus Attack Damage)) physical damage, Pulling them, and Slowing by 30/35/40/45/50% for 2.5 seconds. While hooked, Kled has True Sight to the enemy. Deals 150% damage to minions.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "클레드가 밧줄에 묶인 덫을 던져 적 챔피언에게 피해를 입히고 붙잡습니다. 해당 챔피언과 잠시 동안 근거리를 유지하면 클레드 쪽으로 끌어당기면서 추가 물리 피해를 입힙니다. 스칼 미탑승 시에는 원거리 공격이 가능한 빵야!로 바뀝니다. 빵야!를 사용하면 클레드가 뒤로 밀려나며 스칼의 용기를 회복시킬 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "탑승 시: 클레드가 밧줄에 묶인 덫을 던져 (30/55/80/105/130 + (60% 추가 공격력))의 물리 피해를 입히고 첫 번째로 맞힌 적 챔피언이나 대형 정글 몬스터를 붙잡습니다. 클레드가 1.75초 동안 붙잡은 적과 근거리를 유지하면 적을 끌어당기며 (60/110/160/210/260 + (120% 추가 공격력))의 물리 피해를 입히고 2.5초 동안 30/35/40/45/50% 둔화시킵니다. 클레드가 붙잡은 동안 해당 적에 대한 절대 시야를 얻습니다. 미니언에게는 150%의 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "form:A:en",
+      "text": "No Cost Mounted: Kled throws a bear trap that deals (30/55/80/105/130 + (60% bonus Attack Damage)) physical damage and hooks onto the first enemy champion or large jungle monster hit. If Kled stays near a hooked enemy for 1.75 seconds, he yanks out the trap, dealing (60/110/160/210/260 + (120% bonus Attack Damage)) physical damage, Pulling them, and Slowing by 30/35/40/45/50% for 2.5 seconds. While hooked, Kled has True Sight to the enemy. Deals 150% damage to minions.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:A"
+    },
+    {
+      "id": "form:B:en",
+      "text": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward. Pellets beyond the first deal reduced damage. Each pellet that hits an enemy champion or epic monster restores Courage. Restore 5 Courage per hit against champions, and 2.5 against epic monsters. Deals 20% damage per hit beyond the first.",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "variant": "form:B"
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    },
+    {
+      "id": "form:A",
+      "label": "Mounted",
+      "sourceIds": [
+        "form:A:en"
+      ]
+    },
+    {
+      "id": "form:B",
+      "label": "Dismounted",
+      "sourceIds": [
+        "form:B:en"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Bear Trap on a Rope",
+      "ko": "덫날리기"
+    },
+    "cooldownSeconds": [
+      11,
+      10,
+      9,
+      8,
+      7
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      800,
+      800,
+      800,
+      800,
+      800
+    ],
+    "cost": null,
+    "rankValues": [
+      {
+        "label": "Throw Damage",
+        "values": "30/55/80/105/130"
+      },
+      {
+        "label": "Rip Damage",
+        "values": "60/110/160/210/260"
+      },
+      {
+        "label": "Slow",
+        "values": "30%/35%/40%/45%/50%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "11/10/9/8/7"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:TotalDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          30,
+          55,
+          80,
+          105,
+          130
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Kled",
+          "condition": "비탑승 또는 덫 연계"
+        },
+        {
+          "type": "pull",
+          "target": "enemy",
+          "source": "https://wiki.leagueoflegends.com/en-us/Kled",
+          "condition": "탑승 형태 사슬 유지"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [
+      {
+        "key": "A",
+        "label": "Mounted",
+        "id": "KledQ",
+        "name": "Bear Trap on a Rope",
+        "iconPath": "assets/characters/kled/hud/icons2d/kled_q1.png",
+        "iconVersion": "16.20",
+        "cooldownSeconds": [
+          11,
+          10,
+          9,
+          8,
+          7
+        ],
+        "tooltipRankSource": "Q",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      },
+      {
+        "key": "B",
+        "label": "Dismounted",
+        "id": "KledRiderQ",
+        "name": "Pocket Pistol",
+        "iconPath": "assets/characters/kled/hud/icons2d/kled_q2.png",
+        "iconVersion": "16.20",
+        "cooldownSeconds": [
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "tooltipRankSource": "Q",
+        "diagnostics": {
+          "unresolvedTokens": []
+        }
+      }
+    ],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Kled.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Kled.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 51,
+      "end": 53
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 54,
+      "end": 57
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 58,
+      "end": 61
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 65,
+      "end": 68
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 214,
+      "end": 218
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 260,
+      "end": 262
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 263,
+      "end": 266
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 267,
+      "end": 270
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "210",
+      "value": 210,
+      "percent": false,
+      "start": 271,
+      "end": 274
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "260",
+      "value": 260,
+      "percent": false,
+      "start": 275,
+      "end": 278
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 282,
+      "end": 286
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 355,
+      "end": 357
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 358,
+      "end": 360
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 361,
+      "end": 363
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 364,
+      "end": 366
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 367,
+      "end": 370
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 375,
+      "end": 378
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 442,
+      "end": 446
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 25,
+      "end": 27
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 28,
+      "end": 30
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 31,
+      "end": 33
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 34,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 38,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 45,
+      "end": 48
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 110,
+      "end": 114
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 146,
+      "end": 148
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 149,
+      "end": 152
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 153,
+      "end": 156
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "210",
+      "value": 210,
+      "percent": false,
+      "start": 157,
+      "end": 160
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "260",
+      "value": 260,
+      "percent": false,
+      "start": 161,
+      "end": 164
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 168,
+      "end": 172
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 194,
+      "end": 197
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 202,
+      "end": 204
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 205,
+      "end": 207
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 208,
+      "end": 210
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 211,
+      "end": 213
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 214,
+      "end": 217
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 267,
+      "end": 271
+    },
+    {
+      "id": "form:A:en:n0",
+      "sourceId": "form:A:en",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 53,
+      "end": 55
+    },
+    {
+      "id": "form:A:en:n1",
+      "sourceId": "form:A:en",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 56,
+      "end": 58
+    },
+    {
+      "id": "form:A:en:n2",
+      "sourceId": "form:A:en",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 59,
+      "end": 61
+    },
+    {
+      "id": "form:A:en:n3",
+      "sourceId": "form:A:en",
+      "raw": "105",
+      "value": 105,
+      "percent": false,
+      "start": 62,
+      "end": 65
+    },
+    {
+      "id": "form:A:en:n4",
+      "sourceId": "form:A:en",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 66,
+      "end": 69
+    },
+    {
+      "id": "form:A:en:n5",
+      "sourceId": "form:A:en",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 73,
+      "end": 76
+    },
+    {
+      "id": "form:A:en:n6",
+      "sourceId": "form:A:en",
+      "raw": "1.75",
+      "value": 1.75,
+      "percent": false,
+      "start": 222,
+      "end": 226
+    },
+    {
+      "id": "form:A:en:n7",
+      "sourceId": "form:A:en",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 268,
+      "end": 270
+    },
+    {
+      "id": "form:A:en:n8",
+      "sourceId": "form:A:en",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 271,
+      "end": 274
+    },
+    {
+      "id": "form:A:en:n9",
+      "sourceId": "form:A:en",
+      "raw": "160",
+      "value": 160,
+      "percent": false,
+      "start": 275,
+      "end": 278
+    },
+    {
+      "id": "form:A:en:n10",
+      "sourceId": "form:A:en",
+      "raw": "210",
+      "value": 210,
+      "percent": false,
+      "start": 279,
+      "end": 282
+    },
+    {
+      "id": "form:A:en:n11",
+      "sourceId": "form:A:en",
+      "raw": "260",
+      "value": 260,
+      "percent": false,
+      "start": 283,
+      "end": 286
+    },
+    {
+      "id": "form:A:en:n12",
+      "sourceId": "form:A:en",
+      "raw": "120%",
+      "value": 120,
+      "percent": true,
+      "start": 290,
+      "end": 294
+    },
+    {
+      "id": "form:A:en:n13",
+      "sourceId": "form:A:en",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 363,
+      "end": 365
+    },
+    {
+      "id": "form:A:en:n14",
+      "sourceId": "form:A:en",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 366,
+      "end": 368
+    },
+    {
+      "id": "form:A:en:n15",
+      "sourceId": "form:A:en",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 369,
+      "end": 371
+    },
+    {
+      "id": "form:A:en:n16",
+      "sourceId": "form:A:en",
+      "raw": "45",
+      "value": 45,
+      "percent": true,
+      "start": 372,
+      "end": 374
+    },
+    {
+      "id": "form:A:en:n17",
+      "sourceId": "form:A:en",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 375,
+      "end": 378
+    },
+    {
+      "id": "form:A:en:n18",
+      "sourceId": "form:A:en",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 383,
+      "end": 386
+    },
+    {
+      "id": "form:A:en:n19",
+      "sourceId": "form:A:en",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 450,
+      "end": 454
+    },
+    {
+      "id": "form:B:en:n0",
+      "sourceId": "form:B:en",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 0,
+      "end": 1
+    },
+    {
+      "id": "form:B:en:n1",
+      "sourceId": "form:B:en",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 7,
+      "end": 9
+    },
+    {
+      "id": "form:B:en:n2",
+      "sourceId": "form:B:en",
+      "raw": "16",
+      "value": 16,
+      "percent": false,
+      "start": 10,
+      "end": 12
+    },
+    {
+      "id": "form:B:en:n3",
+      "sourceId": "form:B:en",
+      "raw": "14",
+      "value": 14,
+      "percent": false,
+      "start": 13,
+      "end": 15
+    },
+    {
+      "id": "form:B:en:n4",
+      "sourceId": "form:B:en",
+      "raw": "12",
+      "value": 12,
+      "percent": false,
+      "start": 16,
+      "end": 18
+    },
+    {
+      "id": "form:B:en:n5",
+      "sourceId": "form:B:en",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 19,
+      "end": 21
+    },
+    {
+      "id": "form:B:en:n6",
+      "sourceId": "form:B:en",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 38,
+      "end": 39
+    },
+    {
+      "id": "form:B:en:n7",
+      "sourceId": "form:B:en",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 86,
+      "end": 88
+    },
+    {
+      "id": "form:B:en:n8",
+      "sourceId": "form:B:en",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 89,
+      "end": 91
+    },
+    {
+      "id": "form:B:en:n9",
+      "sourceId": "form:B:en",
+      "raw": "65",
+      "value": 65,
+      "percent": false,
+      "start": 92,
+      "end": 94
+    },
+    {
+      "id": "form:B:en:n10",
+      "sourceId": "form:B:en",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 95,
+      "end": 97
+    },
+    {
+      "id": "form:B:en:n11",
+      "sourceId": "form:B:en",
+      "raw": "95",
+      "value": 95,
+      "percent": false,
+      "start": 98,
+      "end": 100
+    },
+    {
+      "id": "form:B:en:n12",
+      "sourceId": "form:B:en",
+      "raw": "65%",
+      "value": 65,
+      "percent": true,
+      "start": 104,
+      "end": 107
+    },
+    {
+      "id": "form:B:en:n13",
+      "sourceId": "form:B:en",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 302,
+      "end": 303
+    },
+    {
+      "id": "form:B:en:n14",
+      "sourceId": "form:B:en",
+      "raw": "2.5",
+      "value": 2.5,
+      "percent": false,
+      "start": 343,
+      "end": 346
+    },
+    {
+      "id": "form:B:en:n15",
+      "sourceId": "form:B:en",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 376,
+      "end": 379
+    }
+  ],
+  "sourceHash": "81c168f4106f606ddaa4500376b26ea1c7d9bc81d9dfdcaea662d3100bf6f000",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

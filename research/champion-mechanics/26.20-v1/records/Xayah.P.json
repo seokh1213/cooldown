@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 2,
+  "id": "Xayah.P",
+  "champion": "Xayah",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "62916be7b584b8996a0534aff7bdd8ad18cbc5c5de5ffdd4b7ee9b37d594ed06",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Clean Cuts",
+      "ko": "관통상"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Xayah.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "After using an ability, Xayah's next basic attacks will hit all targets along their path and leave a Feather.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "After using an Ability, Xayah's next 3 Attacks will deal ?% damage to all other targets along their path and leave a Feather for 6 seconds. Lover's Leap: Xayah and Rakan can recall together.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "스킬 사용 후 다음 기본 공격이 경로에 있는 적을 모두 관통하고 깃털을 남깁니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "스킬 사용 후 다음 3회 기본 공격이 경로에 있는 모든 적에게 ?%의 피해를 입히고 6초 동안 유지되는 깃털을 남깁니다. 연인의 귀환: 자야와 라칸은 동시에 귀환할 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 37,
+      "end": 38
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 129,
+      "end": 130
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 11,
+      "end": 12
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 47,
+      "end": 48
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "스킬 사용 후 다음 3회 기본 공격은 경로상의 다른 대상에게 피해를 입히고 6초 동안 깃털을 남깁니다. 자야와 라칸은 함께 귀환할 수 있습니다.",
+  "rules": [
+    {
+      "id": "afb6e5bfe3033ffb4597",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스킬 사용 후 다음3회 기본 공격 중 하나"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "secondary_targets",
+          "text": "스킬 사용 후 다음3회 기본 공격은 경로상 다른 모든 대상에게 ?% 피해를 입힌다. count는 강화되는 공격의 총횟수이며 피해 중첩 수가 아니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "해당 기본 공격이 깃털을 남기며 그 깃털은6초 유지된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using an Ability, Xayah's next 3 Attacks will deal ?% damage to all other targets along their path and leave a Feather for 6 seconds."
+        }
+      ]
+    },
+    {
+      "id": "4e28b07962f2a26e0d16",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "ally",
+          "text": "자야와 라칸은 함께 귀환할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lover's Leap: Xayah and Rakan can recall together."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "강화 기본 공격이 다른 대상에게 입히는 피해 비율이 원문에서 ?%로 표시되어 있습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "will deal ?% damage"
+        }
+      ]
+    }
+  ],
+  "candidateHash": "2f60bb4d5324fef5cc77a9b61396944c28dc77d1304246764c74bd3eb11ad4f7"
+}

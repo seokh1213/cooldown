@@ -1,0 +1,328 @@
+{
+  "summary": "공격력을 얻는다. 지속 중 어둠 사냥꾼의 이동 속도 증가량이 정해지며 구르기의 재사용 대기시간이 감소하고, 구르기 사용 시 투명해진다. 베인이 피해를 입힌 챔피언이 짧은 시간 안에 죽으면 지속시간이 연장되지만 최대 지속시간을 넘지 않는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "공격력을 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "totalAttackDamage",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vayne gains 35/50/65 Attack Damage for 8/10/12 seconds, extended by 4 seconds whenever a champion damaged by Vayne dies within 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "베인이 피해를 준 적 챔피언이며 time은 그 피해를 입은 후 경과한 초"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n7"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "결전의 시간 효과가 활성인 동안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "궁극기의 지속시간이 연장되며, 기존 최대 지속시간을 초과해 늘어날 수 없다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Vayne gains 35/50/65 Attack Damage for 8/10/12 seconds, extended by 4 seconds whenever a champion damaged by Vayne dies within 3 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability's duration can't be increased past its maximum duration"
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "적 챔피언이 베인에게 피해를 입고 3초 안에 죽으면 지속시간이 4초 늘어납니다."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "결전의 시간 효과가 활성인 동안"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "어둠 사냥꾼의 이동 속도 효과가 발동 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "궁극기 활성 중 어둠 사냥꾼의 이동 속도 증가량은90으로 대체된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Additionally, during the duration:Night Hunter instead grants 90 Move Speed."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Additionally, during the duration:Night Hunter instead grants 90 Move Speed.The Cooldown of Tumble is reduced by 30/40/50%, and grants Invisibility for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "결전의 시간 효과가 활성인 동안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "구르기의 재사용 대기시간이 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Cooldown of Tumble is reduced by 30/40/50%, and grants Invisibility for 1 second."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Additionally, during the duration:Night Hunter instead grants 90 Move Speed.The Cooldown of Tumble is reduced by 30/40/50%, and grants Invisibility for 1 second."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "결전의 시간 효과가 활성인 동안"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "구르기를 시전함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "구르기를 사용하면 투명 상태가 되며, 포탑이나 절대 시야로만 드러난다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The Cooldown of Tumble is reduced by 30/40/50%, and grants Invisibility for 1 second. Invisible units cannot be revealed except by turrets or True Sight."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Additionally, during the duration:Night Hunter instead grants 90 Move Speed.The Cooldown of Tumble is reduced by 30/40/50%, and grants Invisibility for 1 second."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "한글은3초를 베인에게 피해 받은 이후로 명시하므로 그 조건은 확정했다. 기존 최대 지속시간 상한은 보존하지만 상한이 총 누적시간인지 남은 활성시간인지 공급 문장이 구별하지 않아 연장 누적 계산은 확정하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "extended by 4 seconds whenever a champion damaged by Vayne dies within 3 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability's duration can't be increased past its maximum duration"
+        }
+      ]
+    }
+  ]
+}

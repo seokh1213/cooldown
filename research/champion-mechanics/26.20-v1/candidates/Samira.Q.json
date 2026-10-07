@@ -1,0 +1,329 @@
+{
+  "summary": "총을 쏘거나 근접 사거리의 적에게 검을 휘둘러 물리 피해를 줍니다. 총은 처음 맞은 적을 대상으로 합니다. 두 공격 모두 치명타가 가능하고 생명력 흡수가 적용됩니다. 거침없는 질주 도중 시전하면 돌진 완료 시 경로의 모든 적을 공격합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "gt",
+          "value": {
+            "kind": "text",
+            "value": "근접 사거리"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "총을 발사해 처음 맞은 적에게 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Samira fires a shot, dealing (0/5/10/15/20 + (110% Attack Damage)) physical damage to the first enemy hit."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "근접 사거리"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "검으로 베어 물리 피해를 준다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If this Ability is cast towards an enemy in melee range, Samira will instead slash with her sword, dealing (0/5/10/15/20 + (110% Attack Damage)) physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 총 또는 검 공격이 실제 치명타로 적중함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "치명타가 적용되면 피해량은 기본 피해 계산식에 치명타 배율을 적용한 값이 된다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": "critDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Either hit can critically strike for (0/5/10/15/20 + (110% Attack Damage)) × (0.5 + 50% Critical Strike Damage) damage and applies Life Steal at 100% effectiveness."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "거침없는 질주 중 시전"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "거침없는 질주가 완료됨"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "돌진 완료 시 경로에 있는 모든 적을 공격한다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If cast during Wild Rush, Samira will strike all enemies in her path upon completion."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 총 또는 검 공격으로 피해를 입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "생명력 흡수가 100% 효율로 적용된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Either hit can critically strike for (0/5/10/15/20 + (110% Attack Damage)) × (0.5 + 50% Critical Strike Damage) damage and applies Life Steal at 100% effectiveness."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "치명타전체피해는기본Q식×(0.5+치명타피해량50%)의중첩곱수식이다.구성요소를단일선형피해로합산하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Either hit can critically strike for (0/5/10/15/20 + (110% Attack Damage)) × (0.5 + 50% Critical Strike Damage) damage and applies Life Steal at 100% effectiveness."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "질주중Q의경로공격에는별도수식이나치명타/생명력흡수상호작용이재명시되지않는다.경로전체공격이라는확정효과만보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If cast during Wild Rush, Samira will strike all enemies in her path upon completion."
+        }
+      ]
+    }
+  ]
+}

@@ -25,18 +25,20 @@ export function loadComboNotes(): Map<string, PlaybookEntry[]> {
 
 export function compileComboNotes(guides: ComboGuideFile, cards: ChampionCard[]): Map<string, PlaybookEntry[]> {
   const byId = new Map(cards.map(card => [card.id, card]));
+  const changed = guides.champions.filter(guide => {
+    const card = byId.get(guide.champion);
+    return !card || abilityTextHash(card) !== guide.abilityTextHash;
+  }).map(guide => guide.champion);
+  if (changed.length) throw new Error(`${changed.join(", ")} 스킬 본문이 바뀌었습니다. 콤보를 다시 검수하세요.`);
   const notes = new Map<string, PlaybookEntry[]>();
   for (const guide of guides.champions) {
-    const card = byId.get(guide.champion);
-    if (!card || abilityTextHash(card) !== guide.abilityTextHash) {
-      throw new Error(`${guide.champion} 스킬 본문이 바뀌었습니다. 콤보를 다시 검수하세요.`);
-    }
+    const verifiedPatch = guide.verifiedPatch ?? guides.patch;
     const entries: PlaybookEntry[] = guide.patterns.map(pattern => ({
       id: pattern.id, category: "combo", text: renderComboPattern(pattern), combo: pattern,
-      source: pattern.sourceUrl, verifiedPatch: guides.patch,
+      source: pattern.sourceUrl, verifiedPatch,
     }));
     if (guide.laning) entries.push({ id: `${guide.champion.toLowerCase()}-web-laning`, category: "laning",
-      text: guide.laning.text, source: guide.laning.sourceUrl, verifiedPatch: guides.patch });
+      text: guide.laning.text, source: guide.laning.sourceUrl, verifiedPatch });
     notes.set(guide.champion, entries);
   }
   return notes;

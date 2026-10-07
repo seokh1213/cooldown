@@ -1,0 +1,323 @@
+{
+  "champion": "Heimerdinger",
+  "slot": "E",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Heimerdinger lobs a grenade at a location, dealing damage to enemy units, as well as stunning anyone directly hit and slowing surrounding units.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Heimerdinger hurls a grenade that deals (60/100/140/180/220 + (60% Ability Power)) magic damage in an area and Slows by 35% for 2 seconds. Enemies in the center are also Stunned for 1.5 seconds. Hitting a champion fully charges nearby Turrets.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "하이머딩거가 목표 위치에 수류탄을 던져 적에게 피해를 입힙니다. 수류탄에 직격당한 적은 기절하며, 빗겨맞은 유닛은 느려집니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "하이머딩거가 수류탄을 던져 일정 지역에 (60/100/140/180/220 + (60% 주문력))의 마법 피해를 입히고 2초 동안 35% 둔화시킵니다. 중앙에 있는 적들은 1.5초 동안 기절합니다. 적 챔피언을 맞히면 근처의 포탑이 최대로 충전됩니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "CH-2 Electron Storm Grenade",
+      "ko": "CH-2 전자폭풍 수류탄"
+    },
+    "cooldownSeconds": [
+      11,
+      11,
+      11,
+      11,
+      11
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      970,
+      970,
+      970,
+      970,
+      970
+    ],
+    "cost": {
+      "values": [
+        85,
+        85,
+        85,
+        85,
+        85
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "60/100/140/180/220"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:Damage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "Damage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          60,
+          100,
+          140,
+          180,
+          220
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Heimerdinger.json",
+          "condition": "수류탄 주변 적중"
+        },
+        {
+          "type": "stun",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Heimerdinger.json",
+          "condition": "수류탄 중앙 적중"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Heimerdinger.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Heimerdinger.E",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 41,
+      "end": 43
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 44,
+      "end": 47
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 52,
+      "end": 55
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "220",
+      "value": 220,
+      "percent": false,
+      "start": 56,
+      "end": 59
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 63,
+      "end": 66
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 120,
+      "end": 123
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 128,
+      "end": 129
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 182,
+      "end": 185
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 23,
+      "end": 25
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "100",
+      "value": 100,
+      "percent": false,
+      "start": 26,
+      "end": 29
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 30,
+      "end": 33
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 34,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "220",
+      "value": 220,
+      "percent": false,
+      "start": 38,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 45,
+      "end": 48
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 67,
+      "end": 68
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "35%",
+      "value": 35,
+      "percent": true,
+      "start": 73,
+      "end": 76
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 96,
+      "end": 99
+    }
+  ],
+  "sourceHash": "464b0954a7cfcf454bb9c58daee9988aa50ee933502a2f109a987002d63d6369",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

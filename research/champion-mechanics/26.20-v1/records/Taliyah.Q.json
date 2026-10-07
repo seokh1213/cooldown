@@ -1,0 +1,1412 @@
+{
+  "schemaVersion": 2,
+  "id": "Taliyah.Q",
+  "champion": "Taliyah",
+  "slot": "Q",
+  "patch": "26.20",
+  "sourceHash": "3f63246f105ce9c2429a580234d849082df449f50ac91664a66eeda8db956e70",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Threaded Volley",
+      "ko": "파편 난사"
+    },
+    "cooldownSeconds": [
+      7,
+      6,
+      5,
+      4,
+      3
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      1000,
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "cost": {
+      "values": [
+        55,
+        60,
+        65,
+        70,
+        75
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage",
+        "values": "55/72.5/90/107.5/125"
+      },
+      {
+        "label": "Slow",
+        "values": "20%/25%/30%/35%/40%"
+      },
+      {
+        "label": "Monster Damage",
+        "values": "20/25/30/35/40"
+      },
+      {
+        "label": "Cooldown",
+        "values": "7/6/5/4/3"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "55/60/65/70/75"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:RockDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "RockDamage",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          55,
+          72.5,
+          90,
+          107.5,
+          125
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.5,
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "slow",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Taliyah.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Taliyah.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Taliyah throws a volley of rocks in a target direction, moving freely as she casts. This creates Worked Ground below her. If Taliyah casts Threaded Volley on Worked Ground, she consumes the ground to throw a stronger boulder that slows enemies.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Taliyah hurls 5 rocks, each dealing (55/72.5/90/107.5/125 + (50% Ability Power)) magic damage in an area around the first enemy hit while creating Worked Ground at that area. Subsequent hits against the same enemy deal 60% less damage. Casts on worked ground cost 10 Mana and have 50% less Cooldown, consume the Worked Ground, and hurl a boulder that Slows enemies it hits by 20/25/30/35/40% for 1.5 seconds, dealing (99/130.5/162/193.5/225 + (90% Ability Power)) magic damage to the primary target. Monsters hit by the boulder are Stunned for 3 seconds. Taliyah can move and use other Abilities while hurling rocks. Casting this Ability on Worked Ground cannot reduce its Cooldown to less than 0.75 seconds. Total damage to a single target: (143/188.5/234/279.5/325 + (130% Ability Power)) Each rock deals 20/25/30/35/40 additional damage to monsters.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "탈리야가 지정한 방향으로 바위 조각을 던집니다. 이 때 탈리야는 자유롭게 이동할 수 있으며 탈리야 아래의 땅이 다져집니다. 다져진 땅 위에서 파편 난사를 사용하면 다져진 땅이 사라지면서 적을 둔화하는 큰 바위를 던집니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "탈리야가 5개의 바위 조각을 던져 처음으로 맞힌 적 주변 지역에 개당 (55/72.5/90/107.5/125 + (50% 주문력))의 마법 피해를 입히고 땅을 다집니다. 동일한 적에게 연달아 바위 조각을 맞힐 경우 피해량이 60% 감소합니다. 다져진 땅에서 이 스킬을 사용하면 마나가 10 소모되며 재사용 대기시간이 50% 감소하고 다져진 땅을 소모해 바위를 던집니다. 바위는 적중한 적을 1.5초 동안 20/25/30/35/40% 둔화시키고 첫 번째 대상에게 (99/130.5/162/193.5/225 + (90% 주문력))의 마법 피해를 입힙니다. 바위에 맞은 몬스터는 3초 동안 기절합니다. 탈리야는 바위를 던지는 도중에 이동하고 다른 스킬을 사용할 수 있습니다. 다져진 땅에서 이 스킬을 사용하면 재사용 대기시간이 0.75초 미만으로 낮아지지 않습니다. 단일 대상에 대한 총 피해량: (143/188.5/234/279.5/325 + (130% 주문력)) 각 바위는 몬스터에게 20/25/30/35/40의 추가 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 14,
+      "end": 15
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 37,
+      "end": 39
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "72.5",
+      "value": 72.5,
+      "percent": false,
+      "start": 40,
+      "end": 44
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 45,
+      "end": 47
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "107.5",
+      "value": 107.5,
+      "percent": false,
+      "start": 48,
+      "end": 53
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 54,
+      "end": 57
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 61,
+      "end": 64
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 219,
+      "end": 222
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 264,
+      "end": 266
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 281,
+      "end": 284
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 376,
+      "end": 378
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 379,
+      "end": 381
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 382,
+      "end": 384
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 385,
+      "end": 387
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 388,
+      "end": 391
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 396,
+      "end": 399
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "99",
+      "value": 99,
+      "percent": false,
+      "start": 418,
+      "end": 420
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "130.5",
+      "value": 130.5,
+      "percent": false,
+      "start": 421,
+      "end": 426
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "162",
+      "value": 162,
+      "percent": false,
+      "start": 427,
+      "end": 430
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "193.5",
+      "value": 193.5,
+      "percent": false,
+      "start": 431,
+      "end": 436
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 437,
+      "end": 440
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 444,
+      "end": 447
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 544,
+      "end": 545
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 695,
+      "end": 699
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "143",
+      "value": 143,
+      "percent": false,
+      "start": 743,
+      "end": 746
+    },
+    {
+      "id": "en:body:n25",
+      "sourceId": "en:body",
+      "raw": "188.5",
+      "value": 188.5,
+      "percent": false,
+      "start": 747,
+      "end": 752
+    },
+    {
+      "id": "en:body:n26",
+      "sourceId": "en:body",
+      "raw": "234",
+      "value": 234,
+      "percent": false,
+      "start": 753,
+      "end": 756
+    },
+    {
+      "id": "en:body:n27",
+      "sourceId": "en:body",
+      "raw": "279.5",
+      "value": 279.5,
+      "percent": false,
+      "start": 757,
+      "end": 762
+    },
+    {
+      "id": "en:body:n28",
+      "sourceId": "en:body",
+      "raw": "325",
+      "value": 325,
+      "percent": false,
+      "start": 763,
+      "end": 766
+    },
+    {
+      "id": "en:body:n29",
+      "sourceId": "en:body",
+      "raw": "130%",
+      "value": 130,
+      "percent": true,
+      "start": 770,
+      "end": 774
+    },
+    {
+      "id": "en:body:n30",
+      "sourceId": "en:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 807,
+      "end": 809
+    },
+    {
+      "id": "en:body:n31",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 810,
+      "end": 812
+    },
+    {
+      "id": "en:body:n32",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 813,
+      "end": 815
+    },
+    {
+      "id": "en:body:n33",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 816,
+      "end": 818
+    },
+    {
+      "id": "en:body:n34",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 819,
+      "end": 821
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 5,
+      "end": 6
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "55",
+      "value": 55,
+      "percent": false,
+      "start": 40,
+      "end": 42
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "72.5",
+      "value": 72.5,
+      "percent": false,
+      "start": 43,
+      "end": 47
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 48,
+      "end": 50
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "107.5",
+      "value": 107.5,
+      "percent": false,
+      "start": 51,
+      "end": 56
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 64,
+      "end": 67
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 125,
+      "end": 128
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 159,
+      "end": 161
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 177,
+      "end": 180
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 218,
+      "end": 221
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": true,
+      "start": 226,
+      "end": 228
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 229,
+      "end": 231
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": true,
+      "start": 232,
+      "end": 234
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": true,
+      "start": 235,
+      "end": 237
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "40%",
+      "value": 40,
+      "percent": true,
+      "start": 238,
+      "end": 241
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "99",
+      "value": 99,
+      "percent": false,
+      "start": 259,
+      "end": 261
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "130.5",
+      "value": 130.5,
+      "percent": false,
+      "start": 262,
+      "end": 267
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "162",
+      "value": 162,
+      "percent": false,
+      "start": 268,
+      "end": 271
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "193.5",
+      "value": 193.5,
+      "percent": false,
+      "start": 272,
+      "end": 277
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "225",
+      "value": 225,
+      "percent": false,
+      "start": 278,
+      "end": 281
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "90%",
+      "value": 90,
+      "percent": true,
+      "start": 285,
+      "end": 288
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 321,
+      "end": 322
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "0.75",
+      "value": 0.75,
+      "percent": false,
+      "start": 404,
+      "end": 408
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "143",
+      "value": 143,
+      "percent": false,
+      "start": 444,
+      "end": 447
+    },
+    {
+      "id": "ko:body:n25",
+      "sourceId": "ko:body",
+      "raw": "188.5",
+      "value": 188.5,
+      "percent": false,
+      "start": 448,
+      "end": 453
+    },
+    {
+      "id": "ko:body:n26",
+      "sourceId": "ko:body",
+      "raw": "234",
+      "value": 234,
+      "percent": false,
+      "start": 454,
+      "end": 457
+    },
+    {
+      "id": "ko:body:n27",
+      "sourceId": "ko:body",
+      "raw": "279.5",
+      "value": 279.5,
+      "percent": false,
+      "start": 458,
+      "end": 463
+    },
+    {
+      "id": "ko:body:n28",
+      "sourceId": "ko:body",
+      "raw": "325",
+      "value": 325,
+      "percent": false,
+      "start": 464,
+      "end": 467
+    },
+    {
+      "id": "ko:body:n29",
+      "sourceId": "ko:body",
+      "raw": "130%",
+      "value": 130,
+      "percent": true,
+      "start": 471,
+      "end": 475
+    },
+    {
+      "id": "ko:body:n30",
+      "sourceId": "ko:body",
+      "raw": "20",
+      "value": 20,
+      "percent": false,
+      "start": 494,
+      "end": 496
+    },
+    {
+      "id": "ko:body:n31",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": false,
+      "start": 497,
+      "end": 499
+    },
+    {
+      "id": "ko:body:n32",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 500,
+      "end": 502
+    },
+    {
+      "id": "ko:body:n33",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 503,
+      "end": 505
+    },
+    {
+      "id": "ko:body:n34",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 506,
+      "end": 508
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "바위 조각을 던집니다. 다져진 땅에서 사용하면 바위 하나를 던져 적을 둔화시키며, 몬스터는 기절시킵니다.",
+  "rules": [
+    {
+      "id": "27b2f473d3e6e2ff7214",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "mark",
+          "operator": "absent",
+          "value": {
+            "kind": "text",
+            "value": "다져진 땅"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "바위 조각을 던져 처음 맞힌 적 주변 지역에 마법 피해를 입히고, 해당 지역에 다져진 땅을 만듭니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "count",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Taliyah hurls 5 rocks, each dealing (55/72.5/90/107.5/125 + (50% Ability Power)) magic damage in an area around the first enemy hit while creating Worked Ground at that area."
+        }
+      ]
+    },
+    {
+      "id": "7bb7b961b257da3dad9a",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 시전에서 같은 적이 받는 첫 바위 이후 후속 바위 적중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "같은 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "같은 적에게 후속 바위 조각이 적중하면 피해가 60% 감소한다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Subsequent hits against the same enemy deal 60% less damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Taliyah hurls 5 rocks, each dealing (55/72.5/90/107.5/125 + (50% Ability Power)) magic damage in an area around the first enemy hit while creating Worked Ground at that area."
+        }
+      ]
+    },
+    {
+      "id": "4f81b2bd2531a2441be8",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "다져진 땅"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "다져진 땅에서 시전하면 마나를 소모하고 다져진 땅을 소비합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_cost",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Casts on worked ground cost 10 Mana and have 50% less Cooldown, consume the Worked Ground, and hurl a boulder that Slows enemies it hits by 20/25/30/35/40% for 1.5 seconds, dealing (99/130.5/162/193.5/225 + (90% Ability Power)) magic damage to the primary target."
+        }
+      ]
+    },
+    {
+      "id": "022022feeb663ba2755d",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "다져진 땅"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "다져진 땅에서 시전하면 재사용 대기시간이 50% 감소하되 0.75초 미만으로 낮아지지 않는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n23"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Casts on worked ground cost 10 Mana and have 50% less Cooldown, consume the Worked Ground, and hurl a boulder that Slows enemies it hits by 20/25/30/35/40% for 1.5 seconds, dealing (99/130.5/162/193.5/225 + (90% Ability Power)) magic damage to the primary target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Casting this Ability on Worked Ground cannot reduce its Cooldown to less than 0.75 seconds."
+        }
+      ]
+    },
+    {
+      "id": "7d764e048206528b117e",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "다져진 땅에서 던진 바위에 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적중한 적을 둔화시킵니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Casts on worked ground cost 10 Mana and have 50% less Cooldown, consume the Worked Ground, and hurl a boulder that Slows enemies it hits by 20/25/30/35/40% for 1.5 seconds, dealing (99/130.5/162/193.5/225 + (90% Ability Power)) magic damage to the primary target."
+        }
+      ]
+    },
+    {
+      "id": "db43c2ceb2cc4764d95a",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "다져진 땅에서 시전한 큰 바위"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "큰 바위의 주 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "다져진 땅에서 던진 바위가 주 대상에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Casts on worked ground cost 10 Mana and have 50% less Cooldown, consume the Worked Ground, and hurl a boulder that Slows enemies it hits by 20/25/30/35/40% for 1.5 seconds, dealing (99/130.5/162/193.5/225 + (90% Ability Power)) magic damage to the primary target."
+        }
+      ]
+    },
+    {
+      "id": "446da66877f3036699b1",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "다져진 땅에서 던진 바위에 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "몬스터를 기절시킵니다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Monsters hit by the boulder are Stunned for 3 seconds."
+        }
+      ]
+    },
+    {
+      "id": "747c91b36ef15ff08ae5",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "ui_information",
+          "subject": "target",
+          "text": "툴팁은 단일 대상에 대한 총 마법 피해를 별도 식으로 표시한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n24",
+                "en:body:n25",
+                "en:body:n26",
+                "en:body:n27",
+                "en:body:n28"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n29"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Total damage to a single target: (143/188.5/234/279.5/325 + (130% Ability Power))"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Total damage to a single target: (143/188.5/234/279.5/325 + (130% Ability Power)) Each rock deals 20/25/30/35/40 additional damage to monsters."
+        }
+      ]
+    },
+    {
+      "id": "97b77ddf80cffb3455cd",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "본문은 각 바위가 몬스터에게 추가 피해를 준다고 명시한다. 다져진 땅의 큰 바위에도 포함되는지는 별도로 명시하지 않는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n30",
+                "en:body:n31",
+                "en:body:n32",
+                "en:body:n33",
+                "en:body:n34"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each rock deals 20/25/30/35/40 additional damage to monsters."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Total damage to a single target: (143/188.5/234/279.5/325 + (130% Ability Power)) Each rock deals 20/25/30/35/40 additional damage to monsters."
+        }
+      ]
+    },
+    {
+      "id": "3bd24a5e23dacac28b21",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "바위를 던지는 동안 이동하거나 다른 스킬을 사용할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Taliyah can move and use other Abilities while hurling rocks."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "기본 바위 조각의 피해가 '처음 맞힌 적 주변 지역'에 적용되는 범위와 후속 적중 판정은 원문에 세부 설명이 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Taliyah hurls 5 rocks, each dealing (55/72.5/90/107.5/125 + (50% Ability Power)) magic damage in an area around the first enemy hit while creating Worked Ground at that area."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Subsequent hits against the same enemy deal 60% less damage."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "몬스터 추가 피해 수치가 다져진 땅에서 던지는 바위에도 적용되는지 원문에서 범위를 명확히 하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Each rock deals 20/25/30/35/40 additional damage to monsters."
+        }
+      ]
+    },
+    {
+      "reason": "source_conflict",
+      "detail": "두요약은자기아래WorkedGround생성으로설명하지만두본문은첫적주변지역에땅생성으로명시한다.본문위치를우선보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "This creates Worked Ground below her."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "magic damage in an area around the first enemy hit while creating Worked Ground at that area."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "5600496ecc400883d397d98cae559e54506342f60632af64be1d8c2234e33b7f"
+}

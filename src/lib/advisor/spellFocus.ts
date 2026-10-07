@@ -1,5 +1,6 @@
 import { aliasAt, aliasesOf } from "@/lib/knowledge/searchAliases";
 import { requestedContent } from "./requestText";
+import { asksControlDuration } from "./crowdControlQuestion";
 
 export type SpellFocus =
   | "cooldown"
@@ -28,7 +29,7 @@ export type SpellFocus =
 const FOCUS_LEXICON: Array<[SpellFocus, RegExp]> = [
   ["cooldown", /쿨(타임|다운)?|재사용|\bcd\b|cool\s*down|recharge|冷却|CD/i],
   ["cost", /(?<!얼)마나|소모|코스트|기력|분노|비용|\bmana\b|mana\s*cost|\bcosts?\b|energy|fury|法力|消耗|能量|蓝耗|耗蓝|耗多少蓝/i],
-  ["ratio", /계수|주문력\s*계수|공격력\s*계수|\bap\b|\bad\b|ratio|scaling|coefficient|加成|系数/i],
+  ["ratio", /계수|주문력\s*계수|공격력\s*계수|\bap\b|\bad\b|\bratios?\b|\bscaling\b|\bcoefficients?\b|加成|系数/i],
   ["damage", /피해|데미지|딜(량)?|대미지|\bdamage\b|\bdmg\b|伤害/i],
 ];
 
@@ -63,6 +64,7 @@ export function detectSpellFocus(question: string): { focus: SpellFocus; keyword
   // “기절 스킬 쿨타임”의 기절은 수식어다. 명시한 구조 수치를 효과 낱말보다 먼저 읽는다.
   const numeric = FOCUS_LEXICON.find(([focus, pattern]) => focus !== "damage" && pattern.test(question));
   if (numeric) return { focus: numeric[0], keywords: [] };
+  if (asksControlDuration(question)) return { focus: "effect", keywords: ["초 동안", "초간", "second", "seconds", "秒"] };
   for (const [alias, words, focus] of EFFECT_ALIASES) {
     if (alias.test(question)) return { focus: focus ?? "effect", keywords: words };
   }

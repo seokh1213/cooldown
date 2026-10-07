@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 2,
+  "id": "Morgana.P",
+  "champion": "Morgana",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "15a4822c3e4a41e6b6ee3708a60b050aed171d22a188ed970013c5a72704002f",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Soul Siphon",
+      "ko": "영혼 흡수"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Morgana.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Morgana drains spirit from her enemies, healing as she deals damage to champions, large minions, and medium and larger jungler monsters.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "모르가나가 적의 영혼을 흡수하여 챔피언, 대형 미니언, 중형 및 대형 정글 몬스터에게 피해를 입힐 때 체력을 회복합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "모르가나가 스킬로 챔피언, 대형 미니언, 중형 및 대형 정글 몬스터에게 피해를 입히면 피해량의 18%만큼 체력을 회복합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "18%",
+      "value": 18,
+      "percent": true,
+      "start": 18,
+      "end": 21
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "18%",
+      "value": 18,
+      "percent": true,
+      "start": 53,
+      "end": 56
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "모르가나는 스킬로 챔피언, 대형 미니언, 중형 이상 정글 몬스터에게 피해를 입히면 피해량의 일정 비율만큼 체력을 회복합니다.",
+  "rules": [
+    {
+      "id": "3087965e897f245b4791",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스킬로해당대상에실제피해를입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "모르가나가 스킬로 챔피언에게 입힌 피해량에 비례해 체력을 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters."
+        }
+      ]
+    },
+    {
+      "id": "f27aeec4f77cd038f8e5",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "대형 미니언"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스킬로해당대상에실제피해를입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "모르가나가 스킬로 대형 미니언에게 입힌 피해량에 비례해 체력을 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters."
+        }
+      ]
+    },
+    {
+      "id": "6d992c291469bb6d56f7",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "중형 이상 정글 몬스터"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "스킬로해당대상에실제피해를입힘"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "모르가나가 스킬로 중형 이상 정글 몬스터에게 입힌 피해량에 비례해 체력을 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "대형미니언및중형이상정글몬스터의크기/종류는전용enum이없어minion/monster타입ANDother텍스트조건으로보존.완전typed판정으로실행하지않음.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Morgana Heals for 18% of the damage dealt by her Abilities to champions, large minions, and medium and larger jungle monsters."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "fc875b811c598bb14b23dc76d3032b97435a1c596ed3b5b62befdd3ca7b3b4c3"
+}

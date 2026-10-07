@@ -1,0 +1,533 @@
+{
+  "summary": "샤코가 상자를 설치합니다. 상자는 설치 후 시야에서 사라지고, 적이 가까이 다가오거나 발각되면 발동해 주변 적을 공포에 빠뜨린 뒤 공격합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "설치 후 은신 지연이 지나면 상자가 시야에서 사라지고, 별도의 수명 동안 지속된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shaco creates a trap that stealths itself after 2 seconds and lasts for (40 + (10% Ability Power)) seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적이 상자 근처에 오거나 상자가 드러남"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "summon",
+          "text": "적이 가까이 다가오거나 상자가 발각되면 상자가 발동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It activates when an enemy comes near or when revealed"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "상자 주변 적"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 상자가 발동함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "상자가 발동하면 주변 적 챔피언을 공포에 빠뜨립니다.",
+          "damageType": null,
+          "crowdControl": "fear",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It activates when an enemy comes near or when revealed, Fearing nearby enemy Champions for 0.5/0.75/1/1.25/1.5 seconds, or 2 seconds for minions and jungle monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "상자 주변 적"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 상자가 발동함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "상자가 발동하면 주변 미니언을 공포에 빠뜨린다.",
+          "damageType": null,
+          "crowdControl": "fear",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It activates when an enemy comes near or when revealed, Fearing nearby enemy Champions for 0.5/0.75/1/1.25/1.5 seconds, or 2 seconds for minions and jungle monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "상자 주변 정글 몬스터"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 상자가 발동함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "상자가 발동하면 주변 정글 몬스터를 공포에 빠뜨린다.",
+          "damageType": null,
+          "crowdControl": "fear",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It activates when an enemy comes near or when revealed, Fearing nearby enemy Champions for 0.5/0.75/1/1.25/1.5 seconds, or 2 seconds for minions and jungle monsters."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "발동한 뒤5초 공격 상태인 이 상자"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "발동한 상자가5초 동안 주변 모든 적에게 발사한다. 피해값은 상자 공격의 피해이며5초 동안의 총피해로 취급하지 않는다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Once activated, the trap fires at all nearby enemies for 5 seconds, dealing (10/15/20/25/30 + (12% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Once activated, the trap fires at all nearby enemies for 5 seconds, dealing (10/15/20/25/30 + (12% Ability Power)) magic damage, or (25/40/55/70/85 + (18% Ability Power)) damage if focused on a single target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "단일 대상에 집중해 공격"
+          }
+        },
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "발동한 뒤5초 공격 상태인 이 상자"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "상자가 단일 대상에게 집중해 공격하면 해당 대상에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n16",
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19",
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "or (25/40/55/70/85 + (18% Ability Power)) damage if focused on a single target."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Once activated, the trap fires at all nearby enemies for 5 seconds, dealing (10/15/20/25/30 + (12% Ability Power)) magic damage, or (25/40/55/70/85 + (18% Ability Power)) damage if focused on a single target."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "깜짝 상자의 공격은 몬스터에게 추가 피해를 입힙니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n22",
+                "en:body:n23",
+                "en:body:n24",
+                "en:body:n25",
+                "en:body:n26"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Once activated, the trap fires at all nearby enemies for 5 seconds, dealing (10/15/20/25/30 + (12% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Jack in the Box's attacks deal an additional 20/35/50/65/80 damage to monsters."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "적 근접 또는 상자 노출이라는 OR발동 조건을 텍스트로 보존했다. 정확한 근접 반경과 노출 감지 방식은 공급되지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "It activates when an enemy comes near or when revealed"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "원문은 단일 대상에 집중하는 상황을 설명하지만, 그 상황이 발생하는 조건을 구체적으로 정의하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "or (25/40/55/70/85 + (18% Ability Power)) damage if focused on a single target."
+        }
+      ]
+    },
+    {
+      "reason": "missing_source",
+      "detail": "몬스터 대상 추가 피해의 피해 유형은 해당 추가 피해 문장에 명시되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Jack in the Box's attacks deal an additional 20/35/50/65/80 damage to monsters."
+        }
+      ]
+    }
+  ]
+}

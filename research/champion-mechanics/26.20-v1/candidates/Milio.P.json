@@ -1,0 +1,168 @@
+{
+  "summary": "밀리오의 스킬이 아군 챔피언에게 닿으면 그 아군의 다음 기본 공격 또는 스킬에 추가 마법 피해가 붙고, 대상은 일정 시간 동안 불타 피해를 입는다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "밀리오 스킬이 해당 아군챔피언에 닿음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "ally",
+          "text": "밀리오의 스킬이 닿은 아군 챔피언에게 다음 기본 공격 또는 스킬에 적용될 타오르는 힘 효과를 부여한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Milio's Abilities touch ally champions, their next Attack or Ability deals (7% ~ 15%) ally Attack Damage as additional magic damage, plus ((10 ~ 50) + (20% Ability Power)) magic damage over 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "ally"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "밀리오스킬에 닿아 강화된 그 아군챔피언의 다음 공격 또는 스킬"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "해당 공격 또는 스킬의 대상"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "강화된아군의 다음공격/스킬 대상에게 그아군공격력의7~15%를 추가마법피해로 줍니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "ally",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "해당대상은1.5초동안 총(10~50+20%밀리오AP) 마법피해로 불탑니다. 이 총식을 초당피해로 반복하지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Milio's Abilities touch ally champions, their next Attack or Ability deals (7% ~ 15%) ally Attack Damage as additional magic damage, plus ((10 ~ 50) + (20% Ability Power)) magic damage over 1.5 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "7~15%아군AD/10~50기본피해 범위의 변화기준은없다. 강화된스킬의복수적중/복수대상 적용횟수와강화대기시간도공급본문에없어 추정하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "their next Attack or Ability deals (7% ~ 15%) ally Attack Damage as additional magic damage, plus ((10 ~ 50) + (20% Ability Power)) magic damage over 1.5 seconds."
+        }
+      ]
+    }
+  ]
+}

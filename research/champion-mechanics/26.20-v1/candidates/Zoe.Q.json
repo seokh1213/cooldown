@@ -1,0 +1,146 @@
+{
+  "summary": "조이가 별을 발사해 이동거리에 따라 증가하는 마법 피해를 처음 적중한 적과 주변 적에게 입힙니다. 재사용하면 별을 조이 근처의 새 위치로 보냅니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "별의 첫 적중 대상 또는 그 주변 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "처음 적중한 적과 그 주변 적에게 이동거리에 따라 증가하는 마법 피해를 줍니다. 하한식은50/80/110/140/170+(2~50)+AP60%, 상한식은125/200/275/350/425+(5~125)+AP150%입니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zoe fires a star that deals increasing damage the further it travels to the first enemy hit and surrounding enemies -- between (50/80/110/140/170 + (2 ~ 50) + (60% Ability Power)) to (125/200/275/350/425 + (5 ~ 125) + (150% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "unknown",
+          "text": "별을 조이 근처의 새 위치로 방향을 바꿉니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Zoe can Recast this Ability to redirect the missile to a new position near Zoe."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "거리별피해보간식과내부2~50/5~125범위의변화기준은미공급이다. 두AP계수는하한/상한에각각속하며서로더하지않는다. 내부범위를거리값이라고추측하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "deals increasing damage the further it travels"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 2,
+  "id": "Yunara.P",
+  "champion": "Yunara",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "92441cd6a07797fa9b5d36aad778292e7dca02dbd759284ccd191862ab704aaa",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Vow of the First Lands",
+      "ko": "최초의 땅의 맹세"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Yunara.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Yunara's Critical Strikes deal bonus magic damage.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Yunara's Critical Strikes deal an additional (10% + (0.1% Ability Power)) magic damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "유나라의 치명타가 추가 마법 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "유나라의 치명타가 (10% + (0.1% 주문력))의 마법 피해를 추가로 입힙니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 46,
+      "end": 49
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "0.1%",
+      "value": 0.1,
+      "percent": true,
+      "start": 53,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 11,
+      "end": 14
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "0.1%",
+      "value": 0.1,
+      "percent": true,
+      "start": 18,
+      "end": 22
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "유나라의 치명타는 추가 마법 피해를 입힙니다.",
+  "rules": [
+    {
+      "id": "1b4ae3b92291fa1d4b4d",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "유나라의 치명타 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "치명타는(10%+0.1%AP)의 추가 마법 피해를 줍니다. 이 백분율이 적용될 기준 피해는 공급본문에 명시되어 있지 않습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yunara's Critical Strikes deal an additional (10% + (0.1% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "10%+0.1%AP는 퍼센트 구성요소이며 기준피해/정확한연산식이 없다.10을절대마법피해로 합산하지 않고 공급표현만 보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Yunara's Critical Strikes deal an additional (10% + (0.1% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "f82de588f45d7cd46e267c64210ada4727ccf517b71ffeddb69039508e1a29f7"
+}

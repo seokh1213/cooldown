@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 2,
+  "id": "Karthus.P",
+  "champion": "Karthus",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "bc86dc8f4e04b01ae216ac06c490d0ab8eb244585202792968e9e9f2afd28dcf",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Death Defied",
+      "ko": "죽음 극복"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Karthus.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Upon dying, Karthus enters a spirit form that allows him to continue casting spells.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "When Karthus dies he can use his Abilities for free for 7 seconds.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "카서스가 죽으면 영혼이 되어 스킬을 사용할 수 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "카서스는 죽은 뒤에 7초 동안 마나를 소비하지 않고 스킬을 사용할 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 56,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "7",
+      "value": 7,
+      "percent": false,
+      "start": 11,
+      "end": 12
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "카서스가 죽은 뒤 일정 시간 동안 마나를 소모하지 않고 스킬을 사용할 수 있습니다.",
+  "rules": [
+    {
+      "id": "7cea72e190317e08a181",
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "카서스는 죽은 뒤 일정 시간 동안 스킬을 무료로 사용할 수 있습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "When Karthus dies he can use his Abilities for free for 7 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "cf112c99840d68fb205f75254c7c6e576b04b55f30c6eb322307dd9e97255a46"
+}

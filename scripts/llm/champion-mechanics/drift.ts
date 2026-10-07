@@ -17,9 +17,12 @@ export interface DriftSlot {
   id: string; action: "reuse" | "regenerate" | "remove"; reasons: string[];
   sourceHash: string | null; previousSourceHash: string | null; retainedReview: boolean;
 }
-/** provenance와 진단만 제외한다. 수치·CC·형태 변경은 보수적으로 재작성한다. */
+/** 수치·CC·형태는 비교하고, 의미를 바꾸지 않는 출처·진단·아이콘 판본은 제외한다. */
 export function semanticFingerprint(job: Job): string {
   const facts = Object.fromEntries(Object.entries(job.facts).filter(([key]) => !["provenance", "diagnostics"].includes(key)));
+  if (Array.isArray(facts.forms)) {
+    facts.forms = facts.forms.map(form => Object.fromEntries(Object.entries(form).filter(([key]) => key !== "iconVersion")));
+  }
   return digest({ champion: job.champion, slot: job.slot, slotRole: job.slotRole, sources: job.sources, numbers: job.numbers, variants: job.variants, facts });
 }
 export function compareInventory(baseline: Baseline, current: { patch: string; jobs: Job[]; overview?: Array<Record<string, unknown>> }) {

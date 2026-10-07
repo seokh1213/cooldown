@@ -1,0 +1,64 @@
+{
+  "summary": "애니가 원뿔 형태의 화염파를 발사해 원뿔 범위 안의 모든 적에게 마법 피해를 입힌다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "애니가 원뿔 형태의 화염파를 발사해 해당 범위 안의 적들에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "Annie casts a blazing cone of fire, dealing damage to all enemies in the area."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Annie projects a wave of fire, dealing (70/110/150/190/230 + (80% Ability Power)) magic damage."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Annie casts a blazing cone of fire, dealing damage to all enemies in the area."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

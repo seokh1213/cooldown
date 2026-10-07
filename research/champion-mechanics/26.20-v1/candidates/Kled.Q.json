@@ -1,0 +1,985 @@
+{
+  "summary": "탑승 중에는 덫을 던져 적을 붙잡고, 근거리를 유지하면 추가 피해·끌어당김·둔화가 적용됩니다. 미탑승 중에는 산탄총으로 물리 피해를 입히고 뒤로 밀려납니다. 추가 산탄의 피해는 감소하며 챔피언과 에픽 몬스터 적중은 서로 다른 양의 용기를 회복합니다.",
+  "rules": [
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Mounted"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "덫에 적중한 적에게 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n0",
+                "form:A:en:n1",
+                "form:A:en:n2",
+                "form:A:en:n3",
+                "form:A:en:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Mounted: Kled throws a bear trap that deals (30/55/80/105/130 + (60% bonus Attack Damage)) physical damage and hooks onto the first enemy champion or large jungle monster hit."
+        }
+      ]
+    },
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Mounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "대형 정글 몬스터"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "첫 번째로 적중한 대형 정글 몬스터를 덫으로 붙잡는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Mounted: Kled throws a bear trap that deals (30/55/80/105/130 + (60% bonus Attack Damage)) physical damage and hooks onto the first enemy champion or large jungle monster hit."
+        }
+      ]
+    },
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Mounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "덫에 붙잡힌 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "form:A:en:n6"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "붙잡힌 적과 해당 시간 동안 근거리를 유지함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "근거리를 유지한 뒤 붙잡힌 적에게 추가 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n7",
+                "form:A:en:n8",
+                "form:A:en:n9",
+                "form:A:en:n10",
+                "form:A:en:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:A:en:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "If Kled stays near a hooked enemy for 1.75 seconds, he yanks out the trap, dealing (60/110/160/210/260 + (120% bonus Attack Damage)) physical damage, Pulling them, and Slowing by 30/35/40/45/50% for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Mounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "덫에 붙잡힌 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "form:A:en:n6"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "붙잡힌 적과 해당 시간 동안 근거리를 유지함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적을 클레드 쪽으로 끌어당긴다.",
+          "damageType": null,
+          "crowdControl": "pull",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "If Kled stays near a hooked enemy for 1.75 seconds, he yanks out the trap, dealing (60/110/160/210/260 + (120% bonus Attack Damage)) physical damage, Pulling them, and Slowing by 30/35/40/45/50% for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Mounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "덫에 붙잡힌 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "gte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "form:A:en:n6"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "붙잡힌 적과 해당 시간 동안 근거리를 유지함"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:A:en:n13",
+                "form:A:en:n14",
+                "form:A:en:n15",
+                "form:A:en:n16",
+                "form:A:en:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "form:A:en:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "If Kled stays near a hooked enemy for 1.75 seconds, he yanks out the trap, dealing (60/110/160/210/260 + (120% bonus Attack Damage)) physical damage, Pulling them, and Slowing by 30/35/40/45/50% for 2.5 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Mounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "덫에 붙잡힌 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "클레드가 붙잡은 적에 대한 절대 시야를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "While hooked, Kled has True Sight to the enemy."
+        }
+      ]
+    },
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Mounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "첫 번째로 적중한 적 챔피언을 덫으로 붙잡는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Mounted: Kled throws a bear trap that deals (30/55/80/105/130 + (60% bonus Attack Damage)) physical damage and hooks onto the first enemy champion or large jungle monster hit."
+        }
+      ]
+    },
+    {
+      "variant": "form:A",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Mounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "미니언에게 기본 피해의 해당 배율을 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "form:A:en:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:A:en",
+          "quote": "Deals 150% damage to minions."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dismounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "해당 대상에게 처음 적중한 산탄"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "첫 산탄 적중은 추가 공격력에 비례하는 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n7",
+                "form:B:en:n8",
+                "form:B:en:n9",
+                "form:B:en:n10",
+                "form:B:en:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "Deals 20% damage per hit beyond the first."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dismounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "해당 대상에게 첫 산탄 적중 이후 추가로 적중한 산탄"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "첫 적중 이후의 산탄은 첫 적중 피해의 감소된 배율로 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n7",
+                "form:B:en:n8",
+                "form:B:en:n9",
+                "form:B:en:n10",
+                "form:B:en:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "form:B:en:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "form:B:en:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "Deals 20% damage per hit beyond the first."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dismounted"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "산탄총을 발사하면 클레드가 뒤로 밀려난다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dismounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "적 챔피언에게 산탄이 적중할 때마다 용기를 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Each pellet that hits an enemy champion or epic monster restores Courage."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "Restore 5 Courage per hit against champions, and 2.5 against epic monsters."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dismounted"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "epic monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "에픽 몬스터에게 산탄이 적중할 때마다 용기를 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "form:B:en:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "per_target"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "Each pellet that hits an enemy champion or epic monster restores Courage."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "Restore 5 Courage per hit against champions, and 2.5 against epic monsters."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dismounted"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "사용 시 탄약을 소모한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "resource_cost",
+              "numberRefs": [
+                "form:B:en:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        }
+      ]
+    },
+    {
+      "variant": "form:B",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "Dismounted"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "탄약은 원문에 표시된 재충전 시간에 따라 회복된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "form:B:en:n1",
+                "form:B:en:n2",
+                "form:B:en:n3",
+                "form:B:en:n4",
+                "form:B:en:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "미탑승 툴팁 머리말의 괄호 속 3s는 항목 이름이 없어 별도 재사용 대기시간으로 확정하지 않는다. 탄약 재충전 시간과 혼합하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        }
+      ]
+    },
+    {
+      "reason": "missing_source",
+      "detail": "산탄의 총개수와 탄약 최대 보유량은 현재 원문에 없다.",
+      "evidence": [
+        {
+          "sourceId": "form:B:en",
+          "quote": "1 ammo 18/16/14/12/10s Ammo Recharge (3s ) Dismounted: Kled fires a shotgun, dealing (35/50/65/80/95 + (65% bonus Attack Damage)) physical damage and blasting Kled backward."
+        },
+        {
+          "sourceId": "form:B:en",
+          "quote": "Deals 20% damage per hit beyond the first."
+        }
+      ]
+    }
+  ]
+}

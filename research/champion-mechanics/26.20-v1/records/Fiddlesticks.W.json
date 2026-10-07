@@ -1,0 +1,958 @@
+{
+  "schemaVersion": 2,
+  "id": "Fiddlesticks.W",
+  "champion": "Fiddlesticks",
+  "slot": "W",
+  "patch": "26.20",
+  "sourceHash": "d750f3ef655fa43dc2682f4cd8527a74a0e6b4742d0c9a3e92fc08fbbeb247fa",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Bountiful Harvest",
+      "ko": "풍작"
+    },
+    "cooldownSeconds": [
+      10,
+      9.5,
+      9,
+      8.5,
+      8
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      650,
+      650,
+      650,
+      650,
+      650
+    ],
+    "cost": {
+      "values": [
+        60,
+        65,
+        70,
+        75,
+        80
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Damage Per Second",
+        "values": "60/90/120/150/180"
+      },
+      {
+        "label": "Missing Health Damage",
+        "values": "12%/14.5%/17%/19.5%/22%"
+      },
+      {
+        "label": "Percent Healed",
+        "values": "25%/32.5%/40%/47.5%/55%"
+      },
+      {
+        "label": "Cooldown",
+        "values": "10/9.5/9/8.5/8"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:DrainDamageCalc"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "DrainDamageCalc",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRank": [
+          60,
+          90,
+          120,
+          150,
+          180
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.44999998807907104,
+              0.44999998807907104,
+              0.44999998807907104,
+              0.44999998807907104,
+              0.44999998807907104
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Fiddlesticks.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Fiddlesticks drains health from nearby enemies, dealing bonus execute damage at the end of the duration.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Fiddlesticks channels and drains the souls of nearby enemies, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage per second for 2 seconds, plus 12/14.5/17/19.5/22% missing Health magic damage at the end. Fiddlesticks restores 25/32.5/40/47.5/55% of damage as Health. If Fiddlesticks ends the channel without interruption, the remaining Cooldown is reduced by 60%. Healing based on pre-mitigation damage. Against monsters, this Ability deals 135% damage and heals 45% of damage done. Against minions, this Ability deals 50% damage and heals 15% of damage done.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "피들스틱이 주변 적의 체력을 흡수합니다. 지속시간이 끝날 때 잃은 체력에 비례한 추가 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "피들스틱이 정신을 집중해 2초에 걸쳐 주변 적들의 영혼을 흡수합니다. 그동안 초당 (60/90/120/150/180 + (45% 주문력))의 마법 피해 를 입히고, 지속시간이 끝날 때 대상이 잃은 체력의 12/14.5/17/19.5/22%에 해당하는 마법 피해를 입힙니다. 피들스틱은 피해량의 25/32.5/40/47.5/55%에 해당하는 체력을 회복합니다. 피들스틱이 방해 없이 끝까지 스킬을 사용하면 남은 재사용 대기시간이 60% 감소합니다. 체력은 감소되기 전 피해량을 기준으로 회복됩니다. 몬스터에게는 135%의 피해를 입히고 피해량의 45%만큼 체력을 회복합니다. 미니언에게는 50%의 피해를 입히고 피해량의 15%만큼 체력을 회복합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 71,
+      "end": 73
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 74,
+      "end": 76
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 77,
+      "end": 80
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 81,
+      "end": 84
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 85,
+      "end": 88
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 92,
+      "end": 95
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 140,
+      "end": 141
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "12",
+      "value": 12,
+      "percent": true,
+      "start": 156,
+      "end": 158
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "14.5",
+      "value": 14.5,
+      "percent": true,
+      "start": 159,
+      "end": 163
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "17",
+      "value": 17,
+      "percent": true,
+      "start": 164,
+      "end": 166
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "19.5",
+      "value": 19.5,
+      "percent": true,
+      "start": 167,
+      "end": 171
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "22%",
+      "value": 22,
+      "percent": true,
+      "start": 172,
+      "end": 175
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 238,
+      "end": 240
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "32.5",
+      "value": 32.5,
+      "percent": true,
+      "start": 241,
+      "end": 245
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 246,
+      "end": 248
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "47.5",
+      "value": 47.5,
+      "percent": true,
+      "start": 249,
+      "end": 253
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "55%",
+      "value": 55,
+      "percent": true,
+      "start": 254,
+      "end": 257
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 371,
+      "end": 374
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "135%",
+      "value": 135,
+      "percent": true,
+      "start": 453,
+      "end": 457
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 475,
+      "end": 478
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 531,
+      "end": 534
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 552,
+      "end": 555
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 14,
+      "end": 15
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "60",
+      "value": 60,
+      "percent": false,
+      "start": 47,
+      "end": 49
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "90",
+      "value": 90,
+      "percent": false,
+      "start": 50,
+      "end": 52
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "120",
+      "value": 120,
+      "percent": false,
+      "start": 53,
+      "end": 56
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "150",
+      "value": 150,
+      "percent": false,
+      "start": 57,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "180",
+      "value": 180,
+      "percent": false,
+      "start": 61,
+      "end": 64
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 68,
+      "end": 71
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "12",
+      "value": 12,
+      "percent": true,
+      "start": 114,
+      "end": 116
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "14.5",
+      "value": 14.5,
+      "percent": true,
+      "start": 117,
+      "end": 121
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "17",
+      "value": 17,
+      "percent": true,
+      "start": 122,
+      "end": 124
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "19.5",
+      "value": 19.5,
+      "percent": true,
+      "start": 125,
+      "end": 129
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "22%",
+      "value": 22,
+      "percent": true,
+      "start": 130,
+      "end": 133
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "25",
+      "value": 25,
+      "percent": true,
+      "start": 164,
+      "end": 166
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "32.5",
+      "value": 32.5,
+      "percent": true,
+      "start": 167,
+      "end": 171
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": true,
+      "start": 172,
+      "end": 174
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "47.5",
+      "value": 47.5,
+      "percent": true,
+      "start": 175,
+      "end": 179
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "55%",
+      "value": 55,
+      "percent": true,
+      "start": 180,
+      "end": 183
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 239,
+      "end": 242
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "135%",
+      "value": 135,
+      "percent": true,
+      "start": 285,
+      "end": 289
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "45%",
+      "value": 45,
+      "percent": true,
+      "start": 304,
+      "end": 307
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 328,
+      "end": 331
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "15%",
+      "value": 15,
+      "percent": true,
+      "start": 346,
+      "end": 349
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "주변 적의 영혼을 정신 집중해 흡수하며 집중 중 초당 마법 피해를 입히고, 끝날 때 대상의 잃은 체력에 비례한 추가 마법 피해를 입힙니다. 입힌 피해에 따라 체력을 회복합니다. 방해 없이 집중을 끝내면 남은 재사용 대기시간이 감소합니다. 몬스터와 미니언에게는 각각 별도의 피해 및 회복 비율이 적용됩니다.",
+  "rules": [
+    {
+      "id": "121a77ea3346edee6e6d",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "정신 집중 중 주변 적에게 초당 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks channels and drains the souls of nearby enemies, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage per second for 2 seconds, plus 12/14.5/17/19.5/22% missing Health magic damage at the end."
+        }
+      ]
+    },
+    {
+      "id": "1c0be1975e100d52213a",
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "집중이 끝날 때 주변 적에게 대상의 잃은 체력 비례 마법 피해를 입힙니다. 잃은 체력 기준은 제공된 통계 항목으로 표현할 수 없습니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks channels and drains the souls of nearby enemies, dealing (60/90/120/150/180 + (45% Ability Power)) magic damage per second for 2 seconds, plus 12/14.5/17/19.5/22% missing Health magic damage at the end."
+        }
+      ]
+    },
+    {
+      "id": "dd3c87b9042b6ad6e3d9",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "주변 적에게 입힌 피해량의 일정 비율만큼 체력을 회복합니다. 회복량은 경감 전 피해를 기준으로 합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks restores 25/32.5/40/47.5/55% of damage as Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Healing based on pre-mitigation damage."
+        }
+      ]
+    },
+    {
+      "id": "635527b57324290806bc",
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "정신 집중을 방해 없이 끝까지 완료"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "방해 없이 집중을 끝내면 남은 재사용 대기시간이 감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Fiddlesticks ends the channel without interruption, the remaining Cooldown is reduced by 60%."
+        }
+      ]
+    },
+    {
+      "id": "6a00ac7033c990e62795",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "monster"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "몬스터에게 입히는 피해는 조정됩니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "몬스터에게 입힌 피해량의 일정 비율만큼 체력을 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Against monsters, this Ability deals 135% damage and heals 45% of damage done."
+        }
+      ]
+    },
+    {
+      "id": "cc90bbc217967b74000a",
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "미니언에게 입히는 피해는 조정됩니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "미니언에게 입힌 피해량의 일정 비율만큼 체력을 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Against minions, this Ability deals 50% damage and heals 15% of damage done."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "잃은 체력 비례 피해 기준인 missing Health를 제공된 stat enum으로 표현할 수 없어 텍스트에 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "plus 12/14.5/17/19.5/22% missing Health magic damage at the end."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "방해 없이 집중을 끝내는 조건은 fixed followup_status의 fired 값으로 정확히 표현할 수 없어 조건과 효과를 텍스트에 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Fiddlesticks ends the channel without interruption, the remaining Cooldown is reduced by 60%."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "몬스터와미니언은별도회복45%/15%가명시되어기본25~55%회복과중복하지않게대상분기한다.회복은본문감소전피해기준문구를따른다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiddlesticks restores 25/32.5/40/47.5/55% of damage as Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Against monsters, this Ability deals 135% damage and heals 45% of damage done."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Against minions, this Ability deals 50% damage and heals 15% of damage done."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "3af849f80fdb805c2c425e8d383e0b312eb2c0f46c989f982b8942c7570638f9"
+}

@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 2,
+  "id": "TwistedFate.P",
+  "champion": "TwistedFate",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "4684a28726aef715637f7ffb4798a4146774cec11a2c095f5c12b0f81df7eaa7",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Loaded Dice",
+      "ko": "사기 주사위"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/TwistedFate.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Upon killing a unit, Twisted Fate rolls his 'lucky' dice receiving 1 to 6 bonus gold.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Upon killing a unit, Twisted Fate rolls his 'lucky' dice receiving 1 to 6 bonus gold.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "트위스티드 페이트는 유닛을 하나 처치할 때마다 '행운'의 주사위를 굴려 1에서 6까지의 골드를 추가로 얻습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "트위스티드 페이트는 유닛을 하나 처치할 때마다 '행운'의 주사위를 굴려 1에서 6까지의 골드를 추가로 얻습니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 67,
+      "end": 68
+    },
+    {
+      "id": "en:summary:n1",
+      "sourceId": "en:summary",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 72,
+      "end": 73
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 67,
+      "end": 68
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 72,
+      "end": 73
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 40,
+      "end": 41
+    },
+    {
+      "id": "ko:summary:n1",
+      "sourceId": "ko:summary",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 44,
+      "end": 45
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 40,
+      "end": 41
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "6",
+      "value": 6,
+      "percent": false,
+      "start": 44,
+      "end": 45
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "유닛을 처치하면 추가 골드를 얻습니다.",
+  "rules": [
+    {
+      "id": "4b21df0bfe25813bf1ef",
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "유닛을 처치할 때마다 행운의 주사위를 굴려 1~6의 추가 골드를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Upon killing a unit, Twisted Fate rolls his 'lucky' dice receiving 1 to 6 bonus gold."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "8ca9dd518eaca3bdd557101451dc58736c07ba94645d5e8ce89082e11c4d5094"
+}

@@ -1,0 +1,182 @@
+{
+  "summary": "독가스가 적에게 피해를 주며, 챔피언 적중 시 카시오페아의 이동 속도가 증가하고 3초에 걸쳐 감소합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이Q시전의짧은지연후대상지역의적에게독가스가적중할때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "짧은지연후대상지역의적에게3초에걸쳐총65/100/135/170/205+주문력75%마법피해를입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "enemy",
+          "text": "이독가스에맞은적을중독시킵니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Cassiopeia blasts noxious gas, Poisoning enemies and dealing (65/100/135/170/205 + (75% Ability Power)) magic damage over 3 seconds."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "blasts an area with Poison after a brief delay"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이Q에맞은적챔피언"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "이Q로적챔피언을맞히면자신의이동속도가30/35/40/45/50%증가하고3초동안원래대로감소합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "moveSpeed",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Hitting a champion grants Cassiopeia 30/35/40/45/50% Move Speed decaying over 3 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "missing_source",
+      "detail": "요약은짧은지연후지역폭발을명시하지만지연시간숫자는공급원문에없다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "after a brief delay"
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "MS30/35/40/45/50%는모든랭크%지만frozen숫자표는마지막만percent=true이다.전체단위를텍스트에보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "30/35/40/45/50% Move Speed"
+        }
+      ]
+    }
+  ]
+}

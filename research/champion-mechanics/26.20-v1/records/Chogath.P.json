@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 2,
+  "id": "Chogath.P",
+  "champion": "Chogath",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "88571441532e499e3e07710aae15de025b9741da96f47dbdb9cf3937bb2fe11b",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Carnivore",
+      "ko": "육식"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30,
+          32,
+          34,
+          36,
+          38,
+          40,
+          42,
+          44,
+          46,
+          48,
+          50,
+          52,
+          54,
+          56
+        ],
+        "digits": 0
+      },
+      {
+        "values": [
+          4.72,
+          5,
+          5.28,
+          5.56,
+          5.84,
+          6.12,
+          6.4,
+          6.68,
+          6.96,
+          7.24,
+          7.52,
+          7.8,
+          8.08,
+          8.36,
+          8.64,
+          8.92,
+          9.2,
+          9.48,
+          9.76,
+          10.04
+        ],
+        "digits": 1
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Chogath.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Whenever Cho'Gath kills a unit, he recovers Health and Mana. The values restored increase with Cho'Gath's level.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Killing an enemy restores (18 ~ 52) Health and (4.7 ~ 9.5) Mana.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "초가스는 유닛을 죽이면 체력과 마나를 회복합니다. 회복량은 초가스의 레벨이 높아질수록 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "적 유닛을 처치할 때마다 체력을 (18 ~ 52), 마나를 (4.7 ~ 9.5) 회복합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 27,
+      "end": 29
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "52",
+      "value": 52,
+      "percent": false,
+      "start": 32,
+      "end": 34
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "4.7",
+      "value": 4.7,
+      "percent": false,
+      "start": 48,
+      "end": 51
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "9.5",
+      "value": 9.5,
+      "percent": false,
+      "start": 54,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 19,
+      "end": 21
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "52",
+      "value": 52,
+      "percent": false,
+      "start": 24,
+      "end": 26
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "4.7",
+      "value": 4.7,
+      "percent": false,
+      "start": 34,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "9.5",
+      "value": 9.5,
+      "percent": false,
+      "start": 40,
+      "end": 43
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "적 유닛 처치 시 체력과 마나를 회복하며, 회복량은 초가스의 레벨에 따라 증가한다.",
+  "rules": [
+    {
+      "id": "8c10998a243b59937ce3",
+      "variant": "base",
+      "trigger": {
+        "event": "kill",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "any"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "heal",
+          "subject": "caster",
+          "text": "체력을 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "마나를 회복한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Killing an enemy restores (18 ~ 52) Health and (4.7 ~ 9.5) Mana."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "c6ee891fbf66bc2d443e9952b0d10b4de30701b74ae6588045d361aa9e2ecc2a"
+}

@@ -1,0 +1,519 @@
+{
+  "summary": "기본 지속 효과는 2.5초 안에 세 번째 공격마다 추가 마법 피해를 줍니다. 사용 시 주변 적에게 마법 피해를 입히며, 챔피언을 맞히면 8초 동안 방어력과 마법 저항력이 증가합니다. 지속 시간 동안 두 번째 공격마다 추가 마법 피해를 줍니다. 구조물에는 피해량의 50%를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "세 번째 공격"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "number_ref",
+            "ref": "en:body:n0"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "absent",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 8초 강화 효과"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "조건을 만족하는 공격은 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Every third Attack within 2.5 seconds deals an additional (75/130/185 + (60% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "주변적에게100/175/250 + 자기추가주문력100% 마법피해를준다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jax slams his lantern down, dealing (100/175/250 + (100% bonus Ability Power)) magic damage to nearby enemies."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이번 시전에서 첫 챔피언 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "챔피언을 맞히면 방어력과 마법 저항력이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": "armor",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "챔피언을 맞히면 방어력과 마법 저항력이 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15"
+              ],
+              "stat": "magicResist",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If he hits a champion he gains (45/60/75 + (40% bonus Attack Damage)) Armor and (27/36/45 + (24% bonus Attack Damage)) Magic Resist plus (20/25/30 + (10% bonus Attack Damage)) Armor and (12/15/18 + (6% bonus Attack Damage)) Magic Resist per additional champion hit for 8 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "neq",
+          "value": {
+            "kind": "text",
+            "value": "이번 시전에서 첫 챔피언 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "맞힌 추가 챔피언마다 방어력이 추가로 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n17",
+                "en:body:n18",
+                "en:body:n19"
+              ],
+              "stat": "armor",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "맞힌 추가 챔피언마다 마법 저항력이 추가로 증가합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n21",
+                "en:body:n22",
+                "en:body:n23"
+              ],
+              "stat": "magicResist",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n24"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n25"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If he hits a champion he gains (45/60/75 + (40% bonus Attack Damage)) Armor and (27/36/45 + (24% bonus Attack Damage)) Magic Resist plus (20/25/30 + (10% bonus Attack Damage)) Armor and (12/15/18 + (6% bonus Attack Damage)) Magic Resist per additional champion hit for 8 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "hit_count",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "두 번째 공격"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "time",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "R 효과 지속 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "이 시간 동안 두 번째 공격마다 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "During this time every second Attack deals additional magic damage instead of every third."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 스킬의 피해"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "구조물에게는이 스킬 피해의50%를입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n26"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Jax slams his lantern down, dealing (100/175/250 + (100% bonus Ability Power)) magic damage to nearby enemies. If he hits a champion he gains (45/60/75 + (40% bonus Attack Damage)) Armor and (27/36/45 + (24% bonus Attack Damage)) Magic Resist plus (20/25/30 + (10% bonus Attack Damage)) Armor and (12/15/18 + (6% bonus Attack Damage)) Magic Resist per additional champion hit for 8 seconds. During this time every second Attack deals additional magic damage instead of every third. Deals 50% damage to structures."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "세 번째 및 두 번째 공격은 hit_count에 허용된 숫자 참조로 표현할 수 없어 서수 조건을 텍스트로 보존했습니다. 2.5초 시간 창은 숫자 참조로 포함했지만, 공격 간격의 정확한 창 의미는 별도 gap으로 남깁니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every third Attack within 2.5 seconds"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "추가 챔피언 적중당 증가 효과에는 추가 적중 수가 명시되어 있으나, 허용된 entity_count 조건으로 추가 챔피언 적중분을 정확히 셀 수 없어 조건을 완전히 구조화하지 못했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "per additional champion hit"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "지속 중 두 번째 공격의 추가 마법 피해량은 원문에서 별도 수치가 제시되지 않아 parameters를 비워 두었습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "During this time every second Attack deals additional magic damage instead of every third."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "구조물 피해가 주변 적 대상 피해를 대체하는 것으로 표현했으나, 구조물이 주변 적 범위에 포함되는 조건은 원문에서 구체화되지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals 50% damage to structures."
+        }
+      ]
+    },
+    {
+      "reason": "scope_ambiguous",
+      "detail": "활성피해의100% bonus Ability Power는추가AP가스키마에없어abilityPower로연결하되텍스트의추가범위를우선한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "(100% bonus Ability Power)"
+        }
+      ]
+    }
+  ]
+}

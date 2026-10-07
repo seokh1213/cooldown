@@ -1,0 +1,288 @@
+{
+  "summary": "기본 지속 효과로 카사딘의 기본 공격이 추가 마법 피해를 입힙니다. 사용하면 다음 기본 공격이 추가 마법 피해를 입히고 잃은 마나를 회복하며, 챔피언 공격 시 회복 비율이 증가합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "카사딘의 기본 공격이 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Kassadin's Attacks deal an additional (25 + (10% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 W로 검을 충전한 후 다음 기본공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "강화된 다음 기본 공격이 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5",
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kassadin charges his blade, causing his next Attack to deal (50/75/100/125/150 + (80% Ability Power)) magic damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kassadin charges his blade, causing his next Attack to deal (50/75/100/125/150 + (80% Ability Power)) magic damage and restore 4/4.5/5/5.5/6% missing Mana, increased to 20/22.5/25/27.5/30% against champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 W로 검을 충전한 후 다음 기본공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "이 강화공격이 비챔피언을 맞히면 카사딘 자신의 잃은마나4/4.5/5/5.5/6%를 회복합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kassadin charges his blade, causing his next Attack to deal (50/75/100/125/150 + (80% Ability Power)) magic damage and restore 4/4.5/5/5.5/6% missing Mana"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kassadin charges his blade, causing his next Attack to deal (50/75/100/125/150 + (80% Ability Power)) magic damage and restore 4/4.5/5/5.5/6% missing Mana, increased to 20/22.5/25/27.5/30% against champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "followup_attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이 W로 검을 충전한 후 다음 기본공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "이 강화공격이 챔피언을 맞히면 카사딘 자신의 잃은마나20/22.5/25/27.5/30%를 회복합니다. 일반비율 대신 적용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "increased to 20/22.5/25/27.5/30% against champions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kassadin charges his blade, causing his next Attack to deal (50/75/100/125/150 + (80% Ability Power)) magic damage and restore 4/4.5/5/5.5/6% missing Mana, increased to 20/22.5/25/27.5/30% against champions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "W사용으로 검을 충전해 다음 기본공격의 강화피해와 마나회복을 준비합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kassadin charges his blade, causing his next Attack"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "잃은마나는 스키마참조스탯에 없어 백분율회복을 정확한text와formula_components로 보존한다. active마법피해와항상적용passive마법피해의 합산/대체관계는 원문이별도지정하지 않으므로 주어진각식을 보존한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "restore 4/4.5/5/5.5/6% missing Mana, increased to 20/22.5/25/27.5/30% against champions."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Kassadin's Attacks deal an additional (25 + (10% Ability Power)) magic damage. Active: Kassadin charges his blade, causing his next Attack to deal (50/75/100/125/150 + (80% Ability Power)) magic damage"
+        }
+      ]
+    }
+  ]
+}

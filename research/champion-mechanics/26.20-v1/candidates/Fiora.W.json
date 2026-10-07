@@ -1,0 +1,308 @@
+{
+  "summary": "피오라가 0.75초 동안 받는 모든 피해, 비활성화 및 부정적 효과를 막아낸 뒤 찌른다. 찌르기는 처음 적중한 챔피언에게 마법 피해를 입힌다. 이동 불가 효과를 막아내지 않았으면 그 챔피언의 이동 속도와 공격 속도를 둔화시키고, 막아냈으면 둔화 대신 기절시킨다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "받는 모든 피해, 비활성화 및 부정적 효과를 막아낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Fiora parries all incoming damage, disables, and negative effects for 0.75 seconds, then stabs."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "찌르기가 처음 적중한 챔피언에게 마법 피해를 입힌다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The stab deals (110/150/190/230/270 + (100% Ability Power)) magic damage to the first champion hit"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The stab deals (110/150/190/230/270 + (100% Ability Power)) magic damage to the first champion hit and Slows Move Speed by 50% and Attack Speed by 25% for 2 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "absent",
+          "value": {
+            "kind": "text",
+            "value": "피오라가 이 능력으로 이동 불가 효과를 막아냄"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "처음맞은챔피언의이동속도를2초동안50%둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "같은챔피언의공격속도를2초동안25%감소시킨다.",
+          "damageType": null,
+          "crowdControl": "cripple",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The stab deals (110/150/190/230/270 + (100% Ability Power)) magic damage to the first champion hit and Slows Move Speed by 50% and Attack Speed by 25% for 2 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "If Fiora parries an Immobilizing effect, the stabbed enemy is Stunned rather than Slowed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "피오라가 이 능력으로 이동 불가 효과를 막아냄"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "이동 불가 효과를 막아냈다면 둔화 대신 기절시킨다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Fiora parries an Immobilizing effect, the stabbed enemy is Stunned rather than Slowed."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The stab deals (110/150/190/230/270 + (100% Ability Power)) magic damage to the first champion hit"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The stab deals (110/150/190/230/270 + (100% Ability Power)) magic damage to the first champion hit and Slows Move Speed by 50% and Attack Speed by 25% for 2 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "입력 프레임의 조건 필드에는 피오라가 이 능력으로 이동 불가 효과를 막아냈는지 나타내는 전용 조건값이 없어 텍스트 조건으로 보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If Fiora parries an Immobilizing effect, the stabbed enemy is Stunned rather than Slowed."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "둔화는2초라고명시하지만대체기절의별도지속수치는공급본문에없어추측하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "the stabbed enemy is Stunned rather than Slowed."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "summary": "쉔이 기의 검 위치에 방어 영역을 생성합니다. 영역 안의 아군 챔피언을 향한 기본 공격이 차단됩니다. 영역이 시작될 때 보호할 챔피언이 없으면 활성화가 잠시 기다립니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "ally",
+          "text": "기의검위치에 활성화 후1.75초 지속되는 결계를 만들고 내부의 쉔 본인 및 아군챔피언에게 향하는 기본공격을 차단합니다. 보호할 챔피언이 없으면 아래 대기조건을 따릅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Shen creates a defensive zone at his Spirit Blade for 1.75 seconds. Attacks against allied champions in the zone are blocked."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Attacks that would hit Shen or his allies near his spirit blade are blocked."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "ally",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "영역 시작 시 보호할 챔피언이 없음"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "ally",
+          "text": "결계 시작시 보호할 챔피언이 없으면 활성화가 최대2초 대기합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "If there are no champions to protect in the zone when it starts, it will wait for up to 2 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": []
+}

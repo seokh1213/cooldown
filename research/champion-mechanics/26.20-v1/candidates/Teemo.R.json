@@ -1,0 +1,351 @@
+{
+  "summary": "버섯 함정을 던집니다. 적이 밟으면 폭발해 둔화시키고 4초에 걸쳐 마법 피해를 입히며, 그 피해와 같은 시간 동안 적의 모습을 드러냅니다. 함정은 은신 상태로 유지됩니다. 버섯 위에 던진 버섯은 튕겨 착지합니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "summon",
+          "subject": "summon",
+          "text": "저장된버섯충전하나를써버섯함정을던집니다.함정은은신상태로5분유지되며적이밟으면폭발합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Teemo tosses a mushroom trap that detonates when stepped on."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "using one of the mushrooms stored in his pack."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Traps last 5 minutes and are stealthed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "enter_area",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "적이이버섯함정을밟아폭발했을때독구름에영향받는적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "함정폭발의독구름에영향받은적을4초동안30/40/50%둔화합니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "함정폭발의독구름에영향받은적에게4초에걸쳐총200/325/450+주문력50%마법피해를입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "enemy",
+          "text": "적의 모습을 피해와 같은 시간 동안 드러냅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The traps Slow by 30/40/50% and deal (200/325/450 + (50% Ability Power)) magic damage over 4 seconds. Enemies are revealed for the same duration."
+        },
+        {
+          "sourceId": "ko:body",
+          "quote": "함정은 4초 동안 30/40/50% 둔화시키고"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Teemo tosses a mushroom trap that detonates when stepped on."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "it will release a poisonous cloud, slowing enemies and damaging them over time."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "summon"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "summon",
+          "text": "함정은 은신 상태로 유지됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Traps last 5 minutes and are stealthed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "expiry",
+        "subject": "summon"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이함정설치후5분수명이다했을때"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "summon",
+          "text": "설치된이함정이5분의수명을다하면만료됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Traps last 5 minutes and are stealthed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "summon",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "던진 버섯이 다른 버섯 위에 떨어지는 위치 관계"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "summon",
+          "text": "던진 버섯 함정이 튕긴 뒤 착지 지점에 떨어집니다. 기존버섯위에서튕겨추가사거리를얻습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "A mushroom tossed onto another mushroom bounces before landing at its position."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "it will bounce, gaining additional range."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "이 스킬은 충전 횟수를 보유하며 시간이 지나면 충전됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "storage_cap",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "cooldown_seconds",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "This Ability has 3 charges (35/30/25 second refresh)."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "둔화30/40/50%의처음두값은frozen숫자표percent=false이다.전체랭크%를텍스트보존하며표수정은금지되어단순실행불가다.함정5분역시초단위numberRef300이없어서other5와5분텍스트로보존했다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Slow by 30/40/50%"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Traps last 5 minutes"
+        }
+      ]
+    }
+  ]
+}

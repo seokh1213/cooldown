@@ -1,7 +1,7 @@
 /** 검증한 상호작용 및 CC 조회. 모델의 추측이나 일반 상성 조언보다 확인된 사실을 먼저 쓴다. */
 import { CROWD_CONTROL, controlText, controlLabel, type CrowdControlType, type SpellCrowdControl } from "@/lib/knowledge/crowdControl";
 import { matchesMechanicsQuestion } from "@/lib/knowledge/mechanics";
-import { controlQuery, askedCleansers, asksCrowdControl } from "./crowdControlQuestion";
+import { controlQuery, askedCleansers, asksCrowdControl, asksControlDuration } from "./crowdControlQuestion";
 import { controlInteractionAnswer, controlRuleAddenda } from "./controlInteractionAnswer";
 import { controlSubject, controlClarification } from "./controlSubject";
 import { dialogueMemoryOf, type DialogueMemory } from "./dialogueState";
@@ -79,7 +79,8 @@ export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, 
   });
   const directNote = direct?.type === "code" ? ctx.data.mechanics.find(section => `mech:${section.id}` === direct.knowledge?.id) : undefined;
   // 순수 수치 조회는 수치 경로로 보내고, 근거가 있는 조건부 상호작용은 먼저 답한다.
-  if (!query && !directNote?.evidence && /쿨|재사용|사거리|계수|피해량|지속시간|몇\s*초|\b(?:cooldown|range|ratio|duration)\b|冷却|射程/i.test(resolved.text)) return undefined;
+  if (!query && !directNote?.evidence && (asksControlDuration(resolved.text)
+    || /쿨|재사용|사거리|계수|피해량|지속시간|몇\s*초|\b(?:cooldown|range|ratio|duration)\b|冷却|射程/i.test(resolved.text))) return undefined;
   // 구체적인 상호작용 노트는 일반 스킬·CC 목록보다 질문에 직접 답한다.
   if (directNote && directNote.questionGroups!.length >= 2
     && (directNote.evidence || !directNote.subjects && !directNote.controls)) return direct;

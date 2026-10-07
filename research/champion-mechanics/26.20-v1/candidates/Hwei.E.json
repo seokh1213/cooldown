@@ -1,0 +1,372 @@
+{
+  "summary": "흐웨이가 고통 주제의 스킬로 적을 제어하며, 암울한 형상(EQ), 심연의 응시(EW), 파괴의 아귀(EE) 중 하나를 그립니다.",
+  "rules": [
+    {
+      "variant": "EQ",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "처음 적중한 적을 도망치게 합니다.",
+          "damageType": null,
+          "crowdControl": "fear",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "variant:EQ:en:n0",
+                "variant:EQ:en:n1",
+                "variant:EQ:en:n2",
+                "variant:EQ:en:n3",
+                "variant:EQ:en:n4"
+              ],
+              "stat": null,
+              "shape": "rank_values",
+              "statSubject": null
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "처음 적중한 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:EQ:en:n5",
+                "variant:EQ:en:n6",
+                "variant:EQ:en:n7",
+                "variant:EQ:en:n8",
+                "variant:EQ:en:n9"
+              ],
+              "stat": null,
+              "shape": "rank_values",
+              "statSubject": null
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "variant:EQ:en:n10"
+              ],
+              "stat": "abilityPower",
+              "shape": "scalar",
+              "statSubject": "caster"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:EQ:en",
+          "quote": "Grim Visage Hwei launches a terrifying face that causes the first enemy hit to Flee for 1/1.125/1.25/1.375/1.5 second(s) and take (70/110/150/190/230 + (65% Ability Power)) magic damage."
+        }
+      ]
+    },
+    {
+      "variant": "EW",
+      "conditions": [],
+      "evidence": [
+        {
+          "sourceId": "variant:EW:en",
+          "quote": "Gaze of the Abyss Hwei forms an eye that lingers and provides vision locking onto the first enemy champion that enters and launching a homing missile that Roots the first enemy hit for 1.2/1.4/1.6/1.8/2 seconds dealing (70/110/150/190/230 + (65% Ability Power)) magic damage."
+        }
+      ],
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "caster",
+          "text": "눈이 머물며 시야를 제공합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "variant": "EW",
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "first enemy champion to enter"
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:EW:en",
+          "quote": "Gaze of the Abyss Hwei forms an eye that lingers and provides vision locking onto the first enemy champion that enters and launching a homing missile that Roots the first enemy hit for 1.2/1.4/1.6/1.8/2 seconds dealing (70/110/150/190/230 + (65% Ability Power)) magic damage."
+        }
+      ],
+      "trigger": {
+        "event": "enter_area",
+        "subject": "enemy"
+      },
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "target",
+          "text": "눈이 처음 들어오는 적 챔피언을 포착하고 유도 미사일을 발사합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "variant": "EW",
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:EW:en",
+          "quote": "Gaze of the Abyss Hwei forms an eye that lingers and provides vision locking onto the first enemy champion that enters and launching a homing missile that Roots the first enemy hit for 1.2/1.4/1.6/1.8/2 seconds dealing (70/110/150/190/230 + (65% Ability Power)) magic damage."
+        }
+      ],
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "enemy"
+      },
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "유도 미사일이 처음 적중한 적을 속박합니다.",
+          "damageType": null,
+          "crowdControl": "root",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "variant:EW:en:n0",
+                "variant:EW:en:n1",
+                "variant:EW:en:n2",
+                "variant:EW:en:n3",
+                "variant:EW:en:n4"
+              ],
+              "stat": null,
+              "shape": "rank_values",
+              "statSubject": null
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "유도 미사일이 처음 적중한 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:EW:en:n5",
+                "variant:EW:en:n6",
+                "variant:EW:en:n7",
+                "variant:EW:en:n8",
+                "variant:EW:en:n9"
+              ],
+              "stat": null,
+              "shape": "rank_values",
+              "statSubject": null
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "variant:EW:en:n10"
+              ],
+              "stat": "abilityPower",
+              "shape": "scalar",
+              "statSubject": "caster"
+            }
+          ],
+          "flags": []
+        }
+      ]
+    },
+    {
+      "variant": "EE",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "enemy"
+      },
+      "conditions": [
+        {
+          "subject": "enemy",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "caught by Crushing Maw"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "적을 중앙으로 끌어당깁니다.",
+          "damageType": null,
+          "crowdControl": "pull",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "적중한 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:EE:en:n0",
+                "variant:EE:en:n1",
+                "variant:EE:en:n2",
+                "variant:EE:en:n3",
+                "variant:EE:en:n4"
+              ],
+              "stat": null,
+              "shape": "rank_values",
+              "statSubject": null
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "variant:EE:en:n5"
+              ],
+              "stat": "abilityPower",
+              "shape": "scalar",
+              "statSubject": "caster"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "아귀에 잡힌 적을 둔화시키며 둔화 효과는 1.25초에 걸쳐 감소합니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "variant:EE:en:n6",
+                "variant:EE:en:n7",
+                "variant:EE:en:n8",
+                "variant:EE:en:n9",
+                "variant:EE:en:n10"
+              ],
+              "stat": null,
+              "shape": "rank_values",
+              "statSubject": null
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "variant:EE:en:n11"
+              ],
+              "stat": null,
+              "shape": "scalar",
+              "statSubject": null
+            }
+          ],
+          "flags": [
+            "decays"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "variant:EE:en",
+          "quote": "Crushing Maw Hwei paints a set of jaws at a target location that Drags enemies to the center dealing (70/110/150/190/230 + (65% Ability Power)) magic damage and Slowing enemies caught by 40/47.5/55/62.5/70% decaying over 1.25 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "EW 설명은 눈이 시야를 제공한다고 하지만, 시야의 범위와 지속 시간은 주어지지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "variant:EW:en",
+          "quote": "Gaze of the Abyss Hwei forms an eye that lingers and provides vision"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "EQ의 Flee와 EW의 Root 외에 군중 제어의 부가 판정이나 면역 상호작용은 이 입력의 variant 문서에 없습니다.",
+      "evidence": []
+    }
+  ]
+}

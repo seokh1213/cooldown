@@ -65,7 +65,10 @@ export async function runDialogue(options: { stories: QualityStory[]; mode: "non
   for (const story of options.stories) {
     const ctx = qualityContext(story.lang, options.mode);
     const deps = typeof options.deps === "function" ? options.deps(story.lang) : options.deps;
-    if (story.memory) ctx.turns = [{ role: "assistant", memory: story.memory as unknown as NonNullable<PlanContext["turns"][number]["memory"]> }];
+    if (story.memory) {
+      const memory = story.memoryPatch === "current" ? { ...story.memory, patch: ctx.data!.patch } : story.memory;
+      ctx.turns = [{ role: "assistant", memory: memory as unknown as NonNullable<PlanContext["turns"][number]["memory"]> }];
+    }
     for (const [turn, entry] of story.turns.entries()) {
       const start = performance.now();
       const output = await answerDialogue(entry.q, ctx, deps);

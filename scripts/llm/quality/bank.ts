@@ -28,7 +28,7 @@ const language = (text: string): Language => /[가-힣]/.test(text) ? "ko_KR" : 
 export function mergeStories(stories: QualityStory[]): QualityStory[] {
   const merged = new Map<string, QualityStory>();
   for (const story of stories) {
-    const key = digest({ lang: story.lang, turns: story.turns, memory: story.memory, manual: story.manual, split: story.split });
+    const key = digest({ lang: story.lang, turns: story.turns, memory: story.memory, memoryPatch: story.memoryPatch, manual: story.manual, split: story.split });
     const prior = merged.get(key);
     if (prior) {
       prior.sources.push(...story.sources);
@@ -114,7 +114,9 @@ function singleBank(): QualityStory[] {
     const q = String(row.question ?? row.q);
     const expected = suite === "stat-single" ? { statQuery: row.expected } : suite === "numeric-qa" ? { numericGold: row } : { docIds: row.gold };
     stories.push({ id: "", suites: [suite], lang: (row.lang ?? language(q)) as Language, split: "heldout",
-      memory: row.memory as Record<string, unknown> | undefined, sources: [{ file, row: String(row.id ?? index) }], turns: [{ q, expected }] });
+      memory: row.memory as Record<string, unknown> | undefined,
+      memoryPatch: suite === "stat-single" && row.memory ? "current" : undefined,
+      sources: [{ file, row: String(row.id ?? index) }], turns: [{ q, expected }] });
   }
   return stories;
 }

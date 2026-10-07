@@ -31,6 +31,19 @@ test("패치와 수집 경로·진단만 변경되면 의미와 검수를 재사
   assert.equal(report.hasChanges, true);
   assert.deepEqual(report.counts, { total: 1, reuse: 1, regenerate: 0, removed: 0, metadata: 1, retainedReview: 1 });
 });
+test("변신 아이콘 버전만 바뀌면 재사용하고 형태·수치 변경은 승인을 제거한다", () => {
+  const baseline = fixture(), old = baseline.jobs[0];
+  old.facts.forms = [{ id: "human", iconVersion: "16.19", cooldownSeconds: [6] }];
+  const next = structuredClone(old);
+  next.facts.forms = [{ id: "human", iconVersion: "16.20", cooldownSeconds: [6] }];
+  assert.equal(compareInventory(baseline, { patch: "26.20", jobs: [next] }).counts.retainedReview, 1);
+  for (const form of [{ id: "spider", iconVersion: "16.20", cooldownSeconds: [6] },
+    { id: "human", iconVersion: "16.20", cooldownSeconds: [5] }]) {
+    next.facts.forms = [form];
+    assert.equal(compareInventory(baseline, { patch: "26.20", jobs: [next] }).counts.retainedReview, 0);
+  }
+});
+
 test("문구와 코드가 복사한 수치 변경은 해당 슬롯만 재작성하고 승인을 제거한다", () => {
   const baseline = fixture(), old = baseline.jobs[0];
   for (const next of [{ ...old, sources: [{ ...old.sources[0], text: "Gain 20 armor." }] },

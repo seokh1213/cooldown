@@ -9,9 +9,9 @@ export function loadMechanicsNotes(patch = resolvePatchVersion()): MechanicsInde
   const file = path.resolve("knowledge", "mechanics-notes.json");
   const data = JSON.parse(fs.readFileSync(file, "utf8")) as { notes: MechanicsIndex };
   const video = JSON.parse(fs.readFileSync(path.resolve("knowledge", "video-tips.json"), "utf8")) as {
-    patch: string; notes: MechanicsIndex;
+    patch: string; verifiedPatches?: string[]; notes: MechanicsIndex;
   };
-  if (video.patch === patch) data.notes.push(...video.notes);
+  if (video.patch === patch || video.verifiedPatches?.includes(patch)) data.notes.push(...video.notes);
   const seen = new Set<string>();
   for (const note of data.notes) {
     if (seen.has(note.id) || !note.sources?.length || !note.reviewedAt || !note.questionGroups?.length

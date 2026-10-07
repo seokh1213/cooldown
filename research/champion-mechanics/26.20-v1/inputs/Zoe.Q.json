@@ -1,0 +1,590 @@
+{
+  "champion": "Zoe",
+  "slot": "Q",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Zoe fires a missile that she can redirect in flight. Deals more damage the longer it flies in a straight line.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Zoe fires a star that deals increasing damage the further it travels to the first enemy hit and surrounding enemies -- between (50/80/110/140/170 + (2 ~ 50) + (60% Ability Power)) to (125/200/275/350/425 + (5 ~ 125) + (150% Ability Power)) magic damage. Zoe can Recast this Ability to redirect the missile to a new position near Zoe.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "조이가 별을 발사합니다. 별이 날아가는 도중에 방향을 바꿀 수 있으며, 별의 총 이동거리에 비례해 피해량이 증가합니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "조이가 이동거리가 길어질수록 더 큰 피해를 입히는 별을 발사합니다. 처음 적중한 적과 주변 적은 (50/80/110/140/170 + (2 ~ 50) + (60% 주문력)) ~ (125/200/275/350/425 + (5 ~ 125) + (150% 주문력))의 마법 피해를 입습니다. 조이는 스킬을 재사용해 별을 근처의 새로운 목표 지점으로 보낼 수 있습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Paddle Star!",
+      "ko": "통통별"
+    },
+    "cooldownSeconds": [
+      8.5,
+      8,
+      7.5,
+      7,
+      6.5
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      800,
+      800,
+      800,
+      800,
+      800
+    ],
+    "cost": {
+      "values": [
+        40,
+        45,
+        50,
+        55,
+        60
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Base Damage",
+        "values": "50/80/110/140/170"
+      },
+      {
+        "label": "Cooldown",
+        "values": "8.5/8/7.5/7/6.5"
+      },
+      {
+        "label": "Mana Cost",
+        "values": "40/45/50/55/60"
+      }
+    ],
+    "levelValues": [
+      {
+        "values": [
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          21,
+          24,
+          27,
+          30,
+          34,
+          38,
+          42,
+          46,
+          50,
+          54,
+          58
+        ],
+        "digits": 0
+      },
+      {
+        "values": [
+          5,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40,
+          45,
+          52.5,
+          60,
+          67.5,
+          75,
+          85,
+          95,
+          105,
+          115,
+          125,
+          135,
+          145
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "Q Scaling",
+        "labelKo": "Q 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "0:TotalDamageTooltip"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "TotalDamageTooltip",
+        "kind": "damage",
+        "damageType": "magical",
+        "baseByRankAndLevel": [
+          [
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64,
+            66,
+            68,
+            71,
+            74,
+            77,
+            80,
+            84,
+            88,
+            92,
+            96,
+            100
+          ],
+          [
+            82,
+            84,
+            86,
+            88,
+            90,
+            92,
+            94,
+            96,
+            98,
+            101,
+            104,
+            107,
+            110,
+            114,
+            118,
+            122,
+            126,
+            130
+          ],
+          [
+            112,
+            114,
+            116,
+            118,
+            120,
+            122,
+            124,
+            126,
+            128,
+            131,
+            134,
+            137,
+            140,
+            144,
+            148,
+            152,
+            156,
+            160
+          ],
+          [
+            142,
+            144,
+            146,
+            148,
+            150,
+            152,
+            154,
+            156,
+            158,
+            161,
+            164,
+            167,
+            170,
+            174,
+            178,
+            182,
+            186,
+            190
+          ],
+          [
+            172,
+            174,
+            176,
+            178,
+            180,
+            182,
+            184,
+            186,
+            188,
+            191,
+            194,
+            197,
+            200,
+            204,
+            208,
+            212,
+            216,
+            220
+          ]
+        ],
+        "terms": [
+          {
+            "stat": "abilityPower",
+            "coefficientsByRank": [
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579,
+              0.6000000238418579
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Zoe.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Zoe.Q",
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 128,
+      "end": 130
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 131,
+      "end": 133
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 134,
+      "end": 137
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 138,
+      "end": 141
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 142,
+      "end": 145
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 149,
+      "end": 150
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 153,
+      "end": 155
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 160,
+      "end": 163
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 184,
+      "end": 187
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 188,
+      "end": 191
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 192,
+      "end": 195
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 196,
+      "end": 199
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "425",
+      "value": 425,
+      "percent": false,
+      "start": 200,
+      "end": 203
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 207,
+      "end": 208
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 211,
+      "end": 214
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 219,
+      "end": 223
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 55,
+      "end": 57
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 58,
+      "end": 60
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "110",
+      "value": 110,
+      "percent": false,
+      "start": 61,
+      "end": 64
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "140",
+      "value": 140,
+      "percent": false,
+      "start": 65,
+      "end": 68
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 69,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "2",
+      "value": 2,
+      "percent": false,
+      "start": 76,
+      "end": 77
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 80,
+      "end": 82
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "60%",
+      "value": 60,
+      "percent": true,
+      "start": 87,
+      "end": 90
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 100,
+      "end": 103
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "200",
+      "value": 200,
+      "percent": false,
+      "start": 104,
+      "end": 107
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "275",
+      "value": 275,
+      "percent": false,
+      "start": 108,
+      "end": 111
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "350",
+      "value": 350,
+      "percent": false,
+      "start": 112,
+      "end": 115
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "425",
+      "value": 425,
+      "percent": false,
+      "start": 116,
+      "end": 119
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 123,
+      "end": 124
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 127,
+      "end": 130
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "150%",
+      "value": 150,
+      "percent": true,
+      "start": 135,
+      "end": 139
+    }
+  ],
+  "sourceHash": "b650545478ae82a00a91a7346ad07606938f25e76104a1402b57f8949563b21c",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

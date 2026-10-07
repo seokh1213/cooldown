@@ -1,0 +1,466 @@
+{
+  "summary": "창으로 앞을 가른 뒤 찌릅니다. 찌르기에 맞은 적은 둔화되며, 챔피언과 대형 몬스터는 도전 받은 상태가 되고 은신 상태가 아니면 모습이 드러납니다. 두 공격 모두 생명력 흡수가 적용됩니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "창을 가를 때 물리 피해를 입힙니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Xin Zhao slashes, dealing (30/40/50/60/70 + (30% Attack Damage)) physical damage"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Xin Zhao slashes, dealing (30/40/50/60/70 + (30% Attack Damage)) physical damage, then thrusts, dealing (50/85/120/155/190 + (90% Attack Damage) + (65% Ability Power)) × (1 + 33.3% Critical Strike Chance)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "찌르기피해는(기본+90%AD+65%AP)×(1+33.3%치명타확률)의식이며증가율상한33.3%입니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6",
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n11"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "damage_multiplier",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": "critChance",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "then thrusts, dealing (50/85/120/155/190 + (90% Attack Damage) + (65% Ability Power)) × (1 + 33.3% Critical Strike Chance)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The thrust's damage is increased by up to 33.3% based on Xin Zhao's Critical Strike Chance."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Xin Zhao slashes, dealing (30/40/50/60/70 + (30% Attack Damage)) physical damage, then thrusts, dealing (50/85/120/155/190 + (90% Attack Damage) + (65% Ability Power)) × (1 + 33.3% Critical Strike Chance)."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "찌르기에 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "target",
+          "text": "찌르기적중시50%둔화의지속시간은1.5+0.5%AP초입니다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies hit by the thrust are Slowed by 50% for (1.5 + (0.5% Ability Power)) seconds. Champions and Large Monsters hit by the thrust are marked as Challenged for 3 seconds and revealed unless Stealthed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "이W가르기또는찌르기적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "caster",
+          "text": "두 공격 모두 생명력 흡수 효과가 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n22"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Applies Lifesteal at 33% effectiveness on both attacks."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "minion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "미니언에게이W피해의50~100%비율을적용합니다. 숫자표는%를개별인식하지못하므로절대피해량으로실행하지않습니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n20"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n21"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "level_range"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (50 ~ 100)% damage to minions."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "찌르기에 적중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언또는대형몬스터"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "찌르기에 적중한 챔피언과 대형 몬스터를 도전 받은 상태로 표시하고, 은신 상태가 아니면 드러냅니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies hit by the thrust are Slowed by 50% for (1.5 + (0.5% Ability Power)) seconds. Champions and Large Monsters hit by the thrust are marked as Challenged for 3 seconds and revealed unless Stealthed."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "찌르기에 적중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "챔피언또는대형몬스터"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "visibility",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "은신상태가아님"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "target",
+          "text": "찌르기에 맞은 챔피언과 대형 몬스터는 은신 상태가 아니면 드러납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies hit by the thrust are Slowed by 50% for (1.5 + (0.5% Ability Power)) seconds. Champions and Large Monsters hit by the thrust are marked as Challenged for 3 seconds and revealed unless Stealthed."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "미니언 대상 피해 비율의 적용 방식 및 변동 조건은 원문에서 구체적으로 설명되지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (50 ~ 100)% damage to minions."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_number",
+      "detail": "(50~100)%의숫자표percent=false; lexical숫자표만으로단위를실행하지말것.비율텍스트보존.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Deals (50 ~ 100)% damage to minions."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "찌르기괄호전체×치명타확률배율과둔화AP가산시간은복합식구성요소;독립선형피해/지속시간합산금지.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "then thrusts, dealing (50/85/120/155/190 + (90% Attack Damage) + (65% Ability Power)) × (1 + 33.3% Critical Strike Chance)."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The thrust's damage is increased by up to 33.3% based on Xin Zhao's Critical Strike Chance."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Xin Zhao slashes, dealing (30/40/50/60/70 + (30% Attack Damage)) physical damage, then thrusts, dealing (50/85/120/155/190 + (90% Attack Damage) + (65% Ability Power)) × (1 + 33.3% Critical Strike Chance)."
+        }
+      ]
+    }
+  ]
+}

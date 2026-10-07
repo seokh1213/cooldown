@@ -1,0 +1,1074 @@
+{
+  "schemaVersion": 2,
+  "id": "Akshan.E",
+  "champion": "Akshan",
+  "slot": "E",
+  "patch": "26.20",
+  "sourceHash": "c8f0c138480e71899e68a67c5439a402a04cc843c7fb6a9a260e16140b772f69",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Heroic Swing",
+      "ko": "영웅의 비상"
+    },
+    "cooldownSeconds": [
+      18,
+      16.5,
+      15,
+      13.5,
+      12
+    ],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [
+      800,
+      800,
+      800,
+      800,
+      800
+    ],
+    "cost": {
+      "values": [
+        70,
+        70,
+        70,
+        70,
+        70
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Cooldown",
+        "values": "18/16.5/15/13.5/12"
+      },
+      {
+        "label": "Damage",
+        "values": "8/16/24/32/40"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "E Scaling",
+        "labelKo": "E 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "2:DamageToDeal"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "expression",
+      "expression": {
+        "id": "DamageToDeal",
+        "kind": "damage",
+        "damageType": "physical",
+        "root": {
+          "kind": "product",
+          "parts": [
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      8,
+                      16,
+                      24,
+                      32,
+                      40
+                    ]
+                  }
+                },
+                {
+                  "kind": "stat",
+                  "stat": "totalAttackDamage",
+                  "coefficient": {
+                    "byRank": [
+                      0.25,
+                      0.25,
+                      0.25,
+                      0.25,
+                      0.25
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "sum",
+              "parts": [
+                {
+                  "kind": "value",
+                  "value": {
+                    "byRank": [
+                      1,
+                      1,
+                      1,
+                      1,
+                      1
+                    ]
+                  }
+                },
+                {
+                  "kind": "stat",
+                  "stat": "bonusAttackSpeed",
+                  "coefficient": {
+                    "byRank": [
+                      0.30000001192092896,
+                      0.30000001192092896,
+                      0.30000001192092896,
+                      0.30000001192092896,
+                      0.30000001192092896
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "requiresBuffStacks": false
+      },
+      "unsupportedPartTypes": [
+        "nonlinear-multiplier"
+      ]
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Akshan.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Akshan fires a grappling hook into terrain then swings around it, repeatedly firing at the nearest enemy while swinging. He can jump off early or gets knocked off when colliding with champions or terrain.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "First Cast: Akshan fires a grappling hook, attaching to the first terrain hit. Second Cast: Akshan swings around the terrain, repeatedly firing at the nearest enemy for (8/16/24/32/40 + (25% Attack Damage)) × (1 + 30% bonus Attack Speed) physical damage per shot. Third Cast: Akshan dives off the rope, firing a final shot. Colliding with an enemy Champion or terrain ends the swing early. Champion takedowns refresh this Ability's Cooldown. Akshan prioritizes shooting champions marked by Dirty Fighting. On-hits while swinging are 25% effective. Damage is increased by 30% of bonus Attack Speed. Attacks can critically strike for (8/16/24/32/40 + (25% Attack Damage)) × (1 + 30% bonus Attack Speed) × (0.5 + 50% Critical Strike Damage) physical damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "아크샨이 갈고리총을 발사해 지형에 고정시킨 후, 갈고리에 매달린 채 가장 가까운 적을 연속으로 공격하며 이동합니다. 기동 중 챔피언이나 지형에 충돌하면 땅으로 떨어지며, 도중에 스스로 뛰어내릴 수도 있습니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "첫 사용 시: 아크샨이 적중한 첫 번째 지형에 고정되는 갈고리총을 발사합니다. 두 번째 사용 시: 아크샨이 갈고리에 매달려 이동하며 가장 가까운 적에게 연속으로 탄환을 발사해 한 발당 (8/16/24/32/40 + (25% 공격력)) × (1 + 30% 추가 공격 속도)의 물리 피해를 입힙니다. 세 번째 사용 시: 아크샨이 밧줄을 놓고 뛰어내리며 마지막 탄환을 발사합니다. 적 챔피언이나 지형에 부딪히면 영웅의 비상이 일찍 끝납니다. 챔피언 처치 관여 시 이 스킬의 재사용 대기시간이 초기화됩니다. 아크샨이 비열한 싸움으로 표식을 남긴 챔피언을 우선적으로 공격합니다. 갈고리에 매달린 채 이동 중에는 적중 시 효과 피해량이 25%로 적용됩니다. 피해량이 추가 공격 속도의 30%만큼 증가합니다. 기본 공격 시 치명타가 적용될 수 있으며, 적용 시 (8/16/24/32/40 + (25% 공격력)) × (1 + 30% 추가 공격 속도) × (0.5 + 50% 치명타 피해량)의 물리 피해를 입힙니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 170,
+      "end": 171
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "16",
+      "value": 16,
+      "percent": false,
+      "start": 172,
+      "end": 174
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "24",
+      "value": 24,
+      "percent": false,
+      "start": 175,
+      "end": 177
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "32",
+      "value": 32,
+      "percent": false,
+      "start": 178,
+      "end": 180
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 181,
+      "end": 183
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 187,
+      "end": 190
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 210,
+      "end": 211
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 214,
+      "end": 217
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 533,
+      "end": 536
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 571,
+      "end": 574
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 633,
+      "end": 634
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "16",
+      "value": 16,
+      "percent": false,
+      "start": 635,
+      "end": 637
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "24",
+      "value": 24,
+      "percent": false,
+      "start": 638,
+      "end": 640
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "32",
+      "value": 32,
+      "percent": false,
+      "start": 641,
+      "end": 643
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 644,
+      "end": 646
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 650,
+      "end": 653
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 673,
+      "end": 674
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 677,
+      "end": 680
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 704,
+      "end": 707
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 710,
+      "end": 713
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 104,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "16",
+      "value": 16,
+      "percent": false,
+      "start": 106,
+      "end": 108
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "24",
+      "value": 24,
+      "percent": false,
+      "start": 109,
+      "end": 111
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "32",
+      "value": 32,
+      "percent": false,
+      "start": 112,
+      "end": 114
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 115,
+      "end": 117
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 121,
+      "end": 124
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 134,
+      "end": 135
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 138,
+      "end": 141
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 350,
+      "end": 353
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 377,
+      "end": 380
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "8",
+      "value": 8,
+      "percent": false,
+      "start": 420,
+      "end": 421
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "16",
+      "value": 16,
+      "percent": false,
+      "start": 422,
+      "end": 424
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "24",
+      "value": 24,
+      "percent": false,
+      "start": 425,
+      "end": 427
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "32",
+      "value": 32,
+      "percent": false,
+      "start": 428,
+      "end": 430
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 431,
+      "end": 433
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "25%",
+      "value": 25,
+      "percent": true,
+      "start": 437,
+      "end": 440
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "1",
+      "value": 1,
+      "percent": false,
+      "start": 450,
+      "end": 451
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 454,
+      "end": 457
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "0.5",
+      "value": 0.5,
+      "percent": false,
+      "start": 471,
+      "end": 474
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "50%",
+      "value": 50,
+      "percent": true,
+      "start": 477,
+      "end": 480
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "아크샨은 첫 지형에 갈고리를 고정하고 매달려 이동하면서 가장 가까운 적에게 반복 사격합니다. 세 번째 사용으로 밧줄에서 뛰어내리며 마지막 탄환을 발사하고, 적 챔피언이나 지형에 충돌하면 이동이 일찍 끝납니다. 챔피언 처치 관여 시 재사용 대기시간이 초기화됩니다. 표식 대상 챔피언을 우선 공격하며, 이동 중 적중 시 효과는 일부 효율로 적용됩니다. 사격은 추가 공격 속도에 따라 피해가 증가하고, 공격은 치명타가 적용될 수 있습니다.",
+  "rules": [
+    {
+      "id": "489f0ffce37f2bfdbab5",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "처음 적중한 대상이 지형"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "갈고리가 처음 적중한 지형에 고정됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "First Cast: Akshan fires a grappling hook, attaching to the first terrain hit."
+        }
+      ]
+    },
+    {
+      "id": "c5ba159e89526c46d5b7",
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "두 번째 시전으로 그네 이동 시작"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "두 번째 시전으로 지형에 매달려 그네처럼 이동하면서 가장 가까운 적을 향해 반복 사격합니다. 각 발은 (8/16/24/32/40 + 25% Attack Damage) × (1 + 30% bonus Attack Speed)의 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7"
+              ],
+              "stat": "bonusAttackSpeed",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "아크샨이 지형을 중심으로 그네처럼 이동합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Second Cast: Akshan swings around the terrain, repeatedly firing at the nearest enemy for (8/16/24/32/40 + (25% Attack Damage)) × (1 + 30% bonus Attack Speed) physical damage per shot."
+        }
+      ]
+    },
+    {
+      "id": "86df097d855081510f33",
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "세 번째 시전으로 밧줄에서 뛰어내림"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "세 번째 시전으로 밧줄에서 뛰어내리며 마지막 탄환을 발사합니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "아크샨이 밧줄에서 뛰어내립니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Third Cast: Akshan dives off the rope, firing a final shot."
+        }
+      ]
+    },
+    {
+      "id": "3f338f905815c6c8a30d",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨이 E로 그네 이동 중"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Dirty Fighting"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "other",
+          "subject": "caster",
+          "text": "그네 이동 중 비열한 싸움 표식이 있는 챔피언을 사격 대상으로 우선합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akshan prioritizes shooting champions marked by Dirty Fighting."
+        }
+      ]
+    },
+    {
+      "id": "44cfd259f33676d5faba",
+      "variant": "base",
+      "trigger": {
+        "event": "attack_or_ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨이 E로 그네 이동 중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "attack_modifier",
+          "subject": "target",
+          "text": "E로 그네 이동 중인 사격의 적중 시 효과는 25% 효율로 적용됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "ratio_output",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replace_input"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "On-hits while swinging are 25% effective."
+        }
+      ]
+    },
+    {
+      "id": "0f85cb0f9d053f3bb473",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨이 E로 그네 이동 중인 사격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "해당 사격이 치명타로 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "E 그네 사격이 치명타로 적중하면 기본 E 사격 피해를 대체하는 (8/16/24/32/40 + 25% Attack Damage) × (1 + 30% bonus Attack Speed) × (0.5 + 50% Critical Strike Damage) 물리 피해를 줍니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n10",
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n15"
+              ],
+              "stat": "totalAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": "bonusAttackSpeed",
+              "statSubject": "caster",
+              "shape": "scalar"
+            },
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n19"
+              ],
+              "stat": "critDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks can critically strike for (8/16/24/32/40 + (25% Attack Damage)) × (1 + 30% bonus Attack Speed) × (0.5 + 50% Critical Strike Damage) physical damage."
+        }
+      ]
+    },
+    {
+      "id": "cb474cf2b582868bee56",
+      "variant": "base",
+      "trigger": {
+        "event": "takedown",
+        "subject": "target"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "champion"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "cooldown_change",
+          "subject": "caster",
+          "text": "챔피언 처치 관여 시 이 스킬의 재사용 대기시간이 초기화됩니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Champion takedowns refresh this Ability's Cooldown."
+        }
+      ]
+    },
+    {
+      "id": "6a6a9aff0aa5e54dd3d3",
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "아크샨이 E 그네 이동 중 적 챔피언 또는 지형과 충돌"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "그네 이동 중 적 챔피언 또는 지형과 충돌하면 그네 이동이 일찍 끝납니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Colliding with an enemy Champion or terrain ends the swing early."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "scope_ambiguous",
+      "detail": "툴팁의 ‘Damage is increased by 30% of bonus Attack Speed’ 문구는 사격 피해 공식의 공격 속도 계수와 중복인지 별도 효과인지 불분명합니다. 별도의 피해 규칙으로 확정하지 않았습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Damage is increased by 30% of bonus Attack Speed."
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "영문 툴팁은 갈고리 공격 대상으로 가장 가까운 적을, 표식 챔피언을 우선한다고 설명하지만 두 우선순위의 관계는 구체화하지 않습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Akshan prioritizes shooting champions marked by Dirty Fighting."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "사격 피해의 여러 곱셈 계수와 치명타 효과는 제공되지만, 스키마에서 치명타 사격의 복합 수식을 완전히 실행 가능한 형태로 연결할 수 없어 관계를 텍스트로 보존했습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacks can critically strike for (8/16/24/32/40 + (25% Attack Damage)) × (1 + 30% bonus Attack Speed) × (0.5 + 50% Critical Strike Damage) physical damage."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "f9a4bf75a19e5446c3369703c320dd8e26e19bb4a2c8e3418756d09baf28085b"
+}

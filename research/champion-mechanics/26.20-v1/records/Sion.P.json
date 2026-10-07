@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 2,
+  "id": "Sion.P",
+  "champion": "Sion",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "e32a1593db1d038f26beef4b76c655fdbb199ca38b02d6561e8d7729257022bf",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "Glory in Death",
+      "ko": "영광스러운 죽음"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Sion.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "After being killed, Sion will temporarily reanimate with rapidly decaying Health. His attacks become very rapid, heal him, and deal bonus damage based on his target's maximum Health.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "After being killed Sion will reanimate himself allowing him to move and Attack, but his Health rapidly decays while he is reanimated. He also gains 100% Lifesteal, attacks extremely fast, and his Attacks deal an additional 10% max Health physical damage. All of his Abilities are replaced with Death Surge, which grants him a burst of Move Speed.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "사이온은 사망한 이후 잠시 되살아나지만 체력이 급속히 떨어집니다. 이 동안 사이온은 매우 빠르게 공격하며 체력을 회복합니다. 공격 적중 시 대상 최대 체력에 비례해 추가 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "사이온은 처치된 다음 되살아나 이동하고 공격할 수 있지만, 부활한 동안에는 체력이 급속히 떨어집니다. 생명력 흡수 효과가 100% 증가하고 매우 빠르게 공격하며 적중 시 대상 최대 체력의 10%에 해당하는 물리 피해를 추가로 입힙니다. 모든 스킬이 죽음의 물결로 대체되어 이동 속도가 대폭 상승합니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 148,
+      "end": 152
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 223,
+      "end": 226
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "100%",
+      "value": 100,
+      "percent": true,
+      "start": 68,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "10%",
+      "value": 10,
+      "percent": true,
+      "start": 105,
+      "end": 108
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "사망 후 잠시 되살아나 이동하고 공격하지만 체력이 빠르게 감소합니다. 부활 중 공격은 생명력 흡수를 얻고 대상 최대 체력에 비례한 물리 피해를 추가로 입힙니다. 스킬은 죽음의 물결로 대체됩니다. 부활 중에는 매우 빠르게 공격하며 죽음의 물결은 이동 속도를 일시적으로 크게 높입니다.",
+  "rules": [
+    {
+      "id": "8382b31dd9dd86a7a27b",
+      "variant": "base",
+      "trigger": {
+        "event": "death",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "revive",
+          "subject": "caster",
+          "text": "사이온이 되살아나 이동하고 공격할 수 있지만, 부활 중 체력이 빠르게 감소한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "부활 중 생명력 흡수 효과를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "lifeSteal",
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "transform",
+          "subject": "caster",
+          "text": "모든 스킬이 죽음의 물결로 대체된다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "stat_modifier",
+          "subject": "caster",
+          "text": "되살아난 동안 매우 빠르게 공격한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": "attackSpeed",
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After being killed Sion will reanimate himself allowing him to move and Attack, but his Health rapidly decays while he is reanimated. He also gains 100% Lifesteal, attacks extremely fast, and his Attacks deal an additional 10% max Health physical damage. All of his Abilities are replaced with Death Surge, which grants him a burst of Move Speed."
+        }
+      ]
+    },
+    {
+      "id": "fa0f4197f7da01f58a75",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "form",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "사망 후 되살아난 상태"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "공격 적중 시 대상 최대 체력에 비례한 물리 피해를 추가로 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1"
+              ],
+              "stat": "maxHealth",
+              "statSubject": "target",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After being killed Sion will reanimate himself allowing him to move and Attack, but his Health rapidly decays while he is reanimated. He also gains 100% Lifesteal, attacks extremely fast, and his Attacks deal an additional 10% max Health physical damage."
+        }
+      ]
+    },
+    {
+      "id": "17f31f61421c2df30737",
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "교체된 죽음의 물결 사용"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "죽음의 물결을 사용하면 이동 속도가 일시적으로 크게 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "All of his Abilities are replaced with Death Surge, which grants him a burst of Move Speed."
+        }
+      ]
+    }
+  ],
+  "gaps": [],
+  "candidateHash": "001a1a7d2163a3564ce4acf810849860732048e7f75361a2fffa1efc555bed91"
+}

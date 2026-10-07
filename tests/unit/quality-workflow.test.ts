@@ -7,7 +7,7 @@ import { execFileSync } from "node:child_process";
 import { mergeStories, digest, buildBank } from "../../scripts/llm/quality/bank";
 import videoCoverage from "../../research/video-notes/mangdasu-20261006/coverage-questions.json";
 import { compareReports, verifyReview, reviewPacket, saveReport } from "../../scripts/llm/quality/report";
-import type { QualityReport, QualityStory } from "../../scripts/llm/quality/types";
+import type { QualityReport, QualityStory, QualityRow } from "../../scripts/llm/quality/types";
 import { generationTasks, validateArtifact, type GenerationArtifact } from "../../scripts/llm/quality/tasks";
 import { numericChecks, numericRequest } from "../../scripts/llm/quality/numeric";
 import { openOllama } from "../../scripts/llm/quality/ollama";
@@ -81,6 +81,25 @@ test("identical tests share provenance; different histories and answers remain s
   assert.deepEqual(merged[0].suites, ["first", "second"]);
   assert.equal(merged[0].sources.length, 2);
   assert.equal(digest({ a: 1, b: 2 }), digest({ b: 2, a: 1 }));
+});
+
+test("stat follow-up fixtures use the current patch only when explicitly requested", async () => {
+  const memory = { patch: "historical", conditions: [], active: "stat",
+    stat: { kind: "championStat", champions: ["MonkeyKing", "DrMundo"], field: "health", level: 1 } };
+  const fixture: QualityStory = { id: "seed", suites: ["test"], lang: "ko_KR", split: "regression", sources: [], memory,
+    turns: [{ q: "그럼 체력은 얼마야?", expected: {} }] };
+  const rows: QualityRow[] = [];
+  await runDialogue({ stories: [{ ...fixture, id: "current", memoryPatch: "current" }, fixture], mode: "none",
+    deps: { judge: async () => { throw Error("unexpected judge"); }, search: async () => [] }, record: row => rows.push(row) });
+  assert.match(rows[0].text, /오공/);
+  assert.match(rows[0].text, /문도/);
+  assert.notEqual(rows[1].observed?.kind, "compare");
+  assert.doesNotMatch(rows[1].text, /문도/);
+  assert.equal(memory.patch, "historical");
+  assert.equal(mergeStories([fixture, { ...fixture, memoryPatch: "current" }]).length, 2);
+  const seeded = buildBank().filter(story => story.memory);
+  assert.ok(seeded.length > 0);
+  assert.ok(seeded.every(story => story.memoryPatch === "current" && story.suites.includes("stat-single")));
 });
 
 test("expanded video coverage enters the common model bank with its original assertions", () => {

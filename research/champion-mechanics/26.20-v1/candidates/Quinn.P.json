@@ -1,0 +1,153 @@
+{
+  "summary": "발러가 주기적으로 근처 적에게 매사냥 표식을 남겨 모습을 드러낸다. 표식 대상에 대한 퀸의 다음 공격 적중 시 추가 물리 피해를 입힌다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "passive",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "발러가 근처 적 하나에 매사냥 표식을 남깁니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "visibility",
+          "subject": "target",
+          "text": "표식 대상의 모습을 드러낸다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every ? seconds, Valor marks a nearby enemy with Harrier, revealing it for 4 seconds"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Every ? seconds, Valor marks a nearby enemy with Harrier, revealing it for 4 seconds and causing Quinn's next Attack On-Hit against them to deal ((15 ~ 120) + (40% bonus Attack Damage)) bonus physical damage."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "mark",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "Harrier"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "이 매사냥 표식 대상에게 다음 기본 공격이 적중"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "표식 대상에 대한 퀸의 다음 공격 적중 시 추가 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n3"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "causing Quinn's next Attack On-Hit against them to deal ((15 ~ 120) + (40% bonus Attack Damage)) bonus physical damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "seconds, Valor marks a nearby enemy with Harrier, revealing it for 4 seconds and causing Quinn's next Attack On-Hit against them to deal ((15 ~ 120) + (40% bonus Attack Damage)) bonus physical damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_number",
+      "detail": "표식을 남기는 주기는 원문에서 ?로 표시되어 수치를 특정할 수 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Every ? seconds"
+        }
+      ]
+    },
+    {
+      "reason": "unresolved_condition",
+      "detail": "15~120기본피해변화기준이본문에없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "causing Quinn's next Attack On-Hit against them to deal ((15 ~ 120) + (40% bonus Attack Damage)) bonus physical damage."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "seconds, Valor marks a nearby enemy with Harrier, revealing it for 4 seconds and causing Quinn's next Attack On-Hit against them to deal ((15 ~ 120) + (40% bonus Attack Damage)) bonus physical damage."
+        }
+      ]
+    }
+  ]
+}

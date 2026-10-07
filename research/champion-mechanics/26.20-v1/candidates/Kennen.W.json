@@ -1,0 +1,371 @@
+{
+  "summary": "기본 지속 효과는 매 다섯 번째 공격에 추가 마법 피해를 입히고 표식을 적용합니다. 사용 시 표식이 있는 주변 적에게 마법 피해를 입힙니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "매 다섯 번째 기본 공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "absent",
+          "value": {
+            "kind": "text",
+            "value": "치명타"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "기본 공격 적중 시 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "대상에게 폭풍의 표식을 적용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Every 5th Attack deals an additional (35/45/55/65/75 + (35% Ability Power) + (80/90/100/110/120% bonus Attack Damage)) magic damage On-Hit."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The passive also applies Mark of the Storm"
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "nearby_enemies",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "폭풍의 표식이 있는 주변 적 또는 날카로운 소용돌이 안의 적"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "nearby_enemies",
+          "text": "폭풍의 표식이 있는 주변 적에게 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n12",
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n17"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        },
+        {
+          "kind": "mark",
+          "subject": "nearby_enemies",
+          "text": "활성 효과로 대상에게 폭풍의표식을 추가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kennen sends out a blast of electricity, dealing (70/95/120/145/170 + (80% Ability Power)) magic damage to nearby enemies affected by Mark of the Storm."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "he can activate this ability to damage and add another Mark of the Storm to targets who are already marked."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The active automatically hits enemies inside of Slicing Maelstrom."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "resource_change",
+          "subject": "caster",
+          "text": "구조물 공격은 기본 지속 효과 중첩을 쌓지만 소모하지 않습니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Attacking structures will stack the passive, but not expend it."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "매 다섯 번째 기본 공격"
+          }
+        },
+        {
+          "subject": "target",
+          "field": "target_type",
+          "operator": "neq",
+          "value": {
+            "kind": "enum",
+            "value": "structure"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "치명타"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "5번째공격치명타피해는(35/45/55/65/75 + 자신의AP35% + 추가AD80/90/100/110/120%) × (1.4 + 추가치명타피해40%) 마법피해로기본추가피해를대체한다.곱셈식을선형합산하지않는다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4",
+                "en:body:n5"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "rank_values"
+            },
+            {
+              "role": "other",
+              "numberRefs": [
+                "en:body:n29",
+                "en:body:n30"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            }
+          ],
+          "flags": [
+            "replaces_base"
+          ]
+        },
+        {
+          "kind": "mark",
+          "subject": "target",
+          "text": "대상에게 폭풍의 표식을 적용합니다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Passive: Every 5th Attack deals an additional (35/45/55/65/75 + (35% Ability Power) + (80/90/100/110/120% bonus Attack Damage)) magic damage On-Hit."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The passive also applies Mark of the Storm"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "The passive also applies Mark of the Storm and can critically strike for (35/45/55/65/75 + (35% Ability Power) + (80/90/100/110/120% bonus Attack Damage)) × (1.4 + 40% bonus Critical Strike Damage) instead."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "활성 효과의 표식 보유 조건은 표현했으나, 허용된 mark 값에 표식 보유 전용 값이 없습니다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Active: Kennen sends out a blast of electricity, dealing (70/95/120/145/170 + (80% Ability Power)) magic damage to nearby enemies affected by Mark of the Storm."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "치명타곱셈식은본문그대로규칙에보존한다.스키마는추가치명타피해통계가없고다중곱셈계수의선형실행을보장할수없어formula_components와텍스트를우선한다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "The passive also applies Mark of the Storm and can critically strike for (35/45/55/65/75 + (35% Ability Power) + (80/90/100/110/120% bonus Attack Damage)) × (1.4 + 40% bonus Critical Strike Damage) instead."
+        }
+      ]
+    }
+  ]
+}

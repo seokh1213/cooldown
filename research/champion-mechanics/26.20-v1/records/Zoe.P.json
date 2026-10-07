@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 2,
+  "id": "Zoe.P",
+  "champion": "Zoe",
+  "slot": "P",
+  "patch": "26.20",
+  "sourceHash": "898b9e61215044013d001f5b750e09cd7e8afed48d61ee4b1c3c59b14bce2d67",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4",
+  "status": "reviewed",
+  "facts": {
+    "name": {
+      "en": "More Sparkles!",
+      "ko": "반짝반짝!"
+    },
+    "cooldownSeconds": [],
+    "rechargeSeconds": null,
+    "maxCharges": null,
+    "range": [],
+    "cost": null,
+    "rankValues": [],
+    "levelValues": [
+      {
+        "values": [
+          16,
+          20,
+          24,
+          28,
+          32,
+          36,
+          42,
+          48,
+          54,
+          60,
+          66,
+          74,
+          82,
+          90,
+          100,
+          110,
+          120,
+          130,
+          140,
+          150
+        ],
+        "digits": 0
+      }
+    ],
+    "scalings": [],
+    "simulation": {
+      "status": "unavailable",
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": []
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Zoe.json",
+      "provider": "communitydragon"
+    }
+  },
+  "sourceRefs": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Zoe's next basic attack after casting a spell deals bonus magic damage.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "After using an Ability, Zoe's next Attack deals an additional ((16 ~ 130) + (20% Ability Power)) magic damage.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "스킬 사용 후 기본 공격 시 추가 마법 피해를 입힙니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "조이가 스킬을 사용한 후 첫 번째 기본 공격 시 ((16 ~ 130) + (20% 주문력))의 마법 피해를 추가로 입힙니다.",
+      "variant": null
+    }
+  ],
+  "numbers": [
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "16",
+      "value": 16,
+      "percent": false,
+      "start": 64,
+      "end": 66
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 69,
+      "end": 72
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 77,
+      "end": 80
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "16",
+      "value": 16,
+      "percent": false,
+      "start": 29,
+      "end": 31
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "130",
+      "value": 130,
+      "percent": false,
+      "start": 34,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "20%",
+      "value": 20,
+      "percent": true,
+      "start": 42,
+      "end": 45
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "summary": "스킬 사용 후 조이의 다음 기본 공격이 추가 마법 피해를 입힙니다.",
+  "rules": [
+    {
+      "id": "6aad16d5993cb7540676",
+      "variant": "base",
+      "trigger": {
+        "event": "attack",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "present",
+          "value": {
+            "kind": "text",
+            "value": "스킬 사용 후 다음 기본 공격"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "다음 기본 공격이 추가 마법 피해를 입힙니다.",
+          "damageType": "magic",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "unknown"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n2"
+              ],
+              "stat": "abilityPower",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using an Ability, Zoe's next Attack deals an additional ((16 ~ 130) + (20% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unresolved_condition",
+      "detail": "16~130기본피해의변화기준은본문에없어레벨/랭크로확정하지않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "After using an Ability, Zoe's next Attack deals an additional ((16 ~ 130) + (20% Ability Power)) magic damage."
+        }
+      ]
+    }
+  ],
+  "candidateHash": "63777d192bb204524ceb21675a195173c15e63dd4d5283434cb3633a5ae8d2dd"
+}

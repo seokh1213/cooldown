@@ -1,0 +1,694 @@
+{
+  "champion": "Caitlyn",
+  "slot": "W",
+  "patch": "26.20",
+  "slotRole": "ability",
+  "sources": [
+    {
+      "id": "en:summary",
+      "locale": "en_US",
+      "tier": "summary",
+      "text": "Caitlyn sets a trap that, when sprung, reveals and immobilizes the enemy champion for 1.5 seconds, granting Caitlyn an empowered Headshot.",
+      "variant": null
+    },
+    {
+      "id": "en:body",
+      "locale": "en_US",
+      "tier": "tooltip",
+      "text": "Caitlyn sets a trap that Roots the first champion that steps on it for 1.5 seconds and granting True Sight of them for 3 seconds. Traps last for 30/35/40/45/50 seconds, and 3/3/4/4/5 traps may be active at once. This Ability has 3/3/4/4/5 charges (26/22/18/14/10 second refresh). Targets rooted by this Ability take an additional (35/80/125/170/215 + (30% bonus Attack Damage)) physical damage from Headshot.",
+      "variant": null
+    },
+    {
+      "id": "ko:summary",
+      "locale": "ko_KR",
+      "tier": "summary",
+      "text": "케이틀린이 함정을 설치합니다. 함정이 발동하면 함정에 걸린 적 챔피언은 1.5초간 모습이 드러나며 이동할 수 없게 되고, 케이틀린의 헤드샷이 강화됩니다.",
+      "variant": null
+    },
+    {
+      "id": "ko:body",
+      "locale": "ko_KR",
+      "tier": "tooltip",
+      "text": "케이틀린이 덫을 설치하여 처음 밟는 적을 1.5초 동안 속박하고 3초 동안 해당 적에 대한 절대 시야를 얻습니다. 덫은 30/35/40/45/50초 동안 지속되며 한 번에 3/3/4/4/5개까지 설치할 수 있습니다. 이 스킬은 3/3/4/4/5회까지 충전됩니다. (26/22/18/14/10초마다 충전) 이 스킬에 의해 속박된 대상은 헤드샷으로 (35/80/125/170/215 + (30% 추가 공격력))의 물리 피해를 추가로 입습니다.",
+      "variant": null
+    }
+  ],
+  "variants": [
+    {
+      "id": "base",
+      "label": "공통",
+      "sourceIds": [
+        "en:summary",
+        "en:body",
+        "ko:summary",
+        "ko:body"
+      ]
+    }
+  ],
+  "facts": {
+    "name": {
+      "en": "Yordle Snap Trap",
+      "ko": "요들잡이 덫"
+    },
+    "cooldownSeconds": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "rechargeSeconds": [
+      26,
+      22,
+      18,
+      14,
+      10
+    ],
+    "maxCharges": 2,
+    "range": [
+      800,
+      800,
+      800,
+      800,
+      800
+    ],
+    "cost": {
+      "values": [
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "resource": "Mana"
+    },
+    "rankValues": [
+      {
+        "label": "Bonus Headshot Damage on Trapped Targets",
+        "values": "35/80/125/170/215"
+      },
+      {
+        "label": "Recharge Time",
+        "values": "26/22/18/14/10"
+      },
+      {
+        "label": "Maximum Traps",
+        "values": "3/3/4/4/5"
+      },
+      {
+        "label": "Trap Duration",
+        "values": "30/35/40/45/50"
+      }
+    ],
+    "levelValues": [],
+    "scalings": [
+      {
+        "id": "damage",
+        "labelEn": "W Scaling",
+        "labelKo": "W 계수",
+        "parts": [
+          {
+            "stat": null,
+            "coefficient": 1,
+            "op": "add",
+            "rawRef": "1:HeadShotBonusDamage"
+          }
+        ]
+      }
+    ],
+    "simulation": {
+      "status": "complete",
+      "primary": {
+        "id": "HeadShotBonusDamage",
+        "kind": "damage",
+        "damageType": "physical",
+        "baseByRank": [
+          35,
+          80,
+          125,
+          170,
+          215
+        ],
+        "terms": [
+          {
+            "stat": "bonusAttackDamage",
+            "coefficientsByRank": [
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896,
+              0.30000001192092896
+            ]
+          }
+        ]
+      },
+      "unsupportedPartTypes": []
+    },
+    "crowdControl": {
+      "status": "known",
+      "effects": [
+        {
+          "type": "root",
+          "target": "enemy",
+          "source": "public/data/26.19/champions/ko_KR/Caitlyn.json"
+        }
+      ]
+    },
+    "diagnostics": {
+      "unresolvedTokens": []
+    },
+    "forms": [],
+    "provenance": {
+      "cards": "public/data/26.20/llm/champion-cards-{en_US,ko_KR}.json",
+      "detail": "public/data/26.20/champions/en_US/Caitlyn.json",
+      "provider": "communitydragon"
+    }
+  },
+  "id": "Caitlyn.W",
+  "numbers": [
+    {
+      "id": "en:summary:n0",
+      "sourceId": "en:summary",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 86,
+      "end": 89
+    },
+    {
+      "id": "en:body:n0",
+      "sourceId": "en:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 71,
+      "end": 74
+    },
+    {
+      "id": "en:body:n1",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 119,
+      "end": 120
+    },
+    {
+      "id": "en:body:n2",
+      "sourceId": "en:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 145,
+      "end": 147
+    },
+    {
+      "id": "en:body:n3",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 148,
+      "end": 150
+    },
+    {
+      "id": "en:body:n4",
+      "sourceId": "en:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 151,
+      "end": 153
+    },
+    {
+      "id": "en:body:n5",
+      "sourceId": "en:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 154,
+      "end": 156
+    },
+    {
+      "id": "en:body:n6",
+      "sourceId": "en:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 157,
+      "end": 159
+    },
+    {
+      "id": "en:body:n7",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 173,
+      "end": 174
+    },
+    {
+      "id": "en:body:n8",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 175,
+      "end": 176
+    },
+    {
+      "id": "en:body:n9",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 177,
+      "end": 178
+    },
+    {
+      "id": "en:body:n10",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 179,
+      "end": 180
+    },
+    {
+      "id": "en:body:n11",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 181,
+      "end": 182
+    },
+    {
+      "id": "en:body:n12",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 229,
+      "end": 230
+    },
+    {
+      "id": "en:body:n13",
+      "sourceId": "en:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 231,
+      "end": 232
+    },
+    {
+      "id": "en:body:n14",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 233,
+      "end": 234
+    },
+    {
+      "id": "en:body:n15",
+      "sourceId": "en:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 235,
+      "end": 236
+    },
+    {
+      "id": "en:body:n16",
+      "sourceId": "en:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 237,
+      "end": 238
+    },
+    {
+      "id": "en:body:n17",
+      "sourceId": "en:body",
+      "raw": "26",
+      "value": 26,
+      "percent": false,
+      "start": 248,
+      "end": 250
+    },
+    {
+      "id": "en:body:n18",
+      "sourceId": "en:body",
+      "raw": "22",
+      "value": 22,
+      "percent": false,
+      "start": 251,
+      "end": 253
+    },
+    {
+      "id": "en:body:n19",
+      "sourceId": "en:body",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 254,
+      "end": 256
+    },
+    {
+      "id": "en:body:n20",
+      "sourceId": "en:body",
+      "raw": "14",
+      "value": 14,
+      "percent": false,
+      "start": 257,
+      "end": 259
+    },
+    {
+      "id": "en:body:n21",
+      "sourceId": "en:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 260,
+      "end": 262
+    },
+    {
+      "id": "en:body:n22",
+      "sourceId": "en:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 331,
+      "end": 333
+    },
+    {
+      "id": "en:body:n23",
+      "sourceId": "en:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 334,
+      "end": 336
+    },
+    {
+      "id": "en:body:n24",
+      "sourceId": "en:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 337,
+      "end": 340
+    },
+    {
+      "id": "en:body:n25",
+      "sourceId": "en:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 341,
+      "end": 344
+    },
+    {
+      "id": "en:body:n26",
+      "sourceId": "en:body",
+      "raw": "215",
+      "value": 215,
+      "percent": false,
+      "start": 345,
+      "end": 348
+    },
+    {
+      "id": "en:body:n27",
+      "sourceId": "en:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 352,
+      "end": 355
+    },
+    {
+      "id": "ko:summary:n0",
+      "sourceId": "ko:summary",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 40,
+      "end": 43
+    },
+    {
+      "id": "ko:body:n0",
+      "sourceId": "ko:body",
+      "raw": "1.5",
+      "value": 1.5,
+      "percent": false,
+      "start": 23,
+      "end": 26
+    },
+    {
+      "id": "ko:body:n1",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 36,
+      "end": 37
+    },
+    {
+      "id": "ko:body:n2",
+      "sourceId": "ko:body",
+      "raw": "30",
+      "value": 30,
+      "percent": false,
+      "start": 67,
+      "end": 69
+    },
+    {
+      "id": "ko:body:n3",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 70,
+      "end": 72
+    },
+    {
+      "id": "ko:body:n4",
+      "sourceId": "ko:body",
+      "raw": "40",
+      "value": 40,
+      "percent": false,
+      "start": 73,
+      "end": 75
+    },
+    {
+      "id": "ko:body:n5",
+      "sourceId": "ko:body",
+      "raw": "45",
+      "value": 45,
+      "percent": false,
+      "start": 76,
+      "end": 78
+    },
+    {
+      "id": "ko:body:n6",
+      "sourceId": "ko:body",
+      "raw": "50",
+      "value": 50,
+      "percent": false,
+      "start": 79,
+      "end": 81
+    },
+    {
+      "id": "ko:body:n7",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 96,
+      "end": 97
+    },
+    {
+      "id": "ko:body:n8",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 98,
+      "end": 99
+    },
+    {
+      "id": "ko:body:n9",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 100,
+      "end": 101
+    },
+    {
+      "id": "ko:body:n10",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 102,
+      "end": 103
+    },
+    {
+      "id": "ko:body:n11",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 104,
+      "end": 105
+    },
+    {
+      "id": "ko:body:n12",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 127,
+      "end": 128
+    },
+    {
+      "id": "ko:body:n13",
+      "sourceId": "ko:body",
+      "raw": "3",
+      "value": 3,
+      "percent": false,
+      "start": 129,
+      "end": 130
+    },
+    {
+      "id": "ko:body:n14",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 131,
+      "end": 132
+    },
+    {
+      "id": "ko:body:n15",
+      "sourceId": "ko:body",
+      "raw": "4",
+      "value": 4,
+      "percent": false,
+      "start": 133,
+      "end": 134
+    },
+    {
+      "id": "ko:body:n16",
+      "sourceId": "ko:body",
+      "raw": "5",
+      "value": 5,
+      "percent": false,
+      "start": 135,
+      "end": 136
+    },
+    {
+      "id": "ko:body:n17",
+      "sourceId": "ko:body",
+      "raw": "26",
+      "value": 26,
+      "percent": false,
+      "start": 148,
+      "end": 150
+    },
+    {
+      "id": "ko:body:n18",
+      "sourceId": "ko:body",
+      "raw": "22",
+      "value": 22,
+      "percent": false,
+      "start": 151,
+      "end": 153
+    },
+    {
+      "id": "ko:body:n19",
+      "sourceId": "ko:body",
+      "raw": "18",
+      "value": 18,
+      "percent": false,
+      "start": 154,
+      "end": 156
+    },
+    {
+      "id": "ko:body:n20",
+      "sourceId": "ko:body",
+      "raw": "14",
+      "value": 14,
+      "percent": false,
+      "start": 157,
+      "end": 159
+    },
+    {
+      "id": "ko:body:n21",
+      "sourceId": "ko:body",
+      "raw": "10",
+      "value": 10,
+      "percent": false,
+      "start": 160,
+      "end": 162
+    },
+    {
+      "id": "ko:body:n22",
+      "sourceId": "ko:body",
+      "raw": "35",
+      "value": 35,
+      "percent": false,
+      "start": 194,
+      "end": 196
+    },
+    {
+      "id": "ko:body:n23",
+      "sourceId": "ko:body",
+      "raw": "80",
+      "value": 80,
+      "percent": false,
+      "start": 197,
+      "end": 199
+    },
+    {
+      "id": "ko:body:n24",
+      "sourceId": "ko:body",
+      "raw": "125",
+      "value": 125,
+      "percent": false,
+      "start": 200,
+      "end": 203
+    },
+    {
+      "id": "ko:body:n25",
+      "sourceId": "ko:body",
+      "raw": "170",
+      "value": 170,
+      "percent": false,
+      "start": 204,
+      "end": 207
+    },
+    {
+      "id": "ko:body:n26",
+      "sourceId": "ko:body",
+      "raw": "215",
+      "value": 215,
+      "percent": false,
+      "start": 208,
+      "end": 211
+    },
+    {
+      "id": "ko:body:n27",
+      "sourceId": "ko:body",
+      "raw": "30%",
+      "value": 30,
+      "percent": true,
+      "start": 215,
+      "end": 218
+    }
+  ],
+  "sourceHash": "9812d59c1dd649f11204e9160d866b5031c747c816689fbb1ea5d57ad3d5d469",
+  "promptHash": "af268dc2135a6c1ed510bcacfcd58ccd46b52eab5a733be59248812d963648a4"
+}

@@ -13,6 +13,7 @@ export interface QualityStory {
   sources: SourceRef[];
   split: string;
   memory?: Record<string, unknown>;
+  memoryPatch?: "current";
   manual?: boolean;
 }
 export interface Check { label: string; pass: boolean }

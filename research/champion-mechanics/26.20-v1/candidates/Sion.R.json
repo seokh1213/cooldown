@@ -1,0 +1,313 @@
+{
+  "summary": "사이온이 방향을 조종하며 돌진합니다. 돌진은 일정 시간 경과, 적 챔피언이나 벽과의 충돌, 재시전으로 끝나며, 종료 시 이동 거리에 따라 피해와 주변 적 대상 효과를 줍니다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "cast",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "저지 불가 상태로 한 방향으로 돌진하며 마우스 커서 쪽으로 방향을 바꾼다. 돌진 중 이동 속도가 점차 증가한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n0"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sion charges Unstoppably in a direction for 8 seconds, turning towards the mouse cursor."
+        },
+        {
+          "sourceId": "en:summary",
+          "quote": "Sion charges in a direction, ramping up speed over time."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "적 챔피언이나 벽과 충돌하거나 스킬을 재시전하면 돌진을 멈춘다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Sion stops on colliding with an enemy champion or wall or on Recasting this Ability."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "돌진이 끝남"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "enemy",
+          "text": "돌진이 끝날 때 이동 거리에 따라 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n4"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n5",
+                "en:body:n6",
+                "en:body:n7"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n8"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At the end of the charge, Sion deals between (150/300/450 + (60% bonus Attack Damage)) and (400/800/1200 + (120% bonus Attack Damage)) physical damage based on distance travelled."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "lte",
+          "value": {
+            "kind": "text",
+            "value": "가까운 범위"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "돌진이 끝남"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "사이온 가까이 있는 적을 이동 거리에 따라 기절시킨다. 지속시간은 해당 최소~최대 시간(초) 범위다.",
+          "damageType": null,
+          "crowdControl": "stun",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n9"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n10"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies close to Sion are Stunned for between 0.75 and 1.75 seconds based on distance travelled."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "other",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "distance",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "돌진 종료 시 더 큰 효과 영역 안에 있는 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "activation",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "돌진이 끝남"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "crowd_control",
+          "subject": "enemy",
+          "text": "더 넓은 범위에 있는 적을 둔화시킨다.",
+          "damageType": null,
+          "crowdControl": "slow",
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n11",
+                "en:body:n12",
+                "en:body:n13"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n14"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies in a larger area are Slowed by 40/45/50% for 3 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "source_conflict",
+      "detail": "요약은 적과 충돌할 때 피해와 공중 띄우기가 발생한다고 하지만, 본문은 돌진 종료 시 피해를 주고 가까운 적을 기절시키며 더 넓은 범위의 적을 둔화시킨다고 설명한다. 본문에 없는 공중 띄우기는 규칙에 추가하지 않았다.",
+      "evidence": [
+        {
+          "sourceId": "en:summary",
+          "quote": "When he collides with an enemy he deals damage and knocks them up based on the distance he has charged."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "At the end of the charge, Sion deals between (150/300/450 + (60% bonus Attack Damage)) and (400/800/1200 + (120% bonus Attack Damage)) physical damage based on distance travelled."
+        }
+      ]
+    },
+    {
+      "reason": "unsupported_formula",
+      "detail": "이동 거리에 따른 피해와 기절 지속시간의 정확한 보간식은 공급 원문에 없다. 하한/상한 피해식 계수를 하나의 선형식으로 합산하지 않는다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "At the end of the charge, Sion deals between (150/300/450 + (60% bonus Attack Damage)) and (400/800/1200 + (120% bonus Attack Damage)) physical damage based on distance travelled."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Enemies close to Sion are Stunned for between 0.75 and 1.75 seconds based on distance travelled."
+        }
+      ]
+    }
+  ]
+}

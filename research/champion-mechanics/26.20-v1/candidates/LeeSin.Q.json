@@ -1,0 +1,249 @@
+{
+  "summary": "음파는 처음 적중한 적에게 물리 피해를 주고 절대 시야를 얻는다. 음파가 적중하면 정해진 시간 안에 재사용해 해당 적에게 돌진하고, 대상이 잃은 체력에 비례하는 물리 피해를 준다.",
+  "rules": [
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "음파가 처음 적중한 적에게 물리 피해를 입힌다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "amount",
+              "numberRefs": [
+                "en:body:n0",
+                "en:body:n1",
+                "en:body:n2",
+                "en:body:n3",
+                "en:body:n4"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "rank_values"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n5"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Lee Sin projects a discordant wave of sound, dealing (60/90/120/150/180 + (90% bonus Attack Damage)) physical damage to the first enemy hit"
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lee Sin projects a discordant wave of sound, dealing (60/90/120/150/180 + (90% bonus Attack Damage)) physical damage to the first enemy hit, granting True Sight of them, and allows Lee Sin to Recast for the next 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "ability_hit",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "hit_order",
+          "operator": "eq",
+          "value": {
+            "kind": "enum",
+            "value": "first"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "visibility",
+          "subject": "target",
+          "text": "해당 적에 대한 절대 시야를 얻는다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "ui_information",
+          "subject": "caster",
+          "text": "음파가 적중하면 재사용할 수 있다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "duration_seconds",
+              "numberRefs": [
+                "en:body:n6"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "scalar"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "granting True Sight of them, and allows Lee Sin to Recast for the next 3 seconds."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "Lee Sin projects a discordant wave of sound, dealing (60/90/120/150/180 + (90% bonus Attack Damage)) physical damage to the first enemy hit, granting True Sight of them, and allows Lee Sin to Recast for the next 3 seconds."
+        }
+      ]
+    },
+    {
+      "variant": "base",
+      "trigger": {
+        "event": "recast",
+        "subject": "caster"
+      },
+      "conditions": [
+        {
+          "subject": "target",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "음파가 처음 적중한 바로 그 적"
+          }
+        },
+        {
+          "subject": "caster",
+          "field": "other",
+          "operator": "eq",
+          "value": {
+            "kind": "text",
+            "value": "음파 적중 이후 3초 재사용 가능 시간 안"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "kind": "movement",
+          "subject": "caster",
+          "text": "음파에 맞은 적에게 돌진한다.",
+          "damageType": null,
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [],
+          "flags": []
+        },
+        {
+          "kind": "damage",
+          "subject": "target",
+          "text": "음파에 맞은 대상에게 최소 (60/90/120/150/180 + 리 신 추가 공격력의 90%)부터 최대 (120/180/240/300/360 + 추가 공격력의 180%) 사이의 물리 피해를 입힙니다. 피해는 대상의 잃은 체력에 비례하며 두 식은 서로의 경계여서 계수를 함께 더하지 않습니다.",
+          "damageType": "physical",
+          "crowdControl": null,
+          "statFrom": null,
+          "statTo": null,
+          "parameters": [
+            {
+              "role": "min_amount",
+              "numberRefs": [
+                "en:body:n7",
+                "en:body:n8",
+                "en:body:n9",
+                "en:body:n10",
+                "en:body:n11"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n12"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            },
+            {
+              "role": "max_amount",
+              "numberRefs": [
+                "en:body:n13",
+                "en:body:n14",
+                "en:body:n15",
+                "en:body:n16",
+                "en:body:n17"
+              ],
+              "stat": null,
+              "statSubject": null,
+              "shape": "formula_components"
+            },
+            {
+              "role": "stat_coefficient",
+              "numberRefs": [
+                "en:body:n18"
+              ],
+              "stat": "bonusAttackDamage",
+              "statSubject": "caster",
+              "shape": "formula_components"
+            }
+          ],
+          "flags": []
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "Recast: Lee Sin dashes to the enemy hit by the sound wave, dealing between (60/90/120/150/180 + (90% bonus Attack Damage)) to (120/180/240/300/360 + (180% bonus Attack Damage)) physical damage scaling with the target's missing Health."
+        },
+        {
+          "sourceId": "en:body",
+          "quote": "allows Lee Sin to Recast for the next 3 seconds."
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "reason": "unsupported_formula",
+      "detail": "재사용 피해가 대상의 잃은 체력에 비례한다고 되어 있지만 비례식이나 최저·최고 피해 사이의 보간 방식은 원문에 없다.",
+      "evidence": [
+        {
+          "sourceId": "en:body",
+          "quote": "physical damage scaling with the target's missing Health."
+        }
+      ]
+    }
+  ]
+}

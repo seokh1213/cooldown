@@ -159,3 +159,9 @@ pnpm llm:test:ui --out research/.cache/quality/ui
 새 실행기가 대체한 `evaluate_combined_qa.ts`, `evaluate_legacy_conversation.ts`와 단순 re-export `app_sft_evidence.ts`는 제거했다. 앱과 학습 근거 선택 모두 `src/lib/advisor/answerEvidence.ts`를 사용한다. 기존 개별 연구 실행기는 독자적인 학습·export·분석 목적이 있어 유지하며, 옛 결과와 삭제된 파일의 커밋은 `inventory.json`에서 찾는다.
 
 실행 기록·체크포인트·브라우저 캐시는 `.cache`에 보관하고 모델·인증·런타임 정보를 질문 은행이나 Vault에 넣지 않는다. 완료한 작업의 전용 프로세스·브라우저·서버만 회수하며 공용 Ollama·사용자 브라우저·다른 실험은 종료하지 않는다.
+
+## 26.20 패치 전환의 평가 입력 (2026-10-07)
+
+`stat-query/ml/questions.jsonl`의 테스트용 초기 기억 195개는 같은 패치에서 이어지는 능력치 질문을 시험한다. 원본에 수집 당시 패치 26.19가 들어 있어 26.20에서 실제 앱의 패치 경계 보호가 기억을 버렸다. 평가 은행의 해당 `stat-single` 입력만 `memoryPatch: "current"`로 명시하고, 재생 때 현재 자료의 패치를 주입한다. 원본 질문·정답·기억 객체와 제품의 구버전 기억 거절 규칙은 바꾸지 않았다. 이 정책은 은행 해시와 개별 ID에 포함되며, 표시 없는 과거 기억은 계속 과거 패치로 재생한다. 단위 시험은 현재 기억의 후속 답변과 과거 기억의 거절을 함께 확인한다.
+
+새 패치 기준은 [26.20 전환 검증 기록](reports/patch-26.20/README.md)에 남긴다. 과거 실패를 통과로 바꾸거나 미완료 저장 파일을 기준으로 삼지 않는다.
