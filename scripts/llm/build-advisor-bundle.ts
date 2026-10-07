@@ -153,7 +153,14 @@ function main() {
 
   const out = path.join(PUBLIC_DATA_ROOT, patch, "llm", ADVISOR_BUNDLE_FILE);
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, JSON.stringify(enrichNotes(bundle, { baselinePatch: patch })), "utf8");
+  const enriched = enrichNotes(bundle, { baselinePatch: patch }) as AdvisorKnowledgeBundle;
+  if (fs.existsSync(out)) {
+    const previous = JSON.parse(fs.readFileSync(out, "utf8")) as AdvisorKnowledgeBundle;
+    if (JSON.stringify({ ...enriched, generatedAt: previous.generatedAt }) === JSON.stringify(previous)) {
+      enriched.generatedAt = previous.generatedAt;
+    }
+  }
+  fs.writeFileSync(out, JSON.stringify(enriched), "utf8");
 
   const kb = (fs.statSync(out).size / 1024).toFixed(0);
   console.log(

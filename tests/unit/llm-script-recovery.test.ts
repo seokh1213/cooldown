@@ -11,6 +11,45 @@ import { ollamaChat } from "../../scripts/llm/lib/ollama";
 const runNode = promisify(execFile);
 const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
 
+test("지식 번들은 같은 내용의 재생성에서 바이트를 보존하고 노트가 바뀔 때만 생성 시각을 갱신한다", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "cooldown-bundle-repeat-"));
+  const put = async (file: string, value: unknown) => {
+    const target = path.join(directory, file);
+    await mkdir(path.dirname(target), { recursive: true });
+    await writeFile(target, JSON.stringify(value));
+  };
+  const output = path.join(directory, "public/data/26.20/llm/advisor-knowledge.json");
+  const generate = () => runNode(process.execPath, [
+    "--import", path.join(repositoryRoot, "node_modules/tsx/dist/loader.mjs"),
+    path.join(repositoryRoot, "scripts/llm/build-advisor-bundle.ts"),
+  ], { cwd: directory });
+  const book = { champion: "Ambessa", playing: [{ id: "fixture-note", category: "nuance", text: "original note" }], against: [] };
+  try {
+    const fixture = JSON.parse(await readFile(path.join(repositoryRoot, "research/champion-combos/compatibility/ambessa-26.19.json"), "utf8"));
+    await put("public/data/version.json", { patchVersion: "26.20" });
+    await put("public/data/26.20/llm/champion-cards-ko_KR.json", { cards: [fixture.comparison.card] });
+    await put("knowledge/mechanics-notes.json", { notes: [] });
+    await put("knowledge/video-tips.json", { patch: "26.20", notes: [] });
+    await put("knowledge/playbooks/Ambessa.json", book);
+    await generate();
+    const previous = JSON.parse(await readFile(output, "utf8"));
+    previous.generatedAt = "2000-01-01T00:00:00.000Z";
+    await writeFile(output, JSON.stringify(previous));
+    await generate();
+    assert.equal(await readFile(output, "utf8"), JSON.stringify(previous));
+    book.playing[0].text = "changed note";
+    await put("knowledge/playbooks/Ambessa.json", book);
+    await generate();
+    const changed = await readFile(output, "utf8");
+    assert.notEqual(JSON.parse(changed).generatedAt, previous.generatedAt);
+    assert.equal(JSON.parse(changed).playbooks.Ambessa.playing[0].text, "changed note");
+    await generate();
+    assert.equal(await readFile(output, "utf8"), changed);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("manifest가 없으면 연도와 패치 번호가 가장 큰 폴더를 선택한다", async () => {
   const directory = await mkdtemp(path.join(tmpdir(), "cooldown-patch-fallback-"));
   try {
