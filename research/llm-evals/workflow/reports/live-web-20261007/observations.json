@@ -1,0 +1,448 @@
+{
+  "schema": 1,
+  "created": "2026-10-07",
+  "productionCommit": "8068384f08732bc4b616a6f49ab994f0c3ed98bc",
+  "baselineCommit": "ca879f6aa91fffdfde77a76b1160cde7a333b269",
+  "scope": "exploratory UI checks; not a user accuracy estimate",
+  "totalRows": 132,
+  "currentRows": 77,
+  "timings": {
+    "p50Ms": 858,
+    "p95Method": "sorted[floor(.95 * (n - 1))]",
+    "p95Ms": 4340,
+    "maxMs": 4814
+  },
+  "comparisons": [
+    {
+      "id": "long-return13",
+      "expected": {
+        "must": [
+          "10초",
+          "럭스"
+        ],
+        "avoid": []
+      },
+      "outcome": "improved",
+      "current": {
+        "label": "current-long-return13",
+        "q": "그 스킬 쿨타임은?",
+        "text": "10초\nQ 빛의 속박 · 재사용 대기시간\n럭스\n스킬",
+        "pass": true,
+        "elapsedMs": 838
+      },
+      "baseline": {
+        "label": "baseline-ready-long-return13",
+        "q": "그 스킬 쿨타임은?",
+        "text": "어느 챔피언의 어떤 스킬을 말하나요?",
+        "pass": false,
+        "elapsedMs": 472
+      }
+    },
+    {
+      "id": "cancel-to-three-hits",
+      "expected": {
+        "must": [
+          "마법 피해",
+          "보호막"
+        ],
+        "avoid": [
+          "취소 조건에 해당하지"
+        ]
+      },
+      "outcome": "regression",
+      "current": {
+        "label": "current-akshan-3",
+        "q": "그럼 평타 세대 맞추면?",
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격까지 발사하면 취소 조건에 해당하지 않습니다. 발동 조건: 추가 공격 취소.\n\n아크샨\n같은 자료",
+        "pass": false,
+        "elapsedMs": 1147
+      },
+      "baseline": {
+        "label": "baseline-akshan-3",
+        "q": "그럼 평타 세대 맞추면?",
+        "text": "3회 적중: 기본 공격 또는 스킬의 세 번째 적중마다 추가 마법 피해를 준다. 계수 (주문력): 60%.\n\n3회 적중 · 대상 종류: 챔피언 · 보호막 사용 가능: 대상이 챔피언일 때 보호막을 얻는다. 보호막은 지속 시간 뒤 사라진다. 계수 (추가 공격력): 35%. 지속 시간: 2초. 재사용 대기시간: 16~4초 (레벨에 따라).\n\n아크샨\n같은 자료",
+        "pass": true,
+        "elapsedMs": 1521
+      }
+    },
+    {
+      "id": "cancel-to-three-hits-repeat",
+      "expected": {
+        "must": [
+          "마법 피해",
+          "보호막"
+        ],
+        "avoid": [
+          "취소 조건에 해당하지"
+        ]
+      },
+      "outcome": "regression-repeat",
+      "current": {
+        "label": "current-repeat-3",
+        "q": "그럼 평타 세대 맞추면?",
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격까지 발사하면 취소 조건에 해당하지 않습니다. 발동 조건: 추가 공격 취소.\n\n아크샨\n같은 자료",
+        "pass": false,
+        "elapsedMs": 1145
+      },
+      "baseline": null
+    },
+    {
+      "id": "natural-correction",
+      "expected": {
+        "must": [
+          "추가 공격력 3"
+        ],
+        "avoid": [
+          "비스킷"
+        ]
+      },
+      "outcome": "shared-failure",
+      "current": {
+        "label": "current-pyke-correct42",
+        "q": "아 아니 추가 체력 42로 정정할게",
+        "text": "§\n비스킷 배달\n규칙\n\n비스킷 배달로 얻은 체력은 추가 체력으로 취급됩니다. (비스킷 판매를 취소하면 그 추가 체력이 사라집니다.)\n\n이 효과로 추가 체력을 얻어도 현재 체력이 함께 오르지는 않습니다.\n\nv26.19\n룬 백과에서 보기",
+        "pass": false,
+        "elapsedMs": 3969
+      },
+      "baseline": {
+        "label": "baseline-pyke-correct42",
+        "q": "아 아니 추가 체력 42로 정정할게",
+        "text": "§\n비스킷 배달\n규칙\n\n비스킷 배달로 얻은 체력은 추가 체력으로 취급됩니다. (비스킷 판매를 취소하면 그 추가 체력이 사라집니다.)\n\n이 효과로 추가 체력을 얻어도 현재 체력이 함께 오르지는 않습니다.\n\nv26.19\n룬 백과에서 보기",
+        "pass": false,
+        "elapsedMs": 4245
+      }
+    },
+    {
+      "id": "natural-armor",
+      "expected": {
+        "must": [
+          "60"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-failure",
+      "current": {
+        "label": "current-armor-calculation",
+        "q": "방어력 100 상대로 방관 30%에 고정 방관 10이면 최종 방어력?",
+        "text": "퍼센트 관통 중첩\n\n일반적인 퍼센트 관통은 단순 합산하지 않고 남은 저항에 곱해서 적용합니다. 30% 관통 두 개의 계산 예시는 1 − 0.7 × 0.7 = 51%입니다. 고정 관통은 퍼센트 관통 뒤에 적용합니다. 특정 스킬의 별도 방어력 무시 효과와는 구분해야 합니다.",
+        "pass": false,
+        "elapsedMs": 1980
+      },
+      "baseline": {
+        "label": "baseline-armor-calculation",
+        "q": "방어력 100 상대로 방관 30%에 고정 방관 10이면 최종 방어력?",
+        "text": "퍼센트 관통 중첩\n\n일반적인 퍼센트 관통은 단순 합산하지 않고 남은 저항에 곱해서 적용합니다. 30% 관통 두 개의 계산 예시는 1 − 0.7 × 0.7 = 51%입니다. 고정 관통은 퍼센트 관통 뒤에 적용합니다. 특정 스킬의 별도 방어력 무시 효과와는 구분해야 합니다.",
+        "pass": false,
+        "elapsedMs": 1863
+      }
+    },
+    {
+      "id": "cross-intent-english",
+      "expected": {
+        "must": [
+          "라인전"
+        ],
+        "avoid": [
+          "방어력 (6레벨)"
+        ]
+      },
+      "outcome": "shared-failure",
+      "current": {
+        "label": "current-cross-english",
+        "q": "How should I lane as Ahri against Fizz?",
+        "text": "방어력 (6레벨)\n피즈 44.17 > 아리 37.59\n마법 저항력 (6레벨)\n피즈 40.1 > 아리 35.14\n아리 vs 피즈\n비교\n아리 vs 피즈 화면으로 이동",
+        "pass": false,
+        "elapsedMs": 1182
+      },
+      "baseline": {
+        "label": "baseline-cross-english",
+        "q": "How should I lane as Ahri against Fizz?",
+        "text": "방어력 (6레벨)\n피즈 44.17 > 아리 37.59\n마법 저항력 (6레벨)\n피즈 40.1 > 아리 35.14\n아리 vs 피즈\n비교\n아리 vs 피즈 화면으로 이동",
+        "pass": false,
+        "elapsedMs": 989
+      }
+    },
+    {
+      "id": "fresh-english",
+      "expected": {
+        "must": [
+          "라인전",
+          "아리",
+          "피즈"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-fresh-english",
+        "q": "How should I lane as Ahri against Fizz?",
+        "text": "라인전\n\n아리 Q 현혹의 구슬로 피즈와 뒷줄 미니언을 함께 스치며 견제하고, 아리 E 매혹은 반격이나 킬 각을 위해 아낍니다. 피즈 E 장난치기 / 재간둥이와 W 심해석 삼지창의 사용을 지켜보며 교환 시점을 잡습니다. 마나가 마르면 견제를 멈추고 CS를 챙겨 아리 P 정기 흡수로 체력을 회복합니다.\n\n아리 vs 피즈\n상성\n아리 vs 피즈 화면으로 이동",
+        "pass": true,
+        "elapsedMs": 2517
+      },
+      "baseline": {
+        "label": "baseline-fresh-english",
+        "q": "How should I lane as Ahri against Fizz?",
+        "text": "라인전\n\n아리 Q 현혹의 구슬로 피즈와 뒷줄 미니언을 함께 스치며 견제하고, 아리 E 매혹은 반격이나 킬 각을 위해 아낍니다. 피즈 E 장난치기 / 재간둥이와 W 심해석 삼지창의 사용을 지켜보며 교환 시점을 잡습니다. 마나가 마르면 견제를 멈추고 CS를 챙겨 아리 P 정기 흡수로 체력을 회복합니다.\n\n아리 vs 피즈\n상성\n아리 vs 피즈 화면으로 이동",
+        "pass": true,
+        "elapsedMs": 2118
+      }
+    },
+    {
+      "id": "cancel-condition",
+      "expected": {
+        "must": [
+          "취소 조건에 해당하지"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-akshan-full",
+        "q": "그럼 두 발 전부 쏠게. 이속 생겨?",
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격까지 발사하면 취소 조건에 해당하지 않습니다. 발동 조건: 추가 공격 취소.\n\n아크샨\n같은 자료",
+        "pass": true,
+        "elapsedMs": 3550
+      },
+      "baseline": {
+        "label": "baseline-akshan-full",
+        "q": "그럼 두 발 전부 쏠게. 이속 생겨?",
+        "text": "기본 공격을 시작한 뒤 추가 공격을 발사한다.\n\n추가 공격까지 발사하면 취소 조건에 해당하지 않습니다. 발동 조건: 추가 공격 취소.\n\n아크샨\n같은 자료",
+        "pass": true,
+        "elapsedMs": 3662
+      }
+    },
+    {
+      "id": "pyke-conversion",
+      "expected": {
+        "must": [
+          "추가 공격력 10"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-pyke-standard",
+        "q": "파이크 체력 70짜리 템 두 개면?",
+        "text": "추가 능력치: 추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다. 추가 체력 140 (70 × 2개)이면 추가 공격력 10입니다. 추가 체력 14당 추가 공격력 1입니다.\n\n파이크\n스킬",
+        "pass": true,
+        "elapsedMs": 4187
+      },
+      "baseline": {
+        "label": "baseline-pyke-standard",
+        "q": "파이크 체력 70짜리 템 두 개면?",
+        "text": "추가 능력치: 추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다. 추가 체력 140 (70 × 2개)이면 추가 공격력 10입니다. 추가 체력 14당 추가 공격력 1입니다.\n\n파이크\n스킬",
+        "pass": true,
+        "elapsedMs": 4062
+      }
+    },
+    {
+      "id": "short-correction",
+      "expected": {
+        "must": [
+          "추가 공격력 3"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-pyke-standard-correct",
+        "q": "아 42로 바꿔줘",
+        "text": "추가 능력치: 추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다. 추가 체력 42이면 추가 공격력 3입니다. 추가 체력 14당 추가 공격력 1입니다.\n\n파이크\n같은 자료",
+        "pass": true,
+        "elapsedMs": 4078
+      },
+      "baseline": {
+        "label": "baseline-pyke-standard-correct",
+        "q": "아 42로 바꿔줘",
+        "text": "추가 능력치: 추가 최대 체력 증가분을 추가 공격력으로 전환하며, 전환 시 추가 최대 체력 증가를 대체한다. 추가 체력 42이면 추가 공격력 3입니다. 추가 체력 14당 추가 공격력 1입니다.\n\n파이크\n같은 자료",
+        "pass": true,
+        "elapsedMs": 3928
+      }
+    },
+    {
+      "id": "armor-contract",
+      "expected": {
+        "must": [
+          "= 60"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-armor-exact",
+        "q": "방어력이 100인 상대에게 30% 관통이랑 고정 관통 10이 있으면 어떤 순서로 계산해?",
+        "text": "관통 계산\n\n비율 관통을 먼저, 고정 관통을 나중에 적용합니다. 방어력 100 × (1 − 30/100) − 10 = 60입니다. 대상의 실제 방어력을 바꾸는 감소와 달리, 관통은 내 물리 피해 계산에만 적용됩니다.",
+        "pass": true,
+        "elapsedMs": 4340
+      },
+      "baseline": {
+        "label": "baseline-armor-exact",
+        "q": "방어력이 100인 상대에게 30% 관통이랑 고정 관통 10이 있으면 어떤 순서로 계산해?",
+        "text": "관통 계산\n\n비율 관통을 먼저, 고정 관통을 나중에 적용합니다. 방어력 100 × (1 − 30/100) − 10 = 60입니다. 대상의 실제 방어력을 바꾸는 감소와 달리, 관통은 내 물리 피해 계산에만 적용됩니다.",
+        "pass": true,
+        "elapsedMs": 4190
+      }
+    },
+    {
+      "id": "ezreal-refund",
+      "expected": {
+        "must": [
+          "스킬로",
+          "60 마나"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-ezreal-refund",
+        "q": "이즈리얼 W 마나는 언제 돌려받아?",
+        "text": "이즈리얼 W 정수의 흐름 구체: 표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다. 계수 (추가 공격력): 100%. 계수 (주문력): 90%.\n\n스킬 적중 시 · 이즈리얼 W 정수의 흐름 구체: 스킬로 구체를 폭발시키면 해당 스킬의 마나 소모량에 60 마나를 더한 양을 돌려받습니다.\n\n이즈리얼\n스킬",
+        "pass": true,
+        "elapsedMs": 4486
+      },
+      "baseline": {
+        "label": "baseline-ezreal-refund",
+        "q": "이즈리얼 W 마나는 언제 돌려받아?",
+        "text": "이즈리얼 W 정수의 흐름 구체: 표식이 있는 해당 대상에게 구체가 폭발하며 마법 피해를 입힙니다. 계수 (추가 공격력): 100%. 계수 (주문력): 90%.\n\n스킬 적중 시 · 이즈리얼 W 정수의 흐름 구체: 스킬로 구체를 폭발시키면 해당 스킬의 마나 소모량에 60 마나를 더한 양을 돌려받습니다.\n\n이즈리얼\n스킬",
+        "pass": true,
+        "elapsedMs": 4446
+      }
+    },
+    {
+      "id": "jayce-forms",
+      "expected": {
+        "must": [
+          "16/14/12/10/8/6",
+          "8초"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-jayce-form",
+        "q": "제이스 망치 Q랑 캐논 Q 쿨타임 알려줘",
+        "text": "해머: 제이스 Q 하늘로! 재사용 대기시간은 16/14/12/10/8/6초입니다. 이 스킬의 효과는 둔화, 광역입니다.\n\n캐논: 제이스 Q 전격 폭발 재사용 대기시간은 8초입니다. 이 스킬의 효과는 이동 속도 증가, 사거리 증가, 광역입니다.",
+        "pass": true,
+        "elapsedMs": 1762
+      },
+      "baseline": {
+        "label": "baseline-jayce-form",
+        "q": "제이스 망치 Q랑 캐논 Q 쿨타임 알려줘",
+        "text": "해머: 제이스 Q 하늘로! 재사용 대기시간은 16/14/12/10/8/6초입니다. 이 스킬의 효과는 둔화, 광역입니다.\n\n캐논: 제이스 Q 전격 폭발 재사용 대기시간은 8초입니다. 이 스킬의 효과는 이동 속도 증가, 사거리 증가, 광역입니다.",
+        "pass": true,
+        "elapsedMs": 1537
+      }
+    },
+    {
+      "id": "aphelios-interface",
+      "expected": {
+        "must": [
+          "시전하는 스킬이 아니"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-aphelios-display",
+        "q": "아펠리오스 E는 쓰면 무슨 스킬이 나가?",
+        "text": "아펠리오스 E는 무기 정보를 표시하는 인터페이스입니다. 직접 시전하는 스킬이 아니므로 공격 효과나 쿨타임으로 설명할 수 없습니다.",
+        "pass": true,
+        "elapsedMs": 1156
+      },
+      "baseline": {
+        "label": "baseline-aphelios-display",
+        "q": "아펠리오스 E는 쓰면 무슨 스킬이 나가?",
+        "text": "아펠리오스 E는 무기 정보를 표시하는 인터페이스입니다. 직접 시전하는 스킬이 아니므로 공격 효과나 쿨타임으로 설명할 수 없습니다.",
+        "pass": true,
+        "elapsedMs": 976
+      }
+    },
+    {
+      "id": "aphelios-followup",
+      "expected": {
+        "must": [
+          "시전하는 스킬이 아니"
+        ],
+        "avoid": []
+      },
+      "outcome": "shared-success",
+      "current": {
+        "label": "current-aphelios-cleanse",
+        "q": "그럼 정화로 풀 수 있어?",
+        "text": "아펠리오스 E는 무기 정보를 표시하는 인터페이스입니다. 직접 시전하는 스킬이 아니므로 공격 효과나 쿨타임으로 설명할 수 없습니다.",
+        "pass": true,
+        "elapsedMs": 4520
+      },
+      "baseline": {
+        "label": "baseline-aphelios-cleanse",
+        "q": "그럼 정화로 풀 수 있어?",
+        "text": "아펠리오스 E는 무기 정보를 표시하는 인터페이스입니다. 직접 시전하는 스킬이 아니므로 공격 효과나 쿨타임으로 설명할 수 없습니다.",
+        "pass": true,
+        "elapsedMs": 3612
+      }
+    },
+    {
+      "id": "capacity33",
+      "expected": {
+        "must": [
+          "다시 알려"
+        ],
+        "avoid": []
+      },
+      "outcome": "safe-clarification",
+      "current": {
+        "label": "current-capacity33-34",
+        "q": "그 스킬 쿨타임은?",
+        "text": "어느 챔피언의 어떤 스킬·능력치를 말하나요? 챔피언 이름과 항목을 다시 알려주세요.",
+        "pass": true,
+        "elapsedMs": 649
+      },
+      "baseline": null
+    },
+    {
+      "id": "ambiguous-choice",
+      "expected": {
+        "must": [
+          "럭스 Q / 아리 Q",
+          "어느 대상"
+        ],
+        "avoid": []
+      },
+      "outcome": "safe-clarification",
+      "current": {
+        "label": "current-ambiguous-return",
+        "q": "그 스킬은?",
+        "text": "앞서 다룬 럭스 Q / 아리 Q 중 어느 대상을 말하나요?",
+        "pass": true,
+        "elapsedMs": 466
+      },
+      "baseline": null
+    },
+    {
+      "id": "resolved-choice",
+      "expected": {
+        "must": [
+          "10초",
+          "럭스"
+        ],
+        "avoid": []
+      },
+      "outcome": "success",
+      "current": {
+        "label": "current-ambiguous-choice",
+        "q": "럭스 말한 거야",
+        "text": "10초\nQ 빛의 속박 · 재사용 대기시간\n럭스\n스킬",
+        "pass": true,
+        "elapsedMs": 3297
+      },
+      "baseline": null
+    }
+  ],
+  "artifacts": {
+    "akshan-regression.jpg": "a86e7453d6251b0ed2e6e60231477147048d87df58501fced831ce00a9390604",
+    "diagnostics.json": "85f57acfde097e7607654e0e823aceb8ac2be4f499bb241ab6aac94bf009c112",
+    "capacity33.jpg": "1d55ae539f9324f03aaff3fa9c2f15e7d3da930088fcfeb54537de77b7a22d40",
+    "responses.json": "c735edfcbb86637522a4e1a6b5aa45b0e4412e23b4c4716bb75c0f1e82444755"
+  }
+}
