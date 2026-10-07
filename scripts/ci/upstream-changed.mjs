@@ -61,10 +61,9 @@ export async function checkUpstream({ event, local, fetcher = fetch, now = new D
   }
 }
 
-export async function main(root = process.cwd(), fetcher = fetch) {
+export async function main(root = process.cwd(), fetcher = fetch, event = process.env.GITHUB_EVENT_NAME) {
   const local = JSON.parse(fs.readFileSync(path.join(root, "public/data/version.json"), "utf8"));
   const file = process.env.SOURCE_HEALTH_FILE ?? path.join(root, "research/.cache/source-health/static.json");
-  const event = process.env.GITHUB_EVENT_NAME;
   const previous = event === "push" ? undefined : readHealth(file);
   const result = await checkUpstream({ event, local, fetcher, retryPending: Boolean(previous && previous.status !== "available") });
   if (result.checked) {

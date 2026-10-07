@@ -1,11 +1,20 @@
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { test, type TestContext } from "node:test";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { nextHealth, OUTAGE_LIMIT_MS, readHealth, sourceFailure, SourceHttpError } from "../../scripts/ci/source-health.mjs";
 import { watchSources } from "../../scripts/llm/game-knowledge/watch";
 import { PATCH_INDEX, SITEMAP } from "../../scripts/llm/game-knowledge/sources";
+
+function isolateCiOutput(context: TestContext) {
+  context.mock.method(console, "warn", () => {});
+  for (const key of ["GITHUB_STEP_SUMMARY", "GITHUB_OUTPUT"]) {
+    const previous = process.env[key];
+    delete process.env[key];
+    context.after(() => { if (previous !== undefined) process.env[key] = previous; });
+  }
+}
 
 async function fixture() {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "cooldown-ci-health-"));
@@ -26,7 +35,7 @@ function sourceResponse(url: string, official: () => Response) {
 }
 
 test("CI의 부분 수집은 대기로 기록하며 기준·검수 패치는 보존하고 복구 시 해제한다", async context => {
-  context.mock.method(console, "warn", () => {});
+  isolateCiOutput(context);
   const { root, baseline, output, healthFile } = await fixture();
   let recovered = false;
   context.mock.method(globalThis, "fetch", async (url: string) => sourceResponse(url, () => recovered
@@ -53,6 +62,7 @@ test("CI의 부분 수집은 대기로 기록하며 기준·검수 패치는 보
 });
 
 test("CI도 6시간 넘는 일시 장애는 실패하고 불완전 보고서를 남긴다", async context => {
+  isolateCiOutput(context);
   const { root, output, healthFile } = await fixture();
   await fs.mkdir(path.dirname(healthFile), { recursive: true });
   const first = nextHealth(undefined, [sourceFailure("official", new SourceHttpError(522, "source"))], new Date(Date.now() - OUTAGE_LIMIT_MS));
@@ -68,7 +78,7 @@ test("CI도 6시간 넘는 일시 장애는 실패하고 불완전 보고서를 
 });
 
 test("공식 목록 탐색 장애도 대기 기록하며 주소·본문 오류는 즉시 실패한다", async context => {
-  context.mock.method(console, "warn", () => {});
+  isolateCiOutput(context);
   const { root, output } = await fixture();
   context.mock.method(globalThis, "fetch", async () => new Response("unavailable", { status: 503 }));
   try {
@@ -88,7 +98,7 @@ test("공식 목록 탐색 장애도 대기 기록하며 주소·본문 오류�
 });
 
 test("정적 자료 CI는 연속 장애 상태를 저장하고 기존 버전 파일을 바꾸지 않는다", async context => {
-  context.mock.method(console, "warn", () => {});
+  isolateCiOutput(context);
   const { root } = await fixture();
   const { main } = await import(new URL("../../scripts/ci/upstream-changed.mjs", import.meta.url).href);
   let recovered = false;
@@ -97,21 +107,21 @@ test("정적 자료 CI는 연속 장애 상태를 저장하고 기존 버전 파
   try {
     const file = path.join(root, "research/.cache/source-health/static.json");
     const before = await fs.readFile(path.join(root, "public/data/version.json"), "utf8");
-    assert.equal((await main(root, fetcher)).run, false);
+    assert.equal((await main(root, fetcher, "workflow_dispatch")).run, false);
     const first = readHealth(file);
     assert.equal(first?.status, "deferred");
-    assert.equal((await main(root, fetcher)).run, false);
+    assert.equal((await main(root, fetcher, "workflow_dispatch")).run, false);
     assert.equal(readHealth(file)?.firstUnavailableAt, first?.firstUnavailableAt);
     assert.equal(await fs.readFile(path.join(root, "public/data/version.json"), "utf8"), before);
     recovered = true;
-    assert.equal((await main(root, fetcher)).run, true);
+    assert.equal((await main(root, fetcher, "workflow_dispatch")).run, true);
     assert.equal(readHealth(file)?.status, "available");
     assert.equal(readHealth(file)?.firstUnavailableAt, undefined);
   } finally { await fs.rm(root, { recursive: true, force: true }); }
 });
 
 test("수집 예산이 끝나면 남은 원천을 미수집으로 기록해 CI 강제 종료 전에 상태를 보존한다", async context => {
-  context.mock.method(console, "warn", () => {});
+  isolateCiOutput(context);
   const { root, output } = await fixture();
   await fs.writeFile(path.join(root, "knowledge/game-source-registry.json"), JSON.stringify({ wiki: [{ title: "A" }, { title: "B" }, { title: "C" }], cdragon: [], pinnedOfficialPatches: [], recentOfficialCount: 1 }));
   let clockCalls = 0;
