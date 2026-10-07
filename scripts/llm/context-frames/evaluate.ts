@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { execFileSync } from "node:child_process";
+import { setImmediate } from "node:timers/promises";
 import { answerDialogue } from "../../../src/lib/advisor/dialogueFlow";
 import { CONTEXT_POLICIES, CONTEXT_LIMITS, type ContextPolicy } from "../../../src/lib/advisor/contextFrameTypes";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
@@ -108,7 +109,7 @@ async function evaluate(policy: ContextPolicy, limit: number, runtime?: ModelRun
       restoreReply(ctx, entry.q, result.reply);
       if (values.bank === "stress") ctx.turns = ctx.turns.slice(-TURN_LIMIT);
       if (model?.errors.length) throw new Error("Actual model worker failed");
-      if (rows.size % 25 === 0) { save(); console.log(`${policy}: ${rows.size} turns saved`); }
+      if (rows.size % 25 === 0) { save(); console.log(`${policy}: ${rows.size} turns saved`); await setImmediate(); }
     }
   }
   report.checks = [

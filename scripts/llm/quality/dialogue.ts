@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { setImmediate } from "node:timers/promises";
 import { translations } from "../../../src/i18n/translations";
 import { answerDialogue } from "../../../src/lib/advisor/dialogueFlow";
 import { dehydrateTurn, reviveTurn } from "../../../src/lib/advisor/history";
@@ -60,6 +61,7 @@ export function restoreReply(ctx: PlanContext, question: string, reply: Awaited<
 
 export async function runDialogue(options: { stories: QualityStory[]; mode: "none" | "offline" | "model"; deps: PlanDeps | ((lang: Language) => PlanDeps);
   record: (row: QualityRow) => void }): Promise<void> {
+  let measured = 0;
   for (const story of options.stories) {
     const ctx = qualityContext(story.lang, options.mode);
     const deps = typeof options.deps === "function" ? options.deps(story.lang) : options.deps;
@@ -79,6 +81,8 @@ export async function runDialogue(options: { stories: QualityStory[]; mode: "non
         preserve: entry.expected.sameAsBaseline === true,
         numeric: "numericAttempt" in output ? output.numericAttempt : undefined });
       restoreReply(ctx, entry.q, output.reply);
+      // CPU 조회도 저장 주기마다 신호 처리를 허용해야 중단 후 다음 체크포인트로 넘어가지 않는다.
+      if (++measured % 25 === 0) await setImmediate();
     }
   }
 }

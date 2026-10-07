@@ -28,13 +28,13 @@ export function isBaseStatQuestion(resolved: ResolvedQuestion): boolean {
   const lower = question.toLowerCase();
   const withoutLevel = question.replace(/\d+\s*(?:레벨|렙|level|lv\.?|급|级)|(?:level|lv\.?)\s*\d+/gi, "");
   const quantities = questionState(withoutLevel);
-  if (quantities.amount || quantities.invalidAmount) return false;
+  if (quantities.amount || quantities.invalidAmount || quantities.followupStatus || quantities.hitCount !== undefined) return false;
   if (Object.values(CROWD_CONTROL).some(control => control.labels.some(label => lower.includes(label.split("(")[0].trim().toLowerCase())))) return false;
   if (/평타|기본\s*공격(?!력)|\bbasic\s*attack\b|普攻/i.test(question) && !detectStats(question).length) return false;
   if (resolved.requestIntent?.scope === "skills" && !detectStats(question).length) return false;
   return !resolved.matchup && !detectSlot(question) && !OTHER_QUERY.test(question) && !ADVICE.test(question)
     && !asksMatchupHelp(question) && !isBasicAttackMechanicQuestion(question)
-    && !/뜻|원리|메커니즘|적용|관통|치명|한타|피해|전환|변환|초과|한계|제한|meaning|mechanic|penetration|lethality|convert|\bcap\b|limit|how.*work|原理|是什么|穿透|暴击|转换|转化|上限/i.test(question);
+    && !/뜻|원리|메커니즘|적용|관통|치명|한타|피해|전환|변환|치환|바뀌|초과|한계|제한|meaning|mechanic|penetration|lethality|convert|\bcap\b|limit|how.*work|原理|是什么|穿透|暴击|转换|转化|上限/i.test(question);
 }
 
 /** 이름만 줄이거나 레벨만 바꾼 후속 질문에도 나머지 조회 조건을 보존한다. */

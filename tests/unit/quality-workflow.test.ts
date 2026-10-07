@@ -16,12 +16,23 @@ import { graphRoute } from "../../scripts/llm/quality/model";
 import { inventoryChanges, refreshedRecords } from "../../scripts/llm/quality/audit";
 import { currentDataDirectory, retiredFiles, historicalInputs } from "../../scripts/llm/quality/archive";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
+import { runDialogue } from "../../scripts/llm/quality/dialogue";
 
 const story = (prefix: string, answer: string, source: string): QualityStory => ({ id: "", suites: [source], lang: "ko_KR",
   split: "regression", sources: [{ file: source, row: "case" }], turns: [{ q: prefix, expected: {} }, { q: "얼마야?", expected: { contains: [answer] } }] });
 const report = (): QualityReport => ({ schema: 1, profile: "model", caseHash: "cases", dataHash: "data", sourceHash: "source", scorerHash: "scorer",
   graphHash: "graph", created: "fixed", checks: [], rows: [{ id: "one", suite: ["QA"], mode: "model", question: "Q", text: "A",
       seconds: 0, checks: [{ label: "correct", pass: true }], pass: true }] });
+
+test("CPU 대화 평가도 저장 주기 뒤에 도착한 종료 신호를 처리한다", async () => {
+  const controller = new AbortController();
+  const fixture: QualityStory = { id: "interrupt", suites: ["test"], lang: "ko_KR", split: "regression", sources: [],
+    turns: Array.from({ length: 26 }, () => ({ q: "안녕", expected: {} })) };
+  setImmediate(() => controller.abort());
+  await assert.rejects(runDialogue({ stories: [fixture], mode: "none",
+    deps: { judge: async () => { throw Error("unexpected judge"); }, search: async () => [] },
+    record: () => controller.signal.throwIfAborted() }), { name: "AbortError" });
+});
 
 test("mixed datasets exclude training and development rows from historical evaluation", () => {
   const rows = historicalInputs([

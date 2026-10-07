@@ -172,6 +172,18 @@ test("자모 교정은 새로운 오타도 읽고 띄어쓰기 경계의 짧은 
   assert.deepEqual(detectStats("생명력 흡수는 어떻게 적용해?"), []);
 });
 
+test("능력치 어휘가 있어도 전환 여부와 공격 발사의 조건을 기본 수치로 바꾸지 않는다", async () => {
+  const deps = evaluationDeps();
+  const ctx = qualityContext("ko_KR", "none");
+  const growth = await answerDialogue("파이크 성장 체력도 공격력으로 바뀌어?", ctx, deps);
+  assert.match(growth.reply.text, /성장.*(?:포함되지|전환되지|않)/s);
+  const first = await answerDialogue("아크샨 두 번째 공격 취소하면?", ctx, deps);
+  restoreReply(ctx, "아크샨 두 번째 공격 취소하면?", first.reply);
+  const fired = await answerDialogue("그럼 두 발 다 쏘면 이속도 얻어?", ctx, deps);
+  assert.match(fired.reply.text, /취소 조건에 해당하지/);
+  assert.equal(fired.reply.memory.active, "spell");
+});
+
 test("내 챔피언 문형은 먼저 나온 상대보다 우선하며 챔피언 이름에 종속되지 않는다", () => {
   const a = { name: "상대챔피언" }, b = { name: "내챔피언" };
   assert.deepEqual(matchupSidesDetailed("상대챔피언이 길을 막는데 내챔피언 하는 나는 어떻게 해?", [a, b]).sides, [b, a]);
