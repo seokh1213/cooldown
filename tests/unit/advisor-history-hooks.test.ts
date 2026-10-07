@@ -13,13 +13,17 @@ const setup = `
   import assert from "node:assert/strict";
   import { readFileSync } from "node:fs";
   import { mock } from "node:test";
+  import { readCurrentPatchVersion } from "./scripts/llm/lib/data.ts";
   const read = path => JSON.parse(readFileSync(path, "utf8"));
-  const aatrox = read("public/data/26.19/champions/ko_KR/Aatrox.json");
-  const ahri = read("public/data/26.19/champions/ko_KR/Ahri.json");
-  const cards = read("public/data/26.19/llm/champion-cards-ko_KR.json").cards;
+  const patch = readCurrentPatchVersion();
+  const aatrox = read("public/data/" + patch + "/champions/ko_KR/Aatrox.json");
+  const ahri = read("public/data/" + patch + "/champions/ko_KR/Ahri.json");
+  const cards = read("public/data/" + patch + "/llm/champion-cards-ko_KR.json").cards;
   const card = cards.find(entry => entry.id === "Aatrox");
   const otherCard = cards.find(entry => entry.id === "Ahri");
   const originalSource = { patch: aatrox.patchVersion, locale: aatrox.locale, ddragonVersion: aatrox.sources.ddragon };
+  const nextPatch = patch.split(".").map((part, index) => index === 1 ? String(Number(part) + 1) : part).join(".");
+  const nextDdragon = originalSource.ddragonVersion.split(".").map((part, index) => index === 1 ? String(Number(part) + 1) : part).join(".");
   const values = new Map();
   const listeners = new Map();
   const timers = new Map();
@@ -146,7 +150,7 @@ test("발화 출처는 begin 당시 복제본을 유지하고 직접 응답은 �
     const harness = new Harness(() => useAdvisorTurns("ko_KR", () => {}, source));
     let hook = harness.flush();
     hook.begin("old question", "thinking"); hook = harness.flush();
-    source.patch = "26.20"; source.locale = "en_US"; source.ddragonVersion = "16.20.1";
+    source.patch = nextPatch; source.locale = "en_US"; source.ddragonVersion = nextDdragon;
     hook = harness.flush();
     hook.place("old question", { role: "assistant", content: "answer", answer: { kind: "champion", card } });
     hook = harness.flush();
@@ -167,8 +171,8 @@ test("신규 참조 상세만 검증해 보관하고 중복·출처 불일치·�
     hook = harness.flush();
     const before = hook.turns;
     for (const invalid of [
-      { ...aatrox, patchVersion: "26.20" }, { ...aatrox, locale: "en_US" },
-      { ...aatrox, sources: { ...aatrox.sources, ddragon: "16.20.1" } }, ahri,
+      { ...aatrox, patchVersion: nextPatch }, { ...aatrox, locale: "en_US" },
+      { ...aatrox, sources: { ...aatrox.sources, ddragon: nextDdragon } }, ahri,
       { ...aatrox, champion: { ...aatrox.champion, id: 123 } },
     ]) {
       hook.attachReferenceDetail(id, invalid); hook = harness.flush();

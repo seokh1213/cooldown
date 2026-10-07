@@ -16,9 +16,10 @@ import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { offlineJudge } from "../../../src/lib/advisor/offlineJudge";
 import { evaluationPaths } from "./evaluation_config";
 import type { JudgeTier, PlanContext } from "../../../src/lib/advisor/plan";
+import { readCurrentPatchVersion } from "../lib/data";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../..");
-export const PATCH = "26.19";
+export const PATCH = readCurrentPatchVersion(path.join(ROOT, "public/data"));
 const DATA = path.join(ROOT, "public/data", PATCH);
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(file, "utf8")) as T;
 

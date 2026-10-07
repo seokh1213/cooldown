@@ -5,7 +5,7 @@ import { parseArgs } from "node:util";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { audit } from "./audit";
 import { ROOT, WORKFLOW, buildBank, digest, readRows } from "./bank";
-import { fileHash, filesUnder } from "./archive";
+import { currentDataDirectory, fileHash, filesUnder } from "./archive";
 import { localFetch, evaluationDeps, runDialogue } from "./dialogue";
 import { runBenchmarks, splitAudit, benchmarkModes } from "./benchmarks";
 import { openModel } from "./model";
@@ -32,7 +32,7 @@ if (!bank.length) throw new Error("No test cases selected");
 const sourceFiles = [...filesUnder("src/lib/advisor"), ...filesUnder("src/workers"), ...filesUnder("scripts/llm/quality"),
   ...filesUnder("scripts/llm/conversational-advisor"), ...filesUnder("src/hooks").filter(file => /Advisor/.test(file)),
   ...filesUnder("src/components/features/advisor"), ...filesUnder("scripts/llm/kev-agent"), ...filesUnder("src/lib/knowledge")];
-const dataFiles = [...filesUnder("public/data/26.19").filter(file => file.endsWith(".json")), ...filesUnder("public/models/offline"), ...filesUnder("public/models/judge"),
+const dataFiles = [...filesUnder(currentDataDirectory()).filter(file => file.endsWith(".json")), ...filesUnder("public/models/offline"), ...filesUnder("public/models/judge"),
   ...filesUnder("public/models/kev/b3e").filter(file => !file.endsWith(".onnx")), ...filesUnder("knowledge").filter(file => file.endsWith(".json")),
   ...filesUnder("docs").filter(file => /lol-fundamentals\.md$/.test(file))];
 const report: QualityReport = { schema: 1, profile, caseHash: digest(bank), sourceHash: digest(sourceFiles.map(file => [file, fileHash(file)])),
