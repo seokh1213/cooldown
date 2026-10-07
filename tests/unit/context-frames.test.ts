@@ -6,7 +6,7 @@ import { MAX_CONTEXT_FRAMES, CONTEXT_LIMITS } from "../../src/lib/advisor/contex
 import { recordFrame, usableFrames } from "../../src/lib/advisor/contextFrames";
 import { emptyDialogue } from "../../src/lib/advisor/dialogueState";
 import { isStoredTurn } from "../../src/lib/advisor/historyValidation";
-import { dehydrateTurn } from "../../src/lib/advisor/history";
+import { dehydrateTurn, TURN_LIMIT } from "../../src/lib/advisor/history";
 import { contextProbability, CONTEXT_FEATURE_COUNT, learnedContextRanker } from "../../src/lib/advisor/contextRanker";
 import type { PlanContext } from "../../src/lib/advisor/planTypes";
 import { checkApprovedContexts } from "../../scripts/llm/context-frames/approval";
@@ -219,6 +219,22 @@ test("omission markers still require clarification when no usable frame remains"
   assert.equal(result.reply.answer, undefined);
 });
 
+test("trimming 80-message history marks forgotten owners below the context capacity", async () => {
+  const ctx = qualityContext("ko_KR", "none"); ctx.contextLimit = 32;
+  await ask(ctx, "가렌 Q 쿨타임은?");
+  for (let turn = 0; turn < TURN_LIMIT / 2; turn++) {
+    await ask(ctx, "아리 11레벨 마법 저항력은?");
+    ctx.turns = ctx.turns.slice(-TURN_LIMIT);
+  }
+  assert.equal(ctx.turns.length, TURN_LIMIT);
+  assert.equal(ctx.turns.at(-1)?.memory?.contextFrames?.length, 2);
+  await ask(ctx, "이즈리얼 Q 쿨타임은?");
+  await ask(ctx, "장화 가격은?");
+  const result = await ask(ctx, "아까 그 스킬 쿨타임은?");
+  assert.equal(result.contextDecision?.reason, "evicted");
+  assert.equal(result.reply.answer, undefined);
+});
+
 test("the stress gate rejects a guessed answer after its owner was forgotten", () => {
   const approval = { caseHash: "cases", scorerHash: "scorer", passedIds: [], clarificationIds: ["forgotten"] };
   const row: { id: string; pass: boolean; decision: { action: string }; observed?: unknown } = {
@@ -230,4 +246,14 @@ test("the stress gate rejects a guessed answer after its owner was forgotten", (
   assert.throws(() => checkApprovedContexts(report, approval), /forgotten context/);
   row.decision.action = "clarify"; row.observed = { kind: "spell" };
   assert.throws(() => checkApprovedContexts(report, approval), /forgotten context/);
+});
+
+test("the stress gate protects calculation results beyond the spell owner's identity", () => {
+  const approval = { caseHash: "cases", scorerHash: "scorer", passedIds: ["conversion"],
+    textRequirements: [{ id: "conversion", contains: ["추가 공격력 20입니다"] }] };
+  const row = { id: "conversion", pass: true, text: "추가 체력 280이면 추가 공격력 20입니다." };
+  const report = { caseHash: "cases", scorerHash: "scorer", rows: [row] };
+  assert.doesNotThrow(() => checkApprovedContexts(report, approval));
+  row.text = "추가 공격력 62입니다.";
+  assert.throws(() => checkApprovedContexts(report, approval), /numeric answer/);
 });

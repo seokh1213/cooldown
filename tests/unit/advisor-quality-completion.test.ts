@@ -175,8 +175,10 @@ test("자모 교정은 새로운 오타도 읽고 띄어쓰기 경계의 짧은 
 test("능력치 어휘가 있어도 전환 여부와 공격 발사의 조건을 기본 수치로 바꾸지 않는다", async () => {
   const deps = evaluationDeps();
   const ctx = qualityContext("ko_KR", "none");
-  const growth = await answerDialogue("파이크 성장 체력도 공격력으로 바뀌어?", ctx, deps);
-  assert.match(growth.reply.text, /성장.*(?:포함되지|전환되지|않)/s);
+  for (const question of ["파이크 성장 체력도 공격력으로 바뀌어?", "파이크 레벨업으로 늘어나는 체력도 공격력으로 바뀜?"]) {
+    const growth = await answerDialogue(question, ctx, deps);
+    assert.match(growth.reply.text, /(?:성장|레벨).*(?:포함되지|전환되지|않)/s);
+  }
   const first = await answerDialogue("아크샨 두 번째 공격 취소하면?", ctx, deps);
   restoreReply(ctx, "아크샨 두 번째 공격 취소하면?", first.reply);
   const fired = await answerDialogue("그럼 두 발 다 쏘면 이속도 얻어?", ctx, deps);

@@ -4,10 +4,11 @@ import type { QualityReport } from "../quality/types";
 export const CONTEXT_APPROVAL_FILE = "research/llm-evals/workflow/reports/context-frames-20261007/approved.json";
 export const EXPANDED_CONTEXT_APPROVAL_FILE = "research/llm-evals/workflow/reports/context-followup-20261007/approved.json";
 export const STRESS_APPROVAL_FILE = "research/llm-evals/workflow/reports/context-followup-20261007/stress-approved.json";
-export interface ContextApproval { caseHash: string; scorerHash: string; passedIds: string[]; clarificationIds?: string[] }
+export interface ContextApproval { caseHash: string; scorerHash: string; passedIds: string[]; clarificationIds?: string[];
+  textRequirements?: Array<{ id: string; contains: string[] }> }
 
 export function checkApprovedContexts(report: Pick<QualityReport, "caseHash" | "scorerHash"> & {
-  rows: Array<{ id: string; pass: boolean | null; decision?: unknown; observed?: unknown }>;
+  rows: Array<{ id: string; pass: boolean | null; text?: string; decision?: unknown; observed?: unknown }>;
 }, approval: ContextApproval): void {
   assert.equal(report.caseHash, approval.caseHash, "Approved context cases changed; review the contracts");
   assert.equal(report.scorerHash, approval.scorerHash, "Approved context scorer changed; review the scorer");
@@ -19,4 +20,7 @@ export function checkApprovedContexts(report: Pick<QualityReport, "caseHash" | "
     return (row?.decision as { action?: string } | undefined)?.action !== "clarify" || Boolean(row?.observed);
   }) ?? [];
   assert.deepEqual(unsafe, [], "Candidate answered a forgotten context instead of clarifying");
+  const wrongText = approval.textRequirements?.filter(requirement =>
+    requirement.contains.some(value => !rows.get(requirement.id)?.text?.includes(value))).map(requirement => requirement.id) ?? [];
+  assert.deepEqual(wrongText, [], "Candidate lost an approved numeric answer");
 }

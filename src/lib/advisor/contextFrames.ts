@@ -80,12 +80,16 @@ export function recordFrame(memory: DialogueMemory, frames: ContextFrame[], turn
     ? [...frames.filter(frame => frame.key !== key), { key, kind: memory.active, patch: memory.patch, turn, state }]
     : frames;
   const dropped = next.slice(0, Math.max(0, next.length - limit));
-  const omitted = new Set([...(memory.contextOmissions ?? []), ...dropped.map(frameBucket)]);
-  memory.contextOmissions = CONTEXT_BUCKETS.filter(bucket => omitted.has(bucket));
+  rememberOmittedFrames(memory, dropped);
   memory.contextFrames = next.slice(-limit);
 }
 
 export function frameBucket(frame: ContextFrame): ContextBucket {
   const key = frame.kind === "spell" && frame.state.spell?.slot ? `spell:${frame.state.spell.slot}` : frame.kind;
   return CONTEXT_BUCKETS.includes(key as ContextBucket) ? key as ContextBucket : "spell";
+}
+
+export function rememberOmittedFrames(memory: DialogueMemory, frames: ContextFrame[]): void {
+  const omitted = new Set([...(memory.contextOmissions ?? []), ...frames.map(frameBucket)]);
+  memory.contextOmissions = CONTEXT_BUCKETS.filter(bucket => omitted.has(bucket));
 }

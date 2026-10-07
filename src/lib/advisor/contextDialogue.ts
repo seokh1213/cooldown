@@ -1,7 +1,7 @@
 import { dialogueMemoryOf } from "./dialogueState";
 import type { PlanContext, PlanDeps } from "./planTypes";
 import { resolveQuestion } from "./resolvedQuestion";
-import { frameKey, frameTurnIndex, recordFrame, restoreFrame, usableFrames } from "./contextFrames";
+import { frameKey, frameTurnIndex, recordFrame, restoreFrame, usableFrames, rememberOmittedFrames } from "./contextFrames";
 import { selectContextFrame } from "./contextFrameSelection";
 import type { ContextDecision, ContextFrame } from "./contextFrameTypes";
 import type { answerDialogue } from "./dialogueFlow";
@@ -23,6 +23,8 @@ export async function withContextFrames(question: string, ctx: PlanContext, run:
   if (!ctx.data) return run(ctx, question);
   const memory = dialogueMemoryOf(ctx.turns, ctx.data);
   const frames = usableFrames(memory, ctx);
+  const retained = new Set(frames.map(frame => frame.key));
+  rememberOmittedFrames(memory, (memory.contextFrames ?? []).filter(frame => frame.patch === ctx.data!.patch && !retained.has(frame.key)));
   const resolved = resolveQuestion(question, ctx.data);
   const history = { pending: memory.contextPending, omitted: memory.contextOmissions };
   if (ctx.contextPolicy === "learned" && !ranker) throw new Error("Learned context policy requires its ranker");

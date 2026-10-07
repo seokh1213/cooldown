@@ -11,4 +11,5 @@ const approval = JSON.parse(fs.readFileSync(values.approved, "utf8")) as Context
 assert.ok(report.checks.some(check => check.name === "complete-coverage" && check.pass), "Context evaluation is incomplete");
 assert.ok(report.checks.every(check => check.pass), "Context inputs or worker changed");
 checkApprovedContexts(report, approval);
-console.log(JSON.stringify({ protectedSuccesses: approval.passedIds.length, requiredClarifications: approval.clarificationIds?.length ?? 0 }));
+console.log(JSON.stringify({ protectedSuccesses: approval.passedIds.length, requiredClarifications: approval.clarificationIds?.length ?? 0,
+  numericAnswers: approval.textRequirements?.length ?? 0 }));
