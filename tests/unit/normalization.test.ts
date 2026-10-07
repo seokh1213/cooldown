@@ -7,7 +7,7 @@ import { normalizeRunesAndStatShards } from "../../scripts/data-pipeline/normali
 import { compileItemDamageEffects } from "../../scripts/data-pipeline/normalization/item-damage-effects";
 import { StatKey } from "../../src/types/combatStats";
 import { fetchCDragonRuneStatShards } from "../../scripts/data-pipeline/sources/cdragon-runes";
-import { mergeCDragonItems } from "../../scripts/data-pipeline/sources/cdragon-items";
+import { fetchCDragonItemCalculations, mergeCDragonItems } from "../../scripts/data-pipeline/sources/cdragon-items";
 import { htmlToPlainText } from "../../src/lib/htmlText";
 import { mergeCDragonChampionStats } from "../../scripts/data-pipeline/sources/cdragon-champion";
 
@@ -168,6 +168,28 @@ test("CDragon 아이템 병합", () => {
     true,
   );
 
+});
+
+test("CDragon 아이템 계산의 일시적 522는 같은 패치에서 재시도한다", async () => {
+  const requests: string[] = [];
+  const calculation = { "Items/3115": { mDataValues: [] } };
+  const result = await fetchCDragonItemCalculations("16.20", async input => {
+    requests.push(String(input));
+    return requests.length === 1
+      ? new Response("", { status: 522 })
+      : new Response(JSON.stringify(calculation));
+  });
+  assert.deepEqual(result, calculation);
+  assert.deepEqual(requests, Array(2).fill("https://raw.communitydragon.org/16.20/game/items.cdtb.bin.json"));
+});
+
+test("없는 CDragon 아이템 계산 패치는 재시도하거나 다른 버전으로 대체하지 않는다", async () => {
+  const requests: string[] = [];
+  await assert.rejects(fetchCDragonItemCalculations("16.20", async input => {
+    requests.push(String(input));
+    return new Response("", { status: 404 });
+  }), /Calculation data missing:.*HTTP 404/);
+  assert.deepEqual(requests, ["https://raw.communitydragon.org/16.20/game/items.cdtb.bin.json"]);
 });
 
 test("CDragon 룬 파편의 일시적 522는 같은 패치 원천으로 재시도한다", async () => {

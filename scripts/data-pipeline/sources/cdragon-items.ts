@@ -53,14 +53,16 @@ export async function fetchCDragonItems(
 
 export async function fetchCDragonItemCalculations(
   cdragonVersion: string,
+  fetcher: typeof fetch = fetch,
 ): Promise<Record<string, CommunityDragonItemCalculation>> {
   const url = `https://raw.communitydragon.org/${cdragonVersion}/game/items.cdtb.bin.json`;
   console.log(`Fetching exact CDragon item calculations: ${url}`);
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`[CD][Items] Calculation data missing: HTTP ${response.status}`);
+  let json: unknown;
+  try {
+    json = await fetchJson<unknown>(url, 4, fetcher);
+  } catch (error) {
+    throw new Error(`[CD][Items] Calculation data missing: ${String(error)}`);
   }
-  const json = (await response.json()) as unknown;
   if (!json || typeof json !== "object" || Array.isArray(json)) {
     throw new Error("[CD][Items] Invalid calculation response");
   }
