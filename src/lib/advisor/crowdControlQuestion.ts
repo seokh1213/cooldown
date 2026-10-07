@@ -7,6 +7,7 @@ export const CLEANSERS: Array<[Cleanser, RegExp]> = [
 ];
 export type ControlQuery = "types" | "sequence" | "cleanse" | "tenacity" | "smite";
 export const askedCleansers = (question: string): Cleanser[] => CLEANSERS.filter(([, words]) => words.test(question)).map(([method]) => method);
+export const mentionsCrowdControl = (question: string): boolean => /(?:하드|소프트)\s*(?:CC|씨씨)?|군중\s*제어|\bcc\b|기절|속박|에어본|제압|억제|침묵|매혹|공포|도발|수면|졸음|변이|실명|시야\s*축소|정지|고정|광란|crowd\s*control|\b(stun|root|suppression|stasis|charm|fear|polymorph|ground|sleep|asleep|drowsy)\b|控制|眩晕|禁锢|压制|睡眠|昏睡|困倦/i.test(question);
 export const asksControlDuration = (question: string): boolean => /지속\s*시간|(?:수면|졸음|기절|속박|제압|억제|매혹|공포|도발|침묵|변이|실명)\s*시간|몇\s*초|얼마나\s*(?:오래|동안)|duration|how long|持续\s*时间|睡眠\s*时间|几秒/i.test(question);
 
 /** 수치 조회는 별도 사실 흐름에 맡긴다. 아이템 구매 조언도 해제 판정으로 바꾸지 않는다. */
@@ -27,7 +28,7 @@ export function controlQuery(question: string): ControlQuery | undefined {
 export function asksCrowdControl(question: string): boolean {
   if (asksControlDuration(question)) return false;
   if (/쿨|재사용|사거리|계수|피해량|둔화율|지속시간|몇\s*초|얼마나|cooldown|range|ratio|damage|duration|冷却|射程|伤害/i.test(question)) return false;
-  return /(?:하드|소프트)\s*(?:CC|씨씨)?|군중\s*제어|\bcc\b|기절|속박|에어본|제압|억제|침묵|매혹|공포|도발|수면|졸음|변이|실명|시야\s*축소|정지|고정|광란|crowd\s*control|\b(stun|root|suppression|stasis|charm|fear|polymorph|ground)\b|控制|眩晕|禁锢|压制/i.test(question);
+  return mentionsCrowdControl(question);
 }
 
 /** 발동 순서 질문은 검증한 단계 설명을 우선한다. 효과 배열의 나열 순서를 시간 순서로 추정하지 않는다. */

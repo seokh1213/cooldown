@@ -6,6 +6,9 @@ import { answerDialogue } from "../../src/lib/advisor/dialogueFlow";
 import { controlQuery } from "../../src/lib/advisor/crowdControlQuestion";
 import { detectSpellFocus } from "../../src/lib/advisor/spellFocus";
 import type { PlanContext } from "../../src/lib/advisor/planTypes";
+import { runDialogue, evaluationDeps, localFetch } from "../../scripts/llm/quality/dialogue";
+import { buildBank } from "../../scripts/llm/quality/bank";
+import type { QualityRow } from "../../scripts/llm/quality/types";
 
 test("CC 시간 질문에는 종류 목록 대신 현재 패치의 지속시간을 답한다", async () => {
   for (const [lang, question] of [
@@ -27,4 +30,19 @@ test("CC 시간 질문에는 종류 목록 대신 현재 패치의 지속시간�
   assert.equal(controlQuery("릴리아 R 졸음 먼저 수면 나중이야?"), "sequence");
   assert.equal(detectSpellFocus("릴리아 R 피해 얼마나 줘?")?.focus, "damage");
   assert.equal(detectSpellFocus("Lillia R AP ratio?")?.focus, "ratio");
+  assert.equal(detectSpellFocus("그럼 W는 몇 초야?"), undefined);
+});
+
+test("쿨타임 후속 질문의 몇 초는 효과 지속시간으로 바꾸지 않는다", async () => {
+  const fixture = buildBank().find(story => story.id === "b482a9b6c686265cdbb6");
+  assert.ok(fixture);
+  const rows: QualityRow[] = [], restore = localFetch();
+  try {
+    for (const mode of ["none", "offline"] as const) {
+      await runDialogue({ stories: [fixture], mode, deps: evaluationDeps(), record: row => rows.push(row) });
+    }
+  } finally { restore(); }
+  assert.equal(rows.length, 10);
+  assert.ok(rows.every(row => row.pass === true));
+  for (const row of rows.filter(row => row.id.endsWith(":2"))) assert.match(row.text, /22\/19\.5\/17\/14\.5\/12/);
 });
