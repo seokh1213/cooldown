@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { collectSource, diffSnapshots, getText, officialPatches, sha256, SITEMAP, type Snapshot, type Source } from "./sources";
+import { collectSource, diffSnapshots, getText, officialPatches, PATCH_INDEX, sha256, SITEMAP, type Snapshot, type Source } from "./sources";
 import { writeMonsterCandidates } from "./monster-candidates";
 import { writeNoteImpacts } from "./note-impacts";
 
@@ -11,8 +11,9 @@ interface Baseline { schemaVersion: number; patch: string; snapshots: Snapshot[]
 async function readJson<T>(file: string): Promise<T> { return JSON.parse(await fs.readFile(file, "utf8")) as T; }
 
 async function sourceList(registry: Registry, cdragon: string) {
-  const xml = await getText(SITEMAP);
-  const patches = officialPatches(xml);
+  // 사이트맵은 새 패치 게시보다 늦게 갱신되므로 공식 목록의 링크도 함께 확인한다.
+  const indexes = await Promise.all([getText(SITEMAP), getText(PATCH_INDEX)]);
+  const patches = officialPatches(indexes.join("\n"));
   if (!patches.length) throw new Error("No official PC patch URLs discovered");
   const selected = patches.filter((entry, index) => index >= patches.length - registry.recentOfficialCount || registry.pinnedOfficialPatches.includes(entry.patch));
   const sources: Source[] = [

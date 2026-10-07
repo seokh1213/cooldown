@@ -3,6 +3,7 @@ import { setTimeout as delay } from "node:timers/promises";
 
 export const WIKI_API = "https://wiki.leagueoflegends.com/en-us/api.php";
 export const SITEMAP = "https://www.leagueoflegends.com/en-us/sitemap_loc.xml";
+export const PATCH_INDEX = "https://www.leagueoflegends.com/en-us/news/tags/patch-notes/";
 export interface Source { id: string; kind: "wiki" | "official" | "cdragon"; url: string; title?: string }
 export interface Snapshot { id: string; kind: Source["kind"]; url: string; hash: string; revision?: number }
 export const sha256 = (text: string) => createHash("sha256").update(text).digest("hex");
@@ -29,11 +30,14 @@ export async function getText(url: string): Promise<string> {
   }
 }
 
-export function officialPatches(xml: string): Array<{ patch: string; url: string }> {
-  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].flatMap(([, url]) => {
+export function officialPatches(content: string): Array<{ patch: string; url: string }> {
+  const patches = [...content.matchAll(/<loc>([^<]+)<\/loc>|\bhref=["']([^"']+)["']/g)].flatMap(([, location, href]) => {
+    const link = location ?? href;
+    const url = link.startsWith("/en-us/") ? `https://www.leagueoflegends.com${link}` : link;
     const match = url.match(/^https:\/\/www\.leagueoflegends\.com\/en-us\/news\/game-updates\/(?:league-of-legends-)?patch-(\d+)-(\d+)-notes\/?$/);
     return match ? [{ patch: `${Number(match[1])}.${Number(match[2])}`, url }] : [];
-  }).sort((a, b) => {
+  });
+  return [...new Map(patches.map(patch => [patch.patch, patch])).values()].sort((a, b) => {
     const [ay, an] = a.patch.split(".").map(Number);
     const [by, bn] = b.patch.split(".").map(Number);
     return ay - by || an - bn;

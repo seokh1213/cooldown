@@ -3,7 +3,7 @@ import { test } from "node:test";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { collectSource, diffSnapshots, getText, officialBody, officialPatches, SITEMAP, wikiGameplay } from "../../scripts/llm/game-knowledge/sources";
+import { collectSource, diffSnapshots, getText, officialBody, officialPatches, PATCH_INDEX, SITEMAP, wikiGameplay } from "../../scripts/llm/game-knowledge/sources";
 import { watchSources } from "../../scripts/llm/game-knowledge/watch";
 
 test("대기하던 배포는 원천 갱신 뒤의 master를 체크아웃한다", async () => {
@@ -31,6 +31,17 @@ test("매시 상류 확인만 끝난 경우는 건너뛰고 실제 생성 뒤에
 test("공식 주소 형식이 바뀌어도 실제 PC 패치 URL을 발견한다", () => {
   const xml = '<loc>https://www.leagueoflegends.com/en-us/news/game-updates/patch-14-1-notes/</loc><loc>https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-26-19-notes/</loc><loc>https://example.com/patch-26-19-notes/</loc>';
   assert.deepEqual(officialPatches(xml).map(patch => patch.patch), ["14.1", "26.19"]);
+});
+
+test("공식 목록의 최신 패치와 사이트맵을 합치고 중복·다른 게임 링크를 제외한다", () => {
+  const content = '<loc>https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-26-19-notes/</loc>'
+    + '<a href="/en-us/news/game-updates/league-of-legends-patch-26-19-notes">old</a>'
+    + '<a href="/en-us/news/game-updates/league-of-legends-patch-26-20-notes">new</a>'
+    + '<a href="https://example.com/en-us/news/game-updates/patch-26-21-notes/">other</a>'
+    + '<a href="http://[broken">malformed unrelated link</a>'
+    + '<a href="/en-us/news/game-updates/teamfight-tactics-patch-26-20-notes/">TFT</a>';
+  assert.deepEqual(officialPatches(content).map(patch => patch.patch), ["26.19", "26.20"]);
+  assert.equal(officialPatches(content)[1].url, "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-26-20-notes");
 });
 
 test("공식 본문의 핫픽스는 포함하고 footer와 스크립트는 제외한다", () => {
@@ -73,6 +84,7 @@ test("수집 실패는 불완전 보고서를 남기고 기준을 덮어쓰지 �
   await fs.writeFile(path.join(root, "knowledge/game-source-registry.json"), JSON.stringify({ wiki: [{ title: "Example" }], cdragon: [], pinnedOfficialPatches: [], recentOfficialCount: 1 }));
   context.mock.method(globalThis, "fetch", async (url: string) => url === SITEMAP
     ? new Response('<loc>https://www.leagueoflegends.com/en-us/news/game-updates/patch-26-19-notes/</loc>')
+    : url === PATCH_INDEX ? new Response('<main>No new patch</main>')
     : new Response("Unavailable", { status: 503 }));
   try {
     const output = path.join(root, "output");
