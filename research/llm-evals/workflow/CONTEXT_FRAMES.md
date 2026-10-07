@@ -34,10 +34,10 @@ Node 24와 `uv`가 필요하다. Python 3.13, NumPy 2.5.3, SciPy 1.18.1, scikit-
 
 ```sh
 pnpm llm:test:contexts --mode offline --split all --out research/.cache/context-runs/my-change-offline
-pnpm llm:test:contexts:compare --directory research/.cache/context-runs/my-change-offline --require guarded-12
+pnpm llm:test:contexts:compare --directory research/.cache/context-runs/my-change-offline --require guarded-12 --approved research/llm-evals/workflow/reports/context-frames-20261007/approved.json
 pnpm llm:test:contexts --mode none --split all --out research/.cache/context-runs/my-change-none
 pnpm llm:test:contexts --mode model --split all --configs legacy,guarded:6,guarded:12,learned:12 --out research/.cache/context-runs/my-change-webgpu
-pnpm llm:test:contexts:compare --directory research/.cache/context-runs/my-change-webgpu --require guarded-12
+pnpm llm:test:contexts:compare --directory research/.cache/context-runs/my-change-webgpu --require guarded-12 --approved research/llm-evals/workflow/reports/context-frames-20261007/approved.json
 pnpm llm:test:contexts --mode offline --bank regression --configs legacy,guarded:12 --out research/.cache/context-runs/my-change-existing
 pnpm llm:test:contexts:compare --directory research/.cache/context-runs/my-change-existing --require guarded-12
 ```
@@ -46,6 +46,6 @@ pnpm llm:test:contexts:compare --directory research/.cache/context-runs/my-chang
 
 WebGPU 실행은 실제 Chrome의 기존 모델 워커를 사용하며, 워커 실패를 다른 backend로 숨기지 않는다. 매 25턴 로컬 결과를 저장한다. 중단된 대화는 기억을 다시 구성하며, 완료된 대화만 건너뛴다. 작업 종료 시 자신이 띄운 Chrome과 Vite를 닫는다.
 
-`pnpm llm:test --profile regression`은 기본 정책과 `legacy`의 문맥 계약 비교 및 문맥 단위 검사를 자동 실행한다. `--require` 비교는 기존 성공의 실패 전환이나 보호 답변 변경을 발견하면 실패한다. 새 후보 채택에는 이 게이트와 기존 대화 은행의 회귀 0건, 실제 WebGPU 확인을 함께 요구한다.
+`pnpm llm:test --profile regression`은 기본 정책과 `legacy`의 문맥 계약 비교 및 문맥 단위 검사를 자동 실행한다. `--require` 비교는 기존 성공의 실패 전환이나 보호 답변 변경을 발견하면 실패한다. `approved.json`은 이번에 채택한 성공 248턴도 고정해 보호한다. 현행 대비 개선한 35턴을 다시 잃으면 실패하므로 legacy보다 낫다는 이유만으로 통과하지 못한다. 질문 계약이나 채점기를 바꾸면 이 기준도 검토해야 한다. 새 후보 채택에는 이 게이트와 기존 대화 은행의 회귀 0건, 실제 WebGPU 확인을 함께 요구한다.
 
 기본 동작을 되돌릴 때는 `DEFAULT_CONTEXT_POLICY`를 `legacy`로 바꾸고 같은 검사들을 실행한다. 개수를 바꾸려면 목록·직렬화 상한도 함께 검토하고 전체 비교를 다시 한다. [측정 기록](reports/context-frames-20261007/README.md)에 결과·실패 행·SHA-256을 보존한다.

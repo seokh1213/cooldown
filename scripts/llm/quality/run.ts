@@ -4,6 +4,7 @@ import { spawn, execFileSync } from "node:child_process";
 import { parseArgs } from "node:util";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { DEFAULT_CONTEXT_LIMIT, DEFAULT_CONTEXT_POLICY } from "../../../src/lib/advisor/contextFrameTypes";
+import { CONTEXT_APPROVAL_FILE } from "../context-frames/approval";
 import { audit } from "./audit";
 import { ROOT, WORKFLOW, buildBank, digest, readRows } from "./bank";
 import { currentDataDirectory, fileHash, filesUnder } from "./archive";
@@ -86,7 +87,7 @@ try {
     await check("mechanics-answer", "npx", ["tsx", "scripts/llm/champion-mechanics/evaluate.ts", path.join(output, "mechanics-answer.json"), "--check"]);
     const contexts = path.join(output, "context-frames");
     await check("context-window", "npx", ["tsx", "scripts/llm/context-frames/evaluate.ts", "--split", "all", "--configs", `legacy,${DEFAULT_CONTEXT_POLICY}:${DEFAULT_CONTEXT_LIMIT}`, "--out", contexts]);
-    await check("context-comparison", "npx", ["tsx", "scripts/llm/context-frames/compare.ts", "--directory", contexts, "--require", `${DEFAULT_CONTEXT_POLICY}-${DEFAULT_CONTEXT_LIMIT}`]);
+    await check("context-comparison", "npx", ["tsx", "scripts/llm/context-frames/compare.ts", "--directory", contexts, "--require", `${DEFAULT_CONTEXT_POLICY}-${DEFAULT_CONTEXT_LIMIT}`, "--approved", CONTEXT_APPROVAL_FILE]);
   }
   if (profile === "infrastructure" || profile === "quality") {
     await check("generation-recovery", "python3", ["-m", "unittest", "discover", "-s", "scripts/llm/quality", "-p", "test_*.py"]);

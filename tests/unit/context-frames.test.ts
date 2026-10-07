@@ -9,6 +9,7 @@ import { isStoredTurn } from "../../src/lib/advisor/historyValidation";
 import { dehydrateTurn } from "../../src/lib/advisor/history";
 import { contextProbability, CONTEXT_FEATURE_COUNT, learnedContextRanker } from "../../src/lib/advisor/contextRanker";
 import type { PlanContext } from "../../src/lib/advisor/planTypes";
+import { checkApprovedContexts } from "../../scripts/llm/context-frames/approval";
 
 const deps = { judge: async () => { throw new Error("unexpected model call"); }, search: async () => [] };
 const PATCH = qualityContext("ko_KR", "none").data!.patch;
@@ -159,4 +160,13 @@ test("a confirmed conversion uses the pending amount with the selected owner's s
     assert.equal(result.reply.memory.mechanic?.amount?.value, 140);
     assert.match(result.reply.text, /추가 공격력 10/);
   } finally { restore(); }
+});
+
+test("the adoption gate protects new successes even when legacy could not answer them", () => {
+  const approval = { caseHash: "cases", scorerHash: "scorer", passedIds: ["old-win", "new-win"] };
+  const report = { caseHash: "cases", scorerHash: "scorer", rows: [{ id: "old-win", pass: true }, { id: "new-win", pass: false }] };
+  assert.throws(() => checkApprovedContexts(report, approval), /lost an adopted/);
+  report.rows[1].pass = true;
+  assert.doesNotThrow(() => checkApprovedContexts(report, approval));
+  assert.throws(() => checkApprovedContexts({ ...report, caseHash: "other" }, approval), /cases changed/);
 });

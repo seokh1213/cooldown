@@ -3,8 +3,10 @@ import path from "node:path";
 import assert from "node:assert/strict";
 import { parseArgs } from "node:util";
 import type { QualityReport } from "../quality/types";
+import { checkApprovedContexts, type ContextApproval } from "./approval";
 
-const { values } = parseArgs({ options: { directory: { type: "string" }, require: { type: "string" } } });
+const { values } = parseArgs({ options: { directory: { type: "string" }, require: { type: "string" }, approved: { type: "string" } } });
+if (values.approved && !values.require) throw new Error("--approved requires --require");
 if (!values.directory) throw new Error("--directory is required");
 const directory = path.resolve(values.directory);
 const baseline = JSON.parse(fs.readFileSync(path.join(directory, "legacy.json"), "utf8")) as QualityReport;
@@ -33,4 +35,6 @@ if (values.require) {
   assert.ok(chosen, "Required candidate was not evaluated");
   assert.equal(chosen.regressions.length, 0, "Candidate introduces quality regressions");
   assert.equal(chosen.protectedChanges.length, 0, "Candidate changes protected replies");
+  if (values.approved) checkApprovedContexts(JSON.parse(fs.readFileSync(path.join(directory, `${values.require}.json`), "utf8")) as QualityReport,
+    JSON.parse(fs.readFileSync(path.resolve(values.approved), "utf8")) as ContextApproval);
 }
