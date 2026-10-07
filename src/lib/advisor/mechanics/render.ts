@@ -1,12 +1,14 @@
 /** 텍스트 조건을 게임 엔진으로 실행하지 않는다. 확인된 조건과 단일 비율만 적용한다. */
 import type { AbilityJob, Condition, Effect, Rule } from "./types";
 import { correctedQuestion, questionState, type QuestionState } from "./question";
+import { matchesNumericCondition } from "./conditions";
 const labels: Record<string, string> = { champion: "챔피언", minion: "미니언", monster: "몬스터", structure: "구조물",
   ready: "사용 가능", down: "재사용 대기 중", base: "기본", bonus: "추가", total: "전체", cancelled: "취소", fired: "발사",
-  first: "첫 번째", empowered: "강화", unseen: "보이지 않음", visible: "보임" };
+  first: "첫 번째", empowered: "강화", unseen: "보이지 않음", visible: "보임", any: "모든 유닛" };
 const stats: Record<string, string> = { bonusHealth: "추가 체력", maxHealth: "최대 체력", bonusAttackDamage: "추가 공격력", abilityPower: "주문력", totalAttackDamage: "공격력", bonusAttackSpeed: "추가 공격 속도" };
 function conditionText(condition: Condition, job: AbilityJob): string {
   const predicate = condition.value;
+  if (condition.field === "activation" && predicate.kind === "boolean") return predicate.value ? "활성화 상태" : "비활성화 상태";
   const value = predicate.kind === "number_ref" ? String(job.numbers.find(n => n.id === predicate.ref)?.value ?? "")
     : predicate.kind === "boolean" ? String(predicate.value) : predicate.value;
   const readable = labels[value] ?? value;
@@ -46,7 +48,7 @@ function excludedCondition(rule: Rule, job: AbilityJob, state: QuestionState): s
   for (const condition of rule.conditions) {
     const value = condition.value;
     if (condition.field === "visibility" && value.kind === "enum" && state.visibility && condition.operator === "eq" && state.visibility !== value.value) {
-      return "보이는 상태는 보이지 않아야 하는 회복 조건에 해당하지 않습니다.";
+      return "적에게 보이는 동안에는 보이지 않아야 하는 회복 조건을 충족하지 않아 회복하지 않습니다.";
     }
     if (condition.field === "target_type" && value.kind === "enum" && value.value !== "any" && state.targetType
       && (condition.operator === "eq" && state.targetType !== value.value || condition.operator === "neq" && state.targetType === value.value)) {
@@ -64,7 +66,8 @@ function excludedCondition(rule: Rule, job: AbilityJob, state: QuestionState): s
     }
     if (condition.field === "hit_count" && value.kind === "number_ref" && state.hitCount !== undefined) {
       const required = job.numbers.find(n => n.id === value.ref)?.value;
-      if (required !== undefined && ["eq", "gte"].includes(condition.operator) && state.hitCount < required) {
+      const matches = matchesNumericCondition(condition, job, state.hitCount);
+      if (matches === false) {
         return `${state.hitCount}회 적중은 이 효과의 ${required}회 적중 조건에 해당하지 않습니다.`;
       }
     }
@@ -79,10 +82,12 @@ function parameterDetails(effect: Effect, job: AbilityJob): string[] {
       if (!components.length || components.some(number => !number)) return [];
       return [`비축 상한 구성값: ${components.map(number => number!.percent ? `${stats[parameter.stat!] ?? parameter.stat} 계수 ${number!.value}%` : String(number!.value)).join(" · ")}.`];
     }
-    const name = parameter.role === "amount" && effect.kind === "resource_change" ? "중첩/자원 획득량" : names[parameter.role];
+    const name = parameter.role === "amount" && effect.kind === "resource_change" ? "중첩/자원 획득량"
+      : parameter.role === "amount" && effect.kind === "cooldown_change" ? "재사용 대기시간 반환량" : names[parameter.role];
     if (!name || !["scalar", "rank_values", "level_range"].includes(parameter.shape)) return [];
     const numbers = parameter.numberRefs.map(ref => job.numbers.find(n => n.id === ref));
-    if (!numbers.length || numbers.some(n => !n) || numbers.some(n => n!.percent) && !["damage_multiplier", "stat_coefficient"].includes(parameter.role)) return [];
+    if (!numbers.length || numbers.some(n => !n) || numbers.some(n => n!.percent)
+      && !["damage_multiplier", "stat_coefficient"].includes(parameter.role) && !(parameter.role === "amount" && effect.kind === "cooldown_change")) return [];
     const values = numbers.map(n => n!.value);
     if (values.every(value => new RegExp(`(?<![\\d.])${value}(?![\\d.])`).test(effect.text))) return [];
     const value = numbers.map(n => `${n!.value}${n!.percent ? "%" : ""}`).join(parameter.shape === "level_range" ? "~" : "/");
@@ -90,7 +95,8 @@ function parameterDetails(effect: Effect, job: AbilityJob): string[] {
   });
 }
 export function renderRules(job: AbilityJob, rules: Rule[], question: string, state = questionState(question)): string {
-  if (state.invalidAmount && rules.some(rule => rule.effects.some(effect => effect.kind === "stat_conversion"))) {
+  if (state.invalidAmount && !/\d\s*(?:%|퍼센트|프로)/.test(question)
+    && rules.some(rule => rule.effects.some(effect => effect.kind === "stat_conversion"))) {
     return "계산할 수치를 하나로 알려 주세요. 예: ‘추가 체력 70짜리 템 2개’ 또는 ‘주문력 100’.";
   }
   const lines = rules.map(rule => {

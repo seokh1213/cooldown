@@ -27,6 +27,8 @@ export interface QualityRow {
   seconds: number;
   evidence?: string;
   observed?: Record<string, unknown>;
+  plans?: Record<string, unknown>[];
+  memory?: unknown;
   numeric?: { accepted: boolean; reason: string; raw?: string };
   preserve?: boolean;
 }

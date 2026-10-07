@@ -1,5 +1,6 @@
 """로컬 CPU에서 두 로지스틱 모델을 학습한다. test는 모델 선택에 사용하지 않는다."""
 import json
+import hashlib
 import sys
 import time
 from pathlib import Path
@@ -38,7 +39,7 @@ def inputs(rows, kind):
 def channels_for(name, train, dev):
     vectors, train_parts, dev_parts = [], [], []
     for kind in (["char"] if name == "char" else ["char", "jamo", "context"]):
-        vectorizer = DictVectorizer() if kind == "context" else TfidfVectorizer(analyzer="char", ngram_range=(2, 5), min_df=1)
+        vectorizer = DictVectorizer() if kind == "context" else TfidfVectorizer(analyzer="char", ngram_range=(2, 5), min_df=2, max_features=8192)
         train_parts.append(vectorizer.fit_transform(inputs(train, kind)))
         dev_parts.append(vectorizer.transform(inputs(dev, kind)))
         channel = {"kind": kind, "vocabulary": {key: int(value) for key, value in vectorizer.vocabulary_.items()}}
@@ -70,12 +71,14 @@ def train_one(name, train, dev):
     y = np.array([r["label"] for r in train])
     dy = np.array([r["label"] for r in dev])
     candidates = []
-    for C in [0.3, 1.0, 3.0]:
+    for C in [0.3, 1.0, 3.0, 10.0, 40.0]:
         clf = LogisticRegression(C=C, max_iter=800, class_weight="balanced", random_state=42)
         clf.fit(X, y)
         f1 = f1_score(dy, clf.predict(D), average="macro")
-        candidates.append((f1, -C, clf))
-    f1, negative_C, clf = max(candidates, key=lambda row: row[:2])
+        rejection = tune_rejection(clf.predict_proba(D), clf.classes_, dy)
+        candidates.append((rejection["cost"], -f1, C, clf))
+    _, negative_f1, C, clf = min(candidates, key=lambda row: row[:3])
+    f1 = -negative_f1
     probabilities = clf.predict_proba(D)
     rejection = tune_rejection(probabilities, clf.classes_, dy)
     model = {"name": name, "labels": clf.classes_.tolist(), "channels": [channel for _, channel in vectors],
@@ -87,7 +90,7 @@ def train_one(name, train, dev):
     fixture = [{"input": {"text": row["text"], "features": row["features"]}, "probabilities": p.tolist()}
                for row, p in zip(dev, probabilities)]
     (DIRECTORY / f"{name}-parity.json").write_text(json.dumps(fixture, ensure_ascii=False))
-    return {"name": name, "C": -negative_C, "devMacroF1": f1, "rejection": rejection,
+    return {"name": name, "C": C, "devMacroF1": f1, "rejection": rejection,
             "features": X.shape[1], "bytes": target.stat().st_size, "seconds": time.perf_counter() - started}
 
 
@@ -99,7 +102,13 @@ def main():
         raise ValueError("train/dev 표현 계열의 중복")
     results = [train_one(name, train, dev) for name in ["char", "context"]]
     report = {"python": sys.version.split()[0], "sklearn": sklearn.__version__, "numpy": np.__version__,
-              "train": len(train), "dev": len(dev), "models": results}
+              "train": len(train), "dev": len(dev), "models": results,
+              "trainingSources": {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in [
+                  Path("scripts/llm/stat-classifier/train.py"), Path("scripts/llm/stat-classifier/build.ts"),
+                  Path("scripts/llm/stat-classifier/noise.ts"), Path("scripts/llm/stat-classifier/seeds.ts"),
+                  Path("scripts/llm/offline-classifier/request-training.json"), DIRECTORY / "questions.jsonl"]},
+              "modelHashes": {name: hashlib.sha256((DIRECTORY / f"{name}.json").read_bytes()).hexdigest()
+                              for name in ["char", "context"]}}
     (DIRECTORY / "training.json").write_text(json.dumps(report, ensure_ascii=False, indent=2))
     print(json.dumps(report, ensure_ascii=False))
 

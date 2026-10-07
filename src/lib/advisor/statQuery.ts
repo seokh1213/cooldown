@@ -2,6 +2,7 @@
 import type { StatName } from "@/lib/knowledge/facts";
 import type { AdvisorAnswer } from "./answer";
 import { excludesMention } from "./selectionWords";
+import { statSpelling } from "./statSpelling";
 
 export type StatLevel = 1 | 6 | 11 | 18;
 export const STAT_QUERY_TERMS: Record<StatName, string> = {
@@ -9,6 +10,11 @@ export const STAT_QUERY_TERMS: Record<StatName, string> = {
   attackDamage: "공격력", attackSpeed: "공격 속도", moveSpeed: "이동 속도",
 };
 export const ALL_CHAMPION_STATS = Object.keys(STAT_QUERY_TERMS) as StatName[];
+
+export function asksAllStats(question: string): boolean {
+  return /전체|전부|모든|모두|싹|한눈|(?:스탯|능력치)들|\b(?:all|every)\b|全部|所有|全部属性/i.test(question)
+    && /능력치|스탯|\b(?:stats?|attributes?)\b|属性/i.test(question);
+}
 export interface ChampionStatQuery {
   kind: "championStat";
   champions: string[];
@@ -43,9 +49,11 @@ function isPerspectiveAs(question: string, index: number, word: string): boolean
 
 /** 긴 어휘가 덮는 짧은 어휘만 제외한다. 별도로 물은 체력은 체젠과 함께 남긴다. */
 function statMentions(question: string) {
-  const matches = STAT_LEXICON.flatMap(([field, pattern]) => [...question.matchAll(new RegExp(pattern.source, "gi"))]
+  const exact = STAT_LEXICON.flatMap(([field, pattern]) => [...question.matchAll(new RegExp(pattern.source, "gi"))]
     .filter(match => !(field === "attackSpeed" && isPerspectiveAs(question, match.index, match[0])))
     .map(match => ({ field, index: match.index, end: match.index + match[0].length })));
+  const matches = [...exact, ...statSpelling(question).filter(fuzzy => !exact.some(match => match.index <= fuzzy.index
+    && match.end >= fuzzy.end && match.field !== fuzzy.field))];
   return matches.filter(match => !matches.some(other => other !== match && other.index <= match.index && other.end >= match.end
       && other.end - other.index > match.end - match.index));
 }

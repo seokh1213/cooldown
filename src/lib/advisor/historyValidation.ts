@@ -1,5 +1,6 @@
 import type { StoredAnswer, StoredTurn } from "./history";
-import { MAX_CONTEXT_FRAMES } from "./contextFrameTypes";
+import { CONTEXT_BUCKETS, MAX_CONTEXT_FRAMES } from "./contextFrameTypes";
+import { MECHANIC_TOPICS } from "./mechanics/types";
 
 type RecordValue = Record<string, unknown>;
 type Validator = (value: unknown) => boolean;
@@ -123,7 +124,7 @@ function control(value: unknown): boolean {
 
 function mechanic(value: unknown): boolean {
   if (!record(value) || !string(value.abilityId) || !string(value.sourceHash) || !array(value.ruleIndices, integer)) return false;
-  return optional(value.topic, entry => oneOf(entry, ["control_resistance", "conversion", "shield", "movement", "control", "heal", "stats", "stack", "summon", "mark", "resource", "activation"]))
+  return optional(value.topic, entry => oneOf(entry, MECHANIC_TOPICS))
     && optional(value.amount, amount => record(amount) && nonNegative(amount.value)
       && oneOf(amount.stat, ["bonusHealth", "abilityPower"]) && integer(amount.count) && amount.count > 0)
     && optional(value.targetType, entry => oneOf(entry, ["champion", "minion", "monster", "structure"]))
@@ -136,6 +137,8 @@ function memory(value: unknown): boolean {
   return record(value) && string(value.patch)
     && optional(value.contextFrames, entries => array(entries, contextFrame) && (entries as unknown[]).length <= MAX_CONTEXT_FRAMES)
     && optional(value.contextPending, entries => strings(entries) && (entries as string[]).length <= MAX_CONTEXT_FRAMES)
+    && optional(value.contextOmissions, entries => array(entries, entry => oneOf(entry, CONTEXT_BUCKETS))
+      && (entries as unknown[]).length <= CONTEXT_BUCKETS.length && new Set(entries as unknown[]).size === (entries as unknown[]).length)
     && optional(value.active, entry => oneOf(entry, ["matchup", "champion", "spell", "compare", "stat", "item", "rule"]))
     && optional(value.champion, string) && optional(value.matchup, pair)
     && optional(value.matchups, entries => array(entries, entry => pair(entry)

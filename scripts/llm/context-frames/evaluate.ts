@@ -13,6 +13,7 @@ import { openModel } from "../quality/model";
 import type { QualityStory, QualityRow, QualityReport } from "../quality/types";
 import { contextChecks } from "./checks";
 import { learnedContextRanker, type ContextRankModel } from "../../../src/lib/advisor/contextRanker";
+import { TURN_LIMIT } from "../../../src/lib/advisor/history";
 
 const { values } = parseArgs({ options: {
   policy: { type: "string", default: "all" }, mode: { type: "string", default: "offline" },
@@ -24,7 +25,7 @@ const { values } = parseArgs({ options: {
 const policies: ContextPolicy[] = values.policy === "all" ? [...CONTEXT_POLICIES] : [values.policy as ContextPolicy];
 if (policies.some(policy => !CONTEXT_POLICIES.includes(policy))) throw new Error("Unknown context policy");
 if (!["none", "offline", "model"].includes(values.mode!)) throw new Error("Unknown backend");
-if (!["context", "regression"].includes(values.bank!)) throw new Error("Unknown bank");
+if (!["context", "stress", "regression"].includes(values.bank!)) throw new Error("Unknown bank");
 if (!["development", "validation", "all"].includes(values.split!)) throw new Error("Unknown split");
 const mode = values.mode as "none" | "offline" | "model";
 const limits = values.limit === "all" ? [...CONTEXT_LIMITS] : [Number(values.limit)];
@@ -41,7 +42,7 @@ const fixtures = "research/llm-evals/workflow/datasets/context-frames";
 const benchmarks = ["request-scope", "retrieval", "item-alias", "numeric-qa", "retired-verifier-330"];
 const bank = values.bank === "regression" ? buildBank().filter(story => !story.suites.some(suite => benchmarks.includes(suite)))
   : (values.split === "all" ? ["development", "validation"] : [values.split!])
-    .flatMap(split => readRows(`${fixtures}/${split}.jsonl`) as unknown as QualityStory[]);
+    .flatMap(split => readRows(`${fixtures}/${values.bank === "stress" ? "stress-" : ""}${split}.jsonl`) as unknown as QualityStory[]);
 const sources = [...filesUnder("src/lib/advisor"), ...filesUnder("src/lib/knowledge"), ...filesUnder("src/workers"),
   ...filesUnder("scripts/llm/quality"), ...filesUnder("scripts/llm/context-frames"), ...filesUnder("scripts/llm/lib"),
   ...filesUnder("src/data/contracts"), ...filesUnder("src/i18n"), "scripts/llm/kev-agent/lib.ts", "scripts/prepare-ort.ts", "package-lock.json"];
@@ -56,9 +57,10 @@ const hashes = {
 };
 const ranker = configs.some(config => config.policy === "learned") ? learnedContextRanker(JSON.parse(fs.readFileSync(path.join(ROOT, modelFile), "utf8")) as ContextRankModel) : undefined;
 fs.writeFileSync(path.join(output, "provenance.json"), JSON.stringify({ ...hashes, configs, mode, bank: values.bank, split: values.split,
+  restoredHistoryLimit: values.bank === "stress" ? TURN_LIMIT : null,
   sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim(),
   sources: sources.map(file => [file, fileHash(file)]), data: data.map(file => [file, fileHash(file)]) }, null, 2));
-type ContextRow = QualityRow & { decision?: unknown; frames: number; frameBytes: number; plans: unknown[]; memory: unknown };
+type ContextRow = QualityRow & { decision?: unknown; frames: number; frameBytes: number; contextBytes: number; plans: unknown[]; memory: unknown };
 const abort = new AbortController();
 let model: Awaited<ReturnType<typeof openModel>> | undefined;
 const stop = () => { abort.abort(); void model?.close(); };
@@ -100,8 +102,10 @@ async function evaluate(policy: ContextPolicy, limit: number, runtime?: ModelRun
         text: result.reply.text, observed: observedAnswer(result.reply.answer), seconds: (performance.now() - start) / 1000,
         preserve: entry.expected.sameAsBaseline === true, numeric: result.numericAttempt,
         decision: result.contextDecision, frames: frames.length, frameBytes: Buffer.byteLength(JSON.stringify(frames)),
+        contextBytes: Buffer.byteLength(JSON.stringify({ frames, omitted: result.reply.memory.contextOmissions })),
         plans: result.dialogue.parts.map(part => describe(part.plan)), memory: result.reply.memory });
       restoreReply(ctx, entry.q, result.reply);
+      if (values.bank === "stress") ctx.turns = ctx.turns.slice(-TURN_LIMIT);
       if (model?.errors.length) throw new Error("Actual model worker failed");
       if (rows.size % 25 === 0) { save(); console.log(`${policy}: ${rows.size} turns saved`); }
     }
@@ -119,6 +123,7 @@ async function evaluate(policy: ContextPolicy, limit: number, runtime?: ModelRun
   const summary = { policy, limit: policy === "legacy" ? null : limit, mode, total: entries.length, pass: entries.filter(row => row.pass === true).length,
     fail: entries.filter(row => row.pass === false).length, manual: entries.filter(row => row.pass === null).length,
     maxFrames: Math.max(0, ...entries.map(row => row.frames)), maxFrameBytes: Math.max(0, ...entries.map(row => row.frameBytes)),
+    maxContextBytes: Math.max(0, ...entries.map(row => row.contextBytes)),
     p50Seconds: times[Math.floor(times.length * .5)], p95Seconds: times[Math.floor(times.length * .95)],
     clarifications: entries.filter(row => (row.decision as { action?: string })?.action === "clarify").length,
     complete: report.checks.every(check => check.pass) };

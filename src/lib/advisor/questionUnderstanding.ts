@@ -1,4 +1,5 @@
 /** 질문의 이름·갈래·최근 대상을 한 번 읽고, 필요한 주제 판정은 지연한다. */
+import { classifyRequestInput } from "./classifyRequestInput";
 import { buildItemCard, type AdvisorData } from "./context";
 import { answerChampionIds } from "./answer";
 import { askFromWords } from "./askWords";
@@ -15,14 +16,15 @@ import { ROUTE_HEAD, TOPIC_HEAD } from "./judgeHeads";
 
 /** 질문에 적힌 이름, 갈래(판정기 또는 낱말)·주제, 대화가 남긴 맥락을 모은다. 판정기는 여기서 한 번(이름이 있으면 두 번) 부른다. */
 export async function understand(input: QuestionInput, ctx: PlanContext, data: AdvisorData, deps: PlanDeps): Promise<Intent> {
-  const { text: question, champions, slot, requestIntent } = resolveQuestion(input, data);
+  const { text: question, champions, slot, requestIntent } = await classifyRequestInput(resolveQuestion(input, data), deps);
   // 판정기가 어느 단계든(모델·오프라인) 있으면 부른다. 없으면(`none`) 낱말 규칙뿐이다.
   const judging = ctx.judge !== "none";
   const route = judging ? await judgeRoute(question, data, champions, deps) : undefined;
   const lastItem = recentItem(ctx.turns);
   // 낱말 규칙에는 자료 이름(룬·주문 규칙, 아이템, 게임 메타)이 걸렸는지만 넘긴다. 낱말 목록은 `askWords.ts` 에 있다.
   const learnedKind = requestIntent?.scope === "skills" ? "skills" : requestIntent?.scope === "ability" ? "spellStat"
-    : requestIntent?.scope === "combo" || requestIntent?.scope === "advice" ? "guide"
+    : requestIntent?.scope === "combo" || requestIntent?.scope === "advice"
+      ? champions.length >= 2 ? "matchup" : "guide"
       : requestIntent?.scope === "counterplay" ? champions.length >= 2 ? "matchup" : "guide"
         : requestIntent && ["overview", "statsAll", "stats"].includes(requestIntent.scope) ? "other" : undefined;
   const ask =
@@ -40,7 +42,7 @@ export async function understand(input: QuestionInput, ctx: PlanContext, data: A
     data,
     ask,
     route,
-    topic: () => (topic ??= requestIntent ? Promise.resolve({ topic: requestIntent.topic ?? "general",
+    topic: () => (topic ??= requestIntent ? Promise.resolve({ topic: topicFromWords(question, champions.flatMap(card => [card.name, ...(data.aliases.get(card.id) ?? [])])) ?? requestIntent.topic ?? "general",
       perspective: requestIntent.scope === "counterplay" ? "against" : requestIntent.scope === "advice" || requestIntent.scope === "combo" ? "playing" : undefined })
       : judging ? judgeTopic(question, data, champions, deps) : Promise.resolve(undefined)),
     champions,
@@ -64,7 +66,7 @@ export async function understand(input: QuestionInput, ctx: PlanContext, data: A
  * 못 받은 기기에도 답은 나와야 한다.
  */
 async function judgeRoute(question: string, data: AdvisorData, named: ChampionCard[], deps: PlanDeps): Promise<AskRoute | undefined> {
-  const names = named.map((card) => card.name);
+  const names = named.map(card => card.name);
   // 374문항에서 0.8B 가 글로 가르면 183, 옛 헤드(route-v2) 322, 4B 가 글로 가르면 310, kev 헤드 331 이었다.
   return deps
     .judge(ROUTE_HEAD, judgeRouteState(question, names), [

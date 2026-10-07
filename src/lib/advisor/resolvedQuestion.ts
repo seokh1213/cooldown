@@ -20,6 +20,22 @@ export interface ResolvedQuestion {
 }
 export type QuestionInput = string | ResolvedQuestion;
 
+export function championFreeText(resolved: ResolvedQuestion): string {
+  let text = resolved.text;
+  for (const mention of [...resolved.mentions].sort((a, b) => b.index - a.index)) {
+    text = text.slice(0, mention.index) + " ".repeat(mention.length) + text.slice(mention.index + mention.length);
+  }
+  return text;
+}
+
+export function canonicalChampionQuestion(resolved: ResolvedQuestion): string {
+  let text = resolved.text;
+  for (const mention of [...resolved.mentions].sort((a, b) => b.index - a.index)) {
+    text = text.slice(0, mention.index) + mention.card.name + text.slice(mention.index + mention.length);
+  }
+  return text;
+}
+
 export function resolveQuestion(input: QuestionInput, data: AdvisorData): ResolvedQuestion {
   if (typeof input !== "string") return input;
   const mentions = detectChampionMentions(data, input).filter(mention =>

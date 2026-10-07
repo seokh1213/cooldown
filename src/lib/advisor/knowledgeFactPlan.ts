@@ -1,7 +1,7 @@
 /** 검증한 상호작용 및 CC 조회. 모델의 추측이나 일반 상성 조언보다 확인된 사실을 먼저 쓴다. */
-import { CROWD_CONTROL, controlText, controlLabel, type SpellCrowdControl } from "@/lib/knowledge/crowdControl";
+import { CROWD_CONTROL, controlText, controlLabel, type CrowdControlType, type SpellCrowdControl } from "@/lib/knowledge/crowdControl";
 import { matchesMechanicsQuestion } from "@/lib/knowledge/mechanics";
-import { controlQuery } from "./crowdControlQuestion";
+import { controlQuery, askedCleansers, asksCrowdControl } from "./crowdControlQuestion";
 import { controlInteractionAnswer, controlRuleAddenda } from "./controlInteractionAnswer";
 import { controlSubject, controlClarification } from "./controlSubject";
 import { dialogueMemoryOf, type DialogueMemory } from "./dialogueState";
@@ -56,11 +56,24 @@ function curatedInteraction(question: string, ctx: PlanContext, subject?: Contro
     controlContext };
 }
 
+function absentControl(question: string, controls: Array<SpellCrowdControl | undefined>, lang: Language): string | undefined {
+  if (!controls.length || controls.some(control => control?.status !== "known")) return undefined;
+  const type = (Object.keys(CROWD_CONTROL) as CrowdControlType[]).find(type => {
+    const label = controlLabel(type, lang).split("(")[0].trim();
+    return label && question.toLowerCase().includes(label.toLowerCase());
+  });
+  if (!type || controls.some(control => control?.effects.some(effect => effect.type === type))) return undefined;
+  const label = controlLabel(type, lang);
+  return lang === "ko_KR" ? `${label} 효과가 없어요.` : lang === "en_US" ? `There is no ${label.toLowerCase()} effect.` : `没有${label}效果。`;
+}
+
 export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, suppliedMemory?: DialogueMemory): AnswerPlan | undefined {
   if (!ctx.data) return undefined;
   if (resolved.champions.length > 1 && !resolved.slot && asksMatchup(resolved.text)) return undefined;
   const memory = suppliedMemory ?? dialogueMemoryOf(ctx.turns, ctx.data);
   const query = controlQuery(resolved.text);
+  if (query === "cleanse" && !askedCleansers(resolved.text).length && !asksCrowdControl(resolved.text)
+    && !resolved.slot && (!memory.control || resolved.champions.length > 1)) return undefined;
   const direct = curatedInteraction(resolved.text, ctx, {
     champions: resolved.champions.map(card => card.id), slot: resolved.slot,
   });
@@ -110,6 +123,8 @@ export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, 
   const sections = champions.map(card => {
     const spells = slot ? card.spells.filter(s => s.slot === slot) : card.spells;
     const lines = spells.map(spell => `${spell.slot} ${spell.name}: ${spell.crowdControl ? controlText(spell.crowdControl, ctx.lang) : "CC 정보 미확인"}`);
+    const absence = query === "types" && absentControl(resolved.text, spells.map(spell => spell.crowdControl), ctx.lang);
+    if (absence) lines.unshift(absence);
     if (query === "smite") lines.push(smiteRestriction(spells.map(spell => spell.crowdControl), ctx.lang));
     return `### ${card.name}\n${lines.join("\n")}`;
   });

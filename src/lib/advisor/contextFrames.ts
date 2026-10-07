@@ -3,7 +3,7 @@ import { dialogueMemoryOf } from "./dialogueState";
 import type { PlanContext } from "./planTypes";
 import { validMechanicMemory } from "./mechanics/types";
 import { mechanicsToText } from "@/lib/knowledge/mechanics";
-import { MAX_CONTEXT_FRAMES, type ContextFrame, type FrameState } from "./contextFrameTypes";
+import { CONTEXT_BUCKETS, MAX_CONTEXT_FRAMES, type ContextBucket, type ContextFrame, type FrameState } from "./contextFrameTypes";
 
 function stateOf(memory: DialogueMemory): FrameState {
   const state: FrameState = { active: memory.active, conditions: [] };
@@ -76,7 +76,16 @@ export function usableFrames(memory: DialogueMemory, ctx: PlanContext): ContextF
 export function recordFrame(memory: DialogueMemory, frames: ContextFrame[], turn: number, limit = MAX_CONTEXT_FRAMES): void {
   if (!Number.isSafeInteger(limit) || limit < 1 || limit > MAX_CONTEXT_FRAMES) throw new Error("Invalid context limit");
   const state = stateOf(memory), key = frameKey(state);
-  memory.contextFrames = key && memory.active
-    ? [...frames.filter(frame => frame.key !== key), { key, kind: memory.active, patch: memory.patch, turn, state }].slice(-limit)
+  const next: ContextFrame[] = key && memory.active
+    ? [...frames.filter(frame => frame.key !== key), { key, kind: memory.active, patch: memory.patch, turn, state }]
     : frames;
+  const dropped = next.slice(0, Math.max(0, next.length - limit));
+  const omitted = new Set([...(memory.contextOmissions ?? []), ...dropped.map(frameBucket)]);
+  memory.contextOmissions = CONTEXT_BUCKETS.filter(bucket => omitted.has(bucket));
+  memory.contextFrames = next.slice(-limit);
+}
+
+export function frameBucket(frame: ContextFrame): ContextBucket {
+  const key = frame.kind === "spell" && frame.state.spell?.slot ? `spell:${frame.state.spell.slot}` : frame.kind;
+  return CONTEXT_BUCKETS.includes(key as ContextBucket) ? key as ContextBucket : "spell";
 }

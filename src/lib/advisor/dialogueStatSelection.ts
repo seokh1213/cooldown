@@ -25,5 +25,6 @@ export function statTargets(resolved: ResolvedQuestion, memory: DialogueMemory, 
   if (excluded.length) return from((prior ?? []).filter(id => !excluded.includes(id)));
   if (memory.matchup && /상대|\benemy\b|对面/i.test(resolved.text)) return from([memory.matchup.enemy]);
   if (memory.matchup && /내\s*(?:스탯|능력치|체력|방어력|공격력|마저|마방|공속|이속|체젠|깡공)|\bmy\b|我的/i.test(resolved.text)) return from([memory.matchup.mine]);
-  return from(prior?.length ? prior : ctx.championIds);
+  const baseStat = /기본|\bbase\b|基础/i.test(resolved.text);
+  return from(prior?.length ? prior : baseStat && memory.stat ? memory.stat.champions : ctx.championIds);
 }

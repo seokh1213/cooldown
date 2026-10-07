@@ -218,7 +218,7 @@ export function detectSlot(question: string): string | undefined {
   if (/궁극기|궁(?=[\s을은이의으로에만도]|$)|\bult(?:i|imate)?\b|大招|(?:一|二|三|1|2|3)级大(?=能|的|招|多|冷|飞)/i.test(question)) return "R";
   const compact = /\b([QWER])(?=mana|cost|cooldown|range)/i.exec(question);
   if (compact) return compact[1].toUpperCase();
-  const match = /(^|[^A-Za-z])([QWERqwer])($|[^A-Za-z])/.exec(question);
+  const match = /(^|[^A-Za-z])([PQWERpqwer])($|[^A-Za-z])/.exec(question);
   return match ? match[2].toUpperCase() : undefined;
 }
 

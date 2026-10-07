@@ -255,7 +255,7 @@ export function buildCompareAnswer(
     // 상성은 능력치 표 + 상성 노트 위에 해설. 사실 하나를 짚은 헤드라인은 두지 않는다.
     const base = buildCompareAnswer(cards, question, undefined, { lang });
     return base.kind === "compare"
-      ? { ...base, headline: undefined, rows: base.rows.map((row) => ({ ...row, hit: false })), matchup: true, notes: options.notes }
+      ? { ...base, headline: undefined, headlines: undefined, statQuery: undefined, rows: base.rows.map((row) => ({ ...row, hit: false })), matchup: true, notes: options.notes }
       : base;
   }
   if (slot) {

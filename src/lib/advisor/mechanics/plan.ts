@@ -7,9 +7,12 @@ import { buildSpellAnswer } from "../spellAnswer";
 import { buildItemCard } from "../context";
 import { asksSkillHandling, asksScenarioAdvice, asksWholeKit } from "../askWords";
 import { cooldownRemaining, isMechanicFollowup, normalizeMechanicQuestion, questionState } from "./question";
-import { questionTopic, selectRules } from "./retrieval";
+import { questionTopic, ruleMatchesTopic, selectRules } from "./retrieval";
 import { renderRules } from "./render";
 import { abilitySlot, validMechanicMemory, type MechanicMemory } from "./types";
+import { explicitStatLevel } from "../statQuery";
+import { resolveStatQuery } from "../dialogueStats";
+import { askedRules } from "../questionDocs";
 
 export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, memory: DialogueMemory): { plan: AnswerPlan; memory: MechanicMemory } | undefined {
   const data = ctx.data;
@@ -19,8 +22,8 @@ export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, 
   const resolved = resolveQuestion(question, data);
   if (asksWholeKit(question)) return undefined;
   if (buildItemCard(data, question) || asksSkillHandling(question) && questionTopic(question) !== "resource" || asksScenarioAdvice(question)
-    || data.runes.some(rune => rune.name.length > 1 && question.includes(rune.name))
-    || data.summoners.some(spell => spell.name.length > 1 && !["회복", "방어막", "부활", "표식", "돌진"].includes(spell.name) && question.includes(spell.name))) return undefined;
+    || askedRules(data, question, resolved.champions[0] && resolved.slot ? { champion: resolved.champions[0].id, slot: resolved.slot } : memory.spell)
+      .some(rule => rule.subject !== "gameplay")) return undefined;
   const attackOutcome = /(?:평타|공격|[한두세네1234]\s*(?:대|발))/.test(question) && /취소|쏘|치|맞|적중/.test(question);
   if (resolved.champions.length > 1 || resolved.matchup
     || /수은|정화|미카엘|강타|블랙\s*쉴드|모르가나\s*(?:쉴드|보호막)|추천|상대법|공략|비교|가격|가속|쿨타임\s*얼마/.test(question)
@@ -39,15 +42,22 @@ export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, 
     && !/이속|이동\s*속도|취소/.test(question) ? remembered?.topic : detectedTopic ?? (inherit ? remembered?.topic : undefined);
   if (topic === "control") return undefined;
   const explicitPassive = /(?<![A-Za-z])[Pp](?![A-Za-z])/.test(question) ? "P" : undefined;
+  if (!resolved.slot && !explicitPassive && resolveStatQuery(resolved, memory, ctx)) return undefined;
+  const candidates = topic && !resolved.slot && !remembered ? [...data.abilityRules.values()]
+    .filter(ability => ability.job.champion === champion && ability.job.slotRole !== "interface_only"
+      && ability.draft.rules.some(rule => ruleMatchesTopic(rule, topic))) : [];
+  const uniqueSlot = candidates.length === 1 ? abilitySlot(candidates[0].job.id) : undefined;
   const slot = resolved.slot ?? explicitPassive ?? (remembered && (inherit || topic || /패시브|주문력/.test(question)) ? abilitySlot(remembered.abilityId)
     : topic === "conversion" || attackOutcome || topic === "shield"
-      || topic === "heal" && /비축|적(?:에게|한테)\s*보이/.test(question) ? "P" : undefined);
-  const conditional = topic === "conversion" || attackOutcome || Boolean((remembered || topic === "shield") && cooldownRemaining(question) !== undefined);
-  const targetDamage = resolved.spellFocus?.focus === "damage" && /미니언|몬스터|대상/.test(question);
-  if (!slot || !topic && !resolved.slot && !explicitPassive && !attackOutcome || !conditional && topic !== "resource" && !explicitPassive && !targetDamage && resolved.spellFocus?.focus !== undefined && resolved.spellFocus.focus !== "effect"
-    || /(?:\d+\s*레벨|능력치|기본\s*스탯)/.test(question) && !resolved.slot && !explicitPassive) return undefined;
+      || topic === "heal" && /비축|적(?:에게|한테)\s*보이/.test(question) ? "P" : uniqueSlot);
+  if (!slot) return undefined;
   const ability = data.abilityRules.get(`${champion}.${slot}`);
   if (!ability || ability.job.patch !== data.patch || ability.job.slotRole === "interface_only") return undefined;
+  const readyCondition = ability.draft.rules.some(rule => rule.conditions.some(condition => ["spell_ready", "shield_ready"].includes(condition.field)));
+  const conditional = topic === "conversion" || attackOutcome || readyCondition && cooldownRemaining(question) !== undefined;
+  const targetDamage = resolved.spellFocus?.focus === "damage" && /미니언|몬스터|대상/.test(question);
+  if (!topic && !resolved.slot && !explicitPassive && !attackOutcome || !conditional && topic !== "resource" && topic !== "cooldown" && !explicitPassive && !targetDamage && resolved.spellFocus?.focus !== undefined && resolved.spellFocus.focus !== "effect"
+    || (explicitStatLevel(question) !== undefined || /능력치|기본\s*스탯/.test(question)) && !resolved.slot && !explicitPassive) return undefined;
   if (topic === "conversion" && /전환|변환|치환|바뀌|공격력|주문력/.test(question)
     && !ability.draft.rules.some(rule => rule.effects.some(effect => effect.kind === "stat_conversion"))) {
     return { plan: { type: "code", answer: { kind: "text", text: "현재 자료에서 이 스킬의 능력치 전환 효과는 확인할 수 없어요." } },

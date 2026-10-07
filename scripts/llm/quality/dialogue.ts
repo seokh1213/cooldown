@@ -8,11 +8,13 @@ import { withRequestModel, readRequestScope, requestScopePrompt } from "../../..
 import { questionLanguage } from "../../../src/lib/advisor/questionLanguage";
 import { answerEvidence } from "../../../src/lib/advisor/answerEvidence";
 import { buildRetrievalDocs } from "../../../src/lib/advisor/searchFallback";
+import { statClassifier, STAT_MODEL_FILE } from "../../../src/lib/advisor/statClassifier";
+import type { LinearModel } from "../../../src/lib/advisor/statClassifierTypes";
 import type { PlanContext, PlanDeps } from "../../../src/lib/advisor/planTypes";
 import type { Language } from "../../../src/i18n";
 import { loadData, offlineFileJudge } from "../kev-agent/lib";
 import { ROOT } from "./bank";
-import { gradeTurn, routeCheck, observedAnswer } from "./checks";
+import { gradeTurn, routeCheck, observedAnswer, describe } from "./checks";
 import type { QualityStory, QualityRow } from "./types";
 
 export async function readPublic(file: string): Promise<ArrayBuffer> {
@@ -33,9 +35,10 @@ export interface ModelRuntime {
   search: NonNullable<PlanDeps["search"]>;
   generate: (system: string, prompt: string, maxTokens: number, purpose?: "grounded-summary" | "grounded-numeric") => Promise<string>;
 }
+const inferStatQuery = statClassifier(async () => JSON.parse(new TextDecoder().decode(await readPublic(STAT_MODEL_FILE))) as LinearModel);
 export function evaluationDeps(runtime?: ModelRuntime, lang: Language = "ko_KR"): PlanDeps {
   const fast = requestClassifier(readPublic);
-  return { judge: runtime?.judge ?? offlineFileJudge(), search: runtime?.search ?? (async () => []),
+  return { judge: runtime?.judge ?? offlineFileJudge(), search: runtime?.search ?? (async () => []), inferStatQuery,
     classifyRequest: runtime ? withRequestModel(fast, async text => {
       const request = requestScopePrompt(text, questionLanguage(text) ?? lang);
       return readRequestScope(await runtime.generate(request.system, request.messages[0].content, request.maxTokens, "grounded-summary"));
@@ -75,6 +78,7 @@ export async function runDialogue(options: { stories: QualityStory[]; mode: "non
       options.record({ id: `${story.id}:${turn}`, suite: story.suites, mode: options.mode, question: entry.q,
         text: output.reply.text, checks, pass: checks.length && !story.manual ? checks.every(check => check.pass) : null,
         seconds: (performance.now() - start) / 1000, evidence, observed: observedAnswer(output.reply.answer),
+        plans: output.dialogue.parts.map(part => describe(part.plan)), memory: output.reply.memory,
         preserve: entry.expected.sameAsBaseline === true,
         numeric: "numericAttempt" in output ? output.numericAttempt : undefined });
       restoreReply(ctx, entry.q, output.reply);

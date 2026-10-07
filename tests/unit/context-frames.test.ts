@@ -170,3 +170,51 @@ test("the adoption gate protects new successes even when legacy could not answer
   assert.doesNotThrow(() => checkApprovedContexts(report, approval));
   assert.throws(() => checkApprovedContexts({ ...report, caseHash: "other" }, approval), /cases changed/);
 });
+
+test("an evicted spell owner prevents an ambiguous reference from selecting only the remaining owner", async () => {
+  const ctx = qualityContext("ko_KR", "none"); ctx.contextLimit = 2;
+  await ask(ctx, "가렌 Q 쿨타임은?");
+  await ask(ctx, "아리 6레벨 체력은?");
+  await ask(ctx, "이즈리얼 Q 쿨타임은?");
+  await ask(ctx, "장화 가격은?");
+  const result = await ask(ctx, "그 스킬 쿨타임은?");
+  assert.equal(result.contextDecision?.action, "clarify");
+  assert.equal(result.contextDecision?.reason, "evicted");
+  assert.equal(result.reply.answer, undefined);
+  const confirmed = await ask(ctx, "이즈리얼 말한 거야");
+  assert.equal(confirmed.reply.memory.spell?.champion, "Ezreal");
+});
+
+test("an evicted conversion asks for its owner instead of reusing the latest champion's passive", async () => {
+  const ctx = qualityContext("ko_KR", "none"); ctx.contextLimit = 2;
+  await ask(ctx, "파이크 패시브 추가 체력 70이면?");
+  await ask(ctx, "아리 11레벨 체력은?");
+  await ask(ctx, "럭스 11레벨 체력은?");
+  const result = await ask(ctx, "아까 패시브에서 추가 체력 140이면?");
+  assert.equal(result.contextDecision?.reason, "evicted");
+  assert.equal(result.reply.answer, undefined);
+});
+
+test("omission markers stay bounded, carry no entity IDs and survive history restoration", () => {
+  const memory = emptyDialogue(PATCH);
+  for (let i = 0; i < 100; i++) {
+    memory.active = "spell"; memory.spell = { champion: `champion-${i}`, slot: "Q" };
+    recordFrame(memory, memory.contextFrames ?? [], i, 2);
+  }
+  assert.deepEqual(memory.contextOmissions, ["spell:Q"]);
+  const stored = dehydrateTurn({ id: 1, role: "assistant", content: "reply", memory });
+  assert.equal(isStoredTurn(stored), true);
+  const invalid = JSON.parse(JSON.stringify(stored)); invalid.memory.contextOmissions = ["spell:secret"];
+  assert.equal(isStoredTurn(invalid), false);
+});
+
+test("omission markers still require clarification when no usable frame remains", async () => {
+  const ctx = qualityContext("ko_KR", "none");
+  const memory = emptyDialogue(PATCH);
+  memory.active = "champion"; memory.champion = "Lux";
+  memory.contextFrames = []; memory.contextOmissions = ["spell:Q"];
+  ctx.turns = [{ role: "assistant", memory }];
+  const result = await ask(ctx, "아까 그 스킬 쿨타임은?");
+  assert.equal(result.contextDecision?.reason, "evicted");
+  assert.equal(result.reply.answer, undefined);
+});

@@ -18,14 +18,16 @@ export function normalizeMechanicQuestion(question: string): string {
       (_, stat: string, word: string) => `${stat} ${koreanNumber(word)}`);
 }
 export function correctedQuestion(question: string): string {
-  const normalized = normalizeMechanicQuestion(question);
+  const normalized = normalizeMechanicQuestion(question)
+    .replace(/^(?:아까|이전|앞서)\s*.+?(?:돌아가서|돌아와서)\s*[,，:：]?\s*/, "");
   const corrections = [...normalized.matchAll(/말고|아니라(?!면)|대신|(?<=\d\s*)아니(?=\s*\d)/g)];
   const last = corrections[corrections.length - 1];
   return last ? normalized.slice(last.index! + last[0].length).trim() : normalized.trim();
 }
 export function isMechanicFollowup(question: string): boolean {
-  const text = normalizeMechanicQuestion(question).trim();
+  const text = correctedQuestion(question);
   return /^(?:그럼|아니|그거|그건|그때|아\s*\d)/.test(text)
+    || /^(?:한|두|세|네|\d+)\s*(?:대|번|발)/.test(text)
     || /^\d+(?:\.\d+)?\s*(?:짜리|체력)?\s*(?:은|는|이면|면|일 때|로|으로)[?？\s가-힣]*$/.test(text)
     || /^(?:쿨|재사용\s*대기시간|두\s*번째|추가\s*공격|미니언|몬스터|챔피언)/.test(text);
 }

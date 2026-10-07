@@ -4,6 +4,7 @@ import type { QualityReport } from "./types";
 
 export interface DataProvenance { dataFiles: Array<[string, string]> }
 const requestArtifacts = new Set(["public/models/offline/request-v1.bin", "public/models/offline/request-v1.json"]);
+const statArtifact = "public/models/offline/stat-v1.json";
 
 function verifiedFiles(report: QualityReport, provenance: DataProvenance): Map<string, string> {
   const files = new Map(provenance.dataFiles);
@@ -21,8 +22,9 @@ export function comparePipelineReports(current: QualityReport, baseline: Quality
   const paths = new Set([...currentFiles.keys(), ...baselineFiles.keys()]);
   const changedArtifacts = [...paths].filter(file => currentFiles.get(file) !== baselineFiles.get(file))
     .map(file => ({ file, before: baselineFiles.get(file), after: currentFiles.get(file) }));
-  if (changedArtifacts.some(change => !requestArtifacts.has(change.file) || !change.before || !change.after))
-    throw new Error("Pipeline comparison only permits replaced request-v1 classifier artifacts");
+  if (changedArtifacts.some(change => !(requestArtifacts.has(change.file) && change.before && change.after)
+    && !(change.file === statArtifact && change.after)))
+    throw new Error("Pipeline comparison only permits request-v1 replacement or stat-v1 addition/replacement");
   // 원본 해시는 보존하고, 위에서 검증한 분류기 차이만 strict 비교의 데이터 일치 조건에서 제외한다.
   return { ...compareReports({ ...current, dataHash: baseline.dataHash }, baseline), changedArtifacts };
 }

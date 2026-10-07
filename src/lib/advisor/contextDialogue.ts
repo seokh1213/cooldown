@@ -24,12 +24,17 @@ export async function withContextFrames(question: string, ctx: PlanContext, run:
   const memory = dialogueMemoryOf(ctx.turns, ctx.data);
   const frames = usableFrames(memory, ctx);
   const resolved = resolveQuestion(question, ctx.data);
+  const history = { pending: memory.contextPending, omitted: memory.contextOmissions };
   if (ctx.contextPolicy === "learned" && !ranker) throw new Error("Learned context policy requires its ranker");
-  const pending = memory.contextPending?.length ? selectContextFrame(resolved, frames, ctx, memory.contextPending) : undefined;
+  const pending = memory.contextPending?.length ? selectContextFrame(resolved, frames, ctx, history) : undefined;
   const decision = pending?.action !== "keep" && pending ? pending : ctx.contextPolicy === "learned"
-    ? ranker!(resolved, frames, ctx) : selectContextFrame(resolved, frames, ctx);
+    ? ranker!(resolved, frames, ctx) : selectContextFrame(resolved, frames, ctx, history);
   if (decision.action === "clarify") {
-    const text = clarification(frames.filter(frame => decision.candidates.includes(frame.key)), ctx);
+    const text = decision.reason === "evicted"
+      ? ctx.lang === "ko_KR" ? "어느 챔피언의 어떤 스킬·능력치를 말하나요? 챔피언 이름과 항목을 다시 알려주세요."
+        : ctx.lang === "en_US" ? "Which champion and ability or stat do you mean? Please name the champion and the topic."
+          : "你指的是哪个英雄的哪个技能或属性？请重新指定英雄和项目。"
+      : clarification(frames.filter(frame => decision.candidates.includes(frame.key)), ctx);
     memory.contextFrames = frames;
     memory.contextPending = decision.candidates;
     return { dialogue: { parts: [], memory, clarification: text }, reply: { text, memory }, contextDecision: decision };
@@ -42,6 +47,7 @@ export async function withContextFrames(question: string, ctx: PlanContext, run:
     { role: "assistant" as const, memory: { ...restored!, contextFrames: frames } }] } : ctx;
   const result = await run(scoped, input);
   result.reply.memory.contextPending = undefined;
+  result.reply.memory.contextOmissions = memory.contextOmissions;
   const rejected = result.dialogue.clarification || result.dialogue.trace?.rejected || result.dialogue.trace?.parts.some(part => part.rejected);
   const changed = frameKey(result.reply.memory) !== frameKey(memory) || result.dialogue.parts.some(part => part.plan.type === "card" || part.plan.type === "matchup"
     || part.plan.type === "code" && typeof part.plan.answer === "string" && part.plan.knowledge);

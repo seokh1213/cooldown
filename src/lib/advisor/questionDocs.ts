@@ -5,7 +5,7 @@
  * 앱의 답 고르기(`plan.ts`)와 평가 하네스가 같이 쓴다.
  */
 import type { Language } from "@/i18n";
-import { buildItemCard, buildMechanicsAnswerById, type AdvisorData } from "./context";
+import { buildItemCard, buildMechanicsAnswerById, detectSlot, type AdvisorData } from "./context";
 import { buildRuleAnswer as buildRuleCard, type AdvisorAnswer } from "./answer";
 import { suggestChampions } from "./championTypo";
 import { asksAboutHelper, detectChampions, nicknames } from "./intent";
@@ -78,15 +78,23 @@ export function lexicalHit(data: AdvisorData, question: string): LexicalHit | un
  * 걸린 것이 게임 요소(미니언·포탑 …)뿐이고 게임 메타 항목이 따로 잡히면 메타가 답이라 비운다.
  * "미니언 웨이브 생성 주기" 가 미니언 규칙으로, "억제기 … 슈퍼 미니언" 이 미니언으로 갔다.
  */
-export function askedRules(data: AdvisorData, question: string) {
+export function askedRules(data: AdvisorData, question: string, ability?: { champion: string; slot: string }) {
   const champions = detectChampions(data, question);
+  if (!champions.length && ability) {
+    const card = data.cardById.get(ability.champion);
+    if (card) champions.push(card);
+  }
+  const slot = detectSlot(question) ?? ability?.slot;
+  const abilityText = slot && champions.length === 1 && !askedRuleKinds(question).size
+    ? champions[0].spells.find(spell => spell.slot === slot)?.text : undefined;
   const protectedNames = champions.flatMap(card => [card.name, ...(data.aliases.get(card.id) ?? []), ...card.spells.map(spell => spell.name)])
     .filter(name => name.length > 2 && aliasAt(question, name) >= 0);
   const named = findMentionedRules(data.ruleIndex, question).filter(rule => !(rule.name === "수호자"
     && /수호자\s*(?:계열|아이템)|가디언\s*아이템|\bguardian\s+items?\b|守护者.*装备/i.test(question))).filter(rule => ![rule.name, rule.nameEn, rule.nameZh, ...aliasesOf(`rule:${rule.name}`)]
     .some(name => name && aliasAt(question, name) >= 0 && protectedNames.some(protectedName => protectedName !== name && protectedName.includes(name))));
-  const metaFirst = named.length > 0 && named.every((rule) => rule.subject === "gameplay") && Boolean(findGameMeta(question));
-  return metaFirst ? [] : named;
+  const filtered = named.filter(rule => !abilityText || ![rule.name, rule.nameEn, rule.nameZh].some(name => name && abilityText.includes(name)));
+  const metaFirst = filtered.length > 0 && filtered.every((rule) => rule.subject === "gameplay") && Boolean(findGameMeta(question));
+  return metaFirst ? [] : filtered;
 }
 
 /**

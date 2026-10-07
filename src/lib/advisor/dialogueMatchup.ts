@@ -51,6 +51,7 @@ function pairForQuestion(resolved: ResolvedQuestion, memory: DialogueMemory, ctx
     if (prior && named.every(c => prior.some(p => p.id === c.id))) return prior;
     return parsed.sides;
   }
+  if (named.length > 1) return undefined;
   if (!prior) {
     const mine = memory.active === "spell" && memory.spell ? data.cardById.get(memory.spell.champion) : undefined;
     return named.length === 1 && mine && mine.id !== named[0].id && asksScenarioAdvice(question)
