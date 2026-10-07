@@ -1,6 +1,6 @@
 # Review HTML delivery gate
 
-PASS. Inspected the generated standalone HTML, actual Chrome DOM, and 320px light / 1440px dark screenshots. The repository Playwright suite passed 12/12 on 320px and 1440px in both color schemes. This gate concerns the review tool, not semantic approval of its 41 chatbot answers.
+PASS. Inspected the generated standalone HTML, actual Chrome DOM, and translated 320px light / 1440px dark screenshots. After the Korean translation update, the repository Playwright suite passed 16/16 on 320px and 1440px in both color schemes. This gate concerns the review tool, not semantic approval of its 41 chatbot answers. Existing ENERGY 1 / RHYTHM 2 / MOTION 1 direction is retained; Korean comes first and native disclosures keep exact originals reachable without doubling the initial reading load.
 
 Design direction: a Korean question-by-question review utility, with a question queue, one focal question, original evidence and an explicit verdict. Final dials are ENERGY 1 / RHYTHM 2 / MOTION 1. System Korean fonts keep offline operation; one blue accent marks selection, focus and answer subheadings. Structural spacing separates question, answer and decision. No animations or external visual assets are needed. The question-focused direction was declared before initial generation; explicit dials and final reading refinements were declared before the final CSS refinement.
 
@@ -13,13 +13,13 @@ R-18 PASS: no testimonials, avatars or fictional identities.
 R-23 PASS: no generated brand/logo/photo assets; the requested review workflow supplies the navigation structure.
 R-24 PASS: the only anchor targets the existing question heading; all queue buttons select actual packet cases.
 R-25 PASS: computed question, guidance, summary and primary-button foreground/background contrast is at least 4.5:1 in both schemes; body/muted/accent share these verified tokens. Inactive buttons are visibly disabled.
-R-26 PASS: verdicts, scope/kind/status selection, search, evidence disclosure, previous/next, copy, download and import were exercised by the actual browser tests.
+R-26 PASS: verdicts, scope/kind/status selection, Korean/original search, original question/answer/evidence disclosures, previous/next, copy, download and import were exercised by the actual browser tests.
 R-27 PASS: empty-filter guidance, import-reading status, bad-file/hash errors, clipboard fallback and blocked-storage warnings exist; initial packet loading is synchronous and self-contained.
 R-28 PASS: no FAQ section.
 R-32 PASS: Tab/Enter activate the skip link and focus the question; semantic controls and a 3px focus-visible outline support keyboard operation.
 R-33 PASS: functionality and CSS are authored in the maintained source files; the build embeds those files with escaped data, without post-build feature injection.
-R-34 PASS: the OS preference selects light/dark; all 12 browser tests pass across both schemes.
-R-35 PASS: generated and opened the actual HTML; 12/12 file-based Chrome tests and direct DOM/screenshot inspection record the complete control path.
+R-34 PASS: the OS preference selects light/dark; all 16 browser tests pass across both schemes.
+R-35 PASS: generated and opened the actual HTML; 16/16 file-based Chrome tests and direct DOM/screenshot inspection record the complete control path, including retained legacy verdicts and original-language exports.
 R-36 PASS: the tool explicitly distinguishes current none/offline replay from GPU model measurements and does not claim semantic correctness.
 R-37 PASS: question-focused utility direction and final dials are explicit; the resulting restrained layout and motion match them.
 R-38 PASS: all question/answer/statistics content is sourced from the packet and original evaluation artifacts, with uncertain judgments left pending.
@@ -54,7 +54,7 @@ Design Read PASS: question-by-question evidence review was the declared directio
 C-1 PASS: font, queue, bounded reading width, theme and focus decisions each have a stated offline/readability/review purpose.
 C-2 PASS: all interactive controls have actual tested behavior; blocked storage still permits a complete JSON export.
 C-3 PASS: every section supplies the question, historical contract, current answer, evidence or decision needed for review.
-C-4 PASS: mobile/desktop, light/dark, keyboard, empty search, reload, denied storage and invalid imports are exercised in the 12 passing tests.
+C-4 PASS: mobile/desktop, light/dark, keyboard, Korean/original search, original disclosures, empty search, reload, denied storage and invalid imports are exercised in the 16 passing tests.
 C-5 PASS: no invented endorsement or quality score; correctness stays with the reviewer.
 R-05 PASS: this is a question queue and review form, without a promotional hero/cards/footer template.
 R-11 PASS: small 5px control corners and native radio circles reflect their distinct roles, without pill-shaped containers.

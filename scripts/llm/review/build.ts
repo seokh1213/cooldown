@@ -8,10 +8,18 @@ import type { QualityReport } from "../quality/types";
 import { localFetch, evaluationDeps, qualityContext } from "../quality/dialogue";
 import { answerDialogue } from "../../../src/lib/advisor/dialogueFlow";
 import { REQUEST_SCOPES } from "../../../src/lib/advisor/requestIntent";
-import { pendingCases, safeEmbeddedJson } from "./packet";
+import { pendingCases } from "./packet";
+import { renderReview } from "./render";
 
 const { values } = parseArgs({ options: { baseline: { type: "string", default: "research/llm-evals/workflow/reports/regression/baseline.json" },
-  out: { type: "string", default: "research/llm-evals/workflow/reports/review-20261007" } } });
+  out: { type: "string", default: "research/llm-evals/workflow/reports/review-20261007" }, "render-only": { type: "boolean", default: false } } });
+const directory = path.resolve(ROOT, values.out!);
+if (values["render-only"]) {
+  const packet = JSON.parse(fs.readFileSync(path.join(directory, "packet.json"), "utf8"));
+  console.log(JSON.stringify({ output: path.relative(ROOT, directory), packetHash: packet.packetHash,
+    ...renderReview(directory, packet) }));
+  process.exit(0);
+}
 const baseline = JSON.parse(fs.readFileSync(values.baseline!, "utf8")) as QualityReport;
 const bank = buildBank(), cases = pendingCases(baseline, bank), restore = localFetch();
 try {
@@ -34,12 +42,9 @@ const packet = { schema: 1, created: new Date().toISOString(), scopes: REQUEST_S
   dataHash: digest(filesUnder(currentDataDirectory()).filter(file => file.endsWith(".json")).map(file => [file, fileHash(file)])),
   baselineHash: fileHash(values.baseline!), baselineCaseHash: baseline.caseHash, cases };
 const packetHash = digest(packet);
-const directory = path.resolve(ROOT, values.out!);
 fs.mkdirSync(directory, { recursive: true });
 fs.writeFileSync(path.join(directory, "packet.json"), JSON.stringify({ ...packet, packetHash }, null, 2));
-const source = (file: string) => fs.readFileSync(new URL(file, import.meta.url), "utf8");
-const html = source("shell.html").replace("/* REVIEW_STYLE */", source("style.css"))
-  .replace("/* REVIEW_SCRIPT */", source("app.js")).replace("/* REVIEW_DATA */", safeEmbeddedJson({ ...packet, packetHash }));
-fs.writeFileSync(path.join(directory, "review.html"), html);
+const presentation = renderReview(directory, { ...packet, packetHash });
 console.log(JSON.stringify({ output: path.relative(ROOT, directory), scope: cases.filter(row => row.kind === "scope").length,
-  matchup: cases.filter(row => row.kind === "matchup").length, measurements: cases.reduce((n, row) => n + row.measurements.length, 0), packetHash }));
+  matchup: cases.filter(row => row.kind === "matchup").length, measurements: cases.reduce((n, row) => n + row.measurements.length, 0), packetHash,
+  ...presentation }));

@@ -9,10 +9,10 @@
 <div class="workspace"><nav aria-label="검수 질문"><label>검수 종류<select id="kind"><option value="all">전체</option><option value="scope">2번 · 의도 분류</option><option value="matchup">3번 · 상성 답변</option></select></label>
 <label>진행 상태<select id="filter"><option value="all">전체</option><option value="pending">미판정</option><option value="wrong">틀림</option><option value="uncertain">판단 보류</option><option value="correct">맞음</option></select></label>
 <label>질문 찾기<input id="search" type="search"></label><div id="queue"></div></nav>
-<main><p id="position"></p><h2 id="question" tabindex="-1"></h2><p id="guidance"></p>
+<main><p id="position"></p><h2 id="question" tabindex="-1"></h2><details id="question-original" hidden><summary>질문 원문 보기</summary><p></p></details><p id="guidance"></p>
 <section aria-label="기존 검사 결과"><h3>기존 검사 결과</h3><div id="historical"></div></section>
-<section aria-label="현재 앱 답변"><h3>현재 앱 답변</h3><p>모델 생성 없이 앱의 전체 답변 경로를 재실행했습니다. GPU 모델을 켠 웹 측정과는 구분합니다.</p><div id="answers"></div></section>
-<details><summary>근거와 원본 판정 기준 보기</summary><p>스킬 원문은 비교용이며 모든 상성·아이템 주장을 보증하지 않습니다. 부족한 근거는 판단 보류로 남겨주세요.</p><pre id="evidence"></pre><h3>기존 기대값 · 자동으로 정답 처리하지 않음</h3><pre id="expected"></pre><pre id="sources"></pre></details>
+<section aria-label="현재 앱 답변"><h3>현재 앱 답변</h3><p>모델 생성 없이 앱의 전체 답변 경로를 재실행했습니다. GPU 모델을 켠 웹 측정과는 구분합니다.</p><p>외국어는 한국어 번역을 먼저 보여줍니다. 번역은 원문의 오류나 빠진 내용을 고치지 않으며, 판단은 원문 답변에 대한 것입니다.</p><div id="answers"></div></section>
+<details><summary>근거와 원본 판정 기준 보기</summary><p>스킬 근거는 비교용이며 모든 상성·아이템 주장을 보증하지 않습니다. 부족한 근거는 판단 보류로 남겨주세요.</p><p id="evidence-language" hidden>스킬 근거 한국어 번역</p><pre id="evidence"></pre><details id="evidence-original" hidden><summary>스킬 근거 원문 보기</summary><pre></pre></details><h3>기존 기대값 · 자동으로 정답 처리하지 않음</h3><p id="expected-korean"></p><details><summary>기존 검사 데이터 보기</summary><pre id="expected"></pre><pre id="sources"></pre></details></details>
 <form id="decision"><fieldset><legend>이 결과를 어떻게 판단하나요?</legend><div class="verdicts">
 <label><input type="radio" name="verdict" value="correct">맞음</label><label><input type="radio" name="verdict" value="wrong">틀림</label>
 <label><input type="radio" name="verdict" value="uncertain">판단 보류</label><label><input type="radio" name="verdict" value="pending">미판정</label></div></fieldset>
@@ -20,4 +20,4 @@
 <label>수정 의견<textarea id="note" rows="3" placeholder="예: 수치는 맞지만 조건이 빠짐. 원하는 답변은 …"></textarea></label>
 <p>여기서 저장한 판단은 학습이나 master에 자동 반영되지 않습니다.</p><div class="steps"><button type="button" id="previous">이전 질문</button><button type="button" id="next">다음 질문</button></div></form>
 </main></div><section id="export" hidden><h2>복사할 판정 결과</h2><p>자동 복사가 막혔으면 아래 내용을 선택해 복사하세요.</p><textarea id="output" rows="8" readonly aria-label="복사할 JSON"></textarea></section>
-<script id="packet" type="application/json">/* REVIEW_DATA */</script><script>/* REVIEW_SCRIPT */</script></body></html>
+<script id="packet" type="application/json">/* REVIEW_DATA */</script><script id="translations" type="application/json">/* REVIEW_TRANSLATIONS */</script><script>/* REVIEW_SCRIPT */</script></body></html>

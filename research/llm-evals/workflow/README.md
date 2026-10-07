@@ -160,6 +160,8 @@ pnpm llm:test:ui --out research/.cache/quality/ui
 
 `npm run llm:review`는 [41문항 HTML](reports/review-20261007/review.html)을 만든다. 의도 분류 실패 31개와 과거 상성 질문 10개이며, 상성의 none/offline 중복 측정 20건을 10개 질문으로 묶었다. HTML은 서버 없이 열 수 있고 판정·의도·메모를 저장하며 결과 JSON 복사/다운로드/불러오기를 지원한다. 입력 해시가 다른 JSON은 거부한다. `npm run llm:test:review`로 실제 Chrome의 모바일/데스크톱·밝은/어두운 화면과 판정 동작을 검사한다. [검토 방법](reports/review-20261007/README.md)을 따른다. 사용자 판정을 학습 정답이나 배포 승인으로 자동 전환하지 않는다.
 
+영어·중국어 질문/답변/스킬 근거는 한국어 번역을 먼저 보여주고 원문을 펼칠 수 있다. 번역은 오류와 누락도 유지하며 모델·채점기의 입력이나 정답에 쓰지 않는다. 기존 판정을 유지하며 번역/UI만 바꿀 때는 `npm run llm:review -- --render-only`로 기존 packet을 검증한 뒤 HTML만 갱신한다. 일반 재생성은 새 packetHash를 만들므로 기존 판정 갱신에 사용하지 않는다.
+
 ## 후속 실험 결과
 
 새 [숫자·단위 span 후보 네 개](reports/span-ranker-20261007/README.md)는 같은 132개 앱 근거에서 기존 학습 Qwen 92개보다 모두 낮아 채택하지 않았다. 기존 92개는 92%나 현행 웹의 전체 정확도가 아니다.

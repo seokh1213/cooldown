@@ -33,6 +33,7 @@ test('standalone decisions persist, copy, download and import with provenance ch
   await expect(page.locator('#queue button')).toHaveCount(1);
   await page.getByLabel('진행 상태').selectOption('all');
   await page.getByText('근거와 원본 판정 기준 보기', { exact: true }).click();
+  await page.getByText('기존 검사 데이터 보기', { exact: true }).click();
   await expect(page.locator('#expected')).toBeVisible();
   await page.getByRole('radio', { name: '판단 보류', exact: true }).check();
   await page.getByLabel('원하는 답변 범위').selectOption('ability');
@@ -81,6 +82,44 @@ test('standalone decisions persist, copy, download and import with provenance ch
   await expect(page.locator('main')).toBeHidden();
   await page.getByLabel('질문 찾기').fill('');
   await expect(page.locator('main')).toBeVisible();
+});
+
+test('Korean questions, answers and evidence preserve original decisions and exports', async ({ page }, testInfo) => {
+  const legacy = JSON.parse(await readFile('tests/fixtures/review/legacy-decision.json', 'utf8'));
+  await page.addInitScript(value => localStorage.setItem(`cooldown-review:${value.packetHash}`, JSON.stringify(value)), legacy);
+  await page.goto(url);
+  await expect(page.locator('#question')).toHaveText('오공의 기본 소개와 스킬을 둘 다 설명해 줄래요?');
+  await expect(page.getByRole('radio', { name: '틀림', exact: true })).toBeChecked();
+  await expect(page.getByLabel('수정 의견')).toHaveValue(legacy.decisions[0].note);
+  await expect(page.locator('#answers .answer').first()).toContainText('기본 능력치 (1레벨)');
+  await expect(page.locator('#answers .answer').first()).toContainText('체력: 610');
+  await expect(page.locator('#historical')).toHaveText('기존 기대 분류: 챔피언 개요 / 실제 분류: 전체 스킬');
+  await page.getByText('질문 원문 보기', { exact: true }).click();
+  await expect(page.locator('#question-original p')).toHaveText(legacy.decisions[0].question);
+  await page.locator('#answers summary').first().click();
+  await expect(page.locator('#answers pre').first()).toContainText('Wukong · Fighter · Tank · melee');
+  await page.getByRole('button', { name: '판정 결과 복사' }).click();
+  const exported = JSON.parse(await page.getByLabel('복사할 JSON').inputValue());
+  expect(exported.packetHash).toBe(legacy.packetHash);
+  expect(exported.decisions.find((row: { id: string }) => row.id === legacy.decisions[0].id)).toEqual(legacy.decisions[0]);
+  await page.getByLabel('질문 찾기').fill('위의 두 챔피언');
+  await expect(page.locator('#queue button')).toHaveCount(1);
+  await expect(page.locator('#question')).toContainText('마법 저항력만 비교');
+  await expect(page.locator('#answers .answer').first()).toContainText('여기서는 그 요청을 해결할 수 없어요');
+  await page.getByLabel('질문 찾기').fill('孙悟空的血量表看懂了');
+  await expect(page.locator('#question')).toHaveText('오공의 체력 표는 이해했어요. 이번 답변에서는 P Q W E R을 설명해 주세요.');
+  await expect(page.locator('#answers .answer').first()).toContainText('P 바위 피부');
+  await page.locator('#answers summary').first().click();
+  await expect(page.locator('#answers pre').first()).toContainText('齐天大圣');
+  await page.screenshot({ path: testInfo.outputPath('review-translated.png'), fullPage: true });
+  await page.getByLabel('질문 찾기').fill('keep losing to Dr. Mundo');
+  await page.getByText('근거와 원본 판정 기준 보기', { exact: true }).click();
+  await expect(page.locator('#evidence')).toContainText('최대 체력의 0.35%를 5초마다 재생');
+  await expect(page.locator('#evidence')).toContainText('문도 박사');
+  await expect(page.locator('#expected-korean')).toHaveText('기존 기대 답변 범위: 상대하는 법');
+  await page.getByText('스킬 근거 원문 보기', { exact: true }).click();
+  await expect(page.locator('#evidence-original pre')).toContainText('Wukong gains (6 ~ 10) Armor');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
 });
 
 test('mobile reflow, keyboard access and light/dark contrast', async ({ page }, testInfo) => {
