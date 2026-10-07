@@ -32,7 +32,7 @@ export function statSpelling(question: string) {
       if (/[a-z]/.test(term.word) && (/[a-z]/.test(question[chars[start].index - 1] ?? "")
         || /[a-z]/.test(question[chars[start + length - 1].index + 1] ?? ""))) continue;
       const expanded = toJamo(word);
-      if (Math.abs(expanded.length - term.jamo.length) > 1 || expanded.length < 5) continue;
+      if (Math.abs(expanded.length - term.jamo.length) > 1) continue;
       if (editDistance(expanded, term.jamo) !== 1 || 1 / term.jamo.length > 0.2) continue;
       candidates.push({ field: term.field, length });
     }

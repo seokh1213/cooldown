@@ -13,7 +13,7 @@ import { openModel } from "../quality/model";
 import type { QualityStory, QualityRow, QualityReport } from "../quality/types";
 import { contextChecks } from "./checks";
 import { learnedContextRanker, type ContextRankModel } from "../../../src/lib/advisor/contextRanker";
-import { TURN_LIMIT } from "../../../src/lib/advisor/history";
+import { TURN_LIMIT, dehydrateTurn } from "../../../src/lib/advisor/history";
 
 const { values } = parseArgs({ options: {
   policy: { type: "string", default: "all" }, mode: { type: "string", default: "offline" },
@@ -60,7 +60,7 @@ fs.writeFileSync(path.join(output, "provenance.json"), JSON.stringify({ ...hashe
   restoredHistoryLimit: values.bank === "stress" ? TURN_LIMIT : null,
   sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim(),
   sources: sources.map(file => [file, fileHash(file)]), data: data.map(file => [file, fileHash(file)]) }, null, 2));
-type ContextRow = QualityRow & { decision?: unknown; frames: number; frameBytes: number; contextBytes: number; plans: unknown[]; memory: unknown };
+type ContextRow = QualityRow & { decision?: unknown; frames: number; frameBytes: number; contextBytes: number; historyBytes: number; plans: unknown[]; memory: unknown };
 const abort = new AbortController();
 let model: Awaited<ReturnType<typeof openModel>> | undefined;
 const stop = () => { abort.abort(); void model?.close(); };
@@ -103,6 +103,7 @@ async function evaluate(policy: ContextPolicy, limit: number, runtime?: ModelRun
         preserve: entry.expected.sameAsBaseline === true, numeric: result.numericAttempt,
         decision: result.contextDecision, frames: frames.length, frameBytes: Buffer.byteLength(JSON.stringify(frames)),
         contextBytes: Buffer.byteLength(JSON.stringify({ frames, omitted: result.reply.memory.contextOmissions })),
+        historyBytes: Buffer.byteLength(JSON.stringify(ctx.turns.map((entry, id) => dehydrateTurn({ ...entry, id, content: entry.content ?? "" })))),
         plans: result.dialogue.parts.map(part => describe(part.plan)), memory: result.reply.memory });
       restoreReply(ctx, entry.q, result.reply);
       if (values.bank === "stress") ctx.turns = ctx.turns.slice(-TURN_LIMIT);
@@ -124,6 +125,7 @@ async function evaluate(policy: ContextPolicy, limit: number, runtime?: ModelRun
     fail: entries.filter(row => row.pass === false).length, manual: entries.filter(row => row.pass === null).length,
     maxFrames: Math.max(0, ...entries.map(row => row.frames)), maxFrameBytes: Math.max(0, ...entries.map(row => row.frameBytes)),
     maxContextBytes: Math.max(0, ...entries.map(row => row.contextBytes)),
+    maxHistoryBytes: Math.max(0, ...entries.map(row => row.historyBytes)),
     p50Seconds: times[Math.floor(times.length * .5)], p95Seconds: times[Math.floor(times.length * .95)],
     clarifications: entries.filter(row => (row.decision as { action?: string })?.action === "clarify").length,
     complete: report.checks.every(check => check.pass) };

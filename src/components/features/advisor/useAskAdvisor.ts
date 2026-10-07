@@ -19,8 +19,6 @@ import { fetchJudgeFile } from "@/lib/advisor/storage";
 import { docAnswer } from "@/lib/advisor/questionDocs";
 import { requestClassifier } from "@/lib/advisor/requestIntent";
 import { withRequestModel } from "@/lib/advisor/requestScopeModel";
-import { statClassifier, STAT_MODEL_FILE } from "@/lib/advisor/statClassifier";
-import type { LinearModel } from "@/lib/advisor/statClassifierTypes";
 
 interface AskAdvisorOptions {
   advisor: UseAdvisorResult;
@@ -46,12 +44,6 @@ const classifyRequest = requestClassifier(async (file) => {
   const response = await fetchJudgeFile(`${import.meta.env.BASE_URL}${file}`);
   if (!response.ok) throw new Error("요청 판정기를 받지 못했습니다");
   return response.arrayBuffer();
-});
-
-const inferStatQuery = statClassifier(async () => {
-  const response = await fetchJudgeFile(`${import.meta.env.BASE_URL}${STAT_MODEL_FILE}`);
-  if (!response.ok) throw new Error("능력치 판정기를 받지 못했습니다");
-  return response.json() as Promise<LinearModel>;
 });
 
 /** 모델 판정기가 거절하면(헤드를 못 받음·다른 모델용·워커 오류) 오프라인 판정기로. 그마저 거절하면 부르는 단계가 낱말 규칙으로 간다. */
@@ -119,7 +111,7 @@ export function useAskAdvisor({ advisor, data, patch, championIds, canUseModel }
         judge,
         notice,
       };
-      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search, inferStatQuery,
+      const deps = { judge: judge === "model" ? modelThenOffline(advisor.judge) : offline, search: advisor.search,
         generateNumeric: advisor.generateNumeric,
         classifyRequest: withRequestModel(classifyRequest, canUseModel ? advisor.inferRequestScope : undefined) };
       const { dialogue, reply } = await answerDialogue(question, ctx, deps);

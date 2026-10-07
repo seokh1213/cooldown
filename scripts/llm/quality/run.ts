@@ -4,7 +4,7 @@ import { spawn, execFileSync } from "node:child_process";
 import { parseArgs } from "node:util";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { DEFAULT_CONTEXT_LIMIT, DEFAULT_CONTEXT_POLICY } from "../../../src/lib/advisor/contextFrameTypes";
-import { CONTEXT_APPROVAL_FILE } from "../context-frames/approval";
+import { CONTEXT_APPROVAL_FILE, EXPANDED_CONTEXT_APPROVAL_FILE, STRESS_APPROVAL_FILE } from "../context-frames/approval";
 import { audit } from "./audit";
 import { ROOT, WORKFLOW, buildBank, digest, readRows } from "./bank";
 import { currentDataDirectory, fileHash, filesUnder } from "./archive";
@@ -88,6 +88,11 @@ try {
     const contexts = path.join(output, "context-frames");
     await check("context-window", "npx", ["tsx", "scripts/llm/context-frames/evaluate.ts", "--split", "all", "--configs", `legacy,${DEFAULT_CONTEXT_POLICY}:${DEFAULT_CONTEXT_LIMIT}`, "--out", contexts]);
     await check("context-comparison", "npx", ["tsx", "scripts/llm/context-frames/compare.ts", "--directory", contexts, "--require", `${DEFAULT_CONTEXT_POLICY}-${DEFAULT_CONTEXT_LIMIT}`, "--approved", CONTEXT_APPROVAL_FILE]);
+    const contextReport = path.join(contexts, `${DEFAULT_CONTEXT_POLICY}-${DEFAULT_CONTEXT_LIMIT}.json`);
+    await check("context-expanded-successes", "npx", ["tsx", "scripts/llm/context-frames/verify.ts", "--report", contextReport, "--approved", EXPANDED_CONTEXT_APPROVAL_FILE]);
+    const stress = path.join(output, "context-stress");
+    await check("context-stress", "npx", ["tsx", "scripts/llm/context-frames/evaluate.ts", "--bank", "stress", "--split", "all", "--configs", `${DEFAULT_CONTEXT_POLICY}:${DEFAULT_CONTEXT_LIMIT}`, "--out", stress]);
+    await check("context-stress-successes", "npx", ["tsx", "scripts/llm/context-frames/verify.ts", "--report", path.join(stress, `${DEFAULT_CONTEXT_POLICY}-${DEFAULT_CONTEXT_LIMIT}.json`), "--approved", STRESS_APPROVAL_FILE]);
   }
   if (profile === "infrastructure" || profile === "quality") {
     await check("generation-recovery", "python3", ["-m", "unittest", "discover", "-s", "scripts/llm/quality", "-p", "test_*.py"]);

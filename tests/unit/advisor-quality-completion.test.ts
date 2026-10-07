@@ -167,6 +167,7 @@ test("능력치 모델을 못 읽으면 다음 요청에서 다시 읽을 수 �
 test("자모 교정은 새로운 오타도 읽고 띄어쓰기 경계의 짧은 약어는 붙여 만들지 않는다", () => {
   assert.deepEqual(detectStats("애쉬 방어럭은?"), ["armor"]);
   assert.deepEqual(detectStats("진 공격소도"), ["attackSpeed"]);
+  assert.deepEqual(detectStats("최대 체려"), ["health"]);
   assert.deepEqual(detectStats("능력과 기본 능력치를 같이 소개해줘"), []);
   assert.deepEqual(detectStats("생명력 흡수는 어떻게 적용해?"), []);
 });

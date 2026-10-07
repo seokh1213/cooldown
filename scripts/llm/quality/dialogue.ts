@@ -8,8 +8,6 @@ import { withRequestModel, readRequestScope, requestScopePrompt } from "../../..
 import { questionLanguage } from "../../../src/lib/advisor/questionLanguage";
 import { answerEvidence } from "../../../src/lib/advisor/answerEvidence";
 import { buildRetrievalDocs } from "../../../src/lib/advisor/searchFallback";
-import { statClassifier, STAT_MODEL_FILE } from "../../../src/lib/advisor/statClassifier";
-import type { LinearModel } from "../../../src/lib/advisor/statClassifierTypes";
 import type { PlanContext, PlanDeps } from "../../../src/lib/advisor/planTypes";
 import type { Language } from "../../../src/i18n";
 import { loadData, offlineFileJudge } from "../kev-agent/lib";
@@ -35,10 +33,9 @@ export interface ModelRuntime {
   search: NonNullable<PlanDeps["search"]>;
   generate: (system: string, prompt: string, maxTokens: number, purpose?: "grounded-summary" | "grounded-numeric") => Promise<string>;
 }
-const inferStatQuery = statClassifier(async () => JSON.parse(new TextDecoder().decode(await readPublic(STAT_MODEL_FILE))) as LinearModel);
 export function evaluationDeps(runtime?: ModelRuntime, lang: Language = "ko_KR"): PlanDeps {
   const fast = requestClassifier(readPublic);
-  return { judge: runtime?.judge ?? offlineFileJudge(), search: runtime?.search ?? (async () => []), inferStatQuery,
+  return { judge: runtime?.judge ?? offlineFileJudge(), search: runtime?.search ?? (async () => []),
     classifyRequest: runtime ? withRequestModel(fast, async text => {
       const request = requestScopePrompt(text, questionLanguage(text) ?? lang);
       return readRequestScope(await runtime.generate(request.system, request.messages[0].content, request.maxTokens, "grounded-summary"));

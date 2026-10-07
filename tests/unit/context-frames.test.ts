@@ -218,3 +218,16 @@ test("omission markers still require clarification when no usable frame remains"
   assert.equal(result.contextDecision?.reason, "evicted");
   assert.equal(result.reply.answer, undefined);
 });
+
+test("the stress gate rejects a guessed answer after its owner was forgotten", () => {
+  const approval = { caseHash: "cases", scorerHash: "scorer", passedIds: [], clarificationIds: ["forgotten"] };
+  const row: { id: string; pass: boolean; decision: { action: string }; observed?: unknown } = {
+    id: "forgotten", pass: false, decision: { action: "clarify" },
+  };
+  const report = { caseHash: "cases", scorerHash: "scorer", rows: [row] };
+  assert.doesNotThrow(() => checkApprovedContexts(report, approval));
+  row.decision.action = "keep";
+  assert.throws(() => checkApprovedContexts(report, approval), /forgotten context/);
+  row.decision.action = "clarify"; row.observed = { kind: "spell" };
+  assert.throws(() => checkApprovedContexts(report, approval), /forgotten context/);
+});

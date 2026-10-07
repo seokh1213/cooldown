@@ -5,7 +5,7 @@ export type ContextPolicy = typeof CONTEXT_POLICIES[number];
 export const MAX_CONTEXT_FRAMES = 32;
 export const CONTEXT_LIMITS = [2, 4, 6, 8, 12, 16, 24, 32] as const;
 export const DEFAULT_CONTEXT_POLICY: ContextPolicy = "guarded";
-export const DEFAULT_CONTEXT_LIMIT = 12;
+export const DEFAULT_CONTEXT_LIMIT = 32;
 export const CONTEXT_BUCKETS = ["champion", "stat", "item", "compare", "matchup", "rule", "spell",
   "spell:P", "spell:Q", "spell:W", "spell:E", "spell:R"] as const;
 export type ContextBucket = typeof CONTEXT_BUCKETS[number];

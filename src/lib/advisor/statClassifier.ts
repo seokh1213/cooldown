@@ -4,8 +4,6 @@ import type { PlanDeps } from "./planTypes";
 import { asksAllStats, detectStats } from "./statQuery";
 import { asksMatchup } from "./askWords";
 
-export const STAT_MODEL_FILE = "models/offline/stat-v1.json";
-
 export function statClassifier(load: () => Promise<LinearModel>): NonNullable<PlanDeps["inferStatQuery"]> {
   let pending: Promise<LinearModel> | undefined;
   return async (resolved, memory, ctx) => {

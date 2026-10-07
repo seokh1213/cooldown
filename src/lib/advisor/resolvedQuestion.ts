@@ -23,7 +23,7 @@ export type QuestionInput = string | ResolvedQuestion;
 export function championFreeText(resolved: ResolvedQuestion): string {
   let text = resolved.text;
   for (const mention of [...resolved.mentions].sort((a, b) => b.index - a.index)) {
-    text = text.slice(0, mention.index) + " ".repeat(mention.length) + text.slice(mention.index + mention.length);
+    text = text.slice(0, mention.index) + "x".repeat(mention.length) + text.slice(mention.index + mention.length);
   }
   return text;
 }
