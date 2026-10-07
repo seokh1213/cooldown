@@ -62,3 +62,10 @@ node --import tsx research/llm-evals/workflow/reports/live-web-fix-20261007/comp
 ```
 
 브랜치 `fix/advisor-live-web-20261007`에 보관하며 master 8068384f0·원격·배포는 변경하지 않는다. PR은 만들지 않았다. 실제 UI로 사용한 localhost 모델 캐시 632MB·36파일을 삭제했고, 직접 연 탭·preview 4182·완료/중단된 평가 프로세스를 종료했다. 배포 사이트 캐시와 다른 작업 자원은 건드리지 않았다.
+
+
+## master 반영·배포 승인 후 CI 기준 갱신
+
+2026-10-07 사용자가 “마스터배포 다허락할게”라고 명시적으로 승인했다. 위 로컬 보관 상태 이후 master 반영·push와 배포 검증을 진행한다.
+
+기존 CI baseline도 질문집 확장 전의 5,775측정이어서 같은 계약으로 비교할 수 있도록 갱신했다. 먼저 기존 baseline의 은행·자료·채점기를 검증하고 공통 5,775측정의 새 회귀 0개, 신규 34측정 전부 통과를 확인했다. 이후 공식 절차대로 누락 0개와 인프라 통과가 확인된 완결 실측 results.json을 baseline.json에 그대로 복사했다. 기존 실패31개·수동20개는 보존하며 품질 승인으로 바꾸지 않는다. 해시·판정은 baseline-refresh.json과 baseline-refresh-comparison.json에 있다.
