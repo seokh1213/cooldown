@@ -1,5 +1,32 @@
 import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test } from "@playwright/test";
+import type { Playbook } from "../src/lib/knowledge/playbookCore";
+
+test("검수 대기 콤보를 안내하면서 최신 스킬 수치와 다른 챔피언의 콤보는 계속 답한다", async ({ page }) => {
+  await page.route("**/advisor-knowledge.json*", async route => {
+    const response = await route.fetch();
+    const bundle = await response.json() as { patchVersion: string; playbooks: Record<string, Playbook> };
+    const book = bundle.playbooks.Ambessa;
+    const pendingIds = book.playing.filter(entry => entry.combo).map(entry => entry.id!);
+    book.playing = book.playing.filter(entry => entry.category !== "combo");
+    book.against = book.against.filter(entry => entry.category !== "combo");
+    book.comboReview = { patch: bundle.patchVersion, pendingIds };
+    await route.fulfill({ response, json: bundle });
+  });
+  await page.goto("./");
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
+  await waitForModelFreeInput(page, input, page.getByRole("button", { name: "모델 없이 써보기", exact: true }));
+  const ask = async (question: string, expected: RegExp) => {
+    await input.fill(question);
+    await page.getByRole("button", { name: "보내기", exact: true }).click();
+    await expect(page.getByText(expected).filter({ visible: true }).last()).toBeVisible();
+  };
+  await ask("암베사 콤보 알려줘", /현재 패치 검수 중/);
+  await expect(page.getByRole("dialog").locator("code")).toHaveCount(0);
+  await ask("암베사 Q 쿨타임 몇 초야?", /재사용 대기시간/);
+  await ask("아리 콤보 알려줘", /아리 콤보는 상황별로/);
+});
 
 for (const width of [390, 1280]) test(`상황별 콤보·대화 기억·하단 복사: ${width}px`, async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);

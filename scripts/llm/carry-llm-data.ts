@@ -53,6 +53,8 @@ async function main() {
   // 카드를 다시 지은 뒤에 불러온다.
   const dir = path.join(llmDir, "matchups");
   if (fs.existsSync(dir)) {
+    const { loadPlaybooks } = await import("./lib/playbook");
+    const quarantined = new Set([...loadPlaybooks()].filter(([, book]) => book.comboReview?.pendingIds.length).map(([id]) => id));
     const { materialFingerprint } = await import("./precompute-matchups");
     let kept = 0;
     let dropped = 0;
@@ -62,6 +64,7 @@ async function main() {
       const data = JSON.parse(fs.readFileSync(full, "utf8")) as { patch: string; pairs: Record<string, unknown>; materials?: Record<string, string> };
       const stale = new Set<string>();
       for (const enemy of Object.keys(data.pairs)) {
+        if (quarantined.has(me) || quarantined.has(enemy)) { stale.add(enemy); continue; }
         let now: string | undefined;
         try {
           now = materialFingerprint(me, enemy);

@@ -125,7 +125,8 @@ export function championNotes(
     against: source.against.filter(entry => !entry.when?.enemyIds?.length && !entry.when?.lanes?.length),
   };
   if (judged?.topic === "combo" && forced === "playing") {
-    return selectComboNotes(book.playing, { question, locale: data.locale, translations: data.noteTranslations });
+    return selectComboNotes(book.playing, { question, locale: data.locale, translations: data.noteTranslations,
+      reviewPending: Boolean(source.comboReview?.pendingIds.length) });
   }
   /*
    * 영어·중국어는 옮겨 둔 노트만 싣는다. 상성(`matchupNotes`)은 그렇게 하고 있었는데 챔피언 하나를 묻는 길은

@@ -3,6 +3,8 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import { loadData } from "../../scripts/llm/kev-agent/lib";
 import { loadComboNotes, compileComboNotes, abilityTextHash } from "../../scripts/llm/lib/comboNotes";
+import { comboHash, reviewCombos, type ComboBaseline } from "../../scripts/llm/lib/comboReview";
+import type { NumericChampion } from "../../scripts/patch-notes/sourceTypes";
 import { answerDialogue } from "../../src/lib/advisor/dialogueFlow";
 import { planAnswer } from "../../src/lib/advisor/plan";
 import { dehydrateTurn, reviveTurn } from "../../src/lib/advisor/history";
@@ -10,36 +12,47 @@ import { comboSlots, type ComboGuideFile } from "../../src/lib/knowledge/comboGu
 import { translations } from "../../src/i18n/translations";
 import type { PlanContext } from "../../src/lib/advisor/planTypes";
 import type { JudgeQuestion } from "../../src/lib/advisor/judge";
+import { comboBaselineData } from "../fixtures/comboBaselineData";
+import type { AdvisorData } from "../../src/lib/advisor/context";
 
 const deps = { judge: async () => { throw new Error("명시적 콤보는 모델을 부르지 않습니다"); }, search: async () => [] };
-const data = loadData("ko_KR");
-function context(): PlanContext {
-  return { data, lang: "ko_KR", copy: translations.ko_KR.advisor, turns: [], championIds: [],
+const liveData = loadData("ko_KR");
+const baseline = JSON.parse(readFileSync("knowledge/combo-baseline.json", "utf8")) as ComboBaseline;
+const authored = JSON.parse(readFileSync("knowledge/combo-guides.json", "utf8")) as ComboGuideFile;
+const data = comboBaselineData(liveData, authored, baseline);
+const numericSources = Object.fromEntries(Object.entries(baseline.sources).flatMap(([id, source]) => source.card.numeric ? [[id, source.card.numeric]] : []));
+const liveNumbers = JSON.parse(readFileSync(`data/patch-notes/sources/${liveData.patch}.json`, "utf8")) as Record<string, NumericChampion>;
+function context(source: AdvisorData = data): PlanContext {
+  return { data: source, lang: "ko_KR", copy: translations.ko_KR.advisor, turns: [], championIds: [],
     judge: "none", consented: false, canUseModel: false, retrieval: false };
 }
 async function ask(ctx: PlanContext, question: string) {
   const { reply } = await answerDialogue(question, ctx, deps);
   ctx.turns = [...ctx.turns, ...[{ id: ctx.turns.length, role: "user" as const, content: question },
     { id: ctx.turns.length + 1, role: "assistant" as const, content: reply.text, answer: reply.answer, memory: reply.memory }]
-    .flatMap(turn => { const restored = reviveTurn(JSON.parse(JSON.stringify(dehydrateTurn(turn))), data); return restored ? [restored] : []; })];
+    .flatMap(turn => { const restored = reviveTurn(JSON.parse(JSON.stringify(dehydrateTurn(turn))), ctx.data!); return restored ? [restored] : []; })];
   return reply;
 }
 
 test("현재 모든 챔피언의 콤보·조건·출처와 스킬 본문 검수 기록이 있다", () => {
   const file = JSON.parse(readFileSync("knowledge/combo-guides.json", "utf8")) as ComboGuideFile;
   const guides = new Map(file.champions.map(guide => [guide.champion, guide]));
-  assert.equal(guides.size, data.cards.length);
+  assert.equal(guides.size, liveData.cards.length);
   const compiled = loadComboNotes();
-  for (const card of data.cards) {
+  const reviews = new Map(reviewCombos({ guides: file, cards: liveData.cards, baseline, numericSources: liveNumbers, patch: liveData.patch }).map(row => [row.id, row]));
+  for (const card of liveData.cards) {
     const guide = guides.get(card.id);
     assert.ok(guide, card.id);
-    assert.equal(guide.abilityTextHash, abilityTextHash(card), card.id);
+    assert.equal(guide.abilityTextHash, abilityTextHash(baseline.sources[card.id].card as typeof card), card.id);
     assert.ok(guide.patterns.length >= 2, card.id);
     for (const pattern of guide.patterns) {
       assert.ok(pattern.keys.length >= 2 && pattern.tip.length > 15 && pattern.title, pattern.id);
       assert.equal(new URL(pattern.sourceUrl).protocol, "https:");
       assert.ok(comboSlots(pattern.keys).every(slot => card.spells.some(spell => spell.slot === slot)), pattern.id);
-      assert.match(compiled.get(card.id)!.find(entry => entry.id === pattern.id)!.text, /^- \*\*/);
+      const review = reviews.get(pattern.id)!;
+      const entry = compiled.get(card.id)!.find(entry => entry.id === pattern.id);
+      if (review.status === "needs-review") assert.equal(entry, undefined, `${pattern.id}: 검수 대기는 배포하지 않는다`);
+      else assert.match(entry!.text, /^- \*\*/);
     }
   }
   const kled = guides.get("Kled")!;
@@ -55,10 +68,14 @@ test("현재 모든 챔피언의 콤보·조건·출처와 스킬 본문 검수 
 });
 
 test("전 챔피언 콤보 질문이 실제 대화 진입점에서 상황별 순서와 요령으로 답한다", async () => {
-  for (const card of data.cards) {
-    const reply = await ask(context(), `${card.name} 콤보 알려줘`);
+  for (const card of liveData.cards) {
+    const reply = await ask(context(liveData), `${card.name} 콤보 알려줘`);
     assert.equal(reply.answer?.kind, "champion", card.id);
     if (reply.answer?.kind === "champion") assert.equal(reply.answer.card.id, card.id);
+    if (liveData.playbooks.get(card.id)?.comboReview?.pendingIds.length) {
+      assert.match(reply.text, /현재 패치 검수 중/, card.id);
+      continue;
+    }
     assert.match(reply.text, /- \*\*.+:\*\* `.+ → .+` — /, card.id);
     assert.doesNotMatch(reply.text, /의 스킬 구성입니다|\*\*상대할 때\*\*/, card.id);
     assert.doesNotMatch(reply.text, /참고 자료|https?:\/\//, card.id);
@@ -127,21 +144,28 @@ test("개별 재검수 패치는 해당 챔피언의 콤보와 라인전에만 �
   reviewed.verifiedPatch = "26.20";
   delete previous.verifiedPatch;
   reviewed.laning = { text: "개별 재검수한 라인전 조건", sourceUrl: reviewed.patterns[0].sourceUrl };
-  const notes = compileComboNotes(guides, data.cards);
+  const updatedBaseline = structuredClone(baseline);
+  const id = `${reviewed.champion.toLowerCase()}-web-laning`;
+  updatedBaseline.noteHashes[id] = comboHash({ id, ...reviewed.laning });
+  const notes = compileComboNotes(guides, data.cards, { baseline: updatedBaseline, numericSources });
   assert.ok(notes.get(reviewed.champion)!.every(entry => entry.verifiedPatch === "26.20"));
   assert.ok(notes.get(previous.champion)!.every(entry => entry.verifiedPatch === "26.18"));
   assert.ok(notes.get(reviewed.champion)!.some(entry => entry.category === "laning"));
 });
 
-test("출처의 스킬 본문이 바뀌면 새 패치에 같은 콤보를 자동 승인하지 않는다", () => {
+test("출처 변경은 해당 콤보만 보류하고 다른 챔피언의 생성을 계속한다", () => {
   const guides = JSON.parse(readFileSync("knowledge/combo-guides.json", "utf8")) as ComboGuideFile;
   for (const [champion, slot] of [["Zaahen", "Q"], ["Kled", "E"]]) {
     const cards = structuredClone(data.cards);
     cards.find(card => card.id === champion)!.spells.find(spell => spell.slot === slot)!.text += " 스킬이 변경됨";
-    assert.throws(() => compileComboNotes(guides, cards), new RegExp(`${champion}.*다시 검수`));
+    const notes = compileComboNotes(guides, cards, { baseline, numericSources });
+    assert.equal(notes.get(champion)?.length, 0);
+    assert.ok(notes.get("Ambessa")!.length >= 2);
   }
   const changed = structuredClone(data.cards);
   for (const champion of ["Zaahen", "Kled"]) changed.find(card => card.id === champion)!.spells[0].text += " 새 본문";
-  assert.throws(() => compileComboNotes(guides, changed), error => error instanceof Error
-    && error.message.includes("Zaahen") && error.message.includes("Kled") && error.message.includes("다시 검수"));
+  const notes = compileComboNotes(guides, changed, { baseline, numericSources });
+  assert.equal(notes.get("Zaahen")?.length, 0);
+  assert.equal(notes.get("Kled")?.length, 0);
+  assert.ok(notes.get("Ambessa")!.length >= 2);
 });

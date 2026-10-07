@@ -176,6 +176,7 @@ const SHARE: Record<NotePerspective, { playing: number; against: number }> = {
 };
 
 export interface SelectedNotes {
+  reviewPending?: boolean;
   topic?: "combo";
   sources?: string[];
   unavailable?: string[];

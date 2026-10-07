@@ -49,7 +49,8 @@ export function noteVersion(note: object, context: VersionContext, entities = li
   const previous = fields.version as NoteVersion | undefined;
   const entity = entities.find(entity => fields.id === entity.id || fields.page === entity.page);
   const evidence = fields.evidence as { patch?: string } | undefined;
-  const verified = normalizePatch(fields.verifiedPatch) ?? normalizePatch(context.verifiedThroughPatch);
+  const compatibility = fields.compatibility as { checkedThroughPatch?: string } | undefined;
+  const verified = normalizePatch(compatibility?.checkedThroughPatch) ?? normalizePatch(fields.verifiedPatch) ?? normalizePatch(context.verifiedThroughPatch);
   return {
     baselinePatch: context.baselinePatch,
     sourcePatch: normalizePatch(fields.verifiedPatch) ?? normalizePatch(evidence?.patch) ?? previous?.sourcePatch ?? normalizePatch(context.sourcePatch),

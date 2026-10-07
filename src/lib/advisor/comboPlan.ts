@@ -45,6 +45,7 @@ export function comboAdvicePlan(resolved: ResolvedQuestion, ctx: PlanContext, me
   const previous = memory?.combo?.champion === id ? memory.combo.unavailable : [];
   const notes = selectComboNotes(book.playing.filter(entry => !entry.when), {
     question, locale: ctx.data.locale, translations: ctx.data.noteTranslations,
+    reviewPending: Boolean(book.comboReview?.pendingIds.length),
     unavailable: unavailableAbilities(question, previous),
   });
   return { type: "card", answer: { kind: "champion", card, notes }, notice: ctx.notice };

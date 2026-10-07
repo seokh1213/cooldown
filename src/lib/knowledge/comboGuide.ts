@@ -6,6 +6,14 @@ export interface ComboPattern {
   tip: string;
   origin: "published" | "ability-composition";
   sourceUrl: string;
+  dependencies?: ComboDependencies;
+}
+
+export interface ComboDependencies {
+  slots: string[];
+  damageNumbers: "review" | "independent";
+  damageSourceKeys?: string[];
+  basis: string;
 }
 
 export interface ComboGuide {
@@ -20,7 +28,7 @@ export interface ComboGuide {
 }
 
 export interface ComboGuideFile {
-  schemaVersion: 1;
+  schemaVersion: 1 | 2;
   reviewedAt: string;
   patch: string;
   champions: ComboGuide[];

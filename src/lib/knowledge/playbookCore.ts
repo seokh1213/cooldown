@@ -58,6 +58,7 @@ export interface PlaybookHook {
 }
 
 export interface PlaybookEntry {
+  compatibility?: { reviewedPatch: string; checkedThroughPatch: string; method: string; sourceHash: string };
   version?: NoteVersion;
   /** 출처와 사용 조건을 갖춘 상황별 콤보. 본문은 빌드에서 같은 형식으로 만든다. */
   combo?: ComboPattern;
@@ -93,6 +94,7 @@ export interface PlaybookEntry {
 }
 
 export interface Playbook {
+  comboReview?: { patch: string; pendingIds: string[] };
   champion: string;
   /** 이 챔피언을 플레이할 때의 지식 */
   playing: PlaybookEntry[];

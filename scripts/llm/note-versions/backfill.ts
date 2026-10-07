@@ -87,7 +87,7 @@ export function backfill(root = process.cwd()) {
   fs.writeFileSync(meta, `${JSON.stringify(enrichNotes(JSON.parse(fs.readFileSync(meta, "utf8")), { baselinePatch }), null, 2)}\n`);
   const current = path.join(root, "research/champion-mechanics/current.json");
   const reviewed = fs.existsSync(current) ? JSON.parse(fs.readFileSync(current, "utf8")) as { directory: string } : undefined;
-  const authorFiles = jsonFiles(path.join(root, "knowledge")).filter(file => !file.endsWith("note-versions.json"));
+  const authorFiles = jsonFiles(path.join(root, "knowledge")).filter(file => !file.endsWith("note-versions.json") && !file.endsWith("combo-baseline.json"));
   if (reviewed) authorFiles.push(...jsonFiles(path.join(root, "research/champion-mechanics", reviewed.directory, "records")));
   const records = authorFiles.map(file => fileRecord(file, root, baselinePatch)).filter(record => record !== undefined);
   const ledger = {

@@ -21,6 +21,7 @@ import { createHash } from "node:crypto";
 import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "./lib/data";
 import type { AtomFile } from "./build-note-atoms";
 import type { Playbook } from "../../src/lib/knowledge/playbookCore";
+import { loadPlaybooks } from "./lib/playbook";
 
 const LANGS = ["en_US", "zh_CN"] as const;
 const ATOM_DIR = path.join(process.cwd(), "knowledge", "atoms");
@@ -63,8 +64,11 @@ export function joinedNotes(lang: (typeof LANGS)[number], atomDir = ATOM_DIR,
 
 function main(): void {
   const patch = resolvePatchVersion();
+  const books = loadPlaybooks();
+  const permitted = new Set([...books.values()].flatMap(book => [...book.playing, ...book.against].map(entry => entry.id)));
   for (const lang of LANGS) {
     const { notes, skipped } = joinedNotes(lang);
+    for (const id of Object.keys(notes)) if (!permitted.has(id)) delete notes[id];
     const store = path.join(process.cwd(), "knowledge", "note-translations", `${lang}.json`);
     const polished = fs.existsSync(store) ? (JSON.parse(fs.readFileSync(store, "utf8")) as { notes: Record<string, { basis: string; text: string }> }).notes : {};
     let used = 0;

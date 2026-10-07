@@ -64,7 +64,8 @@ export function composeMatchupEvidence(data: AdvisorData, lang: Language, reques
     answer.more = request.more || undefined;
     answer.statQuery = undefined;
   }
-  return selectMatchupReply(answer, pair, request, lang);
+  const quarantined = [mine, enemy].some(card => data.playbooks.get(card.id)?.comboReview?.pendingIds.length);
+  return selectMatchupReply(answer, quarantined ? undefined : pair, request, lang);
 }
 
 /** 은행·노트 조립의 최종 답 모두 같은 실행 조건 검사를 거친다. */

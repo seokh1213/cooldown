@@ -17,7 +17,8 @@ import {
   renderItemClaims,
   renderStackClaims,
 } from "../../../src/lib/knowledge/claims";
-import { loadComboNotes } from "./comboNotes";
+import { loadComboCompilation } from "./comboNotes";
+import { resolvePatchVersion } from "./data";
 
 export * from "../../../src/lib/knowledge/playbookCore";
 
@@ -51,10 +52,13 @@ export function loadPlaybooks(root = PLAYBOOK_ROOT): Map<string, Playbook> {
     });
   }
   if (root === PLAYBOOK_ROOT) {
-    for (const [champion, entries] of loadComboNotes()) {
+    const { notes, reviews } = loadComboCompilation();
+    for (const [champion, entries] of notes) {
       const book = map.get(champion) ?? { champion, playing: [], against: [] };
-      // 상성·조건 대응의 기존 우선순서는 보존한다. 명시적 콤보는 combo 메타데이터로 고른다.
-      map.set(champion, { ...book, playing: [...book.playing, ...entries] });
+      const pendingIds = reviews.filter(review => review.champion === champion && review.status === "needs-review").map(review => review.id);
+      const safe = (entries: PlaybookEntry[]) => pendingIds.length ? entries.filter(entry => entry.category !== "combo") : entries;
+      map.set(champion, { ...book, playing: [...safe(book.playing), ...entries], against: safe(book.against),
+        ...(pendingIds.length ? { comboReview: { patch: resolvePatchVersion(), pendingIds } } : {}) });
     }
   }
   return map;

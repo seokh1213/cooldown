@@ -125,6 +125,7 @@ function main() {
       synthesized += 1;
     }
     byChampion[card.id] = {
+      ...(book.comboReview ? { comboReview: book.comboReview } : {}),
       champion: card.id,
       playing: book.playing.map((entry) => fillGenerated(entry, card)),
       against,
