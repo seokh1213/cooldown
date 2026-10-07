@@ -3,6 +3,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { ROOT, WORKFLOW, digest, mergeStories } from "./bank";
+import { readCurrentPatchVersion } from "../lib/data";
 import type { QualityStory } from "./types";
 import type { Language } from "../../../src/i18n";
 
@@ -14,6 +15,10 @@ export function filesUnder(directory: string): string[] {
   }).sort();
 }
 export const fileHash = (file: string): string => createHash("sha256").update(fs.readFileSync(path.join(ROOT, file))).digest("hex");
+
+export function currentDataDirectory(root = ROOT): string {
+  return `public/data/${readCurrentPatchVersion(path.join(root, "public/data"))}`;
+}
 
 function inputs(value: unknown, pointer = "$", history: string[] = []): Array<{ q: string; history: string[]; pointer: string; lang?: Language }> {
   if (Array.isArray(value)) return value.flatMap((row, i) => inputs(row, `${pointer}[${i}]`, history));

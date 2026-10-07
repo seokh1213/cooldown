@@ -7,6 +7,7 @@
  */
 import * as fs from "fs";
 import * as path from "path";
+import { decodeDataManifest } from "../../../src/data/contracts/dataManifest";
 import type {
   NormalizedItemDataFile,
   NormalizedRuneDataFile,
@@ -37,6 +38,12 @@ export interface StaticDataBundle {
 }
 
 export const PUBLIC_DATA_ROOT = path.resolve(process.cwd(), "public", "data");
+
+export function readCurrentPatchVersion(dataDirectory = PUBLIC_DATA_ROOT): string {
+  const manifest = decodeDataManifest(JSON.parse(fs.readFileSync(path.join(dataDirectory, "version.json"), "utf8")));
+  if (!/^\d+\.\d+$/.test(manifest.patchVersion)) throw new Error("Invalid current patch directory");
+  return manifest.patchVersion;
+}
 
 export function resolvePatchVersion(explicit?: string): string {
   if (explicit) return explicit;

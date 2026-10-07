@@ -14,7 +14,7 @@ import { openOllama } from "../../scripts/llm/quality/ollama";
 import { scopeMatches, observedAnswer } from "../../scripts/llm/quality/checks";
 import { graphRoute } from "../../scripts/llm/quality/model";
 import { inventoryChanges, refreshedRecords } from "../../scripts/llm/quality/audit";
-import { retiredFiles } from "../../scripts/llm/quality/archive";
+import { currentDataDirectory, retiredFiles } from "../../scripts/llm/quality/archive";
 import type { AdvisorAnswer } from "../../src/lib/advisor/answer";
 
 const story = (prefix: string, answer: string, source: string): QualityStory => ({ id: "", suites: [source], lang: "ko_KR",
@@ -22,6 +22,22 @@ const story = (prefix: string, answer: string, source: string): QualityStory => 
 const report = (): QualityReport => ({ schema: 1, profile: "model", caseHash: "cases", dataHash: "data", sourceHash: "source", scorerHash: "scorer",
   graphHash: "graph", created: "fixed", checks: [], rows: [{ id: "one", suite: ["QA"], mode: "model", question: "Q", text: "A",
     seconds: 0, checks: [{ label: "correct", pass: true }], pass: true }] });
+
+test("quality provenance follows 26.20 and later manifests without selecting an old patch", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "advisor-patch-provenance-"));
+  const directory = path.join(root, "public/data");
+  fs.mkdirSync(directory, { recursive: true });
+  try {
+    for (const [patchVersion, ddragon, cdragon] of [["26.20", "16.20.1", "16.20"], ["27.1", "17.1.1", "17.1"]]) {
+      fs.writeFileSync(path.join(directory, "version.json"), JSON.stringify({ schemaVersion: 2, patchVersion, sources: { ddragon, cdragon } }));
+      assert.equal(currentDataDirectory(root), `public/data/${patchVersion}`);
+    }
+    fs.writeFileSync(path.join(directory, "version.json"), JSON.stringify({ schemaVersion: 2, patchVersion: "../../old", sources: { ddragon: "16.19.1", cdragon: "16.19" } }));
+    assert.throws(() => currentDataDirectory(root), /Invalid current patch/);
+    fs.rmSync(path.join(directory, "version.json"));
+    assert.throws(() => currentDataDirectory(root), /ENOENT/);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
 
 test("persistent browser caching separates graph contents even when their file path is reused", () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "advisor-graph-cache-"));

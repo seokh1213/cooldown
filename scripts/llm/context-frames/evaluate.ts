@@ -6,7 +6,7 @@ import { answerDialogue } from "../../../src/lib/advisor/dialogueFlow";
 import { CONTEXT_POLICIES, CONTEXT_LIMITS, type ContextPolicy } from "../../../src/lib/advisor/contextFrameTypes";
 import { ADVISOR_MODEL } from "../../../src/lib/advisor/config";
 import { buildBank, digest, readRows, ROOT } from "../quality/bank";
-import { fileHash, filesUnder } from "../quality/archive";
+import { currentDataDirectory, fileHash, filesUnder } from "../quality/archive";
 import { evaluationDeps, localFetch, qualityContext, restoreReply, type ModelRuntime } from "../quality/dialogue";
 import { gradeTurn, observedAnswer, describe, routeCheck } from "../quality/checks";
 import { openModel } from "../quality/model";
@@ -43,9 +43,10 @@ const bank = values.bank === "regression" ? buildBank().filter(story => !story.s
   : (values.split === "all" ? ["development", "validation"] : [values.split!])
     .flatMap(split => readRows(`${fixtures}/${split}.jsonl`) as unknown as QualityStory[]);
 const sources = [...filesUnder("src/lib/advisor"), ...filesUnder("src/lib/knowledge"), ...filesUnder("src/workers"),
-  ...filesUnder("scripts/llm/quality"), ...filesUnder("scripts/llm/context-frames"), "package-lock.json"];
+  ...filesUnder("scripts/llm/quality"), ...filesUnder("scripts/llm/context-frames"), ...filesUnder("scripts/llm/lib"),
+  ...filesUnder("src/data/contracts"), ...filesUnder("src/i18n"), "scripts/llm/kev-agent/lib.ts", "scripts/prepare-ort.ts", "package-lock.json"];
 const modelFile = "research/llm-evals/workflow/models/context-selector.json";
-const data = [...filesUnder("public/data/26.19").filter(file => file.endsWith(".json")), ...filesUnder("public/models/offline"),
+const data = ["public/data/version.json", ...filesUnder(currentDataDirectory()).filter(file => file.endsWith(".json")), ...filesUnder("public/models/offline"),
   ...filesUnder("public/models/judge"), ...filesUnder("knowledge").filter(file => file.endsWith(".json"))];
 if (fs.existsSync(path.join(ROOT, modelFile))) data.push(modelFile);
 const hashes = {

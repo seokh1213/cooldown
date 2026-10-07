@@ -11,6 +11,7 @@ import { contextProbability, CONTEXT_FEATURE_COUNT, learnedContextRanker } from 
 import type { PlanContext } from "../../src/lib/advisor/planTypes";
 
 const deps = { judge: async () => { throw new Error("unexpected model call"); }, search: async () => [] };
+const PATCH = qualityContext("ko_KR", "none").data!.patch;
 async function ask(ctx: PlanContext, question: string) {
   const output = await answerDialogue(question, ctx, deps);
   restoreReply(ctx, question, output.reply);
@@ -42,7 +43,7 @@ test("guarded contexts clarify two earlier spell owners and resolve the named co
 });
 
 test("context frames retain references and user parameters without response or knowledge text", () => {
-  const memory = emptyDialogue("26.19");
+  const memory = emptyDialogue(PATCH);
   memory.active = "rule"; memory.rule = { title: "rule", id: "mech:rule", text: "knowledge body" };
   memory.lastReply = { question: "question", text: "answer body" };
   recordFrame(memory, [], 1);
@@ -51,7 +52,7 @@ test("context frames retain references and user parameters without response or k
 });
 
 test("context lists enforce the selected capacity and reject frames from another patch", () => {
-  const memory = emptyDialogue("26.19");
+  const memory = emptyDialogue(PATCH);
   for (let i = 0; i < 9; i++) {
     memory.active = "champion"; memory.champion = `champion-${i}`;
     recordFrame(memory, memory.contextFrames ?? [], i, 6);
@@ -59,7 +60,7 @@ test("context lists enforce the selected capacity and reject frames from another
   assert.equal(memory.contextFrames?.length, 6);
   assert.equal(memory.contextFrames?.[0].key, "champion:champion-3");
   const ctx = qualityContext("ko_KR", "none");
-  const valid = emptyDialogue("26.19"); valid.active = "champion"; valid.champion = "Garen";
+  const valid = emptyDialogue(PATCH); valid.active = "champion"; valid.champion = "Garen";
   recordFrame(valid, [], 1);
   ctx.turns = [{ role: "user", content: "question" }, { role: "assistant", memory: valid }];
   assert.equal(usableFrames(valid, ctx).length, 1);
@@ -69,7 +70,7 @@ test("context lists enforce the selected capacity and reject frames from another
 });
 
 test("stored context frames reject nested frames and embedded answer payloads", () => {
-  const memory = emptyDialogue("26.19");
+  const memory = emptyDialogue(PATCH);
   memory.active = "champion"; memory.champion = "Garen";
   recordFrame(memory, [], 1);
   const stored = dehydrateTurn({ id: 1, role: "assistant", content: "reply", memory });
@@ -93,7 +94,7 @@ test("context scoring uses sparse weighted features and rejects malformed model 
 });
 
 for (const limit of CONTEXT_LIMITS) test(`capacity ${limit} evicts the oldest distinct task and deduplicates repeat tasks`, () => {
-  const memory = emptyDialogue("26.19"); memory.active = "champion";
+  const memory = emptyDialogue(PATCH); memory.active = "champion";
   for (let index = 0; index <= limit; index++) {
     memory.champion = `champion-${index}`;
     recordFrame(memory, memory.contextFrames ?? [], index, limit);

@@ -6,6 +6,7 @@ import * as path from "node:path";
 import { officialGlossary, parseArguments, prepareJobs, reviewBatch, validateLiveSections, workPool } from "../../scripts/llm/parallel-semantic-review";
 import type { ManifestSection } from "../../scripts/llm/parallel-semantic-review";
 import { fingerprint } from "../../scripts/llm/lib/translation-review-queue";
+import { readCurrentPatchVersion } from "../../scripts/llm/lib/data";
 
 const section: ManifestSection = {
   lang: "en_US", me: "Lux", enemy: "Akali", slot: "watch", ko: "원문", text: "Translation", newCandidate: true,
@@ -179,7 +180,7 @@ test("official glossary carries names, title and HTML-stripped summaries capped 
 
 test("Chinese Kayn form names come from local passive metadata including body fallback", () => {
   const row = { ...section, lang: "zh_CN", me: "Kayn", enemy: "Kayn" };
-  const local = officialGlossary(path.resolve("public/data/26.19/champions"))([row]);
+  const local = officialGlossary(path.resolve("public/data", readCurrentPatchVersion(), "champions"))([row]);
   assert.ok(local.includes("影流刺客"));
   assert.ok(local.includes("暗裔杀手"));
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "semantic-kayn-test-"));
