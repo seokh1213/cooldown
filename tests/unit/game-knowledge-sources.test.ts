@@ -18,6 +18,15 @@ test("원천 갱신 뒤에도 최신 자료의 전체 회귀를 수동 실행할
   assert.match(workflow, /^ {2}workflow_dispatch:$/m);
 });
 
+test("수집을 건너뛰는 후속 회차는 실제 원천 감시의 대기열을 차지하지 않는다", async () => {
+  const workflow = await fs.readFile(new URL("../../.github/workflows/watch-game-knowledge.yml", import.meta.url), "utf8");
+  assert.doesNotMatch(workflow.split("jobs:")[0], /^concurrency:/m);
+  const watch = workflow.split("\n  watch:")[1];
+  assert.match(watch, /^ {4}needs: check$/m);
+  assert.match(watch, /^ {4}if: needs\.check\.outputs\.run == 'true'$/m);
+  assert.match(watch, /^ {4}concurrency:\n {6}group: watch-game-knowledge\n {6}cancel-in-progress: false$/m);
+});
+
 test("매시 상류 확인만 끝난 경우는 건너뛰고 실제 생성 뒤에 검사한다", async () => {
   const { shouldWatch } = await import(new URL("../../scripts/ci/game-knowledge-trigger.mjs", import.meta.url).href);
   assert.equal(shouldWatch("workflow_run", [{ name: "update-data", conclusion: "skipped" }]), false);

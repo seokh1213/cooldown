@@ -13,15 +13,12 @@ permissions:
   contents: read
   actions: read
 
-concurrency:
-  group: watch-game-knowledge
-  cancel-in-progress: false
-
 jobs:
-  watch:
+  check:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    outputs:
+      run: ${{ steps.trigger.outputs.run }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -36,24 +33,31 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
         run: node scripts/ci/game-knowledge-trigger.mjs
+
+  watch:
+    needs: check
+    if: needs.check.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # 원천을 수집하지 않는 후속 회차가 대기 중인 실제 검수를 취소하지 않게 한다.
+    concurrency:
+      group: watch-game-knowledge
+      cancel-in-progress: false
+    steps:
       - uses: actions/checkout@v7
-        if: steps.trigger.outputs.run == 'true'
         with:
           ref: master
           sparse-checkout: '/*'
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v7
-        if: steps.trigger.outputs.run == 'true'
         with:
           node-version: '24'
           cache: npm
       - run: npm ci --no-audit --no-fund
-        if: steps.trigger.outputs.run == 'true'
       - name: Compare wiki, official notes and CDragon
-        if: steps.trigger.outputs.run == 'true'
         run: npm run llm:watch-game-knowledge
       - name: Preserve report and collected sources
-        if: always() && steps.trigger.outputs.run == 'true'
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: game-knowledge-source-check
