@@ -38,7 +38,7 @@ export default function PatchNotesPage() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-semibold tracking-tight sm:text-2xl"><span className="hidden sm:inline">{patch?.patchVersion} </span>{labels.title}</h2>
             {index && patch && <div className="lg:hidden"><PatchVersionSelect index={index} selected={patch.patchVersion} language={lang} onSelect={onSelect} /></div>}
-            <a href="https://www.leagueoflegends.com/ko-kr/news/game-updates/"
+            <a href={report?.officialSource?.urls[lang] ?? "https://www.leagueoflegends.com/ko-kr/news/game-updates/"}
               target="_blank" rel="noreferrer" className="inline-flex min-h-8 items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
               {labels.official}<ArrowUpRight aria-hidden="true" className="size-3" />
             </a>
@@ -47,6 +47,7 @@ export default function PatchNotesPage() {
             <span className="flex items-center gap-1.5 tabular-nums">{report.previousPatchVersion}<ArrowRight aria-hidden="true" className="size-3" />{report.patchVersion}</span>
             <span>{labels.champions} <strong className="font-medium text-foreground">{counts.champions}</strong></span>
             <span>{labels.items} <strong className="font-medium text-foreground">{counts.items}</strong></span>
+            {counts.systems > 0 && <span>{labels.systems} <strong className="font-medium text-foreground">{counts.systems}</strong></span>}
             <span>{labels.changes} <strong className="font-medium text-foreground">{counts.changes}</strong></span>
           </div>}
         </header>
@@ -67,7 +68,7 @@ export default function PatchNotesPage() {
                 </div>}
               </div>
               </TooltipProvider>
-              <footer className="mt-4 text-[10px] leading-5 text-muted-foreground"><p>{labels.sourceNote}</p></footer>
+              <footer className="mt-4 text-[10px] leading-5 text-muted-foreground"><p>{report.officialSource ? labels.officialSourceNote : labels.sourceNote}</p></footer>
             </>}
       </div>
       {index && patch && <PatchHistory index={index} selected={patch.patchVersion} language={lang} onSelect={onSelect} />}

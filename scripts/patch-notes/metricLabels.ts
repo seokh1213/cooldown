@@ -102,7 +102,7 @@ export const ITEM_DEFINITIONS: Record<string, MetricDefinition> = {
   mFlatSpellBlockMod: { label: STAT_LABELS.spellblock },
   mPercentBaseHPRegenMod: { label: text("기본 체력 재생", "Base health regeneration", "基础生命回复"), factor: 100, unit: "percent" },
   percentBaseMPRegenMod: { label: text("기본 마나 재생", "Base mana regeneration", "基础法力回复"), factor: 100, unit: "percent" },
-  AbilityHasteMod: { label: text("스킬 가속", "Ability haste", "技能急速") },
+  mAbilityHasteMod: { label: text("스킬 가속", "Ability haste", "技能急速") },
   mFlatMovementSpeedMod: { label: STAT_LABELS.movespeed },
   mPercentAttackSpeedMod: { label: STAT_LABELS.attackspeed, factor: 100, unit: "percent" },
 };

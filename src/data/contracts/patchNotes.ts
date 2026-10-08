@@ -2,7 +2,7 @@ import type { DataLocale, StaticDataSources } from "./staticData";
 
 export type PatchText = Record<DataLocale, string>;
 export type PatchImpact = "buff" | "nerf" | "adjustment";
-export type PatchEntityKind = "champion" | "item";
+export type PatchEntityKind = "champion" | "item" | "system";
 
 export interface PatchMetric {
   id: string;
@@ -30,10 +30,24 @@ export interface PatchSnapshot {
   entities: PatchSnapshotEntity[];
 }
 
-export interface PatchChange extends Omit<PatchMetric, "values" | "favorable"> {
+export interface NumericPatchChange extends Omit<PatchMetric, "values" | "favorable"> {
+  valueType?: "numeric";
   before: number[];
   after: number[];
   impact: PatchImpact;
+}
+
+export interface TextPatchChange extends Omit<NumericPatchChange, "valueType" | "before" | "after" | "unit" | "format"> {
+  valueType: "text";
+  gameDataKey?: string;
+  before: PatchText;
+  after: PatchText;
+}
+
+export type PatchChange = NumericPatchChange | TextPatchChange;
+
+export function patchGameDataKey(change: PatchChange): string {
+  return change.valueType === "text" ? change.gameDataKey ?? change.sourceKey : change.sourceKey;
 }
 
 export interface PatchNoteEntry extends Omit<PatchSnapshotEntity, "metrics"> {
@@ -51,6 +65,7 @@ export interface PatchNotesReport {
   comparedItems: number;
   entries: PatchNoteEntry[];
   reviewCount: number;
+  officialSource?: { urls: PatchText; hashes: PatchText; rowCount: number };
 }
 
 export interface PatchNotesIndex {
@@ -91,17 +106,28 @@ export function decodePatchNotesReport(value: unknown, patchVersion: string): Pa
   }
   for (const entry of value.entries) {
     if (!isRecord(entry) || typeof entry.id !== "string" || !isRecord(entry.name) ||
-      !["champion", "item"].includes(String(entry.kind)) || !Array.isArray(entry.changes)) {
+      !["champion", "item", "system"].includes(String(entry.kind)) || !Array.isArray(entry.changes)) {
       throw new Error("Invalid patch notes entry");
     }
     for (const change of entry.changes) {
       if (!isRecord(change) || !isRecord(change.label) || typeof change.section !== "string" ||
         !["buff", "nerf", "adjustment"].includes(String(change.impact)) ||
-        ![change.before, change.after].every(values =>
-          Array.isArray(values) && values.length > 0 && values.every(n => typeof n === "number" && Number.isFinite(n)))) {
+        !(change.valueType === "text"
+          ? [change.before, change.after].every(isPatchText)
+          : [change.before, change.after].every(values =>
+            Array.isArray(values) && values.length > 0 && values.every(n => typeof n === "number" && Number.isFinite(n))))) {
         throw new Error("Invalid patch note values");
       }
     }
   }
+  if (value.officialSource !== undefined && (!isRecord(value.officialSource) ||
+    !isPatchText(value.officialSource.urls) || !isPatchText(value.officialSource.hashes) ||
+    !Number.isInteger(value.officialSource.rowCount) || Number(value.officialSource.rowCount) < 1)) {
+    throw new Error("Invalid official patch source");
+  }
   return value as unknown as PatchNotesReport;
+}
+
+function isPatchText(value: unknown): value is PatchText {
+  return isRecord(value) && ["ko_KR", "en_US", "zh_CN"].every(locale => typeof value[locale] === "string");
 }

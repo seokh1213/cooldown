@@ -71,7 +71,7 @@ test("Aphelios weapon images differ and the matching icon is retained in hover a
 test("patch skills share desktop hover and click policy, including duplicate slots", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto("./patch-notes?patch=26.19");
-  await expect(page.getByRole("link", { name: "공식 패치 노트" })).toHaveAttribute("href", "https://www.leagueoflegends.com/ko-kr/news/game-updates/");
+  await expect(page.getByRole("link", { name: "공식 패치 노트" })).toHaveAttribute("href", "https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-19-notes/");
   const history = page.getByRole("navigation", { name: "패치 기록" });
   const response = await page.request.get("./patch-notes/index.json");
   const index = await response.json();
@@ -123,7 +123,7 @@ test("patch stat glyphs load and past versions select their own skills", async (
   await expect(page.getByRole("dialog").getByLabel("스킬 레벨별 수치")).toContainText("65 / 100 / 135 / 170 / 205");
   await page.keyboard.press("Escape");
   await page.getByRole("navigation", { name: "패치 기록" }).getByRole("button", { name: /^26\.19(?: 현재 패치)?$/ }).click();
-  await expect(page.locator("article")).toHaveCount(18);
+  await expect(page.locator("article")).toHaveCount(20);
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
@@ -132,7 +132,7 @@ test("patch notes fit narrow screens and supported languages", async ({ page }) 
   for (const locale of ["ko_KR", "en_US", "zh_CN"]) {
     await page.evaluate(language => localStorage.setItem("language", language), locale);
     await page.reload();
-    await expect(page.locator("article")).toHaveCount(18);
+    await expect(page.locator("article")).toHaveCount(20);
     await expect(page.locator("[data-skill-trigger]").first()).toBeVisible();
     for (const width of [320, 390, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 844 });

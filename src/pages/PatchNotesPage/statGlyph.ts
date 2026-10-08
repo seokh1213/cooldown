@@ -18,11 +18,12 @@ const ITEM_STATS: Record<string, StatKey> = {
   mFlatMagicDamageMod: StatKey.ABILITY_POWER, mFlatArmorMod: StatKey.ARMOR,
   mFlatSpellBlockMod: StatKey.MAGIC_RESIST, mPercentBaseHPRegenMod: StatKey.HEALTH_REGEN,
   percentBaseMPRegenMod: StatKey.MANA_REGEN, AbilityHasteMod: StatKey.ABILITY_HASTE,
+  mAbilityHasteMod: StatKey.ABILITY_HASTE,
   mFlatMovementSpeedMod: StatKey.MOVE_SPEED, mPercentAttackSpeedMod: StatKey.ATTACK_SPEED,
 };
 
-export function patchStatGlyph(change: Pick<PatchChange, "id" | "section">): string | undefined {
-  const parts = change.id.split("/");
+export function patchStatGlyph(change: Pick<PatchChange, "id" | "section"> & { sourceKey?: string; gameDataKey?: string }): string | undefined {
+  const parts = (change.gameDataKey ?? change.sourceKey ?? change.id).split("/");
   const stat = parts[0] === "stats" ? CHAMPION_STATS[parts[1]] :
     parts[0] === "Items" ? ITEM_STATS[parts[2]] : undefined;
   return stat ? STAT_DEFINITIONS[stat].icon : undefined;

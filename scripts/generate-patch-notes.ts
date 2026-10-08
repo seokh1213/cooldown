@@ -10,7 +10,10 @@ import { findUnmappedChanges } from "./patch-notes/review";
 import type { NumericChampion } from "./patch-notes/sourceTypes";
 import { patchReleases, planCurrentComparisons, planPatchComparisons, type PatchComparison } from "./patch-notes/plan";
 import { ARCHIVE_DIRECTORY, REPORT_DIRECTORY, readJson, archiveJson, writeJson } from "./patch-notes/storage";
-import { generatePatchSkillArchives } from "./patch-notes/skills";
+import { collectPatchSkillCatalog, generatePatchSkillArchives } from "./patch-notes/skills";
+import { DATA_LOCALES, type DataLocale } from "../src/data/contracts/staticData";
+import { collectOfficialPatch } from "./patch-notes/official";
+import { applyOfficialPatch } from "./patch-notes/officialReport";
 
 async function snapshot(ddragonVersion: string): Promise<PatchSnapshot> {
   const { patchVersion } = resolveStaticDataRelease(ddragonVersion);
@@ -36,12 +39,19 @@ async function generateReport(comparison: PatchComparison, releases: Map<string,
   };
   const before = await snapshot(resolve(previousPatch));
   const after = await snapshot(resolve(currentPatch));
-  const report = comparePatchSnapshots(before, after);
+  let report = comparePatchSnapshots(before, after);
   const oldSource = await readJson(path.join(ARCHIVE_DIRECTORY, "sources", `${previousPatch}.json`)) as Record<string, NumericChampion> | undefined;
   const newSource = await readJson(path.join(ARCHIVE_DIRECTORY, "sources", `${currentPatch}.json`)) as Record<string, NumericChampion> | undefined;
   if (!oldSource || !newSource) throw new Error("Archived numeric sources are required for review");
   const review = findUnmappedChanges(oldSource, newSource);
   report.reviewCount = review.length;
+  const manifest = decodeDataManifest(await readJson(path.resolve("public/data/version.json")));
+  if (currentPatch === manifest.patchVersion || process.argv.includes("--official") ||
+    await readJson(path.join(ARCHIVE_DIRECTORY, "official", `${currentPatch}.json`))) {
+    const catalogs = Object.fromEntries(await Promise.all(DATA_LOCALES.map(async locale =>
+      [locale, await collectPatchSkillCatalog(report, locale)] as const))) as Record<DataLocale, Awaited<ReturnType<typeof collectPatchSkillCatalog>>>;
+    report = applyOfficialPatch(report, after, await collectOfficialPatch(currentPatch), catalogs);
+  }
   await generatePatchSkillArchives(report, after);
   await writeJson(path.join(ARCHIVE_DIRECTORY, "reviews", `${currentPatch}.json`), { previousPatch, currentPatch, changes: review });
   await writeJson(path.join(REPORT_DIRECTORY, `${currentPatch}.json`), report);
@@ -49,11 +59,11 @@ async function generateReport(comparison: PatchComparison, releases: Map<string,
   const existing = await readJson(indexFile);
   const index = extendPatchNotesIndex(existing ? decodePatchNotesIndex(existing) : undefined, currentPatch, previousPatch);
   await writeJson(indexFile, index);
-  console.log(`${previousPatch} → ${currentPatch}: ${report.entries.length} entities, ${report.entries.reduce((sum, entry) => sum + entry.changes.length, 0)} numeric changes, ${review.length} unmapped`);
+  console.log(`${previousPatch} → ${currentPatch}: ${report.entries.length} entities, ${report.entries.reduce((sum, entry) => sum + entry.changes.length, 0)} changes, ${review.length} unmapped numeric keys`);
 }
 
 async function comparisons(releases: Map<string, string>): Promise<PatchComparison[]> {
-  const args = process.argv.slice(2);
+  const args = process.argv.slice(2).filter(arg => arg !== "--official");
   if (args[0] === "--backfill" && args.length === 2) return planPatchComparisons(releases, args[1]);
   if (args.length === 0 || (args[0] === "--current" && args.length === 1)) {
     const manifest = decodeDataManifest(await readJson(path.resolve("public/data/version.json")));

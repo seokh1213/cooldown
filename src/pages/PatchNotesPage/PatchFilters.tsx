@@ -12,10 +12,10 @@ export function PatchFilters({ value, onChange, language }: {
   const labels = patchNotesLabels[language];
   return <div className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
     <div className="flex gap-3" role="group" aria-label={labels.category}>
-      {(["all", "champion", "item"] as const).map(kind => <button key={kind} type="button" aria-pressed={value.kind === kind}
+      {(["all", "champion", "item", "system"] as const).map(kind => <button key={kind} type="button" aria-pressed={value.kind === kind}
         onClick={() => onChange({ ...value, kind })}
         className={`min-h-8 border-b-2 text-xs ${value.kind === kind ? "border-primary font-medium" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
-        {kind === "all" ? labels.all : kind === "champion" ? labels.champions : labels.items}
+        {kind === "all" ? labels.all : kind === "champion" ? labels.champions : kind === "item" ? labels.items : labels.systems}
       </button>)}
     </div>
     <div className="flex gap-0.5 sm:border-l sm:border-border/70 sm:pl-4" role="group" aria-label={labels.direction}>

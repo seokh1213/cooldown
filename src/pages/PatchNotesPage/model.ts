@@ -2,7 +2,7 @@ import type { PatchChange, PatchImpact, PatchNoteEntry, PatchNotesReport } from 
 import type { Language } from "@/i18n";
 
 export type ImpactFilter = "all" | PatchImpact;
-export type KindFilter = "all" | "champion" | "item";
+export type KindFilter = "all" | "champion" | "item" | "system";
 
 export function filterPatchEntries(entries: PatchNoteEntry[], filters: { query: string; impact: ImpactFilter; kind: KindFilter }): PatchNoteEntry[] {
   const query = filters.query.trim().toLocaleLowerCase();
@@ -14,7 +14,8 @@ export function filterPatchEntries(entries: PatchNoteEntry[], filters: { query: 
   });
 }
 
-export function formatPatchValues(change: PatchChange, side: "before" | "after", seconds: string): string {
+export function formatPatchValues(change: PatchChange, side: "before" | "after", seconds: string, language: Language = "ko_KR"): string {
+  if (change.valueType === "text") return change[side][language];
   const values = change[side];
   const format = (value: number) => new Intl.NumberFormat("en-US", { maximumFractionDigits: 5, useGrouping: false }).format(value);
   const range = change.format === "range" && values.length > 1;
@@ -39,6 +40,7 @@ export function patchReportCounts(report: PatchNotesReport) {
   return {
     champions: report.entries.filter(entry => entry.kind === "champion").length,
     items: report.entries.filter(entry => entry.kind === "item").length,
+    systems: report.entries.filter(entry => entry.kind === "system").length,
     changes: report.entries.reduce((count, entry) => count + entry.changes.length, 0),
   };
 }

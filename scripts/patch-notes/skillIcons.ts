@@ -3,6 +3,7 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import sharp from "sharp";
 import type { PatchNoteEntry, PatchNotesReport } from "../../src/data/contracts/patchNotes";
+import { patchGameDataKey } from "../../src/data/contracts/patchNotes";
 import type { PatchSkillIcon } from "../../src/data/contracts/patchSkills";
 import { fetchJson } from "../data-pipeline/io/json";
 import { ARCHIVE_DIRECTORY, archiveJson, readJson } from "./storage";
@@ -47,7 +48,7 @@ async function storeIcon(version: string, iconPath: string): Promise<string> {
 
 async function championIcons(report: PatchNotesReport, entry: PatchNoteEntry): Promise<IconCatalog> {
   const paths = new Set(entry.changes.filter(change => change.section !== "stats")
-    .map(change => change.sourceKey.split(/\/(?:values|calculations)\//)[0])
+    .map(change => patchGameDataKey(change).split(/\/(?:values|calculations)\//)[0])
     .filter(spellPath => spellPath.startsWith("Characters/") || spellPath.startsWith("{")));
   if (!paths.size) return {};
   const archive = path.join(ARCHIVE_DIRECTORY, "icon-catalogs", report.patchVersion, `${entry.id}.json`);

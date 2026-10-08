@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-08T12:21:06.805Z",
+  "baselineCommit": "1b933e311db4f0b9852041fbe40f538b7e851810",
+  "scope": "Official Summoner Rift champion/item/system balance. Other modes, skins, client changes, general bug fixes and scoreboard icon counters excluded.",
+  "patches": [
+    {
+      "patch": "26.19",
+      "before": {
+        "champions": 16,
+        "items": 2,
+        "systems": 0,
+        "changes": 42
+      },
+      "after": {
+        "champions": 17,
+        "items": 2,
+        "systems": 1,
+        "changes": 43
+      },
+      "newlyVisibleEntities": [
+        {
+          "id": "MasterYi",
+          "name": "마스터 이"
+        },
+        {
+          "id": "system-teleportcooldown",
+          "name": "순간이동 재사용 대기시간"
+        }
+      ],
+      "officialRows": 41,
+      "excludedScoreboardEntries": 0,
+      "sourceUrls": {
+        "ko_KR": "https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-19-notes/",
+        "en_US": "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-26-19-notes/",
+        "zh_CN": "https://www.leagueoflegends.com/zh-tw/news/game-updates/league-of-legends-patch-26-19-notes/"
+      },
+      "sourceHashes": {
+        "ko_KR": "620fcbe0672fbddb5bdfafa9b64690815333f55287d784c2c7cabe3ba921bfde",
+        "en_US": "534b900f55e9126c7c8691057a7de63d057835d3f0ef35c41fb41457e184e69e",
+        "zh_CN": "be59228413d183e508fa0258eb7d3e0327b3927a2775fff7701dd3bd5a559ab3"
+      },
+      "rawUnmappedChanges": 0
+    },
+    {
+      "patch": "26.20",
+      "before": {
+        "champions": 9,
+        "items": 0,
+        "systems": 0,
+        "changes": 15
+      },
+      "after": {
+        "champions": 16,
+        "items": 3,
+        "systems": 0,
+        "changes": 34
+      },
+      "newlyVisibleEntities": [
+        {
+          "id": "Ambessa",
+          "name": "암베사"
+        },
+        {
+          "id": "Diana",
+          "name": "다이애나"
+        },
+        {
+          "id": "Kennen",
+          "name": "케넨"
+        },
+        {
+          "id": "Neeko",
+          "name": "니코"
+        },
+        {
+          "id": "Smolder",
+          "name": "스몰더"
+        },
+        {
+          "id": "TahmKench",
+          "name": "탐 켄치"
+        },
+        {
+          "id": "Yunara",
+          "name": "유나라"
+        },
+        {
+          "id": "3073",
+          "name": "실험적 마공학판"
+        },
+        {
+          "id": "3152",
+          "name": "마법공학 로켓 벨트"
+        },
+        {
+          "id": "3085",
+          "name": "루난의 허리케인"
+        }
+      ],
+      "officialRows": 34,
+      "excludedScoreboardEntries": 15,
+      "sourceUrls": {
+        "ko_KR": "https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-20-notes/",
+        "en_US": "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-26-20-notes/",
+        "zh_CN": "https://www.leagueoflegends.com/zh-tw/news/game-updates/league-of-legends-patch-26-20-notes/"
+      },
+      "sourceHashes": {
+        "ko_KR": "7ec25a93c3896ea6b7ec59421f8c95c405d241c1e52faf370a74e42a0fedb299",
+        "en_US": "ef555c478bf6aec88b7b2290cad05e52c62b78b9ea999980c984b7bb5c62e07e",
+        "zh_CN": "d61188932abc837afc0dc71f3c5cee9c43a8670e38ebf915aa95a17b00df5c76"
+      },
+      "rawUnmappedChanges": 14
+    }
+  ],
+  "abilityHaste": [
+    {
+      "version": "16.19",
+      "url": "https://raw.communitydragon.org/16.19/game/items.cdtb.bin.json",
+      "actualField": "mAbilityHasteMod",
+      "actualValue": 20,
+      "previousConfiguredField": "AbilityHasteMod",
+      "archivedValue": [
+        0
+      ]
+    },
+    {
+      "version": "16.20",
+      "url": "https://raw.communitydragon.org/16.20/game/items.cdtb.bin.json",
+      "actualField": "mAbilityHasteMod",
+      "actualValue": 10,
+      "previousConfiguredField": "AbilityHasteMod",
+      "archivedValue": [
+        0
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "cause": "Only registered numeric fields were compared.",
+      "evidence": "scripts/patch-notes/collect.ts spellMetrics ignores unknown definitions; 26.20 review had 14 unrendered raw numeric fields."
+    },
+    {
+      "cause": "Raw collection omits script behavior and item effects.",
+      "evidence": "Master Yi cooldown refund, Kindred targeting, Yunara slow stacking and item passives cannot be recovered by a stats-only numeric comparison."
+    },
+    {
+      "cause": "Data arrays/calculations do not reproduce every official rank or condition.",
+      "evidence": "26.19 Aurora R, Aphelios level scaling and 26.20 Tahm Kench healing. Official before/after clauses now preserved in full."
+    },
+    {
+      "cause": "Item ability-haste field misspelled.",
+      "evidence": [
+        {
+          "version": "16.19",
+          "url": "https://raw.communitydragon.org/16.19/game/items.cdtb.bin.json",
+          "actualField": "mAbilityHasteMod",
+          "actualValue": 20,
+          "previousConfiguredField": "AbilityHasteMod",
+          "archivedValue": [
+            0
+          ]
+        },
+        {
+          "version": "16.20",
+          "url": "https://raw.communitydragon.org/16.20/game/items.cdtb.bin.json",
+          "actualField": "mAbilityHasteMod",
+          "actualValue": 10,
+          "previousConfiguredField": "AbilityHasteMod",
+          "archivedValue": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "cause": "Original tests validated only the same limited snapshots.",
+      "evidence": "tests/data/patch-notes.test.ts verified report values against snapshots without an independent official row coverage gate."
+    }
+  ],
+  "verification": {
+    "numericSourcesAndSnapshotsUnchanged": true,
+    "officialLocales": 3,
+    "sourceRowsCovered": 75,
+    "nodeTests": 1431,
+    "patchBrowserTests": 11
+  }
+}

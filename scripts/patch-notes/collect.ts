@@ -161,11 +161,15 @@ function championEntities(raw: Record<string, NumericChampion>, catalog: Localiz
   });
 }
 
+export function itemStatMetrics(id: string, item: RawRecord): PatchMetric[] {
+  return Object.entries(ITEM_DEFINITIONS).map(([key, definition]) =>
+    buildMetric(`Items/${id}/${key}`, [typeof item[key] === "number" ? item[key] as number : 0], definition, "stats"));
+}
+
 function itemEntities(source: RawRecord, catalog: LocalizedCatalog<ItemCatalogEntry>): PatchSnapshotEntity[] {
   return Object.entries(catalog.ko_KR).filter(([, item]) => item.maps?.["11"]).map(([id]) => {
     const item = record(source[`Items/${id}`]);
-    const metrics = Object.entries(ITEM_DEFINITIONS).map(([key, definition]) =>
-      buildMetric(`Items/${id}/${key}`, [typeof item[key] === "number" ? item[key] as number : 0], definition, "stats"));
+    const metrics = itemStatMetrics(id, item);
     return { id, kind: "item", name: localized(locale => catalog[locale][id]?.name ?? id), metrics };
   });
 }

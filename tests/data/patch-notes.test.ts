@@ -35,6 +35,7 @@ test("모든 패치 보고서의 양쪽 수치를 실제 보관 스냅샷에서 
     const newEntities = new Map(after.entities.map(entity => [entity.id, entity]));
     for (const entry of report.entries) {
       for (const change of entry.changes) {
+        if (change.valueType === "text") continue;
         const where = `${patch.patchVersion} ${entry.id} ${change.id}`;
         assert.deepEqual(change.before, oldEntities.get(entry.id)?.metrics.find(metric => metric.id === change.id)?.values, where);
         assert.deepEqual(change.after, newEntities.get(entry.id)?.metrics.find(metric => metric.id === change.id)?.values, where);

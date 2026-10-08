@@ -5,6 +5,7 @@ import { toChampion } from "../../src/data/mappers/championMapper";
 import type { DataLocale } from "../../src/data/contracts/staticData";
 import { DATA_LOCALES } from "../../src/data/contracts/staticData";
 import type { PatchNotesReport, PatchSnapshot, PatchMetric } from "../../src/data/contracts/patchNotes";
+import { patchGameDataKey } from "../../src/data/contracts/patchNotes";
 import { decodePatchSkillArchive, patchSkillKey, type PatchSkillArchive, type PatchSkillInfo } from "../../src/data/contracts/patchSkills";
 import { formatPatchValues, groupPatchChanges } from "../../src/pages/PatchNotesPage/model";
 import { patchNotesLabels } from "../../src/pages/PatchNotesPage/labels";
@@ -22,7 +23,7 @@ export interface SkillCatalogChampion {
 type SkillCatalog = Record<string, SkillCatalogChampion>;
 const SLOTS = ["Q", "W", "E", "R"] as const;
 
-async function catalog(report: PatchNotesReport, locale: DataLocale): Promise<SkillCatalog> {
+export async function collectPatchSkillCatalog(report: PatchNotesReport, locale: DataLocale): Promise<SkillCatalog> {
   const file = path.join(ARCHIVE_DIRECTORY, "skill-catalogs", `${report.patchVersion}.${locale}.json`);
   const stored = await readJson(file) as SkillCatalog | undefined;
   if (stored) return stored;
@@ -78,40 +79,29 @@ export async function generatePatchSkillArchives(report: PatchNotesReport, snaps
   await Promise.all(DATA_LOCALES.map(async locale => {
     const file = path.join(REPORT_DIRECTORY, "skills", `${report.patchVersion}.${locale}.json`);
     const stored = await readJson(file);
-    if (stored) {
-      const archive = decodePatchSkillArchive(stored, { patchVersion: report.patchVersion, sources: report.sources, locale });
-      let changed = false;
-      for (const entry of report.entries.filter(entity => entity.kind === "champion")) {
-        for (const group of groupPatchChanges(entry.changes, locale).filter(group => group.section !== "stats")) {
-          const info = archive.champions[entry.id][patchSkillKey(group.section, group.title)];
-          const selected = selectPatchSkillIcons(group.changes.map(change => change.sourceKey), icons[entry.id], { section: group.section, source: sources[entry.id] });
-          if (JSON.stringify(info.icons ?? []) !== JSON.stringify(selected)) {
-            if (selected.length) info.icons = selected;
-            else delete info.icons;
-            changed = true;
-          }
+    const metadata = await collectPatchSkillCatalog(report, locale);
+    const archive: PatchSkillArchive = stored
+      ? decodePatchSkillArchive(stored, { patchVersion: report.patchVersion, sources: report.sources, locale })
+      : { schemaVersion: 1, patchVersion: report.patchVersion, sources: report.sources, locale, champions: {} };
+    let changed = !stored;
+    for (const entry of report.entries.filter(entity => entity.kind === "champion")) {
+      const skills = archive.champions[entry.id] ??= {};
+      for (const group of groupPatchChanges(entry.changes, locale).filter(group => group.section !== "stats")) {
+        const key = patchSkillKey(group.section, group.title);
+        if (!skills[key]) {
+          const metrics = entities.get(entry.id)?.metrics.filter(metric => metric.section === group.section && metric.sectionName?.[locale] === group.title) ?? [];
+          skills[key] = buildPatchSkillInfo({ championId: entry.id, section: group.section, title: group.title, metrics,
+            metadata: metadata[entry.id], locale, current: await currentChampion(report, locale, entry.id) });
+          changed = true;
+        }
+        const selected = selectPatchSkillIcons(group.changes.map(patchGameDataKey), icons[entry.id], { section: group.section, source: sources[entry.id] });
+        if (JSON.stringify(skills[key].icons ?? []) !== JSON.stringify(selected)) {
+          if (selected.length) skills[key].icons = selected;
+          else delete skills[key].icons;
+          changed = true;
         }
       }
-      if (changed) await writeJson(file, archive);
-      return;
     }
-    const metadata = await catalog(report, locale);
-    const archive: PatchSkillArchive = { schemaVersion: 1, patchVersion: report.patchVersion,
-      sources: report.sources, locale, champions: {} };
-    for (const entry of report.entries.filter(entity => entity.kind === "champion")) {
-      const current = await currentChampion(report, locale, entry.id);
-      const skills: Record<string, PatchSkillInfo> = {};
-      for (const group of groupPatchChanges(entry.changes, locale).filter(group => group.section !== "stats")) {
-        const metrics = entities.get(entry.id)?.metrics.filter(metric => metric.section === group.section && metric.sectionName?.[locale] === group.title) ?? [];
-        skills[patchSkillKey(group.section, group.title)] = buildPatchSkillInfo({
-          championId: entry.id, section: group.section, title: group.title, metrics,
-          metadata: metadata[entry.id], locale, current,
-        });
-        const selected = selectPatchSkillIcons(group.changes.map(change => change.sourceKey), icons[entry.id], { section: group.section, source: sources[entry.id] });
-        if (selected.length) skills[patchSkillKey(group.section, group.title)].icons = selected;
-      }
-      if (Object.keys(skills).length) archive.champions[entry.id] = skills;
-    }
-    await archiveJson(file, archive);
+    if (changed) await writeJson(file, archive);
   }));
 }

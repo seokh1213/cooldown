@@ -91,7 +91,10 @@ test("CI는 누락된 과거 보고서를 순서대로 채우고 수집한 현�
 
 test("고정된 단위·랭크 배열·레벨 범위를 표시한다", () => {
   const report = comparePatchSnapshots(snapshot("26.18", [metric("cooldown", [20, 18])]), snapshot("26.19", [metric("cooldown", [18, 16.5])]));
-  const change = { ...report.entries[0].changes[0], unit: "seconds" as const };
+  const numeric = report.entries[0].changes[0];
+  assert.notEqual(numeric.valueType, "text");
+  if (numeric.valueType === "text") assert.fail("Expected a numeric snapshot change");
+  const change = { ...numeric, unit: "seconds" as const };
   assert.equal(formatPatchValues(change, "after", "초"), "18 / 16.5초");
   assert.equal(formatPatchValues({ ...change, unit: "percent", format: "range" }, "before", "초"), "20–18%");
 });
