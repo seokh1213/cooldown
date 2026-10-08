@@ -43,19 +43,25 @@ function matchingEntities(entity: OfficialEntity, snapshot: PatchSnapshot, ids?:
   throw new Error(`Official champion not in snapshot: ${entity.title}`);
 }
 
+function abilityPrefix(title: string): string | undefined {
+  return /^(R[QWE]|[QWER])\s*[-–]/.exec(title)?.[1] ?? (/^Passive\b/.test(title) ? "P" : undefined);
+}
+
 function sectionMetadata(section: OfficialSection, entity: PatchSnapshotEntity | undefined, report: PatchNotesReport, options: {
-  catalogs?: SkillNames; titles: TextPatchChange["label"];
+  catalogs?: SkillNames; titles: TextPatchChange["label"]; slotSectionCount: number;
 }): {
   section: string; sectionName?: TextPatchChange["sectionName"]; metrics: PatchMetric[];
 } {
   if (!entity || entity.kind !== "champion") return { section: "stats", metrics: entity?.metrics ?? [] };
-  const prefix = /^(R[QWE]|[QWER])\s*[-–]/.exec(section.title)?.[1];
-  const slot = prefix?.[0] ?? (/^Passive\b/.test(section.title) ? "P" : undefined);
+  const prefix = abilityPrefix(section.title);
+  const slot = prefix?.[0];
   const abilityName = section.title.replace(/^(?:R[QWE]|[QWER]|Passive)\s*[-–]\s*/, "");
-  const existing = report.entries.find(entry => entry.id === entity.id)?.changes.find(change =>
-    change.section === slot && normalized(change.sectionName?.en_US ?? "") === normalized(abilityName));
-  const metric = existing ?? entity.metrics.find(candidate => candidate.section === slot &&
-    normalized(candidate.sectionName?.en_US ?? "") === normalized(abilityName));
+  const matches = (change: Pick<PatchMetric, "section" | "sectionName">) =>
+    slot ? change.section === slot && (normalized(change.sectionName?.en_US ?? "").includes(normalized(abilityName)) ||
+      slot === "P" || (prefix?.length === 1 && options.slotSectionCount === 1))
+      : change.sectionName?.en_US.includes(section.title);
+  const existing = report.entries.find(entry => entry.id === entity.id)?.changes.find(matches);
+  const metric = existing ?? entity.metrics.find(matches);
   if (metric) return { section: metric.section, sectionName: metric.sectionName,
     metrics: entity.metrics.filter(candidate => candidate.section === metric.section && candidate.sectionName?.en_US === metric.sectionName?.en_US) };
   if (/Base Stats/i.test(section.title)) return { section: "stats", metrics: entity.metrics.filter(candidate => candidate.section === "stats") };
@@ -87,7 +93,8 @@ function buildChanges(options: {
   const english = archive.articles.en_US.entities[entityIndex];
   return english.sections.flatMap((section, sectionIndex) => {
     const metadata = sectionMetadata(section, snapshotEntity, report, { catalogs: options.catalogs,
-      titles: officialText(locale => archive.articles[locale].entities[entityIndex].sections[sectionIndex].title) });
+      titles: officialText(locale => archive.articles[locale].entities[entityIndex].sections[sectionIndex].title),
+      slotSectionCount: english.sections.filter(candidate => abilityPrefix(candidate.title)?.[0] === abilityPrefix(section.title)?.[0]).length });
     return section.rows.map((original, rowIndex): TextPatchChange => {
       const row = rowForItem(original, itemIndex, itemCount);
       const localized = (locale: DataLocale) => rowForItem(archive.articles[locale].entities[entityIndex].sections[sectionIndex].rows[rowIndex], itemIndex, itemCount);

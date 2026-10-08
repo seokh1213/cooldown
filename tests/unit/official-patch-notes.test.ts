@@ -207,3 +207,19 @@ test("아이템 효과의 숫자가 기본 체력과 같아도 체력 아이콘�
   assert.equal(changes[0].gameDataKey, undefined);
   assert.equal(changes[1].gameDataKey, "Items/Item/mFlatHPPoolMod");
 });
+
+test("슬롯 접두사가 없는 무기 제목도 기존의 독립된 Q 스킬에 연결한다", () => {
+  const original = archive();
+  for (const locale of ["en_US", "ko_KR", "zh_CN"] as const) original.articles[locale] = {
+    ...original.articles[locale], ...parseOfficialArticle(html.replace("Q - Test ability", "Calibrum")),
+  };
+  const after = { ...snapshot, entities: [{ ...snapshot.entities[0], metrics: [{
+    ...snapshot.entities[0].metrics[0], sectionName: { ...name, en_US: "Calibrum · Moonshot" }, values: [20],
+  }] }] };
+  const before = { ...after, patchVersion: "26.19", entities: [{ ...after.entities[0], metrics: [{
+    ...after.entities[0].metrics[0], values: [10],
+  }] }] };
+  const result = applyOfficialPatch(comparePatchSnapshots(before, after), after, original);
+  assert.equal(result.entries[0].changes[0].section, "Q");
+  assert.equal(result.entries[0].changes[0].sectionName?.en_US, "Calibrum · Moonshot");
+});

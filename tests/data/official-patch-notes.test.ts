@@ -5,6 +5,8 @@ import { decodePatchNotesReport, type TextPatchChange } from "../../src/data/con
 import { DATA_LOCALES } from "../../src/data/contracts/staticData";
 import { validateOfficialArchive, type OfficialPatchArchive } from "../../scripts/patch-notes/official";
 import { localizedOfficialArticle } from "../../scripts/patch-notes/officialLocalization";
+import { applyOfficialPatch } from "../../scripts/patch-notes/officialReport";
+import { comparePatchSnapshots } from "../../scripts/patch-notes/diff";
 
 const read = (file: string) => JSON.parse(fs.readFileSync(file, "utf8"));
 
@@ -90,6 +92,23 @@ test("중국어 원문의 누락·오타와 합쳐진 행을 숨기지 않고 �
     .entries.find(entry => entry.id === "6610")!.changes as TextPatchChange[];
   assert.equal(sky.length, 3);
   assert.ok(sky.some(change => change.label.zh_CN === "生命" && change.after.zh_CN === "450"));
+});
+
+test("공식 원문이 있는 여섯 패치를 재생성해도 스킬 묶음과 아이콘 연결을 보존한다", () => {
+  for (const patch of ["26.15", "26.16", "26.17", "26.18", "26.19", "26.20"]) {
+    const published = decodePatchNotesReport(read(`public/patch-notes/${patch}.json`), patch);
+    const before = read(`data/patch-notes/snapshots/${published.previousPatchVersion}.json`);
+    const after = read(`data/patch-notes/snapshots/${patch}.json`);
+    const numeric = comparePatchSnapshots(before, after);
+    numeric.reviewCount = published.reviewCount;
+    const catalogs = {
+      ko_KR: read(`data/patch-notes/skill-catalogs/${patch}.ko_KR.json`),
+      en_US: read(`data/patch-notes/skill-catalogs/${patch}.en_US.json`),
+      zh_CN: read(`data/patch-notes/skill-catalogs/${patch}.zh_CN.json`),
+    };
+    const rebuilt = applyOfficialPatch(numeric, after, read(`data/patch-notes/official/${patch}.json`), catalogs);
+    assert.deepEqual(JSON.parse(JSON.stringify(rebuilt)), published, patch);
+  }
 });
 
 test("26.20의 누락된 챔피언 7종·아이템 3종·동작 변경을 복원했다", () => {
