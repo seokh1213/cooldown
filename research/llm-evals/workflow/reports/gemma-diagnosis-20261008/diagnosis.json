@@ -1,0 +1,4045 @@
+{
+  "purpose": "Post-hoc causal diagnostics, not a new blind quality score or promotion.",
+  "snapshotSha256": "1e0cf2f622d198291d28ba443e63e1e33637c96d612561fb3dcbb17c712466aa",
+  "deployedDocumentMetadataSha256": "628f1401c44a8146748b81bf7c7e057c1aac5f023991c1b0e3ccce214e410c17",
+  "hybrid": {
+    "bm25": 0.05,
+    "lexical": {
+      "rule": 0.5,
+      "meta": 0.1,
+      "mech": 0.1
+    },
+    "answer": 0.43,
+    "suggest": 0.35
+  },
+  "models": {
+    "qwen": {
+      "vectorsSha256": "a8f5e1041858342f760db1056e081bc949d3aec8c5264ecdf7aa62bd13dfd4b2",
+      "cohorts": {
+        "dev": {
+          "questions": 60,
+          "answerable": 51,
+          "rawR1": 46,
+          "rawR3": 49,
+          "hybridR1": 50
+        },
+        "expandedTrain": {
+          "questions": 129,
+          "answerable": 117,
+          "rawR1": 101,
+          "rawR3": 114,
+          "hybridR1": 81
+        },
+        "expandedDev": {
+          "questions": 30,
+          "answerable": 21,
+          "rawR1": 19,
+          "rawR3": 21,
+          "hybridR1": 20
+        },
+        "expandedTest": {
+          "questions": 84,
+          "answerable": 72,
+          "rawR1": 67,
+          "rawR3": 72,
+          "hybridR1": 56
+        },
+        "legacyTest": {
+          "questions": 349,
+          "answerable": 294,
+          "rawR1": 234,
+          "rawR3": 273,
+          "hybridR1": 290
+        },
+        "legacyAll": {
+          "questions": 809,
+          "answerable": 638,
+          "rawR1": 503,
+          "rawR3": 580,
+          "hybridR1": 625
+        },
+        "devEligible": {
+          "questions": 38,
+          "answerable": 35,
+          "rawR1": 32,
+          "rawR3": 33,
+          "hybridR1": 34
+        },
+        "expandedTrainEligible": {
+          "questions": 63,
+          "answerable": 52,
+          "rawR1": 45,
+          "rawR3": 52,
+          "hybridR1": 31
+        },
+        "expandedDevEligible": {
+          "questions": 8,
+          "answerable": 5,
+          "rawR1": 5,
+          "rawR3": 5,
+          "hybridR1": 4
+        },
+        "expandedTestEligible": {
+          "questions": 40,
+          "answerable": 35,
+          "rawR1": 33,
+          "rawR3": 35,
+          "hybridR1": 27
+        },
+        "legacyTestEligible": {
+          "questions": 316,
+          "answerable": 269,
+          "rawR1": 213,
+          "rawR3": 251,
+          "hybridR1": 266
+        },
+        "legacyAllEligible": {
+          "questions": 704,
+          "answerable": 584,
+          "rawR1": 460,
+          "rawR3": 533,
+          "hybridR1": 573
+        },
+        "legacySeen": {
+          "questions": 215,
+          "answerable": 215,
+          "rawR1": 169,
+          "rawR3": 202,
+          "hybridR1": 213
+        },
+        "legacyUnseen": {
+          "questions": 54,
+          "answerable": 54,
+          "rawR1": 44,
+          "rawR3": 49,
+          "hybridR1": 53
+        }
+      },
+      "pipeline": {
+        "raw": {
+          "threshold": 0.6122502088546753,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 28,
+            "wrongAnswer": 0,
+            "missedAnswer": 32,
+            "correctAbstention": 9,
+            "recall1Hits": 46,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 34,
+            "noAnswerRelated": 3,
+            "rescuedByRelated": 30
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 213,
+            "rawR3": 251,
+            "hybridR1": 213,
+            "rankedCorrect": 213,
+            "acceptedCorrect": 50,
+            "rejectedCorrect": 163,
+            "measured": {
+              "total": 316,
+              "correct": 96,
+              "wrongAnswer": 7,
+              "missedAnswer": 213,
+              "correctAbstention": 46,
+              "recall1Hits": 213,
+              "recall3Hits": 251,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 210,
+              "noAnswerRelated": 16,
+              "rescuedByRelated": 180
+            },
+            "demoted": [],
+            "rescued": []
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 33,
+            "rawR3": 35,
+            "hybridR1": 33,
+            "rankedCorrect": 33,
+            "acceptedCorrect": 19,
+            "rejectedCorrect": 14,
+            "measured": {
+              "total": 40,
+              "correct": 24,
+              "wrongAnswer": 0,
+              "missedAnswer": 16,
+              "correctAbstention": 5,
+              "recall1Hits": 33,
+              "recall3Hits": 35,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 20,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 15
+            },
+            "demoted": [],
+            "rescued": []
+          }
+        },
+        "bm25": {
+          "threshold": 0.6084086775779725,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 35,
+            "wrongAnswer": 0,
+            "missedAnswer": 25,
+            "correctAbstention": 9,
+            "recall1Hits": 46,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 30,
+            "noAnswerRelated": 6,
+            "rescuedByRelated": 23
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 213,
+            "rawR3": 251,
+            "hybridR1": 232,
+            "rankedCorrect": 232,
+            "acceptedCorrect": 93,
+            "rejectedCorrect": 139,
+            "measured": {
+              "total": 316,
+              "correct": 139,
+              "wrongAnswer": 5,
+              "missedAnswer": 172,
+              "correctAbstention": 46,
+              "recall1Hits": 213,
+              "recall3Hits": 251,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 178,
+              "noAnswerRelated": 16,
+              "rescuedByRelated": 158
+            },
+            "demoted": [
+              131,
+              650
+            ],
+            "rescued": [
+              6,
+              22,
+              26,
+              62,
+              76,
+              90,
+              99,
+              105,
+              153,
+              170,
+              172,
+              192,
+              298,
+              317,
+              322,
+              381,
+              410,
+              432,
+              482,
+              489,
+              578
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 33,
+            "rawR3": 35,
+            "hybridR1": 32,
+            "rankedCorrect": 32,
+            "acceptedCorrect": 19,
+            "rejectedCorrect": 13,
+            "measured": {
+              "total": 40,
+              "correct": 24,
+              "wrongAnswer": 2,
+              "missedAnswer": 14,
+              "correctAbstention": 5,
+              "recall1Hits": 33,
+              "recall3Hits": 35,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 18,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 13
+            },
+            "demoted": [
+              910,
+              934
+            ],
+            "rescued": [
+              908
+            ]
+          }
+        },
+        "lexical": {
+          "threshold": 0.706871509552002,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 47,
+            "wrongAnswer": 0,
+            "missedAnswer": 13,
+            "correctAbstention": 9,
+            "recall1Hits": 46,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 19,
+            "noAnswerRelated": 6,
+            "rescuedByRelated": 13
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 213,
+            "rawR3": 251,
+            "hybridR1": 266,
+            "rankedCorrect": 266,
+            "acceptedCorrect": 209,
+            "rejectedCorrect": 57,
+            "measured": {
+              "total": 316,
+              "correct": 255,
+              "wrongAnswer": 1,
+              "missedAnswer": 60,
+              "correctAbstention": 46,
+              "recall1Hits": 213,
+              "recall3Hits": 251,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 75,
+              "noAnswerRelated": 16,
+              "rescuedByRelated": 59
+            },
+            "demoted": [
+              140
+            ],
+            "rescued": [
+              2,
+              6,
+              22,
+              23,
+              26,
+              28,
+              62,
+              76,
+              78,
+              90,
+              99,
+              104,
+              105,
+              126,
+              153,
+              170,
+              172,
+              192,
+              196,
+              240,
+              249,
+              263,
+              298,
+              317,
+              318,
+              322,
+              339,
+              344,
+              368,
+              370,
+              371,
+              380,
+              381,
+              393,
+              410,
+              432,
+              480,
+              482,
+              489,
+              490,
+              503,
+              542,
+              556,
+              564,
+              570,
+              571,
+              578,
+              579,
+              584,
+              606,
+              610,
+              611,
+              620,
+              621
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 33,
+            "rawR3": 35,
+            "hybridR1": 29,
+            "rankedCorrect": 29,
+            "acceptedCorrect": 13,
+            "rejectedCorrect": 16,
+            "measured": {
+              "total": 40,
+              "correct": 18,
+              "wrongAnswer": 6,
+              "missedAnswer": 16,
+              "correctAbstention": 5,
+              "recall1Hits": 33,
+              "recall3Hits": 35,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 20,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 15
+            },
+            "demoted": [
+              872,
+              876,
+              878,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              830,
+              908
+            ]
+          }
+        },
+        "hybrid": {
+          "threshold": 0.756871509552002,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 47,
+            "wrongAnswer": 0,
+            "missedAnswer": 13,
+            "correctAbstention": 9,
+            "recall1Hits": 46,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 20,
+            "noAnswerRelated": 7,
+            "rescuedByRelated": 13
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 213,
+            "rawR3": 251,
+            "hybridR1": 266,
+            "rankedCorrect": 266,
+            "acceptedCorrect": 208,
+            "rejectedCorrect": 58,
+            "measured": {
+              "total": 316,
+              "correct": 254,
+              "wrongAnswer": 1,
+              "missedAnswer": 61,
+              "correctAbstention": 46,
+              "recall1Hits": 213,
+              "recall3Hits": 251,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 77,
+              "noAnswerRelated": 16,
+              "rescuedByRelated": 61
+            },
+            "demoted": [
+              140
+            ],
+            "rescued": [
+              2,
+              6,
+              22,
+              23,
+              26,
+              28,
+              62,
+              76,
+              78,
+              90,
+              99,
+              104,
+              105,
+              126,
+              153,
+              170,
+              172,
+              192,
+              196,
+              240,
+              249,
+              263,
+              298,
+              317,
+              318,
+              322,
+              339,
+              344,
+              368,
+              370,
+              371,
+              380,
+              381,
+              393,
+              410,
+              432,
+              480,
+              482,
+              489,
+              490,
+              503,
+              542,
+              556,
+              564,
+              570,
+              571,
+              578,
+              579,
+              584,
+              606,
+              610,
+              611,
+              620,
+              621
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 33,
+            "rawR3": 35,
+            "hybridR1": 27,
+            "rankedCorrect": 27,
+            "acceptedCorrect": 12,
+            "rejectedCorrect": 15,
+            "measured": {
+              "total": 40,
+              "correct": 17,
+              "wrongAnswer": 6,
+              "missedAnswer": 17,
+              "correctAbstention": 5,
+              "recall1Hits": 33,
+              "recall3Hits": 35,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 21,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 16
+            },
+            "demoted": [
+              872,
+              876,
+              878,
+              910,
+              934,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              830,
+              908
+            ]
+          }
+        }
+      },
+      "legacySharedCorpusSameVectors": {
+        "questions": 316,
+        "answerable": 269,
+        "rawR1": 233,
+        "rawR3": 262,
+        "hybridR1": 268,
+        "documents": {
+          "ko_KR": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "en_US": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "zh_CN": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          }
+        }
+      }
+    },
+    "gemmaQ4": {
+      "vectorsSha256": "12af986528c04d5a9c391adb5c08f4e55e31abbc4f0de7c471cde2974ed4fa98",
+      "cohorts": {
+        "dev": {
+          "questions": 60,
+          "answerable": 51,
+          "rawR1": 43,
+          "rawR3": 45,
+          "hybridR1": 48
+        },
+        "expandedTrain": {
+          "questions": 129,
+          "answerable": 117,
+          "rawR1": 105,
+          "rawR3": 114,
+          "hybridR1": 77
+        },
+        "expandedDev": {
+          "questions": 30,
+          "answerable": 21,
+          "rawR1": 20,
+          "rawR3": 21,
+          "hybridR1": 18
+        },
+        "expandedTest": {
+          "questions": 84,
+          "answerable": 72,
+          "rawR1": 65,
+          "rawR3": 71,
+          "hybridR1": 56
+        },
+        "legacyTest": {
+          "questions": 349,
+          "answerable": 294,
+          "rawR1": 186,
+          "rawR3": 227,
+          "hybridR1": 293
+        },
+        "legacyAll": {
+          "questions": 809,
+          "answerable": 638,
+          "rawR1": 423,
+          "rawR3": 502,
+          "hybridR1": 630
+        },
+        "devEligible": {
+          "questions": 38,
+          "answerable": 35,
+          "rawR1": 28,
+          "rawR3": 29,
+          "hybridR1": 34
+        },
+        "expandedTrainEligible": {
+          "questions": 63,
+          "answerable": 52,
+          "rawR1": 46,
+          "rawR3": 51,
+          "hybridR1": 28
+        },
+        "expandedDevEligible": {
+          "questions": 8,
+          "answerable": 5,
+          "rawR1": 5,
+          "rawR3": 5,
+          "hybridR1": 4
+        },
+        "expandedTestEligible": {
+          "questions": 40,
+          "answerable": 35,
+          "rawR1": 32,
+          "rawR3": 34,
+          "hybridR1": 26
+        },
+        "legacyTestEligible": {
+          "questions": 316,
+          "answerable": 269,
+          "rawR1": 167,
+          "rawR3": 205,
+          "hybridR1": 268
+        },
+        "legacyAllEligible": {
+          "questions": 704,
+          "answerable": 584,
+          "rawR1": 384,
+          "rawR3": 454,
+          "hybridR1": 577
+        },
+        "legacySeen": {
+          "questions": 215,
+          "answerable": 215,
+          "rawR1": 135,
+          "rawR3": 169,
+          "hybridR1": 215
+        },
+        "legacyUnseen": {
+          "questions": 54,
+          "answerable": 54,
+          "rawR1": 32,
+          "rawR3": 36,
+          "hybridR1": 53
+        }
+      },
+      "pipeline": {
+        "raw": {
+          "threshold": 0.8082836270332336,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 30,
+            "wrongAnswer": 0,
+            "missedAnswer": 30,
+            "correctAbstention": 9,
+            "recall1Hits": 43,
+            "recall3Hits": 45,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 39,
+            "noAnswerRelated": 9,
+            "rescuedByRelated": 24
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 167,
+            "rawR3": 205,
+            "hybridR1": 167,
+            "rankedCorrect": 167,
+            "acceptedCorrect": 66,
+            "rejectedCorrect": 101,
+            "measured": {
+              "total": 316,
+              "correct": 112,
+              "wrongAnswer": 5,
+              "missedAnswer": 199,
+              "correctAbstention": 46,
+              "recall1Hits": 167,
+              "recall3Hits": 205,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 245,
+              "noAnswerRelated": 46,
+              "rescuedByRelated": 135
+            },
+            "demoted": [],
+            "rescued": []
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 32,
+            "rawR3": 34,
+            "hybridR1": 32,
+            "rankedCorrect": 32,
+            "acceptedCorrect": 18,
+            "rejectedCorrect": 14,
+            "measured": {
+              "total": 40,
+              "correct": 23,
+              "wrongAnswer": 0,
+              "missedAnswer": 17,
+              "correctAbstention": 5,
+              "recall1Hits": 32,
+              "recall3Hits": 34,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 22,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 16
+            },
+            "demoted": [],
+            "rescued": []
+          }
+        },
+        "bm25": {
+          "threshold": 0.8547879338264466,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 30,
+            "wrongAnswer": 0,
+            "missedAnswer": 30,
+            "correctAbstention": 9,
+            "recall1Hits": 43,
+            "recall3Hits": 45,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 39,
+            "noAnswerRelated": 9,
+            "rescuedByRelated": 28
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 167,
+            "rawR3": 205,
+            "hybridR1": 205,
+            "rankedCorrect": 205,
+            "acceptedCorrect": 71,
+            "rejectedCorrect": 134,
+            "measured": {
+              "total": 316,
+              "correct": 117,
+              "wrongAnswer": 2,
+              "missedAnswer": 197,
+              "correctAbstention": 46,
+              "recall1Hits": 167,
+              "recall3Hits": 205,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 243,
+              "noAnswerRelated": 46,
+              "rescuedByRelated": 161
+            },
+            "demoted": [
+              50,
+              140,
+              522,
+              524,
+              608
+            ],
+            "rescued": [
+              10,
+              42,
+              48,
+              59,
+              82,
+              86,
+              90,
+              98,
+              99,
+              100,
+              109,
+              128,
+              170,
+              256,
+              284,
+              290,
+              294,
+              310,
+              322,
+              338,
+              339,
+              340,
+              345,
+              381,
+              392,
+              393,
+              426,
+              428,
+              432,
+              490,
+              506,
+              534,
+              542,
+              556,
+              562,
+              570,
+              579,
+              584,
+              585,
+              588,
+              633,
+              666,
+              678
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 32,
+            "rawR3": 34,
+            "hybridR1": 29,
+            "rankedCorrect": 29,
+            "acceptedCorrect": 10,
+            "rejectedCorrect": 19,
+            "measured": {
+              "total": 40,
+              "correct": 15,
+              "wrongAnswer": 1,
+              "missedAnswer": 24,
+              "correctAbstention": 5,
+              "recall1Hits": 32,
+              "recall3Hits": 34,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 29,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 23
+            },
+            "demoted": [
+              874,
+              910,
+              934,
+              976
+            ],
+            "rescued": [
+              908
+            ]
+          }
+        },
+        "lexical": {
+          "threshold": 1.1907299160957336,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 37,
+            "wrongAnswer": 0,
+            "missedAnswer": 23,
+            "correctAbstention": 9,
+            "recall1Hits": 43,
+            "recall3Hits": 45,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 32,
+            "noAnswerRelated": 9,
+            "rescuedByRelated": 23
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 167,
+            "rawR3": 205,
+            "hybridR1": 267,
+            "rankedCorrect": 267,
+            "acceptedCorrect": 171,
+            "rejectedCorrect": 96,
+            "measured": {
+              "total": 316,
+              "correct": 218,
+              "wrongAnswer": 0,
+              "missedAnswer": 98,
+              "correctAbstention": 47,
+              "recall1Hits": 167,
+              "recall3Hits": 205,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 145,
+              "noAnswerRelated": 47,
+              "rescuedByRelated": 98
+            },
+            "demoted": [
+              140
+            ],
+            "rescued": [
+              2,
+              6,
+              8,
+              10,
+              16,
+              22,
+              26,
+              42,
+              44,
+              48,
+              59,
+              62,
+              70,
+              76,
+              78,
+              82,
+              86,
+              90,
+              98,
+              99,
+              100,
+              104,
+              105,
+              108,
+              109,
+              116,
+              126,
+              128,
+              131,
+              170,
+              172,
+              188,
+              242,
+              246,
+              248,
+              250,
+              256,
+              267,
+              284,
+              290,
+              294,
+              298,
+              310,
+              318,
+              322,
+              324,
+              331,
+              338,
+              339,
+              340,
+              344,
+              345,
+              356,
+              366,
+              368,
+              370,
+              381,
+              387,
+              392,
+              393,
+              408,
+              410,
+              412,
+              426,
+              428,
+              432,
+              480,
+              482,
+              486,
+              488,
+              490,
+              496,
+              506,
+              530,
+              534,
+              542,
+              550,
+              556,
+              558,
+              562,
+              564,
+              570,
+              571,
+              578,
+              579,
+              580,
+              584,
+              585,
+              588,
+              606,
+              610,
+              611,
+              620,
+              621,
+              627,
+              632,
+              633,
+              650,
+              652,
+              666,
+              678
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 32,
+            "rawR3": 34,
+            "hybridR1": 29,
+            "rankedCorrect": 29,
+            "acceptedCorrect": 3,
+            "rejectedCorrect": 26,
+            "measured": {
+              "total": 40,
+              "correct": 8,
+              "wrongAnswer": 5,
+              "missedAnswer": 27,
+              "correctAbstention": 5,
+              "recall1Hits": 32,
+              "recall3Hits": 34,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 32,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 27
+            },
+            "demoted": [
+              878,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              908
+            ]
+          }
+        },
+        "hybrid": {
+          "threshold": 1.2407299160957337,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 37,
+            "wrongAnswer": 0,
+            "missedAnswer": 23,
+            "correctAbstention": 9,
+            "recall1Hits": 43,
+            "recall3Hits": 45,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 32,
+            "noAnswerRelated": 9,
+            "rescuedByRelated": 23
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 167,
+            "rawR3": 205,
+            "hybridR1": 268,
+            "rankedCorrect": 268,
+            "acceptedCorrect": 163,
+            "rejectedCorrect": 105,
+            "measured": {
+              "total": 316,
+              "correct": 210,
+              "wrongAnswer": 0,
+              "missedAnswer": 106,
+              "correctAbstention": 47,
+              "recall1Hits": 167,
+              "recall3Hits": 205,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 153,
+              "noAnswerRelated": 47,
+              "rescuedByRelated": 106
+            },
+            "demoted": [
+              140
+            ],
+            "rescued": [
+              2,
+              6,
+              8,
+              10,
+              16,
+              22,
+              26,
+              42,
+              44,
+              48,
+              59,
+              62,
+              70,
+              76,
+              78,
+              82,
+              86,
+              90,
+              98,
+              99,
+              100,
+              104,
+              105,
+              108,
+              109,
+              116,
+              126,
+              128,
+              131,
+              170,
+              172,
+              188,
+              242,
+              246,
+              248,
+              250,
+              256,
+              267,
+              284,
+              290,
+              294,
+              298,
+              310,
+              318,
+              322,
+              324,
+              331,
+              338,
+              339,
+              340,
+              344,
+              345,
+              356,
+              366,
+              368,
+              370,
+              380,
+              381,
+              387,
+              392,
+              393,
+              408,
+              410,
+              412,
+              426,
+              428,
+              432,
+              480,
+              482,
+              486,
+              488,
+              490,
+              496,
+              506,
+              530,
+              534,
+              542,
+              550,
+              556,
+              558,
+              562,
+              564,
+              570,
+              571,
+              578,
+              579,
+              580,
+              584,
+              585,
+              588,
+              606,
+              610,
+              611,
+              620,
+              621,
+              627,
+              632,
+              633,
+              650,
+              652,
+              666,
+              678
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 32,
+            "rawR3": 34,
+            "hybridR1": 26,
+            "rankedCorrect": 26,
+            "acceptedCorrect": 3,
+            "rejectedCorrect": 23,
+            "measured": {
+              "total": 40,
+              "correct": 8,
+              "wrongAnswer": 4,
+              "missedAnswer": 28,
+              "correctAbstention": 5,
+              "recall1Hits": 32,
+              "recall3Hits": 34,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 33,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 28
+            },
+            "demoted": [
+              874,
+              878,
+              910,
+              934,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              908
+            ]
+          }
+        }
+      },
+      "legacySharedCorpusSameVectors": {
+        "questions": 316,
+        "answerable": 269,
+        "rawR1": 190,
+        "rawR3": 217,
+        "hybridR1": 268,
+        "documents": {
+          "ko_KR": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "en_US": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "zh_CN": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          }
+        }
+      }
+    },
+    "gemmaBase": {
+      "vectorsSha256": "c426f672004e1704b1ed61908d0f2c344723268a0e4ad6c86174ad8cc55eedfe",
+      "cohorts": {
+        "dev": {
+          "questions": 60,
+          "answerable": 51,
+          "rawR1": 43,
+          "rawR3": 47,
+          "hybridR1": 48
+        },
+        "expandedTrain": {
+          "questions": 129,
+          "answerable": 117,
+          "rawR1": 102,
+          "rawR3": 114,
+          "hybridR1": 78
+        },
+        "expandedDev": {
+          "questions": 30,
+          "answerable": 21,
+          "rawR1": 19,
+          "rawR3": 21,
+          "hybridR1": 18
+        },
+        "expandedTest": {
+          "questions": 84,
+          "answerable": 72,
+          "rawR1": 64,
+          "rawR3": 70,
+          "hybridR1": 55
+        },
+        "legacyTest": {
+          "questions": 349,
+          "answerable": 294,
+          "rawR1": 189,
+          "rawR3": 232,
+          "hybridR1": 293
+        },
+        "legacyAll": {
+          "questions": 809,
+          "answerable": 638,
+          "rawR1": 434,
+          "rawR3": 515,
+          "hybridR1": 630
+        },
+        "devEligible": {
+          "questions": 38,
+          "answerable": 35,
+          "rawR1": 29,
+          "rawR3": 31,
+          "hybridR1": 34
+        },
+        "expandedTrainEligible": {
+          "questions": 63,
+          "answerable": 52,
+          "rawR1": 46,
+          "rawR3": 51,
+          "hybridR1": 30
+        },
+        "expandedDevEligible": {
+          "questions": 8,
+          "answerable": 5,
+          "rawR1": 5,
+          "rawR3": 5,
+          "hybridR1": 4
+        },
+        "expandedTestEligible": {
+          "questions": 40,
+          "answerable": 35,
+          "rawR1": 31,
+          "rawR3": 33,
+          "hybridR1": 26
+        },
+        "legacyTestEligible": {
+          "questions": 316,
+          "answerable": 269,
+          "rawR1": 170,
+          "rawR3": 209,
+          "hybridR1": 268
+        },
+        "legacyAllEligible": {
+          "questions": 704,
+          "answerable": 584,
+          "rawR1": 394,
+          "rawR3": 466,
+          "hybridR1": 577
+        },
+        "legacySeen": {
+          "questions": 215,
+          "answerable": 215,
+          "rawR1": 137,
+          "rawR3": 172,
+          "hybridR1": 215
+        },
+        "legacyUnseen": {
+          "questions": 54,
+          "answerable": 54,
+          "rawR1": 33,
+          "rawR3": 37,
+          "hybridR1": 53
+        }
+      },
+      "pipeline": {
+        "raw": {
+          "threshold": 0.8254908323287964,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 26,
+            "wrongAnswer": 0,
+            "missedAnswer": 34,
+            "correctAbstention": 9,
+            "recall1Hits": 43,
+            "recall3Hits": 47,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 43,
+            "noAnswerRelated": 9,
+            "rescuedByRelated": 30
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 170,
+            "rawR3": 209,
+            "hybridR1": 170,
+            "rankedCorrect": 170,
+            "acceptedCorrect": 50,
+            "rejectedCorrect": 120,
+            "measured": {
+              "total": 316,
+              "correct": 96,
+              "wrongAnswer": 3,
+              "missedAnswer": 217,
+              "correctAbstention": 46,
+              "recall1Hits": 170,
+              "recall3Hits": 209,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 263,
+              "noAnswerRelated": 46,
+              "rescuedByRelated": 157
+            },
+            "demoted": [],
+            "rescued": []
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 31,
+            "rawR3": 33,
+            "hybridR1": 31,
+            "rankedCorrect": 31,
+            "acceptedCorrect": 12,
+            "rejectedCorrect": 19,
+            "measured": {
+              "total": 40,
+              "correct": 17,
+              "wrongAnswer": 0,
+              "missedAnswer": 23,
+              "correctAbstention": 5,
+              "recall1Hits": 31,
+              "recall3Hits": 33,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 28,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 21
+            },
+            "demoted": [],
+            "rescued": []
+          }
+        },
+        "bm25": {
+          "threshold": 0.8491558313369751,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 33,
+            "wrongAnswer": 0,
+            "missedAnswer": 27,
+            "correctAbstention": 9,
+            "recall1Hits": 43,
+            "recall3Hits": 47,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 36,
+            "noAnswerRelated": 9,
+            "rescuedByRelated": 25
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 170,
+            "rawR3": 209,
+            "hybridR1": 204,
+            "rankedCorrect": 204,
+            "acceptedCorrect": 81,
+            "rejectedCorrect": 123,
+            "measured": {
+              "total": 316,
+              "correct": 127,
+              "wrongAnswer": 3,
+              "missedAnswer": 186,
+              "correctAbstention": 46,
+              "recall1Hits": 170,
+              "recall3Hits": 209,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 232,
+              "noAnswerRelated": 46,
+              "rescuedByRelated": 151
+            },
+            "demoted": [
+              50,
+              140
+            ],
+            "rescued": [
+              10,
+              48,
+              54,
+              58,
+              59,
+              82,
+              84,
+              90,
+              98,
+              99,
+              100,
+              108,
+              170,
+              172,
+              198,
+              256,
+              290,
+              294,
+              316,
+              318,
+              322,
+              338,
+              339,
+              392,
+              412,
+              428,
+              432,
+              490,
+              534,
+              542,
+              578,
+              580,
+              584,
+              633,
+              666,
+              678
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 31,
+            "rawR3": 33,
+            "hybridR1": 29,
+            "rankedCorrect": 29,
+            "acceptedCorrect": 12,
+            "rejectedCorrect": 17,
+            "measured": {
+              "total": 40,
+              "correct": 17,
+              "wrongAnswer": 1,
+              "missedAnswer": 22,
+              "correctAbstention": 5,
+              "recall1Hits": 31,
+              "recall3Hits": 33,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 27,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 21
+            },
+            "demoted": [
+              874,
+              877,
+              910,
+              976
+            ],
+            "rescued": [
+              831,
+              908
+            ]
+          }
+        },
+        "lexical": {
+          "threshold": 1.2061142921447754,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 37,
+            "wrongAnswer": 0,
+            "missedAnswer": 23,
+            "correctAbstention": 9,
+            "recall1Hits": 43,
+            "recall3Hits": 47,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 32,
+            "noAnswerRelated": 9,
+            "rescuedByRelated": 23
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 170,
+            "rawR3": 209,
+            "hybridR1": 267,
+            "rankedCorrect": 267,
+            "acceptedCorrect": 161,
+            "rejectedCorrect": 106,
+            "measured": {
+              "total": 316,
+              "correct": 208,
+              "wrongAnswer": 0,
+              "missedAnswer": 108,
+              "correctAbstention": 47,
+              "recall1Hits": 170,
+              "recall3Hits": 209,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 155,
+              "noAnswerRelated": 47,
+              "rescuedByRelated": 108
+            },
+            "demoted": [
+              140
+            ],
+            "rescued": [
+              2,
+              6,
+              8,
+              10,
+              16,
+              22,
+              26,
+              44,
+              48,
+              54,
+              58,
+              59,
+              62,
+              70,
+              76,
+              78,
+              82,
+              84,
+              90,
+              98,
+              99,
+              100,
+              104,
+              105,
+              108,
+              116,
+              126,
+              131,
+              170,
+              172,
+              188,
+              198,
+              240,
+              242,
+              246,
+              248,
+              250,
+              256,
+              267,
+              290,
+              294,
+              298,
+              310,
+              316,
+              318,
+              322,
+              324,
+              331,
+              338,
+              339,
+              340,
+              344,
+              356,
+              366,
+              368,
+              370,
+              371,
+              381,
+              387,
+              392,
+              393,
+              408,
+              410,
+              412,
+              428,
+              432,
+              480,
+              482,
+              486,
+              488,
+              490,
+              496,
+              522,
+              524,
+              530,
+              534,
+              542,
+              550,
+              558,
+              562,
+              564,
+              571,
+              578,
+              580,
+              584,
+              606,
+              608,
+              610,
+              611,
+              620,
+              621,
+              627,
+              632,
+              633,
+              650,
+              652,
+              666,
+              678
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 31,
+            "rawR3": 33,
+            "hybridR1": 29,
+            "rankedCorrect": 29,
+            "acceptedCorrect": 3,
+            "rejectedCorrect": 26,
+            "measured": {
+              "total": 40,
+              "correct": 8,
+              "wrongAnswer": 4,
+              "missedAnswer": 28,
+              "correctAbstention": 5,
+              "recall1Hits": 31,
+              "recall3Hits": 33,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 33,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 28
+            },
+            "demoted": [
+              878,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              831,
+              908
+            ]
+          }
+        },
+        "hybrid": {
+          "threshold": 1.2548978666383919,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 37,
+            "wrongAnswer": 0,
+            "missedAnswer": 23,
+            "correctAbstention": 9,
+            "recall1Hits": 43,
+            "recall3Hits": 47,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 32,
+            "noAnswerRelated": 9,
+            "rescuedByRelated": 22
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 170,
+            "rawR3": 209,
+            "hybridR1": 268,
+            "rankedCorrect": 268,
+            "acceptedCorrect": 156,
+            "rejectedCorrect": 112,
+            "measured": {
+              "total": 316,
+              "correct": 203,
+              "wrongAnswer": 0,
+              "missedAnswer": 113,
+              "correctAbstention": 47,
+              "recall1Hits": 170,
+              "recall3Hits": 209,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 160,
+              "noAnswerRelated": 47,
+              "rescuedByRelated": 113
+            },
+            "demoted": [
+              140
+            ],
+            "rescued": [
+              2,
+              6,
+              8,
+              10,
+              16,
+              22,
+              26,
+              44,
+              48,
+              54,
+              58,
+              59,
+              62,
+              70,
+              76,
+              78,
+              82,
+              84,
+              90,
+              98,
+              99,
+              100,
+              104,
+              105,
+              108,
+              116,
+              126,
+              131,
+              170,
+              172,
+              188,
+              198,
+              240,
+              242,
+              246,
+              248,
+              250,
+              256,
+              267,
+              290,
+              294,
+              298,
+              310,
+              316,
+              318,
+              322,
+              324,
+              331,
+              338,
+              339,
+              340,
+              344,
+              356,
+              366,
+              368,
+              370,
+              371,
+              380,
+              381,
+              387,
+              392,
+              393,
+              408,
+              410,
+              412,
+              428,
+              432,
+              480,
+              482,
+              486,
+              488,
+              490,
+              496,
+              522,
+              524,
+              530,
+              534,
+              542,
+              550,
+              558,
+              562,
+              564,
+              571,
+              578,
+              580,
+              584,
+              606,
+              608,
+              610,
+              611,
+              620,
+              621,
+              627,
+              632,
+              633,
+              650,
+              652,
+              666,
+              678
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 31,
+            "rawR3": 33,
+            "hybridR1": 26,
+            "rankedCorrect": 26,
+            "acceptedCorrect": 3,
+            "rejectedCorrect": 23,
+            "measured": {
+              "total": 40,
+              "correct": 8,
+              "wrongAnswer": 4,
+              "missedAnswer": 28,
+              "correctAbstention": 5,
+              "recall1Hits": 31,
+              "recall3Hits": 33,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 33,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 28
+            },
+            "demoted": [
+              874,
+              877,
+              878,
+              910,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              831,
+              908
+            ]
+          }
+        }
+      },
+      "legacySharedCorpusSameVectors": {
+        "questions": 316,
+        "answerable": 269,
+        "rawR1": 185,
+        "rawR3": 220,
+        "hybridR1": 268,
+        "documents": {
+          "ko_KR": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "en_US": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "zh_CN": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          }
+        }
+      }
+    },
+    "gemmaEpoch1": {
+      "vectorsSha256": "407967d7c2ec0a59ac77e9471ba53f035ac026f1cc44f8665a87f53c9cd9ab94",
+      "cohorts": {
+        "dev": {
+          "questions": 60,
+          "answerable": 51,
+          "rawR1": 45,
+          "rawR3": 49,
+          "hybridR1": 48
+        },
+        "expandedTrain": {
+          "questions": 129,
+          "answerable": 117,
+          "rawR1": 107,
+          "rawR3": 114,
+          "hybridR1": 85
+        },
+        "expandedDev": {
+          "questions": 30,
+          "answerable": 21,
+          "rawR1": 18,
+          "rawR3": 21,
+          "hybridR1": 18
+        },
+        "expandedTest": {
+          "questions": 84,
+          "answerable": 72,
+          "rawR1": 65,
+          "rawR3": 69,
+          "hybridR1": 54
+        },
+        "legacyTest": {
+          "questions": 349,
+          "answerable": 294,
+          "rawR1": 234,
+          "rawR3": 262,
+          "hybridR1": 292
+        },
+        "legacyAll": {
+          "questions": 809,
+          "answerable": 638,
+          "rawR1": 514,
+          "rawR3": 583,
+          "hybridR1": 626
+        },
+        "devEligible": {
+          "questions": 38,
+          "answerable": 35,
+          "rawR1": 30,
+          "rawR3": 33,
+          "hybridR1": 34
+        },
+        "expandedTrainEligible": {
+          "questions": 63,
+          "answerable": 52,
+          "rawR1": 48,
+          "rawR3": 52,
+          "hybridR1": 36
+        },
+        "expandedDevEligible": {
+          "questions": 8,
+          "answerable": 5,
+          "rawR1": 3,
+          "rawR3": 5,
+          "hybridR1": 4
+        },
+        "expandedTestEligible": {
+          "questions": 40,
+          "answerable": 35,
+          "rawR1": 30,
+          "rawR3": 32,
+          "hybridR1": 25
+        },
+        "legacyTestEligible": {
+          "questions": 316,
+          "answerable": 269,
+          "rawR1": 212,
+          "rawR3": 239,
+          "hybridR1": 267
+        },
+        "legacyAllEligible": {
+          "questions": 704,
+          "answerable": 584,
+          "rawR1": 470,
+          "rawR3": 533,
+          "hybridR1": 573
+        },
+        "legacySeen": {
+          "questions": 215,
+          "answerable": 215,
+          "rawR1": 173,
+          "rawR3": 196,
+          "hybridR1": 215
+        },
+        "legacyUnseen": {
+          "questions": 54,
+          "answerable": 54,
+          "rawR1": 39,
+          "rawR3": 43,
+          "hybridR1": 52
+        }
+      },
+      "pipeline": {
+        "raw": {
+          "threshold": 0.6230586767196655,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 25,
+            "wrongAnswer": 0,
+            "missedAnswer": 35,
+            "correctAbstention": 9,
+            "recall1Hits": 45,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 39,
+            "noAnswerRelated": 5,
+            "rescuedByRelated": 33
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 212,
+            "rawR3": 239,
+            "hybridR1": 212,
+            "rankedCorrect": 212,
+            "acceptedCorrect": 66,
+            "rejectedCorrect": 146,
+            "measured": {
+              "total": 316,
+              "correct": 112,
+              "wrongAnswer": 2,
+              "missedAnswer": 202,
+              "correctAbstention": 46,
+              "recall1Hits": 212,
+              "recall3Hits": 239,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 221,
+              "noAnswerRelated": 20,
+              "rescuedByRelated": 171
+            },
+            "demoted": [],
+            "rescued": []
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 30,
+            "rawR3": 32,
+            "hybridR1": 30,
+            "rankedCorrect": 30,
+            "acceptedCorrect": 12,
+            "rejectedCorrect": 18,
+            "measured": {
+              "total": 40,
+              "correct": 17,
+              "wrongAnswer": 0,
+              "missedAnswer": 23,
+              "correctAbstention": 5,
+              "recall1Hits": 30,
+              "recall3Hits": 32,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 27,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 19
+            },
+            "demoted": [],
+            "rescued": []
+          }
+        },
+        "bm25": {
+          "threshold": 0.6520272970199585,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 30,
+            "wrongAnswer": 0,
+            "missedAnswer": 30,
+            "correctAbstention": 9,
+            "recall1Hits": 45,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 35,
+            "noAnswerRelated": 6,
+            "rescuedByRelated": 28
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 212,
+            "rawR3": 239,
+            "hybridR1": 222,
+            "rankedCorrect": 222,
+            "acceptedCorrect": 81,
+            "rejectedCorrect": 141,
+            "measured": {
+              "total": 316,
+              "correct": 127,
+              "wrongAnswer": 1,
+              "missedAnswer": 188,
+              "correctAbstention": 46,
+              "recall1Hits": 212,
+              "recall3Hits": 239,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 210,
+              "noAnswerRelated": 22,
+              "rescuedByRelated": 169
+            },
+            "demoted": [
+              131,
+              371,
+              480,
+              610,
+              611
+            ],
+            "rescued": [
+              10,
+              54,
+              90,
+              99,
+              128,
+              180,
+              299,
+              319,
+              366,
+              408,
+              410,
+              564,
+              571,
+              579,
+              632
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 30,
+            "rawR3": 32,
+            "hybridR1": 29,
+            "rankedCorrect": 29,
+            "acceptedCorrect": 12,
+            "rejectedCorrect": 17,
+            "measured": {
+              "total": 40,
+              "correct": 17,
+              "wrongAnswer": 0,
+              "missedAnswer": 23,
+              "correctAbstention": 5,
+              "recall1Hits": 30,
+              "recall3Hits": 32,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 28,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 20
+            },
+            "demoted": [
+              876,
+              877
+            ],
+            "rescued": [
+              831
+            ]
+          }
+        },
+        "lexical": {
+          "threshold": 0.7899528741836548,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 39,
+            "wrongAnswer": 0,
+            "missedAnswer": 21,
+            "correctAbstention": 9,
+            "recall1Hits": 45,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 27,
+            "noAnswerRelated": 6,
+            "rescuedByRelated": 21
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 212,
+            "rawR3": 239,
+            "hybridR1": 263,
+            "rankedCorrect": 263,
+            "acceptedCorrect": 198,
+            "rejectedCorrect": 65,
+            "measured": {
+              "total": 316,
+              "correct": 244,
+              "wrongAnswer": 1,
+              "missedAnswer": 71,
+              "correctAbstention": 46,
+              "recall1Hits": 212,
+              "recall3Hits": 239,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 91,
+              "noAnswerRelated": 20,
+              "rescuedByRelated": 68
+            },
+            "demoted": [],
+            "rescued": [
+              2,
+              6,
+              10,
+              22,
+              26,
+              50,
+              54,
+              59,
+              76,
+              90,
+              99,
+              104,
+              116,
+              126,
+              128,
+              180,
+              242,
+              246,
+              299,
+              319,
+              339,
+              344,
+              345,
+              356,
+              366,
+              368,
+              370,
+              381,
+              387,
+              404,
+              408,
+              410,
+              482,
+              486,
+              488,
+              490,
+              496,
+              522,
+              542,
+              564,
+              571,
+              579,
+              580,
+              584,
+              585,
+              596,
+              606,
+              608,
+              632,
+              650,
+              653
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 30,
+            "rawR3": 32,
+            "hybridR1": 26,
+            "rankedCorrect": 26,
+            "acceptedCorrect": 5,
+            "rejectedCorrect": 21,
+            "measured": {
+              "total": 40,
+              "correct": 10,
+              "wrongAnswer": 5,
+              "missedAnswer": 25,
+              "correctAbstention": 5,
+              "recall1Hits": 30,
+              "recall3Hits": 32,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 30,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 24
+            },
+            "demoted": [
+              876,
+              878,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              831
+            ]
+          }
+        },
+        "hybrid": {
+          "threshold": 0.8315876819699619,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 39,
+            "wrongAnswer": 0,
+            "missedAnswer": 21,
+            "correctAbstention": 9,
+            "recall1Hits": 45,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 28,
+            "noAnswerRelated": 7,
+            "rescuedByRelated": 21
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 212,
+            "rawR3": 239,
+            "hybridR1": 267,
+            "rankedCorrect": 267,
+            "acceptedCorrect": 199,
+            "rejectedCorrect": 68,
+            "measured": {
+              "total": 316,
+              "correct": 245,
+              "wrongAnswer": 1,
+              "missedAnswer": 70,
+              "correctAbstention": 46,
+              "recall1Hits": 212,
+              "recall3Hits": 239,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 92,
+              "noAnswerRelated": 22,
+              "rescuedByRelated": 69
+            },
+            "demoted": [],
+            "rescued": [
+              2,
+              6,
+              10,
+              22,
+              26,
+              50,
+              54,
+              59,
+              76,
+              90,
+              99,
+              104,
+              116,
+              126,
+              128,
+              172,
+              180,
+              242,
+              246,
+              299,
+              319,
+              339,
+              344,
+              345,
+              356,
+              366,
+              368,
+              370,
+              380,
+              381,
+              387,
+              404,
+              408,
+              410,
+              412,
+              482,
+              486,
+              488,
+              490,
+              496,
+              522,
+              542,
+              564,
+              571,
+              579,
+              580,
+              584,
+              585,
+              596,
+              606,
+              608,
+              632,
+              650,
+              652,
+              653
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 30,
+            "rawR3": 32,
+            "hybridR1": 25,
+            "rankedCorrect": 25,
+            "acceptedCorrect": 5,
+            "rejectedCorrect": 20,
+            "measured": {
+              "total": 40,
+              "correct": 10,
+              "wrongAnswer": 5,
+              "missedAnswer": 25,
+              "correctAbstention": 5,
+              "recall1Hits": 30,
+              "recall3Hits": 32,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 30,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 24
+            },
+            "demoted": [
+              876,
+              877,
+              878,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              831
+            ]
+          }
+        }
+      },
+      "legacySharedCorpusSameVectors": {
+        "questions": 316,
+        "answerable": 269,
+        "rawR1": 218,
+        "rawR3": 240,
+        "hybridR1": 267,
+        "documents": {
+          "ko_KR": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "en_US": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "zh_CN": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          }
+        }
+      }
+    },
+    "gemmaEpoch2": {
+      "vectorsSha256": "3ea20f244775a59b5ab9913945de4cb18c45a1a5554482fdcae5593faf3a5446",
+      "cohorts": {
+        "dev": {
+          "questions": 60,
+          "answerable": 51,
+          "rawR1": 44,
+          "rawR3": 49,
+          "hybridR1": 48
+        },
+        "expandedTrain": {
+          "questions": 129,
+          "answerable": 117,
+          "rawR1": 108,
+          "rawR3": 114,
+          "hybridR1": 88
+        },
+        "expandedDev": {
+          "questions": 30,
+          "answerable": 21,
+          "rawR1": 18,
+          "rawR3": 21,
+          "hybridR1": 18
+        },
+        "expandedTest": {
+          "questions": 84,
+          "answerable": 72,
+          "rawR1": 64,
+          "rawR3": 69,
+          "hybridR1": 51
+        },
+        "legacyTest": {
+          "questions": 349,
+          "answerable": 294,
+          "rawR1": 246,
+          "rawR3": 269,
+          "hybridR1": 292
+        },
+        "legacyAll": {
+          "questions": 809,
+          "answerable": 638,
+          "rawR1": 527,
+          "rawR3": 589,
+          "hybridR1": 630
+        },
+        "devEligible": {
+          "questions": 38,
+          "answerable": 35,
+          "rawR1": 29,
+          "rawR3": 33,
+          "hybridR1": 34
+        },
+        "expandedTrainEligible": {
+          "questions": 63,
+          "answerable": 52,
+          "rawR1": 48,
+          "rawR3": 52,
+          "hybridR1": 37
+        },
+        "expandedDevEligible": {
+          "questions": 8,
+          "answerable": 5,
+          "rawR1": 3,
+          "rawR3": 5,
+          "hybridR1": 4
+        },
+        "expandedTestEligible": {
+          "questions": 40,
+          "answerable": 35,
+          "rawR1": 29,
+          "rawR3": 32,
+          "hybridR1": 22
+        },
+        "legacyTestEligible": {
+          "questions": 316,
+          "answerable": 269,
+          "rawR1": 224,
+          "rawR3": 246,
+          "hybridR1": 267
+        },
+        "legacyAllEligible": {
+          "questions": 704,
+          "answerable": 584,
+          "rawR1": 483,
+          "rawR3": 538,
+          "hybridR1": 576
+        },
+        "legacySeen": {
+          "questions": 215,
+          "answerable": 215,
+          "rawR1": 184,
+          "rawR3": 203,
+          "hybridR1": 215
+        },
+        "legacyUnseen": {
+          "questions": 54,
+          "answerable": 54,
+          "rawR1": 40,
+          "rawR3": 43,
+          "hybridR1": 52
+        }
+      },
+      "pipeline": {
+        "raw": {
+          "threshold": 0.5504723191261292,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 26,
+            "wrongAnswer": 0,
+            "missedAnswer": 34,
+            "correctAbstention": 9,
+            "recall1Hits": 44,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 35,
+            "noAnswerRelated": 3,
+            "rescuedByRelated": 31
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 224,
+            "rawR3": 246,
+            "hybridR1": 224,
+            "rankedCorrect": 224,
+            "acceptedCorrect": 65,
+            "rejectedCorrect": 159,
+            "measured": {
+              "total": 316,
+              "correct": 111,
+              "wrongAnswer": 1,
+              "missedAnswer": 204,
+              "correctAbstention": 46,
+              "recall1Hits": 224,
+              "recall3Hits": 246,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 165,
+              "noAnswerRelated": 4,
+              "rescuedByRelated": 152
+            },
+            "demoted": [],
+            "rescued": []
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 29,
+            "rawR3": 32,
+            "hybridR1": 29,
+            "rankedCorrect": 29,
+            "acceptedCorrect": 10,
+            "rejectedCorrect": 19,
+            "measured": {
+              "total": 40,
+              "correct": 15,
+              "wrongAnswer": 0,
+              "missedAnswer": 25,
+              "correctAbstention": 5,
+              "recall1Hits": 29,
+              "recall3Hits": 32,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 25,
+              "noAnswerRelated": 4,
+              "rescuedByRelated": 19
+            },
+            "demoted": [],
+            "rescued": []
+          }
+        },
+        "bm25": {
+          "threshold": 0.5699508666992188,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 31,
+            "wrongAnswer": 0,
+            "missedAnswer": 29,
+            "correctAbstention": 9,
+            "recall1Hits": 44,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 30,
+            "noAnswerRelated": 3,
+            "rescuedByRelated": 26
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 224,
+            "rawR3": 246,
+            "hybridR1": 233,
+            "rankedCorrect": 233,
+            "acceptedCorrect": 89,
+            "rejectedCorrect": 144,
+            "measured": {
+              "total": 316,
+              "correct": 135,
+              "wrongAnswer": 1,
+              "missedAnswer": 180,
+              "correctAbstention": 46,
+              "recall1Hits": 224,
+              "recall3Hits": 246,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 165,
+              "noAnswerRelated": 7,
+              "rescuedByRelated": 148
+            },
+            "demoted": [
+              611
+            ],
+            "rescued": [
+              26,
+              54,
+              62,
+              76,
+              180,
+              299,
+              340,
+              366,
+              579,
+              606
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 29,
+            "rawR3": 32,
+            "hybridR1": 27,
+            "rankedCorrect": 27,
+            "acceptedCorrect": 11,
+            "rejectedCorrect": 16,
+            "measured": {
+              "total": 40,
+              "correct": 16,
+              "wrongAnswer": 0,
+              "missedAnswer": 24,
+              "correctAbstention": 5,
+              "recall1Hits": 29,
+              "recall3Hits": 32,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 26,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 19
+            },
+            "demoted": [
+              874,
+              877,
+              910,
+              1012
+            ],
+            "rescued": [
+              831,
+              909
+            ]
+          }
+        },
+        "lexical": {
+          "threshold": 0.600025987625122,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 46,
+            "wrongAnswer": 0,
+            "missedAnswer": 14,
+            "correctAbstention": 9,
+            "recall1Hits": 44,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 20,
+            "noAnswerRelated": 6,
+            "rescuedByRelated": 14
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 224,
+            "rawR3": 246,
+            "hybridR1": 265,
+            "rankedCorrect": 265,
+            "acceptedCorrect": 223,
+            "rejectedCorrect": 42,
+            "measured": {
+              "total": 316,
+              "correct": 269,
+              "wrongAnswer": 1,
+              "missedAnswer": 46,
+              "correctAbstention": 46,
+              "recall1Hits": 224,
+              "recall3Hits": 246,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 44,
+              "noAnswerRelated": 4,
+              "rescuedByRelated": 39
+            },
+            "demoted": [],
+            "rescued": [
+              2,
+              6,
+              10,
+              22,
+              26,
+              50,
+              54,
+              62,
+              76,
+              99,
+              104,
+              116,
+              172,
+              180,
+              242,
+              246,
+              299,
+              318,
+              339,
+              340,
+              344,
+              356,
+              366,
+              368,
+              370,
+              381,
+              387,
+              404,
+              482,
+              490,
+              522,
+              530,
+              542,
+              579,
+              580,
+              584,
+              585,
+              596,
+              606,
+              650,
+              652
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 29,
+            "rawR3": 32,
+            "hybridR1": 26,
+            "rankedCorrect": 26,
+            "acceptedCorrect": 10,
+            "rejectedCorrect": 16,
+            "measured": {
+              "total": 40,
+              "correct": 15,
+              "wrongAnswer": 6,
+              "missedAnswer": 19,
+              "correctAbstention": 5,
+              "recall1Hits": 29,
+              "recall3Hits": 32,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 21,
+              "noAnswerRelated": 4,
+              "rescuedByRelated": 16
+            },
+            "demoted": [
+              876,
+              878,
+              974,
+              975,
+              976
+            ],
+            "rescued": [
+              831,
+              909
+            ]
+          }
+        },
+        "hybrid": {
+          "threshold": 0.6500259876251221,
+          "calibrationDev": {
+            "total": 60,
+            "correct": 46,
+            "wrongAnswer": 0,
+            "missedAnswer": 14,
+            "correctAbstention": 9,
+            "recall1Hits": 44,
+            "recall3Hits": 49,
+            "answerable": 51,
+            "noAnswer": 9,
+            "relatedOffered": 20,
+            "noAnswerRelated": 6,
+            "rescuedByRelated": 14
+          },
+          "legacyTestEligible": {
+            "questions": 316,
+            "answerable": 269,
+            "rawR1": 224,
+            "rawR3": 246,
+            "hybridR1": 267,
+            "rankedCorrect": 267,
+            "acceptedCorrect": 223,
+            "rejectedCorrect": 44,
+            "measured": {
+              "total": 316,
+              "correct": 269,
+              "wrongAnswer": 1,
+              "missedAnswer": 46,
+              "correctAbstention": 46,
+              "recall1Hits": 224,
+              "recall3Hits": 246,
+              "answerable": 269,
+              "noAnswer": 47,
+              "relatedOffered": 47,
+              "noAnswerRelated": 7,
+              "rescuedByRelated": 40
+            },
+            "demoted": [],
+            "rescued": [
+              2,
+              6,
+              10,
+              22,
+              26,
+              50,
+              54,
+              62,
+              76,
+              99,
+              104,
+              116,
+              172,
+              180,
+              242,
+              246,
+              299,
+              318,
+              339,
+              340,
+              344,
+              356,
+              366,
+              368,
+              370,
+              381,
+              387,
+              404,
+              412,
+              482,
+              490,
+              522,
+              530,
+              542,
+              579,
+              580,
+              584,
+              585,
+              596,
+              606,
+              621,
+              650,
+              652
+            ]
+          },
+          "expandedTestEligible": {
+            "questions": 40,
+            "answerable": 35,
+            "rawR1": 29,
+            "rawR3": 32,
+            "hybridR1": 22,
+            "rankedCorrect": 22,
+            "acceptedCorrect": 9,
+            "rejectedCorrect": 13,
+            "measured": {
+              "total": 40,
+              "correct": 14,
+              "wrongAnswer": 6,
+              "missedAnswer": 20,
+              "correctAbstention": 5,
+              "recall1Hits": 29,
+              "recall3Hits": 32,
+              "answerable": 35,
+              "noAnswer": 5,
+              "relatedOffered": 23,
+              "noAnswerRelated": 5,
+              "rescuedByRelated": 17
+            },
+            "demoted": [
+              874,
+              876,
+              877,
+              878,
+              910,
+              974,
+              975,
+              976,
+              1012
+            ],
+            "rescued": [
+              831,
+              909
+            ]
+          }
+        }
+      },
+      "legacySharedCorpusSameVectors": {
+        "questions": 316,
+        "answerable": 269,
+        "rawR1": 228,
+        "rawR3": 248,
+        "hybridR1": 267,
+        "documents": {
+          "ko_KR": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "en_US": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          },
+          "zh_CN": {
+            "shared": 98,
+            "deployed": 100,
+            "missingFromCurrent": [
+              "mech:아이템-역할군-—-위키의-상점-분류를-쓴다",
+              "mech:챔피언-분류-—-두-외부-출처를-함께-쓴다"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "paired": {
+    "gemmaBase": {
+      "legacySeen": {
+        "qwenOnly": [
+          6,
+          8,
+          16,
+          26,
+          70,
+          76,
+          78,
+          90,
+          104,
+          126,
+          242,
+          246,
+          248,
+          250,
+          294,
+          298,
+          310,
+          316,
+          324,
+          340,
+          344,
+          366,
+          370,
+          387,
+          482,
+          486,
+          488,
+          496,
+          542,
+          550,
+          558,
+          580,
+          610,
+          666
+        ],
+        "gemmaOnly": [
+          99,
+          339,
+          371,
+          556
+        ],
+        "netQwenAdvantage": 30
+      },
+      "legacyUnseen": {
+        "qwenOnly": [
+          98,
+          116,
+          172,
+          188,
+          290,
+          338,
+          356,
+          412,
+          522,
+          530,
+          620,
+          650,
+          652
+        ],
+        "gemmaOnly": [
+          578
+        ],
+        "netQwenAdvantage": 12
+      },
+      "expandedTestEligible": {
+        "qwenOnly": [
+          872,
+          908
+        ],
+        "gemmaOnly": [],
+        "netQwenAdvantage": 2
+      }
+    },
+    "gemmaEpoch1": {
+      "legacySeen": {
+        "qwenOnly": [
+          6,
+          26,
+          104,
+          128,
+          242,
+          246,
+          344,
+          345,
+          370,
+          387,
+          482,
+          496,
+          542,
+          580,
+          584
+        ],
+        "gemmaOnly": [
+          99,
+          240,
+          339,
+          371,
+          408,
+          480,
+          556,
+          564,
+          611
+        ],
+        "netQwenAdvantage": 6
+      },
+      "legacyUnseen": {
+        "qwenOnly": [
+          116,
+          140,
+          172,
+          356,
+          412,
+          522,
+          596,
+          652
+        ],
+        "gemmaOnly": [
+          410,
+          578
+        ],
+        "netQwenAdvantage": 6
+      },
+      "expandedTestEligible": {
+        "qwenOnly": [
+          872,
+          908,
+          914
+        ],
+        "gemmaOnly": [],
+        "netQwenAdvantage": 3
+      }
+    },
+    "gemmaEpoch2": {
+      "legacySeen": {
+        "qwenOnly": [
+          6,
+          242,
+          246,
+          344,
+          370,
+          482,
+          542,
+          584
+        ],
+        "gemmaOnly": [
+          99,
+          240,
+          371,
+          408,
+          480,
+          556,
+          564,
+          606,
+          611
+        ],
+        "netQwenAdvantage": -1
+      },
+      "legacyUnseen": {
+        "qwenOnly": [
+          116,
+          140,
+          172,
+          356,
+          412,
+          522,
+          530,
+          596
+        ],
+        "gemmaOnly": [
+          410,
+          578
+        ],
+        "netQwenAdvantage": 6
+      },
+      "expandedTestEligible": {
+        "qwenOnly": [
+          872,
+          908,
+          914
+        ],
+        "gemmaOnly": [],
+        "netQwenAdvantage": 3
+      }
+    }
+  },
+  "devDifference": {
+    "trainerRows": 66,
+    "calibrationRows": 60,
+    "trainerAnswerable": 57,
+    "omitted": [
+      {
+        "lang": "ko_KR",
+        "q": "용 영혼 먹고 나면 나오는 큰 용은 잡히고 몇 분 뒤에 다시 나와?",
+        "gold": [
+          "meta:elder",
+          "meta:dragon"
+        ],
+        "type": "paraphrase",
+        "bank": "main",
+        "searchLang": "ko_KR",
+        "lexical": {
+          "id": "meta:dragon",
+          "step": "meta"
+        },
+        "bm25": {
+          "meta:elder": 9.838582699997573,
+          "meta:voidgrubs": 6.539498411343017,
+          "meta:scuttle": 5.658487782828714,
+          "rule:빙결 강화": 4.401230336715619,
+          "rule:돌발 일격": 4.074401242803682,
+          "rule:표식": 3.9621425268471597,
+          "rule:진급": 3.9517625044592752,
+          "rule:포탑": 3.6432156500508954,
+          "meta:baron": 3.2436850278267566,
+          "meta:remake": 3.2129794732535255,
+          "rule:끈질긴 사냥꾼": 3.0399954185905567,
+          "rule:봉인 풀린 주문서": 3.0301932129367612,
+          "meta:monster-cloud": 2.829718671912445,
+          "meta:monster-ocean": 2.824236220185767,
+          "meta:monster-mountain": 2.821502953113908,
+          "meta:monster-hextech": 2.816052259677575,
+          "meta:dragon": 2.759717958669301,
+          "meta:monster-chemtech": 2.6838410673137916,
+          "rule:콩콩이 소환": 2.679986974912457,
+          "meta:buffs": 2.5788976861521906,
+          "meta:inhibitor": 2.5726390182261203,
+          "meta:monster-infernal": 2.5455811496986858,
+          "rule:물 위를 걷는 자": 2.5239601987907454,
+          "rule:어둠의 수확": 2.5191857089592506,
+          "rule:귀환": 2.4616277788464758,
+          "rule:뼈 방패": 2.232882750797435,
+          "rule:마법의 신발": 2.196267892434711,
+          "rule:보호막 강타": 2.1751333967067676,
+          "meta:surrender": 2.170951537637294,
+          "rule:마법공학 점멸기": 2.137133229126856,
+          "rule:탈진": 1.9429194354110693,
+          "rule:죽음불꽃 손길": 1.756746952077145,
+          "rule:여진": 1.7346824816992485,
+          "rule:빛의 망토": 1.6317728013798638,
+          "rule:기민함": 1.592045454022114,
+          "rule:점화": 1.529740560031861,
+          "rule:미니언": 1.334098836801792,
+          "rule:칼날비": 1.3302951855887182
+        },
+        "eligible": true,
+        "goldAvailable": true,
+        "id": "legacy:164",
+        "family": "meta:elder",
+        "split": "dev"
+      },
+      {
+        "lang": "ko_KR",
+        "q": "장로 드래곤은 언제부터 나와?",
+        "gold": [
+          "meta:elder",
+          "meta:dragon"
+        ],
+        "type": "direct",
+        "bank": "main",
+        "searchLang": "ko_KR",
+        "lexical": {
+          "id": "meta:elder",
+          "step": "meta"
+        },
+        "bm25": {
+          "meta:elder": 10.903357334950222,
+          "meta:monster-elder": 9.984972009511948,
+          "meta:dragon": 5.058965597549431,
+          "rule:빙결 강화": 4.401230336715619,
+          "meta:monster-cloud": 3.9441288500028513,
+          "meta:monster-ocean": 3.9411319785786962,
+          "meta:monster-mountain": 3.9396352500549217,
+          "meta:monster-hextech": 3.9366452009054895,
+          "meta:monster-chemtech": 3.861903342379437,
+          "meta:monster-infernal": 3.7789020062486123,
+          "rule:콩콩이 소환": 2.679986974912457,
+          "rule:물 위를 걷는 자": 2.432214124446836,
+          "rule:쾌속 접근": 2.1991569346862576,
+          "rule:와드": 1.1393256208705431
+        },
+        "eligible": false,
+        "goldAvailable": true,
+        "id": "legacy:165",
+        "family": "meta:elder",
+        "split": "dev"
+      },
+      {
+        "lang": "en_US",
+        "q": "after soul is taken, how long until the big one respawns?",
+        "gold": [
+          "meta:elder",
+          "meta:dragon"
+        ],
+        "type": "paraphrase",
+        "bank": "main",
+        "searchLang": "en_US",
+        "lexical": {
+          "id": "meta:elder",
+          "step": "meta"
+        },
+        "bm25": {
+          "meta:monster-cloud": 6.014465717317522,
+          "meta:monster-ocean": 6.007812872910807,
+          "meta:monster-hextech": 5.997861156767301,
+          "meta:monster-mountain": 5.99455124051795,
+          "meta:monster-chemtech": 5.7380610385982465,
+          "meta:inhibitor": 5.714410412239202,
+          "meta:monster-infernal": 5.396015805045295,
+          "rule:철거": 4.672000199717667,
+          "meta:ping-limit": 3.5447032016529443,
+          "meta:plating": 3.5424296275667304,
+          "meta:elder": 3.5328090451742646,
+          "rule:미니언": 3.485281608251215,
+          "meta:baron": 3.1829673434056645,
+          "rule:탈진": 2.8423621936421988,
+          "meta:kill-gold": 2.7518952733168205,
+          "meta:monster-herald": 2.651333004073359,
+          "rule:어둠의 수확": 2.6150489724617496,
+          "rule:비스킷 배달": 2.476874875073604,
+          "rule:부활": 2.3621731579697283,
+          "rule:죽음불꽃 손길": 2.0242664778937747,
+          "rule:뼈 방패": 1.967963409676186,
+          "rule:진급": 1.898959544028139,
+          "rule:비열한 한 방": 1.7061508470569913,
+          "rule:액시옴 비전 마법사": 1.5653464673257627,
+          "rule:돌발 일격": 1.548403660201055,
+          "rule:집중 공격": 1.5435003530156852,
+          "rule:표식": 1.5105478372666714,
+          "meta:dragon": 1.503643556916819,
+          "rule:콩콩이 소환": 1.4554199727918022,
+          "rule:순간이동": 1.3876098070258505,
+          "rule:빛의 망토": 1.3212794183253072,
+          "rule:정복자": 1.3109055944408887,
+          "rule:봉인 풀린 주문서": 1.1066263028988252,
+          "rule:와드": 0.9087806449463949
+        },
+        "eligible": true,
+        "goldAvailable": true,
+        "id": "legacy:404",
+        "family": "meta:elder",
+        "split": "dev"
+      },
+      {
+        "lang": "en_US",
+        "q": "When does Elder Dragon start spawning?",
+        "gold": [
+          "meta:elder",
+          "meta:dragon"
+        ],
+        "type": "direct",
+        "bank": "main",
+        "searchLang": "en_US",
+        "lexical": {
+          "id": "meta:elder",
+          "step": "meta"
+        },
+        "bm25": {
+          "meta:elder": 16.782900210906796,
+          "meta:monster-elder": 10.403215113283274,
+          "meta:dragon": 5.430349139413078,
+          "meta:monster-cloud": 5.159388985754483,
+          "meta:monster-ocean": 5.153681976392519,
+          "meta:monster-hextech": 5.145145095965663,
+          "meta:monster-mountain": 5.1423057505868215,
+          "meta:monster-chemtech": 4.922280766667107,
+          "meta:monster-infernal": 4.6288641119604925,
+          "meta:minion-waves": 2.9033035123224846,
+          "meta:surrender": 2.4866236727226485,
+          "rule:강타": 2.4693358511613637,
+          "meta:scuttle": 2.409008784285902,
+          "rule:물 위를 걷는 자": 2.143786337840767,
+          "meta:monster-voidgrub": 2.143786337840767,
+          "rule:미니언": 1.6341950282836433,
+          "rule:시야 점수": 1.4088157950765587,
+          "rule:와드": 1.0510324042099972,
+          "rule:순간이동": 1.017448855419012
+        },
+        "eligible": false,
+        "goldAvailable": true,
+        "id": "legacy:405",
+        "family": "meta:elder",
+        "split": "dev"
+      },
+      {
+        "lang": "zh_CN",
+        "q": "拿到龙魂以后刷的那条大的，被打掉多久再刷？",
+        "gold": [
+          "meta:elder",
+          "meta:dragon"
+        ],
+        "type": "paraphrase",
+        "bank": "main",
+        "searchLang": "zh_CN",
+        "lexical": {
+          "id": "meta:dragon",
+          "step": "meta"
+        },
+        "bm25": {
+          "meta:elder": 16.22493712084079,
+          "meta:minion-waves": 7.764968872754452,
+          "meta:plating": 5.605636010292552,
+          "meta:cs": 5.266394155145301,
+          "rule:승전보": 4.5733013732101275,
+          "rule:뼈 방패": 3.1812520523553034,
+          "rule:진급": 3.1699164587411968,
+          "rule:표식": 3.024361616883628,
+          "meta:monster-cloud": 2.9408801055289264,
+          "meta:monster-ocean": 2.9328331317658924,
+          "meta:monster-mountain": 2.9288261362018444,
+          "meta:monster-hextech": 2.924830074847869,
+          "rule:선제공격": 2.854595748256794,
+          "meta:monster-chemtech": 2.8098193832574685,
+          "rule:집중 공격": 2.6987217755573223,
+          "meta:monster-infernal": 2.6967095225516524,
+          "rule:빛의 망토": 2.646293648311656,
+          "meta:dragon": 1.3698331166641344
+        },
+        "eligible": true,
+        "goldAvailable": true,
+        "id": "legacy:644",
+        "family": "meta:elder",
+        "split": "dev"
+      },
+      {
+        "lang": "zh_CN",
+        "q": "远古龙什么时候开始出现？",
+        "gold": [
+          "meta:elder",
+          "meta:dragon"
+        ],
+        "type": "direct",
+        "bank": "main",
+        "searchLang": "zh_CN",
+        "lexical": {
+          "id": "meta:elder",
+          "step": "meta"
+        },
+        "bm25": {
+          "meta:elder": 13.754942506899445,
+          "meta:monster-elder": 10.010881225187614,
+          "meta:scuttle": 5.357703590383662,
+          "meta:monster-scuttle": 4.95023659000326,
+          "meta:dragon": 3.676026301037053,
+          "rule:점멸": 3.0195876711824337,
+          "meta:monster-blue": 2.4899758782118764,
+          "meta:monster-cloud": 2.4168234848547354,
+          "meta:monster-ocean": 2.410210459340384,
+          "meta:monster-mountain": 2.406917499193966,
+          "meta:monster-hextech": 2.403633524811926,
+          "meta:monster-chemtech": 2.309117417228182,
+          "rule:점화": 2.273439754223546,
+          "meta:monster-red": 2.2519455308644396,
+          "meta:monster-voidgrub": 2.25013072196066,
+          "meta:monster-infernal": 2.2161634177745735,
+          "rule:콩콩이 소환": 1.9090182815250754,
+          "rule:강타": 1.9046784419663296,
+          "rule:비열한 한 방": 1.8971917533163611,
+          "rule:선제공격": 1.8843059855498845,
+          "rule:미니언": 1.2354695113414451,
+          "rule:순간이동": 1.2302927036193898
+        },
+        "eligible": false,
+        "goldAvailable": true,
+        "id": "legacy:645",
+        "family": "meta:elder",
+        "split": "dev"
+      }
+    ]
+  },
+  "trainingDocuments": {
+    "ko_KR": 109,
+    "en_US": 109,
+    "zh_CN": 109
+  },
+  "tokenCoverage": {
+    "ko_KR": {
+      "documents": 192,
+      "documentsOver256": 55,
+      "documentsOver512": 0,
+      "trainRows": 448,
+      "trainRowsWithTruncatedGold": 203,
+      "truncatedDocuments": [
+        {
+          "id": "rule:감전",
+          "tokens": 366,
+          "omittedAtTraining": "은 예외 처리되어 제압을 걸 때와 피해를 줄 때 각각 중첩을 쌓습니다.\n제드 Q 예리한 표창과 E 그림자 베기를 W 살아있는 그림자와 함께 쓰면 예외 처리되어 피해 틱마다 중첩을 쌓습니다.\n나미 E 파도 소환사의 축복은 첫 번째 이후의 피해에 대해서는 예외 처리되어 중첩을 쌓지 않습니다.\n발동 피해를 주는 효과는 소환수 피해로도 분류되지 않는 한 "
+        },
+        {
+          "id": "rule:어둠의 수확",
+          "tokens": 291,
+          "omittedAtTraining": "동하지 않습니다. 주문 작열, 리안드리의 고통, W 계열이 그렇습니다. 티모 E 맹독 다트는 예외입니다."
+        },
+        {
+          "id": "rule:칼날비",
+          "tokens": 366,
+          "omittedAtTraining": " 사용 시 기본 공격 타이머를 초기화하지만 이 태그가 없습니다. 그래서 공격을 초기화하고도 추가 중첩을 만들지 못합니다.) (세트 E 안면 강타와 사일러스 W 국왕시해자는 이 태그가 있지만 기본 공격 타이머를 초기화하지 않아, 의도치 않게 추가 중첩을 만듭니다.) (크산테 Q 엔토포 타격과 렐 W 철마술 재사용은 이 태그가 있고 기본 공격 타이머도 초기"
+        },
+        {
+          "id": "rule:비열한 한 방",
+          "tokens": 354,
+          "omittedAtTraining": "에 들어간 피해에는 비열한 한 방이 발동하지 않을 수 있습니다. (대상이 이미 군중 제어에 걸려 있었다면 해당하지 않습니다.) (비열한 한 방은 아군이 아닌 쪽의 군중 제어로는 발동하지 않는데도, 대상이 내셔 남작 같은 중립 몬스터의 군중 제어에 걸려 있을 때도 이 현상이 일어납니다.) (럭스 E 광휘"
+        },
+        {
+          "id": "rule:돌발 일격",
+          "tokens": 382,
+          "omittedAtTraining": " 돌발 일격을 준비 상태로 만들어, 이후 4초 안에 효과를 발동할 수 있게 합니다. (폭발 원뿔 꽃) (마법공학 관문) (소환사 주문 돌진) (마법공학 점멸) (순간이동과 봉인 풀린 순간이동) (귀환과 강화 귀환) (마법공학 로켓 벨트) (바드 E 신비한 차원문 — 차원문에 들어가는 모든 챔피언) (아이번 Q 덩굴뿌리의 돌진 — 밀착 거리에서 쓰"
+        },
+        {
+          "id": "rule:봉인 풀린 주문서",
+          "tokens": 352,
+          "omittedAtTraining": " 골라도 정글 전용 아이템은 살 수 없습니다. 바람돌이 새끼, 이끼쿵쿵이 새싹, 화염발톱 새끼가 여기에 해당합니다. (이미 가지고 있던 강타를 다른 주문으로 바꾸는 것은 그 아이템의 사용을 막지도, 효과를 없애지도 않습니다.)\n강타가 원래 들고 있던 소환사 주문이 아니었다면 그 피해량은 레벨에 따라 달라지는 값으로"
+        },
+        {
+          "id": "rule:선제공격",
+          "tokens": 383,
+          "omittedAtTraining": "\n선제공격은 발동하는 순간 재사용 대기 시간이 돌기 시작합니다.\n선제공격을 발동시킨 피해 자체도 추가 피해를 받습니다.\n선제공격은 전투에서 여러 챔피언에게 피해를 줄수록 이득을 봅니다.\n선제공격은 효과가 켜져 있는 동안 시전 인스턴스마다 대상에게 준 피해 횟수만큼 투사체를 발사합니다. (이 투사체의 이동 시간은 0.4초로 고정입니다.) (선제공격의 첫 추가 피해도 같은"
+        },
+        {
+          "id": "rule:마법공학 점멸기",
+          "tokens": 314,
+          "omittedAtTraining": "기 시간은 소환사 주문 가속으로 줄어듭니다. 전투에 들어갔을 때 절반으로 줄어드는 대기 시간도 마찬가지입니다.\n마법공학 점멸은 대부분의 충전형 정신 집중 스킬처럼 시전 시간이 없습니다."
+        },
+        {
+          "id": "rule:쾌속 접근",
+          "tokens": 285,
+          "omittedAtTraining": " 군중 제어가 끝나거나 제거된 뒤에도 이동 속도 효과가 최대 0.25초까지 남을 수 있습니다."
+        },
+        {
+          "id": "rule:집중 공격",
+          "tokens": 360,
+          "omittedAtTraining": "판, 카타리나 P 탐욕과 R 죽음의 연꽃, 마스터 이 Q 일격 필살이 그렇습니다. 14.1 패치의 사일러스 수정 내용에 따르면 의도된 동작입니다.\n집중 공격의 세 번째 중첩을 쌓은 그 기본 공격은 증폭된 피해를 받지 못합니다.\n집중 공격의 적응형 피해는 적중 시 효과를 수정하는 효과의 영향을 받지 않습니다. 아크샨 E"
+        },
+        {
+          "id": "rule:치명적 속도",
+          "tokens": 378,
+          "omittedAtTraining": ".) (룬 설명문에는 원거리 피해량이 6~24로 적혀 있는데 실제보다 높습니다. 설명문이 피해량 배수(0.667) 대신 공격 속도 배수(0.8)를 피해량에 적용했기 때문입니다. 위 수치가 실제로 들어가는 값입니다.)\n치명적 속도가 주는 공격 속도 중첩도 전격 계수에 쓰이는 추가 공격 속도에 포함됩니다. (그래서 최대 중첩 전에 툴팁을 보면 최대 중첩에서 실제로 나가는 피해량보다 낮게 표시됩니"
+        },
+        {
+          "id": "rule:정복자",
+          "tokens": 383,
+          "omittedAtTraining": " 숨결, 베인 Q 구르기, 빅토르 Q 힘의 흡수입니다. 그 피해가 스킬 시전 인스턴스에 속하는지 여부와는 무관합니다.\n정복자 중첩은 한 시전 인스턴스당 한 번만 쌓입니다. (예를 들어 케일 P 거룩한 승천의 화염파는 그것을 발동시킨 기본 공격과 시전 인스턴스를 공유합니다. 그래서 기대되는 두 번이 아니라 공격당 한 번만 중첩이 쌓입니다.) (타격마다 별도의 시전 인스"
+        },
+        {
+          "id": "rule:승전보",
+          "tokens": 289,
+          "omittedAtTraining": "사체를 의도치 않게 없애는 효과에는 터질 수 있습니다. 이 경우 추가 골드와 회복을 모두 받지 못합니다.)"
+        },
+        {
+          "id": "rule:착취의 손아귀",
+          "tokens": 257,
+          "omittedAtTraining": ""
+        },
+        {
+          "id": "rule:여진",
+          "tokens": 317,
+          "omittedAtTraining": "여진의 추가 마법 저항력은 보유한 추가 마법 저항력이 레벨에 따라 정해지는 기준에 이르면 더 오르지 않습니다.\n이동 불가 효과가 밀쳐내기 면역 대상에게 걸린 경우에는 여진이 발동하지 않습니다."
+        },
+        {
+          "id": "rule:수호자",
+          "tokens": 264,
+          "omittedAtTraining": " 상태에서는 발동하지 않습니다."
+        },
+        {
+          "id": "rule:철거",
+          "tokens": 272,
+          "omittedAtTraining": " 철거의 피해가 실제 치명타인 것처럼 잘못 표시됩니다."
+        },
+        {
+          "id": "rule:보호막 강타",
+          "tokens": 314,
+          "omittedAtTraining": " 가장 컸던 값을 기준으로 삼습니다.)\n보호막 강타는 얻은 보호막 하나당 한 번만 발동합니다.\n보호막 강타는 마법 보호막과 물리 보호막을 포함한 모든 종류의 보호막에서 발동합니다."
+        },
+        {
+          "id": "rule:뼈 방패",
+          "tokens": 296,
+          "omittedAtTraining": "막이 대신 받은 피해.) (무적으로 흡수된 피해.)\n뼈 방패의 피해 감소는 들어오는 공격이나 스킬의 방어력 적용 후 피해에 적용됩니다."
+        },
+        {
+          "id": "rule:소생",
+          "tokens": 387,
+          "omittedAtTraining": " 회복량에는 체력이 가득 찬 상태의 회복과 기지에서의 재생까지 포함됩니다.\n소생은 맬모셔스의 아귀 같은 마법 보호막도 증폭시킵니다.\n소생과 함께 쓰면 방어막이 레벨에 따라 달라지는 만큼 보호막을 더 주고, 최대 체력의 40% 미만일 때는 그 값이 더 커집니다.\n소생과 함께 쓰면 회복이 레벨에 따라 달라지는 만큼 회복량을 더 주고, 최대 체력의 40% 미만일 때는 그 값이 더 커집니다."
+        },
+        {
+          "id": "rule:콩콩이 소환",
+          "tokens": 378,
+          "omittedAtTraining": "식처, 룰루 W 변덕쟁이가 그렇습니다. (오리아나 W 명령: 불협화음은 사용하는 순간에도, 아군이 남아 있는 장판에 들어올 때도 아군 효과를 발동시킵니다.) (나미 P 밀려오는 파도를 아군에게 걸어도 콩콩이는 발동하지 않습니다. 즉 Q 물의 감옥을 아군에게 맞혀 보호막을 줄 수는 없습니다.) (일부 강화 효과는 아군 효과를 발동시키지 않습니다. 동작이 개별로 정해지기 때문입니다"
+        },
+        {
+          "id": "rule:신비로운 유성",
+          "tokens": 261,
+          "omittedAtTraining": "75입니다."
+        },
+        {
+          "id": "rule:죽음불꽃 손길",
+          "tokens": 298,
+          "omittedAtTraining": "는 않습니다.\n죽음불꽃 손길의 피해량은 실시간으로 다시 계산되지 않습니다. 참조하는 능력치는 약화 효과가 끝나고 다시 걸릴 때까지 고정됩니다."
+        },
+        {
+          "id": "rule:액시옴 비전 마법사",
+          "tokens": 384,
+          "omittedAtTraining": "피언이 아닌 아군에게 준 회복 및 보호막에도 적용됩니다. (다만 룬 설명의 기록기는 적 챔피언에게 준 추가 피해와 자신 또는 아군 챔피언에게 준 추가 회복·보호막만 셉니다.)\n액시옴 비전 마법사는 자신을 회복시키는 효과는 증폭하지 않습니다. (다만 생명력 흡수를 적용하는 궁극기의 흡혈 회복은 증폭합니다.) (문도 박사 R 최대 투여량이 주는 재생은 예외 처리되어 증폭됩니다.)\n액시옴 "
+        },
+        {
+          "id": "rule:마나순환 팔찌",
+          "tokens": 329,
+          "omittedAtTraining": "동하는 효과에게 마나 소모로 취급됩니다. (깎은 결과가 음수가 되면 능력치의 하한이 0이므로 마나순환 팔찌가 오히려 현재 마나를 올리게 됩니다. 실제로 깎이는 양이 뒤이어 오르는 최대 마나보다 적어져 현재 마나가 늘어나기 때문입니다.)"
+        },
+        {
+          "id": "rule:빛의 망토",
+          "tokens": 366,
+          "omittedAtTraining": " 아이오니아 장화로 대기 시간이 줄면 기준 아래로 내려갈 수 있습니다. 현재 예로는 점멸의 대기 시간이 소환사의 협곡에서 230.77초, 칼바람 나락에서 150초까지 줄어 중간 구간에 들어가고, 그 결과 빛의 망토가 이동 속도를 20%만 주게 됩니다.) (순간이동의 대기 시간은 따로 처리되어 항상 가장 높은 구간에 속합니다. 조이 W 주문도둑"
+        },
+        {
+          "id": "rule:기민함",
+          "tokens": 363,
+          "omittedAtTraining": " 곱연산 퍼센트 합계의 7%만큼 곱연산 이동 속도를 줍니다.) (능력치를 새로 계산할 때마다 기민함의 곱연산 몫은 직전 계산의 자기 자신을 다시 곱하지 않으려 합니다. 그런데 능력치 계산 자체가 이미 그것을 막고 있어서, 일부 계산 주기에서는 곱연산 몫이 원래보다 훨씬 작아지며 값이 오르내립니다.) (14.17 패치 이후로는 오래된 설명일 수"
+        },
+        {
+          "id": "rule:점화",
+          "tokens": 365,
+          "omittedAtTraining": "지 못합니다.\n같은 대상에게 점화를 다시 쓰면 앞서 걸린 효과를 덮어씁니다. 지속 시간은 갱신되지만 중첩되지는 않습니다.\n점화는 사용하는 순간 정복자 중첩 2개, 감전과 질풍 중첩을 각각 1개씩 줍니다.\n점화는 첫 틱이 들어갈 때 콩콩이 소환을 발동시킵니다. (그 이후의 틱은 이 룬을 발동시"
+        },
+        {
+          "id": "rule:회복",
+          "tokens": 265,
+          "omittedAtTraining": " 레벨에 따라 달라집니다."
+        },
+        {
+          "id": "rule:강타",
+          "tokens": 361,
+          "omittedAtTraining": " 유효한 대상 위에 있지 않으면 반경 125 안의 대형 몬스터를 우선해서 때립니다.\n강타와 그 상위 형태는 발동 피해를 주므로 스킬 효과를 발동시키지 않습니다.\n강타와 그 상위 형태의 피해는 피해 증폭 효과의 영향을 받지 않습니다.\n봉인 풀린 강타와 원시 강타는 주문 방어막에 막힙니다.\n우르프 모드에서는 다음과 같습"
+        },
+        {
+          "id": "rule:표식",
+          "tokens": 350,
+          "omittedAtTraining": " 날아오는 투사체를 없애지 못하며 포탑에도 영향을 주지 않습니다.\n시전자는 돌진해 도착한 대상을 자동으로 공격합니다.\n표식을 다시 걸면 약화 효과의 지속 시간은 갱신되지만, 돌진을 쓸 수 있는 시간은 각자 3초 그대로입니다.\n돌진이 정상적으로 끝나거나 재사용 시간이 지나면 주문 칸이 표식으로 돌아가고, "
+        },
+        {
+          "id": "rule:진급",
+          "tokens": 308,
+          "omittedAtTraining": " 돌아왔습니다.\n진급은 너무 강해서 한 번 삭제되었다가, 이후 균형이 조정되어 모든 모드에서 쓸 수 있게 되었지만 시즌 3에서 다시 삭제되었습니다. 그 사용 효과는 아이템으로 돌아왔습니다."
+        },
+        {
+          "id": "rule:순간이동",
+          "tokens": 342,
+          "omittedAtTraining": "동에는 2초의 재사용 대기 시간이 걸립니다.\n변환 시점에 순간이동의 남은 대기 시간이 봉인 풀린 순간이동의 최대 대기 시간보다 길면, 그 최대치까지 줄어듭니다.\n순간이동은 시전 시간이 없습니다.\n순간이동의 재사용 대기 시간은 이동이 끝난 뒤부터 돕니"
+        },
+        {
+          "id": "rule:미니언",
+          "tokens": 390,
+          "omittedAtTraining": " 지나면서 10~25만큼 올라갑니다.\n[미니언] 적 억제기를 파괴하면 그 라인의 아군 미니언이 약한 버프를 받습니다.\n[미니언 압박] 포탑 우위란 양 팀이 파괴한 안쪽 포탑과 넥서스 포탑 수의 차이를 말합니다.\n[웨이브 골드] V8.23 기준으로 미니언 한 웨이브의 평균 골드 가치는 125에서 시작해 25분에 195까지 올라갑니다.\n[웨이브 운영] 플"
+        },
+        {
+          "id": "rule:와드",
+          "tokens": 371,
+          "omittedAtTraining": "[와드] 나미 W 밀물의 축복은 와드를 때려도 소모되지 않습니다.\n[와드] 쓰레쉬 E 척결도 와드를 때릴 때는 추가 피해가 초기화되지 않습니다.\n[와드] 미니언과 마찬가지로, 와드가 파괴될 때 아군 챔피언이 여럿 근처에 있으면 경험치 124%를 똑같이 나눠 받습니다.\n[와드] 좀비 와드 같은 효과는 골드를 못 받아도 도움은 집계"
+        },
+        {
+          "id": "rule:포탑",
+          "tokens": 425,
+          "omittedAtTraining": " 피해 감소 30%를 얻습니다.\n[포탑] 포탑이 쏜 탄이 날아가는 도중에 포탑이 부서지면 그 탄은 피해를 주지 않습니다.\n[포탑] 포탑은 통과할 수 없는 지형 위에 있는 유닛입니다. 그 지형은 포탑이 부서진 뒤에도 남습니다.\n[포탑] 지형과 상호작용하는 효과는 멀쩡한 포탑이든 부서진 포탑이든 똑같이 작동합니다.\n[포탑] 요새화: 모든 피해를 85% 줄입니다. 5분이 지나면 사라집니다.\n[포탑] 포탑은 방어구 관통 30%를 얻습니다.\n[포탑] 포"
+        },
+        {
+          "id": "rule:시야 점수",
+          "tokens": 406,
+          "omittedAtTraining": " 깎입니다. 하나 겹치면 -25%, 셋 이상 겹치면 -75%입니다. 와드가 덤불 안에 있으면 라인 미니언은 겹침으로 세지 않습니다.\n[시야 점수] 본진에 가까운 와드일수록 점수가 낮습니다. 아군 버프 캠프 근처에서는 감점이 없고 본진 성벽에서는 약 -50%입니다.\n[시야 점수] 아군 구조물에 아주 가깝거나 본진 안에 있는 와드는 점수가 -100%가 됩니다.\n[시야 점수] 적이 와드를 금방 부숴도 최소 20초는 살아 있던 것"
+        },
+        {
+          "id": "mech:저항과-피해-감소",
+          "tokens": 314,
+          "omittedAtTraining": " 1당 실효 체력 1%는 저항이 높아도 그대로다.\n  \"마법 저항력을 더 올려도 소용없다\"는 말은 틀렸고, 실제로 소용없게 만드는 것은 아래의 관통과 감소다."
+        },
+        {
+          "id": "mech:관통과-감소,-그리고-적용-순서",
+          "tokens": 365,
+          "omittedAtTraining": "치만큼 방어력을 무시한다.\n\n**조언에 쓰는 규칙**\n\n- 상대에게 저항 감소 스킬이 있으면 내 저항 아이템의 값이 실제로 떨어진다.\n  그래서 럼블 E 전기 작살처럼 마법 저항력을 깎는 스킬은 회피 우선순위가 가장 높다.\n- 고정 관통은 저항이 낮은 대상(딜러)에게, 비율 관통은 저항이 높은 대상(탱커)에게 값을 한다.\n"
+        },
+        {
+          "id": "meta:dragon",
+          "tokens": 481,
+          "omittedAtTraining": "–18 기준이며 공격하는 챔피언의 레벨과 다릅니다.\n체력: 5,106.25–10,000\n방어력: 65.6–170\n마법 저항력: 47.8–100\n공격력: 70\n공격 속도(초당 공격 횟수): 0.5\n공격 사거리: 500\n\n### 대지 드래곤\n몬스터 레벨 6–18 기준이며 공격하는 챔피언의 레벨과 다릅니다.\n체력: 5,898.5–11,510\n방어력: 65.6–170\n마법 저항력: 47.8–100\n공격력: 105\n공격 속도(초당 공격 횟수): 0.25\n공격 사거리: 500\n"
+        },
+        {
+          "id": "meta:baron",
+          "tokens": 430,
+          "omittedAtTraining": "6.19 검수 · PC 소환사의 협곡 일반 규칙\n\n### 내셔 남작 아군 버프\n바론 버프 추가 공격력의 검수 표는 처치 시점 20분 12, 30분 26, 40분 48입니다. 40분 이후에는 상한을 유지합니다. 중간 시점의 매초 증가식과 현재 첫 등장 18~20분 수치는 아직 검수하지 않았습니다.\n바론 버프 주문력의 검수 표는 처치 시점 20분 20, 30분 43, 40분 80입니다. 40분 이후에는 상한을 유지합니다. 중간 시점의 매초 증가식과 18~"
+        },
+        {
+          "id": "meta:buffs",
+          "tokens": 468,
+          "omittedAtTraining": " 0.49\n방어력: 42\n마법 저항력: 42\n이동 속도: 275\n\n26.19 검수 · PC 소환사의 협곡 일반 규칙\n\n### 푸른 파수꾼 아군 버프\n블루 버프는 챔피언 1/6/11레벨부터 스킬 가속 10/15/20을 제공합니다.\n블루 버프는 5초당 최대 마나의 5% + 마나 25를 회복합니다. 실제 회복은 0.5초마다 최대 마나 0.5% + 2.5입니다.\n기력 챔피언에게 블루 버프는 5초당 최대 기력의 5% + 기력 25를 회복합니다. 최대 기력 200이면 초당 7, 400이면 초당 9입니다.\n블"
+        },
+        {
+          "id": "meta:monster-baron",
+          "tokens": 429,
+          "omittedAtTraining": " 가장 최근에 맞은 한 유닛은 바론에게 주는 피해가 8초 동안 50% 줄어듭니다.\n부식의 보조 공격은 공격력의 35%에 해당하는 마법 피해를 주며 공허 부패 중첩을 적용합니다. 중첩당 방어력·마법 저항력이 0.5 줄고, 최대 100중첩이며 8초 동안 유지됩니다.\n산성 웅덩이는 공격력의 100% 마법 피해를 주고, 남은 웅덩이에서 60% 둔화를 적용합니다.\n산성 발사는 직선상 유닛에게 공격력의 100% 마법 피해를 줍니다.\n촉수 공격은 공격력의 100% "
+        },
+        {
+          "id": "meta:monster-voidgrub",
+          "tokens": 316,
+          "omittedAtTraining": " 회복합니다. 초과 회복은 추가 체력이 되며, 회복한 양은 10초 동안 되돌려 잃습니다.\n비챔피언 대상에게 50% 추가 피해를 줍니다. 챔피언 피해와 구분해야 합니다."
+        },
+        {
+          "id": "meta:monster-herald",
+          "tokens": 317,
+          "omittedAtTraining": "력의 200% 물리 피해를 주고 밀쳐냅니다.\n체력이 약 65.75%와 32.75%에 도달할 때 전방을 휘둘러 공격력의 125% 물리 피해를 줍니다."
+        },
+        {
+          "id": "meta:monster-infernal",
+          "tokens": 335,
+          "omittedAtTraining": " 적을 밀쳐냅니다.\n### 화염 드래곤 아군 버프\n화염 드래곤 처치 보상은 팀 전체 공격력과 주문력을 중첩당 3% 증가시킵니다. 같은 보상은 최대 4중첩, 합계 12%이며 영구 유지됩니다. 드래곤 자체 공격력과 다릅니다."
+        },
+        {
+          "id": "meta:monster-ocean",
+          "tokens": 264,
+          "omittedAtTraining": " 적을 밀쳐냅니다."
+        },
+        {
+          "id": "meta:monster-mountain",
+          "tokens": 265,
+          "omittedAtTraining": "의 적을 밀쳐냅니다."
+        },
+        {
+          "id": "meta:monster-cloud",
+          "tokens": 260,
+          "omittedAtTraining": "냅니다."
+        },
+        {
+          "id": "meta:monster-hextech",
+          "tokens": 269,
+          "omittedAtTraining": "550 범위의 적을 밀쳐냅니다."
+        },
+        {
+          "id": "meta:monster-chemtech",
+          "tokens": 296,
+          "omittedAtTraining": "3중첩 기준은 0·15·30·45%입니다.\n교전을 시작할 때 주변 550 범위의 적을 밀쳐냅니다."
+        },
+        {
+          "id": "meta:monster-elder",
+          "tokens": 271,
+          "omittedAtTraining": " 처형·화상 버프는 서로 다른 수치입니다."
+        },
+        {
+          "id": "meta:monster-blue",
+          "tokens": 405,
+          "omittedAtTraining": "0을 제공합니다.\n블루 버프는 5초당 최대 마나의 5% + 마나 25를 회복합니다. 실제 회복은 0.5초마다 최대 마나 0.5% + 2.5입니다.\n기력 챔피언에게 블루 버프는 5초당 최대 기력의 5% + 기력 25를 회복합니다. 최대 기력 200이면 초당 7, 400이면 초당 9입니다.\n블루 버프 지속시간은 120초입니다. 적 챔피언에게 처치당하면 처치자에게 이전됩니다."
+        },
+        {
+          "id": "meta:monster-red",
+          "tokens": 449,
+          "omittedAtTraining": " 피해를 줍니다. 총 피해는 챔피언 1~5레벨 15, 6레벨부터 레벨당 3 증가하여 18레벨 54입니다. 탑 역할 퀘스트로 20레벨이 되면 60이며 몬스터 레벨 기준이 아닙니다.\n레드 버프는 챔피언 1/4/6/11레벨부터 5초당 최대 체력의 0.5/1/1.5/3%를 회복합니다. 챔피언·포탑·에픽 몬스터와 전투 중이면 이 회복은 비활성화됩니다.\n레드 버프 둔화는 원천 충돌로 확정하지 않았습니다. 공식 26.1의 근접 둔화는 1/6/11레벨부터 10/"
+        },
+        {
+          "id": "meta:monster-scuttle",
+          "tokens": 319,
+          "omittedAtTraining": "야가 챔피언을 3초, 다른 유닛을 12초 드러내고 발견한 와드의 체력을 1로 줄입니다. 공허 형태의 체력 30% 증가는 현재 위키에서 미적용으로 기록되어 채택하지 않았습니다."
+        }
+      ]
+    },
+    "en_US": {
+      "documents": 192,
+      "documentsOver256": 2,
+      "documentsOver512": 0,
+      "trainRows": 436,
+      "trainRowsWithTruncatedGold": 0,
+      "truncatedDocuments": [
+        {
+          "id": "mech:저항과-피해-감소",
+          "tokens": 314,
+          "omittedAtTraining": " 1당 실효 체력 1%는 저항이 높아도 그대로다.\n  \"마법 저항력을 더 올려도 소용없다\"는 말은 틀렸고, 실제로 소용없게 만드는 것은 아래의 관통과 감소다."
+        },
+        {
+          "id": "mech:관통과-감소,-그리고-적용-순서",
+          "tokens": 365,
+          "omittedAtTraining": "치만큼 방어력을 무시한다.\n\n**조언에 쓰는 규칙**\n\n- 상대에게 저항 감소 스킬이 있으면 내 저항 아이템의 값이 실제로 떨어진다.\n  그래서 럼블 E 전기 작살처럼 마법 저항력을 깎는 스킬은 회피 우선순위가 가장 높다.\n- 고정 관통은 저항이 낮은 대상(딜러)에게, 비율 관통은 저항이 높은 대상(탱커)에게 값을 한다.\n"
+        }
+      ]
+    },
+    "zh_CN": {
+      "documents": 192,
+      "documentsOver256": 33,
+      "documentsOver512": 0,
+      "trainRows": 447,
+      "trainRowsWithTruncatedGold": 143,
+      "truncatedDocuments": [
+        {
+          "id": "rule:감전",
+          "tokens": 296,
+          "omittedAtTraining": "数。\n造成触发伤害的效果不会叠加，除非该效果同时被标记为宠物伤害。（此类效果若施加了减益效果，例如黑色切割者，仍可叠加。）"
+        },
+        {
+          "id": "rule:칼날비",
+          "tokens": 404,
+          "omittedAtTraining": "桑提 Q 和芮尔的铁流注：骑乘带有该标签，且使用时会重置施法者的普攻计时器，但未能像预期那样正确额外叠加一层。）（这些技能均在 V26.09 中被赋予 Trait_AttackReset 标签，并在同一版本的丛刃说明中记载为已修复；但尽管两者都带有该标签，这两个技能都不会额外叠加一层。）\n使用者通过攻击计时器重置获得额外层数时，层数持续时间不会刷新。\n即使攻击重置发生时使用者的普攻并未处于冷却中，也会叠加额外层数。\n持续期间，使用者的攻速上限会提高至90"
+        },
+        {
+          "id": "rule:비열한 한 방",
+          "tokens": 424,
+          "omittedAtTraining": "之束缚等技能可以自行施加控制效果，并在延迟后造成伤害，因此会跳过同一游戏帧规则并自行触发恶意中伤。）（恶意中伤在某个施法实例上触发后，会清除该标记，以便同一施法实例下次施加控制效果时重新判定。）\n对恶意中伤而言，所有基础伤害（注：所有带有此伤害标签的伤害，而不只是普攻伤害）都被视为同一施法实例。（因此，结合上述规则，例如伊泽瑞尔的秘术射击搭配冰脉护手，或艾希的冰霜射击，若是唯一命中敌人的攻击，则自身每隔一次才能触发恶意中伤。）\n在控制效果施加前生效的持续伤害效果，也可能在某次伤害"
+        },
+        {
+          "id": "rule:돌발 일격",
+          "tokens": 387,
+          "omittedAtTraining": "奇旅程（任何进入隧道的英雄均可触发））（根须召唤者的冲刺（贴脸使用时无效））（赛娜的黑雾诅咒（以及任何进入幽魂形态的英雄））（塔姆·肯奇的大快朵颐（被吐出的友军和敌军均可触发））（锤石的魂引之灯冲刺）\n效果不会因突进触发，因为突进只会使英雄靠近目标移动，不一定属于传统意义上的“冲刺”。\n从敌方视野范围外（例如草丛）现身，不会使猛然冲击就绪。"
+        },
+        {
+          "id": "rule:봉인 풀린 주문서",
+          "tokens": 419,
+          "omittedAtTraining": "师技能之一，其伤害会随等级成长。（游戏内提示始终显示惩戒造成 600 点伤害，即使实际伤害更高。）（游戏内提示称惩戒需要替换 2 次才会提高伤害，但只有当惩戒是第 3 个（或之后）被替换的技能时，伤害才会提高。）（惩戒已装备时进行替换不会影响当前伤害。）（选择惩戒或切回惩戒都不会使其进入冷却。）\n在 10:00 之后选择传送，会获得解封的传送。（如果传送正在被替换，10:00 之后它也可以变为解封版本。）（如果传送被选中的召唤师技能替换，它会在返回技能栏位后变为解封版本。）\n"
+        },
+        {
+          "id": "rule:선제공격",
+          "tokens": 305,
+          "omittedAtTraining": "伤害也会在相同延迟后结算。）（这枚飞弹不会决定符文效果。）（如果同时对多个目标造成伤害，飞弹会朝第一个命中的目标发射。）（飞弹会短暂暴露使用者的位置。）"
+        },
+        {
+          "id": "rule:집중 공격",
+          "tokens": 338,
+          "omittedAtTraining": "英雄登场、净除）。（不过，普攻附带的持续伤害或后续效果会受到影响（例如：诺克萨斯之力、毒性射击以及每次后续的触手猛击）。（增益获得的同一帧内造成的伤害不会提高。））（触发强攻的那次伤害不会享受伤害提升，但在伤害增益生效期间触发的后续伤害会。）"
+        },
+        {
+          "id": "rule:치명적 속도",
+          "tokens": 362,
+          "omittedAtTraining": "节奏自身的攻击速度层数也会计入弩箭伤害所用的额外攻击速度。（因此，在叠满层数前查看悬停提示，显示的伤害会低于弩箭在可满层发射时实际造成的伤害。）\n弩箭根据额外攻击速度属性本身进行加成，而非根据英雄实际攻击速度进行加成。超过攻击速度上限的攻击速度仍会提高伤害，尽管它不会带来额外攻击。\n符文的伤害统计器显示的是抗性减免后的伤害。"
+        },
+        {
+          "id": "rule:정복자",
+          "tokens": 415,
+          "omittedAtTraining": "常赋予多层。） （此外，盖伦 审判和孙悟空 大闹天宫经过特殊处理，每次伤害跳动都会叠加征服者。） （其他类似效果没有特殊处理（例如潘森 E、塔莉垭 Q、扎克 R）。） （基础伤害类攻击特效无论施放实例如何都能多次叠加，但易大师 Q 是唯一不会如此叠加的多重攻击特效，因为它属于单个施放实例且不是基础伤害。） （如果莫德凯撒 黑暗起兮通过破灭之锤或死亡之握触发，它会被视为与触发技能属于同一施放实例，因此不会叠加征服者。）\n征服者不会因以下特定效果叠加或刷新。（宠物造成的基础伤害（即安妮"
+        },
+        {
+          "id": "rule:보호막 강타",
+          "tokens": 264,
+          "omittedAtTraining": "护盾和物理护盾。"
+        },
+        {
+          "id": "rule:소생",
+          "tokens": 337,
+          "omittedAtTraining": "斯之噬提供的护盾）。\n屏障与复苏搭配时会额外提供随等级成长的护盾；生命值低于40%时，护盾会提升至随等级成长的数值。\n治疗术与复苏搭配时会额外提供随等级成长的治疗；生命值低于40%时，治疗量会提升至随等级成长的数值。"
+        },
+        {
+          "id": "rule:콩콩이 소환",
+          "tokens": 455,
+          "omittedAtTraining": "之行不会触发艾黎——也就是说，不能用碧波之牢命中友军来为其提供护盾。）（部分增益效果可能不会触发对友军的效果，具体行为视情况而定。例如，班德尔管弦乐队提供给友军的攻击速度增益不会触发艾黎。）\n艾黎的护盾会触发炽热香炉和流水法杖的效果，使原本没有治疗或护盾技能的英雄也能触发这些效果。\n艾黎有特殊判定：会在引燃施加第一段伤害时触发。\n艾黎不会对受到生命源泉治疗的友军触发。\n艾黎不会触发法术效果。\n艾黎不会被阻挡飞行道弹的效果阻挡。\n英雄回城时，艾黎也会出现并播放回城动画。（在此期间，艾黎拥有独立的 1350 视野范围；如果玩家在草丛附近回城且面朝"
+        },
+        {
+          "id": "rule:액시옴 비전 마법사",
+          "tokens": 451,
+          "omittedAtTraining": "额外治疗和护盾。）\n公理秘术不会增强自我治疗效果。（公理秘术会增强明确应用生命偷取效果的终极技能通过生命偷取得到的治疗。）（它有特殊处理，会增强蒙多医生 R「极限剂量」提供的回复效果。）\n公理秘术会影响黑默丁格 R（H-28Q 尖端炮台、海克斯科技火箭集群、CH-3X 闪电手雷）和卡尔玛 R（灵魂烈焰、焕然一新、蔑视）的强化技能。\n公理秘术只会增强第一次「冲啊啊啊啊啊！！！」护盾。\n公理秘术不会增强莫德凯撒「轮回绝境」造成的最大生命值削减。\n赛恩在「荣耀归于死亡」期间无法受益于公理秘术的冷却返还。\n图奇的「火力"
+        },
+        {
+          "id": "rule:마나순환 팔찌",
+          "tokens": 259,
+          "omittedAtTraining": "值。）"
+        },
+        {
+          "id": "rule:빛의 망토",
+          "tokens": 434,
+          "omittedAtTraining": "召唤师技能冷却缩减可能使冷却时间降至阈值以下；例如，闪现在召唤师峡谷中的冷却时间会降至 230.77 秒，在极地大乱斗中会降至 150 秒，从而进入中档位，使灵光披风触发时只提供 20% 移动速度加成。）（传送经过特殊处理，始终属于最高档位（佐伊通过窃法巧手施放时除外）。）（佐伊通过窃法巧手施放召唤师技能时，始终采用该技能的冷却时间，因此属于最低档位。）\n同时激活多个召唤师技能时，只会考虑能提供最高移动速度加成的技能。冷却阈值不同的召唤师技能各自拥有独立的灵光披风触发效果；最高加成的持续时间结束"
+        },
+        {
+          "id": "rule:기민함",
+          "tokens": 298,
+          "omittedAtTraining": "主动避免这种情况，因此某些轮次中的乘算加成会远低于应有数值，并产生波动。）（此内容在 14.17 版本后是否已过时？）"
+        },
+        {
+          "id": "rule:점화",
+          "tokens": 302,
+          "omittedAtTraining": "相位猛冲各提供1层。\n引燃会在第一跳伤害施加时触发召唤：艾黎。（后续跳次无法触发该符文。）\n伤害增幅效果无法提高引燃的伤害。"
+        },
+        {
+          "id": "rule:강타",
+          "tokens": 297,
+          "omittedAtTraining": "惩戒和原始惩戒可以被法术护盾格挡。\n在无限火力模式中：（冷却时间改为10秒。）（充能时间延长至120秒。）"
+        },
+        {
+          "id": "rule:표식",
+          "tokens": 372,
+          "omittedAtTraining": "3秒时间来施放冲刺。\n冲刺成功完成或再次施放时限结束后，技能栏位中的冲刺会切换回标记，随后标记进入冷却。（冲刺被打断时，再次施放时限不会提前结束。）\n即使被标记的目标处于不可被选取状态，也可以使用冲刺。\n由于嚎哭深渊光环提供70点召唤师技能急速，该召唤师技能的冷却时间会自动缩短至48秒。（其他来源的召唤师技能急速还可以进一步缩短冷却时间。）"
+        },
+        {
+          "id": "rule:순간이동",
+          "tokens": 402,
+          "omittedAtTraining": "法时不能使用传送。处于莫德凯撒的轮回绝境中时也无法使用。（被视野受限影响时，施放者在全地图范围内都无法使用传送。）\n传送期间的不可被选取状态不会摧毁飞行中的弹道。\n使用传送进行冲刺时，英雄模型会隐藏，视觉上会变成一颗拖尾光球。\n如果落地点没有足够的空位，施法者可能会落在行进方向上最近的空位。\n使用传送冲刺时，敌方视角下的小地图上会隐藏该英雄的头像。\n如果目标在传送引导或冲刺期间死亡，传送的引导和冲刺都不会因此取消。"
+        },
+        {
+          "id": "rule:미니언",
+          "tokens": 450,
+          "omittedAtTraining": "和水晶枢纽塔数量之差。\n[兵线金币价值] 截至V8.23，一波小兵的平均金币价值会随时间变化，在25:00时介于125至195之间。\n[兵线策略] 在没有玩家干预的情况下，一路兵线不会明显向前推进或后退。\n[兵线策略] 一波小兵追上前一波后，会开始将兵线推向敌方防御塔。\n[兵线策略] 大波小兵可以压制防御塔。\n[兵线策略] 玩家干扰敌方兵线，使己方小兵对敌方小兵造成的伤害多于承受的伤害时，该路兵线就会开始推进。\n[兵线策略] 最简单的做法是在己方小兵没有干扰的情况下，击杀一波中的所有敌方小"
+        },
+        {
+          "id": "rule:와드",
+          "tokens": 457,
+          "omittedAtTraining": "通用] 攻击守卫时，不会消耗唤潮者之佑娜美的效果。\n[通用] 攻击守卫时，魂引之灯锤石也不会重置额外伤害。\n[通用] 与小兵类似，如果击杀守卫时附近有多名友方英雄，所有英雄将平分总计124%的经验赏金。\n[通用] 像僵尸守卫这样的效果，即使没有获得金币，也会记录助攻。\n[通用] 自V12.22起，友方守卫在剩余持续时间达到总时长的三分之一时，会在小地图上显示为枯萎状态。\n[通用] 侦查守卫饰品在18级时，守卫图腾持续时间与充能回复时间达到平衡。此时，饰品放置的最后一个守卫自然消失时，下一层充能刚好可用。\n[通用] 1级"
+        },
+        {
+          "id": "rule:포탑",
+          "tokens": 456,
+          "omittedAtTraining": "正常运作和已被摧毁的防御塔都会生效。\n[装备] 唯一被动—防御加固：来自所有来源的伤害降低85%。该效果在5分钟后结束。\n[装备] 唯一被动：获得30%护甲穿透。\n[装备] 唯一被动—闪避穿透：防御塔攻击完成前摇后无法被闪避、招架或拦截。不过，若目标变为不可被选取等效果使追踪弹道消失，该攻击仍会被摧毁。\n[装备] 唯一被动—蓄势待发：每次防御塔命中英雄，造成的伤害提高40%，最多提升120%。最后一发攻击命中英雄3秒后，该效果重置；切换目标不会使其重置。\n[装备] 唯一被动—强化护甲：附近没有敌方小兵或召唤出的峡谷先锋时，受到的伤害降低"
+        },
+        {
+          "id": "rule:시야 점수",
+          "tokens": 414,
+          "omittedAtTraining": "存在3处或更多时最高降至-75%。如果守卫位于草丛中，线上小兵不计为视野重叠。\n[守卫存续时间修正] 守卫离己方基地非常近时，获得的视野得分可能会降低：在己方增益野怪营地附近约为-0%，到基地墙边则降至约-50%。\n[守卫存续时间修正] 守卫非常靠近友方建筑或位于己方基地内时，其分值修正为-100%。\n[守卫存续时间修正] 如果守卫很快被敌人摧毁，仍会按至少存续20秒计算存续时间得分（0.33点）。"
+        },
+        {
+          "id": "mech:저항과-피해-감소",
+          "tokens": 314,
+          "omittedAtTraining": " 1당 실효 체력 1%는 저항이 높아도 그대로다.\n  \"마법 저항력을 더 올려도 소용없다\"는 말은 틀렸고, 실제로 소용없게 만드는 것은 아래의 관통과 감소다."
+        },
+        {
+          "id": "mech:관통과-감소,-그리고-적용-순서",
+          "tokens": 365,
+          "omittedAtTraining": "치만큼 방어력을 무시한다.\n\n**조언에 쓰는 규칙**\n\n- 상대에게 저항 감소 스킬이 있으면 내 저항 아이템의 값이 실제로 떨어진다.\n  그래서 럼블 E 전기 작살처럼 마법 저항력을 깎는 스킬은 회피 우선순위가 가장 높다.\n- 고정 관통은 저항이 낮은 대상(딜러)에게, 비율 관통은 저항이 높은 대상(탱커)에게 값을 한다.\n"
+        },
+        {
+          "id": "meta:dragon",
+          "tokens": 498,
+          "omittedAtTraining": "攻击力: 70\n攻击速度（每秒次数）: 0.5\n攻击范围: 500\n\n### 山脉亚龙\n使用野怪等级6–18，不是攻击者的英雄等级。\n生命值: 5,898.5–11,510\n护甲: 65.6–170\n魔法抗性: 47.8–100\n攻击力: 105\n攻击速度（每秒次数）: 0.25\n攻击范围: 500\n\n### 云端亚龙\n使用野怪等级6–18，不是攻击者的英雄等级。\n生命值: 5,106.25–10,000\n护甲: 65.6–170\n魔法抗性: 47.8–100\n攻击力: 35\n攻击速度（每秒次数）: 1\n攻击范围: 500\n\n### 海克斯亚龙\n使用野怪等级6–18，不是攻击者的英雄等级"
+        },
+        {
+          "id": "meta:baron",
+          "tokens": 408,
+          "omittedAtTraining": "12点、30分钟26点、40分钟48点，之后达到上限。每秒变化公式及当前18–20分钟区间尚未核实。\n已核实男爵增益法术强度：击杀时20分钟20点、30分钟43点、40分钟80点，之后达到上限。每秒变化公式及18–20分钟区间尚未核实。\n击杀时存活的队友获得持续180秒的男爵增益，死亡时失去；攻击力及法强按击杀时刻确定，持有期间不增长。\n男爵增益将回城引导时间减半至4秒。"
+        },
+        {
+          "id": "meta:buffs",
+          "tokens": 509,
+          "omittedAtTraining": "峡谷\n\n### 苍蓝雕纹魔像 友方增益\n蓝增益在英雄1/6/11级起提供10/15/20技能急速。\n蓝增益每5秒回复5%最大法力值加25点法力；每0.5秒回复0.5%最大法力值加2.5点。\n使用能量的英雄每5秒回复5%最大能量加25点；上限200时每秒7点，上限400时每秒9点。\n蓝增益持续120秒，被敌方英雄击杀时转移给击杀者。\n\n### 绯红印记树怪 友方增益\n红增益在普攻命中后2秒内造成3次真实伤害；英雄1–5级总计15点，6级起每级加3，18级54点，完成上路任务达到20级时60点。\n红增益在英雄1/4/6/11级起每5秒回复最大生命值的0.5/1/1.5/3%；与英雄"
+        },
+        {
+          "id": "meta:monster-baron",
+          "tokens": 476,
+          "omittedAtTraining": "00层，持续8秒。\n酸液池造成100%攻击力的魔法伤害，残留酸液减速60%。\n酸液喷射对直线上的单位造成100%攻击力的魔法伤害。\n触手攻击造成100%攻击力的魔法伤害，并击飞1.25秒。\n猎杀形态的闪电造成目标当前生命值20%的魔法伤害，连续后续命中的伤害逐次降低50%。\n根据26.1官方改动和客户端系数，领地形态拉拽造成100%攻击力的魔法伤害。维基140%的数值与这些来源不符。\n全视形态裂隙的总伤害在26.1改为140%攻击力的魔法伤害。维基仍保留改动前的固定1000伤害。\n26.1官方说明有每秒降低周围敌人0.5护甲和魔抗的光环，但维基记录其未在游戏中生效，目前无法确认。"
+        },
+        {
+          "id": "meta:monster-infernal",
+          "tokens": 259,
+          "omittedAtTraining": "不同。"
+        },
+        {
+          "id": "meta:monster-blue",
+          "tokens": 321,
+          "omittedAtTraining": "5点。\n使用能量的英雄每5秒回复5%最大能量加25点；上限200时每秒7点，上限400时每秒9点。\n蓝增益持续120秒，被敌方英雄击杀时转移给击杀者。"
+        },
+        {
+          "id": "meta:monster-red",
+          "tokens": 395,
+          "omittedAtTraining": "/4/6/11级起每5秒回复最大生命值的0.5/1/1.5/3%；与英雄、防御塔或史诗野怪战斗时不生效。\n红增益减速存在来源冲突：官方26.1近战为1/6/11级起10/15/20%，当前维基模板为10/15/25%；维基远程为5/7.5/12.5%，持续3秒，尚未确认当前值。\n红增益持续120秒，被敌方英雄击杀时转移给击杀者。"
+        }
+      ]
+    }
+  },
+  "diagnosticCaseRows": 164
+}

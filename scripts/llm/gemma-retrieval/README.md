@@ -47,3 +47,11 @@ python3 -m unittest discover -s scripts/llm/gemma-retrieval -p 'test_*.py'
 평가기는 질문·정답·분할·문서 지문과 임베딩 입력 지문을 확인한다. 최초 실험의 native NPZ에는 입력 지문이 없었으므로, 원격 스냅샷 일치를 확인한 뒤 벡터 배열을 바꾸지 않고 메타데이터만 추가했다. 원본 체크포인트와 변경 전후 해시는 [실험 보고서](../../../research/llm-evals/workflow/reports/gemma-tuning-20261008/README.md)에 기록한다.
 
 완료 후 기본 모델·가상환경·중간 백업은 정리하고, 결과·선택된 어댑터·최종 복구 백업만 보존한다.
+
+## 성능 차이 원인 분석
+
+[2026-10-08 원인 분석](../../../research/llm-evals/workflow/reports/gemma-diagnosis-20261008/README.md)은 같은 벡터에서 보정·문서 경쟁을 제거하고, 한국어 표현과 문서 길이를 바꾸며, 문서 길이·학습 범위를 고정한 세 재학습을 비교한다. `diagnose.py WORK OUTPUT`은 동결 벡터와 `frozen-deployed-doc-vectors.json`을 읽는다. `diagnostic_score.py WORK CANDIDATES OUTPUT/controlled-results.json`은 세 실험 모두를 채점하고 실제 앱 검색과의 일치를 확인한다. 학습 진단은 새 후보를 선택하거나 배포하지 않는다.
+
+`diagnostic_train.py ROOT`의 입력은 보고서에 보존한 동결 입력 묶음이다. `diagnostic-protocol.json`, `coverage-input.json`, `mined.json`, `initial-adapter/`, 기존 corpus·snapshot·기본 Gemma 벡터, 고정 리비전의 `native/`를 사용한다. 새 실험은 별도 ROOT에서 시작한다. 기존 체크포인트의 소스 지문이 다르면 이어 쓰지 않는다. 최초 업로드 소스와 유지되는 러너의 최종 아카이브 경로는 다르므로 복구 시 보고서의 frozen 소스를 사용한다.
+
+가벼운 데이터·러너 테스트는 위 `python3` 명령으로 실행한다. Torch·ONNX가 필요한 수치 진단 테스트는 `scripts/llm/tuning/test_gemma_*.py`에 두며 공통 `infrastructure`·`quality`의 기존 `tuning-infrastructure` 검사에서 실행된다.

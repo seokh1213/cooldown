@@ -63,6 +63,8 @@ CI도 위 baseline 비교 명령을 실행하고 결과·검토 패킷을 14일 
 
 EmbeddingGemma 검색 LoRA와 확장 질문 은행은 [학습·복구·비교 절차](../../../scripts/llm/gemma-retrieval/README.md)를 따른다. `npm run llm:train:gemma -- prepare WORK`로 현재 문서를 동결하고, 설치한 Python 환경으로 `colab WORK` 또는 `local WORK`를 실행한다. 새 test 84개는 `retrieval-v2` suite에 등록되며, `infrastructure`·`quality`에서 분할과 복구 러너 검사도 자동으로 돈다. train/dev는 회귀 채점에서 제외한다.
 
+[Gemma와 Qwen의 차이 원인 분석](reports/gemma-diagnosis-20261008/README.md)은 검색 보정·답변 임계값·문서 노출·표현 차이를 분리한다. 수치 진단 테스트는 기존 `tuning-infrastructure` 검사에 포함되며 이 보고서의 재학습은 모델 교체 승인이 아니다.
+
 ## 실제 브라우저 모델 비교
 
 Mac의 설치된 Chrome과 WebGPU를 사용한다. 초기 ONNX 외부 가중치·토크나이저는 모델 설정의 원본 위치에서 내려받으며 Chrome 프로필은 실행 전용 `.cache/quality/browser`다. 이미 사용 중인 포트나 WebGPU 실패를 다른 판정기로 대체하지 않는다.
