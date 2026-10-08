@@ -1,5 +1,7 @@
 # EmbeddingGemma 2 검색 튜닝, 2026-10-08
 
+**종료 상태, 2026-10-08:** Gemma 실험은 종료했다. 선택 어댑터 사본과 로컬 모델·체크포인트·벡터 백업은 삭제했으며 아래 보존·재현 절차는 삭제 전 기록이다. 현재 상태는 [최종 정리](../gemma-retirement-20261008/README.md)를 따른다.
+
 결론: LoRA는 기존 질문 검색을 개선했지만 현행 Qwen을 이기지 못했다. **배포 Qwen 웨이트와 인덱스를 유지한다.** 미리 정한 교체 조건을 통과하지 않아 학습 Gemma의 q4 export·WebGPU 검증으로 진행하지 않았다. 아래 수치는 문서 검색 결과이며 전체 챗봇 답변 정확도가 아니다.
 
 ## 검색 결과
@@ -39,7 +41,7 @@ T4 FP32 환경은 [training-environment.json](training-environment.json)에 고�
 
 이후 실제 Colab 할당이 사라져 원인 추정 없이 새 T4를 할당하고 마지막 검증된 302스텝으로 복구했다. 재실행한 310스텝 loss는 종료 전후 모두 0.35808682441711426으로 정확히 같았다. [interruption.json](interruption.json), [training-progress.jsonl](training-progress.jsonl)에 남겼다. 최종 파일 검증 후 소유 GPU를 반환했고 수집기도 종료했다.
 
-선택된 epoch-1 [어댑터](selected-adapter/adapter_config.json)는 저장소에 보존한다. 베이스 경로만 공개 저장소와 리비전으로 바꿨으며 텐서 바이트는 같다. 이미지·음성을 제외한 베이스를 먼저 로드해야 한다. 최종 334스텝 복구 체크포인트 37,686,532바이트와 동결 입력·평가 벡터 묶음 26,742,580바이트는 `~/.cache/cooldown-kev/gemma-adapters-20261008/`에 보존했다. [retention.json](retention.json)에 SHA256이 있다. 기본 모델·가상환경·중간 백업·임시 실행 폴더 네 곳은 삭제했다. 수집기와 실험 프로세스도 종료됐고 기존 사용자 Qwen 캐시의 SHA256은 그대로다. 공유 Chrome·Ollama는 유지했다. [cleanup.json](cleanup.json)에 기록했다.
+선택된 epoch-1 [당시 어댑터](https://github.com/seokh1213/cooldown/blob/9c5c07a84c8acb857a7c4bb0b1ddc0b5f53d7be8/research/llm-evals/workflow/reports/gemma-tuning-20261008/selected-adapter/adapter_config.json)는 저장소에 보존한다. 베이스 경로만 공개 저장소와 리비전으로 바꿨으며 텐서 바이트는 같다. 이미지·음성을 제외한 베이스를 먼저 로드해야 한다. 최종 334스텝 복구 체크포인트 37,686,532바이트와 동결 입력·평가 벡터 묶음 26,742,580바이트는 `~/.cache/cooldown-kev/gemma-adapters-20261008/`에 보존했다. [retention.json](retention.json)에 SHA256이 있다. 기본 모델·가상환경·중간 백업·임시 실행 폴더 네 곳은 삭제했다. 수집기와 실험 프로세스도 종료됐고 기존 사용자 Qwen 캐시의 SHA256은 그대로다. 공유 Chrome·Ollama는 유지했다. [cleanup.json](cleanup.json)에 기록했다.
 
 ## 재현
 

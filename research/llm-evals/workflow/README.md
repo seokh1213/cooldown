@@ -55,15 +55,11 @@ CI도 위 baseline 비교 명령을 실행하고 결과·검토 패킷을 14일 
 
 `infrastructure`는 같은 Node·타입 검사에 Colab 백업·복원·export·학습 도구의 Python 검사와 원격 실행 도구, 생성 결과 재개 검사를 더한다. Python 의존성은 `uv`의 별도 환경을 사용한다.
 
-## 임베딩 모델 로컬 비교
+## 종료한 Gemma 비교와 공통 검색 평가
 
-`npm run llm:test:embeddinggemma -- --out research/.cache/embeddinggemma2-report`로 현행 검색 LoRA와 EmbeddingGemma 2 q4를 비교한다. 문서 갱신 효과를 구분하고 임계값은 dev에서만 선택한다. 학습 없는 짧은 본문·전체 본문 변형, 새 문서 진단, CPU 비용, 앱 하이브리드 함수와 선택 일치를 함께 남긴다. 집중 단위 검사는 `infrastructure`와 `quality`에도 포함된다.
+Gemma는 채택하지 않고 [실험을 종료했다](reports/gemma-retirement-20261008/README.md). 학습·비교 npm 명령, 선택 어댑터의 작업 사본과 로컬 모델·체크포인트 백업은 제거했다. [기본 모델 비교](reports/embeddinggemma2-20261008/README.md), [검색 LoRA 결과](reports/gemma-tuning-20261008/README.md), [차이 원인 분석](reports/gemma-diagnosis-20261008/README.md)은 기록으로 남긴다.
 
-[2026-10-08 결과와 판정 기준](reports/embeddinggemma2-20261008/README.md)에서 WebGPU 진입 조건과 라벨 한계를 확인한다. 이 명령은 로컬 비교용이며 모델을 배포하거나 WebGPU를 자동 실행하지 않는다.
-
-EmbeddingGemma 검색 LoRA와 확장 질문 은행은 [학습·복구·비교 절차](../../../scripts/llm/gemma-retrieval/README.md)를 따른다. `npm run llm:train:gemma -- prepare WORK`로 현재 문서를 동결하고, 설치한 Python 환경으로 `colab WORK` 또는 `local WORK`를 실행한다. 새 test 84개는 `retrieval-v2` suite에 등록되며, `infrastructure`·`quality`에서 분할과 복구 러너 검사도 자동으로 돈다. train/dev는 회귀 채점에서 제외한다.
-
-[Gemma와 Qwen의 차이 원인 분석](reports/gemma-diagnosis-20261008/README.md)은 검색 보정·답변 임계값·문서 노출·표현 차이를 분리한다. 수치 진단 테스트는 기존 `tuning-infrastructure` 검사에 포함되며 이 보고서의 재학습은 모델 교체 승인이 아니다.
+질문 은행과 검색 평가·분할·복구 검사는 유지한다. 새 test 84개는 `retrieval-v2` suite에서 계속 회귀 채점하고 train/dev는 제외한다. `infrastructure`·`quality`의 수치 진단 검사도 유지한다. 당시 코드의 위치와 재현 제한은 [종료 안내](../../../scripts/llm/gemma-retrieval/README.md)에 있다. 현행 Qwen 웨이트와 배포 인덱스를 유지하며 후속 개선은 선택 사항이다.
 
 ## 실제 브라우저 모델 비교
 

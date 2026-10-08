@@ -1,5 +1,7 @@
 # Gemma 진단 재현과 보존
 
+종료 안내: 아래 로컬 백업은 사용자의 결정으로 삭제됐다. 이 파일은 당시 복구 절차의 기록이며 지금 실행 가능한 복구 안내가 아니다. [최종 정리](../gemma-retirement-20261008/README.md)를 참고한다.
+
 retention.json의 SHA256과 크기를 검증한 뒤 사용한다. archive에는 베이스 모델이나 인증 정보가 없다. 원래 평가 입력은 ../gemma-adapters-20261008/evaluation-inputs.tar.gz에 보존돼 있다.
 
 ## 점수 재생, GPU 불필요
