@@ -223,3 +223,33 @@ test("슬롯 접두사가 없는 무기 제목도 기존의 독립된 Q 스킬�
   assert.equal(result.entries[0].changes[0].section, "Q");
   assert.equal(result.entries[0].changes[0].sectionName?.en_US, "Calibrum · Moonshot");
 });
+
+test("다른 모드의 같은 제목·ID가 협곡으로 다시 들어오지 않는다", () => {
+  const result = parseOfficialArticle(`<h2 id="patch-champions">Champions</h2><h3>Test</h3><h4>Q - Test ability</h4>
+    <li>Damage: 10 ⇒ 20</li><h2>Arena</h2><h2 id="patch-champions">Champions (Arena)</h2>
+    <h3>Test</h3><li>Damage: 30 ⇒ 40</li><h2 id="patch-items">Items</h2><h3>Other</h3><li>Health: 50 ⇒ 60</li>`);
+  assert.equal(result.rowCount, 1);
+  assert.equal(result.entities.length, 1);
+  assert.equal(result.coverage?.at(-1)?.scope, "mode");
+});
+
+test("시즌 시작의 별도 체계·신규 아이템·챔피언 소개 제목도 수집한다", () => {
+  const result = parseOfficialArticle(`<h2 id="patch-role-quests">Role Quests</h2><li>Experience: 100 ⇒ 120</li>
+    <h2 id="patch-new-items">New Items</h2><h4>First</h4><li>Health: 100</li><h4>Second</h4><li>Damage: 20</li>
+    <h2 id="patch-test-update">Test Update</h2><h4>Q - Test ability</h4><li>Damage: 10 ⇒ 20</li>`, { champions: { Test: ["Test"] } });
+  assert.deepEqual(result.entities.map(entry => [entry.kind, entry.title]), [["system", "Role Quests"], ["item", "First"], ["item", "Second"], ["champion", "Test"]]);
+});
+
+test("콜론이 없는 강조 제목과 문장·괄호 안의 추가 비교를 그대로 보존한다", () => {
+  const result = parseOfficialArticle(html.replace("Damage: 10 (+20% AP) ⇒ <strong>20 (+20% AP)</strong>", "<strong>Damage</strong> 10 ⇒ 20 (5 ⇒ 10)")
+    .replace("Targeting: Enabled ⇒ Removed", "Landing time reduced from 2s ⇒ 1.5s"));
+  const rows = result.entities[0].sections[0].rows;
+  assert.deepEqual(rows[1], { label: "Damage", before: "10", after: "20 (5 ⇒ 10)" });
+  assert.deepEqual(rows[0], { label: "", before: "Landing time reduced from 2s", after: "1.5s" });
+});
+
+test("새로운 목록 영역이 분류되지 않으면 공식 보관·배포 검증에서 거부한다", () => {
+  const original = archive();
+  original.articles.en_US.coverage = [{ title: "New objective", scope: "unknown", rows: 1 }];
+  assert.throws(() => validateOfficialArchive(original, "26.20"), /sections unclassified/);
+});

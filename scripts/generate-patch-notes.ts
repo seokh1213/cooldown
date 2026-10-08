@@ -13,7 +13,8 @@ import { ARCHIVE_DIRECTORY, REPORT_DIRECTORY, readJson, archiveJson, writeJson }
 import { collectPatchSkillCatalog, generatePatchSkillArchives } from "./patch-notes/skills";
 import { DATA_LOCALES, type DataLocale } from "../src/data/contracts/staticData";
 import { collectOfficialPatch } from "./patch-notes/official";
-import { applyOfficialPatch } from "./patch-notes/officialReport";
+import { applyOfficialPatch, officialIdentitySnapshot } from "./patch-notes/officialReport";
+import { applyCachedItemIcons, collectHistoricalItemIcons } from "./patch-notes/itemIcons";
 
 async function snapshot(ddragonVersion: string): Promise<PatchSnapshot> {
   const { patchVersion } = resolveStaticDataRelease(ddragonVersion);
@@ -45,13 +46,13 @@ async function generateReport(comparison: PatchComparison, releases: Map<string,
   if (!oldSource || !newSource) throw new Error("Archived numeric sources are required for review");
   const review = findUnmappedChanges(oldSource, newSource);
   report.reviewCount = review.length;
-  const manifest = decodeDataManifest(await readJson(path.resolve("public/data/version.json")));
-  if (currentPatch === manifest.patchVersion || process.argv.includes("--official") ||
-    await readJson(path.join(ARCHIVE_DIRECTORY, "official", `${currentPatch}.json`))) {
-    const catalogs = Object.fromEntries(await Promise.all(DATA_LOCALES.map(async locale =>
-      [locale, await collectPatchSkillCatalog(report, locale)] as const))) as Record<DataLocale, Awaited<ReturnType<typeof collectPatchSkillCatalog>>>;
-    report = applyOfficialPatch(report, after, await collectOfficialPatch(currentPatch), catalogs);
-  }
+  const catalogs = Object.fromEntries(await Promise.all(DATA_LOCALES.map(async locale =>
+    [locale, await collectPatchSkillCatalog(report, locale)] as const))) as Record<DataLocale, Awaited<ReturnType<typeof collectPatchSkillCatalog>>>;
+  const champions = Object.fromEntries(after.entities.filter(entity => entity.kind === "champion")
+    .map(entity => [entity.id, Object.values(entity.name)]));
+  report = applyOfficialPatch(report, officialIdentitySnapshot(after, before), await collectOfficialPatch(currentPatch, champions), catalogs);
+  await applyCachedItemIcons(report);
+  await collectHistoricalItemIcons(report);
   await generatePatchSkillArchives(report, after);
   await writeJson(path.join(ARCHIVE_DIRECTORY, "reviews", `${currentPatch}.json`), { previousPatch, currentPatch, changes: review });
   await writeJson(path.join(REPORT_DIRECTORY, `${currentPatch}.json`), report);

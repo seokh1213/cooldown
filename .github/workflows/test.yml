@@ -50,6 +50,9 @@ jobs:
           NODE_OPTIONS: --test-reporter=dot
         run: npm run test:data
 
+      - name: Audit every official patch report
+        run: npm run patch-notes:audit
+
       - name: Check champion mechanics answer regressions
         run: npm run llm:mechanics-eval -- research/champion-mechanics/reports/answer-quality.json --check
 

@@ -25,14 +25,15 @@ export function PatchEntry({ entry, language, report, skills }: {
   return (
     <article id={`patch-${entry.id}`} className="scroll-mt-20 border-b border-border/60 py-5">
       <header className="mb-3 flex items-center gap-2.5">
-        {entry.kind !== "system" && <Icon id={entry.id} ddragonVersion={IMAGE_VERSION} className="block size-10 shrink-0 rounded-md shadow-none!" />}
+        {entry.icon ? <img src={`${import.meta.env.BASE_URL}${entry.icon}`} alt="" className="block size-10 shrink-0 rounded-md" /> :
+          entry.kind !== "system" && <Icon id={entry.id} ddragonVersion={IMAGE_VERSION} className="block size-10 shrink-0 rounded-md shadow-none!" />}
         <h3 className="text-lg font-semibold tracking-tight">{entry.name[language]}</h3>
         <span className={`ml-auto text-xs font-medium ${IMPACT_CLASSES[entry.impact]}`}>{labels[entry.impact]}</span>
       </header>
       <div className="min-w-0 space-y-3 sm:pl-12">
         {groupPatchChanges(entry.changes, language).map(group => (
           <section key={`${group.section}:${group.title}`}>
-            {group.section === "stats" ? <h4 className="mb-1.5 text-sm font-medium text-muted-foreground">{entry.kind === "champion" ? labels.stats : labels.changes}</h4> :
+            {group.section === "stats" ? <h4 className="mb-1.5 text-sm font-medium text-muted-foreground">{group.title || (entry.kind === "champion" ? labels.stats : labels.changes)}</h4> :
               <PatchSkillTitle championId={entry.id} section={group.section} title={group.title} report={report}
                 info={skills?.[patchSkillKey(group.section, group.title)]} />}
             <dl className="space-y-1.5">

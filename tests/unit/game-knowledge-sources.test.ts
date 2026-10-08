@@ -53,6 +53,12 @@ test("공식 목록의 최신 패치와 사이트맵을 합치고 중복·다른
   assert.equal(officialPatches(content)[1].url, "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-26-20-notes");
 });
 
+test("2025 시즌 1의 두 가지 공식 주소를 게임 데이터의 패치 번호에 연결한다", () => {
+  const urls = ["patch-25-s1-1-notes", "patch-25-s1-2-notes", "patch-2025-s1-3-notes"];
+  const content = urls.map(url => `<loc>https://www.leagueoflegends.com/en-us/news/game-updates/${url}/</loc>`).join("");
+  assert.deepEqual(officialPatches(content).map(source => source.patch), ["25.1", "25.2", "25.3"]);
+});
+
 test("공식 본문의 핫픽스는 포함하고 footer와 스크립트는 제외한다", () => {
   const article = '<main><div id="patch-notes-container"><h2>Mid-Patch Updates</h2><p>Damage 100</p></div><footer>Navigation</footer></main><script>build 123</script>';
   assert.equal(officialBody(article), "Mid-Patch Updates Damage 100");

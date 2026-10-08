@@ -5,8 +5,10 @@ import { decodePatchNotesReport, type TextPatchChange } from "../../src/data/con
 import { DATA_LOCALES } from "../../src/data/contracts/staticData";
 import { validateOfficialArchive, type OfficialPatchArchive } from "../../scripts/patch-notes/official";
 import { localizedOfficialArticle } from "../../scripts/patch-notes/officialLocalization";
-import { applyOfficialPatch } from "../../scripts/patch-notes/officialReport";
+import { applyOfficialPatch, officialIdentitySnapshot } from "../../scripts/patch-notes/officialReport";
 import { comparePatchSnapshots } from "../../scripts/patch-notes/diff";
+import { applyCachedItemIcons } from "../../scripts/patch-notes/itemIcons";
+import { IMAGE_VERSION } from "../../src/data/generated/assetVersion";
 
 const read = (file: string) => JSON.parse(fs.readFileSync(file, "utf8"));
 
@@ -35,7 +37,7 @@ test("공식 출처가 있는 모든 보고서는 원문의 모든 행과 3개 �
     "The current patch must include official balance changes");
   for (const { patchVersion } of index.patches) {
     const report = decodePatchNotesReport(read(`public/patch-notes/${patchVersion}.json`), patchVersion);
-    if (!report.officialSource) continue;
+    assert.ok(report.officialSource, `${patchVersion}: official archive required`);
     const archive = read(`data/patch-notes/official/${patchVersion}.json`) as OfficialPatchArchive;
     validateOfficialArchive(archive, patchVersion);
     for (const locale of DATA_LOCALES) {
@@ -44,6 +46,8 @@ test("공식 출처가 있는 모든 보고서는 원문의 모든 행과 3개 �
     }
     const rows = new Set<string>();
     for (const entry of report.entries) {
+      if (entry.kind === "item") assert.ok(fs.existsSync(entry.icon ? `public/${entry.icon}` :
+        `public/img/${IMAGE_VERSION}/item/${entry.id}.webp`), `${patchVersion}: item icon ${entry.id}`);
       for (const change of entry.changes) {
         assert.equal(change.valueType, "text");
         const text = change as TextPatchChange;
@@ -51,8 +55,8 @@ test("공식 출처가 있는 모든 보고서는 원문의 모든 행과 3개 �
         verifyLocalizedRow(text, entry.id, archive);
       }
     }
-    assert.equal(rows.size, archive.articles.en_US.rowCount, patchVersion);
-    for (const [entityIndex, entity] of archive.articles.en_US.entities.entries()) {
+    assert.equal(rows.size, localizedOfficialArticle(archive, "en_US").rowCount, patchVersion);
+    for (const [entityIndex, entity] of localizedOfficialArticle(archive, "en_US").entities.entries()) {
       for (const [sectionIndex, section] of entity.sections.entries()) {
         for (const rowIndex of section.rows.keys()) assert.ok(rows.has(`official/${entityIndex}/${sectionIndex}/${rowIndex}`));
       }
@@ -94,8 +98,8 @@ test("중국어 원문의 누락·오타와 합쳐진 행을 숨기지 않고 �
   assert.ok(sky.some(change => change.label.zh_CN === "生命" && change.after.zh_CN === "450"));
 });
 
-test("공식 원문이 있는 여섯 패치를 재생성해도 스킬 묶음과 아이콘 연결을 보존한다", () => {
-  for (const patch of ["26.15", "26.16", "26.17", "26.18", "26.19", "26.20"]) {
+test("색인의 모든 패치를 오프라인 재생성해도 공개 보고서와 스킬 연결이 같다", async () => {
+  for (const { patchVersion: patch } of read("public/patch-notes/index.json").patches) {
     const published = decodePatchNotesReport(read(`public/patch-notes/${patch}.json`), patch);
     const before = read(`data/patch-notes/snapshots/${published.previousPatchVersion}.json`);
     const after = read(`data/patch-notes/snapshots/${patch}.json`);
@@ -106,7 +110,8 @@ test("공식 원문이 있는 여섯 패치를 재생성해도 스킬 묶음과 
       en_US: read(`data/patch-notes/skill-catalogs/${patch}.en_US.json`),
       zh_CN: read(`data/patch-notes/skill-catalogs/${patch}.zh_CN.json`),
     };
-    const rebuilt = applyOfficialPatch(numeric, after, read(`data/patch-notes/official/${patch}.json`), catalogs);
+    const rebuilt = applyOfficialPatch(numeric, officialIdentitySnapshot(after, before), read(`data/patch-notes/official/${patch}.json`), catalogs);
+    await applyCachedItemIcons(rebuilt);
     assert.deepEqual(JSON.parse(JSON.stringify(rebuilt)), published, patch);
   }
 });

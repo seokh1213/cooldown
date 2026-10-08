@@ -53,6 +53,7 @@ export function patchGameDataKey(change: PatchChange): string {
 export interface PatchNoteEntry extends Omit<PatchSnapshotEntity, "metrics"> {
   impact: PatchImpact;
   changes: PatchChange[];
+  icon?: string;
 }
 
 export interface PatchNotesReport {
@@ -109,6 +110,8 @@ export function decodePatchNotesReport(value: unknown, patchVersion: string): Pa
       !["champion", "item", "system"].includes(String(entry.kind)) || !Array.isArray(entry.changes)) {
       throw new Error("Invalid patch notes entry");
     }
+    if (entry.icon !== undefined && (entry.kind !== "item" || typeof entry.icon !== "string" ||
+      !/^patch-notes\/item-icons\/\d+\.\d+\/\d+\.webp$/.test(entry.icon))) throw new Error("Invalid historical item icon");
     for (const change of entry.changes) {
       if (!isRecord(change) || !isRecord(change.label) || typeof change.section !== "string" ||
         !["buff", "nerf", "adjustment"].includes(String(change.impact)) ||

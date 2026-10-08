@@ -26,8 +26,8 @@ export function officialPatches(content: string): Array<{ patch: string; url: st
   const patches = [...content.matchAll(/<loc>([^<]+)<\/loc>|\bhref=["']([^"']+)["']/g)].flatMap(([, location, href]) => {
     const link = location ?? href;
     const url = link.startsWith("/en-us/") ? `https://www.leagueoflegends.com${link}` : link;
-    const match = url.match(/^https:\/\/www\.leagueoflegends\.com\/en-us\/news\/game-updates\/(?:league-of-legends-)?patch-(\d+)-(\d+)-notes\/?$/);
-    return match ? [{ patch: `${Number(match[1])}.${Number(match[2])}`, url }] : [];
+    const match = url.match(/^https:\/\/www\.leagueoflegends\.com\/en-us\/news\/game-updates\/(?:league-of-legends-)?patch-(\d+)-(?:s1-)?(\d+)-notes\/?$/);
+    return match ? [{ patch: `${Number(match[1]) % 100}.${Number(match[2])}`, url }] : [];
   });
   return [...new Map(patches.map(patch => [patch.patch, patch])).values()].sort((a, b) => {
     const [ay, an] = a.patch.split(".").map(Number);
