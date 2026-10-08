@@ -115,8 +115,8 @@ test("patch stat glyphs load and past versions select their own skills", async (
 
   await page.getByRole("navigation", { name: "패치 기록" }).getByRole("button", { name: "26.18", exact: true }).click();
   await expect(page).toHaveURL(/patch=26.18/);
-  await expect(page.locator("article")).toHaveCount(8);
-  const skill = page.locator("[data-skill-trigger]").first();
+  await expect(page.locator("article")).toHaveCount(12);
+  const skill = page.locator("#patch-Cassiopeia").getByRole("button", { name: "Q 맹독 폭발", exact: true });
   await expect(skill).toHaveAttribute("data-skill-patch", "26.18");
   await skill.click();
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -174,7 +174,7 @@ test.describe("mobile patch skills", () => {
     await expect(skill).toBeFocused();
     await expect(page.getByRole("tooltip")).toHaveCount(0);
     await page.getByRole("combobox", { name: "패치 기록" }).selectOption("26.18");
-    await expect(page.locator("article")).toHaveCount(8);
+    await expect(page.locator("article")).toHaveCount(12);
     await expect(page.locator("[data-skill-trigger]").first()).toHaveAttribute("data-skill-patch", "26.18");
   });
 });

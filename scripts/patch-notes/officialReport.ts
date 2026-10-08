@@ -1,12 +1,13 @@
-import type { DataLocale } from "../../src/data/contracts/staticData";
+import { DATA_LOCALES, type DataLocale } from "../../src/data/contracts/staticData";
 import type { PatchImpact, PatchMetric, PatchNoteEntry, PatchNotesReport, PatchSnapshot, PatchSnapshotEntity, TextPatchChange } from "../../src/data/contracts/patchNotes";
 import { combinedImpact } from "./diff";
 import { officialText, validateOfficialArchive, type OfficialPatchArchive } from "./official";
 import type { OfficialEntity, OfficialRow, OfficialSection } from "./officialParser";
 import { text } from "./metricLabels";
+import { localizedOfficialArticle, officialNumbers } from "./officialLocalization";
 
 const normalized = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
-const numbers = (value: string) => [...value.matchAll(/\d*\.?\d+/g)].map(match => Number(match[0]));
+const numbers = officialNumbers;
 type SkillNames = Record<DataLocale, Record<string, { passive: { name: string }; spells: Array<{ name: string }> }>>;
 
 export function officialImpact(row: OfficialRow): PatchImpact {
@@ -17,15 +18,23 @@ export function officialImpact(row: OfficialRow): PatchImpact {
   if (left.length !== right.length) return "adjustment";
   const deltas = right.map((value, index) => value - left[index]).filter(value => Math.abs(value) > 1e-6);
   if (!deltas.length || (!deltas.every(value => value > 0) && !deltas.every(value => value < 0))) return "adjustment";
-  const lower = /cooldown|mana cost|resource cost/i.test(row.label);
+  const lower = /cooldown|cost|recipe|cast time|time between casts|lockout|penalty/i.test(row.label);
   return (deltas[0] > 0) !== lower ? "buff" : "nerf";
 }
 
-function matchingEntities(entity: OfficialEntity, snapshot: PatchSnapshot): PatchSnapshotEntity[] {
+function matchingEntities(entity: OfficialEntity, snapshot: PatchSnapshot, ids?: string[]): PatchSnapshotEntity[] {
   if (entity.kind === "system") return [];
+  if (ids) {
+    const mapped = ids.map(id => snapshot.entities.find(candidate => candidate.kind === entity.kind && candidate.id === id));
+    if (!ids.length || mapped.some(candidate => !candidate)) throw new Error(`Official entity mapping missing: ${entity.title}`);
+    return mapped as PatchSnapshotEntity[];
+  }
   const title = normalized(entity.title);
+  const canonical = snapshot.entities.find(candidate => candidate.kind === entity.kind && normalized(candidate.id) === title);
+  if (canonical) return [canonical];
   const matches = snapshot.entities.filter(candidate => candidate.kind === entity.kind &&
-    (normalized(candidate.name.en_US) === title || normalized(candidate.id) === title));
+    normalized(candidate.name.en_US) === title);
+  if (entity.kind === "champion" && matches.length > 1) throw new Error(`Official champion ambiguous: ${entity.title}`);
   if (matches.length) return matches;
   if (entity.kind === "item") {
     return snapshot.entities.filter(candidate => candidate.kind === "item" &&
@@ -34,22 +43,31 @@ function matchingEntities(entity: OfficialEntity, snapshot: PatchSnapshot): Patc
   throw new Error(`Official champion not in snapshot: ${entity.title}`);
 }
 
-function sectionMetadata(section: OfficialSection, entity: PatchSnapshotEntity | undefined, report: PatchNotesReport, catalogs?: SkillNames): {
+function sectionMetadata(section: OfficialSection, entity: PatchSnapshotEntity | undefined, report: PatchNotesReport, options: {
+  catalogs?: SkillNames; titles: TextPatchChange["label"];
+}): {
   section: string; sectionName?: TextPatchChange["sectionName"]; metrics: PatchMetric[];
 } {
   if (!entity || entity.kind !== "champion") return { section: "stats", metrics: entity?.metrics ?? [] };
-  const slot = /^([QWER])\s*[-–]/.exec(section.title)?.[1] ?? (/^Passive\b/.test(section.title) ? "P" : undefined);
+  const prefix = /^(R[QWE]|[QWER])\s*[-–]/.exec(section.title)?.[1];
+  const slot = prefix?.[0] ?? (/^Passive\b/.test(section.title) ? "P" : undefined);
+  const abilityName = section.title.replace(/^(?:R[QWE]|[QWER]|Passive)\s*[-–]\s*/, "");
   const existing = report.entries.find(entry => entry.id === entity.id)?.changes.find(change =>
-    slot ? change.section === slot : change.sectionName?.en_US.includes(section.title));
-  const metric = existing ?? entity.metrics.find(candidate => candidate.section === slot);
+    change.section === slot && normalized(change.sectionName?.en_US ?? "") === normalized(abilityName));
+  const metric = existing ?? entity.metrics.find(candidate => candidate.section === slot &&
+    normalized(candidate.sectionName?.en_US ?? "") === normalized(abilityName));
   if (metric) return { section: metric.section, sectionName: metric.sectionName,
     metrics: entity.metrics.filter(candidate => candidate.section === metric.section && candidate.sectionName?.en_US === metric.sectionName?.en_US) };
   if (/Base Stats/i.test(section.title)) return { section: "stats", metrics: entity.metrics.filter(candidate => candidate.section === "stats") };
+  const catalogs = options.catalogs;
   if (slot && catalogs) return { section: slot, metrics: [], sectionName: officialText(locale => {
     const champion = catalogs[locale][entity.id];
     const name = slot === "P" ? champion?.passive.name : champion?.spells[["Q", "W", "E", "R"].indexOf(slot)]?.name;
     if (!name) throw new Error(`Official skill name missing: ${entity.id}.${slot}.${locale}`);
-    return name;
+    const english = catalogs.en_US[entity.id];
+    const canonicalName = slot === "P" ? english.passive.name : english.spells[["Q", "W", "E", "R"].indexOf(slot)].name;
+    return normalized(canonicalName) === normalized(abilityName) ? name
+      : options.titles[locale].replace(/^(?:R[QWE]|[QWER]|Passive|기본 지속 효과)\s*[-–]\s*/, "");
   }) };
   throw new Error(`Official ability slot unresolved: ${entity.id} ${section.title}`);
 }
@@ -68,12 +86,15 @@ function buildChanges(options: {
   const { archive, entityIndex, snapshotEntity, report, itemIndex, itemCount } = options;
   const english = archive.articles.en_US.entities[entityIndex];
   return english.sections.flatMap((section, sectionIndex) => {
-    const metadata = sectionMetadata(section, snapshotEntity, report, options.catalogs);
+    const metadata = sectionMetadata(section, snapshotEntity, report, { catalogs: options.catalogs,
+      titles: officialText(locale => archive.articles[locale].entities[entityIndex].sections[sectionIndex].title) });
     return section.rows.map((original, rowIndex): TextPatchChange => {
       const row = rowForItem(original, itemIndex, itemCount);
       const localized = (locale: DataLocale) => rowForItem(archive.articles[locale].entities[entityIndex].sections[sectionIndex].rows[rowIndex], itemIndex, itemCount);
-      const metric = metadata.metrics.find(candidate => candidate.values.length === numbers(row.after).length &&
-        candidate.values.every((value, index) => Math.abs(value - numbers(row.after)[index]) < 1e-5)) ?? metadata.metrics[0];
+      const metric = metadata.section === "stats"
+        ? metadata.metrics.find(candidate => normalized(candidate.label.en_US) === normalized(row.label))
+        : metadata.metrics.find(candidate => candidate.values.length === numbers(row.after).length &&
+          candidate.values.every((value, index) => Math.abs(value - numbers(row.after)[index]) < 1e-5)) ?? metadata.metrics[0];
       return { id: `official/${entityIndex}/${sectionIndex}/${rowIndex}`, valueType: "text",
         sourceKey: `official/${entityIndex}/${sectionIndex}/${rowIndex}`, gameDataKey: metric?.sourceKey,
         label: original.label ? officialText(locale => localized(locale).label) : text("변경 사항", "Change", "改动"),
@@ -86,11 +107,15 @@ function buildChanges(options: {
 
 export function applyOfficialPatch(report: PatchNotesReport, snapshot: PatchSnapshot, archive: OfficialPatchArchive, catalogs?: SkillNames): PatchNotesReport {
   validateOfficialArchive(archive, report.patchVersion);
+  const localized = { ...archive, articles: Object.fromEntries(DATA_LOCALES.map(locale =>
+    [locale, localizedOfficialArticle(archive, locale)])) as OfficialPatchArchive["articles"] };
   const entries: PatchNoteEntry[] = archive.articles.en_US.entities.flatMap((entity, entityIndex) => {
-    const matches = matchingEntities(entity, snapshot);
+    const mapping = archive.entityMappings?.find(candidate => candidate.entityIndex === entityIndex);
+    if (mapping && !mapping.reason) throw new Error(`Official entity mapping has no reason: ${entity.title}`);
+    const matches = matchingEntities(entity, snapshot, mapping?.ids);
     if (entity.kind !== "system" && !matches.length) throw new Error(`Official item not in snapshot: ${entity.title}`);
     return (matches.length ? matches : [undefined]).map((snapshotEntity, itemIndex) => {
-      const changes = buildChanges({ archive, entityIndex, snapshotEntity, report, itemIndex, itemCount: matches.length || 1, catalogs });
+      const changes = buildChanges({ archive: localized, entityIndex, snapshotEntity, report, itemIndex, itemCount: matches.length || 1, catalogs });
       return { id: snapshotEntity?.id ?? `system-${normalized(entity.title)}`, kind: entity.kind,
         name: snapshotEntity?.name ?? officialText(locale => archive.articles[locale].entities[entityIndex].title),
         changes, impact: combinedImpact(changes.map(change => change.impact)) };
@@ -99,5 +124,9 @@ export function applyOfficialPatch(report: PatchNotesReport, snapshot: PatchSnap
   return { ...report, entries, officialSource: {
     urls: officialText(locale => archive.articles[locale].url), hashes: officialText(locale => archive.articles[locale].sha256),
     rowCount: archive.articles.en_US.rowCount,
+    ...(archive.localizationCorrections?.length ? { note: text(
+      "일부 번역의 누락·오타는 영어·한국어 공식 원문과 대조해 보완했습니다.",
+      "Translation omissions and typos were corrected against the English and Korean official notes.",
+      "部分翻譯遺漏與錯字已依英文及韓文官方版本公告補正。") } : {}),
   } };
 }

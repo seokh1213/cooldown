@@ -6,12 +6,15 @@ import type { PatchText } from "../../src/data/contracts/patchNotes";
 import { getText, officialPatches, SITEMAP } from "../llm/game-knowledge/sources";
 import { officialArticleHtml, parseOfficialArticle, type OfficialArticle } from "./officialParser";
 import { ARCHIVE_DIRECTORY, archiveJson, readJson } from "./storage";
+import { localizedOfficialArticle, officialNumberFingerprint, type OfficialLocalizationCorrection } from "./officialLocalization";
 
 export interface OfficialPatchArchive {
   schemaVersion: 1;
   patchVersion: string;
   fetchedAt: string;
   articles: Record<DataLocale, OfficialArticle & { url: string; sha256: string }>;
+  localizationCorrections?: OfficialLocalizationCorrection[];
+  entityMappings?: Array<{ entityIndex: number; ids: string[]; reason: string }>;
 }
 
 const SITE_LOCALES: Record<DataLocale, string> = { ko_KR: "ko-kr", en_US: "en-us", zh_CN: "zh-tw" };
@@ -22,13 +25,12 @@ export function officialText(read: (locale: DataLocale) => string): PatchText {
 }
 
 function validateLocalizedValues(article: OfficialArticle, reference: OfficialArticle, where: string): void {
-  const fingerprint = (value: string) => JSON.stringify([...value.matchAll(/\d*\.?\d+/g)]
-    .map(match => Number(match[0])).sort((a, b) => a - b));
   for (const [entityIndex, entity] of article.entities.entries()) {
     for (const [sectionIndex, section] of entity.sections.entries()) {
       for (const [rowIndex, row] of section.rows.entries()) {
         const original = reference.entities[entityIndex].sections[sectionIndex].rows[rowIndex];
-        if (fingerprint(row.before) !== fingerprint(original.before) || fingerprint(row.after) !== fingerprint(original.after)) {
+        if (officialNumberFingerprint(row.before) !== officialNumberFingerprint(original.before) ||
+          officialNumberFingerprint(row.after) !== officialNumberFingerprint(original.after)) {
           throw new Error(`Official locale values differ: ${where} ${entityIndex}/${sectionIndex}/${rowIndex}`);
         }
       }
@@ -43,8 +45,11 @@ export function validateOfficialArchive(value: unknown, patch: string): asserts 
   }
   const reference = archive.articles.en_US;
   if (!reference?.entities.length || !reference.rowCount) throw new Error(`Empty official patch: ${patch}`);
+  if (archive.localizationCorrections?.some(correction => !["ko_KR", "zh_CN"].includes(correction.locale))) {
+    throw new Error(`Invalid official localization correction: ${patch}`);
+  }
   for (const locale of DATA_LOCALES) {
-    const article = archive.articles[locale];
+    const article = localizedOfficialArticle(archive, locale);
     if (!article || !/^https:\/\/www\.leagueoflegends\.com\//.test(article.url) || !/^[a-f0-9]{64}$/.test(article.sha256)) {
       throw new Error(`Invalid official source: ${patch}.${locale}`);
     }

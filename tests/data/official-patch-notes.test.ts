@@ -4,6 +4,7 @@ import { test } from "node:test";
 import { decodePatchNotesReport, type TextPatchChange } from "../../src/data/contracts/patchNotes";
 import { DATA_LOCALES } from "../../src/data/contracts/staticData";
 import { validateOfficialArchive, type OfficialPatchArchive } from "../../scripts/patch-notes/official";
+import { localizedOfficialArticle } from "../../scripts/patch-notes/officialLocalization";
 
 const read = (file: string) => JSON.parse(fs.readFileSync(file, "utf8"));
 
@@ -12,8 +13,8 @@ function verifyLocalizedRow(change: TextPatchChange, itemId: string, archive: Of
   assert.ok(match, change.sourceKey);
   const [, entityIndex, sectionIndex, rowIndex] = match.map(Number);
   for (const locale of DATA_LOCALES) {
-    const row = archive.articles[locale].entities[entityIndex].sections[sectionIndex].rows[rowIndex];
-    assert.equal(change.label[locale], row.label);
+    const row = localizedOfficialArticle(archive, locale).entities[entityIndex].sections[sectionIndex].rows[rowIndex];
+    assert.equal(change.label[locale], row.label || { ko_KR: "변경 사항", en_US: "Change", zh_CN: "改动" }[locale]);
     if (archive.articles.en_US.entities[entityIndex].title === "World Atlas and Runic Compass") {
       const itemIndex = itemId === "3865" ? 0 : 1;
       assert.ok(["3865", "3866"].includes(itemId));
@@ -56,6 +57,39 @@ test("공식 출처가 있는 모든 보고서는 원문의 모든 행과 3개 �
     }
   }
   assert.equal(fs.existsSync("public/patch-notes/official"), false);
+});
+
+test("26.15~26.18은 공식 챔피언·아이템·룬·게임 체계를 빠짐없이 보존한다", () => {
+  const counts = [
+    ["26.15", 11, 3, 1, 69], ["26.16", 7, 10, 5, 49],
+    ["26.17", 14, 2, 0, 32], ["26.18", 11, 1, 0, 30],
+  ] as const;
+  for (const [patch, champions, items, systems, rows] of counts) {
+    const report = decodePatchNotesReport(read(`public/patch-notes/${patch}.json`), patch);
+    assert.equal(report.officialSource?.rowCount, rows, patch);
+    assert.equal(report.entries.filter(entry => entry.kind === "champion").length, champions, patch);
+    assert.equal(report.entries.filter(entry => entry.kind === "item").length, items, patch);
+    assert.equal(report.entries.filter(entry => entry.kind === "system").length, systems, patch);
+    assert.equal(report.entries.reduce((sum, entry) => sum + entry.changes.length, 0), rows, patch);
+    assert.equal(report.entries.some(entry => entry.id.startsWith("Jade_")), false, patch);
+  }
+});
+
+test("중국어 원문의 누락·오타와 합쳐진 행을 숨기지 않고 올바른 변경으로 표시한다", () => {
+  const original = read("data/patch-notes/official/26.18.json") as OfficialPatchArchive;
+  const correction = original.localizationCorrections![0];
+  assert.ok(correction.original!.before.startsWith("5 / 50"));
+  const report = decodePatchNotesReport(read("public/patch-notes/26.18.json"), "26.18");
+  const zaahen = report.entries.find(entry => entry.id === "Zaahen")!.changes as TextPatchChange[];
+  assert.ok(zaahen.some(change => change.before.zh_CN.startsWith("25 / 50")));
+  assert.ok(report.officialSource?.note);
+  const belveth = decodePatchNotesReport(read("public/patch-notes/26.15.json"), "26.15")
+    .entries.find(entry => entry.id === "Belveth")!.changes as TextPatchChange[];
+  assert.ok(belveth.some(change => change.label.en_US === "Out of Combat Move Speed" && change.after.zh_CN === "移除"));
+  const sky = decodePatchNotesReport(read("public/patch-notes/26.16.json"), "26.16")
+    .entries.find(entry => entry.id === "6610")!.changes as TextPatchChange[];
+  assert.equal(sky.length, 3);
+  assert.ok(sky.some(change => change.label.zh_CN === "生命" && change.after.zh_CN === "450"));
 });
 
 test("26.20의 누락된 챔피언 7종·아이템 3종·동작 변경을 복원했다", () => {

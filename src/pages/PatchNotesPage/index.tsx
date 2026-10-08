@@ -68,7 +68,10 @@ export default function PatchNotesPage() {
                 </div>}
               </div>
               </TooltipProvider>
-              <footer className="mt-4 text-[10px] leading-5 text-muted-foreground"><p>{report.officialSource ? labels.officialSourceNote : labels.sourceNote}</p></footer>
+              <footer className="mt-4 text-[10px] leading-5 text-muted-foreground">
+                <p>{report.officialSource ? labels.officialSourceNote : labels.sourceNote}</p>
+                {report.officialSource?.note && <p>{report.officialSource.note[lang]}</p>}
+              </footer>
             </>}
       </div>
       {index && patch && <PatchHistory index={index} selected={patch.patchVersion} language={lang} onSelect={onSelect} />}

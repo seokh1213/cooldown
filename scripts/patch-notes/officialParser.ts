@@ -1,4 +1,5 @@
 import type { PatchEntityKind } from "../../src/data/contracts/patchNotes";
+import { parseFragment, serialize, type DefaultTreeAdapterTypes } from "parse5";
 
 export interface OfficialRow { label: string; before: string; after: string }
 export interface OfficialSection { title: string; rows: OfficialRow[] }
@@ -36,11 +37,43 @@ export function officialArticleHtml(html: string): string {
   throw new Error("Official patch article body missing");
 }
 
-function sectionKind(title: string, attributes: string): PatchEntityKind | undefined {
-  if (/id=["']patch-champions["']/.test(attributes) || ["Champions", "챔피언", "英雄"].includes(title)) return "champion";
-  if (/id=["']patch-items["']/.test(attributes) || ["Items", "아이템", "道具", "装备"].includes(title)) return "item";
-  if (/id=["']patch-systems["']/.test(attributes) || ["Systems", "게임 체계", "系統", "系统"].includes(title)) return "system";
+function sectionKind(title: string, id?: string): PatchEntityKind | undefined {
+  if (id === "patch-champions" || ["Champions", "챔피언", "英雄"].includes(title)) return "champion";
+  if (id === "patch-items" || ["Items", "아이템", "道具", "装备"].includes(title)) return "item";
+  if (["patch-systems", "patch-runes"].includes(id ?? "") ||
+    ["Systems", "게임 체계", "系統", "系统", "Runes", "룬", "符文"].includes(title)) return "system";
   return undefined;
+}
+
+function containsBlock(node: DefaultTreeAdapterTypes.Node): boolean {
+  return "childNodes" in node && node.childNodes.some(child =>
+    ("tagName" in child && /^(?:h[234]|li)$/.test(child.tagName)) || containsBlock(child));
+}
+
+function* articleBlocks(node: DefaultTreeAdapterTypes.Node): Generator<DefaultTreeAdapterTypes.Element> {
+  if ("tagName" in node && (/^h[234]$/.test(node.tagName) || (node.tagName === "li" && !containsBlock(node)))) {
+    yield node;
+    return;
+  }
+  if ("childNodes" in node) for (const child of node.childNodes) yield* articleBlocks(child);
+}
+
+function blockRows(block: DefaultTreeAdapterTypes.Element): OfficialRow[] {
+  const html = serialize(block);
+  const arrows = html.match(/⇒|→/g)?.length ?? 0;
+  const labels = [...html.matchAll(/<strong\b[^>]*>[^<>]+<\/strong>\s*[:：]/gi)];
+  if (arrows > 1 && labels.length !== arrows) throw new Error(`Ambiguous official changes: ${plainText(html)}`);
+  const starts = arrows > 1 ? [0, ...labels.slice(1).map(match => match.index)] : [0];
+  return starts.map((start, index) => {
+    const title = plainText(html.slice(start, starts[index + 1]));
+    const arrow = title.match(/^(.*?)\s*(?:⇒|→)\s*(.+)$/);
+    const left = arrow?.[1] ?? title;
+    const colon = left.search(/[:：]/);
+    if (arrow && colon < 0) throw new Error(`Official change has no label: ${title}`);
+    return { label: colon >= 0 ? left.slice(0, colon).trim() : "",
+      before: arrow ? left.slice(colon + 1).trim() : "",
+      after: arrow ? arrow[2].trim() : colon >= 0 ? left.slice(colon + 1).trim() : title };
+  });
 }
 
 export function parseOfficialArticle(html: string): OfficialArticle {
@@ -51,11 +84,11 @@ export function parseOfficialArticle(html: string): OfficialArticle {
   let section: OfficialSection | undefined;
   let skip = false;
   let rowCount = 0;
-  for (const match of html.matchAll(/<(h[234]|li)\b([^>]*)>([\s\S]*?)<\/\1>/gi)) {
-    const [, tag, attributes, content] = match;
-    const title = plainText(content);
+  for (const block of articleBlocks(parseFragment(html))) {
+    const tag = block.tagName;
+    const title = plainText(serialize(block));
     if (tag === "h2") {
-      kind = sectionKind(title, attributes);
+      kind = sectionKind(title, block.attrs.find(attribute => attribute.name === "id")?.value);
       entity = undefined; section = undefined; skip = false;
       continue;
     }
@@ -72,12 +105,8 @@ export function parseOfficialArticle(html: string): OfficialArticle {
     if (skip) { excluded.push(title); continue; }
     if (!entity) throw new Error(`Official row has no entity: ${title}`);
     if (!section) { section = { title: "", rows: [] }; entity.sections.push(section); }
-    const arrow = title.match(/^(.*?)\s*(?:⇒|→)\s*(.+)$/);
-    const colon = arrow?.[1].search(/[:：]/) ?? -1;
-    if (arrow && colon < 0) throw new Error(`Official change has no label: ${title}`);
-    const row = arrow ? { label: arrow[1].slice(0, colon).trim(), before: arrow[1].slice(colon + 1).trim(), after: arrow[2].trim() }
-      : { label: "", before: "", after: title };
-    section.rows.push(row); rowCount++;
+    const rows = blockRows(block);
+    section.rows.push(...rows); rowCount += rows.length;
   }
   const populated = entities.map(entry => ({ ...entry, sections: entry.sections.filter(group => group.rows.length) }))
     .filter(entry => entry.sections.length);

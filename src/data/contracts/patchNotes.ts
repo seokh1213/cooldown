@@ -65,7 +65,7 @@ export interface PatchNotesReport {
   comparedItems: number;
   entries: PatchNoteEntry[];
   reviewCount: number;
-  officialSource?: { urls: PatchText; hashes: PatchText; rowCount: number };
+  officialSource?: { urls: PatchText; hashes: PatchText; rowCount: number; note?: PatchText };
 }
 
 export interface PatchNotesIndex {
@@ -122,6 +122,7 @@ export function decodePatchNotesReport(value: unknown, patchVersion: string): Pa
   }
   if (value.officialSource !== undefined && (!isRecord(value.officialSource) ||
     !isPatchText(value.officialSource.urls) || !isPatchText(value.officialSource.hashes) ||
+    (value.officialSource.note !== undefined && !isPatchText(value.officialSource.note)) ||
     !Number.isInteger(value.officialSource.rowCount) || Number(value.officialSource.rowCount) < 1)) {
     throw new Error("Invalid official patch source");
   }

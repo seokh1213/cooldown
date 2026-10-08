@@ -7,6 +7,7 @@ import { decodePatchNotesReport, type PatchSnapshot, type TextPatchChange } from
 import { comparePatchSnapshots } from "../../scripts/patch-notes/diff";
 import { filterPatchEntries, formatPatchValues } from "../../src/pages/PatchNotesPage/model";
 import { itemStatMetrics } from "../../scripts/patch-notes/collect";
+import { localizedOfficialArticle, officialNumberFingerprint } from "../../scripts/patch-notes/officialLocalization";
 
 const html = `<div id="patch-notes-container"><h2 id="patch-champions">Champions</h2>
 <h3 id="patch-duplicate">Test</h3><h4>Q - Test ability</h4>
@@ -15,8 +16,8 @@ const html = `<div id="patch-notes-container"><h2 id="patch-champions">Champions
 const name = { ko_KR: "테스트", en_US: "Test", zh_CN: "测试" };
 const sources = { ddragon: "16.20.1", cdragon: "16.20" };
 const snapshot: PatchSnapshot = { schemaVersion: 1, patchVersion: "26.20", sources, entities: [{
-  id: "Test", kind: "champion", name, metrics: [{ id: "cooldown", label: name, section: "Q", sectionName: name,
-    values: [10], unit: "seconds", favorable: "lower", sourceKey: "cooldown" }],
+  id: "Test", kind: "champion", name, metrics: [{ id: "cooldown", label: name, section: "Q",
+    values: [10], unit: "seconds", favorable: "lower", sourceKey: "cooldown", sectionName: { ...name, en_US: "Test ability" } }],
 }] };
 
 test("아이템 스킬 가속은 실제 CDragon 키를 읽어 20→10을 잃지 않는다", () => {
@@ -94,4 +95,115 @@ test("번역의 빈 제목을 건너뛰고 점수판 숫자 숨김을 협곡 밸
   const article = parseOfficialArticle(content);
   assert.equal(article.entities[0].sections.length, 1);
   assert.deepEqual(article.excluded, ["Death's Dance"]);
+});
+
+test("목록 안의 모드 제목을 놓치거나 부모 목록을 변경 행으로 수집하지 않는다", () => {
+  const article = parseOfficialArticle(`<h2>Champions</h2><h3>Test</h3><h4>Q - Test ability</h4>
+    <ul><li><div><ul><li>Damage: 1 ⇒ 2</li></ul></div></li>
+    <li><header><h2>Classic</h2></header></li><li>Damage: 2 ⇒ 9999</li></ul>`);
+  assert.equal(article.rowCount, 1);
+  assert.equal(article.entities[0].sections[0].rows[0].after, "2");
+  const systems = parseOfficialArticle(html.replace('<h2 id="patch-classic">Classic</h2>',
+    '<h2>Systems</h2><h4>Pets</h4><ul><li><h4>Support</h4><ul><li>Penalty: 25 ⇒ 33</li></ul></li></ul><h2>Classic</h2>'));
+  assert.equal(systems.entities.find(entity => entity.title === "Support")?.sections[0].rows[0].after, "33");
+});
+
+test("한 목록에 합쳐진 두 수치 행을 분리하고 룬도 협곡 체계로 보존한다", () => {
+  const article = parseOfficialArticle(html.replace('<h2 id="patch-classic">Classic</h2>',
+    '<h2>Runes</h2><h3>Test rune</h3><li><strong>Healing</strong>: 6 ⇒ <strong>4</strong> <strong>Health</strong>: 400 ⇒ <strong>450</strong></li><h2>Classic</h2>'));
+  const rune = article.entities.find(entity => entity.title === "Test rune")!;
+  assert.equal(rune.kind, "system");
+  assert.deepEqual(rune.sections[0].rows.map(row => [row.label, row.after]), [["Healing", "4"], ["Health", "450"]]);
+  assert.throws(() => parseOfficialArticle(html.replace("Targeting: Enabled ⇒ Removed", "Damage: 1 ⇒ 2; Health: 3 ⇒ 4")));
+});
+
+test("서술형 변경의 제목과 조건, 천 단위 쉼표·문자로 쓴 숫자를 보존한다", () => {
+  const article = parseOfficialArticle(html.replace("Targeting: Enabled ⇒ Removed", "New targeting: Small monsters are no longer valid targets"));
+  assert.deepEqual(article.entities[0].sections[0].rows[0], {
+    label: "New targeting", before: "", after: "Small monsters are no longer valid targets",
+  });
+  for (const [left, right] of [["3,200g", "3200골드"], ["every other attack", "기본 공격 2회마다"],
+    ["twice", "2회"], ["Halved for Magic Damage", "마법 피해는 50% 효과"], ["up to double", "最高可達雙倍"]]) {
+    assert.equal(officialNumberFingerprint(left), officialNumberFingerprint(right));
+  }
+  assert.notEqual(officialNumberFingerprint("25"), officialNumberFingerprint("5"));
+});
+
+test("번역 보정은 원문을 유지하고 지정한 누락 행만 추가하며 근거 불일치를 거부한다", () => {
+  const corrected = archive();
+  corrected.articles.zh_CN.entities[0].sections[0].rows.pop();
+  corrected.articles.zh_CN.rowCount--;
+  const missingRow = corrected.articles.en_US.entities[0].sections[0].rows[1];
+  corrected.localizationCorrections = [{ locale: "zh_CN", entityIndex: 0, sectionIndex: 0, rowIndex: 1,
+    original: null, replacement: missingRow, reason: "English and Korean both include this row" }];
+  validateOfficialArchive(corrected, "26.20");
+  assert.equal(localizedOfficialArticle(corrected, "zh_CN").rowCount, 2);
+  assert.equal(corrected.articles.zh_CN.rowCount, 1);
+  const result = applyOfficialPatch(comparePatchSnapshots({ ...snapshot, patchVersion: "26.19" }, snapshot), snapshot, corrected);
+  assert.ok(result.officialSource?.note?.ko_KR.includes("보완"));
+  corrected.localizationCorrections[0].original = missingRow;
+  assert.throws(() => validateOfficialArchive(corrected, "26.20"));
+});
+
+test("같은 이름의 클래식 챔피언 대신 정식 게임 ID와 일치하는 챔피언만 연결한다", () => {
+  const after = { ...snapshot, entities: [...snapshot.entities, { ...snapshot.entities[0], id: "Jade_Test" }] };
+  const result = applyOfficialPatch(comparePatchSnapshots({ ...after, patchVersion: "26.19" }, after), after, archive());
+  assert.deepEqual(result.entries.map(entity => entity.id), ["Test"]);
+});
+
+test("가격·재시전 간격·시전 후 잠금 증가를 상향으로 뒤집지 않는다", () => {
+  for (const label of ["Cost", "Recipe", "Time Between Casts", "Post-Cast Lockout", "Attack Cast Time", "Gold Penalty"]) {
+    assert.equal(officialImpact({ label, before: "1", after: "2" }), "nerf", label);
+  }
+});
+
+test("R 재사용 스킬과 모방 스킬을 원래 R의 이름으로 합치지 않는다", () => {
+  const original = archive();
+  const article = parseOfficialArticle(`<h2>Champions</h2><h3>Test</h3>
+    <h4>R - Base R</h4><li>Damage: 1 ⇒ 2</li>
+    <h4>RW - Mimic: Distortion</h4><li>Damage: 3 ⇒ 4</li>`);
+  for (const locale of ["en_US", "ko_KR", "zh_CN"] as const) original.articles[locale] = { ...original.articles[locale], ...article };
+  const after = { ...snapshot, entities: [{ ...snapshot.entities[0], metrics: [] }] };
+  const catalog = { Test: { passive: { name: "Passive" }, spells: ["Q", "W", "E", "Base R"].map(name => ({ name })) } };
+  const result = applyOfficialPatch(comparePatchSnapshots({ ...after, patchVersion: "26.19" }, after), after, original,
+    { en_US: catalog, ko_KR: catalog, zh_CN: catalog });
+  assert.deepEqual(result.entries[0].changes.map(change => [change.section, change.sectionName?.en_US]),
+    [["R", "Base R"], ["R", "Mimic: Distortion"]]);
+});
+
+test("이름이 바뀐 아이템은 근거 있는 ID 연결만 허용한다", () => {
+  const original = archive();
+  for (const locale of ["en_US", "ko_KR", "zh_CN"] as const) {
+    original.articles[locale].entities.push({ kind: "item", title: "Old item name", sections: [{ title: "", rows: [
+      { label: "Cost", before: "600", after: "700" },
+    ] }] });
+    original.articles[locale].rowCount++;
+  }
+  const after: PatchSnapshot = { ...snapshot, entities: [...snapshot.entities, { id: "3068", kind: "item", name, metrics: [] }] };
+  const report = comparePatchSnapshots({ ...after, patchVersion: "26.19" }, after);
+  assert.throws(() => applyOfficialPatch(report, after, original));
+  original.entityMappings = [{ entityIndex: 1, ids: ["3068"], reason: "Same item with a legacy name" }];
+  assert.equal(applyOfficialPatch(report, after, original).entries[1].id, "3068");
+  original.entityMappings[0].ids = ["missing"];
+  assert.throws(() => applyOfficialPatch(report, after, original));
+});
+
+test("아이템 효과의 숫자가 기본 체력과 같아도 체력 아이콘으로 연결하지 않는다", () => {
+  const original = archive();
+  for (const locale of ["en_US", "ko_KR", "zh_CN"] as const) {
+    original.articles[locale].entities.push({ kind: "item", title: "Item", sections: [{ title: "", rows: [
+      { label: "Duration", before: "3", after: "4" }, { label: "Health", before: "3", after: "4" },
+    ] }] });
+    original.articles[locale].rowCount += 2;
+  }
+  const after: PatchSnapshot = { ...snapshot, entities: [...snapshot.entities, {
+    id: "Item", kind: "item", name: { ...name, en_US: "Item" }, metrics: [{
+      ...snapshot.entities[0].metrics[0], id: "Items/Item/mFlatHPPoolMod", section: "stats", sectionName: undefined,
+      label: { ...name, en_US: "Health" }, sourceKey: "Items/Item/mFlatHPPoolMod", values: [4],
+    }],
+  }] };
+  const result = applyOfficialPatch(comparePatchSnapshots({ ...after, patchVersion: "26.19" }, after), after, original);
+  const changes = result.entries[1].changes as TextPatchChange[];
+  assert.equal(changes[0].gameDataKey, undefined);
+  assert.equal(changes[1].gameDataKey, "Items/Item/mFlatHPPoolMod");
 });
