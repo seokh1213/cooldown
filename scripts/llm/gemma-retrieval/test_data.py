@@ -1,8 +1,6 @@
 import json
-from pathlib import Path
-import tempfile
 import unittest
-from data import BANK, ALTERNATIVES, family, partition, read_jsonl
+from data import BANK, ALTERNATIVES, family, partition, read_jsonl, validate_question_rows
 
 
 class DataTests(unittest.TestCase):
@@ -44,6 +42,15 @@ class DataTests(unittest.TestCase):
             ['mech:lifesteal-true-components', 'mech:lifesteal-converted-true'],
         ]:
             self.assertEqual(len({family({'id': key}) for key in keys}), 1)
+
+    def test_evaluation_refuses_changed_question_labels_and_partial_coverage(self):
+        original = dict(self.rows[0])
+        validate_question_rows({'rows': [dict(original, bank='expanded')]}, [original])
+        for mutation in [{'q': 'changed input'}, {'gold': []}, {'split': 'test' if original['split'] != 'test' else 'train'}]:
+            with self.assertRaisesRegex(ValueError, 'after freeze'):
+                validate_question_rows({'rows': [dict(original, bank='expanded', **mutation)]}, [original])
+        with self.assertRaisesRegex(ValueError, 'coverage'):
+            validate_question_rows({'rows': []}, [original])
 
 
 if __name__ == '__main__': unittest.main()

@@ -8,7 +8,8 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'vector-search'))
 from embeddinggemma_eval import ranked_cases, metrics, calibrate, split, validate_vectors
-from embeddinggemma_runtime import sha256
+from embeddinggemma_runtime import sha256, input_digest, texts
+from data import read_jsonl, validate_question_rows, digest
 
 
 def partitions(rows, manifest):
@@ -54,6 +55,10 @@ def evaluate(work, output):
     manifest = json.loads((work / 'data/manifest.json').read_text())
     summary = json.loads((work / 'candidates/gemma/summary.json').read_text())
     rows = snapshot['rows']
+    expected_questions = read_jsonl(work / 'data/expanded.jsonl')
+    if digest(expected_questions) != manifest['questionsSha256']: raise ValueError('Frozen question digest changed')
+    if digest(snapshot['docs']) != manifest['corpusSha256']: raise ValueError('Frozen corpus digest changed')
+    validate_question_rows(snapshot, expected_questions)
     indices = partitions(rows, manifest)
     expected = sum(len(d) for d in snapshot['docs'].values()) + len(rows)
     matrices = {'qwenFresh': work / 'qwen-embeddings.npz', 'gemmaQ4': work / 'gemma-embeddings.npz',
@@ -69,7 +74,14 @@ def evaluate(work, output):
             'New questions are authored from project documents, not an independent human-labelled benchmark.'}
     model_cases = {}
     for name, file in matrices.items():
-        vectors = np.load(file)['vectors']
+        stored = np.load(file)
+        if name in ['qwenFresh', 'gemmaQ4']:
+            model = 'qwen' if name == 'qwenFresh' else 'gemma'
+            if not str(stored['signature']).startswith(input_digest(snapshot, model)):
+                raise ValueError('Embedding inputs changed after generation')
+        elif str(stored['inputDigest']) != digest([item['text'] for item in texts(snapshot, 'gemma')]):
+            raise ValueError('Native embedding inputs changed after generation')
+        vectors = stored['vectors']
         validate_vectors(vectors, expected, 1024 if name == 'qwenFresh' else 768)
         model_cases[name] = ranked_cases(snapshot, vectors)
         if name == 'qwenFresh': model_cases['qwenDeployed'] = ranked_cases(snapshot, vectors, deployed=True)

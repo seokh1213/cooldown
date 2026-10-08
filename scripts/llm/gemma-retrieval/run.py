@@ -46,12 +46,15 @@ def bootstrap(work):
     (work / 'provenance.json').write_text(json.dumps(provenance))
 
 
-def launch_colab(work, resume):
+def launch_colab(work, resume, source_revision=None):
     from colab_client import Colab
     run_id = uuid.uuid4().hex
     metadata = {'work': str(work), 'config': str(work / 'colab-sessions.json'),
         'session': 'gemma-' + run_id[:12], 'run': run_id,
         'checkpointStages': ['gemma', 'gemma-results'], 'requiredResults': ['gemma-results'], 'resumeStages': ['gemma']}
+    if source_revision:
+        metadata['sourceRevision'] = subprocess.check_output(
+            ['git', 'rev-parse', '--verify', '--end-of-options', source_revision + '^{commit}'], cwd=ROOT, text=True).strip()
     config_file = work / 'metadata.json'
     if config_file.exists() and not (work / 'gpu-cleanup.json').exists():
         raise ValueError('Existing runtime ownership must be resolved before creating another runtime')
@@ -90,7 +93,14 @@ def configure_colab(work, metadata, resume):
     client.call('restart-kernel', timeout=90)
     helpers = ['checkpoints.py', 'model_utils.py', 'artifact_io.py', 'backup_artifacts.py']
     files = [TUNING / name for name in helpers] + [Path(__file__).with_name(name) for name in ['data.py', 'model.py', 'train.py', 'run.py']]
-    for file in files: client.upload(file, '/content/cooldown-tuning/' + str(file.relative_to(ROOT)))
+    for file in files:
+        relative = str(file.relative_to(ROOT))
+        source = file
+        if metadata.get('sourceRevision') and '/gemma-retrieval/' in relative:
+            source = work / 'resume-source' / relative
+            source.parent.mkdir(parents=True, exist_ok=True)
+            source.write_bytes(subprocess.check_output(['git', 'show', metadata['sourceRevision'] + ':' + relative], cwd=ROOT))
+        client.upload(source, '/content/cooldown-tuning/' + relative)
     for file in (work / 'data').glob('*'): client.upload(file, '/content/cooldown-tuning/data/' + file.name)
     client.upload(work / 'eval-snapshot.json', '/content/cooldown-tuning/eval-snapshot.json')
     if resume:
@@ -111,11 +121,12 @@ if __name__ == '__main__':
     parser.add_argument('action', choices=['prepare', 'colab', 'local', 'remote', 'evaluate'])
     parser.add_argument('work', type=Path)
     parser.add_argument('--resume', action='store_true')
+    parser.add_argument('--source-revision')
     parser.add_argument('--out', type=Path)
     args = parser.parse_args()
     work = args.work.resolve()
     if args.action == 'prepare': prepare_run(work)
-    elif args.action == 'colab': launch_colab(work, args.resume)
+    elif args.action == 'colab': launch_colab(work, args.resume, args.source_revision)
     elif args.action in ['local', 'remote']:
         if args.action == 'local':
             from huggingface_hub import snapshot_download

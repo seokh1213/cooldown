@@ -55,6 +55,14 @@ def read_jsonl(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line]
 
 
+def validate_question_rows(snapshot, expected):
+    actual = [row for row in snapshot['rows'] if row['bank'] == 'expanded']
+    if len(actual) != len(expected): raise ValueError('Expanded question coverage changed')
+    for row, frozen in zip(actual, expected):
+        if {key: row.get(key) for key in frozen} != frozen:
+            raise ValueError('Expanded question text, labels, or split changed after freeze')
+
+
 def expand(snapshot):
     docs = {d['id']: d for d in snapshot['docs']['ko_KR']}
     facts = list(csv.DictReader((BANK / 'facts.tsv').open(), delimiter='\t'))

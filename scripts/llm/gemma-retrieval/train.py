@@ -2,13 +2,12 @@
 import json
 from pathlib import Path
 import random
-import shutil
 import sys
 import time
 import numpy as np
 import torch
 
-from data import read_jsonl
+from data import read_jsonl, digest
 from model import load, query_text, doc_text
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tuning'))
@@ -87,7 +86,7 @@ def write_vectors(encoder, root, label):
     start = time.monotonic()
     matrix = encoder.vectors(values)
     if not np.isfinite(matrix).all(): raise ValueError('Non-finite evaluation vector')
-    np.savez_compressed(root / 'candidates/gemma' / (label + '.npz'), vectors=matrix)
+    np.savez_compressed(root / 'candidates/gemma' / (label + '.npz'), vectors=matrix, inputDigest=digest(values))
     print(json.dumps({'stage': 'vectors', 'label': label, 'rows': len(values),
         'seconds': round(time.monotonic() - start, 1)}), flush=True)
 
@@ -128,7 +127,7 @@ def train(root):
     output = root / 'candidates/gemma'
     output.mkdir(parents=True, exist_ok=True)
     checkpoints = Checkpoints(root, 'gemma', ['data/train.jsonl', 'data/dev.jsonl',
-        'data/corpus.json', 'data/manifest.json', 'training-config.json',
+        'data/corpus.json', 'data/manifest.json', 'eval-snapshot.json', 'training-config.json',
         'scripts/llm/gemma-retrieval/model.py', 'scripts/llm/gemma-retrieval/train.py'],
         artifacts=['candidates/gemma'])
     previous = checkpoints.latest()

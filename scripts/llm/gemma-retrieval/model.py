@@ -1,5 +1,4 @@
 """Text-only EmbeddingGemma 2 with its official prompts and mean pooling."""
-from contextlib import nullcontext
 from pathlib import Path
 import numpy as np
 import torch
