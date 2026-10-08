@@ -55,6 +55,12 @@ CI도 위 baseline 비교 명령을 실행하고 결과·검토 패킷을 14일 
 
 `infrastructure`는 같은 Node·타입 검사에 Colab 백업·복원·export·학습 도구의 Python 검사와 원격 실행 도구, 생성 결과 재개 검사를 더한다. Python 의존성은 `uv`의 별도 환경을 사용한다.
 
+## 임베딩 모델 로컬 비교
+
+`npm run llm:test:embeddinggemma -- --out research/.cache/embeddinggemma2-report`로 현행 검색 LoRA와 EmbeddingGemma 2 q4를 비교한다. 문서 갱신 효과를 구분하고 임계값은 dev에서만 선택한다. 학습 없는 짧은 본문·전체 본문 변형, 새 문서 진단, CPU 비용, 앱 하이브리드 함수와 선택 일치를 함께 남긴다. 집중 단위 검사는 `infrastructure`와 `quality`에도 포함된다.
+
+[2026-10-08 결과와 판정 기준](reports/embeddinggemma2-20261008/README.md)에서 WebGPU 진입 조건과 라벨 한계를 확인한다. 이 명령은 로컬 비교용이며 모델을 배포하거나 WebGPU를 자동 실행하지 않는다.
+
 ## 실제 브라우저 모델 비교
 
 Mac의 설치된 Chrome과 WebGPU를 사용한다. 초기 ONNX 외부 가중치·토크나이저는 모델 설정의 원본 위치에서 내려받으며 Chrome 프로필은 실행 전용 `.cache/quality/browser`다. 이미 사용 중인 포트나 WebGPU 실패를 다른 판정기로 대체하지 않는다.
