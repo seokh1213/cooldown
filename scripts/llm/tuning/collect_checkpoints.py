@@ -93,6 +93,24 @@ def finish_if_collected(metadata):
     return True
 
 
+def finish_failed(metadata):
+    root = Path(metadata['work'])
+    if (root / 'HOLD_GPU').exists(): return False
+    failed = root / 'backups/.incoming/TRAINING_FAILED.json'
+    try:
+        transfer(metadata, 'download', {'remote': '/content/cooldown-tuning/TRAINING_FAILED.json', 'local': str(failed)})
+    except ConnectionError as error:
+        if str(error) == 'FileNotFoundError': return False
+        raise
+    failure = json.loads(failed.read_text())
+    if not isinstance(failure.get('error'), str): raise ValueError('Invalid training failure record')
+    transfer(metadata, 'stop')
+    atomic_json(root / 'gpu-cleanup.json', {'ownedRuntimeStopped': True,
+        'trainingFailed': True, 'error': failure['error'],
+        'reason': 'Published checkpoints collected before releasing the failed owned trainer'})
+    return True
+
+
 def run(metadata, interval):
     root = Path(metadata["work"])
     status_file = root / "backup-status.json"
@@ -103,7 +121,7 @@ def run(metadata, interval):
             transfer(metadata, "ping")
             status["downloaded"] = collect(metadata)
             status["healthy"] = True
-            status["finished"] = finish_if_collected(metadata)
+            status["finished"] = finish_failed(metadata) or finish_if_collected(metadata)
         except Exception as error:
             status.update(healthy=False, error=type(error).__name__)
         atomic_json(status_file, status)

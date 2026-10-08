@@ -27,7 +27,7 @@ def restore(metadata, stages=None):
     (root / "results").mkdir(parents=True, exist_ok=True)
     receipts = latest_receipts(root)
     restored = []
-    for variant in stages or ["retrieval", "sft", "quantized"]:
+    for variant in stages or metadata.get('resumeStages', ["retrieval", "sft", "quantized"]):
         entry = receipts.get(variant)
         if not entry: continue
         archive = Path(entry["restored"]).parent / "artifact.tar.gz"
@@ -39,6 +39,7 @@ def restore(metadata, stages=None):
 from pathlib import Path
 r=Path('/content/cooldown-tuning')
 sys.path.insert(0,str(r/'scripts'))
+sys.path.insert(0,str(r/'scripts/llm/tuning'))
 from backup_artifacts import validate_members
 entries=""" + repr(restored) + """
 for entry in entries:

@@ -114,6 +114,19 @@ test("expanded video coverage enters the common model bank with its original ass
   }
 });
 
+test("retrieval v2 registers heldout questions and keeps training and dev out of the quality bank", () => {
+  const file = "research/llm-evals/datasets/retrieval-v2/questions.jsonl";
+  const fixtures = fs.readFileSync(file, "utf8").trim().split("\n").map(line => JSON.parse(line));
+  const bank = buildBank().filter(story => story.sources.some(source => source.file === file));
+  assert.equal(bank.length, fixtures.filter(row => row.split === "test").length);
+  for (const story of bank) {
+    const fixture = fixtures.find(row => row.id === story.sources.find(source => source.file === file)?.row);
+    assert.equal(fixture?.split, "test");
+    assert.ok(story.suites.includes("retrieval") && story.suites.includes("retrieval-v2"));
+    assert.deepEqual(story.turns[0].expected.docIds, fixture.gold);
+  }
+});
+
 test("legacy scope contracts check the exact ability, field, and opponent perspective", () => {
   const spell = { kind: "spell", spell: { slot: "R" } } as AdvisorAnswer;
   assert.equal(scopeMatches(spell, "R"), true);

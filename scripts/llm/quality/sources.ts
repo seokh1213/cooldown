@@ -14,6 +14,7 @@ export const requestSources = ["request-test.json", "request-holdout.json", "req
 // Historical outputs stay readable; only registered expectations become automatic assertions.
 export const families: Record<string, string> = {
   workflow: "canonical fixtures, inventory, regression/quality runner",
+  datasets: "versioned retrieval questions, document-family splits, Gemma tuning evaluation",
   atoms: "dialogue, node tests, manual review", "champion-mechanics-v2": "dialogue, node tests, manual review",
   "conversational-advisor": "dialogue, memory assertions, manual review", "dialogue-coverage": "dialogue",
   "request-contract": "dialogue", "crowd-control": "dialogue, node tests", "control-audit": "dialogue, node tests",

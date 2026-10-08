@@ -108,12 +108,13 @@ function singleBank(): QualityStory[] {
   const stories: QualityStory[] = [];
   for (const [suite, file] of [
     ["stat-single", `${EVALS}/stat-query/ml/questions.jsonl`], ["retrieval", `${EVALS}/vector-search/queries.jsonl`],
+    ["retrieval", `${EVALS}/datasets/retrieval-v2/questions.jsonl`],
     ["item-alias", `${EVALS}/item-aliases/queries.jsonl`], ["numeric-qa", `${WORKFLOW}/datasets/qa/heldout/numeric.jsonl`],
   ]) for (const [index, row] of readRows(file).entries()) {
     if (row.split && row.split !== "test") continue;
     const q = String(row.question ?? row.q);
     const expected = suite === "stat-single" ? { statQuery: row.expected } : suite === "numeric-qa" ? { numericGold: row } : { docIds: row.gold };
-    stories.push({ id: "", suites: [suite], lang: (row.lang ?? language(q)) as Language, split: "heldout",
+    stories.push({ id: "", suites: [suite, ...(file.includes('/retrieval-v2/') ? ['retrieval-v2'] : [])], lang: (row.lang ?? language(q)) as Language, split: "heldout",
       memory: row.memory as Record<string, unknown> | undefined,
       memoryPatch: suite === "stat-single" && row.memory ? "current" : undefined,
       sources: [{ file, row: String(row.id ?? index) }], turns: [{ q, expected }] });

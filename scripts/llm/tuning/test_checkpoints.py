@@ -74,5 +74,45 @@ class CheckpointsTest(unittest.TestCase):
             install(self.root, "retrieval", entry, pending)
         self.assertTrue(latest_receipts(self.root)["retrieval"]["verified"])
 
+    def test_selected_candidate_survives_runtime_loss_with_optimizer(self):
+        selected = self.root / 'candidates/gemma/selected'
+        selected.mkdir(parents=True)
+        (selected / 'adapter.bin').write_bytes(b'earlier best epoch')
+        checkpoints = Checkpoints(self.root, 'gemma', ['train.json'], artifacts=['candidates/gemma'])
+        model = torch.nn.Linear(2, 1)
+        optimizer = torch.optim.AdamW(model.parameters())
+        scaler = torch.amp.GradScaler('cuda', enabled=False)
+        with patch('checkpoints.export_adapter', export_model):
+            checkpoints.save(model, (optimizer, scaler), 1, {'selectedEpoch': 0})
+        import shutil
+        shutil.rmtree(self.root / 'candidates')
+        self.assertEqual(checkpoints.restore(optimizer, scaler)['extra']['selectedEpoch'], 0)
+        self.assertEqual((selected / 'adapter.bin').read_bytes(), b'earlier best epoch')
+
+    def test_artifact_path_cannot_escape_checkpoint(self):
+        with self.assertRaisesRegex(ValueError, 'Unsafe'):
+            Checkpoints(self.root, 'gemma', ['train.json'], artifacts=['../credentials'])
+
+    def test_unpublished_pending_directory_never_becomes_latest(self):
+        checkpoints = Checkpoints(self.root, 'gemma', ['train.json'])
+        pending = checkpoints.directory / 'step-000999.pending'
+        pending.mkdir()
+        (pending / 'checkpoint.json').write_text(json.dumps({'step': 999, 'signature': checkpoints.signature}))
+        self.assertIsNone(checkpoints.latest())
+
+    def test_missing_best_candidate_refuses_incomplete_restore(self):
+        selected = self.root / 'candidates/gemma'
+        selected.mkdir(parents=True)
+        checkpoints = Checkpoints(self.root, 'gemma', ['train.json'], artifacts=['candidates/gemma'])
+        model = torch.nn.Linear(2, 1)
+        optimizer = torch.optim.AdamW(model.parameters())
+        scaler = torch.amp.GradScaler('cuda', enabled=False)
+        with patch('checkpoints.export_adapter', export_model):
+            checkpoints.save(model, (optimizer, scaler), 1, {})
+        import shutil
+        shutil.rmtree(checkpoints.latest() / 'artifacts')
+        with self.assertRaisesRegex(ValueError, 'missing a required artifact'):
+            checkpoints.restore(optimizer, scaler)
+
 
 if __name__ == "__main__": unittest.main()

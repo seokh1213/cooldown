@@ -96,6 +96,7 @@ try {
   }
   if (profile === "infrastructure" || profile === "quality") {
     await check("retrieval-evaluation-infrastructure", "uv", ["run", "--script", "scripts/llm/vector-search/embeddinggemma_eval.py", "check", output]);
+    await check("retrieval-family-splits", "python3", ["-m", "unittest", "discover", "-s", "scripts/llm/gemma-retrieval", "-p", "test_*.py"]);
     await check("generation-recovery", "python3", ["-m", "unittest", "discover", "-s", "scripts/llm/quality", "-p", "test_*.py"]);
     await check("tuning-infrastructure", "uv", ["run", "--python", "3.13", "--with", "numpy", "--with", "onnx", "--with", "onnxruntime", "--with", "torch", "--with", "transformers", "--with", "peft",
       "python", "-m", "unittest", "discover", "-s", "scripts/llm/tuning", "-p", "test_*.py"]);

@@ -3,7 +3,7 @@ import json
 import tempfile
 import unittest
 from unittest.mock import patch
-from collect_checkpoints import configured_stages, finish_if_collected
+from collect_checkpoints import configured_stages, finish_if_collected, finish_failed
 from artifact_io import sha256
 
 
@@ -28,6 +28,28 @@ def remote_download(index):
 
 
 class CollectorCompletionTest(unittest.TestCase):
+    def test_failed_owned_training_releases_gpu_after_collection(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'backups/.incoming').mkdir(parents=True)
+            def transfer(metadata, operation, paths=None):
+                if operation == 'download': Path(paths['local']).write_text('{"error":"ValueError"}')
+            with patch('collect_checkpoints.transfer', side_effect=transfer) as calls:
+                self.assertTrue(finish_failed({'work': temporary}))
+                self.assertEqual([call.args[1] for call in calls.call_args_list], ['download', 'stop'])
+                self.assertTrue(json.loads((root / 'gpu-cleanup.json').read_text())['trainingFailed'])
+
+    def test_missing_failure_marker_or_hold_keeps_owned_gpu(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            metadata = {'work': temporary}
+            with patch('collect_checkpoints.transfer', side_effect=ConnectionError('FileNotFoundError')) as calls:
+                self.assertFalse(finish_failed(metadata))
+                self.assertEqual(calls.call_count, 1)
+            (Path(temporary) / 'HOLD_GPU').touch()
+            with patch('collect_checkpoints.transfer') as calls:
+                self.assertFalse(finish_failed(metadata))
+                calls.assert_not_called()
+
     def test_custom_sft_results_do_not_require_unrelated_experiments(self):
         with tempfile.TemporaryDirectory() as temporary:
             receipts = final_receipts(Path(temporary))

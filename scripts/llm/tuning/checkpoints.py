@@ -46,16 +46,20 @@ def restore_rng(state):
 
 
 class Checkpoints:
-    def __init__(self, root, variant, inputs):
+    def __init__(self, root, variant, inputs, *, artifacts=()):
         self.root = Path(root)
         self.variant = variant
         self.signature = signature(self.root, inputs)
         self.directory = self.root / "checkpoints" / variant
         self.directory.mkdir(parents=True, exist_ok=True)
         self.last_saved = time.monotonic()
+        self.artifacts = tuple(Path(name) for name in artifacts)
+        if any(name.is_absolute() or '..' in name.parts for name in self.artifacts):
+            raise ValueError('Unsafe checkpoint artifact path')
 
     def latest(self):
-        candidates = sorted(self.directory.glob("step-*/checkpoint.json"))
+        candidates = sorted(file for file in self.directory.glob("step-*/checkpoint.json")
+                            if file.parent.name.removeprefix('step-').isdigit())
         if not candidates: return None
         file = candidates[-1]
         meta = json.loads(file.read_text())
@@ -71,6 +75,13 @@ class Checkpoints:
         optimizer.load_state_dict(state["optimizer"])
         scaler.load_state_dict(state["scaler"])
         restore_rng(state["rng"])
+        for name in self.artifacts:
+            source, destination = folder / 'artifacts' / name, self.root / name
+            if source.is_dir(): shutil.copytree(source, destination, dirs_exist_ok=True)
+            elif source.is_file():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+            else: raise ValueError('Checkpoint is missing a required artifact')
         return json.loads((folder / "checkpoint.json").read_text())
 
     def due(self, step):
@@ -86,6 +97,13 @@ class Checkpoints:
         torch.save({"optimizer": optimizer.state_dict(), "scaler": scaler.state_dict(),
                     "rng": capture_rng()}, temporary / "training.pt")
         atomic_json(temporary / "checkpoint.json", {"step": step, "signature": self.signature, "extra": extra})
+        for name in self.artifacts:
+            source, destination = self.root / name, temporary / 'artifacts' / name
+            if source.is_dir(): shutil.copytree(source, destination, dirs_exist_ok=True)
+            elif source.is_file():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+            else: raise ValueError('Missing checkpoint artifact')
         if folder.exists(): shutil.rmtree(folder)
         temporary.replace(folder)
         archive = self.directory / f"step-{step:06d}.tar.gz"
