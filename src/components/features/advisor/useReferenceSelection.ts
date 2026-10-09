@@ -3,28 +3,32 @@
  */
 import { useEffect, useState } from "react";
 import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
+import type { AdvisorAnswer } from "@/lib/advisor/answer";
+import { groupReferenceAnswers, isReferenceAnswer } from "@/lib/advisor/referenceGroups";
+import { referenceKey } from "@/lib/advisor/referenceIdentity";
 
 export function useReferenceSelection(turns: AdvisorTurn[], wide: boolean) {
-  const [refTurnId, setRefTurnId] = useState<number | undefined>(undefined);
+  const [selection, setSelection] = useState<{ turnId: number; key?: string }>();
   const lastAssistantId = [...turns].reverse().find((turn) => turn.role === "assistant")?.id;
 
   // 카드 화면의 자료는 모바일에도 유지한다. 일반 조회 카드는 좁은 화면에서 대화 안에 그린다.
-  const isCardTurn = (turn: AdvisorTurn): boolean =>
-    turn.role === "assistant" &&
-    !!turn.answer &&
-    (turn.answer.kind === "spell" ||
-      turn.answer.kind === "champion" ||
-      turn.answer.kind === "compare" ||
-      turn.answer.kind === "item");
+  const answersOf = (turn: AdvisorTurn) => turn.answers?.length ? turn.answers : turn.answer ? [turn.answer] : [];
+  const isCardTurn = (turn: AdvisorTurn): boolean => turn.role === "assistant" && answersOf(turn).some(isReferenceAnswer);
   const isReference = (turn: AdvisorTurn): boolean => isCardTurn(turn) &&
     (wide || turn.answer?.kind === "champion" && turn.answer.notes?.topic === "combo" && Boolean(turn.content));
-  const referenceTurns = turns.filter(isCardTurn);
+  const referenceTurns = turns.filter(isCardTurn).flatMap(turn =>
+    groupReferenceAnswers(answersOf(turn)).filter(group => isReferenceAnswer(group.answer))
+      .map(group => ({ ...turn, answer: group.answer, answers: group.answers })));
   const latestReference = referenceTurns[referenceTurns.length - 1];
-  const refTurn = referenceTurns.find((turn) => turn.id === refTurnId) ?? latestReference;
+  const refTurn = referenceTurns.find(turn => turn.id === selection?.turnId
+    && (!selection.key || referenceKey(turn.answer) === selection.key)) ?? latestReference;
+  const selectReference = (turnId: number, answer?: AdvisorAnswer) => {
+    setSelection({ turnId, key: answer ? referenceKey(answer) : undefined });
+  };
   // 새 답이 오면 고정을 풀어 최신 답을 따라간다.
   useEffect(() => {
-    setRefTurnId(undefined);
+    setSelection(undefined);
   }, [lastAssistantId]);
 
-  return { isReference, referenceTurns, refTurn, selectReference: setRefTurnId, lastAssistantId };
+  return { isReference, referenceTurns, refTurn, selectReference, lastAssistantId };
 }

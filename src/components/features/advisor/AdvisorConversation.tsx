@@ -29,6 +29,7 @@ interface AdvisorConversationProps extends TurnHandlers {
   isReference: (turn: AdvisorTurn) => boolean;
   /** 자료 패널이 지금 보이는 답 */
   shownReferenceId: number | undefined;
+  shownReferenceKey?: string;
   lastAssistantId: number | undefined;
   ddragonVersion: string;
   patch: string;
@@ -56,6 +57,7 @@ export function AdvisorConversation({ scrollRef, lastTurnRef, turns, error, load
             .find((entry) => entry.role === "assistant" && entry.answer)}
           asReference={props.isReference(turn)}
           shownInReference={props.shownReferenceId === turn.id}
+          shownReferenceKey={props.shownReferenceKey}
           answering={busy && turn.id === props.lastAssistantId}
           busy={busy}
           ddragonVersion={ddragonVersion}

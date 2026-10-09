@@ -5,6 +5,7 @@ import { useTranslation } from "@/i18n";
 import { fill } from "@/i18n/fill";
 import type { AdvisorData } from "@/lib/advisor/context";
 import { referenceKey } from "@/lib/advisor/referenceIdentity";
+import type { AdvisorAnswer } from "@/lib/advisor/answer";
 import type { ChampionCard } from "@/lib/knowledge/facts";
 import { usePageContext } from "@/hooks/usePageContext";
 import { WIDE_VIEWPORT_MIN, useViewportWidth } from "@/hooks/useWideViewport";
@@ -148,8 +149,8 @@ export function AdvisorPanel({ advisor, data, dataError, onRetryData, history, p
     ? fill(copy.card.askAbout, { name: contextCards.map((card) => card.name).join("·") })
     : copy.placeholder;
   const { isReference, referenceTurns, refTurn, selectReference, lastAssistantId } = useReferenceSelection(advisor.turns, wide);
-  const showReference = (turnId: number) => {
-    selectReference(turnId);
+  const showReference = (turnId: number, answer?: AdvisorAnswer) => {
+    selectReference(turnId, answer);
     if (!wide) {
       setView("card");
       return;
@@ -215,6 +216,7 @@ export function AdvisorPanel({ advisor, data, dataError, onRetryData, history, p
           size={referenceSize}
           tabs={referenceTabStrip}
           answer={refTurn?.answer}
+          answers={refTurn?.answers}
           ddragonVersion={ddragonVersion}
           patch={patch}
           onPickChampion={pickChampion}
@@ -265,7 +267,7 @@ export function AdvisorPanel({ advisor, data, dataError, onRetryData, history, p
         {referenceTabStrip}
         <div className="flex-1 overflow-y-auto overscroll-contain p-4">
           <HistoryReference turn={refTurn}>
-          <ReferenceCard answer={refTurn?.answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} onNavigate={onNavigate} />
+          <ReferenceCard answer={refTurn?.answer} answers={refTurn?.answers} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={pickChampion} onNavigate={onNavigate} />
           </HistoryReference>
         </div>
         </>
@@ -323,6 +325,7 @@ export function AdvisorPanel({ advisor, data, dataError, onRetryData, history, p
             context={context}
             isReference={isReference}
             shownReferenceId={wide ? refTurn?.id : undefined}
+            shownReferenceKey={wide && refTurn?.answer ? referenceKey(refTurn.answer, refTurn.source) : undefined}
             lastAssistantId={lastAssistantId}
             ddragonVersion={ddragonVersion}
             patch={patch}

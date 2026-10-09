@@ -9,14 +9,13 @@ import type { Translations } from "@/i18n/translations";
 import { fill } from "@/i18n/fill";
 import type { AdvisorTurn } from "@/hooks/useAdvisorTurns";
 import { groundCommentary } from "@/lib/advisor/grounding";
-import { answerKey, answerLinks, itemHeadline, spellSummary, type AdvisorAnswer } from "@/lib/advisor/answer";
+import { answerLinks, itemHeadline, spellSummary, type AdvisorAnswer } from "@/lib/advisor/answer";
 import { AdvisorAnswerCard } from "./AdvisorAnswerCard";
-import { CompareAnswerCard } from "./CompareAnswerCard";
+import { AdvisorMultiAnswer } from "./AdvisorMultiAnswer";
 import { AdvisorTurnFooter as TurnFooter } from "./AdvisorTurnFooter";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
-import { AnswerIcons, referenceTitle } from "./AdvisorReference";
+import { ReferenceChip } from "./AdvisorReferenceChip";
 import { referenceKey } from "@/lib/advisor/referenceIdentity";
-import { useHistoryReference } from "./HistoryReference";
 
 interface AdvisorTurnViewProps {
   ref?: React.Ref<HTMLDivElement>;
@@ -28,12 +27,13 @@ interface AdvisorTurnViewProps {
   asReference: boolean;
   /** 자료 패널이 지금 이 답을 보이는가 */
   shownInReference: boolean;
+  shownReferenceKey?: string;
   /** 답을 쓰는 중인 마지막 답인가 */
   answering: boolean;
   busy: boolean;
   ddragonVersion: string;
   patch: string;
-  onShowReference: (turnId: number) => void;
+  onShowReference: (turnId: number, answer?: AdvisorAnswer) => void;
   onAskPerspective: (index: number, side: "playing" | "against") => void;
   onShowDoc: (id: string, title: string) => void;
   onPickChampion: (championId: string) => void;
@@ -62,7 +62,9 @@ function useTurnPresentation(props: AdvisorTurnViewProps) {
     && turn.source?.locale === previousTurn?.source?.locale
     && turn.source?.ddragonVersion === previousTurn?.source?.ddragonVersion;
   const previousLinkTargets = new Set(previousTurn?.answer && sameSource ? answerLinks(previousTurn.answer).map((link) => link.to) : []);
-  const links = turn.answer ? answerLinks(turn.answer).filter((link) => !previousLinkTargets.has(link.to)) : [];
+  const answers = turn.answers?.length ? turn.answers : turn.answer ? [turn.answer] : [];
+  const links = [...new Map(answers.flatMap(answerLinks).map(link => [link.to, link])).values()]
+    .filter(link => !previousLinkTargets.has(link.to));
   // 자료 칩과 같은 줄에 둔다. 따로 두면 버튼이 두 줄로 쌓여 어지럽다.
   const linkButtons = links.map((link) => (
     <Link
@@ -125,16 +127,9 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
     >
       {turn.notice && <p className="mb-1.5 text-[11px] text-muted-foreground">{turn.notice}</p>}
       {turn.answers?.length ? (
-        <div className="space-y-3">
-          <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 18rem), 1fr))" }}>
-            {turn.answers.map(answer => answer.kind === "compare" && answer.matchup
-              ? <CompareAnswerCard key={answerKey(answer)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} presentation="reference" />
-              : <AdvisorAnswerCard key={answerKey(answer)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={props.onPickChampion} onNavigate={onNavigate} />)}
-          </div>
-          <div className="text-sm leading-7">
-            <AdvisorMarkdown text={turn.content} />
-          </div>
-        </div>
+        <AdvisorMultiAnswer turn={turn} asReference={asReference} shownReferenceKey={props.shownReferenceKey}
+          ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate}
+          onPickChampion={props.onPickChampion} onShowReference={props.onShowReference} />
       ) : turn.answer && asReference ? (
         // 카드는 자료 패널에 있다(L1). 대화에는 질문이 짚은 사실 한 줄, 해설, 자료 칩만.
         <div className="space-y-2">
@@ -150,7 +145,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
               // 직전 답과 같은 자료면 칩만 흐리게. "오공 Q 쿨, W 쿨" 은 카드 두 장이 아니다.
               sameAsPrevious={Boolean(previousTurn?.answer && referenceKey(turn.answer, turn.source) === referenceKey(previousTurn.answer, previousTurn.source))}
               ddragonVersion={ddragonVersion}
-              onClick={() => props.onShowReference(turn.id)}
+              onClick={() => props.onShowReference(turn.id, turn.answer)}
             />
             {linkButtons}
           </div>
@@ -195,7 +190,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
         <p className="mt-2 text-xs text-muted-foreground">{t.advisor.history.missingCard}</p>
       )}
       {/* 카드 없는 답(규칙)의 바로 가기. 카드가 있는 답은 자료 칩 옆에 이미 붙였다. */}
-      {turn.role === "assistant" && linkButtons.length > 0 && !asReference && (
+      {turn.role === "assistant" && linkButtons.length > 0 && (turn.answers?.length ? asReference : !asReference) && (
         <div className="mt-2 flex flex-wrap gap-1.5">{linkButtons}</div>
       )}
       {turn.role === "assistant" && (turn.content || turn.answer || Boolean(turn.answers?.length)) && <TurnFooter turn={turn} />}
@@ -341,39 +336,5 @@ function ReferenceDigest({ answer }: { answer: AdvisorAnswer }) {
       )}
       {answer.kind === "compare" && <ComparisonHeadlines answer={answer} />}
     </>
-  );
-}
-
-interface ReferenceChipProps {
-  answer: AdvisorAnswer;
-  active: boolean;
-  sameAsPrevious: boolean;
-  ddragonVersion: string;
-  onClick: () => void;
-}
-
-/** 자료 패널(좁은 화면이면 카드 화면)로 가는 칩 */
-function ReferenceChip({ answer, active, sameAsPrevious, ddragonVersion, onClick }: ReferenceChipProps) {
-  const { t } = useTranslation();
-  const copy = t.advisor;
-  const { title, kind } = referenceTitle(answer, copy);
-  const turn = useHistoryReference();
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={copy.card.openCard}
-      title={turn?.source ? `${title} · ${turn.source.patch} · ${turn.source.locale}` : undefined}
-      className={`flex min-w-0 max-w-full items-center gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-muted hover:text-foreground ${
-        active ? "border-primary bg-primary/5" : "bg-background"
-      } ${sameAsPrevious ? "text-muted-foreground" : ""}`}
-    >
-      <span className="flex shrink-0 -space-x-1.5">
-        <AnswerIcons answer={answer} ddragonVersion={ddragonVersion} className="h-[18px] w-[18px] rounded ring-1 ring-background" />
-      </span>
-      <span className="truncate font-medium">{title}</span>
-      <span className="shrink-0 text-muted-foreground">{sameAsPrevious ? copy.card.sameReference : kind}</span>
-      <ArrowRight className="h-3 w-3 shrink-0 text-primary" />
-    </button>
   );
 }

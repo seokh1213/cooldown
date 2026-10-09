@@ -21,13 +21,13 @@ export function ChampionAnswerCard({
   ddragonVersion: currentDdragonVersion,
   patch: currentPatch,
   onNavigate,
-  selectedSpell,
+  selectedSpells,
 }: {
   answer: Extract<AdvisorAnswer, { kind: "champion" }>;
   ddragonVersion: string;
   patch: string;
   onNavigate?: () => void;
-  selectedSpell?: Extract<AdvisorAnswer, { kind: "spell" }>;
+  selectedSpells?: Extract<AdvisorAnswer, { kind: "spell" }>[];
 }) {
   const { t, lang } = useTranslation();
   const turn = useHistoryReference();
@@ -64,7 +64,7 @@ export function ChampionAnswerCard({
         <ChampionReferenceStats card={card} detail={detail} query={answer.statQuery} />
       )}
       <div className={skillsView ? "" : "mt-3"}>
-        <ChampionReferenceSkills answer={answer} detail={detail} selectedSpell={selectedSpell} patch={patch} ddragonVersion={ddragonVersion} />
+        <ChampionReferenceSkills answer={answer} detail={detail} selectedSpells={selectedSpells} patch={patch} ddragonVersion={ddragonVersion} />
       </div>
       {!skillsView && card.mechanics.length > 0 && (
         <div className="mt-2.5 flex flex-wrap gap-1">

@@ -43,7 +43,7 @@ function tabLabel(answer: AdvisorAnswer, copy: Translations["advisor"]): string 
     case "champion":
       return answer.focus || answer.view === "skills" ? `${answer.card.name} · ${copy.card.skills}` : answer.card.name;
     case "compare":
-      return answer.matchup ? copy.card.matchupTool : copy.card.compare;
+      return `${answer.cards.map(card => card.name).join(" vs ")} · ${answer.matchup ? copy.card.matchupTool : copy.card.compare}`;
     case "item":
       return answer.itemName;
     default:
@@ -65,7 +65,7 @@ export function AnswerIcons({ answer, ddragonVersion, className }: { answer: Adv
 interface ReferenceTabsProps {
   tabs: AdvisorTurn[];
   activeKey: string | undefined;
-  onSelect: (turnId: number) => void;
+  onSelect: (turnId: number, answer?: AdvisorAnswer) => void;
   ddragonVersion: string;
 }
 
@@ -98,7 +98,7 @@ export function ReferenceTabs({ tabs, activeKey, onSelect, ddragonVersion }: Ref
           <button
             key={key}
             type="button"
-            onClick={() => onSelect(turn.id)}
+            onClick={() => onSelect(turn.id, answer)}
             ref={active ? (node) => node?.scrollIntoView({ block: "nearest", inline: "nearest" }) : undefined}
             title={title}
             aria-label={provenance ? `${tabLabel(answer, copy)} · ${provenance}` : undefined}
@@ -121,6 +121,7 @@ export function ReferenceTabs({ tabs, activeKey, onSelect, ddragonVersion }: Ref
 
 interface ReferenceCardProps {
   answer: AdvisorAnswer | undefined;
+  answers?: AdvisorAnswer[];
   ddragonVersion: string;
   patch: string;
   onPickChampion: (championId: string) => void;
@@ -136,7 +137,7 @@ interface ReferenceAsideProps extends ReferenceCardProps {
   자료 패널(L1). 대화는 오른쪽에 글로만 흐르고, 답의 카드는 여기 한 자리에서 갱신된다.
   같은 오공 카드가 열 번 나와도 여기 하나다. 표를 보면서 다음 질문을 칠 수 있다.
 */
-export function ReferenceAside({ size, tabs, answer, ddragonVersion, patch, onPickChampion, onNavigate }: ReferenceAsideProps) {
+export function ReferenceAside({ size, tabs, answer, answers, ddragonVersion, patch, onPickChampion, onNavigate }: ReferenceAsideProps) {
   const { t } = useTranslation();
   const copy = t.advisor;
   return (
@@ -174,18 +175,18 @@ export function ReferenceAside({ size, tabs, answer, ddragonVersion, patch, onPi
       </div>
       {tabs}
       <div className="flex-1 overflow-y-auto overscroll-contain p-3">
-        <ReferenceCard answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={onPickChampion} onNavigate={onNavigate} />
+        <ReferenceCard answer={answer} answers={answers} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={onPickChampion} onNavigate={onNavigate} />
       </div>
     </aside>
   );
 }
 
 /** 자료 패널·카드 화면의 카드. 고른 답이 없으면 비었다고 적는다. */
-export function ReferenceCard({ answer, ddragonVersion, patch, onPickChampion, onNavigate }: ReferenceCardProps) {
+export function ReferenceCard({ answer, answers, ddragonVersion, patch, onPickChampion, onNavigate }: ReferenceCardProps) {
   const { t } = useTranslation();
   const turn = useHistoryReference();
   return answer ? (
-    <AdvisorAnswerCard key={referenceKey(answer, turn?.source)} answer={answer} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={onPickChampion} onNavigate={onNavigate} />
+    <AdvisorAnswerCard key={referenceKey(answer, turn?.source)} answer={answer} answers={answers} ddragonVersion={ddragonVersion} patch={patch} onPickChampion={onPickChampion} onNavigate={onNavigate} />
   ) : (
     <p className="text-xs text-muted-foreground">{turn?.referenceUnavailable ? t.advisor.history.missingCard : t.advisor.card.referenceEmpty}</p>
   );

@@ -25,6 +25,7 @@ import { useHistoryReference } from "./HistoryReference";
 
 interface AdvisorAnswerCardProps {
   answer: AdvisorAnswer;
+  answers?: AdvisorAnswer[];
   ddragonVersion: string;
   patch: string;
   /** 오타 후보를 골랐을 때. 패널이 그 이름으로 다시 묻는다. */
@@ -33,12 +34,13 @@ interface AdvisorAnswerCardProps {
   onNavigate?: () => void;
 }
 
-export function AdvisorAnswerCard({ answer, ddragonVersion: currentDdragonVersion, patch: currentPatch, onPickChampion, onNavigate }: AdvisorAnswerCardProps) {
+export function AdvisorAnswerCard({ answer, answers, ddragonVersion: currentDdragonVersion, patch: currentPatch, onPickChampion, onNavigate }: AdvisorAnswerCardProps) {
   const turn = useHistoryReference();
   const patch = turn?.source?.patch ?? currentPatch;
   const ddragonVersion = turn?.source?.ddragonVersion ?? currentDdragonVersion;
   const reference = championReferenceOf(answer);
-  if (reference) return <ChampionAnswerCard answer={reference} selectedSpell={answer.kind === "spell" ? answer : undefined}
+  if (reference) return <ChampionAnswerCard answer={reference}
+    selectedSpells={(answers ?? [answer]).filter((entry): entry is Extract<AdvisorAnswer, { kind: "spell" }> => entry.kind === "spell" && entry.championId === reference.card.id)}
     ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate} />;
   switch (answer.kind) {
     case "text":

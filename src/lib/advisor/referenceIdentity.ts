@@ -3,7 +3,7 @@ import { answerKey, type AdvisorAnswer } from "./answer";
 import type { HistorySource } from "./historySnapshot";
 
 export function referenceKey(answer: AdvisorAnswer, source?: HistorySource): string {
-  const cardKey = answer.kind === "spell" ? `skills:${answer.championId}`
+  const cardKey = answer.kind === "spell" && answer.card ? `skills:${answer.championId}`
     : answer.kind === "champion" && (answer.view === "skills" || answer.focus) ? `skills:${answer.card.id}`
       : answerKey(answer);
   return source ? `${source.patch}:${source.locale}:${source.ddragonVersion}:${cardKey}` : cardKey;
