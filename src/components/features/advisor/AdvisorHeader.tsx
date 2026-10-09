@@ -1,7 +1,7 @@
 /**
  * 도우미 서랍의 머리 — 지금 화면의 이름과 자료·새 대화·기록·저장 공간·닫기 단추.
  */
-import { Bot, ChevronLeft, History, Loader2, MessageSquarePlus, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
+import { Bot, ChevronLeft, History, Loader2, MessageSquarePlus, PanelLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import type { AdvisorAnswer } from "@/lib/advisor/answer";
@@ -68,6 +68,8 @@ export function AdvisorHeader(props: AdvisorHeaderProps) {
                 onClick={() => (wide ? onToggleReference() : onViewChange("card"))}
                 aria-label={copy.card.toggleReference}
                 aria-pressed={wide ? referenceOpen : undefined}
+                aria-expanded={wide ? referenceOpen : undefined}
+                title={wide ? (referenceOpen ? copy.card.collapseReference : copy.card.expandReference) : copy.card.toggleReference}
                 /*
                   눌린 상태를 강조색으로 칠하면 머리에서 이 단추 하나만 결이 달라진다.
                   옆의 넷은 전부 무채색 ghost 다. 눌림은 채도가 아니라 명도로 — 바탕을
@@ -75,7 +77,7 @@ export function AdvisorHeader(props: AdvisorHeaderProps) {
                 */
                 className={wide && referenceOpen ? "bg-muted text-foreground hover:bg-muted" : "text-muted-foreground"}
               >
-                {wide && referenceOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+                <PanelLeft className="h-4 w-4" />
               </Button>
             )}
             {/* 대화는 지우는 것이 아니라 새로 시작한다. 지난 대화는 기록에 남아 다시 열 수 있다. */}

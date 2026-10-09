@@ -1,0 +1,124 @@
+{
+  "source": {
+    "name": "점화.mp4",
+    "sha256": "b6d5fc529ab46bd36bdf80b1c8fcf88156b3b335d64bfcbf55639460f3dc94c0",
+    "bytes": 1743045,
+    "width": 1280,
+    "height": 720,
+    "presentationFramesPerSecond": 24,
+    "containerDurationSeconds": 5.69,
+    "decodedPresentationFrameCount": 136,
+    "containerDeclaredFrameCount": 169,
+    "lastDecodedPresentationSeconds": 5.625,
+    "editListIgnoredFrameCount": 169,
+    "editListIgnoredDurationSeconds": 7.041666666666667,
+    "note": "Use default MP4 presentation, including its edit list. Ignoring it exposes 33 excluded leading frames, not extra resolution. Default displayed frame 0 exactly matches untrimmed decoded frame 33."
+  },
+  "method": {
+    "timeOrigin": "start of supplied video, not spell cast",
+    "timestampSource": "ffprobe best_effort_timestamp_time",
+    "frameExtraction": "ffmpeg -i INPUT -fps_mode passthrough frame-%04d.png",
+    "resolution": "Native 1280x720 frames; manually compare both selected-target HP numerals and overhead health bar before/after each transition. Evidence crops use nearest-neighbor 4x magnification.",
+    "hudCropPixels": [
+      57,
+      0,
+      161,
+      56
+    ],
+    "overheadHealthCropPixels": [
+      560,
+      206,
+      647,
+      239
+    ],
+    "crossCheck": "Nearest-template classification of native HP numeral crops over all 136 displayed frames independently returns the same six HP states and five transition frames.",
+    "observationalLimits": [
+      "One supplied clip, no independent game-version stamp.",
+      "Frame sampling is 1/24 second (41.667 ms); rendered UI can lag actual server damage.",
+      "Do not infer exact server tick interval, initial cast-to-first-hit delay, or all versions from this clip.",
+      "Magnification improves readability but adds no original spatial information."
+    ]
+  },
+  "events": [
+    {
+      "tick": 1,
+      "frameIndexZeroBased": 12,
+      "observedAtVideoSeconds": 0.5,
+      "visibleChangeWindowSeconds": {
+        "afterExclusive": 0.4583333333333333,
+        "atOrBeforeInclusive": 0.5
+      },
+      "healthBefore": 1000,
+      "healthAfter": 905,
+      "damage": 95,
+      "intervalSincePreviousSeconds": null,
+      "evidence": "tick-1-4x.png"
+    },
+    {
+      "tick": 2,
+      "frameIndexZeroBased": 36,
+      "observedAtVideoSeconds": 1.5,
+      "visibleChangeWindowSeconds": {
+        "afterExclusive": 1.4583333333333333,
+        "atOrBeforeInclusive": 1.5
+      },
+      "healthBefore": 905,
+      "healthAfter": 810,
+      "damage": 95,
+      "intervalSincePreviousSeconds": 1.0,
+      "evidence": "tick-2-4x.png"
+    },
+    {
+      "tick": 3,
+      "frameIndexZeroBased": 62,
+      "observedAtVideoSeconds": 2.5833333333333335,
+      "visibleChangeWindowSeconds": {
+        "afterExclusive": 2.5416666666666665,
+        "atOrBeforeInclusive": 2.5833333333333335
+      },
+      "healthBefore": 810,
+      "healthAfter": 715,
+      "damage": 95,
+      "intervalSincePreviousSeconds": 1.0833333333333333,
+      "evidence": "tick-3-4x.png"
+    },
+    {
+      "tick": 4,
+      "frameIndexZeroBased": 89,
+      "observedAtVideoSeconds": 3.7083333333333335,
+      "visibleChangeWindowSeconds": {
+        "afterExclusive": 3.6666666666666665,
+        "atOrBeforeInclusive": 3.7083333333333335
+      },
+      "healthBefore": 715,
+      "healthAfter": 620,
+      "damage": 95,
+      "intervalSincePreviousSeconds": 1.125,
+      "evidence": "tick-4-4x.png"
+    },
+    {
+      "tick": 5,
+      "frameIndexZeroBased": 109,
+      "observedAtVideoSeconds": 4.541666666666667,
+      "visibleChangeWindowSeconds": {
+        "afterExclusive": 4.5,
+        "atOrBeforeInclusive": 4.541666666666667
+      },
+      "healthBefore": 620,
+      "healthAfter": 525,
+      "damage": 95,
+      "intervalSincePreviousSeconds": 0.8333333333333334,
+      "evidence": "tick-5-4x.png"
+    }
+  ],
+  "summary": {
+    "ticksObserved": 5,
+    "damagePerTick": 95,
+    "totalDamage": 475,
+    "firstToLastObservedSeconds": 4.041666666666667,
+    "meanObservedIntervalSeconds": 1.0104166666666667,
+    "minimumObservedIntervalSeconds": 0.8333333333333334,
+    "maximumObservedIntervalSeconds": 1.125,
+    "conclusion": "Five equal damage steps about one second apart. Visible spacing is not fixed at 1.056 s; this does not establish an exact server timer."
+  }
+}

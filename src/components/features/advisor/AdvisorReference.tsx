@@ -2,7 +2,7 @@
  * 자료 패널(L1) — 대화는 오른쪽에 글로만 흐르고, 답의 카드는 이 한 자리에서 갱신된다.
  * 좁은 화면에서는 같은 탭 줄과 카드가 대화를 덮는 카드 화면으로 뜬다.
  */
-import { PanelLeftClose } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ItemIcon } from "@/components/ui/item-icon";
 import { ChampionIcon } from "@/components/ui/champion-icon";
@@ -162,15 +162,15 @@ export function ReferenceAside({ size, tabs, answer, answers, ddragonVersion, pa
           size.resizing ? "bg-primary/40" : "hover:bg-primary/20"
         }`}
       />
-      <div className="flex items-center gap-2 border-b px-3 py-2 text-xs">
+      <div className="flex shrink-0 items-center gap-2 border-b px-3 py-3 text-xs">
         <span className="font-semibold">{copy.card.reference}</span>
         {answer && (
           <span className="min-w-0 flex-1 truncate text-muted-foreground">
             {referenceTitle(answer, copy).title} · {referenceTitle(answer, copy).kind}
           </span>
         )}
-        <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground" onClick={size.toggleReference} aria-label={copy.card.collapseReference}>
-          <PanelLeftClose className="h-4 w-4" />
+        <Button variant="ghost" size="icon" className="shrink-0 text-muted-foreground hover:text-foreground" onClick={size.toggleReference} aria-label={copy.card.collapseReference} title={copy.card.collapseReference}>
+          <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
       {tabs}

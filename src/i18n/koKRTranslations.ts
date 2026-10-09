@@ -324,6 +324,7 @@ export const koKRTranslations: Translations = {
       reference: "자료",
       toggleReference: "자료 패널",
       collapseReference: "자료 패널 접기",
+      expandReference: "자료 패널 펼치기",
       resizeReference: "자료 패널 너비 조절",
       referenceEmpty: "답의 자료가 여기에 보입니다.",
       sameReference: "같은 자료",

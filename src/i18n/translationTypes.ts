@@ -337,6 +337,7 @@ export interface Translations {
       reference: string;
       toggleReference: string;
       collapseReference: string;
+      expandReference: string;
       resizeReference: string;
       referenceEmpty: string;
       /** 직전 답과 같은 카드 */
