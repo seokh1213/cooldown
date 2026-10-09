@@ -1,6 +1,6 @@
 /** 대화 계획의 근거 문장을 조립한다. 이 단계는 새로운 게임 지식을 생성하지 않는다. */
 import type { Language } from "@/i18n";
-import { ruleLines } from "@/lib/knowledge/rules";
+import { ruleAnswerText } from "./ruleFocus";
 import { answerKey, type AdvisorAnswer } from "./answer";
 import type { AdvisorData } from "./context";
 import type { AnswerPlan } from "./plan";
@@ -28,7 +28,7 @@ export type AnswerDelivery = string | AdvisorAnswer | { text: string; answers: A
 
 export function dialogueAnswerText(answer: AdvisorAnswer, lang: Language): string {
   if (answer.kind === "text") return answer.text;
-  if (answer.kind === "rule") return (answer.highlighted.length ? answer.highlighted : ruleLines(answer.rule, lang)).join("\n");
+  if (answer.kind === "rule") return ruleAnswerText(answer.rule, answer.highlighted, lang);
   const prose = answerProse(answer, lang);
   if (answer.kind === "compare" && !prose) return answer.rows.map(row => `${row.label}: ${answer.cards.map((card, i) => `${card.name} ${row.values[i] || "—"}`).join(" · ")}`).join("\n");
   if (answer.kind === "item") {

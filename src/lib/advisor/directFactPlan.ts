@@ -21,7 +21,7 @@ export function directFactPlan(resolved: ResolvedQuestion, ctx: PlanContext): An
   const rules = askedRules(ctx.data, question);
   if (rules.length === 1 && rules[0].subject !== "gameplay" && spellFocus.focus === "cooldown" && !champions.length) {
     const rule = rules[0];
-    return { type: "card", answer: buildRuleAnswer(rule, [rule.name], ctx.lang, rules, ruleCooldown(ctx.data, rule, question)), notice: ctx.notice };
+    return { type: "card", answer: buildRuleAnswer(rule, { mentionedNames: [rule.name], lang: ctx.lang, mentioned: rules, cooldownSeconds: ruleCooldown(ctx.data, rule, question), question }), notice: ctx.notice };
   }
   if (rules.length || !champions.length) return undefined;
   // 복합 계산과 정정은 숫자 기억을 다루는 대화 조회에 맡긴다.

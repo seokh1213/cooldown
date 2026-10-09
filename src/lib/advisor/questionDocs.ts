@@ -131,7 +131,7 @@ export function docAnswer(data: AdvisorData, lang: Language, id: string, questio
     const named = findMentionedRules(data.ruleIndex, question);
     const all = named.some((entry) => entry.name === rule.name) ? named : [rule, ...named];
     const names = all.map((entry) => entry.name);
-    const cards = all.map((entry) => buildRuleCard(entry, names, lang, all, ruleCooldown(data, entry, question)));
+    const cards = all.map((entry) => buildRuleCard(entry, { mentionedNames: names, lang, mentioned: all, cooldownSeconds: ruleCooldown(data, entry, question), question }));
     return cards.find((card) => card.kind === "rule" && card.highlighted.length > 0) ?? cards[all.indexOf(rule)];
   }
   if (id.startsWith("meta:")) return gameMetaById(id, lang, question);

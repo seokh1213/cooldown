@@ -38,3 +38,5 @@
 이 문구로 관련 단위·데이터 28/28건과 390px·1280px 브라우저 2/2건을 재시도 없이 통과했다. 실제 로컬 Chrome의 새 대화에서도 짧은 결론을 확인했고 영상 설명·계측 범위가 표시되지 않음을 확인했다.
 
 전체 회귀 5,893건과 인프라 12/12를 다시 실측했다. 성공 5,796건·기존 실패 77건·수동 검토 20건, unsafeNumeric 0건으로 이전과 같았다. 변경 응답 10건은 이전의 긴 점화 문장만 짧은 결론으로 교체됐고, 나머지 모든 응답 문자·통과 여부·검사 항목이 동일했다. [짧은 문구의 기준 갱신 근거](concise-update.json)에 전후 해시와 변경 행을 보존했다.
+
+커밋 `8847d72a9214e2d177aca7c9deb4780e946e7c4d`의 [배포 Actions](https://github.com/seokh1213/cooldown/actions/runs/37947837623)와 [전체 품질 회귀 Actions](https://github.com/seokh1213/cooldown/actions/runs/37947837589)는 모두 성공했다. 배포 서버의 `release.json`에서 예상 releaseId `a5d58450b75b9b52fe76a7b5c580fb0c`를 확인했다. 이어진 사용자 검토에서 규칙 전체 나열을 줄이는 [질문별 답변 개선](../rule-focus-20261010/README.md)을 진행했다.

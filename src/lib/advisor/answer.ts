@@ -22,6 +22,7 @@ import { detectSpellFocus, type SpellFocus } from "./spellFocus";
 import type { ChampionStatQuery } from "./statQuery";
 import { ratioText, spellFocusValue } from "./spellAnswer";
 import { splitSentences } from "./answerText";
+import { focusedRuleLines } from "./ruleFocus";
 export { splitSentences } from "./answerText";
 export { buildSpellAnswer, cooldownFact, rangeFact, spellFocusValue } from "./spellAnswer";
 import { buildStatComparison } from "./statComparison";
@@ -92,6 +93,7 @@ export type AdvisorAnswer =
   | {
       kind: "rule";
       rule: RuleNotes;
+      focus?: SpellFocus;
       /** 질문에 답하는 문장. 먼저, 굵게. */
       highlighted: string[];
       /** 그 밖의 문장. 접는다. */
@@ -180,14 +182,17 @@ export interface CompareRow {
   winner?: number;
 }
 
-/** 툴팁 평문을 문장으로 가른다. 한국어 종결 "다." 와 마침표를 경계로 본다. */
-/**
- * 규칙 답. 질문에 함께 나온 **다른 이름**을 담은 문장을 앞에 놓는다.
- *
- * "정복자에 점화 들어가?" 는 점화 규칙 9문장 중 "정복자" 가 든 한 문장이 답이다.
- * 이름을 담은 문장이 없으면 전부 rest 로 두고 카드가 원문을 보인다.
- */
-export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang = "ko_KR", mentioned: RuleNotes[] = [], cooldownSeconds?: number | string): AdvisorAnswer {
+interface RuleAnswerOptions {
+  mentionedNames?: string[];
+  lang?: string;
+  mentioned?: RuleNotes[];
+  cooldownSeconds?: number | string;
+  question?: string;
+}
+
+/** 함께 물은 개체의 상호작용, 조회 수치, 질문에 맞는 근거를 먼저 보인다. */
+export function buildRuleAnswer(rule: RuleNotes, options: RuleAnswerOptions = {}): AdvisorAnswer {
+  const { mentionedNames = [], lang = "ko_KR", mentioned = [], cooldownSeconds, question = "" } = options;
   // "점멸 쿨타임" 은 판정 규칙이 아니라 수치를 묻는 것이다. 규칙 문장만 보였더니 300초가 어디에도 없었다(2026-09-30 브라우저 시험).
   const cooldownLine =
     cooldownSeconds === undefined ? undefined : `${cardLabels(lang as Language).cooldown} ${cooldownSeconds}${translations[lang as Language].comparison.seconds}`;
@@ -195,13 +200,16 @@ export function buildRuleAnswer(rule: RuleNotes, mentionedNames: string[], lang 
   const lines = [...(cooldownLine ? [cooldownLine] : []), ...ruleLines(rule, lang)];
   // 함께 물은 다른 규칙을 그 화면 언어 이름으로 찾는다("정복자에 점화" → 점화 규칙에서 정복자가 든 줄)
   const others = [...new Set([...mentionedNames.filter((name) => name !== rule.name), ...mentioned.filter((r) => r !== rule).map((r) => ruleName(r, lang))])];
-  const highlighted = [
+  const crossed = others.length ? lines.filter((line) => line !== cooldownLine && others.some((name) => line.toLowerCase().includes(name.toLowerCase()))) : [];
+  const highlighted = [...new Set([
     ...(removed ? [removed, ...lines] : []),
     ...(cooldownLine ? [cooldownLine] : []),
-    ...(others.length ? lines.filter((line) => line !== cooldownLine && others.some((name) => line.toLowerCase().includes(name.toLowerCase()))) : []),
-  ];
+    ...crossed,
+    ...(!removed && !cooldownLine && !crossed.length && question ? focusedRuleLines(rule, question, lang) : []),
+  ])];
   const rest = lines.filter((line) => !highlighted.includes(line));
-  return { kind: "rule", rule, highlighted, rest };
+  const focus = question ? detectSpellFocus(question)?.focus : undefined;
+  return { kind: "rule", rule, highlighted, rest, ...(focus ? { focus } : {}) };
 }
 
 /** 카드에 쓰는 능력치 이름. 순서가 곧 표의 행 순서다. */

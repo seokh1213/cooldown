@@ -207,7 +207,7 @@ function RuleAnswerCard({ answer, patch }: { answer: Extract<AdvisorAnswer, { ki
   const turn = useHistoryReference();
   const copy = t.advisor.card;
   const single = answer.highlighted.length === 1 ? answer.highlighted[0] : undefined;
-  const verdict = single ? ruleVerdict(single) : undefined;
+  const verdict = single && !answer.focus ? ruleVerdict(single) : undefined;
   const restCount = answer.rest.length;
   return (
     <Frame

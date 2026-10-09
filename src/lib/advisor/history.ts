@@ -43,7 +43,7 @@ type StoredAnswerReference =
        */
       notes?: { playing: string[]; against: string[]; perspective?: NotePerspective; detail?: "full"; topic?: "combo"; sources?: string[]; unavailable?: string[] };
     }
-  | { kind: "rule"; ruleName: string; highlighted: string[]; rest: string[] }
+  | { kind: "rule"; ruleName: string; highlighted: string[]; rest: string[]; focus?: SpellFocus }
   | { kind: "suggestion"; original: string; candidateIds: string[]; reason?: "typo" | "ambiguous" }
   | {
       kind: "compare";
@@ -116,7 +116,7 @@ function answerReference(answer: AdvisorAnswer): StoredAnswerReference {
     case "champion":
       return { kind: "champion", cardId: answer.card.id, focus: answer.focus, view: answer.view, notes: answer.notes, statQuery: answer.statQuery, headline: answer.headline };
     case "rule":
-      return { kind: "rule", ruleName: answer.rule.name, highlighted: answer.highlighted, rest: answer.rest };
+      return { kind: "rule", ruleName: answer.rule.name, highlighted: answer.highlighted, rest: answer.rest, focus: answer.focus };
     case "suggestion":
       return {
         kind: "suggestion",

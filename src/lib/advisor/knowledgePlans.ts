@@ -79,7 +79,7 @@ export function answerRuleQuestion({ question, ctx, data, matchup }: Pick<Intent
     named.length > 0 && named.every((rule) => rule.subject === "summoner") && SPELL_USE_IN_MATCHUP.test(question) && Boolean(matchup);
   if (!named.length || spellInMatchup) return undefined;
   const names = named.map((rule) => rule.name);
-  const cards = named.map((rule) => buildRuleCard(rule, names, ctx.lang, named, ruleCooldown(data, rule, question)));
+  const cards = named.map((rule) => buildRuleCard(rule, { mentionedNames: names, lang: ctx.lang, mentioned: named, cooldownSeconds: ruleCooldown(data, rule, question), question }));
   if (named.length > 1 && detectSpellFocus(question)?.focus === "cooldown") {
     const text = cards.flatMap(card => card.kind === "rule" ? [`### ${card.rule.name}\n${card.highlighted.join("\n")}`] : []).join("\n\n");
     return { type: "code", answer: text, notice: ctx.notice };

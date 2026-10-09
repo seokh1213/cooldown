@@ -7,7 +7,7 @@ import { loadPrecomputed, precomputedDigest, precomputedMore } from "../../../sr
 import { answerProse } from "../../../src/lib/advisor/prose";
 import { groundCommentary } from "../../../src/lib/advisor/grounding";
 import { MAX_NEW_TOKENS } from "../../../src/lib/advisor/config";
-import { ruleLines } from "../../../src/lib/knowledge/rules";
+import { ruleAnswerText } from "../../../src/lib/advisor/ruleFocus";
 import { translations } from "../../../src/i18n/translations";
 import type { Language } from "../../../src/i18n";
 import { createRuntime, type BrowserRuntime, type CallRecord } from "./runtime";
@@ -60,7 +60,7 @@ async function materialize(plan: AnswerPlan, question: string, lang: Language, r
   const answer = plan.answer;
   if (typeof answer === "string") return { text: answer };
   const prose = answerProse(answer, lang);
-  const text = answer.kind === "rule" ? (answer.highlighted.length ? answer.highlighted : ruleLines(answer.rule, lang)).join("\n")
+  const text = answer.kind === "rule" ? ruleAnswerText(answer.rule, answer.highlighted, lang)
     : answer.kind === "text" ? answer.text
     : answer.kind === "compare" && !prose ? JSON.stringify(answer.rows) : prose;
   return { answer, text };

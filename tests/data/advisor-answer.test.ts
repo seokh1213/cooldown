@@ -141,9 +141,9 @@ test("스킬 답: 사거리는 헤드라인으로", () => {
 // ── 룬 답: 재사용 대기시간은 첫 줄로 ───────────────────────────────────
 test("룬 답: 재사용 대기시간은 첫 줄로", () => {
   const electrocute = ruleOf("감전");
-  const answer = buildRuleAnswer(electrocute, [], "ko_KR", [], 20);
+  const answer = buildRuleAnswer(electrocute, { cooldownSeconds: 20 });
   if (answer.kind === "rule") assert.equal(answer.highlighted[0], "재사용 대기시간 20초");
-  const scaling = buildRuleAnswer(electrocute, [], "ko_KR", [], "25~15");
+  const scaling = buildRuleAnswer(electrocute, { cooldownSeconds: "25~15" });
   if (scaling.kind === "rule") assert.equal(scaling.highlighted[0], "재사용 대기시간 25~15초");
 });
 
@@ -253,7 +253,7 @@ test("문장 가르기: 툴팁 평문이 종결어미로 갈려야 한다", () =
 // ── 규칙 답: 함께 나온 이름이 든 문장이 앞에 ────────────────────────────
 test("규칙 답: 함께 나온 이름이 든 문장이 앞에", () => {
   const ignite = ruleOf("점화");
-  const answer = buildRuleAnswer(ignite, ["정복자", "점화"]);
+  const answer = buildRuleAnswer(ignite, { mentionedNames: ["정복자", "점화"] });
   assert.equal(answer.kind, "rule");
   if (answer.kind === "rule") {
     assert.equal(answer.highlighted.length, 1, "정복자를 담은 문장은 하나");
@@ -261,7 +261,7 @@ test("규칙 답: 함께 나온 이름이 든 문장이 앞에", () => {
     assert.equal(answer.highlighted.length + answer.rest.length, ignite.notes.length, "문장을 잃지 않는다");
   }
   // 다른 이름이 없으면 강조 없이 전부 rest
-  const alone = buildRuleAnswer(ignite, ["점화"]);
+  const alone = buildRuleAnswer(ignite, { mentionedNames: ["점화"] });
   if (alone.kind === "rule") assert.equal(alone.highlighted.length, 0);
 });
 
@@ -397,7 +397,7 @@ test("대화 맥락: 상성·이름 생략", () => {
   {
     const links = answerLinks(buildCompareAnswer([card("MonkeyKing"), card("Malphite")], "누가 유리해", undefined, { matchup: true }));
     assert.deepEqual(links, [{ kind: "vs", to: "/vs?a=MonkeyKing&t=Malphite", names: ["오공", "말파이트"] }]);
-    assert.deepEqual(answerLinks(buildRuleAnswer(ruleOf("점화"), ["정복자", "점화"])), [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }]);
+    assert.deepEqual(answerLinks(buildRuleAnswer(ruleOf("점화"), { mentionedNames: ["정복자", "점화"] })), [{ kind: "summoner", to: "/encyclopedia?tab=summoner" }]);
     // 챔피언 하나·스킬 하나의 답에는 대화 링크가 없다. 답마다 "VS 화면으로 이동" 이 붙어 어지러웠다.
     assert.deepEqual(answerLinks({ kind: "champion", card: card("MonkeyKing") }), []);
     assert.deepEqual(answerLinks(buildSpellAnswer(card("MonkeyKing"), spellOf("MonkeyKing", "Q"), "Q 쿨")), []);
@@ -456,7 +456,7 @@ test("대화 기록: 당시 카드 원본을 저장하고 그대로 되살린다
   const answers: AdvisorAnswer[] = [
     buildSpellAnswer(card("Rumble"), spellOf("Rumble", "E"), "럼블 E 마저 몇 깎여?"),
     { kind: "champion", card: card("Malphite"), focus: "cooldown" },
-    buildRuleAnswer(ruleOf("점화"), ["정복자", "점화"]),
+    buildRuleAnswer(ruleOf("점화"), { mentionedNames: ["정복자", "점화"] }),
     buildCompareAnswer([card("Malphite"), card("Jayce")], "누가 더 세?", undefined, { matchup: true }),
     { kind: "suggestion", original: "럼미", candidates: [card("Rumble"), card("Nami")], reason: "typo" },
     { kind: "text", text: "그냥 글" },

@@ -98,8 +98,30 @@ for (const [lang, question, expected] of [
   ["en_US", "Ignite tick interval?", /five ticks, about one second apart/],
   ["zh_CN", "引燃每跳间隔是多少？", /约每秒.*5跳/],
 ] as const) for (const model of [false, true]) test(`${lang}: 점화 틱은 근사 간격과 횟수만 전달한다, 모델 ${model}`, async () => {
-  const reply = await conversation(lang, model).ask(question);
+  const c = conversation(lang, model);
+  c.ctx.retrieval = model;
+  const reply = await c.ask(question);
   assert.match(reply.text, expected);
   assert.doesNotMatch(reply.text, /5\.28|1\.056|0\.833|1\.125|검토한 영상|reviewed recording|核对的视频/);
   assert.equal(reply.answer?.kind, "rule");
+  if (reply.answer?.kind === "rule") {
+    assert.equal(reply.answer.highlighted.length, 1, "틱 간격 질문은 간격·횟수만 답한다");
+    assert.equal(reply.answer.rest.length, 8, "다른 상호작용은 카드에서 펼쳐 볼 수 있다");
+    assert.equal(reply.text.trim(), reply.answer.highlighted[0]);
+  }
+});
+
+for (const [lang, question, expected] of [
+  ["ko_KR", "정화로 점화 지우면 회복 감소도 없어져?", /회복 감소.*남/],
+  ["en_US", "Does Cleanse remove Ignite healing reduction too?", /healing reduction.*(?:remain|persist)/],
+  ["zh_CN", "净化引燃后重伤也会消失吗？", /重伤.*保留/],
+] as const) test(`${lang}: 별도 상호작용 답변도 정화 후 남는 효과를 빠뜨리지 않는다`, async () => {
+  assert.match((await conversation(lang).ask(question)).text, expected);
+});
+
+test("틱 간격과 다른 판정을 함께 물어도 두 측면을 보존한다", async () => {
+  const reply = await conversation().ask("점화 틱 간격이랑 피해 증폭은?");
+  assert.match(reply.text, /약 1초 간격.*5틱/);
+  assert.match(reply.text, /피해 증폭 효과로 늘어나지 않습니다/);
+  assert.doesNotMatch(reply.text, /정화|은신|정복자|콩콩이/);
 });

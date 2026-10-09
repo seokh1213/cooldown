@@ -80,7 +80,7 @@ export function isStoredAnswer(value: unknown): value is StoredAnswer {
         && optional(value.focus, focus) && optional(value.view, entry => oneOf(entry, ["skills", "overview"]))
         && optional(value.notes, championNotes);
     case "rule":
-      return string(value.ruleName) && strings(value.highlighted) && strings(value.rest);
+      return string(value.ruleName) && strings(value.highlighted) && strings(value.rest) && optional(value.focus, focus);
     case "suggestion":
       return string(value.original) && strings(value.candidateIds)
         && optional(value.reason, entry => oneOf(entry, ["typo", "ambiguous"]));

@@ -65,9 +65,18 @@ for (const width of [390, 1280]) test(`점화 틱의 결론을 카드·대화 �
   await page.getByRole("button", { name: "보내기", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.getByText(/약 1초 간격.*5틱/).filter({ visible: true }).last()).toBeVisible();
+  const otherRule = page.getByText("점화는 진실의 시야를 주지 않으므로 은신한 대상을 드러내지 못합니다.", { exact: true });
+  await expect(otherRule).not.toBeVisible();
+  const otherRules = page.getByText(`▸ ${translations.ko_KR.advisor.card.restRules.replace("{count}", "8")}`, { exact: true });
+  await otherRules.click();
+  await expect(otherRule).toBeVisible();
+  await otherRules.click();
+  await expect(otherRule).not.toBeVisible();
+  await expect(page.getByText(translations.ko_KR.advisor.card.verdictYes, { exact: true })).not.toBeVisible();
   await expect(dialog).not.toContainText(/5\.28|0\.833|1\.125|검토한 영상/);
   await page.reload();
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   await expect(dialog.getByText("점화는 약 1초 간격으로 총 5틱의 피해를 줍니다.", { exact: true }).filter({ visible: true }).last()).toBeVisible();
+  await expect(otherRule).not.toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
