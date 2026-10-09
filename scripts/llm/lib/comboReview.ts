@@ -7,8 +7,15 @@ import { numericComboChanges } from "./comboNumericChanges";
 export const comboHash = (value: unknown): string => createHash("sha256").update(JSON.stringify(value) ?? "undefined").digest("hex");
 export const abilityTextHash = (card: ChampionCard): string => comboHash(card.spells.map(({ slot, text }) => ({ slot, text })));
 
+function comboSpellSource(spell: SpellFact): SpellFact {
+  // 검수 주석 추가는 게임 변경이 아니다. 툴팁·공식 수치의 변경 검사는 그대로 유지한다.
+  const { ticks: _ticks, ...source } = spell;
+  if (source.forms) source.forms = source.forms.map(({ ticks: _ticks, ...form }) => form);
+  return source;
+}
+
 export function comboSource(card: ChampionCard, numeric?: NumericChampion) {
-  return { id: card.id, attackRange: card.attackRange, rangeType: card.rangeType, spells: card.spells,
+  return { id: card.id, attackRange: card.attackRange, rangeType: card.rangeType, spells: card.spells.map(comboSpellSource),
     ...(numeric ? { numeric } : {}),
     stats: Object.fromEntries(Object.entries(card.stats).map(([key, stat]) => [key,
       { perLevel: stat.perLevel, lv1: stat.lv1, lv6: stat.lv6, lv11: stat.lv11, lv18: stat.lv18 }])) };

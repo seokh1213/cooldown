@@ -44,6 +44,21 @@ test("승인된 콤보·라인전 스냅샷은 재사용하되 직접 검수 이
   assert.ok(rows.every(row => row.reviewedPatch === (guides.champions.find(guide => guide.champion === row.champion)!.verifiedPatch ?? guides.patch)));
 });
 
+test("틱 검수 주석 추가는 콤보를 격리하지 않으며 실제 지속시간 변경은 계속 보류한다", () => {
+  const actual = loadData("ko_KR"), annotated = structuredClone(data.cards);
+  for (const champion of annotated) for (const spell of champion.spells) {
+    const live = actual.cardById.get(champion.id)!.spells.find(row => row.slot === spell.slot)!;
+    spell.ticks = structuredClone(live.ticks);
+    for (const form of spell.forms ?? []) form.ticks = structuredClone(live.forms?.find(row => row.key === form.key)?.ticks);
+  }
+  assert.ok(annotated.some(champion => champion.spells.some(spell => spell.ticks?.status === "known")));
+  assert.ok(review(annotated).every(row => row.status === "unchanged"));
+  const ambessa = annotated.find(champion => champion.id === "Ambessa")!;
+  assert.deepEqual(comboSource(ambessa, numericSources.Ambessa), comboSource(card, numericSources.Ambessa));
+  ambessa.spells[0].text = ambessa.spells[0].text.replace("4초", "5초");
+  assert.ok(review(annotated).filter(row => row.champion === "Ambessa").every(row => row.status === "needs-review"));
+});
+
 test("암베사 피해량만 바뀌면 콤보를 유지하고 직접 검수 패치를 덮어쓰지 않는다", () => {
   const changed = source(card.spells[0].text.replace("5 ~ 25", "5 ~ 30").replace("20% 추가", "25% 추가"));
   changed.spells[0].ratios["추가 공격력"] = 25;
@@ -146,6 +161,10 @@ test("실제 생성기가 보류된 원문·옛 콤보·번역을 제외하며 �
   };
   try {
     const cards = structuredClone(data.cards); cards.find(c => c.id === "Ambessa")!.spells[0].text += " 새 발동 조건";
+    for (const champion of cards) for (const spell of champion.spells) {
+      spell.ticks = { status: "not_documented", effects: [], sources: [] };
+      for (const form of spell.forms ?? []) form.ticks = spell.ticks;
+    }
     write("knowledge/combo-guides.json", guides); write("knowledge/combo-baseline.json", baseline);
     write("knowledge/combo-review-ledger.json", { schemaVersion: 1, reviews: [] });
     write("knowledge/note-versions.json", { baselinePatch: "26.19", files: [{ path: "knowledge/combo-guides.json", sourceHash: "before-review" }] });
