@@ -47,6 +47,8 @@ pnpm llm:test --profile infrastructure --out research/.cache/quality/infrastruct
 
 이 로컬 저장소는 `git config --local core.hooksPath .githooks`로 푸시 전 배포 검사를 사용한다. 새 clone에서는 같은 명령으로 활성화한다. 기존 hook 경로가 있다면 먼저 그 구성을 유지할 방법을 검토한다.
 
+SSH 원격에서는 검사 중 연결이 유휴 상태로 끊기지 않도록 이 저장소에 `git config --local core.sshCommand 'ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=6'`을 적용했다. 새 clone에서도 기존 `core.sshCommand`와 `GIT_SSH_COMMAND`·`GIT_SSH` 설정이 없을 때 같은 명령을 사용한다. 기존 설정이 있으면 덮어쓰지 않고 해당 명령에 옵션을 병합한다. [OpenSSH의 연결 유지 옵션](https://github.com/openssh/openssh-portable/blob/master/ssh_config.5)은 30초마다 연결을 확인하며, 응답 없는 확인이 6회 누적되면 종료한다. 전역 SSH 설정은 변경하지 않는다.
+
 훅은 푸시할 커밋을 로컬 Git 객체로 임시 clone하고 설치된 `node_modules`를 공유한다. 커밋과 작업 폴더의 lockfile이 다르거나 의존성이 없으면 중단한다. Git이 훅에 넘긴 저장소 환경변수를 제거해 임시 clone의 명령이 원본 저장소를 건드리지 않게 한다. 미커밋 수정·무시된 연구 산출물이 검사 결과를 가리지 않는다. 목록이나 정답은 자동 갱신하지 않으며, 임시 clone과 생성물은 성공·실패·정상적인 중단 후 제거한다. 별도 worktree를 등록하지 않는다.
 
 공통 `check:release`는 inventory 확인, 배포 자료 준비, 타입·lint, 전체 단위·데이터 시험, 틱·공식 패치 감사, 메커니즘 답변 회귀를 순서대로 실행한다. Actions도 같은 준비·검증 단계를 호출한다. `src/`, `public/`, `knowledge/`, `data/`, `scripts/`, `e2e/`, 기초 게임 문서, Playwright·Vite·TypeScript 설정, 의존성 변경이 푸시 범위에 있으면 훅이 빌드·Pages 준비·전체 브라우저 시험도 추가한다. 브라우저 시험은 재시도 0회이며 기존 서버를 재사용하지 않는다. CI의 재시도 성공도 flaky로 기록해 실패시킨다. 실제 불안정한 조건을 수정해야 통과한다.
