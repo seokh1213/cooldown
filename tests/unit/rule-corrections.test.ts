@@ -26,15 +26,17 @@ test("원문이 바뀌거나 다른 규칙이면 과거 교정을 덮어씌우�
   assert.throws(() => reviewRuleNotes([rule], [...corrections, correction]), /Invalid rule correction/);
 });
 
-test("점화 관측은 원자료와 일치하고 고정 서버 주기나 패치 확인을 주장하지 않는다", () => {
+test("점화 카드는 근사 간격과 틱 수만 전달하고 상세 계측은 연구 자료에 보존한다", () => {
   const measurement = JSON.parse(fs.readFileSync("research/ability-ticks/ignite-video-20261009/measurement.json", "utf8"));
   assert.equal(measurement.events.length, 5);
   for (const text of Object.values(correction.text)) {
-    assert.match(text, /475/);
-    assert.match(text, /0\.833.*1\.125/);
-    assert.doesNotMatch(text, /5\.28|1\.056|26\.20/);
+    assert.doesNotMatch(text, /5\.28|1\.056|26\.20|475|0\.833|1\.125/);
   }
-  assert.match(correction.text.ko_KR, /확정할 수 없.*패치.*확인되지/);
+  assert.match(correction.text.ko_KR, /약 1초.*5틱/);
+  assert.match(correction.text.en_US, /five ticks.*about one second/);
+  assert.match(correction.text.zh_CN, /约每秒.*5跳/);
+  assert.equal(measurement.summary.totalDamage, 475);
+  assert.ok(measurement.method.observationalLimits.length > 0);
   for (const [file, lang] of [["ko", "ko_KR"], ["zh", "zh_CN"]] as const) {
     const translations = JSON.parse(fs.readFileSync(`knowledge/rule-translations.${file}.json`, "utf8")).translations;
     assert.equal(translations[correction.text.en_US], correction.text[lang]);
