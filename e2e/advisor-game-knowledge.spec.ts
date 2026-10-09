@@ -54,3 +54,21 @@ for (const [lang, question, title] of [
   await expect(dialog.getByRole("heading", { name: title, exact: true })).toBeVisible();
   await expect(dialog.getByText(/350\.5–515/)).toBeVisible();
 });
+
+for (const width of [390, 1280]) test(`점화 틱의 영상 관측과 한계를 카드·대화 복원에서 보존한다: ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await page.goto("./");
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
+  await waitForModelFreeInput(page, input, page.getByRole("button", { name: "모델 없이 써보기", exact: true }));
+  await input.fill("점화 틱 간격은?");
+  await page.getByRole("button", { name: "보내기", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByText(/약 1초 간격.*5틱/).filter({ visible: true }).last()).toBeVisible();
+  await expect(dialog.getByText(/정확한 서버 주기.*확정할 수 없/).filter({ visible: true }).last()).toBeVisible();
+  await expect(dialog).not.toContainText("5.28");
+  await page.reload();
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  await expect(dialog.getByText(/95씩 5회.*475/).filter({ visible: true }).last()).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

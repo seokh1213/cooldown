@@ -92,3 +92,14 @@ for (const [lang, question, expected] of [
   ["en_US", "Corki E damage ticks?", /0\.25s interval[\s\S]*16ticks[\s\S]*total E damage ÷ 16/],
   ["zh_CN", "库奇 E 每跳伤害？", /0\.25秒间隔[\s\S]*16跳[\s\S]*总伤害 ÷ 16/],
 ] as const) test(`${lang}: ${question}`, async () => assert.match((await conversation(lang).ask(question)).text, expected));
+
+for (const [lang, question, expected] of [
+  ["ko_KR", "점화 틱 간격은?", /약 1초.*5틱[\s\S]*475[\s\S]*확정할 수 없/],
+  ["en_US", "Ignite tick interval?", /five equal damage ticks about one second[\s\S]*475[\s\S]*does not establish/],
+  ["zh_CN", "引燃每跳间隔是多少？", /约每秒[\s\S]*5跳[\s\S]*475[\s\S]*无法确认/],
+] as const) for (const model of [false, true]) test(`${lang}: 점화 영상 관측과 서버 주기를 구분한다, 모델 ${model}`, async () => {
+  const reply = await conversation(lang, model).ask(question);
+  assert.match(reply.text, expected);
+  assert.doesNotMatch(reply.text, /5\.28|1\.056/);
+  assert.equal(reply.answer?.kind, "rule");
+});

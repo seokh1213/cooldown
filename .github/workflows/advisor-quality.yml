@@ -31,7 +31,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Prepare the same advisor data used for deployment
-        run: npm run llm:prepare-release
+        run: npm run check:release -- --phase prepare
 
       - name: Compare advisor regression baseline
         run: npm run llm:test -- --profile regression --baseline research/llm-evals/workflow/reports/regression/baseline.json --out research/.cache/quality/ci

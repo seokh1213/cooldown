@@ -45,7 +45,20 @@ pnpm llm:test --profile infrastructure --out research/.cache/quality/infrastruct
 
 등록된 시험 입력과 실행 코드는 저장소에 유지한다. `inventory.json`의 `localOnly` 자료는 로컬 연구 산출물이며, 깨끗한 CI checkout에 없어도 된다. 그 자료에서 복구한 질문·대화·출처는 `datasets/review/archive.jsonl`에 보존한다. 필수 파일 누락, 등록 입력 변경, 수동 질문 은행 변경은 계속 실패한다.
 
-이 로컬 저장소는 `git config --local core.hooksPath .githooks`로 푸시 전 inventory 검사를 사용한다. 새 clone에서는 같은 명령으로 활성화한다. 등록 누락은 원격에 보내기 전에 푸시를 중단하며 목록이나 정답을 자동 갱신하지 않는다. 기존 hook 경로가 있다면 먼저 그 구성을 유지할 방법을 검토한다.
+이 로컬 저장소는 `git config --local core.hooksPath .githooks`로 푸시 전 배포 검사를 사용한다. 새 clone에서는 같은 명령으로 활성화한다. 기존 hook 경로가 있다면 먼저 그 구성을 유지할 방법을 검토한다.
+
+훅은 푸시할 커밋을 로컬 Git 객체로 임시 clone하고 설치된 `node_modules`를 공유한다. 커밋과 작업 폴더의 lockfile이 다르거나 의존성이 없으면 중단한다. Git이 훅에 넘긴 저장소 환경변수를 제거해 임시 clone의 명령이 원본 저장소를 건드리지 않게 한다. 미커밋 수정·무시된 연구 산출물이 검사 결과를 가리지 않는다. 목록이나 정답은 자동 갱신하지 않으며, 임시 clone과 생성물은 성공·실패·정상적인 중단 후 제거한다. 별도 worktree를 등록하지 않는다.
+
+공통 `check:release`는 inventory 확인, 배포 자료 준비, 타입·lint, 전체 단위·데이터 시험, 틱·공식 패치 감사, 메커니즘 답변 회귀를 순서대로 실행한다. Actions도 같은 준비·검증 단계를 호출한다. `src/`, `public/`, `knowledge/`, `data/`, `scripts/`, `e2e/`, 기초 게임 문서, Playwright·Vite·TypeScript 설정, 의존성 변경이 푸시 범위에 있으면 훅이 빌드·Pages 준비·전체 브라우저 시험도 추가한다. 브라우저 시험은 재시도 0회이며 기존 서버를 재사용하지 않는다. CI의 재시도 성공도 flaky로 기록해 실패시킨다. 실제 불안정한 조건을 수정해야 통과한다.
+
+작업 폴더에서 미리 확인하려면 아래 명령을 사용한다. 배포 준비는 `public/data`를 갱신하므로 결과 diff를 검토한다. 푸시 훅에서는 그 변경이 임시 clone 안에만 생긴다.
+
+```sh
+npm run check:release
+npm run check:release -- --browser
+```
+
+단계별 결과와 소요 시간은 `research/.cache/preflight/release-*.json`, 푸시한 커밋의 결과는 `push-<commit>.json`에 남는다. 전체 LLM 대화 평가는 기존 `llm:test --profile regression`과 원격 Advisor Regression에서 계속 수행한다. 이 훅이 수동 의미 검토나 새 자료에 대한 품질 승인을 대신하지 않는다.
 
 삭제 기록은 시험 중인 브랜치의 `HEAD` 이력을 기준으로 계산한다. 아직 합쳐지지 않은 다른 브랜치의 진행 중 실험 파일을 삭제 자료로 분류하지 않는다. 이미 복구한 역사적 질문과 출처는 계속 보존한다.
 

@@ -119,7 +119,7 @@ jobs:
         run: npm run llm:refresh-growth
 
       - name: Review combo compatibility
-        run: npm run llm:prepare-release
+        run: npm run check:release -- --phase prepare
 
       - name: Upload combo compatibility review
         if: always()
@@ -160,8 +160,15 @@ jobs:
         if: steps.mechanics-drift.outputs.has_changes == 'true'
         run: npm run llm:mechanics-refresh -- "$RUNNER_TEMP/mechanics-next"
 
-      - name: Check champion mechanics answer regressions
-        run: npm run llm:mechanics-eval -- research/champion-mechanics/reports/answer-quality.json --check
+      # 같은 보고서로 알림을 반복하지 않으며 새 본문 지문은 다시 알린다.
+      - name: Open or update knowledge drift issue
+        if: steps.drift.outputs.has_report == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node --import tsx scripts/ci/knowledge-drift-issue.ts
+
+      - name: Validate prepared release with the local push harness
+        run: npm run check:release -- --phase verify
 
       - name: Upload champion mechanics update inputs
         if: always()
@@ -170,37 +177,21 @@ jobs:
           name: champion-mechanics-update
           path: |
             research/champion-mechanics/reports/*
+            research/.cache/preflight/mechanics.json
             ${{ runner.temp }}/mechanics-next
           retention-days: 14
           if-no-files-found: ignore
+          include-hidden-files: true
 
-      # 같은 보고서로 알림을 반복하지 않으며 새 본문 지문은 다시 알린다.
-      - name: Open or update knowledge drift issue
-        if: steps.drift.outputs.has_report == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: node --import tsx scripts/ci/knowledge-drift-issue.ts
-
-      - name: Type-check and lint
-        run: |
-          npm run type-check
-          npm run lint
-
-      # 코드만 보는 시험. 새로 받은 자료와 무관하게 깨지면 코드 탓이다.
-      # 1,200건을 한 줄씩 찍으면 로그가 그것으로 찬다. 점으로 찍고, 실패만 이름과 함께 보인다.
-      - name: Unit tests
-        env:
-          NODE_OPTIONS: --test-reporter=dot
-        run: npm run test:unit
-
-      # 방금 만든 public/data 를 읽는 시험. 여기서만 깨지면 새 자료(패치·리워크)를 먼저 의심한다.
-      - name: Data tests
-        env:
-          NODE_OPTIONS: --test-reporter=dot
-        run: npm run test:data
-
-      - name: Audit every official patch report
-        run: npm run patch-notes:audit
+      - name: Upload release validation report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-validation
+          path: research/.cache/preflight
+          retention-days: 14
+          if-no-files-found: ignore
+          include-hidden-files: true
 
       # `src/data/generated` 도 생성물이다. 시트에 무엇이 몇째 칸에 있는지를 적어 둔
       # 파일이라, 챔피언이나 아이템이 늘면 시트와 함께 바뀐다. 여기 안 넣으면 그림만
