@@ -13,6 +13,31 @@ async function openAdvisor(page: Page) {
   };
 }
 
+for (const width of [390, 1280]) test(`단일 틱 답변은 수치를 들여쓰고 주의사항을 별도 문단으로 표시한다: ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  const ask = await openAdvisor(page);
+  await ask("코르키 w 틱 간격과 데미지 알려줘");
+  const dialog = page.getByRole("dialog", { name: "롤 지식 도우미", exact: true });
+  const digest = dialog.locator(".border-l-2").filter({ hasText: "W 발키리 · 지속 틱" });
+  const metrics = digest.getByRole("listitem");
+  await expect(metrics).toHaveText(["0.5초 간격", "2.5초 지속", "5틱분"]);
+  const label = digest.getByText("지속 피해", { exact: true });
+  const note = digest.getByText(/불길에서 벗어나도 1초간 피해가 잔류합니다/);
+  await expect(note).toContainText("실제 적중 횟수를 보장하지 않습니다");
+  const labelBox = (await label.boundingBox())!;
+  const firstBox = (await metrics.nth(0).boundingBox())!;
+  const lastBox = (await metrics.nth(2).boundingBox())!;
+  expect(firstBox.x).toBeGreaterThan(labelBox.x);
+  expect(lastBox.y).toBeGreaterThan(firstBox.y);
+  expect((await note.boundingBox())!.y).toBeGreaterThan(lastBox.y);
+  await expect(dialog.locator('a[href^="http"], a[target="_blank"]')).toHaveCount(0);
+  expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+  await page.reload();
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  await expect(metrics).toHaveText(["0.5초 간격", "2.5초 지속", "5틱분"]);
+  await expect(dialog.getByText("틱 근거", { exact: true })).toHaveCount(0);
+});
+
 for (const width of [390, 1280]) test(`복수 스킬은 카드 하나와 옆 패널을 사용하며 기록 복원도 유지한다: ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 900 });
   const ask = await openAdvisor(page);
@@ -33,18 +58,9 @@ for (const width of [390, 1280]) test(`복수 스킬은 카드 하나와 옆 패
   await expect(gatling).toContainText("16틱 (계속 적중 시)");
   await expect(gatling).toContainText("총피해 ÷ 16");
   await expect(gatling.getByText("지속 틱", { exact: true })).toHaveCount(1);
-  await gatling.locator("summary").click();
-  expect((await gatling.locator("summary").boundingBox())!.height).toBeGreaterThanOrEqual(44);
-  await gatling.locator("summary").focus();
-  await gatling.locator("summary").press("Enter");
-  await expect(gatling.locator("details")).not.toHaveAttribute("open", "");
-  await gatling.locator("summary").press("Enter");
-  await expect(gatling.locator("details")).toHaveAttribute("open", "");
-  const source = gatling.getByRole("link", { name: "틱 근거 1", exact: true });
-  await expect(source).toHaveAttribute("href", /wiki\.leagueoflegends\.com/);
-  await source.focus();
-  await expect(source).toBeFocused();
-  expect((await source.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  await expect(gatling.getByRole("listitem")).toHaveCount(4);
+  await expect(dialog.locator('a[href^="http"], a[target="_blank"]')).toHaveCount(0);
+  await expect(dialog.getByText("틱 근거", { exact: true })).toHaveCount(0);
   if (width >= 1180) {
     await expect(dialog.locator("aside")).toBeVisible();
     await expect(dialog.locator("aside [data-reference-skills]")).toHaveCount(1);

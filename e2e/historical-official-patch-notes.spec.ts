@@ -15,8 +15,7 @@ for (const { patch, count, champion, text, item } of patches) {
     await expect(page.locator("article")).toHaveCount(count);
     await expect(page.locator(champion)).toContainText(text);
     await expect(page.locator(`[id="patch-${item}"]`)).toBeVisible();
-    await expect(page.getByRole("link", { name: "공식 패치 노트", exact: true })).toHaveAttribute("href",
-      `https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-${patch.replace(".", "-")}-notes/`);
+    await expect(page.locator('a[href^="http"], a[target="_blank"]')).toHaveCount(0);
     await page.locator(champion).locator("[data-skill-trigger]").first().click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.keyboard.press("Escape");

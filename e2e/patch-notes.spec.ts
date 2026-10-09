@@ -71,7 +71,7 @@ test("Aphelios weapon images differ and the matching icon is retained in hover a
 test("patch skills share desktop hover and click policy, including duplicate slots", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto("./patch-notes?patch=26.19");
-  await expect(page.getByRole("link", { name: "공식 패치 노트" })).toHaveAttribute("href", "https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-19-notes/");
+  await expect(page.locator('a[href^="http"], a[target="_blank"]')).toHaveCount(0);
   const history = page.getByRole("navigation", { name: "패치 기록" });
   const response = await page.request.get("./patch-notes/index.json");
   const index = await response.json();
@@ -158,7 +158,7 @@ test.describe("mobile patch skills", () => {
 
   test("tap opens a scrollable dialog, returns focus, and never leaves a hover preview", async ({ page }) => {
     await page.goto("./patch-notes?patch=26.19");
-    await expect(page.getByRole("link", { name: "공식 패치 노트" })).toBeVisible();
+    await expect(page.locator('a[href^="http"], a[target="_blank"]')).toHaveCount(0);
     await expect(page.getByRole("combobox", { name: "패치 기록" })).toBeVisible();
     await expect(page.getByRole("navigation", { name: "패치 기록" })).toBeHidden();
     const skill = page.getByRole("button", { name: "W 지옥사슬", exact: true });

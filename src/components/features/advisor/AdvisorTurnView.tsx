@@ -16,6 +16,7 @@ import { AdvisorTurnFooter as TurnFooter } from "./AdvisorTurnFooter";
 import { AdvisorMarkdown } from "./AdvisorMarkdown";
 import { ReferenceChip } from "./AdvisorReferenceChip";
 import { referenceKey } from "@/lib/advisor/referenceIdentity";
+import { TickDetails } from "./SpellTickInfo";
 
 interface AdvisorTurnViewProps {
   ref?: React.Ref<HTMLDivElement>;
@@ -157,7 +158,8 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
           {turn.answer.kind === "compare" && turn.answer.cards.length === 1 && turn.answer.statQuery && (
             <ComparisonHeadlines answer={turn.answer} />
           )}
-          {commentary}
+          {turn.answer.kind === "spell" && turn.answer.focus === "ticks" && <ReferenceDigest answer={turn.answer} />}
+          {!(turn.byCode && turn.answer.kind === "spell" && turn.answer.focus === "ticks") && commentary}
           <AdvisorAnswerCard
             answer={turn.answer}
             ddragonVersion={ddragonVersion}
@@ -278,7 +280,9 @@ function ReferenceDigest({ answer }: { answer: AdvisorAnswer }) {
     <>
       {answer.kind === "spell" && answer.headline && (
         <div className="border-l-2 border-foreground pl-2.5">
-          <div className="text-[15px] font-semibold tabular-nums">{answer.headline.value}</div>
+          <div className="text-[15px] font-semibold tabular-nums">
+            {answer.focus === "ticks" && answer.spell.ticks ? <TickDetails ticks={answer.spell.ticks} /> : answer.headline.value}
+          </div>
           <div className="text-[11px] text-muted-foreground">
             {answer.spell.slot} {answer.spell.name} · {answer.headline.label}
           </div>

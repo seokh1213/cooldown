@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -38,10 +38,6 @@ export default function PatchNotesPage() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-semibold tracking-tight sm:text-2xl"><span className="hidden sm:inline">{patch?.patchVersion} </span>{labels.title}</h2>
             {index && patch && <div className="lg:hidden"><PatchVersionSelect index={index} selected={patch.patchVersion} language={lang} onSelect={onSelect} /></div>}
-            <a href={report?.officialSource?.urls[lang] ?? "https://www.leagueoflegends.com/ko-kr/news/game-updates/"}
-              target="_blank" rel="noreferrer" className="inline-flex min-h-8 items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-              {labels.official}<ArrowUpRight aria-hidden="true" className="size-3" />
-            </a>
           </div>
           {report && counts && <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5 tabular-nums">{report.previousPatchVersion}<ArrowRight aria-hidden="true" className="size-3" />{report.patchVersion}</span>

@@ -1,21 +1,31 @@
 import { useTranslation } from "@/i18n";
-import { tickHeading, tickText, type SpellTicks } from "@/lib/knowledge/abilityTicks";
-import { Disclosure } from "./AnswerCardFrame";
+import { tickEffectText, tickHeading, tickText, type SpellTicks } from "@/lib/knowledge/abilityTicks";
+
+export function TickDetails({ ticks }: { ticks?: SpellTicks }) {
+  const { lang } = useTranslation();
+  if (!ticks || ticks.status !== "known") return <p>{tickText(ticks, lang)}</p>;
+  return <div className="space-y-3">
+    {ticks.effects.map((effect, index) => {
+      const label = effect.label[lang];
+      const metrics = tickEffectText({ ...effect, perTick: undefined, note: undefined }, lang)
+        .slice(label.length + 2).split(" · ").filter(Boolean);
+      return <div key={`${label}:${index}`} className="space-y-1.5">
+        <p className="font-medium">{label}</p>
+        <ul className="ml-4 list-disc space-y-1 pl-1 tabular-nums">
+          {metrics.map(metric => <li key={metric}>{metric}</li>)}
+          {effect.perTick && <li>{effect.perTick[lang]}</li>}
+        </ul>
+        {effect.note && <p className="pl-5 text-[13px] font-normal leading-relaxed">{effect.note[lang]}</p>}
+      </div>;
+    })}
+  </div>;
+}
 
 export function SpellTickInfo({ ticks, requested = false }: { ticks?: SpellTicks; requested?: boolean }) {
   const { lang } = useTranslation();
-  if (!requested && (!ticks || ticks.status === "not_documented" || !ticks.sources.length)) return null;
-  const sourceLabel = { ko_KR: "틱 근거", en_US: "Tick sources", zh_CN: "跳数来源" }[lang];
-  return <div data-spell-ticks className="space-y-1 text-xs [&_summary]:flex [&_summary]:min-h-11 [&_summary]:items-center dark:[&_summary]:text-foreground">
+  if (!requested && (!ticks || ticks.status === "not_documented")) return null;
+  return <div data-spell-ticks className="space-y-2 text-xs">
     <div className="font-medium">{tickHeading(lang)}</div>
-    <div className="whitespace-pre-line">{tickText(ticks, lang)}</div>
-    {ticks && ticks.sources.length > 0 && <Disclosure summary={sourceLabel}>
-      <div className="flex flex-wrap gap-x-3">
-        {ticks.sources.map((source, index) => <a key={source} href={source} target="_blank" rel="noreferrer"
-          className="inline-flex min-h-11 items-center text-primary underline underline-offset-2 focus-visible:outline focus-visible:outline-2 dark:text-foreground">
-          {sourceLabel} {index + 1}
-        </a>)}
-      </div>
-    </Disclosure>}
+    <TickDetails ticks={ticks} />
   </div>;
 }
