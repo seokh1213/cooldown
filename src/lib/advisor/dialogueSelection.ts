@@ -20,9 +20,11 @@ import { topicFromWords } from "./topicJudge";
 import { asksSpellNumbers } from "./spellFocus";
 import { resolveDialogueFact } from "./dialogueFacts";
 import { itemKnowledgeGap } from "./itemKnowledgeGap";
+import { effectSourcesPlan } from "./mechanics/effectSources";
 
 export async function selectDialogueEvidence(resolved: ResolvedQuestion, memory: DialogueMemory, ctx: PlanContext, deps: PlanDeps) {
   const question = resolved.text;
+  const sources = effectSourcesPlan(resolved, ctx, memory);
   if (memory.pending && resolved.champions.length === 1 && memory.pending.candidates.includes(resolved.champions[0].id)
     && (!resolved.slot || resolved.slot === memory.pending.slot) && !asksScenarioAdvice(question)) {
     const confirmed = resolveDialogueFact(resolved, memory, ctx);
@@ -67,7 +69,7 @@ export async function selectDialogueEvidence(resolved: ResolvedQuestion, memory:
   const itemStat = item && /강인함|tenacity|韧性/i.test(question) && !/CC|기절|제압|에어본|stun|suppress|airborne|眩晕|压制|击飞/i.test(question);
   const control = knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined;
   const kit = asksWholeKit(question) && !asksSpellNumbers(question) ? learned : undefined;
-  const preferred = gap ?? abilityBoundaryPlan(resolved, ctx) ?? penetrationCalculation(question, ctx) ?? kit ?? (itemStat ? itemPlan : undefined) ?? control ?? standaloneGuide ?? championFollowup ?? scenario ?? soloScenario ?? (combo && (asksCombo(question) || memory.active === "champion" && memory.combo) ? combo : undefined) ?? (!numeric && knowledge?.type === "code" && knowledge.knowledge ? knowledge : undefined) ?? itemPlan ?? rule ?? mechanic?.plan ?? passive ?? learned ?? combo
+  const preferred = gap ?? abilityBoundaryPlan(resolved, ctx) ?? sources ?? penetrationCalculation(question, ctx) ?? kit ?? (itemStat ? itemPlan : undefined) ?? control ?? standaloneGuide ?? championFollowup ?? scenario ?? soloScenario ?? (combo && (asksCombo(question) || memory.active === "champion" && memory.combo) ? combo : undefined) ?? (!numeric && knowledge?.type === "code" && knowledge.knowledge ? knowledge : undefined) ?? itemPlan ?? rule ?? mechanic?.plan ?? passive ?? learned ?? combo
     ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? (numeric ? undefined : knowledge) ?? passive
     ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
 

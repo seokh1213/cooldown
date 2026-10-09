@@ -284,20 +284,24 @@ function ReferenceDigest({ answer }: { answer: AdvisorAnswer }) {
             {answer.focus === "ticks" && answer.spell.ticks ? <TickDetails ticks={answer.spell.ticks} /> : answer.headline.value}
           </div>
           <div className="text-[11px] text-muted-foreground">
-            {answer.spell.slot} {answer.spell.name} · {answer.headline.label}
+            {answer.championName} {answer.spell.slot} {answer.spell.name} · {answer.headline.label}
           </div>
         </div>
       )}
       {answer.kind === "spell" && answer.highlighted.length > 0 && (
-        <div className="space-y-1 rounded-md bg-muted px-2.5 py-2 text-[13px] font-semibold leading-relaxed">
+        <div className="space-y-2 rounded-md bg-muted px-2.5 py-2 text-[13px] leading-relaxed">
+          <p className="font-semibold">{answer.championName} {answer.spell.slot} {answer.spell.name}</p>
           {answer.highlighted.map((sentence) => (
-            <p key={sentence}>{sentence}</p>
+            <AdvisorMarkdown key={sentence} text={sentence} />
           ))}
         </div>
       )}
       {answer.kind === "spell" && !answer.headline && answer.highlighted.length === 0 && (
         // "W는?" 처럼 사실을 짚지 않았으면 스킬이 무엇을 하는지 한 줄. 표는 자료 패널에.
-        <p className="text-[13px] leading-relaxed">{spellSummary(answer.spell)}</p>
+        <div className="space-y-1 text-[13px] leading-relaxed">
+          <p className="font-semibold">{answer.championName} {answer.spell.slot} {answer.spell.name}</p>
+          <p>{spellSummary(answer.spell)}</p>
+        </div>
       )}
       {answer.kind === "item" && (
         <div className="space-y-2">

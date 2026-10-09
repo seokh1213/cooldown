@@ -2,6 +2,33 @@ import { waitForModelFreeInput } from "./support/advisor";
 import { expect, test } from "@playwright/test";
 import { translations } from "../src/i18n/translations";
 
+for (const width of [390, 1280]) test(`회복 효과는 소속 스킬과 조건을 밝히고 복원에서도 유지한다: ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await page.goto("./");
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
+  await waitForModelFreeInput(page, input, page.getByRole("button", { name: "모델 없이 써보기", exact: true }));
+  await input.fill("유미 Q 맞춰도 힐 안되나? 유미는 궁에만 힐이 있나?");
+  await page.getByRole("button", { name: "보내기", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  for (const name of ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]) {
+    await expect(dialog.getByRole("heading", { name, exact: true })).toBeVisible();
+  }
+  await expect(dialog).toContainText("Q 사르르탄 적중으로 이어지는 회복은 P 야옹이 친구의 효과");
+  await expect(dialog).toContainText("4초 안에 아군에게 밀착");
+  await expect(dialog).not.toContainText(/반경 200|최근 35초/);
+  await expect(dialog.locator('a[href^="http"], a[target="_blank"]')).toHaveCount(0);
+  expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+  await page.reload();
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  await expect(dialog.getByRole("heading", { name: "유미 P 야옹이 친구", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "새 대화", exact: true }).click();
+  await input.fill("유미 R 회복은?");
+  await page.getByRole("button", { name: "보내기", exact: true }).click();
+  await expect(dialog.getByText("유미 R 대단원", { exact: true }).filter({ visible: true }).last()).toBeVisible();
+  await expect(dialog).toContainText("아군 챔피언은 파동마다 체력을 회복");
+});
+
 test("오브젝트 생성·제거와 검수한 상세 수치를 구분한다", async ({ page }) => {
   await page.goto("./");
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();

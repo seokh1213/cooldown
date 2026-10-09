@@ -120,8 +120,8 @@ export function answerProse(answer: AdvisorAnswer, lang: Language = "ko_KR"): st
     if (answer.focus === "ticks") return `${title}\n${tickText(answer.spell.ticks, lang)}`;
     const lines: string[] = [];
     if (answer.headline) lines.push(w.is(`${title} ${answer.headline.label}`, answer.headline.value));
-    else if (answer.highlighted.length) lines.push(answer.highlighted.join(" "));
-    else lines.push(spellOneLiner(answer.spell, lang));
+    else if (answer.highlighted.length) lines.push(`**${title}**\n${answer.highlighted.join("\n\n")}`);
+    else lines.push(`**${title}**\n${spellOneLiner(answer.spell, lang)}`);
     // 두 번째 문장에서 이름을 다시 대면 "말파이트 R 멈출 수 없는 힘" 이 두 줄 연속으로
     // 나온다. 앞에서 누구인지 밝혔으므로 여기서는 가리키는 말이면 된다.
     if (answer.spell.effects.length && answer.headline && answer.headline.label !== controlHeading(lang) && answer.headline.label !== tickHeading(lang)) {

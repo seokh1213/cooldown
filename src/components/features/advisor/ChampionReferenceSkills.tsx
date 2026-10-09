@@ -9,6 +9,7 @@ import { AdvisorSkillTrigger } from "./AdvisorSkillTrigger";
 import { Disclosure, KvTable } from "./AnswerCardFrame";
 import { SpellTickInfo } from "./SpellTickInfo";
 import { tickHeading } from "@/lib/knowledge/abilityTicks";
+import { AdvisorMarkdown } from "./AdvisorMarkdown";
 
 export function ChampionReferenceSkills({ answer, detail, selectedSpells = [], patch, ddragonVersion }: {
   answer: Extract<AdvisorAnswer, { kind: "champion" }>; detail?: ChampionDetailV2;
@@ -47,7 +48,7 @@ function SkillDetails({ spell, facts, selected, tickRequested }: {
   return <div className="mt-1.5 space-y-1 text-xs font-normal">
     {selected.flatMap(answer => answer.headline && answer.headline.label !== tickHeading(lang) ? [answer.headline] : []).map(fact =>
       <p key={`${fact.label}:${fact.value}`} className="font-semibold text-primary">{fact.label}: {fact.value}</p>)}
-    {[...new Set(selected.flatMap(answer => answer.highlighted))].map(sentence => <p key={sentence}>{sentence}</p>)}
+    {[...new Set(selected.flatMap(answer => answer.highlighted))].map(sentence => <AdvisorMarkdown key={sentence} text={sentence} />)}
     <SpellTickInfo ticks={spell.ticks} requested={tickRequested || selected.some(answer => answer.focus === "ticks")} />
     {otherFacts.length > 0 && <Disclosure summary={t.skillTooltip.skillInfo}>
       <KvTable rows={otherFacts} />
