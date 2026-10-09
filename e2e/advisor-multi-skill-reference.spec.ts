@@ -38,13 +38,25 @@ for (const width of [390, 1280]) test(`복수 스킬은 카드 하나와 옆 패
 
   if (width >= 1180) {
     const input = page.getByRole("textbox", { name: "롤 질문 입력", exact: true });
+    await input.fill("코르키 Q 스킬정보 알려줘");
+    await page.getByRole("button", { name: "보내기", exact: true }).click();
+    await expect(page.getByRole("button", { name: "중단", exact: true })).toBeHidden();
+    const chips = dialog.getByRole("button", { name: "자료 보기", exact: true });
+    await expect(chips).toHaveCount(2);
+    await expect(chips.first()).not.toHaveClass(/bg-primary\/5/);
+    await expect(chips.last()).toHaveClass(/bg-primary\/5/);
     await input.fill("아리 Q 스킬정보 알려줘");
     await page.getByRole("button", { name: "보내기", exact: true }).click();
     await expect(page.getByRole("button", { name: "중단", exact: true })).toBeHidden();
     const corki = dialog.getByRole("button", { name: "코르키 · 스킬", exact: true });
     await corki.click();
-    await expect(skills.locator("[data-highlighted=true]")).toHaveCount(2);
+    await expect(skills.locator("[data-highlighted=true]")).toHaveCount(1);
+    await expect(skills.locator("[data-highlighted=true]")).toContainText("Q 인광탄");
     await expect(corki).toHaveAttribute("aria-pressed", "true");
+    await chips.first().click();
+    await expect(skills.locator("[data-highlighted=true]")).toHaveCount(2);
+    await expect(chips.first()).toHaveClass(/bg-primary\/5/);
+    await expect(chips.nth(1)).not.toHaveClass(/bg-primary\/5/);
     await dialog.getByRole("button", { name: "자료 보기", exact: true }).last().click();
     await expect(skills.locator("[data-highlighted=true]")).toHaveCount(1);
     await expect(skills.locator("[data-highlighted=true]")).toContainText("Q 현혹의 구슬");

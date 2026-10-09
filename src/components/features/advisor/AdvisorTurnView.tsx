@@ -127,7 +127,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
     >
       {turn.notice && <p className="mb-1.5 text-[11px] text-muted-foreground">{turn.notice}</p>}
       {turn.answers?.length ? (
-        <AdvisorMultiAnswer turn={turn} asReference={asReference} shownReferenceKey={props.shownReferenceKey}
+        <AdvisorMultiAnswer turn={turn} asReference={asReference} shownReferenceKey={props.shownInReference ? props.shownReferenceKey : undefined}
           navigation={asReference && linkButtons.length > 0 ? linkButtons : undefined}
           ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate}
           onPickChampion={props.onPickChampion} onShowReference={props.onShowReference} />
