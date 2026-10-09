@@ -48,7 +48,8 @@ for (const width of [390, 1280]) test(`상황별 콤보·대화 기억·하단 �
   const combo = page.locator("li").filter({ hasText: "짧은 딜교:" }).last();
   await expect(combo.locator("strong")).toHaveText("짧은 딜교:");
   await expect(combo.locator("code")).toHaveText("평타 → Q1 → 평타 → Q2 → 평타");
-  await expect(page.getByRole("dialog").locator('a[href^="http"]')).toHaveCount(0);
+  const unexpectedLinks = page.getByRole("dialog").locator('a[href^="http"]:not([data-spell-ticks] a[href^="https://wiki.leagueoflegends.com/"])');
+  await expect(unexpectedLinks).toHaveCount(0);
   if (width === 390) {
     await expect(page.getByRole("dialog").getByRole("table")).toHaveCount(0);
     await page.getByRole("button", { name: "자료 보기", exact: true }).last().click();
@@ -91,7 +92,7 @@ for (const width of [390, 1280]) test(`상황별 콤보·대화 기억·하단 �
   expect(combined).toContain("**라인전**");
   expect(combined).toContain("미니언과 상대를 함께");
   expect(combined).not.toMatch(/참고 자료|https?:\/\//);
-  await expect(page.getByRole("dialog").locator('a[href^="http"]')).toHaveCount(0);
+  await expect(unexpectedLinks).toHaveCount(0);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(overflow).toBe(false);
 });

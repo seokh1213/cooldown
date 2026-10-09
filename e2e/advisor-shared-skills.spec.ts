@@ -23,14 +23,17 @@ async function expectAllDetails(skills: Locator) {
   await expect(rows).toHaveCount(5);
   for (let index = 0; index < 5; index++) {
     const row = rows.nth(index);
-    await expect(row.locator("summary")).toHaveText(["▸ 스킬 정보", "▸ 설명 전문"]);
-    await row.locator("summary").first().click();
-    await expect(row.locator("details").first().getByRole("table")).toBeVisible();
-    await row.locator("summary").first().click();
-    await row.locator("summary").last().click();
-    await expect(row.locator("details").last().locator("div")).not.toBeEmpty();
-    await expect(row.locator("details").last().locator("div")).toBeVisible();
-    await row.locator("summary").last().click();
+    const information = row.getByText("▸ 스킬 정보", { exact: true });
+    const fullText = row.getByText("▸ 설명 전문", { exact: true });
+    await expect(information).toHaveCount(1);
+    await expect(fullText).toHaveCount(1);
+    await information.click();
+    await expect(information.locator("..").getByRole("table")).toBeVisible();
+    await information.click();
+    await fullText.click();
+    await expect(fullText.locator("..").locator("div")).not.toBeEmpty();
+    await expect(fullText.locator("..").locator("div")).toBeVisible();
+    await fullText.click();
   }
 }
 
@@ -52,9 +55,11 @@ for (const width of [390, 1280]) test(`모든 스킬 상세와 같은 챔피언 
   await expectAllDetails(skills);
 
   const w = skillRows(skills).nth(2);
-  await w.locator("summary").first().click();
-  await w.locator("summary").last().click();
-  await expect(w.locator("details").first()).toContainText("22/21/20/19/18초");
+  const wInformation = w.getByText("▸ 스킬 정보", { exact: true });
+  const wFullText = w.getByText("▸ 설명 전문", { exact: true });
+  await wInformation.click();
+  await wFullText.click();
+  await expect(wInformation.locator("..")).toContainText("22/21/20/19/18초");
   if (width < 768) await page.getByRole("button", { name: "돌아가기", exact: true }).click();
   else await skills.evaluate(node => node.setAttribute("data-reuse-check", "same-card"));
 
@@ -67,15 +72,15 @@ for (const width of [390, 1280]) test(`모든 스킬 상세와 같은 챔피언 
 
   if (width >= 1280) {
     await expect(skills).toHaveAttribute("data-reuse-check", "same-card");
-    await expect(w.locator("details").first()).toHaveAttribute("open", "");
-    await expect(w.locator("details").last()).toHaveAttribute("open", "");
+    await expect(wInformation.locator("..")).toHaveAttribute("open", "");
+    await expect(wFullText.locator("..")).toHaveAttribute("open", "");
     await page.getByRole("button", { name: "자료 보기", exact: true }).nth(1).click();
     await expect(skills.locator("[data-highlighted=true]")).toContainText("Q 파쇄격");
     await expect(tab).toHaveAttribute("aria-pressed", "true");
     await tab.click();
     await expect(skills.locator("[data-highlighted=true]")).toContainText("R 회전격");
-    await w.locator("summary").first().click();
-    await w.locator("summary").last().click();
+    await wInformation.click();
+    await wFullText.click();
   } else {
     await expectAllDetails(skills);
   }

@@ -113,6 +113,7 @@ test("mobile champion tabs support Enter and Space without moving the drag handl
   await page.getByRole("button", { name: "Select 제이스", exact: true }).click();
   await page.getByRole("button", { name: "Select 오공", exact: true }).click();
   await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
   const tabs = page.locator("[data-tab-id]");
   const jayce = tabs.getByRole("button", { name: "제이스", exact: true });
   const wukong = tabs.getByRole("button", { name: "오공", exact: true });

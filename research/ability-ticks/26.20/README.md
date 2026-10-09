@@ -42,7 +42,7 @@
 2. 원문·공식 툴팁을 대조해 `knowledge/ability-ticks.json`을 수정하고, 새 패치의 검토 해시를 보존한다. 미확인은 이유와 함께 남긴다. `npm run llm:ticks:record -- /tmp/cooldown-tick-sources-<patch>.json`으로 원문을 제외한 조사 기록을 생성한다.
 3. `npm run llm:build -- --lang ko_KR`, `en_US`, `zh_CN`을 차례로 실행한다. 패치 또는 한국어 툴팁의 정확한 SHA-256이 달라지면 이전 값 대신 미확인 상태를 생성한다.
 4. `npm run llm:prepare-release`로 배포와 같은 번들·번역·상성 유지·콤보 검수 단계를 실행한 뒤 `npm run llm:ticks:audit`와 `npm test`를 실행한다. 모든 슬롯, 언어, 형태, 기록 복원, 버전 및 본문 변경 시 차단을 검사한다.
-5. `npm run build` 후 `npx playwright test e2e/advisor-multi-skill-reference.spec.ts`로 모바일·데스크톱 카드와 대화를 검사한다. 실제 브라우저와 배포본도 확인한다.
+5. `npm run build` 후 `npm run test:e2e -- --workers=2`로 웹 전체를 검사한다. 틱 집중 확인에는 `npx playwright test e2e/advisor-multi-skill-reference.spec.ts`도 사용할 수 있다. 실제 브라우저와 배포본도 확인한다.
 6. `npm run llm:test:audit`로 테스트 목록을 갱신하고 기존 품질 회귀를 통과시킨 뒤 master에 반영한다. Advisor Regression Actions에 틱 데이터 검사를 추가했다.
 
 ## 구현·검증 기록
@@ -68,3 +68,15 @@ UI 세부 검증과 Delivery Gate는 [화면 검증 기록](ui-verification.md)�
 실제 배포 재생성을 로컬에서 실행해 콤보 355개 변경 없음·검수 대기 0개, 상성 5,839쌍 유지·제외 0쌍을 확인했다. 생성된 public 자료도 커밋된 파일과 일치했다. 틱 주석 추가 시 유지 및 실제 지속시간 변경 시 보류하는 회귀 테스트를 추가했고, 실제 생성기의 격리 테스트에도 틱 주석을 넣었다. 관련 콤보 테스트 21/21 통과.
 
 배포와 Advisor Regression 양쪽에서 같은 `npm run llm:prepare-release`를 사용한다. 앞으로 자료·모델 변경 시 이 명령을 먼저 실행해 배포용 재생성 뒤의 답변을 로컬에서도 검사한다.
+
+## 기존 웹 테스트의 고정 가정 수정
+
+두 번째 [배포 실행](https://github.com/seokh1213/cooldown/actions/runs/37901187491)은 데이터 검사와 틱 테스트를 통과했으나 기존 웹 테스트 4건에서 실패했다. 콤보 테스트는 dialog 안의 외부 링크가 무조건 0개라고 가정했고, 공통 스킬 테스트는 펼침 항목이 무조건 2개이며 첫 번째가 스킬 정보라고 가정했다. 새 ‘틱 근거’가 추가되어 이 가정이 맞지 않았다.
+
+콤보 테스트는 틱 자료 영역의 검수 Wiki 링크만 허용하며 나머지 외부 링크와 복사 본문의 URL 제한은 계속 검사한다. 공통 스킬 테스트는 항목 위치 대신 ‘스킬 정보’·‘설명 전문’의 정확한 이름으로 열림·내용·상태 유지를 확인한다. 틱 근거 자체의 링크·키보드·접근성은 새 틱 테스트에서 검사한다.
+
+전체 216건을 로컬에서도 실행했다. 첫 실행은 215건 통과, 기존 모바일 키보드 테스트 1건이 병렬 실행의 창 닫힘·포커스 복원 순서에서 실패했다. 해당 항목은 단독 실행에서 통과했고, 선택창이 닫힌 상태를 기다린 뒤 키 입력을 검사하도록 보완했다. 배포 전 체크 절차는 집중 4건에 더해 웹 전체 검사도 실행하도록 명시했다.
+
+최종 앱 코드의 [Advisor Regression](https://github.com/seokh1213/cooldown/actions/runs/37901187512)은 전체 5,893건·인프라 검사·세 언어 틱 감사에 통과했다. 신규 품질 회귀 0건이며 기존 77건 실패와 20건 수동 검수는 여전히 남아 있다.
+
+보완 뒤 로컬 웹 전체 216/216 통과(6 workers, 2.8분), 타입·lint 통과. 통과한 품질 Actions의 provenance에 있는 모든 sourceFiles·dataFiles를 현재 작업 트리의 SHA-256과 대조해 차이 0개를 확인했다. 앱·자료·채점기 변경 없이 테스트와 조사 기록만 수정했으므로 중복 push 작업은 생략하고 실패한 배포 jobs를 재실행한다. 해당 workflow의 `ref: master` checkout이 최신 테스트 커밋을 받도록 하며, lint·타입·단위·데이터·웹 전체 검사와 실제 배포는 다시 실행한다.
