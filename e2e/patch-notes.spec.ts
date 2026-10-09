@@ -83,6 +83,8 @@ test("patch skills share desktop hover and click policy, including duplicate slo
   await skill.click();
   await expect(page.getByRole("dialog")).toContainText("18/16.5/15/13.5/12초");
   await expect(page.getByRole("tooltip")).toHaveCount(0);
+  // 포커스 복귀를 검사할 때 마우스 호버로 툴팁이 다시 열리지 않게 한다.
+  await page.mouse.move(0, 0);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(skill).toBeFocused();

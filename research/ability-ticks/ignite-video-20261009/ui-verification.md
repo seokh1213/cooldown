@@ -18,6 +18,17 @@
 - 사용자 Chrome에서 수정된 아이콘을 스크린샷으로 검수하고 접기·펼치기를 직접 실행했다.
 - 최초 Advisor Regression 실행은 새 E2E 1개와 분석 파일 8개가 inventory에 등록되지 않아 평가 전에 중단됐다. `llm:test:audit`로 목록을 갱신하고 추가 9개·삭제 0개를 확인했다. 질문 은행·수동 검수 은행의 세 해시는 모두 그대로다. 실제 회귀 기준과 기대값은 변경하지 않았다.
 
+## 배포와 재발 방지
+
+- [배포 Actions 37931101529](https://github.com/seokh1213/cooldown/actions/runs/37931101529)는 성공했다. 실제 배포 소스는 `1e80e0a5b0ee8bdafd0197e0ea5776048dedf74b`다. 웹 테스트 221개 중 220개는 최초 통과했고, 기존 패치노트 hover 테스트 1개는 재시도 후 통과했다.
+- 그 hover 테스트는 팝업을 닫고 포커스가 돌아온 뒤 툴팁이 없는지 확인하면서 마우스를 트리거 위에 그대로 뒀다. 포커스와 호버 조건을 분리하도록 닫기 전에 마우스를 화면 모서리로 이동했다. 이후 서로 다른 스킬을 실제 hover해 한 툴팁만 보이는 검사는 유지했다. 수정한 테스트는 재시도 없이 10회 연속 통과했다. 이 보완은 테스트만 변경하며 배포 앱의 동작을 바꾸지 않는다.
+- 실서비스 release는 app `c3916883d8f680304621117987557806`, data `950535caf2b6771bf3e0d08ba5387d5e`, release `35cf3b05dd6e5d2a8c2caf00d8c7f052`, patch `26.20`이다. 사용자 Chrome을 정상 새로고침한 뒤 DOM의 release meta가 일치함을 확인했다. 두 제어는 모두 높이 40px, 중심 y=32px였고 아이콘·title·aria-expanded 및 접기·펼치기 동작을 다시 확인했다.
+- 로컬 전체 회귀는 5,893건, 성공 5,796건, 기존 실패 77건, 수동 검토 20건으로 완료했다. 신규 회귀 0건, unsafeNumeric 0건, 인프라 12/12 통과다. 기존 semantic review 보류 상태와 실패 목록을 변경하지 않았다. caseHash `ecd922c455be6675b59c47fea15c2ab656e28283748118bbdd30e5771c76b4e0`, sourceHash `195093862ecca43b4d4441f803d28e76bbad0bde5265178edd5a8b837d990e0b`, scorerHash `33cbebef547fd1b99965e2c179622b72d6ff800ba49137ba3ad429cfab553671`, dataHash `2a92404fe02c8ab516de1aa4714c4eec9fe64589f5af9e5e0b8b153fe4fb8a8f`.
+- 수정 후 [Advisor Regression 37931920964](https://github.com/seokh1213/cooldown/actions/runs/37931920964)가 성공했다. 원격에서도 5,893건, 신규 회귀 0건, unsafeNumeric 0건, 인프라 통과를 확인했다. 기존 semantic review는 계속 보류다. 틱 자료 검사는 173챔피언·865스킬, known 136·unknown 6·notDocumented 723으로 통과했다.
+- 앞선 [배포 실패 37899833332](https://github.com/seokh1213/cooldown/actions/runs/37899833332)는 틱 주석 추가 뒤 콤보·상성 답 은행이 빠진 데이터 검사 실패였다. 이미 `5e74e63df`에서 수정됐고 이후 배포·회귀 실행은 통과했다. 이번 등록 누락과는 다른 원인이다.
+- `.githooks/pre-push`를 형상관리하고 이 로컬 저장소의 `core.hooksPath`에 연결했다. push 전에 기존 audit 검사를 실행하며 등록 목록·정답을 자동 수정하지 않는다. 임시 미등록 파일을 만들어 거부되는지 확인하고 삭제한 뒤 정상 저장소가 통과하는지도 확인했다. 새 clone은 workflow README의 활성화 명령을 따른다.
+- 로컬 미리보기 `http://127.0.0.1:4173/cooldown/`를 갱신했고 사용자 자료와 기존 서버는 유지했다. 원본 영상은 복제하지 않았다. 임시 추출 프레임과 중복 프로덕션 빌드 약 466MiB를 제거했다.
+
 ## Delivery Gate
 
 PASS는 이번 수선 범위에 한정한다. 기존 제품 전체를 새로 인증한다는 뜻은 아니다.
