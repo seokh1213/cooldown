@@ -120,9 +120,14 @@ test("대화 저장 공간 실패를 표시하고 재시도하면 카드 원본�
   const input = await openAdvisor(page);
   await input.fill("오공 체력은 어떻게돼?");
   await page.getByRole("button", { name: "보내기", exact: true }).click();
+  await expect(page.getByText(/오공 체력 \(1레벨\).*610/).last()).toBeVisible();
   await expect(page.getByRole("alert")).toContainText("대화를 저장하지 못했습니다.");
-  await page.evaluate(() => Object.assign(window, { historyStorageBlocked: false }));
-  await page.getByRole("button", { name: "저장 다시 시도", exact: true }).click();
+  const retry = page.getByRole("button", { name: "저장 다시 시도", exact: true });
+  // 클릭 전에 차단을 풀면 뒤늦은 답변·상세 자동 저장이 버튼을 먼저 없앨 수 있다.
+  await retry.evaluate(button => button.addEventListener("click", () => {
+    Object.assign(window, { historyStorageBlocked: false });
+  }, { capture: true, once: true }));
+  await retry.click();
   await expect(page.getByRole("alert")).toHaveCount(0);
   await expect.poll(() => page.evaluate(key => Boolean(JSON.parse(localStorage.getItem(key) ?? "[]")[0]?.turns[1]?.answer?.snapshot), key)).toBe(true);
 });
