@@ -1,4 +1,4 @@
-import type { ResolvedQuestion } from "../resolvedQuestion";
+import { resolveQuestion, type ResolvedQuestion } from "../resolvedQuestion";
 import type { AnswerPlan, PlanContext } from "../planTypes";
 import type { DialogueMemory } from "../dialogueState";
 import { askedRules } from "../questionDocs";
@@ -11,14 +11,21 @@ import { renderRules } from "./render";
 export function effectSourcesPlan(input: ResolvedQuestion, ctx: PlanContext, memory: DialogueMemory): AnswerPlan | undefined {
   const data = ctx.data;
   if (!data?.abilityRules?.size || ctx.lang !== "ko_KR" || input.champions.length > 1 || input.matchup) return undefined;
-  const question = normalizeMechanicQuestion(input.text);
-  const topic = questionTopic(question);
+  let question = normalizeMechanicQuestion(input.text);
+  const correction = /^\s*아니/.test(question) && !input.spellFocus && !questionTopic(question)
+    && /(?:스킬|능력)(?:들)?\s*(?:중에?|에서|에)\s*[?？.!]*$/.test(question);
+  const previous = correction && memory.lastReply ? resolveQuestion(memory.lastReply.question, data) : undefined;
+  const topic = questionTopic(question) ?? (previous && questionTopic(normalizeMechanicQuestion(previous.text)));
   const kind = topic === "heal" || topic === "shield" ? topic : undefined;
   if (!kind || asksScenarioAdvice(question) || buildItemCard(data, question)
     || /소환사|스펠|\bsummoner\b|召唤师|(?:회복|치유)\s*감소|치감/i.test(question)) return undefined;
   const remembered = memory.active === "spell" ? memory.spell : undefined;
-  const card = input.champions[0] ?? (remembered && data.cardById.get(remembered.champion));
+  const champion = remembered?.champion ?? (memory.active === "champion" ? memory.champion
+    : memory.rule?.id?.startsWith("ability-effects:") ? memory.rule.context?.champions[0] : undefined);
+  const card = input.champions[0] ?? previous?.champions[0] ?? (champion && data.cardById.get(champion));
   if (!card || askedRules(data, question).some(rule => rule.subject !== "gameplay" && !(kind === "heal" && rule.name === "회복"))) return undefined;
+  const label = { heal: "회복", shield: "보호막" }[kind];
+  if (previous) question = `${question} ${label}`;
   const sources = card.spells.flatMap(spell => {
     const ability = data.abilityRules!.get(`${card.id}.${spell.slot}`);
     if (!ability || ability.job.patch !== data.patch || ability.job.slotRole === "interface_only"
@@ -36,15 +43,17 @@ export function effectSourcesPlan(input: ResolvedQuestion, ctx: PlanContext, mem
     && hitAbility?.draft.rules.some(rule => rule.effects.some(effect => effect.kind === "damage"))
     && passive?.rules.some(rule => rule.trigger.subject === "caster"
       && ["ability_hit", "attack_or_ability_hit"].includes(rule.trigger.event)) ? passive : undefined;
-  if (!only && !linked) return undefined;
-  const label = { heal: "회복", shield: "보호막" }[kind];
-  const selected = only ? sources : linked ? [linked] : [];
-  if (!selected.length) return undefined;
+  const overview = only || !input.slot && (input.champions.length > 0 || correction || !remembered?.slot);
+  if (!overview && !linked) return undefined;
+  const selected = overview ? sources : linked ? [linked] : [];
   const intro = linked ? `${hitSpell!.slot} ${hitSpell!.name} 적중으로 이어지는 ${label}은 P ${linked.spell.name}의 효과입니다. 아래 발동 조건을 충족해야 합니다.` : undefined;
-  const scope = only ? `현재 자료에서 확인된 ${card.name}의 ${label} 스킬은 ${selected.map(source => `${source.spell.slot} ${source.spell.name}`).join(", ")}입니다.` : undefined;
+  const scope = overview ? selected.length
+    ? `현재 자료에서 확인된 ${card.name}의 ${label} 스킬은 ${selected.map(source => `${source.spell.slot} ${source.spell.name}`).join(", ")}입니다.`
+    : `현재 자료에서는 ${card.name}의 ${label} 효과가 있는 스킬을 확인하지 못했습니다.` : undefined;
+  const context = { champions: [card.id], slot: overview ? undefined : input.slot ?? remembered?.slot };
   const state = questionState(question);
   const sections = selected.map(source => `### ${card.name} ${source.spell.slot} ${source.spell.name}\n${renderRules(source.ability.job, source.rules, question, state)}`);
   return { type: "code", answer: [intro, scope, ...sections].filter(Boolean).join("\n\n"),
-    knowledge: { id: `ability-effects:${card.id}:${kind}`, title: `${card.name} ${label}`, context: { champions: [card.id], slot: input.slot ?? remembered?.slot } },
-    controlContext: { champions: [card.id], slot: input.slot ?? remembered?.slot } };
+    knowledge: { id: `ability-effects:${card.id}:${kind}`, title: `${card.name} ${label}`, context },
+    controlContext: context };
 }

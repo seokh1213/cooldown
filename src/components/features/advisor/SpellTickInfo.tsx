@@ -15,7 +15,7 @@ export function TickDetails({ ticks }: { ticks?: SpellTicks }) {
           {metrics.map(metric => <li key={metric}>{metric}</li>)}
           {effect.perTick && <li>{effect.perTick[lang]}</li>}
         </ul>
-        {effect.note && <p className="pl-5 text-[13px] font-normal leading-relaxed">{effect.note[lang]}</p>}
+        {effect.note && <p className="text-[13px] font-normal leading-relaxed">{effect.note[lang]}</p>}
       </div>;
     })}
   </div>;

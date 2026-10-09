@@ -24,6 +24,7 @@ function targets(frame: ContextFrame): string[] {
   if (state.stat) return state.stat.champions;
   if (state.spell) return state.compared ?? [state.spell.champion];
   if (state.matchup) return [state.matchup.mine, state.matchup.enemy];
+  if (state.rule?.context?.champions.length) return state.rule.context.champions;
   return state.compared ?? (state.champion ? [state.champion] : []);
 }
 

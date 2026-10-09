@@ -30,6 +30,11 @@ for (const width of [390, 1280]) test(`단일 틱 답변은 수치를 들여쓰�
   expect(firstBox.x).toBeGreaterThan(labelBox.x);
   expect(lastBox.y).toBeGreaterThan(firstBox.y);
   expect((await note.boundingBox())!.y).toBeGreaterThan(lastBox.y);
+  expect(await note.evaluate(node => {
+    const text = document.createRange();
+    text.selectNodeContents(node);
+    return text.getBoundingClientRect().x;
+  })).toBeCloseTo(labelBox.x, 0);
   await expect(dialog.locator('a[href^="http"], a[target="_blank"]')).toHaveCount(0);
   expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
   await page.reload();

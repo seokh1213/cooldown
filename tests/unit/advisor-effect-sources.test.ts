@@ -16,6 +16,55 @@ function context(): PlanContext {
 }
 const deps = { judge: async () => { throw new Error("모델을 부르면 안 됩니다"); }, search: async () => [] };
 
+test("챔피언의 회복·보호막 질문은 소환사 주문 대신 해당 효과가 있는 스킬을 찾는다", async () => {
+  for (const [question, titles] of [
+    ["유미 스킬에 회복이 있어?", ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]],
+    ["유미 스킬 중에 힐하는 게 뭐야?", ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]],
+    ["럭스 스킬에 보호막이 있어?", ["럭스 W 프리즘 보호막"]],
+  ] as const) {
+    const { reply } = await answerDialogue(question, context(), deps);
+    for (const title of titles) assert.ok(reply.text.includes(`### ${title}`), `${question}: ${reply.text}`);
+    assert.doesNotMatch(reply.text, /반경 200|최근 35초/);
+  }
+});
+
+test("소환사 주문으로 잘못 답한 과거 대화에서도 스킬 범위 정정은 원래 회복 질문을 잇는다", async () => {
+  for (const question of ["아니 유미 스킬중에", "아니 스킬 중에"]) {
+    const ctx = context();
+    ctx.turns = [{ role: "user", content: "유미 스킬에 회복이 있어?" },
+      { role: "assistant", content: "회복은 반경 200 안에서 아군을 찾습니다.",
+        memory: { ...emptyDialogue(ctx.data!.patch), active: "rule", rule: { title: "회복", text: "소환사 주문" } } }];
+    const { reply } = await answerDialogue(question, ctx, deps);
+    for (const title of ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]) assert.ok(reply.text.includes(`### ${title}`), reply.text);
+    assert.doesNotMatch(reply.text, /반경 200|최근 35초|### 유미 Q|### 유미 E/);
+  }
+});
+
+test("효과 조회를 이어도 명시한 새 질문과 소환사 주문 조회는 유지한다", async () => {
+  const ctx = context();
+  const question = "유미 스킬에 회복이 있어?";
+  const { reply } = await answerDialogue(question, ctx, deps);
+  ctx.turns = [{ role: "user", content: question }, { role: "assistant", content: reply.text, memory: reply.memory }];
+  assert.match((await answerDialogue("그럼 보호막은?", ctx, deps)).reply.text, /### 유미 E 슈우우웅/);
+  assert.match((await answerDialogue("아니 유미 Q 쿨타임은?", ctx, deps)).reply.text, /유미 Q 사르르탄.*재사용 대기시간/s);
+  assert.equal(effectSourcesPlan(resolveQuestion("아니 유미 스킬 전체 설명해줘", ctx.data!), ctx, reply.memory), undefined);
+  assert.equal(effectSourcesPlan(resolveQuestion("유미 소환사 주문 회복은?", ctx.data!), ctx, reply.memory), undefined);
+  const missing = (await answerDialogue("이즈리얼 스킬에 회복이 있어?", context(), deps)).reply.text;
+  assert.match(missing, /이즈리얼.*회복.*확인하지 못/);
+  assert.doesNotMatch(missing, /반경 200|최근 35초/);
+});
+
+test("새 챔피언의 효과를 이어 물으면 오래된 다른 챔피언 스킬로 돌아가지 않는다", async () => {
+  const ctx = context();
+  for (const question of ["럭스 Q 속박은?", "유미 스킬에 회복이 있어?"]) {
+    const { reply } = await answerDialogue(question, ctx, deps);
+    ctx.turns = [...ctx.turns, { role: "user", content: question }, { role: "assistant", content: reply.text, memory: reply.memory }];
+  }
+  const { reply } = await answerDialogue("그럼 보호막은?", ctx, deps);
+  assert.match(reply.text, /### 유미 E 슈우우웅/);
+  assert.doesNotMatch(reply.text, /럭스/);
+});
+
 test("스킬 답문은 세 언어에서 챔피언·슬롯·스킬명을 항상 밝힌다", () => {
   for (const lang of ["ko_KR", "en_US", "zh_CN"] as const) {
     const data = loadData(lang);

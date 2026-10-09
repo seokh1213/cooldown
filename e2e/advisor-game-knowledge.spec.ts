@@ -27,6 +27,27 @@ for (const width of [390, 1280]) test(`회복 효과는 소속 스킬과 조건�
   await page.getByRole("button", { name: "보내기", exact: true }).click();
   await expect(dialog.getByText("유미 R 대단원", { exact: true }).filter({ visible: true }).last()).toBeVisible();
   await expect(dialog).toContainText("아군 챔피언은 파동마다 체력을 회복");
+  await page.getByRole("button", { name: "새 대화", exact: true }).click();
+  await input.fill("럭스 Q 속박은?");
+  await page.getByRole("button", { name: "보내기", exact: true }).click();
+  await expect(dialog.getByText(/럭스 Q 빛의 속박.*군중 제어/).filter({ visible: true }).last()).toBeVisible();
+  await input.fill("유미 스킬에 회복이 있어?");
+  await page.getByRole("button", { name: "보내기", exact: true }).click();
+  for (const name of ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]) {
+    await expect(dialog.getByRole("heading", { name, exact: true })).toHaveCount(1);
+  }
+  await input.fill("아니 유미 스킬중에");
+  await page.getByRole("button", { name: "보내기", exact: true }).click();
+  for (const name of ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]) {
+    await expect(dialog.getByRole("heading", { name, exact: true })).toHaveCount(2);
+  }
+  await expect(dialog).not.toContainText(/반경 200|최근 35초/);
+  await input.fill("그럼 보호막은?");
+  await page.getByRole("button", { name: "보내기", exact: true }).click();
+  await expect(dialog.getByRole("heading", { name: "유미 E 슈우우웅", exact: true })).toBeVisible();
+  await page.reload();
+  await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
+  await expect(dialog.getByRole("heading", { name: "유미 P 야옹이 친구", exact: true })).toHaveCount(2);
 });
 
 test("오브젝트 생성·제거와 검수한 상세 수치를 구분한다", async ({ page }) => {

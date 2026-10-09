@@ -69,7 +69,9 @@ export async function selectDialogueEvidence(resolved: ResolvedQuestion, memory:
   const itemStat = item && /강인함|tenacity|韧性/i.test(question) && !/CC|기절|제압|에어본|stun|suppress|airborne|眩晕|压制|击飞/i.test(question);
   const control = knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined;
   const kit = asksWholeKit(question) && !asksSpellNumbers(question) ? learned : undefined;
-  const preferred = gap ?? abilityBoundaryPlan(resolved, ctx) ?? sources ?? penetrationCalculation(question, ctx) ?? kit ?? (itemStat ? itemPlan : undefined) ?? control ?? standaloneGuide ?? championFollowup ?? scenario ?? soloScenario ?? (combo && (asksCombo(question) || memory.active === "champion" && memory.combo) ? combo : undefined) ?? (!numeric && knowledge?.type === "code" && knowledge.knowledge ? knowledge : undefined) ?? itemPlan ?? rule ?? mechanic?.plan ?? passive ?? learned ?? combo
+  const conditionalMechanic = mechanic && [mechanic.memory.hitCount, mechanic.memory.shieldReady,
+    mechanic.memory.spellReady, mechanic.memory.followupStatus, mechanic.memory.amount].some(value => value !== undefined);
+  const preferred = gap ?? abilityBoundaryPlan(resolved, ctx) ?? (numeric || conditionalMechanic ? undefined : sources) ?? penetrationCalculation(question, ctx) ?? kit ?? (itemStat ? itemPlan : undefined) ?? control ?? standaloneGuide ?? championFollowup ?? scenario ?? soloScenario ?? (combo && (asksCombo(question) || memory.active === "champion" && memory.combo) ? combo : undefined) ?? (!numeric && knowledge?.type === "code" && knowledge.knowledge ? knowledge : undefined) ?? itemPlan ?? rule ?? mechanic?.plan ?? passive ?? learned ?? combo
     ?? (knowledge?.controlContext && mechanic?.memory.topic !== "control_resistance" ? knowledge : undefined) ?? mechanic?.plan ?? (numeric ? undefined : knowledge) ?? passive
     ?? (resolved.matchup ? await matchupPlan(resolved, memory, ctx, deps) : undefined);
 
