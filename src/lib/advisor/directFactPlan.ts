@@ -10,14 +10,14 @@ import { asksSpellNumbers } from "./spellFocus";
 const ADVICE = /빠졌|빠진|없으면|대신|들어가|진입|상대법|교환|언제|어떻게|피하|피해\s*버|좋아|추천|\b(when|should|instead|without|bait|avoid|engage)\b|怎么|何时|没了|没有|换成|推荐/i;
 
 export function directFactPlan(resolved: ResolvedQuestion, ctx: PlanContext): AnswerPlan | undefined {
-  if (resolved.requestIntent && ["overview", "statsAll", "skills", "combo", "advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
+  if (resolved.spellFocus?.focus !== "ticks" && resolved.requestIntent && ["overview", "statsAll", "skills", "combo", "advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
   const unavailable = unavailableStatPlan(resolved, ctx);
   if (unavailable) return unavailable;
   const { text: question, champions, slot, spellFocus } = resolved;
   if (!asksSpellNumbers(question) && /(?:쿨(?:타임)?|재사용 대기)\s*중|on cooldown|冷却中/i.test(question)) return undefined;
   if (!ctx.data || !spellFocus || asksWholeKit(question)) return undefined;
   if (!asksSpellNumbers(question) && (ADVICE.test(question) || asksScenarioAdvice(question) || asksSkillHandling(question))) return undefined;
-  if (!["cooldown", "cost", "range", "ratio"].includes(spellFocus.focus)) return undefined;
+  if (!["cooldown", "cost", "range", "ratio", "ticks"].includes(spellFocus.focus)) return undefined;
   const rules = askedRules(ctx.data, question);
   if (rules.length === 1 && rules[0].subject !== "gameplay" && spellFocus.focus === "cooldown" && !champions.length) {
     const rule = rules[0];

@@ -2,6 +2,7 @@ import type { Language } from "@/i18n";
 import type { ChampionCard, SpellFact } from "@/lib/knowledge/facts";
 import type { RuleNotes } from "@/lib/knowledge/rules";
 import { CROWD_CONTROL } from "@/lib/knowledge/crowdControl";
+import { isSpellTicks } from "@/lib/knowledge/abilityTicksValidation";
 import type { AdvisorAnswer } from "./answer";
 import { isStoredAnswer } from "./historyValidation";
 
@@ -83,6 +84,7 @@ function spell(value: unknown): value is SpellFact {
     && array(value.damageTypes, entry => oneOf(entry, ["물리", "마법", "고정"]))
     && strings(value.effects) && record(value.ratios) && Object.values(value.ratios).every(finite)
     && optional(value.crowdControl, crowdControl)
+    && optional(value.ticks, isSpellTicks)
     && optional(value.forms, forms => Array.isArray(forms) && forms.length > 0 && forms.length <= 2
       && new Set(forms.map(form => record(form) ? form.key : undefined)).size === forms.length
       && array(forms, form => record(form) && form.forms === undefined

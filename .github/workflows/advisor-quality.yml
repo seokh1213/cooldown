@@ -33,6 +33,9 @@ jobs:
       - name: Compare advisor regression baseline
         run: npm run llm:test -- --profile regression --baseline research/llm-evals/workflow/reports/regression/baseline.json --out research/.cache/quality/ci
 
+      - name: Check reviewed ability ticks against all shipped locales
+        run: npm run llm:ticks:audit
+
       - name: Upload regression and semantic review packet
         if: always()
         uses: actions/upload-artifact@v7

@@ -28,17 +28,17 @@ export interface FandomAbility {
 interface RevisionPage {
   title: string;
   missing?: boolean;
-  revisions?: { slots: { main: { content?: string } } }[];
+  revisions?: { revid?: number; slots: { main: { content?: string } } }[];
 }
 
-async function queryPages(titles: string[]): Promise<Map<string, string>> {
+export async function queryPages(titles: string[], revisions?: Map<string, number>): Promise<Map<string, string>> {
   const found = new Map<string, string>();
   for (let index = 0; index < titles.length; index += TITLES_PER_REQUEST) {
     const batch = titles.slice(index, index + TITLES_PER_REQUEST);
     const url = new URL(API);
     url.searchParams.set("action", "query");
     url.searchParams.set("prop", "revisions");
-    url.searchParams.set("rvprop", "content");
+    url.searchParams.set("rvprop", "content|ids");
     url.searchParams.set("rvslots", "main");
     url.searchParams.set("format", "json");
     url.searchParams.set("formatversion", "2");
@@ -58,7 +58,9 @@ async function queryPages(titles: string[]): Promise<Map<string, string>> {
     for (const page of payload.query?.pages ?? []) {
       const content = page.revisions?.[0]?.slots?.main?.content;
       if (page.missing || !content) continue;
-      found.set(toOriginal.get(page.title) ?? page.title, content);
+      const title = toOriginal.get(page.title) ?? page.title;
+      found.set(title, content);
+      if (page.revisions?.[0]?.revid !== undefined) revisions?.set(title, page.revisions[0].revid);
     }
   }
   return found;

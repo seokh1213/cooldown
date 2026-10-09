@@ -7,6 +7,7 @@ export type SpellFocus =
   | "cost"
   | "ratio"
   | "damage"
+  | "ticks"
   /** 시전 사거리. 카드에 숫자가 있으면 그것을, 없으면 본문의 사거리 문장을 보인다. */
   | "range"
   /** 툴팁 본문에서 찾아야 하는 효과 수치 (마저 감소, 둔화율 …) */
@@ -27,6 +28,7 @@ export type SpellFocus =
  * 있을 까닭이 없고, 그 반대도 마찬가지다.
  */
 const FOCUS_LEXICON: Array<[SpellFocus, RegExp]> = [
+  ["ticks", /(?<![가-힣])틱|(?:몇|지속|매)\s*틱|도트|몇\s*초마다|피해\s*간격|회복\s*간격|\bticks?\b|\b(?:damage|healing)\s*interval\b|跳数|每跳|伤害间隔|治疗间隔/i],
   ["cooldown", /쿨(타임|다운)?|재사용|\bcd\b|cool\s*down|recharge|冷却|CD/i],
   ["cost", /(?<!얼)마나|소모|코스트|기력|분노|비용|\bmana\b|mana\s*cost|\bcosts?\b|energy|fury|法力|消耗|能量|蓝耗|耗蓝|耗多少蓝/i],
   ["ratio", /계수|주문력\s*계수|공격력\s*계수|\bap\b|\bad\b|\bratios?\b|\bscaling\b|\bcoefficients?\b|加成|系数/i],
@@ -84,6 +86,7 @@ export function detectSpellFocus(question: string): { focus: SpellFocus; keyword
 export function asksSpellNumbers(question: string): boolean {
   question = requestedContent(question);
   const focus = detectSpellFocus(question)?.focus;
+  if (focus === "ticks") return true;
   if (!["cooldown", "cost", "ratio", "range"].includes(focus ?? "")) return false;
   // 스킬 가속(쿨감·cdr·冷却缩减)은 능력치이지 스킬 수치가 아니다. 쿨타임 낱말이 그 안에 들어 있어 "쿨감 템 먼저 가는 게 나아?",
   // "should I rush a cdr item?", "先出冷却缩减装备好吗" 가 상성 대화에서 수치 조회로 빠져나가 "스킬 가속" 절 원문을 받았다.

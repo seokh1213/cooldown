@@ -10,6 +10,7 @@ import { asksCrowdControl } from "./crowdControlQuestion";
 import { passiveAttackEvidence } from "./basicAttackQuestion";
 import { passiveStatEvidence } from "./passiveStatQuestion";
 import { selectSpellForm } from "./spellForm";
+import { tickHeading, tickText } from "@/lib/knowledge/abilityTicks";
 
 /**
  * 계수 목록을 글로. "주문력 105%" 의 능력치 이름은 툴팁에서 읽어 낸 한국어라 옮긴다.
@@ -49,6 +50,8 @@ export function rangeFact(spell: SpellFact, lang: Language = "ko_KR"): Fact | un
 /** 스킬 하나에서 사실 하나를 글로. 스킬 표(챔피언 카드의 focus)와 비교 표가 같이 쓴다. */
 export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Language = "ko_KR"): string {
   switch (focus) {
+    case "ticks":
+      return tickText(spell.ticks, lang);
     case "cooldown":
       return cooldownFact(spell, lang)?.value ?? "";
     case "cost":
@@ -68,6 +71,7 @@ export function spellFocusValue(spell: SpellFact, focus: SpellFocus, lang: Langu
 export function spellFacts(spell: SpellFact, lang: Language = "ko_KR"): Fact[] {
   const w = cardLabels(lang);
   const facts: Fact[] = [];
+  if (spell.ticks?.status === "known" || spell.ticks?.status === "unknown") facts.push({ label: tickHeading(lang), value: tickText(spell.ticks, lang) });
   const cooldown = cooldownFact(spell, lang);
   if (cooldown) facts.push(cooldown);
   if (spell.cost) facts.push({ label: w.cost, value: spellFocusValue(spell, "cost", lang) });
@@ -107,7 +111,9 @@ export function buildSpellAnswer(
 
   let headline: Fact | undefined;
   let highlighted: string[] = [];
-  if (control && asksCrowdControl(question)) {
+  if (detected?.focus === "ticks") {
+    headline = { label: tickHeading(lang), value: tickText(spell.ticks, lang) };
+  } else if (control && asksCrowdControl(question)) {
     headline = control;
   } else if (detected?.focus === "cooldown" && cooldown) {
     headline = cooldown;

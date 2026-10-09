@@ -16,6 +16,7 @@ import type { Ability } from "./mechanics/types";
 import { renderRules } from "./mechanics/render";
 import type { Language } from "@/i18n";
 import { translations } from "@/i18n/translations";
+import { tickHeading, tickText } from "@/lib/knowledge/abilityTicks";
 import type { SelectedNotes } from "./noteSelect";
 import { detectSpellFocus, type SpellFocus } from "./spellFocus";
 import type { ChampionStatQuery } from "./statQuery";
@@ -232,7 +233,7 @@ export { answerLinks, answerKey, answerChampionIds, type AnswerLink } from "./an
 
 export function focusLabel(focus: SpellFocus, lang: Language = "ko_KR"): string {
   const w = cardLabels(lang);
-  return { cooldown: w.cooldown, cost: w.cost, ratio: w.ratios, range: w.range, damage: w.damageType, effect: w.effects }[focus];
+  return { cooldown: w.cooldown, cost: w.cost, ratio: w.ratios, range: w.range, damage: w.damageType, effect: w.effects, ticks: tickHeading(lang) }[focus];
 }
 
 // ── 비교 ──────────────────────────────────────────────────────────────
@@ -282,6 +283,7 @@ export function buildCompareAnswer(
     );
     push(w.cost, (spell) => spellFocusValue(spell, "cost", lang), focus === "cost");
     push(w.range, (spell) => spellFocusValue(spell, "range", lang), focus === "range");
+    if (focus === "ticks") push(tickHeading(lang), spell => tickText(spell.ticks, lang), true);
     push(w.damageType, (spell) => spellFocusValue(spell, "damage", lang), focus === "damage");
     push(w.effects, (spell) => spellFocusValue(spell, "effect", lang), focus === "effect");
     push(

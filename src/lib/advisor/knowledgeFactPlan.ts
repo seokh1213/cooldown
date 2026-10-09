@@ -69,6 +69,7 @@ function absentControl(question: string, controls: Array<SpellCrowdControl | und
 
 export function knowledgeFactPlan(resolved: ResolvedQuestion, ctx: PlanContext, suppliedMemory?: DialogueMemory): AnswerPlan | undefined {
   if (!ctx.data) return undefined;
+  if (resolved.spellFocus?.focus === "ticks") return undefined;
   if (resolved.champions.length > 1 && !resolved.slot && asksMatchup(resolved.text)) return undefined;
   const memory = suppliedMemory ?? dialogueMemoryOf(ctx.turns, ctx.data);
   const query = controlQuery(resolved.text);

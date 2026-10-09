@@ -9,7 +9,7 @@ import type { AnswerPlan, PlanContext } from "./plan";
 import { inferredSpellFocus, numericConditions, type DialogueMemory } from "./dialogueState";
 import { resolveDialogueRule, isPenetrationRule } from "./dialogueRules";
 import { josa } from "@/lib/knowledge/text";
-import { asksSpellNumbers } from "./spellFocus";
+import { asksSpellNumbers, detectSpellFocus } from "./spellFocus";
 
 export interface FactResolution {
   plan?: AnswerPlan;
@@ -19,6 +19,7 @@ export interface FactResolution {
 }
 const RETURN = /아까|앞서|다시|그대로|같은\s*조건|earlier|same|回到|之前/i;
 const QUERY = /사거리|범위|range|射程|쿨|몇\s*초|마나|소모|계수|설명|효과|말한|기준|비교|돌아(?!왔|가)|cooldown|cost|ratio|冷却|耗蓝|比较/i;
+const factQuery = (question: string) => QUERY.test(question) || detectSpellFocus(question)?.focus === "ticks";
 const round = (value: number) => Number(value.toFixed(2)).toString();
 
 function numberList(value: string | undefined): number[] | undefined {
@@ -106,7 +107,7 @@ function explicitEntity(question: string, memory: DialogueMemory, ctx: PlanConte
 }
 
 function penetrationAnswer(answer: AdvisorAnswer, question: string, memory: DialogueMemory, ctx: PlanContext): FactResolution | undefined {
-  const carries = memory.spell?.relation === "penetration" && !QUERY.test(question);
+  const carries = memory.spell?.relation === "penetration" && !factQuery(question);
   const follows = isPenetrationRule(memory.rule) && /적용|평타|기본\s*공격/.test(question);
   if (!carries && !follows) return undefined;
   const source = ctx.data!.mechanics.find(m => m.id === "저항과-피해-감소");
@@ -123,7 +124,7 @@ export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory
   const resolved = resolveQuestion(input, ctx.data);
   const pendingTarget = memory.pending && resolved.champions.length === 1 && memory.pending.candidates.includes(resolved.champions[0].id)
     && (!resolved.slot || resolved.slot === memory.pending.slot) && !asksScenarioAdvice(resolved.text);
-  if (!pendingTarget && resolved.requestIntent && ["overview", "statsAll", "skills", "combo", "advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
+  if (!pendingTarget && resolved.spellFocus?.focus !== "ticks" && resolved.requestIntent && ["overview", "statsAll", "skills", "combo", "advice", "counterplay"].includes(resolved.requestIntent.scope)) return undefined;
   const question = resolved.text;
   if (!asksSpellNumbers(question) && /(?:쿨(?:타임)?|재사용 대기)\s*중|on cooldown|冷却中/i.test(question)) return undefined;
   const formula = hasteFormula(question, memory);
@@ -134,21 +135,21 @@ export function resolveDialogueFact(input: QuestionInput, memory: DialogueMemory
   if (entity) return entity;
   // 룬·주문은 knowledgePlans의 공통 계획으로 넘긴다. 최근 스킬의 생략으로 읽지 않는다.
   if (askedRules(ctx.data, question).some(rule => rule.subject !== "gameplay")) return undefined;
-  if (!pendingTarget && memory.active === "matchup" && !QUERY.test(question) && (asksMatchup(question) || asksReason(question) || /정정|사실.*[QWER]|빠지면/.test(question))) return undefined;
+  if (!pendingTarget && memory.active === "matchup" && !factQuery(question) && (asksMatchup(question) || asksReason(question) || /정정|사실.*[QWER]|빠지면/.test(question))) return undefined;
   if (asksWholeKit(question) || !asksSpellNumbers(question) && (asksScenarioAdvice(question) || asksSkillHandling(question))) return undefined;
   const numeric = numericConditions(question, memory.numeric);
   const named = resolved.champions;
   // 여러 이름의 전체 조회를 이전에 물었던 단일 슬롯으로 좁히지 않는다.
   if (named.length > 1 && !resolved.slot) return undefined;
-  const slot = resolved.slot ?? memory.pending?.slot ?? ((memory.active === "spell" && (QUERY.test(question) || numeric !== undefined)) ? memory.spell?.slot : undefined);
+  const slot = resolved.slot ?? memory.pending?.slot ?? ((memory.active === "spell" && (factQuery(question) || numeric !== undefined)) ? memory.spell?.slot : undefined);
   if (!slot && /그\s*스킬|그거.*쿨|that (ability|skill)|那个技能/i.test(question) && !named.length) return { pending: { slot: "?", focus: inferredSpellFocus(question, memory), candidates: [] } };
-  if (!slot || (!QUERY.test(question) && !resolved.slot && JSON.stringify(numeric) === JSON.stringify(memory.numeric))) return undefined;
+  if (!slot || (!factQuery(question) && !resolved.slot && JSON.stringify(numeric) === JSON.stringify(memory.numeric))) return undefined;
   const cards = resolveTargets(question, named, memory, ctx);
   if (!cards.length) return { pending: { slot, focus: inferredSpellFocus(question, memory), candidates: [] } };
   const shared = /그대로|같은\s*조건|same/i.test(question) || memory.active === "spell";
   const applied = shared || /가속|랭크|레벨/.test(question) ? numeric : undefined;
   const focus = inferredSpellFocus(question, memory);
-  const focusedQuestion = `${question} ${focus === "cooldown" ? "쿨타임" : focus === "cost" ? "마나 소모" : focus === "range" ? "사거리" : ""}`;
+  const focusedQuestion = `${question} ${focus === "cooldown" ? "쿨타임" : focus === "cost" ? "마나 소모" : focus === "range" ? "사거리" : focus === "ticks" ? "틱" : ""}`;
   if (cards.length > 1) {
     const selected = named.length > 1 || memory.active === "compare" || memory.active === "stat" || memory.active === "spell" && Boolean(memory.compared);
     return {

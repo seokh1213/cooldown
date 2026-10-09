@@ -19,6 +19,7 @@ import { DAMAGE, GRADE, RANGE, RATIO_STATS, TAGS, missingCardWords } from "../..
 import { createChampionCardBuilder, type ChampionCard } from "../../src/lib/knowledge/facts";
 import { loadSpellOverrides } from "./lib/spellOverrides";
 import { attachCrowdControl } from "./lib/crowdControl";
+import { attachAbilityTicks } from "./ability-ticks/attach";
 
 export interface ChampionCardFile {
   schemaVersion: 1;
@@ -174,6 +175,7 @@ function main() {
 
   const outDir = path.join(PUBLIC_DATA_ROOT, data.patch, "llm");
   attachCrowdControl(cards, data.patch, koreanCards);
+  attachAbilityTicks(cards, data.patch, koreanCards);
   fs.mkdirSync(outDir, { recursive: true });
   const outFile = path.join(outDir, `champion-cards-${lang}.json`);
   const file: ChampionCardFile = {

@@ -22,7 +22,7 @@ function array(value: unknown, check: Validator): boolean {
 }
 const strings = (value: unknown): value is string[] => array(value, string);
 const oneOf = (value: unknown, choices: readonly unknown[]): boolean => choices.includes(value);
-const focus = (value: unknown): boolean => oneOf(value, ["cooldown", "cost", "ratio", "damage", "range", "effect"]);
+const focus = (value: unknown): boolean => oneOf(value, ["cooldown", "cost", "ratio", "damage", "range", "effect", "ticks"]);
 const statField = (value: unknown): boolean => oneOf(value, ["health", "healthRegen", "armor", "magicResist", "attackDamage", "attackSpeed", "moveSpeed"]);
 const statLevel = (value: unknown): boolean => oneOf(value, [1, 6, 11, 18]);
 const guidance = (value: unknown): boolean => oneOf(value, ["scope", "perspective", "evidence", "unsupported", "guarantee", "answerMismatch"]);

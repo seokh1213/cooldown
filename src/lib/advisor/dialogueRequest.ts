@@ -7,6 +7,7 @@ import { requestScope, unsupportedCondition } from "./requestContract";
 import type { GuidanceReason } from "./requestGuidance";
 import { detectStats } from "./statQuery";
 import { championTypoPlan } from "./championTypoPlan";
+import { asksSpellNumbers, detectSpellFocus } from "./spellFocus";
 
 export type DialogueVariant = "memory" | "decompose" | "clarify" | "combined";
 export interface DialogueRequest { questions: QuestionInput[]; memory: DialogueMemory; variant: DialogueVariant; groupedMatchups?: boolean; rejected?: GuidanceReason }
@@ -18,11 +19,16 @@ export function splitDialogueQuestions(question: string, data?: PlanContext["dat
   const independent = question.split(/(?:(?:알려|설명해|비교해|정리해|보여)주고)\s*[,，]?\s*|\s+그리고\s+|\s+and also\s+|\s+and\s+(?=\w+\s+(?:vs\.?|versus)\s)|另外|还有/i).map(q => q.trim()).filter(Boolean);
   if (independent.length > 1 && independent.every(q => asks.test(q) || detectStats(q).length)) return independent.flatMap(piece => splitDialogueQuestions(piece, data));
   const pieces = question.split(/(?:(?:알려|설명해|비교해|정리해|보여)주고)\s*[,，]?\s*|[,;]\s*(?:그리고|추가로)?\s*|\n+(?:그리고\s*)?|\s+그리고\s+|\s+and also\s+|\s+and\s+(?=\w+\s+(?:vs\.?|versus)\s)|另外|还有/i).map(q => q.trim()).filter(Boolean);
-  if (pieces.length < 2) return [question];
   const stateOnly = (text: string) => /(?<![A-Za-z])[QWER](?![A-Za-z])/i.test(text)
     && /없|빠졌|빠진|돌아왔|사용\s*가능|재사용\s*대기\s*중|있어|있고|is down|available|冷却中|可用/i.test(text)
     && !/\?|？|알려|설명|어떻게|언제|how|what|when|怎么|多少/i.test(text);
   if (pieces.some(stateOnly)) return [question];
+  const slotList = /((?<![A-Za-z])[PQWER](?![A-Za-z])(?:\s*(?:[,，/·]|및|와|과|하고|and|和)\s*[PQWER](?![A-Za-z]))+)(.*)$/i.exec(question);
+  if (slotList && asksSpellNumbers(question) && detectSpellFocus(slotList[2]) && (!data || resolveQuestion(question, data).champions.length <= 1)) {
+    const prefix = question.slice(0, slotList.index);
+    return [...new Set(slotList[1].match(/[PQWER]/gi))].map(slot => `${prefix}${slot} ${slotList[2].trim()}`);
+  }
+  if (pieces.length < 2) return [question];
   // 쉼표로 나열한 능력치는 한 조회다. 명시한 여러 요청만 분리한다.
   const scopedStats = data && pieces.every(q => resolveQuestion(q, data).champions.length);
   if (!/주고|그리고|and also|另外|还有/i.test(question) && pieces.every(q => detectStats(q).length)
