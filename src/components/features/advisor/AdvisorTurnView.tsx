@@ -72,7 +72,7 @@ function useTurnPresentation(props: AdvisorTurnViewProps) {
       to={link.to}
       title={turn.historical ? copy.history.currentDataLink : undefined}
       onClick={onNavigate}
-      className="inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+      className={`inline-flex items-center gap-1 rounded-md border border-primary/40 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10 ${turn.answers?.length ? "min-h-11" : ""}`}
     >
       {turn.historical ? copy.history.currentDataLink : linkLabel(link, copy)}
       <ArrowRight className="h-3 w-3" />
@@ -128,6 +128,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
       {turn.notice && <p className="mb-1.5 text-[11px] text-muted-foreground">{turn.notice}</p>}
       {turn.answers?.length ? (
         <AdvisorMultiAnswer turn={turn} asReference={asReference} shownReferenceKey={props.shownReferenceKey}
+          navigation={asReference && linkButtons.length > 0 ? linkButtons : undefined}
           ddragonVersion={ddragonVersion} patch={patch} onNavigate={onNavigate}
           onPickChampion={props.onPickChampion} onShowReference={props.onShowReference} />
       ) : turn.answer && asReference ? (
@@ -190,7 +191,7 @@ export function AdvisorTurnView(props: AdvisorTurnViewProps) {
         <p className="mt-2 text-xs text-muted-foreground">{t.advisor.history.missingCard}</p>
       )}
       {/* 카드 없는 답(규칙)의 바로 가기. 카드가 있는 답은 자료 칩 옆에 이미 붙였다. */}
-      {turn.role === "assistant" && linkButtons.length > 0 && (turn.answers?.length ? asReference : !asReference) && (
+      {turn.role === "assistant" && linkButtons.length > 0 && !asReference && !turn.answers?.length && (
         <div className="mt-2 flex flex-wrap gap-1.5">{linkButtons}</div>
       )}
       {turn.role === "assistant" && (turn.content || turn.answer || Boolean(turn.answers?.length)) && <TurnFooter turn={turn} />}
