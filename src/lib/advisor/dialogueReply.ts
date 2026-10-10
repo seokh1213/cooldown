@@ -66,7 +66,9 @@ async function partReply(part: DialoguePlan["parts"][number], options: { data: A
     return { answer, text: dialogueAnswerText(answer, lang), notice: plan.notice, selectedTopics: topics };
   }
   const answer = plan.answer;
-  if (typeof answer === "string") return { text: answer, notice: plan.notice, related: plan.type === "code" ? plan.related : undefined };
+  if (typeof answer === "string") return { text: answer, notice: plan.notice,
+    answers: plan.type === "code" ? plan.references : undefined,
+    related: plan.type === "code" ? plan.related : undefined };
   const text = dialogueAnswerText(answer, lang);
   return text.trim() ? { answer, text, notice: plan.notice } : { text: requestGuidance("evidence", lang), notice: plan.notice };
 }
@@ -89,6 +91,7 @@ export async function assembleDialogueReply(dialogue: DialoguePlan, data: Adviso
   if (dialogue.clarification) return { text: [text, dialogue.clarification].filter(Boolean).join("\n\n"), memory, trace: dialogue.trace };
   memory.lastReply = { question: dialogue.parts.map(p => p.question).join(" / "), text, focus: memory.matchup?.focus };
   if (replies.length === 1) return { ...replies[0], memory, trace: dialogue.trace };
-  const answers = [...new Map(replies.flatMap(reply => reply.answer ? [[answerKey(reply.answer), reply.answer] as const] : [])).values()];
+  const answers = [...new Map(replies.flatMap(reply => reply.answers ?? (reply.answer ? [reply.answer] : []))
+    .map(answer => [answerKey(answer), answer] as const)).values()];
   return { text, answers: answers.length ? answers : undefined, memory, trace: dialogue.trace };
 }

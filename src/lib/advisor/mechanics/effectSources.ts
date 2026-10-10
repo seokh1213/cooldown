@@ -7,6 +7,7 @@ import { buildItemCard } from "../context";
 import { normalizeMechanicQuestion, questionState } from "./question";
 import { questionTopic } from "./retrieval";
 import { renderRules } from "./render";
+import { buildSpellAnswer, type AdvisorAnswer } from "../answer";
 
 export function effectSourcesPlan(input: ResolvedQuestion, ctx: PlanContext, memory: DialogueMemory): AnswerPlan | undefined {
   const data = ctx.data;
@@ -53,7 +54,11 @@ export function effectSourcesPlan(input: ResolvedQuestion, ctx: PlanContext, mem
   const context = { champions: [card.id], slot: overview ? undefined : input.slot ?? remembered?.slot };
   const state = questionState(question);
   const sections = selected.map(source => `### ${card.name} ${source.spell.slot} ${source.spell.name}\n${renderRules(source.ability.job, source.rules, question, state)}`);
+  const references: AdvisorAnswer[] = selected.length
+    ? selected.map(source => buildSpellAnswer(card, source.spell, question, ctx.lang))
+    : [{ kind: "champion", card, view: "skills" }];
   return { type: "code", answer: [intro, scope, ...sections].filter(Boolean).join("\n\n"),
+    references,
     knowledge: { id: `ability-effects:${card.id}:${kind}`, title: `${card.name} ${label}`, context },
     controlContext: context };
 }

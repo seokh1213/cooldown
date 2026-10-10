@@ -9,6 +9,7 @@ import { emptyDialogue } from "../../src/lib/advisor/dialogueState";
 import { effectSourcesPlan } from "../../src/lib/advisor/mechanics/effectSources";
 import { resolveQuestion } from "../../src/lib/advisor/resolvedQuestion";
 import type { PlanContext } from "../../src/lib/advisor/planTypes";
+import { groupReferenceAnswers } from "../../src/lib/advisor/referenceGroups";
 
 function context(): PlanContext {
   return { data: loadData("ko_KR"), lang: "ko_KR", copy: translations.ko_KR.advisor, turns: [], championIds: [],
@@ -25,6 +26,9 @@ test("챔피언의 회복·보호막 질문은 소환사 주문 대신 해당 �
     const { reply } = await answerDialogue(question, context(), deps);
     for (const title of titles) assert.ok(reply.text.includes(`### ${title}`), `${question}: ${reply.text}`);
     assert.doesNotMatch(reply.text, /반경 200|최근 35초/);
+    const groups = groupReferenceAnswers(reply.answers ?? []);
+    assert.equal(groups.length, 1, question);
+    assert.deepEqual(groups[0].answers.map(answer => answer.kind === "spell" && `${answer.championName} ${answer.spell.slot} ${answer.spell.name}`), titles);
   }
 });
 
@@ -49,9 +53,11 @@ test("효과 조회를 이어도 명시한 새 질문과 소환사 주문 조회
   assert.match((await answerDialogue("아니 유미 Q 쿨타임은?", ctx, deps)).reply.text, /유미 Q 사르르탄.*재사용 대기시간/s);
   assert.equal(effectSourcesPlan(resolveQuestion("아니 유미 스킬 전체 설명해줘", ctx.data!), ctx, reply.memory), undefined);
   assert.equal(effectSourcesPlan(resolveQuestion("유미 소환사 주문 회복은?", ctx.data!), ctx, reply.memory), undefined);
-  const missing = (await answerDialogue("이즈리얼 스킬에 회복이 있어?", context(), deps)).reply.text;
-  assert.match(missing, /이즈리얼.*회복.*확인하지 못/);
-  assert.doesNotMatch(missing, /반경 200|최근 35초/);
+  const missing = (await answerDialogue("이즈리얼 스킬에 회복이 있어?", context(), deps)).reply;
+  assert.match(missing.text, /이즈리얼.*회복.*확인하지 못/);
+  assert.doesNotMatch(missing.text, /반경 200|최근 35초/);
+  assert.equal(missing.answers?.length, 1);
+  assert.ok(missing.answers?.[0].kind === "champion" && missing.answers[0].card.id === "Ezreal");
 });
 
 test("새 챔피언의 효과를 이어 물으면 오래된 다른 챔피언 스킬로 돌아가지 않는다", async () => {
@@ -90,6 +96,7 @@ test("Q 적중 회복은 소환사 주문 대신 발동하는 패시브와 조�
   assert.match(reply.text, /4초/);
   assert.doesNotMatch(reply.text, /반경 200|최근 35초|파동마다/);
   assert.deepEqual(reply.memory.spell, { champion: "Yuumi", slot: "Q" });
+  assert.deepEqual(reply.answers?.map(answer => answer.kind === "spell" && answer.spell.slot), ["P"]);
 });
 
 test("궁에만 회복이 있는지 물으면 각 효과의 소속을 함께 보여준다", async () => {
@@ -99,6 +106,8 @@ test("궁에만 회복이 있는지 물으면 각 효과의 소속을 함께 보
   assert.match(reply.text, /아군 챔피언은 파동마다 체력을 회복/);
   assert.match(reply.text, /초과 회복량은 보호막/);
   assert.doesNotMatch(reply.text, /반경 200|최근 35초/);
+  assert.deepEqual(reply.answers?.map(answer => answer.kind === "spell" && answer.spell.slot), ["P", "W", "R"]);
+  assert.equal(groupReferenceAnswers(reply.answers ?? []).length, 1);
 });
 
 test("회복 외 효과의 스킬 범위도 자료에서 찾으며 소환사 주문 질문을 가로채지 않는다", () => {

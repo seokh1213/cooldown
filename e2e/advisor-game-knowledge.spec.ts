@@ -11,6 +11,15 @@ for (const width of [390, 1280]) test(`회복 효과는 소속 스킬과 조건�
   await input.fill("유미 Q 맞춰도 힐 안되나? 유미는 궁에만 힐이 있나?");
   await page.getByRole("button", { name: "보내기", exact: true }).click();
   const dialog = page.getByRole("dialog");
+  const skills = dialog.locator("[data-reference-skills]");
+  const highlighted = skills.locator("[data-highlighted=true]");
+  await expect(skills).toHaveCount(1);
+  await expect(highlighted).toHaveCount(3);
+  for (const [index, name] of ["P 야옹이 친구", "W 너랑 유미랑!", "R 대단원"].entries()) {
+    await expect(highlighted.nth(index)).toContainText(name);
+  }
+  if (width >= 1180) await expect(dialog.locator("aside [data-reference-skills]")).toHaveCount(1);
+  else await expect(dialog.locator("aside")).toHaveCount(0);
   for (const name of ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]) {
     await expect(dialog.getByRole("heading", { name, exact: true })).toBeVisible();
   }
@@ -22,6 +31,8 @@ for (const width of [390, 1280]) test(`회복 효과는 소속 스킬과 조건�
   await page.reload();
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   await expect(dialog.getByRole("heading", { name: "유미 P 야옹이 친구", exact: true })).toBeVisible();
+  await expect(skills).toHaveCount(1);
+  await expect(highlighted).toHaveCount(3);
   await page.getByRole("button", { name: "새 대화", exact: true }).click();
   await input.fill("유미 R 회복은?");
   await page.getByRole("button", { name: "보내기", exact: true }).click();
@@ -36,6 +47,9 @@ for (const width of [390, 1280]) test(`회복 효과는 소속 스킬과 조건�
   for (const name of ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]) {
     await expect(dialog.getByRole("heading", { name, exact: true })).toHaveCount(1);
   }
+  const latestSkills = skills.last();
+  await expect(latestSkills.locator("[data-highlighted=true]")).toHaveCount(3);
+  await expect(latestSkills).toContainText("P 야옹이 친구");
   await input.fill("아니 유미 스킬중에");
   await page.getByRole("button", { name: "보내기", exact: true }).click();
   for (const name of ["유미 P 야옹이 친구", "유미 W 너랑 유미랑!", "유미 R 대단원"]) {
@@ -45,9 +59,12 @@ for (const width of [390, 1280]) test(`회복 효과는 소속 스킬과 조건�
   await input.fill("그럼 보호막은?");
   await page.getByRole("button", { name: "보내기", exact: true }).click();
   await expect(dialog.getByRole("heading", { name: "유미 E 슈우우웅", exact: true })).toBeVisible();
+  await expect(latestSkills.locator("[data-highlighted=true]")).toHaveCount(2);
+  await expect(latestSkills.locator("[data-highlighted=true]").first()).toContainText("E 슈우우웅");
   await page.reload();
   await page.getByRole("button", { name: "롤 지식 도우미 열기", exact: true }).click();
   await expect(dialog.getByRole("heading", { name: "유미 P 야옹이 친구", exact: true })).toHaveCount(2);
+  await expect(latestSkills.locator("[data-highlighted=true]")).toHaveCount(2);
 });
 
 test("오브젝트 생성·제거와 검수한 상세 수치를 구분한다", async ({ page }) => {
