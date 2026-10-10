@@ -36,7 +36,7 @@ jobs:
         with:
           sparse-checkout: |
             public/data/version.json
-            scripts/ci
+            dev/scripts/ci
           sparse-checkout-cone-mode: false
 
       - name: Setup Node.js
@@ -47,29 +47,29 @@ jobs:
       - name: Restore source outage start time
         uses: actions/cache/restore@v6
         with:
-          path: research/.cache/source-health/static.json
-          key: static-source-health-v1-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: static-source-health-v1-
+          path: dev/research/.cache/source-health/static.json
+          key: static-source-health-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: static-source-health-v2-
 
       - name: Check source availability and changes
         id: decide
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-        run: node scripts/ci/upstream-changed.mjs
+        run: node dev/scripts/ci/upstream-changed.mjs
 
       - name: Save source availability across retries
         if: always() && steps.decide.outputs.health_checked == 'true'
         uses: actions/cache/save@v6
         with:
-          path: research/.cache/source-health/static.json
-          key: static-source-health-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dev/research/.cache/source-health/static.json
+          key: static-source-health-v2-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Preserve source availability report
         if: always() && steps.decide.outputs.health_checked == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: static-source-health
-          path: research/.cache/source-health/static.json*
+          path: dev/research/.cache/source-health/static.json*
           retention-days: 14
           if-no-files-found: error
           include-hidden-files: true
@@ -126,7 +126,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: combo-compatibility-review
-          path: research/.cache/combo-review/report.*
+          path: dev/research/.cache/combo-review/report.*
           retention-days: 14
           if-no-files-found: ignore
           include-hidden-files: true
@@ -165,7 +165,7 @@ jobs:
         if: steps.drift.outputs.has_report == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: node --import tsx scripts/ci/knowledge-drift-issue.ts
+        run: node --import tsx dev/scripts/ci/knowledge-drift-issue.ts
 
       - name: Validate prepared release with the local push harness
         run: npm run check:release -- --phase verify
@@ -176,8 +176,8 @@ jobs:
         with:
           name: champion-mechanics-update
           path: |
-            research/champion-mechanics/reports/*
-            research/.cache/preflight/mechanics.json
+            dev/research/champion-mechanics/reports/*
+            dev/research/.cache/preflight/mechanics.json
             ${{ runner.temp }}/mechanics-next
           retention-days: 14
           if-no-files-found: ignore
@@ -188,18 +188,18 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: release-validation
-          path: research/.cache/preflight
+          path: dev/research/.cache/preflight
           retention-days: 14
           if-no-files-found: ignore
           include-hidden-files: true
 
-      # `src/data/generated` 도 생성물이다. 시트에 무엇이 몇째 칸에 있는지를 적어 둔
+      # `src/infrastructure/generated` 도 생성물이다. 시트에 무엇이 몇째 칸에 있는지를 적어 둔
       # 파일이라, 챔피언이나 아이템이 늘면 시트와 함께 바뀐다. 여기 안 넣으면 그림만
       # 새로 붙고 차례는 낡은 채로 나가 아이콘이 통째로 밀린다 — 화면은 조용하다.
       - name: Check for changes
         id: git-check
         run: |
-          if [[ -n "$(git status --porcelain --untracked-files=all -- public/data public/img public/patch-notes data/patch-notes src/data/generated scripts/active-tooltip-allowlist.json)" ]]; then
+          if [[ -n "$(git status --porcelain --untracked-files=all -- public/data public/img public/patch-notes dev/data/patch-notes src/infrastructure/generated dev/data/overrides/active-tooltip-allowlist.json)" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -208,7 +208,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add public/data/ public/img/ public/patch-notes/ data/patch-notes/ src/data/generated/ scripts/active-tooltip-allowlist.json
+          git add public/data/ public/img/ public/patch-notes/ dev/data/patch-notes/ src/infrastructure/generated/ dev/data/overrides/active-tooltip-allowlist.json
           git commit -m "chore: 정적 데이터와 패치 변경 기록 갱신 [skip ci]"
 
       - name: Build project
@@ -222,22 +222,22 @@ jobs:
       - name: Verify deployment artifact
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
         run: |
-          test -f dist/.nojekyll
-          test -f dist/404.html
-          test -f dist/encyclopedia/index.html
-          test -f dist/vs/index.html
-          test -f dist/patch-notes/index.html
-          diff --recursive --brief --exclude=index.html public/patch-notes dist/patch-notes
-          test ! -d dist/patch-notes/sources
-          test ! -d dist/patch-notes/snapshots
-          test ! -d dist/patch-notes/reviews
-          test ! -d dist/patch-notes/skill-catalogs
-          test ! -d dist/patch-notes/icon-catalogs
-          test ! -d dist/patch-notes/official
+          test -f dev/artifacts/dist/.nojekyll
+          test -f dev/artifacts/dist/404.html
+          test -f dev/artifacts/dist/encyclopedia/index.html
+          test -f dev/artifacts/dist/vs/index.html
+          test -f dev/artifacts/dist/patch-notes/index.html
+          diff --recursive --brief --exclude=index.html public/patch-notes dev/artifacts/dist/patch-notes
+          test ! -d dev/artifacts/dist/patch-notes/sources
+          test ! -d dev/artifacts/dist/patch-notes/snapshots
+          test ! -d dev/artifacts/dist/patch-notes/reviews
+          test ! -d dev/artifacts/dist/patch-notes/skill-catalogs
+          test ! -d dev/artifacts/dist/patch-notes/icon-catalogs
+          test ! -d dev/artifacts/dist/patch-notes/official
           # 빌드가 data/releases/<데이터 해시>/ 에 데이터 사본을 하나 더 만든다(PWA 릴리스 캐시).
           # 원본 트리와 그 사본이 각각 public/data 와 같아야 한다.
-          diff --recursive --brief --exclude=releases public/data dist/data
-          release_dir=$(find dist/data/releases -mindepth 1 -maxdepth 1 -type d)
+          diff --recursive --brief --exclude=releases public/data dev/artifacts/dist/data
+          release_dir=$(find dev/artifacts/dist/data/releases -mindepth 1 -maxdepth 1 -type d)
           test "$(printf '%s\n' "$release_dir" | wc -l)" -eq 1
           diff --recursive --brief public/data "$release_dir"
 
@@ -273,7 +273,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: playwright-visual-report-${{ github.run_id }}
-          path: playwright-report
+          path: dev/artifacts/playwright-report
           retention-days: 14
 
       # 작업 시간이 10분 가까이 걸려 그사이 master 가 움직일 수 있다.
@@ -288,14 +288,14 @@ jobs:
           done
           exit 1
 
-      # 예전에는 dist 를 gh-pages 브랜치에 커밋했다(peaceiris/actions-gh-pages). 그러면 옛 파일을
+      # 예전에는 dev/artifacts/dist 를 gh-pages 브랜치에 커밋했다(peaceiris/actions-gh-pages). 그러면 옛 파일을
       # 하나씩 지우는 로그가 5천 줄 넘게 찍히고, 브랜치 기록이 배포마다 쌓이고(2,639 커밋·182MB),
       # 그 push 를 받아 GitHub 이 Pages 빌드를 한 번 더 돌렸다. 이제 산출물을 바로 올린다.
-      # actions/upload-pages-artifact 와 같은 일(dist 를 tar 로 묶어 github-pages 로 올림)을 한다.
+      # actions/upload-pages-artifact 와 같은 일(dev/artifacts/dist 를 tar 로 묶어 github-pages 로 올림)을 한다.
       # 그 action 은 tar -v 로 파일 5,800개 이름을 모두 찍어서 직접 묶는다.
       - name: Archive GitHub Pages artifact
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'
-        run: tar --dereference --hard-dereference --directory dist -cf "$RUNNER_TEMP/artifact.tar" --exclude=.git --exclude=.github .
+        run: tar --dereference --hard-dereference --directory dev/artifacts/dist -cf "$RUNNER_TEMP/artifact.tar" --exclude=.git --exclude=.github .
 
       - name: Upload GitHub Pages artifact
         if: github.event_name != 'schedule' || steps.git-check.outputs.changed == 'true'

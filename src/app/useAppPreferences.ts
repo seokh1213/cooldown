@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Language } from "@/i18n";
+import type { Language } from "@/shared/i18n";
 import {
   APP_STORAGE_KEYS,
   initializeAppStorage,
@@ -7,7 +7,7 @@ import {
   readStorage,
   readTheme,
   writeStorage,
-} from "@/data/storage/appStorage";
+} from "@/infrastructure/storage/appStorage";
 
 export type AppTheme = "light" | "dark";
 

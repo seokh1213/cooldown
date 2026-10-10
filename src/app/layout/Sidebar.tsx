@@ -1,0 +1,274 @@
+import React, { useCallback, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Sidebar as ShadcnSidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/shared/ui/sidebar";
+import { X, BookOpen, Clock, Swords, FileClock } from "lucide-react";
+import { Button } from "@/shared/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import { cn } from "@/shared/lib/utils";
+import { useTranslation } from "@/shared/i18n";
+import { patchNotesLabels } from "@/features/patch-notes/labels";
+
+interface SidebarProps {
+  isOpen: boolean;
+  isMobile: boolean;
+  onClose: () => void;
+}
+
+interface NavItem {
+  path: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+function useMobileSidebarFocus(
+  open: boolean,
+  onClose: () => void,
+  sidebarRef: React.RefObject<HTMLDivElement | null>,
+  overlayRef: React.RefObject<HTMLDivElement | null>,
+) {
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!open || !sidebar) return;
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const background = new Map<HTMLElement, boolean>();
+    let branch: HTMLElement | null = sidebar;
+    while (branch?.parentElement) {
+      for (const sibling of branch.parentElement.children) {
+        if (!(sibling instanceof HTMLElement) || sibling === branch || sibling === overlayRef.current) continue;
+        background.set(sibling, sibling.inert);
+        sibling.setAttribute("inert", "");
+      }
+      branch = branch.parentElement;
+    }
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const controls = () => Array.from(sidebar.querySelectorAll<HTMLElement>(
+      "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]",
+    )).filter((control) => control.tabIndex >= 0 && control.getClientRects().length > 0);
+    controls()[0]?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+      } else if (event.key === "Tab") {
+        const targets = controls();
+        if (targets.length === 0) return;
+        event.preventDefault();
+        const index = targets.indexOf(document.activeElement as HTMLElement);
+        const next = event.shiftKey ? (index <= 0 ? targets.length - 1 : index - 1) : (index + 1) % targets.length;
+        targets[next].focus();
+      }
+    };
+    const handleFocus = (event: FocusEvent) => {
+      if (event.target instanceof Node && !sidebar.contains(event.target)) controls()[0]?.focus();
+    };
+    document.addEventListener("keydown", handleKeyDown, true);
+    document.addEventListener("focusin", handleFocus);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, true);
+      document.removeEventListener("focusin", handleFocus);
+      for (const [element, wasInert] of background) element.toggleAttribute("inert", wasInert);
+      document.body.style.overflow = previousOverflow;
+      if (trigger?.isConnected && trigger.getClientRects().length > 0) trigger.focus();
+      else controls()[0]?.focus();
+    };
+  }, [open, onClose, sidebarRef, overlayRef]);
+}
+
+function Sidebar({ isOpen, isMobile, onClose }: SidebarProps) {
+  const { t, lang } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  useMobileSidebarFocus(isMobile && isOpen, onClose, sidebarRef, overlayRef);
+
+  const navItems: NavItem[] = [
+    { path: "/", label: t.sidebar.championCooldown, icon: Clock },
+    { path: "/vs", label: t.comparison.title, icon: Swords },
+    { path: "/encyclopedia", label: t.sidebar.encyclopedia, icon: BookOpen },
+    { path: "/patch-notes", label: patchNotesLabels[lang].title, icon: FileClock },
+  ];
+
+  const handleNavigate = useCallback(
+    (path: string) => {
+      navigate(path);
+      onClose();
+    },
+    [navigate, onClose]
+  );
+
+  return (
+    <TooltipProvider delayDuration={200}>
+      <>
+        {/* Mobile overlay */}
+        {isOpen && (
+          <div
+            ref={overlayRef}
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={onClose}
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Sidebar */}
+        <ShadcnSidebar
+          ref={sidebarRef}
+          side="left"
+          variant="sidebar"
+          collapsible="offcanvas"
+          role={isMobile ? "dialog" : "navigation"}
+          aria-modal={isMobile && isOpen ? true : undefined}
+          aria-label="Primary navigation"
+          aria-hidden={isMobile && !isOpen ? true : undefined}
+          inert={isMobile && !isOpen ? true : undefined}
+          className={cn(
+            "transition-[transform,width,padding] duration-300 md:translate-x-0! md:w-16 md:p-2 pt-0 md:pt-0",
+            isOpen ? "translate-x-0!" : "-translate-x-full!",
+          )}
+        >
+          <SidebarHeader className="flex! flex-row! items-center border-b border-border/50 h-[60px] relative px-0 md:px-2 box-border gap-0">
+            {/* Mobile: Full header */}
+            <div className="md:hidden flex items-center gap-3 flex-1 px-4 h-full">
+              <img 
+                src={`${import.meta.env.BASE_URL}poro_logo.png`}
+                alt=""
+                className="h-12 w-12 object-contain shadow-none"
+                style={{ imageRendering: 'auto' as const }}
+              />
+              <h2 className="text-lg font-semibold text-sidebar-foreground">Cooldown</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className={cn(
+                  "ml-auto size-11 transition-[color,background-color,transform] duration-200",
+                  "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                  "active:scale-95"
+                )}
+                aria-label="Close menu"
+              >
+                <X aria-hidden="true" className="h-4 w-4" />
+              </Button>
+            </div>
+            {/* Desktop/Tablet: Collapsed header */}
+            <div className="hidden md:flex w-full items-center justify-center px-1 h-full">
+              <img 
+                src={`${import.meta.env.BASE_URL}poro_logo.png`}
+                alt="Poro Logo" 
+                className="h-8 w-8 object-contain shadow-none"
+                style={{ imageRendering: 'auto' as const }}
+              />
+            </div>
+          </SidebarHeader>
+
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupContent className="px-1" role={isMobile ? "navigation" : undefined} aria-label={isMobile ? "Primary navigation" : undefined}>
+                <SidebarMenu>
+                  {navItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    const Icon = item.icon;
+                    
+                    return (
+                      <SidebarMenuItem key={item.path}>
+                        {/* Desktop/Tablet: Collapsed with Tooltip */}
+                        <div className="hidden md:block">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <SidebarMenuButton
+                                onClick={() => handleNavigate(item.path)}
+                                isActive={isActive}
+                                aria-label={item.label}
+                                aria-current={isActive ? "page" : undefined}
+                                className={cn(
+                                  "w-full transition-colors duration-200 relative group/menu-item",
+                                  "justify-center px-2 rounded-lg",
+                                  "hover:bg-sidebar-accent dark:hover:bg-sidebar-accent",
+                                  "hover:text-sidebar-foreground"
+                                )}
+                              >
+                                <Icon aria-hidden="true" className={cn(
+                                  "shrink-0 transition-colors duration-200 h-5 w-5",
+                                  isActive 
+                                    ? "text-sidebar-foreground dark:text-sidebar-foreground"
+                                    : "text-sidebar-foreground/60 dark:text-sidebar-foreground/70 group-hover/menu-item:text-sidebar-foreground dark:group-hover/menu-item:text-sidebar-foreground"
+                                )} />
+                              </SidebarMenuButton>
+                            </TooltipTrigger>
+                            <TooltipContent side="right" className="text-xs text-gray-500 dark:text-gray-400">
+                              {item.label}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        {/* Mobile: Expanded without Tooltip */}
+                        <div className="md:hidden">
+                          <SidebarMenuButton
+                            onClick={() => handleNavigate(item.path)}
+                            isActive={isActive}
+                            aria-current={isActive ? "page" : undefined}
+                            className={cn(
+                              "w-full transition-[color,background-color,border-color] duration-200 relative group/menu-item rounded-lg",
+                              // 기본 hover 스타일
+                              !isActive && [
+                                "hover:bg-sidebar-accent dark:hover:bg-sidebar-accent",
+                                "hover:text-sidebar-foreground",
+                              ],
+                              // 선택됨
+                              isActive && [
+                                "text-sidebar-foreground dark:text-sidebar-foreground",
+                                "font-semibold",
+                                "hover:bg-sidebar-accent dark:hover:bg-sidebar-accent",
+                                "before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2",
+                                "before:w-1 before:h-8 before:rounded-r-full",
+                                "before:bg-sidebar-primary/60 dark:before:bg-sidebar-primary"
+                              ],
+                              // 선택 안됨
+                              !isActive && [
+                                "text-sidebar-foreground/70 dark:text-sidebar-foreground/80",
+                                "hover:text-sidebar-foreground dark:hover:text-sidebar-foreground",
+                                "border border-transparent hover:border-sidebar-border/50"
+                              ]
+                            )}
+                          >
+                            <Icon aria-hidden="true" className={cn(
+                              "shrink-0 transition-colors duration-200 h-4 w-4",
+                              isActive 
+                                ? "text-sidebar-foreground dark:text-sidebar-foreground"
+                                : "text-sidebar-foreground/60 dark:text-sidebar-foreground/70 group-hover/menu-item:text-sidebar-foreground dark:group-hover/menu-item:text-sidebar-foreground"
+                            )} />
+                            <span className={cn(
+                              "ml-3 truncate transition-colors duration-200",
+                              isActive 
+                                ? "text-sidebar-foreground dark:text-sidebar-foreground font-semibold" 
+                                : "text-sidebar-foreground/70 dark:text-sidebar-foreground/80 group-hover/menu-item:text-sidebar-foreground dark:group-hover/menu-item:text-sidebar-foreground font-normal"
+                            )}>
+                              {item.label}
+                            </span>
+                          </SidebarMenuButton>
+                        </div>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+        </ShadcnSidebar>
+      </>
+    </TooltipProvider>
+  );
+}
+
+export default React.memo(Sidebar);

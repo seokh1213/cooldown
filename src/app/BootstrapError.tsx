@@ -21,4 +21,4 @@ export function BootstrapError({ message, onRetry }: BootstrapErrorProps) {
     </main>
   );
 }
-import { useTranslation } from "@/i18n";
+import { useTranslation } from "@/shared/i18n";

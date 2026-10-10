@@ -6,26 +6,38 @@ Check ability cooldowns before the game starts. A static web app for League of L
 
 Live: https://seokh1213.github.io/cooldown/
 
+## Repository layout
+
+The project has three main areas.
+
+```text
+src/       # Application source
+public/    # Public deployment data, images and models
+dev/       # Tools, tests, docs, source data and research
+```
+
+[Folder conventions and reading order](dev/docs/project-structure.md)
+
 ## Ability cooldowns and descriptions
 
 All 173 champions. P/Q/W/E/R cooldowns by rank, cost, per-rank values and scaling ratios, with the in-game description rendered from Riot's own calculation data. Champions with two forms, such as Jayce, show both as A and B.
 
-![Champion cooldown table with Jayce's A/B Q tooltip open next to Aatrox](docs/images/cooldown-desktop.en.png)
+![Champion cooldown table with Jayce's A/B Q tooltip open next to Aatrox](dev/docs/images/cooldown-desktop.en.png)
 
 ## VS matchup
 
 Pick your champion and the opponent. Every rank's cooldown in one table, base stats by level, swap and share by URL. Works on phones.
 
-![VS matchup: Aatrox against Fiora, cooldowns by rank and stats by level](docs/images/vs-desktop.en.png)
+![VS matchup: Aatrox against Fiora, cooldowns by rank and stats by level](dev/docs/images/vs-desktop.en.png)
 
-<img src="docs/images/vs-mobile.en.png" alt="VS matchup on a phone" width="320">
+<img src="dev/docs/images/vs-mobile.en.png" alt="VS matchup on a phone" width="320">
 
 ## Also included
 
 - Champion biographies and skins, runes, items and summoner spells encyclopedia
 - Korean, English and Simplified Chinese
 - Installable PWA that works offline
-- Optional LoL knowledge helper. The model runs inside the browser and nothing is sent to a server. See `docs/advisor-answer-pipeline.md`.
+- Optional LoL knowledge helper. The model runs inside the browser and nothing is sent to a server. See `dev/docs/advisor-answer-pipeline.md`.
 
 ## Data
 
@@ -60,10 +72,10 @@ Regenerate the current patch's data locally with `npm run generate-static-data`.
 
 ## More
 
-- `docs/product-roadmap.md`: priorities and done criteria
-- [Data versions and PWA updates](docs/data-and-updates.md)
-- [Knowledge helper design](docs/advisor-answer-pipeline.md) and [knowledge authoring](knowledge/README.md)
-- [Patch change reports](docs/patch-notes.md)
+- `dev/docs/product-roadmap.md`: priorities and done criteria
+- [Data versions and PWA updates](dev/docs/data-and-updates.md)
+- [Knowledge helper design](dev/docs/advisor-answer-pipeline.md) and [knowledge authoring](dev/data/knowledge/README.md)
+- [Patch change reports](dev/docs/patch-notes.md)
 
 ## License
 

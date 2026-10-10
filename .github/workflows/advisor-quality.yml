@@ -34,7 +34,7 @@ jobs:
         run: npm run check:release -- --phase prepare
 
       - name: Compare advisor regression baseline
-        run: npm run llm:test -- --profile regression --baseline research/llm-evals/workflow/reports/regression/baseline.json --out research/.cache/quality/ci
+        run: npm run llm:test -- --profile regression --baseline dev/research/llm-evals/workflow/reports/regression/baseline.json --out dev/research/.cache/quality/ci
 
       - name: Check reviewed ability ticks against all shipped locales
         run: npm run llm:ticks:audit
@@ -44,6 +44,6 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: advisor-regression
-          path: research/.cache/quality/ci
+          path: dev/research/.cache/quality/ci
           retention-days: 14
           if-no-files-found: ignore

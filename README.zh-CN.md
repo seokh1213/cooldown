@@ -6,26 +6,38 @@
 
 站点：https://seokh1213.github.io/cooldown/
 
+## 目录结构
+
+项目分为三个主要区域。
+
+```text
+src/       # 应用源代码
+public/    # 公开部署的数据、图片和模型
+dev/       # 工具、测试、文档、原始数据和研究记录
+```
+
+[目录规范与阅读顺序](dev/docs/project-structure.md)
+
 ## 技能冷却与说明
 
 覆盖全部 173 位英雄。P/Q/W/E/R 各等级冷却、消耗、各等级数值与加成系数，技能说明直接由 Riot 的计算数据渲染。杰斯这类双形态英雄会分为 A/B 两栏显示。
 
-![英雄冷却表：打开杰斯 A/B 形态 Q 的提示框](docs/images/cooldown-desktop.zh.png)
+![英雄冷却表：打开杰斯 A/B 形态 Q 的提示框](dev/docs/images/cooldown-desktop.zh.png)
 
 ## VS 对线比较
 
 选择你的英雄和对手。所有等级的冷却在一张表里，附带各等级基础属性，支持互换和 URL 分享。手机上也可使用。
 
-![VS 比较：亚托克斯对菲奥娜，各等级冷却与各等级属性](docs/images/vs-desktop.zh.png)
+![VS 比较：亚托克斯对菲奥娜，各等级冷却与各等级属性](dev/docs/images/vs-desktop.zh.png)
 
-<img src="docs/images/vs-mobile.zh.png" alt="手机上的 VS 比较" width="320">
+<img src="dev/docs/images/vs-mobile.zh.png" alt="手机上的 VS 比较" width="320">
 
 ## 其他功能
 
 - 英雄背景故事与皮肤、符文、装备、召唤师技能百科
 - 韩语、英语、简体中文
 - 可安装、可离线使用的 PWA
-- 可选的英雄联盟知识助手。模型只在浏览器内运行，不向任何服务器发送数据。参见 `docs/advisor-answer-pipeline.md`。
+- 可选的英雄联盟知识助手。模型只在浏览器内运行，不向任何服务器发送数据。参见 `dev/docs/advisor-answer-pipeline.md`。
 
 ## 数据
 
@@ -60,10 +72,10 @@ npm run test:e2e
 
 ## 更多
 
-- `docs/product-roadmap.md`：优先级与完成标准
-- [数据版本与 PWA 更新](docs/data-and-updates.md)
-- [知识助手设计](docs/advisor-answer-pipeline.md)、[知识编写指南](knowledge/README.md)
-- [补丁变更记录](docs/patch-notes.md)
+- `dev/docs/product-roadmap.md`：优先级与完成标准
+- [数据版本与 PWA 更新](dev/docs/data-and-updates.md)
+- [知识助手设计](dev/docs/advisor-answer-pipeline.md)、[知识编写指南](dev/data/knowledge/README.md)
+- [补丁变更记录](dev/docs/patch-notes.md)
 
 ## 许可证
 

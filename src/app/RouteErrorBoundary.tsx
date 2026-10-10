@@ -1,6 +1,6 @@
 import { Component, type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { useTranslation } from "@/i18n";
+import { Button } from "@/shared/ui/button";
+import { useTranslation } from "@/shared/i18n";
 
 export function RouteLoadError() {
   const { t } = useTranslation();

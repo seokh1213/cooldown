@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Language } from "@/i18n";
-import type { Champion } from "@/types";
-import { getChampionList } from "@/data/queries/championQueries";
-import { championRepository } from "@/data/repositories/championRepository";
-import { gameDataRepository } from "@/data/repositories/gameDataRepository";
-import { manifestRepository } from "@/data/repositories/manifestRepository";
-import type { StaticDataSources } from "@/data/contracts/staticData";
-import { waitForPWAStartup } from "@/pwa";
+import type { Language } from "@/shared/i18n";
+import type { Champion } from "@/domain/game/types";
+import { getChampionList } from "@/infrastructure/queries/championQueries";
+import { championRepository } from "@/infrastructure/repositories/championRepository";
+import { gameDataRepository } from "@/infrastructure/repositories/gameDataRepository";
+import { manifestRepository } from "@/infrastructure/repositories/manifestRepository";
+import type { StaticDataSources } from "@/domain/game/contracts/staticData";
+import { waitForPWAStartup } from "@/app/pwa/index";
 
 export interface AppRuntimeData {
   patchVersion: string;

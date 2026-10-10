@@ -1,0 +1,212 @@
+/**
+ * 룬·소환사 주문 판정 규칙
+ *
+ * 툴팁이 담지 못하는 발동 조건과 예외를 위키에서 모은 것이다.
+ * 정복자 툴팁은 "기본 공격 또는 스킬로" 라고만 적혀 있지만 실제로는 소환사 주문도 중첩을 준다.
+ * 그 차이 때문에 실제로 틀린 답을 냈다. 그래서 별도 계층으로 둔다.
+ *
+ * 파일 읽기는 로더 쪽에 있고 여기에는 선택과 서술만 둔다. 브라우저에서도 쓴다.
+ */
+
+/** gameplay 는 챔피언·룬과 무관한 일반 플레이 지식(미니언, 와드, 포탑 …)이다. */
+import { aliasAt, aliasesOf } from "./searchAliases";
+import { removalNotice, type NoteVersion } from "./noteVersion";
+
+export type RuleSubject = "rune" | "summoner" | "gameplay";
+
+export interface RuleNotes {
+  version?: NoteVersion;
+  name: string;
+  page: string;
+  subject: RuleSubject;
+  /** 위키 원문 (영어). 번역이 틀렸을 때 대조용으로 남긴다. */
+  notes: string[];
+  /** 한국어 번역. `npm run llm:translate-rules` 가 채운다. */
+  notesKo?: string[];
+  /** 중국어 번역. `dev/scripts/advisor/translate-rules-zh.ts` 가 채운다. 문장이 하나라도 없으면 비운다 */
+  notesZh?: string[];
+  /** 영어·중국어 클라이언트 이름. 그 언어로 물어도 찾고, 그 화면에서는 이 이름으로 보인다 */
+  nameEn?: string;
+  nameZh?: string;
+}
+
+export type RuleIndex = Map<string, RuleNotes>;
+
+export function indexRules(rules: RuleNotes[]): RuleIndex {
+  return new Map(rules.map((r) => [r.name, r]));
+}
+
+/**
+ * 문장에 언급된 룬·주문의 규칙을 찾는다.
+ *
+ * 이름이 긴 쪽을 먼저 맞춘다. "정복자" 와 "치명적 속도" 처럼 겹치는 이름은 없지만,
+ * "점화" 가 "점화의 성물" 같은 이름 안에 들어갈 수 있다.
+ */
+export function findMentionedRules(index: RuleIndex, text: string, limit = 3): RuleNotes[] {
+  // 세 언어 이름을 모두 본다. 영어는 대소문자를 가리지 않고 낱말 경계로("Flash" 가 "flashy" 에 걸리지 않게).
+  const names: Array<[string, RuleNotes]> = [];
+  for (const rule of new Set(index.values())) {
+    for (const name of [rule.name, rule.nameEn, rule.nameZh]) if (name && name.length >= 2) names.push([name, rule]);
+    // 은어("스마", "PTA", "TP") — dev/data/knowledge/search-aliases.json
+    for (const alias of aliasesOf(`rule:${rule.name}`)) names.push([alias, rule]);
+  }
+  names.sort((a, b) => b[0].length - a[0].length);
+  const lower = text.toLowerCase();
+  const found: RuleNotes[] = [];
+  const taken: Array<[number, number]> = [];
+  for (const [name, rule] of names) {
+    if (found.length >= limit) break;
+    if (found.includes(rule)) continue;
+    let at: number;
+    if (/^[ -~]+$/.test(name)) {
+      const m = new RegExp(`(?<![a-z])${name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![a-z])`).exec(lower);
+      at = m ? m.index : -1;
+    } else {
+      at = aliasAt(text, name);
+      if (at < 0 && rule.subject === "rune" && /^[가-힣]{2}$/.test(name)
+        && /(?:랑|하고|과|와|중).*(?:들어|고르|선택|좋)/.test(text)) at = text.indexOf(name);
+    }
+    if (at < 0) continue;
+    if (taken.some(([s, e]) => at < e && at + name.length > s)) continue;
+    taken.push([at, at + name.length]);
+    found.push(rule);
+  }
+  const primary = found.filter(rule => rule.subject !== "gameplay");
+  return narrowToAsked(primary.length ? primary : found, text);
+}
+
+/** 질문이 "룬" 이라고 밝혔는가. 세 언어. */
+const ASKS_RUNE = /룬|키스톤|\brunes?\b|\bkeystone\b|符文|基石/i;
+/** 질문이 "소환사 주문" 이라고 밝혔는가. 영어 "spell" 만으로는 스킬일 수 있어 summoner 를 요구한다. */
+const ASKS_SUMMONER = /스펠|소환사\s*주문|\bsummoner\b|召唤师技能/i;
+
+/** 질문이 밝힌 규칙 갈래(룬·소환사 주문). 없으면 빈 집합. */
+export function askedRuleKinds(text: string): Set<RuleSubject> {
+  const asked = new Set<RuleSubject>();
+  if (ASKS_RUNE.test(text)) asked.add("rune");
+  if (ASKS_SUMMONER.test(text)) asked.add("summoner");
+  return asked;
+}
+
+/**
+ * 질문이 갈래를 밝혔으면 그 갈래의 규칙만 남긴다.
+ *
+ * 흔한 낱말이 게임 요소·소환사 주문 이름과 같아서 걸렸다 — "와드 없는 모드에서 킬로 트로피 모으는 **룬**" 이 와드로,
+ * "킬 관여하면 피 채워주는 **룬**, 회복량은 …" 이 소환사 주문 회복으로, "미니언을 키워 주던 **스펠**" 이 미니언으로 갔다.
+ * 남은 것이 없으면 비운다 — 틀린 자료를 보이는 것보다 다음 단계(낱말 검색)로 넘기는 편이 낫다.
+ */
+export function narrowToAsked(rules: RuleNotes[], text: string): RuleNotes[] {
+  const asked = askedRuleKinds(text);
+  if (asked.size === 0) return rules;
+  return rules.filter((rule) => asked.has(rule.subject) || rule.subject === "rune" && asked.has("summoner")
+    && [rule.name, rule.nameEn, rule.nameZh, ...aliasesOf(`rule:${rule.name}`)]
+      .some(name => name && name.length >= 2 && aliasAt(text, name) >= 0));
+}
+
+/** 화면 언어의 이름과 본문. 중국어 본문이 없으면 영어 원문이다. */
+export function ruleName(rule: RuleNotes, lang: string): string {
+  return lang.startsWith("en") ? (rule.nameEn ?? rule.name) : lang.startsWith("zh") ? (rule.nameZh ?? rule.nameEn ?? rule.name) : rule.name;
+}
+
+export function ruleLines(rule: RuleNotes, lang: string): string[] {
+  if (lang.startsWith("en")) return rule.notes;
+  if (lang.startsWith("zh")) return rule.notesZh?.length === rule.notes.length ? rule.notesZh : rule.notes;
+  return rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
+}
+
+/**
+ * 질문에 직접 답하는 줄만 골라낸다.
+ *
+ * 규칙 원문이 영어라 소형 모델이 통째로 읽으면 반대로 답한다. 실제로 "점화는 정복자 스택에
+ * 포함되지 않습니다" 라고 틀리게 답했다. 정복자 블록에 있는 "will not stack from these effects"
+ * 쪽에 끌린 것이다.
+ *
+ * 그래서 **여러 규칙이 서로를 언급한 줄**을 따로 뽑아 맨 앞에 세운다.
+ * "점화가 정복자 스택을 주는가" 의 답은 두 이름이 함께 나오는 줄에 있다.
+ */
+export function crossReferences(rules: RuleNotes[]): string[] {
+  if (rules.length < 2) return [];
+  const pages = rules.map((r) => r.page);
+  const koreanNames = rules.map((r) => r.name);
+  const hits: string[] = [];
+  for (const rule of rules) {
+    const otherEnglish = pages.filter((p) => p !== rule.page);
+    const otherKorean = koreanNames.filter((n) => n !== rule.name);
+    rule.notes.forEach((note, i) => {
+      const ko = rule.notesKo?.[i];
+      // 판정은 원문으로 하고 화면에는 번역을 낸다. 번역에서 이름이 달라져도 놓치지 않는다.
+      const matched =
+        otherEnglish.some((o) => note.includes(o)) ||
+        (ko ? otherKorean.some((o) => ko.includes(o)) : false);
+      if (matched) hits.push(ko ?? note);
+    });
+  }
+  return [...new Set(hits)];
+}
+
+/**
+ * 이름이 본문에만 나오는 규칙도 끌어온다.
+ *
+ * "감전은 소환사 주문으로 발동되나" 는 감전 문서가 아니라 점화 문서에 답이 있다.
+ * 헤더만 보고 찾으면 놓친다.
+ */
+export function findRulesMentioning(index: RuleIndex, names: string[], limit = 2): RuleNotes[] {
+  const english = names
+    .map((n) => index.get(n)?.page)
+    .filter((p): p is string => Boolean(p));
+  if (!english.length) return [];
+  const out: RuleNotes[] = [];
+  for (const rule of index.values()) {
+    if (out.length >= limit) break;
+    if (english.includes(rule.page)) continue;
+    if (rule.notes.some((n) => english.some((e) => n.includes(e)))) out.push(rule);
+  }
+  return out;
+}
+
+/**
+ * 한 줄을 본문과 하위 항목으로 나눠 계층을 살린다.
+ *
+ * 수집 단계에서 하위 항목을 괄호로 이어 붙였는데, 그대로 두면 앞 문장의 조건과 멀어진다.
+ * "…중첩되지 않습니다. (펫의 기본 공격 피해)" 를 보고 모델이 "펫으로 중첩된다" 고 뒤집었다.
+ * 들여쓴 줄로 내려 부정 바로 아래에 붙인다.
+ */
+function renderNote(note: string): string[] {
+  const parts = note.split(/\s\(/);
+  const head = parts[0].trim();
+  const children = parts.slice(1).map((p) => p.replace(/\)\s*$/, "").trim());
+  if (!children.length) return [`  - ${head}`];
+  return [`  - ${head}`, ...children.map((c) => `      · ${c}`)];
+}
+
+/**
+ * 화면에 그대로 낼 규칙 답변. **모델을 거치지 않는다.**
+ *
+ * e2b 는 부정문을 뒤집는다. "정복자는 이러한 효과로 중첩되지 않습니다 · 펫의 기본 공격 피해"
+ * 를 보고 "정복자는 펫의 기본 공격으로 중첩됩니다" 라고 답했다. 계층을 살려도 마찬가지였다.
+ *
+ * 규칙 질문의 답은 규칙문 자체다. 모델이 더할 것이 없고 뒤집을 위험만 있다.
+ * 그래서 원문(번역본)을 그대로 낸다. 구조상 틀릴 수가 없다.
+ *
+ * 다만 순서는 손봐야 한다. "정복자 스택에 점화는 포함되나" 의 답은 정복자 스무 줄 중
+ * 한 줄이라, 문서 순서대로 내면 정작 답이 화면 아래로 밀린다.
+ * 두 이름이 함께 나오는 줄을 맨 앞에 따로 세운다.
+ */
+export function buildRuleAnswer(rules: RuleNotes[], patch: string): string | undefined {
+  if (!rules.length) return undefined;
+  const crossed = crossReferences(rules);
+  const blocks = rules.map((rule) => {
+    const lines = rule.notesKo?.length === rule.notes.length ? rule.notesKo : rule.notes;
+    const body = lines.flatMap((n) => renderNote(n)).join("\n");
+    const removed = removalNotice(rule.name, rule.version, "ko_KR");
+    return `## ${rule.name}\n${removed ? `${removed}\n` : ""}${body}`;
+  });
+  const answerFirst = crossed.length
+    ? [`## 관련 규칙\n${crossed.flatMap((n) => renderNote(n)).join("\n")}`]
+    : [];
+  return [
+    ...answerFirst,
+    ...blocks,
+    `_v${patch}_`,
+  ].join("\n\n");
+}

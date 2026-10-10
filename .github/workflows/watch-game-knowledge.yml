@@ -24,22 +24,22 @@ jobs:
       - uses: actions/checkout@v7
         with:
           ref: master
-          sparse-checkout: scripts/ci
+          sparse-checkout: dev/scripts/ci
       - uses: actions/setup-node@v7
         with:
           node-version: '24'
       - name: Restore source outage state for scheduling
         uses: actions/cache/restore@v6
         with:
-          path: research/.cache/source-health/knowledge.json
-          key: knowledge-source-health-v1-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: knowledge-source-health-v1-
+          path: dev/research/.cache/source-health/knowledge.json
+          key: knowledge-source-health-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: knowledge-source-health-v2-
       - name: Decide daily scan or outage retry
         id: trigger
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
-        run: node scripts/ci/game-knowledge-trigger.mjs
+        run: node dev/scripts/ci/game-knowledge-trigger.mjs
 
   watch:
     needs: check
@@ -64,25 +64,25 @@ jobs:
       - name: Restore source outage start time
         uses: actions/cache/restore@v6
         with:
-          path: research/.cache/source-health/knowledge.json
-          key: knowledge-source-health-v1-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: knowledge-source-health-v1-
+          path: dev/research/.cache/source-health/knowledge.json
+          key: knowledge-source-health-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: knowledge-source-health-v2-
       - name: Compare wiki, official notes and CDragon
         run: npm run llm:watch-game-knowledge -- --ci
       - name: Save source availability across retries
-        if: always() && hashFiles('research/.cache/source-health/knowledge.json') != ''
+        if: always() && hashFiles('dev/research/.cache/source-health/knowledge.json') != ''
         uses: actions/cache/save@v6
         with:
-          path: research/.cache/source-health/knowledge.json
-          key: knowledge-source-health-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dev/research/.cache/source-health/knowledge.json
+          key: knowledge-source-health-v2-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Preserve report and collected sources
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: game-knowledge-source-check
           path: |
-            research/.cache/game-knowledge/watch/
-            research/.cache/source-health/knowledge.json*
+            dev/research/.cache/game-knowledge/watch/
+            dev/research/.cache/source-health/knowledge.json*
           retention-days: 14
           if-no-files-found: warn
           include-hidden-files: true

@@ -1,0 +1,175 @@
+import type { DataLocale } from "@/domain/game/contracts/staticData";
+import type { StoredSelectedChampionList } from "@/shared/lib/storageSchema";
+import type { ChampionTab } from "./contracts";
+
+export interface StorageLike {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+  removeItem(key: string): void;
+}
+
+export const APP_STORAGE_KEYS = {
+  schema: "cooldown:storage-schema",
+  theme: "theme",
+  language: "language",
+  pwaAutoUpdate: "pwaAutoUpdate",
+  selectedChampions: "cooldown_selected_champions",
+  tabs: "cooldown_tabs",
+  selectedTabId: "cooldown_selected_tab_id",
+  favoriteChampionIds: "cooldown:favorite-champion-ids",
+  championSelectorScroll: "cooldown:champion-selector-scroll",
+} as const;
+
+const STATE_SCHEMA_VERSION = "2";
+const LEGACY_OWNED_KEYS = [
+  "app_serialization_version",
+  "encyclopedia_selected_champions",
+  "encyclopedia_tabs",
+  "encyclopedia_selected_tab_id",
+];
+const STATE_KEYS = [
+  APP_STORAGE_KEYS.selectedChampions,
+  APP_STORAGE_KEYS.tabs,
+  APP_STORAGE_KEYS.selectedTabId,
+  ...LEGACY_OWNED_KEYS,
+];
+
+function browserStorage(): StorageLike | undefined {
+  if (typeof window === "undefined") return undefined;
+  try {
+    return window.localStorage;
+  } catch {
+    return undefined;
+  }
+}
+
+function browserSessionStorage(): StorageLike | undefined {
+  if (typeof window === "undefined") return undefined;
+  try {
+    return window.sessionStorage;
+  } catch {
+    return undefined;
+  }
+}
+
+export function readStorage(
+  key: string,
+  storage: StorageLike | undefined = browserStorage()
+): string | null {
+  try {
+    return storage?.getItem(key) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function writeStorage(
+  key: string,
+  value: string,
+  storage: StorageLike | undefined = browserStorage()
+): void {
+  try {
+    storage?.setItem(key, value);
+  } catch {
+    // Preferences remain in memory when storage is blocked or full.
+  }
+}
+
+export function removeStorage(
+  key: string,
+  storage: StorageLike | undefined = browserStorage()
+): void {
+  try {
+    storage?.removeItem(key);
+  } catch {
+    // Removing persisted state is best-effort.
+  }
+}
+
+export function readSessionStorage(
+  key: string,
+  storage: StorageLike | undefined = browserSessionStorage(),
+): string | null {
+  return readStorage(key, storage);
+}
+
+export function writeSessionStorage(
+  key: string,
+  value: string,
+  storage: StorageLike | undefined = browserSessionStorage(),
+): void {
+  writeStorage(key, value, storage);
+}
+
+export function readJsonStorage<T>(
+  key: string,
+  decode: (value: unknown) => T | null,
+  storage: StorageLike | undefined = browserStorage()
+): T | null {
+  const value = readStorage(key, storage);
+  if (!value) return null;
+  try {
+    const decoded = decode(JSON.parse(value));
+    if (decoded) return decoded;
+  } catch {
+    // Invalid owned data is removed below.
+  }
+  removeStorage(key, storage);
+  return null;
+}
+
+export function initializeAppStorage(
+  storage: StorageLike | undefined = browserStorage()
+): void {
+  if (readStorage(APP_STORAGE_KEYS.schema, storage) === STATE_SCHEMA_VERSION) {
+    return;
+  }
+  STATE_KEYS.forEach((key) => removeStorage(key, storage));
+  writeStorage(APP_STORAGE_KEYS.schema, STATE_SCHEMA_VERSION, storage);
+}
+
+export function decodeSelectedChampions(
+  value: unknown
+): StoredSelectedChampionList | null {
+  if (!Array.isArray(value)) return null;
+  if (!value.every((entry) =>
+    typeof entry === "object" &&
+    entry !== null &&
+    typeof entry.id === "string" &&
+    (entry.key === undefined || typeof entry.key === "string")
+  )) return null;
+  return value as StoredSelectedChampionList;
+}
+
+export function decodeFavoriteChampionIds(value: unknown): string[] | null {
+  if (!Array.isArray(value)) return null;
+  if (!value.every((id) => typeof id === "string" && id.length > 0)) {
+    return null;
+  }
+  return [...new Set(value)];
+}
+
+export function decodeTabs(value: unknown): ChampionTab[] | null {
+  if (!Array.isArray(value)) return null;
+  // 저장본에 남은 VS 탭(mode "vs")은 버리고 일반 탭만 복원한다.
+  const tabs = value.filter((tab) => tab?.mode !== "vs");
+  if (!tabs.every((tab) => {
+    if (typeof tab !== "object" || tab === null) return false;
+    if (tab.mode !== "normal") return false;
+    if (typeof tab.id !== "string" || !Array.isArray(tab.champions)) return false;
+    return tab.champions.length === 1 && typeof tab.champions[0] === "string";
+  })) return null;
+  return tabs as ChampionTab[];
+}
+
+export function readTheme(): "light" | "dark" | null {
+  const value = readStorage(APP_STORAGE_KEYS.theme);
+  return value === "light" || value === "dark" ? value : null;
+}
+
+export function readLocale(): DataLocale | null {
+  const value = readStorage(APP_STORAGE_KEYS.language);
+  return value === "ko_KR" || value === "en_US" || value === "zh_CN"
+    ? value
+    : null;
+}

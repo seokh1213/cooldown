@@ -1,0 +1,168 @@
+import React, { useCallback, useState, useEffect } from "react";
+import { Champion } from "@/domain/game/types";
+import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { Skeleton } from "@/shared/ui/skeleton";
+import { Check, Star } from "lucide-react";
+import { useTranslation } from "@/shared/i18n";
+import { championIconUrl } from "@/infrastructure/assets/riotAssetUrls";
+import { ChampionIcon, championInSheet } from "@/shared/ui/champion-icon";
+
+interface ChampionThumbnailProps {
+  addChampion: (champion: Champion) => void;
+  data: Champion;
+  name: string;
+  selected: boolean;
+  favorite: boolean;
+  showFavoriteControl: boolean;
+  onToggleFavorite: (champion: Champion) => void;
+}
+
+function ChampionThumbnail({
+  addChampion,
+  data,
+  name,
+  selected,
+  favorite,
+  showFavoriteControl,
+  onToggleFavorite,
+}: ChampionThumbnailProps) {
+  const { t } = useTranslation();
+  /*
+   * 시트에서 자를 수 있으면 **기다릴 것이 없다.**
+   *
+   * 이 격자는 173장을 한꺼번에 그린다. 낱장으로 받던 시절에는 받아 오는 동안
+   * 자리맡을 띄우고 `onLoad` 에 맞춰 흐리게 나타냈는데, 그 깜빡임이 화면에 들어갈
+   * 때마다 보였다. 시트는 서비스워커가 이미 들고 있어 첫 그림에 바로 나오므로
+   * 자리맡도 나타나는 효과도 필요 없다. 시트에 없는 챔피언만 옛 길로 간다.
+   */
+  const fromSheet = championInSheet(data.id, data.ddragonVersion || "");
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  // 즉시 피드백을 위한 로컬 선택 상태
+  const [isLocallySelected, setIsLocallySelected] = useState(selected);
+
+  useEffect(() => {
+    setIsLocallySelected(selected);
+  }, [selected]);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // 즉시 로컬 상태 업데이트 (네트워크 응답 전에 피드백 제공)
+    setIsLocallySelected((prev) => !prev);
+    addChampion(data);
+  }, [addChampion, data]);
+
+  const handleLoad = useCallback(() => {
+    setIsLoaded(true);
+  }, []);
+
+  const handleError = useCallback(() => {
+    setHasError(true);
+  }, []);
+
+  const handleFavoriteClick = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onToggleFavorite(data);
+  }, [data, onToggleFavorite]);
+
+  const favoriteLabel = (
+    favorite
+      ? t.championSelector.removeFavorite
+      : t.championSelector.addFavorite
+  ).replace("{champion}", name);
+
+  return (
+    <div className="group relative flex flex-col items-center justify-center m-1 h-fit">
+      <Button
+        variant="ghost"
+        className="cursor-pointer rounded-full shrink-0 p-0 h-auto w-auto hover:bg-transparent relative touch-manipulation"
+        onClick={handleClick}
+        aria-label={selected ? `Deselect ${name}` : `Select ${name}`}
+        aria-pressed={selected}
+      >
+        {/* 고정 크기 컨테이너 - 레이아웃 시프트 방지, overflow-hidden으로 scale 시 보더가 벗어나지 않도록 */}
+        <div className="relative w-12 h-12 md:w-14 md:h-14 shrink-0 overflow-hidden rounded-full">
+          {/* Skeleton placeholder - 고정 크기로 레이아웃 시프트 방지 */}
+          {!fromSheet && !isLoaded && !hasError && (
+            <Skeleton className="absolute inset-0 rounded-full" />
+          )}
+          {!fromSheet && !isLoaded && !hasError && (
+            <div className="absolute inset-0 rounded-full bg-linear-to-br from-muted via-muted/80 to-muted/60 blur-xs" />
+          )}
+          {/* Actual image - 고정 크기로 레이아웃 시프트 방지 */}
+          {fromSheet ? (
+            <ChampionIcon
+              id={data.id}
+              ddragonVersion={data.ddragonVersion || ""}
+              alt={name}
+              className={cn(
+                "absolute inset-0 w-full h-full rounded-full bg-black/5 bg-cover transition-transform duration-200 ease-out",
+                !selected && !isLocallySelected && "hover:scale-105",
+              )}
+            />
+          ) : (
+          <img
+            className={cn(
+              "absolute inset-0 w-full h-full rounded-full bg-black/5 border-0 box-border transition-[transform,opacity] duration-200 ease-out object-cover",
+              !selected && !isLocallySelected && "hover:scale-105",
+              isLoaded ? "opacity-100" : "opacity-0"
+            )}
+            src={championIconUrl(data.ddragonVersion || "", data.id)}
+            alt={name}
+            loading="lazy"
+            decoding="async"
+            width="56"
+            height="56"
+            onLoad={handleLoad}
+            onError={handleError}
+          />
+          )}
+          {/* 선택 인디케이터 - 가시성 향상을 위한 외부 ring */}
+          {(isLocallySelected || selected) && (
+            <div 
+              className="absolute inset-0 rounded-full pointer-events-none z-10"
+              style={{
+                boxShadow: 'inset 0 0 0 2px hsl(var(--primary)), 0 0 0 3px hsl(var(--primary) / 0.3)'
+              }}
+            />
+          )}
+        </div>
+        {/* 체크마크 아이콘 - 컨테이너 밖에 배치하여 잘리지 않도록 */}
+        {(isLocallySelected || selected) && (
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 md:w-5 md:h-5 bg-primary rounded-full flex items-center justify-center pointer-events-none z-20 shadow-lg border-2 border-background">
+            <Check className="w-2.5 h-2.5 md:w-3 md:h-3 text-primary-foreground stroke-3" />
+          </div>
+        )}
+      </Button>
+      <Button
+        variant="secondary"
+        size="icon"
+        className={cn(
+          "absolute -right-0.5 -top-1 z-30 h-6 w-6 rounded-full border border-background",
+          "[@media(hover:none)]:after:absolute [@media(hover:none)]:after:-inset-2.5 [@media(hover:none)]:after:content-['']",
+          "shadow-sm transition-[opacity,transform,color,background-color] duration-150",
+          "hover:scale-105 hover:text-amber-500 focus-visible:opacity-100",
+          favorite
+            ? "bg-background/95 text-amber-500 opacity-100"
+            : "text-muted-foreground opacity-0 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100",
+          showFavoriteControl && "pointer-events-auto opacity-100",
+        )}
+        onClick={handleFavoriteClick}
+        aria-label={favoriteLabel}
+        aria-pressed={favorite}
+        title={favoriteLabel}
+      >
+        <Star
+          aria-hidden="true"
+          className={cn("h-3.5 w-3.5", favorite && "fill-current")}
+        />
+      </Button>
+      <div className="text-xs md:text-sm whitespace-nowrap mt-0.5">{name}</div>
+    </div>
+  );
+}
+
+export default React.memo(ChampionThumbnail);

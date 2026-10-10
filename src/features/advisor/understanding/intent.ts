@@ -1,0 +1,314 @@
+/**
+ * 질문에 나온 챔피언을 찾는다(이름·별명·줄임말, 세 언어).
+ *
+ * 어느 쪽이 내 챔피언인지는 여기서 가르지 않는다. 판정기와 문형(`conversation.ts`·`routeAsk.ts`)이 가른다.
+ */
+import type { ChampionCard } from "@/domain/knowledge/facts";
+import type { AdvisorData } from "../conversation/context";
+import championAliasFile from "../../../../dev/data/knowledge/champion-aliases.json";
+import { findItems } from "../answers/itemAnswer";
+import itemAliases from "../../../../dev/data/knowledge/item-aliases.json";
+import { MONSTER_NOTES } from "@/domain/knowledge/monsterNotes";
+
+export interface ChampionMention {
+  card: ChampionCard;
+  index: number;
+  length: number;
+}
+
+/**
+ * 줄임말 후보를 만든다.
+ *
+ * 사람들은 "말파이트" 를 "말파", "트위스티드 페이트" 를 "트페" 라고 부른다.
+ * 이름에서 기계적으로 만들 수 있는 것만 여기서 만든다.
+ *   접두사    한글 이름에서 세 글자 이상만(모데카이저 → 모데카). 두 글자는 만들지 않는다.
+ *   머리글자  트위스티드 페이트 → 트페
+ *
+ * 두 글자 접두사는 일상 낱말과 너무 자주 겹쳤다. 374문항에서 "모르겠어" 가 모르가나,
+ * "아무것도" 가 아무무, "밀리니까" 가 밀리오, "기다리는" 이 다리우스로 잡혔다. 실제로
+ * 쓰는 두 글자 별명(말파·모데)은 사람이 검토한 별명 사전(dev/data/knowledge/champion-aliases.json)이 맡는다.
+ * 영어·중국어 이름에서는 접두사를 만들지 않는다 — "Co" 가 Could 에서 Corki 로, "符文" 이
+ * 룬(符文) 질문에서 라이즈(符文法师)로 잡혔다.
+ *
+ * 다른 챔피언과 겹치는 줄임말은 쓰지 않는다. "리" 는 리 신·리븐·릴리아를 모두 가리켜
+ * 어느 쪽인지 정할 수 없다.
+ */
+function buildNicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
+  const owners = new Map<string, ChampionCard[]>();
+  const add = (key: string, card: ChampionCard) => {
+    if (key.length < 2) return;
+    const list = owners.get(key);
+    if (list) list.push(card);
+    else owners.set(key, [card]);
+  };
+
+  for (const card of cards) {
+    if (!/[가-힣]/.test(card.name)) continue;
+    const compact = card.name.replace(/\s+/g, "");
+    for (let length = 3; length < compact.length; length += 1) {
+      add(compact.slice(0, length), card);
+    }
+    const words = card.name.split(/\s+/).filter(Boolean);
+    if (words.length > 1) add(words.map((w) => w[0]).join(""), card);
+  }
+
+  const unique = new Map<string, ChampionCard>();
+  for (const [key, list] of owners) {
+    // 정식 이름과 겹치는 줄임말은 쓰지 않는다. 이름 쪽이 먼저 잡혀야 한다.
+    if (list.length === 1 && !cards.some((c) => c.name.replace(/\s+/g, "") === key)) {
+      unique.set(key, list[0]);
+    }
+  }
+  return unique;
+}
+
+/** 짧은 한글 이름 뒤에 올 수 있는 것: 공백·문장부호·끝·조사, 그리고 이름 다음에 흔히 붙는 말. */
+const HANGUL_NAME_END =
+  "\\s|[,.?!~/·]|$|[A-Za-z0-9]|으로|로|이|가|은|는|을|를|랑|이랑|과|와|의|도|만|면|한테|에게|상대|전|vs|하|해|했|할|잡|픽|인|이야|야|라|궁|패시브|스킬|카운터|대처|공략";
+
+/**
+ * 문장에서 이름 하나를 찾는다. 글자 체계마다 규칙이 다르다.
+ *
+ *   영문   대소문자를 가리지 않고 낱말 경계로만. 띄어쓰기·아포스트로피·점은 있어도 없어도 된다
+ *          ("cho gath", "chogath", "Cho'Gath"). 영어 화면에서 "vs zed as ahri" 가 소문자라
+ *          통째로 빠졌었다(374문항 중 영어 46%).
+ *   한 글자 한글  렐·진·퀸. 그냥 찾으면 "진짜" 에 걸리므로 앞이 한글이 아니고 뒤가 공백·조사·
+ *          문장부호일 때만 이름으로 본다.
+ *   그 밖  그대로 찾는다(한글·한자는 낱말 경계가 없다).
+ *
+ *   한글 별명  wordStart 면 낱말 앞머리에서만("나 아트인데", "딩거 포탑"). 정식 이름은 어디서든.
+ *
+ * 돌려주는 것은 [시작, 길이] 다. 못 찾으면 undefined.
+ */
+function locate(text: string, name: string, wordStart = false): [number, number] | undefined {
+  if (/^[ -~]+$/.test(name)) {
+    const chunks = name.split(/[\s'.]+/).filter(Boolean).map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    if (!chunks.length) return undefined;
+    // 소유격·복수("olafs kit", "fiora's passive", "yasuos")도 이름이다
+    const found = new RegExp(`(?<![A-Za-z])${chunks.join("[\\s'.]*")}(?:'?s)?(?![A-Za-z])`, "i").exec(text);
+    return found ? [found.index, found[0].length] : undefined;
+  }
+  // 짧은 이름과 두 글자 별명은 뒤 경계도 본다. '마이너스'의 '마이'를 이름으로 읽지 않는다.
+  if (/^[가-힣]$/.test(name) || (wordStart && /^[가-힣]{2}$/.test(name))) {
+    const found = new RegExp(`(?<![가-힣])${name}(?=${HANGUL_NAME_END})`).exec(text);
+    return found ? [found.index, name.length] : undefined;
+  }
+  // 한글 별명·줄임말은 낱말 앞머리에서만 찾는다. "그레"(그레이브즈)가 "업그레이드" 에서 잡혔다.
+  if (wordStart && /^[가-힣]/.test(name)) {
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const found = new RegExp(`(?<![가-힣])${escaped}`).exec(text);
+    return found ? [found.index, name.length] : undefined;
+  }
+  const index = text.indexOf(name);
+  return index >= 0 ? [index, name.length] : undefined;
+}
+
+let nicknameCache: { cards: ChampionCard[]; map: Map<string, ChampionCard> } | null = null;
+
+export function nicknames(cards: ChampionCard[]): Map<string, ChampionCard> {
+  if (nicknameCache?.cards !== cards) {
+    nicknameCache = { cards, map: buildNicknames(cards) };
+  }
+  return nicknameCache.map;
+}
+
+/**
+ * 줄임말이 들어 있는 흔한 말. 이름 앞 두 글자를 줄임말로 받으므로 "아이템" 의 "아이" 가
+ * 아이번이 됐다. "오공으로 럼블 상대할 때 아이템 뭐 가?" 가 챔피언 셋을 부른 질문이 되어
+ * 상성 답으로 가지 못했다. 게임에서 흔히 쓰는 말과 아이템 이름을 가린 뒤에 줄임말을 찾는다.
+ */
+const COMMON_WORDS = ["아이템", "템트리", "다이아", "카이팅", "회오리", "밀리", "触发条件"];
+const MONSTER_NAMES = [...new Set(MONSTER_NOTES.flatMap(note => Object.values(note.aliases).flat()))]
+  .filter(name => name.length >= 3)
+  .sort((left, right) => right.length - left.length);
+
+let itemNameCache: { items: unknown; names: string[] } | null = null;
+
+function maskItemNames(text: string, data: AdvisorData): string {
+  if (itemNameCache?.items !== data.items) {
+    const names = (data.items ?? []).map((item) => item.name).filter((name): name is string => !!name && name.length >= 3);
+    itemNameCache = { items: data.items, names: [...new Set(names)].sort((a, b) => b.length - a.length) };
+  }
+  let out = text;
+  const recognized = findItems(data, text).flatMap(item => Object.values(itemAliases.aliases[String(item.id) as keyof typeof itemAliases.aliases] ?? {}).flat());
+  for (const word of [...itemNameCache.names, ...recognized]) {
+    const pattern = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    out = out.replace(pattern, match => "□".repeat(match.length));
+  }
+  // 긴 몬스터 이름 안의 챔피언 별명은 언급이 아니다. 낱말 경계와 원문 위치는 유지한다.
+  for (const word of MONSTER_NAMES) {
+    for (let match = locate(out, word); match; match = locate(out, word)) {
+      const [index, length] = match;
+      out = out.slice(0, index) + "□".repeat(length) + out.slice(index + length);
+    }
+  }
+  return out;
+}
+
+function maskCommonWords(text: string, data: AdvisorData): string {
+  return COMMON_WORDS.reduce((masked, word) => masked.split(word).join("□".repeat(word.length)), maskItemNames(text, data));
+}
+
+/**
+ * 문장에서 챔피언 언급을 모은다.
+ *
+ * 이름이 긴 쪽을 먼저 맞춰야 한다. "미스 포츈" 을 "포츈" 으로 자르거나
+ * "리 신" 을 놓치면 엉뚱한 상성이 된다.
+ */
+function findMentions(data: AdvisorData, text: string): ChampionMention[] {
+  const mentions: ChampionMention[] = [];
+  const taken: Array<[number, number]> = [];
+  const take = (card: ChampionCard, at: [number, number] | undefined): boolean => {
+    if (!at) return false;
+    const [index, length] = at;
+    // 이미 잡힌 구간과 겹치면 건너뛴다 (긴 이름이 먼저 잡혔다는 뜻)
+    if (taken.some(([s, e]) => index < e && index + length > s)) return false;
+    taken.push([index, index + length]);
+    mentions.push({ card, index, length });
+    return true;
+  };
+
+  // 1. 화면 언어의 정식 이름. 긴 이름부터 — "미스 포츈" 을 "포츈" 으로 자르지 않게.
+  //    "리 신" 을 "리신" 이라 붙여 쓰는 경우가 흔하다. 공백 없는 형태도 정식 이름으로 본다.
+  const names = [...data.cards].sort((a, b) => b.name.length - a.name.length);
+  const masked = maskCommonWords(text, data);
+  const officialText = maskItemNames(text, data);
+  for (const card of names) {
+    const compact = card.name.replace(/\s+/g, "");
+    // 두 글자 한글 이름(오른·아리)은 낱말 앞머리에서만. "오른쪽" 이 오른, "메아리" 가 아리로 잡혔다.
+    const short = /^[가-힣]{2}$/.test(card.name);
+    take(card, locate(officialText, card.name, short) ?? (compact !== card.name ? locate(officialText, compact) : undefined));
+  }
+
+  // 2. 줄임말. 긴 줄임말이 더 구체적이라 먼저 맞춘다. 낱말 앞머리에서만 찾고, 흔한 말과
+  //    아이템 이름은 가린 뒤에 찾는다 — "아이템" 은 앞머리가 "아이"(아이번)라 앞머리 규칙만으로는
+  //    못 막는다(`maskCommonWords`). 가려도 글자 수는 그대로라 위치는 원문과 같다.
+  const nickEntries = [...nicknames(data.cards)].sort((a, b) => b[0].length - a[0].length);
+  for (const [nick, card] of nickEntries) {
+    if (mentions.some((m) => m.card.id === card.id)) continue;
+    take(card, locate(masked, nick, true));
+  }
+
+  /*
+   * 3. 다른 언어 이름·중국어 음역 이름·별명(champion-names.json).
+   *
+   * 한국어 화면에서 "How do I play Yasuo into Malphite?" 가 챔피언 없음으로 빠졌다.
+   */
+  const aliasEntries = [...(data.aliases ?? new Map<string, string[]>())]
+    .flatMap(([id, list]) => list.map((alias) => ({ id, alias })))
+    .filter(({ alias }) => alias.length >= 2)
+    .sort((a, b) => b.alias.length - a.alias.length);
+  for (const { id, alias } of aliasEntries) {
+    if (mentions.some((m) => m.card.id === id)) continue;
+    const card = data.cardById.get(id);
+    // 아이템 이름을 가린 글에서 찾는다. "破败王"(비에고)이 "破败王者之刃"(몰락한 왕의 검) 안에서 잡히지 않게.
+    if (card) take(card, locate(masked, alias, true));
+  }
+
+  /*
+   * 5. 한 글자 중국어 이름(烬·彗·劫·慎·蔚·霞·洛). 글자가 흔한 합성어 안에 있으면 이름이 아니다 — 灰烬(재), 彗星(혜성), 抢劫(강도),
+   *    慎重(신중), 蔚蓝(쪽빛), 晚霞(노을). 긴 이름·별명이 이미 잡은 자리는 건너뛴다(`take`). 아이템 이름은 가린 글에서 찾는다.
+   */
+  for (const [char, id] of SINGLE_CHAR_NAMES) {
+    if (mentions.some((m) => m.card.id === id)) continue;
+    const card = data.cardById.get(id);
+    if (!card) continue;
+    for (let at = masked.indexOf(char); at >= 0; at = masked.indexOf(char, at + 1)) {
+      const around = masked.slice(Math.max(0, at - 2), at + 3);
+      if ((SINGLE_CHAR_COMPOUNDS[char] ?? []).some((word) => around.includes(word))) continue;
+      if (take(card, [at, 1])) break;
+    }
+  }
+
+  /*
+   * 4. 공백 없이 붙여 쓴 영어("imtristanahowdoibeatzed", "AnnieQmanacost", "howtobeatksante"). 열두 글자 이상 이어진 로마자
+   *    덩어리 안에서만 영어 이름을 찾는다 — 보통 문장에서 찾으면 "vision" 의 Sion, "really" 의 Rell 이 걸린다. 네 글자 이상 이름은
+   *    덩어리 어디서나, 세 글자 이름(Zed)은 덩어리 맨 앞·맨 끝에서만.
+   */
+  for (const run of text.matchAll(/[A-Za-z']{12,}/g)) {
+    const lower = run[0].toLowerCase().replace(/'/g, "");
+    for (const { id, name } of latinNames(data)) {
+      if (mentions.some((m) => m.card.id === id)) continue;
+      const at = lower.indexOf(name);
+      if (at < 0) continue;
+      if (name.length < 4 && at !== 0 && at + name.length !== lower.length) continue;
+      const card = data.cardById.get(id);
+      if (card) take(card, [(run.index ?? 0) + at, name.length]);
+    }
+  }
+
+  return mentions.sort((a, b) => a.index - b.index);
+}
+
+/** 한 글자 중국어 이름(dev/data/knowledge/champion-aliases.json 의 zh_CN_single) */
+const SINGLE_CHAR_NAMES: Array<[string, string]> = Object.entries(
+  (championAliasFile as { aliases: Record<string, { zh_CN_single?: string[] }> }).aliases,
+).flatMap(([id, byLang]) => (byLang.zh_CN_single ?? []).map((char) => [char, id] as [string, string]));
+
+/** 그 글자가 들어가는 흔한 낱말. 이 안에 있으면 이름이 아니다. */
+const SINGLE_CHAR_COMPOUNDS: Record<string, string[]> = {
+  烬: ["灰烬", "余烬", "烬余"],
+  彗: ["彗星", "扫帚彗"],
+  劫: ["抢劫", "劫持", "打劫", "劫难", "浩劫", "劫后", "洗劫", "劫匪", "劫富", "渡劫", "劫数"],
+  慎: ["慎重", "谨慎", "慎用", "慎选", "慎入", "审慎", "不慎", "慎行"],
+  蔚: ["蔚蓝", "蔚然", "蔚为"],
+  霞: ["晚霞", "彩霞", "朝霞", "霞光", "云霞"],
+  洛: ["洛杉矶", "洛阳", "洛克", "克洛", "洛可可", "诺克萨斯"],
+};
+
+let latinCache: { data: AdvisorData; names: Array<{ id: string; name: string }> } | null = null;
+
+/** 영어 이름(id, 세 글자 이상)과 로마자 별명(다섯 글자 이상)을 소문자·붙여 쓴 꼴로. 긴 것부터. */
+function latinNames(data: AdvisorData): Array<{ id: string; name: string }> {
+  if (latinCache?.data !== data) {
+    const names = new Map<string, string>();
+    for (const card of data.cards) names.set(card.id.toLowerCase(), card.id);
+    for (const [id, list] of data.aliases ?? new Map<string, string[]>()) {
+      for (const alias of list) {
+        const compact = alias.toLowerCase().replace(/[\s'.]/g, "");
+        // 별명은 다섯 글자 이상만. "Revitalize's" 안의 "tali"(탈리야)가 걸렸다.
+        if (/^[a-z]{5,}$/.test(compact)) names.set(compact, id);
+      }
+    }
+    latinCache = { data, names: [...names].map(([name, id]) => ({ id, name })).sort((a, b) => b.name.length - a.name.length) };
+  }
+  return latinCache.names;
+}
+
+/**
+ * 질문에 나온 챔피언을 모두 돌려준다.
+ *
+ * 한 명일 때만 자료를 붙이면 "럼블 마법저항력 1렙에 몇이고 오공은 몇이야" 가
+ * 빈손으로 나간다. 언급한 대상을 인원수로 자르지 않는다.
+ */
+export function detectChampions(
+  data: AdvisorData,
+  text: string,
+): ChampionCard[] {
+  return detectChampionMentions(data, text)
+    .map((mention) => mention.card);
+}
+
+/** 이름과 별명 모두 원문 위치를 보존한다. 대화의 스킬 주인을 찾을 때도 같은 해석을 쓴다. */
+export function detectChampionMentions(data: AdvisorData, text: string): ChampionMention[] {
+  return findMentions(data, text);
+}
+
+/**
+ * 고맙다·안녕 같은 잡담인가. 짧은 말 전체가 그것일 때만(“고마워 근데 템은?” 은 잡담이 아니다).
+ * 상성 대화 중에 "고마워 덕분에 이겼다" 가 앞 상성의 이어 묻기로 가서 상성 조언이 다시 나왔다.
+ */
+const SMALL_TALK =
+  /^(고마워(요)?|고맙(다|습니다)|감사(합니다|해요|해)?|ㄳ|ㄱㅅ|땡큐|덕분에[^?？]*|안녕(하세요)?|ㅎㅇ|잘\s*자|ㅋㅋ+|ㅎㅎ+|thanks?( you)?|thx|ty|tysm|hi|hello|hey|gg|谢谢|谢了|多谢|你好|嗨)([\s,.!~ㅋㅎ，。！]|덕분에|이겼다|이겼어|won|that one|这把赢了|赢了)*[.!~。！]*$/i;
+
+export function isSmallTalk(question: string): boolean {
+  if (SMALL_TALK.test(question.trim())) return true;
+  return /(?:위로|멘탈).*(?:한마디|말|해줄|해줘)|같이\s*롤\s*얘기|\bpep talk\b|陪我(?:聊|唠)|(?:안녕|\bhey\b|你好).*(?:얘기|talk|聊天)/i.test(question);
+}
+
+/** 분류기 확신도와 별개로 도우미를 직접 가리키는 질문인지 확인한다. */
+const HELPER_ASK = /(넌|너는|너|당신|네가|니가)\s*(누구|뭐야|뭐니|무엇)|(who|what)\s+are\s+you|你是[谁什]/i;
+
+export function asksAboutHelper(question: string): boolean {
+  return HELPER_ASK.test(question) || /(?:도우미|챗봇)(?:를|는|의|은)?\s*(?:소개|설명|누구|이용|사용|어떻게\s*(?:이용|사용))/.test(question);
+}

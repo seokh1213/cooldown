@@ -1,18 +1,18 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
-import Layout from "@/components/layout/Layout";
-import SplashScreen from "@/components/layout/SplashScreen";
-import Nav from "@/components/features/Nav";
-import type { Language } from "@/i18n";
+import Layout from "@/app/layout/Layout";
+import SplashScreen from "@/app/layout/SplashScreen";
+import Nav from "@/app/layout/Nav";
+import type { Language } from "@/shared/i18n";
 import type { AppRuntimeData } from "./useAppBootstrap";
 import type { AppTheme } from "./useAppPreferences";
 import { RouteErrorBoundary } from "./RouteErrorBoundary";
 
-const ChampionCooldownPage = lazy(() => import("@/pages/ChampionCooldownPage"));
-const EncyclopediaPage = lazy(() => import("@/pages/EncyclopediaPage"));
-const VsPage = lazy(() => import("@/pages/VsPage"));
-const PatchNotesPage = lazy(() => import("@/pages/PatchNotesPage"));
-const OGPreviewPage = lazy(() => import("@/pages/OGPreviewPage"));
+const ChampionCooldownPage = lazy(() => import("@/features/cooldown/ChampionCooldownPage"));
+const EncyclopediaPage = lazy(() => import("@/features/encyclopedia/EncyclopediaPage"));
+const VsPage = lazy(() => import("@/features/vs/VsPage"));
+const PatchNotesPage = lazy(() => import("@/features/patch-notes/PatchNotesPage"));
+const OGPreviewPage = lazy(() => import("@/app/OGPreviewPage"));
 
 interface AppRouterProps {
   runtime: AppRuntimeData;

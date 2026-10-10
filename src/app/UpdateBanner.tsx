@@ -1,5 +1,5 @@
-import { applyPWAUpdate, BUILD_VERSION } from "@/pwa";
-import { useTranslation } from "@/i18n";
+import { applyPWAUpdate, BUILD_VERSION } from "@/app/pwa/index";
+import { useTranslation } from "@/shared/i18n";
 import { useState } from "react";
 
 interface UpdateBannerProps {

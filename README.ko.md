@@ -6,26 +6,38 @@
 
 서비스: https://seokh1213.github.io/cooldown/
 
+## 폴더 구조
+
+실행 코드·배포 파일·개발 자료를 세 영역으로 나눕니다.
+
+```text
+src/       # 앱 코드
+public/    # 공개 배포 데이터·이미지·모델
+dev/       # 도구·테스트·문서·원본·조사 기록
+```
+
+[폴더 기준과 읽는 순서](dev/docs/project-structure.md)
+
 ## 스킬 쿨타임과 설명
 
 173개 챔피언 전부. P/Q/W/E/R 랭크별 쿨타임, 비용, 랭크별 수치와 계수를 Riot 계산 데이터에서 그대로 렌더링한 인게임 설명과 함께 보여줍니다. 제이스처럼 두 폼을 가진 챔피언은 A/B 로 나눠 보입니다.
 
-![제이스 A/B Q 툴팁이 열린 챔피언 쿨타임 표](docs/images/cooldown-desktop.ko.png)
+![제이스 A/B Q 툴팁이 열린 챔피언 쿨타임 표](dev/docs/images/cooldown-desktop.ko.png)
 
 ## VS 상성 비교
 
 내 챔피언과 상대를 고릅니다. 전체 랭크 쿨타임을 한 표에서, 레벨별 기본 능력치와 함께 봅니다. 교체와 URL 공유를 지원하고 휴대폰에서도 동작합니다.
 
-![VS 비교: 아트록스 대 피오라, 랭크별 쿨타임과 레벨별 능력치](docs/images/vs-desktop.ko.png)
+![VS 비교: 아트록스 대 피오라, 랭크별 쿨타임과 레벨별 능력치](dev/docs/images/vs-desktop.ko.png)
 
-<img src="docs/images/vs-mobile.ko.png" alt="휴대폰에서 본 VS 비교" width="320">
+<img src="dev/docs/images/vs-mobile.ko.png" alt="휴대폰에서 본 VS 비교" width="320">
 
 ## 그 밖에
 
 - 챔피언 이야기·스킨, 룬, 아이템, 소환사 주문 백과사전
 - 한국어, 영어, 중국어
 - 오프라인에서도 동작하는 설치형 PWA
-- 선택형 롤 지식 도우미. 모델은 브라우저 안에서만 돌고 서버로 보내지 않습니다. `docs/advisor-answer-pipeline.md` 참고.
+- 선택형 롤 지식 도우미. 모델은 브라우저 안에서만 돌고 서버로 보내지 않습니다. `dev/docs/advisor-answer-pipeline.md` 참고.
 
 ## 데이터
 
@@ -60,10 +72,10 @@ npm run test:e2e
 
 ## 더 보기
 
-- `docs/product-roadmap.md`: 우선순위와 완료 기준
-- [데이터 버전과 PWA 갱신](docs/data-and-updates.md)
-- [지식 도우미 설계](docs/advisor-answer-pipeline.md), [지식 작성 지침](knowledge/README.md)
-- [패치 변경 내역](docs/patch-notes.md)
+- `dev/docs/product-roadmap.md`: 우선순위와 완료 기준
+- [데이터 버전과 PWA 갱신](dev/docs/data-and-updates.md)
+- [지식 도우미 설계](dev/docs/advisor-answer-pipeline.md), [지식 작성 지침](dev/data/knowledge/README.md)
+- [패치 변경 내역](dev/docs/patch-notes.md)
 
 ## 라이선스
 
