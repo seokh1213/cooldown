@@ -79,7 +79,7 @@ function excludedCondition(rule: Rule, job: AbilityJob, state: QuestionState): s
   }
   return undefined;
 }
-function parameterDetails(effect: Effect, job: AbilityJob): string[] {
+function parameterDetails(effect: Effect, job: AbilityJob, compact = false): string[] {
   const names: Record<string, string> = { count: "횟수/중첩", duration_seconds: "지속 시간", cooldown_seconds: "재사용 대기시간", damage_multiplier: "피해 비율", stat_coefficient: "계수" };
   return effect.parameters.flatMap(parameter => {
     if (parameter.role === "storage_cap" && parameter.shape === "formula_components" && parameter.stat) {
@@ -87,7 +87,9 @@ function parameterDetails(effect: Effect, job: AbilityJob): string[] {
       if (!components.length || components.some(number => !number)) return [];
       return [`비축 상한 구성값: ${components.map(number => number!.percent ? `${stats[parameter.stat!] ?? parameter.stat} 계수 ${number!.value}%` : String(number!.value)).join(" · ")}.`];
     }
-    const name = parameter.role === "amount" && effect.kind === "resource_change" ? "중첩/자원 획득량"
+    const amountName = compact && ({ heal: "회복량", shield: "보호막 흡수량" } as Record<string, string>)[effect.kind];
+    const name = parameter.role === "amount" && amountName ? amountName
+      : parameter.role === "amount" && effect.kind === "resource_change" ? "중첩/자원 획득량"
       : parameter.role === "amount" && effect.kind === "cooldown_change" ? "재사용 대기시간 반환량" : names[parameter.role];
     if (!name || !["scalar", "rank_values", "level_range"].includes(parameter.shape)) return [];
     const numbers = parameter.numberRefs.map(ref => job.numbers.find(n => n.id === ref));
@@ -96,10 +98,14 @@ function parameterDetails(effect: Effect, job: AbilityJob): string[] {
     const values = numbers.map(n => n!.value);
     if (values.every(value => new RegExp(`(?<![\\d.])${value}(?![\\d.])`).test(effect.text))) return [];
     const value = numbers.map(n => `${n!.value}${n!.percent ? "%" : ""}`).join(parameter.shape === "level_range" ? "~" : "/");
-    return [`${name}${parameter.stat ? ` (${stats[parameter.stat] ?? parameter.stat})` : ""}: ${value}${parameter.role.endsWith("seconds") ? "초" : ""}${parameter.shape === "level_range" ? " (레벨에 따라)" : ""}.`];
+    const label = compact && parameter.role === "stat_coefficient" && parameter.stat
+      ? `${stats[parameter.stat] ?? parameter.stat} 계수` : `${name}${parameter.stat ? ` (${stats[parameter.stat] ?? parameter.stat})` : ""}`;
+    const measured = `${value}${parameter.role.endsWith("seconds") ? "초" : ""}`;
+    return [`${label}: ${compact ? `**${measured}**` : measured}${parameter.shape === "level_range" ? " (레벨에 따라)" : ""}.`];
   });
 }
-export function renderRules(job: AbilityJob, rules: Rule[], question: string, state = questionState(question)): string {
+export function renderRules(job: AbilityJob, rules: Rule[], question: string, state = questionState(question), presentation: "paragraphs" | "compact" = "paragraphs"): string {
+  const compact = presentation === "compact";
   if (state.invalidAmount && !/\d\s*(?:%|퍼센트|프로)/.test(question)
     && rules.some(rule => rule.effects.some(effect => effect.kind === "stat_conversion"))) {
     return "계산할 수치를 하나로 알려 주세요. 예: ‘추가 체력 70짜리 템 2개’ 또는 ‘주문력 100’.";
@@ -109,13 +115,15 @@ export function renderRules(job: AbilityJob, rules: Rule[], question: string, st
     const phase = rule.trigger.event === "cast" ? "시전 시" : rule.trigger.subject === "secondary_targets" ? "충돌한 대상" : rule.trigger.event === "takedown" ? "처치 관여 시" : rule.trigger.event === "ability_hit" ? "스킬 적중 시" : rule.trigger.event === "kill" ? "처치 시" : undefined;
     const header = [phase, ...conditions].filter(Boolean).join(" · ");
     const excluded = excludedCondition(rule, job, state);
-    if (excluded) return [excluded, header ? `발동 조건: ${header}.` : undefined].filter(Boolean).join("\n");
+    if (excluded) return compact ? `- ${excluded}${header ? ` _발동 조건: ${header}._` : ""}`
+      : [excluded, header ? `발동 조건: ${header}.` : undefined].filter(Boolean).join("\n");
     const effects = rule.effects.flatMap(effect => [localizedEffect(effect.text),
       effect.kind === "damage" && effect.damageType && !effect.text.includes(({ physical: "물리", magic: "마법", true: "고정" })[effect.damageType])
         ? `${({ physical: "물리", magic: "마법", true: "고정" })[effect.damageType]} 피해입니다.` : undefined,
-      ...parameterDetails(effect, job),
+      ...parameterDetails(effect, job, compact),
       ...(effect.kind === "stat_conversion" ? conversionText(effect, job, question, state) : [])]);
+    if (compact) return `- ${[...effects, header ? `_조건: ${header}._` : undefined].filter(Boolean).join(" ")}`;
     return [header ? `${header}:` : undefined, ...effects].filter(Boolean).join("\n");
   });
-  return [...new Set(lines)].join("\n\n");
+  return [...new Set(lines)].join(compact ? "\n" : "\n\n");
 }

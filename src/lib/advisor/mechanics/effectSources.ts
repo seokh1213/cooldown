@@ -49,11 +49,15 @@ export function effectSourcesPlan(input: ResolvedQuestion, ctx: PlanContext, mem
   const selected = overview ? sources : linked ? [linked] : [];
   const intro = linked ? `${hitSpell!.slot} ${hitSpell!.name} 적중으로 이어지는 ${label}은 P ${linked.spell.name}의 효과입니다. 아래 발동 조건을 충족해야 합니다.` : undefined;
   const scope = overview ? selected.length
-    ? `현재 자료에서 확인된 ${card.name}의 ${label} 스킬은 ${selected.map(source => `${source.spell.slot} ${source.spell.name}`).join(", ")}입니다.`
+    ? `${card.name}의 ${label} 효과는 **${selected.map(source => source.spell.slot).join("·")}**에 있습니다.`
     : `현재 자료에서는 ${card.name}의 ${label} 효과가 있는 스킬을 확인하지 못했습니다.` : undefined;
   const context = { champions: [card.id], slot: overview ? undefined : input.slot ?? remembered?.slot };
   const state = questionState(question);
-  const sections = selected.map(source => `### ${card.name} ${source.spell.slot} ${source.spell.name}\n${renderRules(source.ability.job, source.rules, question, state)}`);
+  const sections = selected.map(source => {
+    const rules = source.rules.map(rule => ({ ...rule,
+      effects: rule.effects.filter(effect => effect.kind === kind || effect.kind === "cooldown_change") }));
+    return `### ${card.name} ${source.spell.slot} ${source.spell.name}\n${renderRules(source.ability.job, rules, question, state, "compact")}`;
+  });
   const references: AdvisorAnswer[] = selected.length
     ? selected.map(source => buildSpellAnswer(card, source.spell, question, ctx.lang))
     : [{ kind: "champion", card, view: "skills" }];

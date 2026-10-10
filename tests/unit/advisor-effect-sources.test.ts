@@ -94,6 +94,10 @@ test("Q 적중 회복은 소환사 주문 대신 발동하는 패시브와 조�
   assert.match(reply.text, /### 유미 P 야옹이 친구/);
   assert.match(reply.text, /챔피언.*재사용 대기시간이 준비됨/);
   assert.match(reply.text, /4초/);
+  assert.match(reply.text, /회복량: \*\*20~110\*\*/);
+  assert.match(reply.text, /재사용 대기시간: \*\*20~8초\*\*/);
+  assert.equal(reply.text.split("\n").filter(line => line.startsWith("- ")).length, 2);
+  assert.doesNotMatch(reply.text, /\n계수 \(주문력\):/);
   assert.doesNotMatch(reply.text, /반경 200|최근 35초|파동마다/);
   assert.deepEqual(reply.memory.spell, { champion: "Yuumi", slot: "Q" });
   assert.deepEqual(reply.answers?.map(answer => answer.kind === "spell" && answer.spell.slot), ["P"]);
@@ -105,6 +109,9 @@ test("궁에만 회복이 있는지 물으면 각 효과의 소속을 함께 보
   assert.match(reply.text, /단짝은 적중 시 체력을 회복/);
   assert.match(reply.text, /아군 챔피언은 파동마다 체력을 회복/);
   assert.match(reply.text, /초과 회복량은 보호막/);
+  assert.match(reply.text, /회복량: \*\*3\/4\/5\/6\/7\*\*/);
+  assert.match(reply.text, /회복량: \*\*30\/50\/70\*\*/);
+  assert.doesNotMatch(reply.text, /파동 회복의 초과분은 대신 보호막/);
   assert.doesNotMatch(reply.text, /반경 200|최근 35초/);
   assert.deepEqual(reply.answers?.map(answer => answer.kind === "spell" && answer.spell.slot), ["P", "W", "R"]);
   assert.equal(groupReferenceAnswers(reply.answers ?? []).length, 1);

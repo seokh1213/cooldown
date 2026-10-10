@@ -26,6 +26,13 @@ for (const width of [390, 1280]) test(`회복 효과는 소속 스킬과 조건�
   await expect(dialog).toContainText("Q 사르르탄 적중으로 이어지는 회복은 P 야옹이 친구의 효과");
   await expect(dialog).toContainText("4초 안에 아군에게 밀착");
   await expect(dialog).not.toContainText(/반경 200|최근 35초/);
+  const markdown = dialog.locator(".space-y-2.break-words").filter({ has: page.getByRole("heading", { name: "유미 P 야옹이 친구", exact: true }) });
+  await expect(markdown.getByRole("listitem")).toHaveCount(5);
+  const selfHeal = markdown.getByRole("listitem").filter({ hasText: "자신을 회복합니다" });
+  await expect(selfHeal).toContainText("회복량: 20~110");
+  await expect(selfHeal).toContainText("주문력 계수: 30%");
+  await expect(selfHeal).toContainText("재사용 대기시간: 20~8초");
+  await expect(markdown.locator("p").filter({ hasText: /^계수|^대상 종류|^재사용 대기시간/ })).toHaveCount(0);
   await expect(dialog.locator('a[href^="http"], a[target="_blank"]')).toHaveCount(0);
   expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
   await page.reload();
