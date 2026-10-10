@@ -17,7 +17,7 @@ for (const locale of ["ko_KR", "en_US", "zh_CN"] as const) {
     await expect.poll(() => archivedItem.evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     for (const patch of ["26.1", "25.15", "25.1"]) {
       await page.goto(`./patch-notes?patch=${patch}`);
-      const published = await (await page.request.get(`.//${patch}.json`)).json();
+      const published = await (await page.request.get(`./patch-notes/${patch}.json`)).json();
       await expect(page.locator("article")).toHaveCount(published.entries.length);
       await expect(page.getByRole("alert")).toHaveCount(0);
       const ids = await page.locator("article").evaluateAll(nodes => nodes.map(node => node.id));

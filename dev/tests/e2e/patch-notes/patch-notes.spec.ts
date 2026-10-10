@@ -10,7 +10,7 @@ test("default patch page follows the published data manifest", async ({ page, re
   const index = await indexResponse.json();
   const manifest = await manifestResponse.json();
   expect(index.latest).toBe(manifest.patchVersion);
-  await page.goto("./");
+  await page.goto("./patch-notes");
   await expect(page.getByRole("heading", { name: index.latest + " 패치 변경 내역", exact: true })).toBeVisible();
   await expect(page.getByRole("alert")).toHaveCount(0);
 });
