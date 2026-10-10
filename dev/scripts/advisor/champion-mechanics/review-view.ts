@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Draft, Job } from "./contract";
+import type { Draft, Job } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { readJson } from "./sources";
 
 /** 검수 화면에는 기존 큰 계산 트리를 빼고, 숫자 참조를 원문값으로 함께 풀어 보여 준다. */

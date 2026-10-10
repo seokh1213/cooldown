@@ -1,9 +1,9 @@
 import { resolveQuestion, type ResolvedQuestion } from "../understanding/resolvedQuestion";
 import type { AnswerPlan, PlanContext } from "../contracts/planTypes";
-import type { DialogueMemory } from "../conversation/dialogueState";
+import type { DialogueMemory } from "../conversation/memory/dialogueState";
 import { askedRules } from "../retrieval/questionDocs";
-import { asksScenarioAdvice } from "../understanding/askWords";
-import { buildItemCard } from "../conversation/context";
+import { asksScenarioAdvice } from "../understanding/requests/askWords";
+import { buildItemCard } from "../retrieval/context";
 import { normalizeMechanicQuestion, questionState } from "./question";
 import { questionTopic } from "./retrieval";
 import { renderRules } from "./render";

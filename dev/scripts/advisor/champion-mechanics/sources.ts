@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { ChampionDetailV2 } from "../../../../src/domain/game/contracts/championData";
-import { SCHEMA_VERSION, SLOTS, type Job, type Slot, type SourceDoc } from "./contract";
+import { SCHEMA_VERSION, SLOTS, type Job, type Slot, type SourceDoc } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { GUIDE } from "./guide";
 import { sourceNumbers } from "./numbers";
 import { DRAFT_SCHEMA } from "./schema";

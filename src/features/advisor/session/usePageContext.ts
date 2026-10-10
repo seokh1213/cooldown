@@ -7,7 +7,7 @@
  */
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { readPageContext, type PageContext } from "@/features/advisor/conversation/pageContext";
+import { readPageContext, type PageContext } from "@/features/advisor/session/pageContext";
 
 export function usePageContext(refreshKey?: unknown): PageContext {
   const { pathname, search } = useLocation();

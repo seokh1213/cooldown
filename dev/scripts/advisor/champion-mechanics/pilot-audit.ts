@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { Draft, Job, Rule } from "./contract";
+import type { Draft, Job, Rule } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { digest, readJson } from "./sources";
 import { PILOT_IDS } from "./prepare";
 import { checkDirectory } from "./check";

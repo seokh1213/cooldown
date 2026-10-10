@@ -1,11 +1,12 @@
+import type { ChampionDetailV2 } from "@/domain/game/contracts/championData";
+import type { LevelScaledScalar } from "@/domain/game/types/combatNormalized";
+import { type ChampionCard,type StatSnapshot } from "@/domain/knowledge/cards/contracts";
+import { statAtLevel } from "@/domain/knowledge/cards/stats";
+import { translateStat } from "@/features/advisor/answers/presentation/promptLocale";
+import { ALL_CHAMPION_STATS,statFields,type ChampionStatQuery } from "@/features/advisor/understanding/stats/statQuery";
 import { useTranslation } from "@/shared/i18n";
 import { fill } from "@/shared/i18n/fill";
-import type { ChampionDetailV2 } from "@/domain/game/contracts/championData";
-import { statAtLevel, type ChampionCard, type StatSnapshot } from "@/domain/knowledge/facts";
-import type { LevelScaledScalar } from "@/domain/game/types/combatNormalized";
-import { ALL_CHAMPION_STATS, statFields, type ChampionStatQuery } from "@/features/advisor/understanding/statQuery";
-import { translateStat } from "@/features/advisor/answers/promptLocale";
-import { KvTable } from "../answers/AnswerCardFrame";
+import { KvTable } from "../answers/cards/AnswerCardFrame";
 
 function snapshot(scalar: LevelScaledScalar) {
   return { lv1: statAtLevel(scalar, 1), lv18: Number(statAtLevel(scalar, 18).toFixed(2)), perLevel: scalar.perLevel };

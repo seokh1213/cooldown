@@ -1,4 +1,4 @@
-import { numericContext } from "../../../../src/features/advisor/answers/numericEvidence";
+import { numericContext } from "../../../../src/features/advisor/answers/evidence/numericEvidence";
 import type { Check, QualityStory } from "./types";
 
 export const NUMERIC_SYSTEM = "Use only the document. Copy the requested number and unit exactly, with no explanation. If absent, output NOT_FOUND.";

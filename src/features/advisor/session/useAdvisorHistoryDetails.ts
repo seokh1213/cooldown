@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { ChampionDetailV2 } from "@/domain/game/contracts/championData";
-import { loadAdvisorChampionDetail } from "@/features/advisor/answers/championDetail";
+import { loadAdvisorChampionDetail } from "@/features/advisor/answers/references/championDetail";
 import type { AdvisorTurn } from "./useAdvisorTurns";
 
 export function advisorReferenceChampionIds(turn: Pick<AdvisorTurn, "answer" | "answers">): string[] {

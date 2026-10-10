@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm, writeFile, access, mkdir } from "node:fs/promise
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Draft, Job, Manifest } from "./contract";
+import type { Draft, Job, Manifest } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { digest, readJson } from "./sources";
 import { validateDraft } from "./validate";
 import { DRAFT_SCHEMA } from "./schema";

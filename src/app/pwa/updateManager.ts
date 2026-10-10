@@ -1,4 +1,4 @@
-import { getRuntimeBasePath } from "../../domain/game/staticDataUtils";
+import { getRuntimeBasePath } from "../../domain/game/static-data/staticDataUtils";
 import { decodeAppRelease, RELEASE_ID } from "./release";
 import { prepareReleaseData } from "./staticDataRevision";
 import { readWorkerRelease } from "./workerRelease";

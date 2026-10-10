@@ -2,7 +2,7 @@
 import { ADVISOR_MODEL } from "../../../../src/features/advisor/model/config";
 import type { AdvisorChatMessage, AdvisorRequest, AdvisorResponse } from "../../../../src/features/advisor/contracts/protocol";
 import { readRequestScope, requestScopePrompt } from "../../../../src/features/advisor/model/requestScopeModel";
-import type { RequestIntent } from "../../../../src/features/advisor/understanding/requestIntent";
+import type { RequestIntent } from "../../../../src/features/advisor/understanding/requests/requestIntent";
 import type { Language } from "../../../../src/shared/i18n";
 
 interface Case { language: Language; question?: string; text: string; expected: string; group?: string; fastIntent?: RequestIntent }

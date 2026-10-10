@@ -1,6 +1,6 @@
 /** 답 카드의 이동 링크·중복 비교·조회 대상. */
 import type { AdvisorAnswer } from "./answer";
-import { statFields } from "../understanding/statQuery";
+import { statFields } from "../understanding/stats/statQuery";
 
 export type AnswerLink =
   | { kind: "vs"; to: string; names: [string, string] }

@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { loadData } from "../kev-agent/lib";
 import { resolveQuestion } from "../../../../src/features/advisor/understanding/resolvedQuestion";
 import { normalizeMessage } from "../../../../src/features/advisor/model/offlineJudge";
-import { requestClassifier } from "../../../../src/features/advisor/understanding/requestIntent";
+import { requestClassifier } from "../../../../src/features/advisor/understanding/requests/requestIntent";
 import prompt from "../../../../src/features/advisor/model/requestScopePrompt.json";
 import type { Language } from "../../../../src/shared/i18n";
 

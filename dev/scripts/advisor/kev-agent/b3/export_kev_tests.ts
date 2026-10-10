@@ -4,9 +4,9 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { detectChampions } from "../../../../../src/features/advisor/understanding/intent";
+import { detectChampions } from "../../../../../src/features/advisor/understanding/champions/intent";
 import { JUDGE_KIND9_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, judgeRouteState } from "../../../../../src/features/advisor/application/routeAsk";
-import { actCriteria, actState, ACT_INSTRUCTIONS } from "../../../../../src/features/advisor/conversation/conversation";
+import { actCriteria, actState, ACT_INSTRUCTIONS } from "../../../../../src/features/advisor/conversation/memory/conversation";
 import { ROOT, loadData, readJsonl, type Lang } from "../lib";
 
 const out = process.argv[2];

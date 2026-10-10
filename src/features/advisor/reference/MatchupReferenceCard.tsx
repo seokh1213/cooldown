@@ -1,12 +1,12 @@
 /** 상성 조언 위에 두는 자료 카드. 카드 전체가 해당 1:1 화면으로 이어진다. */
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ChampionIcon } from "@/shared/ui/champion-icon";
+import { ChampionIcon } from "@/shared/ui/icons/champion-icon";
 import { useTranslation } from "@/shared/i18n";
 import { fill } from "@/shared/i18n/fill";
 import type { AdvisorAnswer } from "@/features/advisor/answers/answer";
-import { josa } from "@/domain/knowledge/text";
-import { PatchLabel } from "../answers/AnswerCardFrame";
+import { josa } from "@/domain/knowledge/text/text";
+import { PatchLabel } from "../answers/cards/AnswerCardFrame";
 import { useHistoryReference } from "../history/HistoryReference";
 
 export function MatchupReferenceCard({ answer, ddragonVersion, patch, onNavigate }: {

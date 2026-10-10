@@ -1,4 +1,4 @@
-import { patchLabel } from "@/domain/game/staticDataRelease";
+import { patchLabel } from "@/domain/game/static-data/staticDataRelease";
 import React, { useCallback, useState, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/shared/ui/button";
@@ -11,9 +11,9 @@ import {
 } from "@/shared/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { VisuallyHidden } from "@/shared/ui/visually-hidden";
-import { TutorialContent } from "../../features/cooldown/TutorialContent";
+import { TutorialContent } from "../../features/cooldown/view/TutorialContent";
 import { useTranslation } from "@/shared/i18n";
-import { patchNotesLabels } from "@/features/patch-notes/labels";
+import { patchNotesLabels } from "@/features/patch-notes/formatting/labels";
 import { useDeviceType } from "@/shared/hooks/useDeviceType";
 
 /**

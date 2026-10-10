@@ -1,16 +1,16 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { StaticDataRelease } from "../../../../src/domain/game/staticDataRelease";
-import { corroborateMismatches } from "../ability-corroboration";
-import { validateAbilitySimulations } from "../ability-simulation-validation";
-import { validateGeneratedAbilities } from "../ability-validation";
+import type { StaticDataRelease } from "../../../../src/domain/game/static-data/staticDataRelease";
+import { corroborateMismatches } from "../abilities/ability-corroboration";
+import { validateAbilitySimulations } from "../simulation/ability-simulation-validation";
+import { validateGeneratedAbilities } from "../abilities/ability-validation";
 import {
   assertActiveTooltipReport,
   pruneAllowlist,
   validateActiveTooltips,
   type ActiveTooltipAllowlist,
-} from "../active-tooltip-validation";
-import { requireMapValue } from "../champion-source";
+} from "../tooltip/active-tooltip-validation";
+import { requireMapValue } from "../champions/champion-source";
 import { writeJson } from "../io/json";
 import type { ChampionSources } from "./champion-stage";
 

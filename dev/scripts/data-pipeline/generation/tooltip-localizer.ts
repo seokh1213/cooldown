@@ -1,23 +1,23 @@
-import type { AbilityFormDiagnostics, Champion } from "../../../../src/domain/game/types";
-import type {
-  ExtractedActiveSpellData,
-} from "../cdragon-active-spells";
-import { localizeActiveTooltip } from "../active-tooltip-data";
-import { buildAbilityForms } from "../ability-forms";
+import type { CommunityDragonSpellData } from "../../../../src/domain/game/tooltip/contracts";
+import type { AbilityFormDiagnostics,Champion } from "../../../../src/domain/game/types";
+import { buildAbilityForms } from "../abilities/ability-forms";
 import {
-  requireMapValue,
-  type ChampionsByLocale,
-} from "../champion-source";
-import type { DataLocale, StringTable } from "../localization";
-import type { CommunityDragonSpellData } from "../../../../src/domain/game/tooltip/types";
+requireMapValue,
+type ChampionsByLocale,
+} from "../champions/champion-source";
 import { fetchJson } from "../io/json";
+import type {
+ExtractedActiveSpellData,
+} from "../sources/cdragon-active-spells";
+import { localizeActiveTooltip } from "../tooltip/active-tooltip-data";
+import type { DataLocale,StringTable } from "../tooltip/localization";
 import {
-  localizePassiveTooltip,
-  PASSIVE_TOOLTIP_LOCALES,
-  type ExtractedPassiveSpell,
-  type LocalizedPassiveTooltip,
-  type PassiveTooltipLocale,
-} from "../passive-tooltip-data";
+localizePassiveTooltip,
+PASSIVE_TOOLTIP_LOCALES,
+type ExtractedPassiveSpell,
+type LocalizedPassiveTooltip,
+type PassiveTooltipLocale,
+} from "../tooltip/passive-tooltip-data";
 
 const stringTableCache = new Map<string, Promise<StringTable>>();
 

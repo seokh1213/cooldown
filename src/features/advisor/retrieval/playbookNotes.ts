@@ -1,11 +1,11 @@
-import type { ChampionCard } from "@/domain/knowledge/facts";
-import { selectPlaybook } from "@/domain/knowledge/playbookCore";
-import { deriveMatchupClaims, renderTaggedClaims, type ClaimLang, type TaggedClaim } from "@/domain/knowledge/matchupClaims";
-import { josa } from "@/domain/knowledge/text";
-import { selectNotes, type NoteCategory, type NotePerspective, type SelectedNotes } from "./noteSelect";
+import type { ChampionCard } from "@/domain/knowledge/cards/contracts";
+import { deriveMatchupClaims,renderTaggedClaims,type ClaimLang,type TaggedClaim } from "@/domain/knowledge/combat/matchupClaims";
+import { selectPlaybook } from "@/domain/knowledge/notes/playbookCore";
+import { josa } from "@/domain/knowledge/text/text";
 import type { MatchupNotes } from "../answers/answer";
-import type { AdvisorData } from "../conversation/context";
 import { selectComboNotes } from "./comboNotes";
+import type { AdvisorData } from "./context";
+import { selectNotes,type NoteCategory,type NotePerspective,type SelectedNotes } from "./noteSelect";
 
 /** 상성 카드에 그대로 보일 노트. 해설 재료도 이것을 쓴다. */
 export function matchupNotes(

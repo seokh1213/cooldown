@@ -12,7 +12,7 @@
  * 줄여 두는 값보다 저장소에 쌓이는 값이 크다.
  */
 import { IMAGE_VERSION } from "@/infrastructure/generated/assetVersion";
-import { spellIconStates } from "@/domain/game/abilityIconStates";
+import { spellIconStates } from "@/domain/game/abilities/abilityIconStates";
 
 const local = (ddragonVersion: string, kind: string, name: string) =>
   `${import.meta.env.BASE_URL}img/${ddragonVersion}/${kind}/${name}.webp`;

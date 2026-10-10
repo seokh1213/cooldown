@@ -1,6 +1,6 @@
 /** 낮은 확신의 요청만 같은 0.8B에 보내고, 모순된 범위는 채택하지 않는다. */
 import prompt from "./requestScopePrompt.json";
-import { REQUEST_SCOPES, type RequestIntent } from "../understanding/requestIntent";
+import { REQUEST_SCOPES, type RequestIntent } from "../understanding/requests/requestIntent";
 import { normalizeMessage } from "./offlineJudge";
 import type { ResolvedQuestion } from "../understanding/resolvedQuestion";
 import type { AdvisorChatMessage } from "../contracts/protocol";

@@ -4,16 +4,16 @@
  */
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { ItemIcon } from "@/shared/ui/item-icon";
-import { ChampionIcon } from "@/shared/ui/champion-icon";
+import { ItemIcon } from "@/shared/ui/icons/item-icon";
+import { ChampionIcon } from "@/shared/ui/icons/champion-icon";
 import { useTranslation } from "@/shared/i18n";
 import type { Translations } from "@/shared/i18n/translations";
 import { REFERENCE_MAX_WIDTH, REFERENCE_MIN_WIDTH } from "@/shared/hooks/useWideViewport";
 import type { AdvisorTurn } from "@/features/advisor/session/useAdvisorTurns";
 import { answerChampionIds, type AdvisorAnswer } from "@/features/advisor/answers/answer";
-import { referenceKey } from "@/features/advisor/answers/referenceIdentity";
-export { referenceTabsOf } from "@/features/advisor/answers/referenceIdentity";
-import { AdvisorAnswerCard } from "../answers/AdvisorAnswerCard";
+import { referenceKey } from "@/features/advisor/answers/references/referenceIdentity";
+export { referenceTabsOf } from "@/features/advisor/answers/references/referenceIdentity";
+import { AdvisorAnswerCard } from "../answers/cards/AdvisorAnswerCard";
 import type { useReferencePanelSize } from "./useReferencePanelSize";
 import { useHistoryReference } from "../history/HistoryReference";
 

@@ -1,5 +1,5 @@
 import type { StoredAnswer, StoredTurn } from "./history";
-import { CONTEXT_BUCKETS, MAX_CONTEXT_FRAMES } from "../conversation/contextFrameTypes";
+import { CONTEXT_BUCKETS, MAX_CONTEXT_FRAMES } from "../conversation/memory/contextFrameTypes";
 import { MECHANIC_TOPICS } from "../mechanics/types";
 
 type RecordValue = Record<string, unknown>;

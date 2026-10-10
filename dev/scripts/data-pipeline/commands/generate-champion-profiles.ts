@@ -5,7 +5,7 @@ import { decodeDataManifest } from "../../../../src/domain/game/contracts/dataMa
 import { decodeChampionIndex } from "../../../../src/domain/game/contracts/championDataDecoder";
 import type { Champion } from "../../../../src/domain/game/types";
 import { fetchJson, writeJson } from "../io/json";
-import { buildChampionProfile } from "../champion-profile";
+import { buildChampionProfile } from "../champions/champion-profile";
 
 async function generateProfiles() {
   const release = decodeDataManifest(JSON.parse(await readFile("public/data/version.json", "utf8")));

@@ -1,11 +1,11 @@
 import * as path from "node:path";
-import type { StaticDataRelease } from "../../../../src/domain/game/staticDataRelease";
+import type { StaticDataRelease } from "../../../../src/domain/game/static-data/staticDataRelease";
 import type {
   NormalizedItemDataFile,
   NormalizedRuneDataFile,
   NormalizedSummonerDataFile,
 } from "../../../../src/domain/game/types/combatNormalized";
-import type { DataLocale } from "../localization";
+import type { DataLocale } from "../tooltip/localization";
 import { fetchJson, writeJson } from "../io/json";
 import { normalizeItems } from "../normalization/item";
 import {

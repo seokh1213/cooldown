@@ -3,7 +3,7 @@ import fs from "node:fs";
 import { modeNames, runQuestion, directory } from "./adapter";
 import { data } from "./runtime";
 import { conversations } from "./conversations";
-import { emptyDialogue, rememberAnswer } from "../../../../src/features/advisor/conversation/dialogueState";
+import { emptyDialogue, rememberAnswer } from "../../../../src/features/advisor/conversation/memory/dialogueState";
 import { resolveQuestion } from "../../../../src/features/advisor/understanding/resolvedQuestion";
 import { buildSpellAnswer } from "../../../../src/features/advisor/answers/answer";
 

@@ -23,7 +23,7 @@ for lang in ("ko_KR", "en_US", "zh_CN"):
     cards = json.load(open(f"{D}/llm/champion-cards-{lang}.json"))["cards"]
     NAMES[lang] = [c["name"] for c in cards if c["id"] not in HELD]
 
-# ---- 앱과 같은 문구(한 글자도 다르면 안 된다: src/features/advisor/conversation/conversation.ts) ----
+# ---- 앱과 같은 문구(한 글자도 다르면 안 된다: src/features/advisor/conversation/memory/conversation.ts) ----
 ACT_INSTRUCTIONS = "What is the new message?"
 def act_criteria(m, e):
     return {

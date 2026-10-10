@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { MechanicsIndex } from "../../../../src/domain/knowledge/mechanics";
-import { CROWD_CONTROL } from "../../../../src/domain/knowledge/crowdControl";
+import type { MechanicsIndex } from "../../../../src/domain/knowledge/notes/mechanics";
+import { CROWD_CONTROL } from "../../../../src/domain/knowledge/combat/crowdControl";
 import { resolvePatchVersion } from "./data";
 
 /** 원문 복사 대신 검증한 판정을 적는다. 출처와 검토일을 번들에도 보존한다. */

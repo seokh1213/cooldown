@@ -18,7 +18,7 @@
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
 import { normalizeTooltipText } from "./tooltipFingerprint";
 
 export const FINGERPRINT_FILE = path.resolve(process.cwd(), "dev/data/knowledge", "champion-fingerprints.json");

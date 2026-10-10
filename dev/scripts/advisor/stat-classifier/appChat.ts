@@ -3,9 +3,9 @@ import { loadData, offlineFileJudge, type Lang } from "../kev-agent/lib";
 import { translations } from "../../../../src/shared/i18n/translations";
 import { answerDialogue } from "../../../../src/features/advisor/conversation/dialogueFlow";
 import { dehydrateTurn, reviveTurn } from "../../../../src/features/advisor/storage/history";
-import type { DialogueMemory } from "../../../../src/features/advisor/conversation/dialogueState";
+import type { DialogueMemory } from "../../../../src/features/advisor/conversation/memory/dialogueState";
 import type { PlanContext, PlanDeps } from "../../../../src/features/advisor/contracts/planTypes";
-import { statQueryFromAnswer, type ChampionStatQuery } from "../../../../src/features/advisor/understanding/statQuery";
+import { statQueryFromAnswer, type ChampionStatQuery } from "../../../../src/features/advisor/understanding/stats/statQuery";
 import { isDeepStrictEqual } from "node:util";
 
 export function appChat(options: { lang?: Lang; inferStatQuery?: PlanDeps["inferStatQuery"]; memory?: DialogueMemory }) {

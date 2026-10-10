@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { type AdvisorAnswer } from "@/features/advisor/answers/answer";
-import { dialogueAnswerText, type AnswerDelivery } from "@/features/advisor/conversation/dialogueReply";
-import type { DialogueMemory } from "@/features/advisor/conversation/dialogueState";
+import { dialogueAnswerText, type AnswerDelivery } from "@/features/advisor/conversation/planning/dialogueReply";
+import type { DialogueMemory } from "@/features/advisor/conversation/memory/dialogueState";
 import type { DialogueTrace } from "@/features/advisor/contracts/requestContract";
 import type { Language } from "@/shared/i18n";
 import type { AdvisorChatMessage, AdvisorResponse } from "@/features/advisor/contracts/protocol";
@@ -9,9 +9,9 @@ import type { HistorySource } from "@/features/advisor/storage/historySnapshot";
 import type { StoredTurn } from "@/features/advisor/storage/history";
 import type { ChampionDetailV2 } from "@/domain/game/contracts/championData";
 import { decodeChampionDetail } from "@/domain/game/contracts/championDataDecoder";
-import { matchesDetailSource } from "@/features/advisor/answers/championDetail";
+import { matchesDetailSource } from "@/features/advisor/answers/references/championDetail";
 import { advisorReferenceChampionIds } from "./useAdvisorHistoryDetails";
-import { useRevealText } from "../answers/useRevealText";
+import { useRevealText } from "../answers/cards/useRevealText";
 
 export interface AdvisorTurn extends AdvisorChatMessage {
   id: number;

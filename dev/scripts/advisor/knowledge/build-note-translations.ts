@@ -1,0 +1,89 @@
+/**
+ * 노트 번역 — 번역 원자(dev/data/knowledge/atoms)를 노트 단위로 잇는다
+ *
+ * 플레이북 노트는 한국어뿐이라 영어·중국어 상성 답은 카드 도출 문장만으로 지어졌다(맹검 1.8~2.2점).
+ * 노트를 원자로 나눠 옮긴 것(translate-atoms.ts)이 있으니, 같은 노트(source)에서 나온 원자를
+ * 순서대로 이어 그 노트의 번역으로 쓴다. 앱의 조립 규칙(digestSections)은 노트 단위로 돌기 때문이다.
+ *
+ * 원자 절반 이상이 번역되지 않은 노트는 뺀다 — 앞뒤가 빠진 번역은 뜻이 달라질 수 있다.
+ * 원자가 있는 챔피언만 번역이 생긴다. 없는 노트는 지금처럼 싣지 않는다.
+ *
+ * 이어 붙인 글은 원자마다 주어를 다시 세워 읽기가 거칠다. polish-note-translations.ts 가 노트 한 편으로
+ * 다듬은 글(dev/data/knowledge/note-translations/<lang>.json)이 있고, 그 바탕(basis)이 지금 이어 붙인 글과 같으면
+ * 다듬은 글을 쓴다. 원자를 다시 지어 바탕이 바뀌었으면 이어 붙인 글로 돌아간다.
+ *
+ * 사용: npx tsx dev/scripts/advisor/knowledge/build-note-translations.ts
+ * 출력: public/data/<patch>/llm/note-translations-<lang>.json  { patch, notes: { 노트 id: 글 } }
+ */
+import * as fs from "fs";
+import * as path from "path";
+import { createHash } from "node:crypto";
+import { PUBLIC_DATA_ROOT, resolvePatchVersion } from "../lib/data";
+import type { AtomFile } from "./build-note-atoms";
+import type { Playbook } from "../../../../src/domain/knowledge/notes/playbookCore";
+import { loadPlaybooks } from "../lib/playbook";
+
+const LANGS = ["en_US", "zh_CN"] as const;
+const ATOM_DIR = path.join(process.cwd(), "dev/data/knowledge", "atoms");
+export const noteSourceDigest = (text: string) => createHash("sha256").update(text).digest("hex");
+
+/** 같은 노트의 번역 원자를 순서대로 이은 글. 절반 미만만 번역된 노트는 뺀다. */
+export function joinedNotes(lang: (typeof LANGS)[number], atomDir = ATOM_DIR,
+  playbookDir = path.join(process.cwd(), "dev/data/knowledge", "playbooks")): { notes: Record<string, string>; skipped: number } {
+  const files = fs.existsSync(atomDir) ? fs.readdirSync(atomDir).filter((f) => f.endsWith(".json")) : [];
+  const notes: Record<string, string> = {};
+  let skipped = 0;
+  for (const file of files) {
+    const { atoms, sourceDigests } = JSON.parse(fs.readFileSync(path.join(atomDir, file), "utf8")) as AtomFile;
+    const sourceFile = path.join(playbookDir, file);
+    const book = sourceDigests && fs.existsSync(sourceFile) ? JSON.parse(fs.readFileSync(sourceFile, "utf8")) as Playbook : undefined;
+    const sourceNotes = book && [...book.playing, ...book.against];
+    const bySource = new Map<string, typeof atoms>();
+    for (const atom of atoms) {
+      if (!atom.source.startsWith("playbook:")) continue;
+      bySource.set(atom.source, [...(bySource.get(atom.source) ?? []), atom]);
+    }
+    for (const [source, list] of bySource) {
+      const id = source.slice("playbook:".length);
+      const expectedDigest = sourceDigests?.[id];
+      const current = sourceNotes?.find(note => note.id === id);
+      if (expectedDigest && (!current || noteSourceDigest(current.text) !== expectedDigest)) {
+        skipped += 1;
+        continue;
+      }
+      const parts = list.map((atom) => (atom.text as Record<string, string | undefined>)[lang]).filter((t): t is string => !!t);
+      if (parts.length * 2 < list.length) {
+        skipped += 1;
+        continue;
+      }
+      notes[id] = parts.join(lang === "zh_CN" ? "" : " ");
+    }
+  }
+  return { notes, skipped };
+}
+
+function main(): void {
+  const patch = resolvePatchVersion();
+  const books = loadPlaybooks();
+  const permitted = new Set([...books.values()].flatMap(book => [...book.playing, ...book.against].map(entry => entry.id)));
+  for (const lang of LANGS) {
+    const { notes, skipped } = joinedNotes(lang);
+    for (const id of Object.keys(notes)) if (!permitted.has(id)) delete notes[id];
+    const store = path.join(process.cwd(), "dev/data/knowledge", "note-translations", `${lang}.json`);
+    const polished = fs.existsSync(store) ? (JSON.parse(fs.readFileSync(store, "utf8")) as { notes: Record<string, { basis: string; text: string }> }).notes : {};
+    let used = 0;
+    for (const [id, text] of Object.entries(notes)) {
+      if (polished[id]?.basis === text) {
+        notes[id] = polished[id].text;
+        used += 1;
+      }
+    }
+    const out = path.join(PUBLIC_DATA_ROOT, patch, "llm", `note-translations-${lang}.json`);
+    fs.writeFileSync(out, JSON.stringify({ patch, notes }), "utf8");
+    console.log(
+      `생성: ${path.relative(process.cwd(), out)} (노트 ${Object.keys(notes).length}건, 다듬은 글 ${used}건, 번역 절반 미만이라 뺀 노트 ${skipped}건, ${(fs.statSync(out).size / 1024).toFixed(0)} KB)`,
+    );
+  }
+}
+
+if (process.argv[1]?.endsWith("build-note-translations.ts")) main();

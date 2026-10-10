@@ -1,20 +1,20 @@
 /** 질문 계획의 입력과 출력. 화면 실행·모델 구현·저장과 분리된 계약. */
+import type { ChampionCard } from "@/domain/knowledge/cards/contracts";
+import type { CrowdControlType } from "@/domain/knowledge/combat/crowdControl";
 import type { Language } from "@/shared/i18n";
 import type { Translations } from "@/shared/i18n/translations";
-import { type AdvisorData } from "../conversation/context";
 import { type AdvisorAnswer } from "../answers/answer";
-import { type AskKind, type AskRoute } from "../application/routeAsk";
-import type { topicFromJudge } from "../model/topicJudge";
-import { type MatchupState } from "../conversation/conversation";
+import type { NumericGenerator } from "../answers/evidence/groundedNumeric";
+import { type AskKind,type AskRoute } from "../application/routeAsk";
+import type { ContextDecision,ContextFrame,ContextPolicy } from "../conversation/memory/contextFrameTypes";
+import { type MatchupState } from "../conversation/memory/conversation";
+import type { DialogueHistoryTurn,DialogueMemory } from "../conversation/memory/dialogueState";
 import type { JudgeQuestion } from "../model/judge";
-import type { ChampionCard } from "@/domain/knowledge/facts";
-import type { DialogueHistoryTurn, DialogueMemory } from "../conversation/dialogueState";
+import type { topicFromJudge } from "../model/topicJudge";
+import { type AdvisorData } from "../retrieval/context";
+import type { RequestIntent } from "../understanding/requests/requestIntent";
 import type { ResolvedQuestion } from "../understanding/resolvedQuestion";
-import type { ChampionStatQuery } from "../understanding/statQuery";
-import type { CrowdControlType } from "@/domain/knowledge/crowdControl";
-import type { RequestIntent } from "../understanding/requestIntent";
-import type { NumericGenerator } from "../answers/groundedNumeric";
-import type { ContextPolicy, ContextFrame, ContextDecision } from "../conversation/contextFrameTypes";
+import type { ChampionStatQuery } from "../understanding/stats/statQuery";
 
 /** 자료 조회·상성·확인·생성 중 질문 하나를 답할 계획. 조립 단계가 실행한다. */
 export interface ControlContext { champions: string[]; slot?: string; types?: CrowdControlType[] }

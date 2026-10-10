@@ -18,8 +18,8 @@ import { deleteModelCache, fetchJudgeFile, pruneOtherModels } from "@/features/a
 import { loadDocVectors, ranked, type DocVectors } from "@/features/advisor/retrieval/docVectors";
 import { questionLanguage } from "@/features/advisor/understanding/questionLanguage";
 import type { AdvisorAnswer } from "@/features/advisor/answers/answer";
-import type { AnswerDelivery } from "@/features/advisor/conversation/dialogueReply";
-import type { DialogueMemory } from "@/features/advisor/conversation/dialogueState";
+import type { AnswerDelivery } from "@/features/advisor/conversation/planning/dialogueReply";
+import type { DialogueMemory } from "@/features/advisor/conversation/memory/dialogueState";
 import type { DialogueTrace } from "@/features/advisor/contracts/requestContract";
 import type { AdvisorFileProgress } from "@/features/advisor/contracts/protocol";
 import { readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "@/features/advisor/model/judge";
@@ -28,10 +28,10 @@ import { useAdvisorTurns, type AdvisorTurn } from "./useAdvisorTurns";
 import { useAdvisorWorker, type AdvisorStatus } from "./useAdvisorWorker";
 import { ACT_HEAD, ROUTE_HEAD, TOPIC_HEAD } from "@/features/advisor/application/plan";
 import { readRequestScope, requestScopePrompt } from "@/features/advisor/model/requestScopeModel";
-import type { RequestIntent } from "@/features/advisor/understanding/requestIntent";
+import type { RequestIntent } from "@/features/advisor/understanding/requests/requestIntent";
 import type { HistorySource } from "@/features/advisor/storage/historySnapshot";
 import { useAdvisorHistoryDetails } from "./useAdvisorHistoryDetails";
-import type { NumericGenerator } from "@/features/advisor/answers/groundedNumeric";
+import type { NumericGenerator } from "@/features/advisor/answers/evidence/groundedNumeric";
 import { isJudgeCompatible } from "@/features/advisor/model/judgeCompatibility";
 
 /** `respond` 한 번에 필요한 것. 자료는 부르는 쪽(코드)이 모아서 `system` 에 싣는다. */

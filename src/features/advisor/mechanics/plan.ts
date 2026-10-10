@@ -1,17 +1,17 @@
 /** 승인된 스킬 규칙 조회. 확실한 단일 스킬 질문에만 기존 일반 조회보다 먼저 답한다. */
 import type { PlanContext, AnswerPlan } from "../contracts/planTypes";
-import type { DialogueMemory } from "../conversation/dialogueState";
+import type { DialogueMemory } from "../conversation/memory/dialogueState";
 import type { ResolvedQuestion } from "../understanding/resolvedQuestion";
 import { resolveQuestion } from "../understanding/resolvedQuestion";
-import { buildSpellAnswer } from "../answers/spellAnswer";
-import { buildItemCard } from "../conversation/context";
-import { asksSkillHandling, asksScenarioAdvice, asksWholeKit } from "../understanding/askWords";
+import { buildSpellAnswer } from "../answers/builders/spellAnswer";
+import { buildItemCard } from "../retrieval/context";
+import { asksSkillHandling, asksScenarioAdvice, asksWholeKit } from "../understanding/requests/askWords";
 import { cooldownRemaining, isMechanicFollowup, normalizeMechanicQuestion, questionState } from "./question";
 import { questionTopic, ruleMatchesTopic, selectRules } from "./retrieval";
 import { renderRules } from "./render";
 import { abilitySlot, validMechanicMemory, type MechanicMemory } from "./types";
-import { explicitStatLevel } from "../understanding/statQuery";
-import { resolveStatQuery } from "../conversation/dialogueStats";
+import { explicitStatLevel } from "../understanding/stats/statQuery";
+import { resolveStatQuery } from "../conversation/planning/dialogueStats";
 import { askedRules } from "../retrieval/questionDocs";
 
 export function approvedMechanicPlan(input: ResolvedQuestion, ctx: PlanContext, memory: DialogueMemory): { plan: AnswerPlan; memory: MechanicMemory } | undefined {

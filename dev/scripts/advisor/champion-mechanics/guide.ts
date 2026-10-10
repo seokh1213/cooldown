@@ -1,4 +1,4 @@
-import { SCHEMA_VERSION } from "./contract";
+import { SCHEMA_VERSION } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 export const GUIDE = `당신은 gpt-6-luna / medium으로 챔피언 툴팁을 JSON으로 구조화하는 작성자다.
 스키마 v${SCHEMA_VERSION}와 입력 프레임의 키·허용값을 그대로 쓴다. 새 키, 새 효과 종류, 새 통계를 만들지 않는다.
 출력은 summary/rules/gaps뿐이다. ID, 챔피언, 슬롯, 패치, 출처 해시, 기존 숫자, 승인 상태는 코드가 관리한다.

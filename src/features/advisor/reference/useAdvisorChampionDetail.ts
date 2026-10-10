@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Language } from "@/shared/i18n";
 import type { ChampionDetailV2 } from "@/domain/game/contracts/championData";
-import { loadAdvisorChampionDetail, matchesDetailSource } from "@/features/advisor/answers/championDetail";
+import { loadAdvisorChampionDetail, matchesDetailSource } from "@/features/advisor/answers/references/championDetail";
 import { useHistoryReference } from "../history/HistoryReference";
 
 /** 챔피언당 한 파일을 공유한다. 상세 자료를 못 받아도 기존 카드의 스탯·스킬은 즉시 표시한다. */

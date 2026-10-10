@@ -1,11 +1,11 @@
 import { useSearchParams } from "react-router-dom";
 import { EncyclopediaPageProps } from "./types";
 import { TabNavigation, EncyclopediaTab } from "./TabNavigation";
-import { RunesTab } from "./RunesTab";
-import { ItemsTab } from "./ItemsTab";
-import { SummonerTab } from "./SummonerTab";
-import { FormulasTab } from "./FormulasTab";
-import { ChampionsTab } from "./ChampionsTab";
+import { RunesTab } from "./runes/RunesTab";
+import { ItemsTab } from "./items/ItemsTab";
+import { SummonerTab } from "./summoners/SummonerTab";
+import { FormulasTab } from "./formulas/FormulasTab";
+import { ChampionsTab } from "./champions/ChampionsTab";
 
 function isValidTab(tab: string | null): tab is EncyclopediaTab {
   return (

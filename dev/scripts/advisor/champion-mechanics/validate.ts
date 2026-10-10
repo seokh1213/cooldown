@@ -1,6 +1,6 @@
 import { digest } from "./sources";
 import { parseDraft } from "./schema";
-import type { Draft, Evidence, Job, Rule } from "./contract";
+import type { Draft, Evidence, Job, Rule } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 
 export interface Finding { code: string; path: string; detail: string }
 export interface ValidationResult { valid: boolean; errors: Finding[]; warnings: Finding[]; draft?: Draft }

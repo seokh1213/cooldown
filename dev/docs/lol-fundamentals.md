@@ -102,9 +102,9 @@
 
 ## 현행 자료 생성 경로 (2026-10-06)
 
-`dev/scripts/advisor/build-knowledge.ts`의 `createChampionCardBuilder`가 Ability v2와 라이엇·위키 메타를 읽어 챔피언 사실 카드를 만든다. 역할 태그는 라이엇 `roles`를 우선하고, 근접·원거리는 `attackType`을 우선한다. 위키의 하위 클래스·포지션과 라이엇의 피해 분류·플레이스타일은 카드의 `wiki`·`riot` 필드로 보존한다.
+`dev/scripts/advisor/knowledge/build-knowledge.ts`의 `createChampionCardBuilder`가 Ability v2와 라이엇·위키 메타를 읽어 챔피언 사실 카드를 만든다. 역할 태그는 라이엇 `roles`를 우선하고, 근접·원거리는 `attackType`을 우선한다. 위키의 하위 클래스·포지션과 라이엇의 피해 분류·플레이스타일은 카드의 `wiki`·`riot` 필드로 보존한다.
 
-`damageProfile`은 스킬 피해 유형 집계와 역할 가중치로 도출하며 `riot.damageType`과 별도 값이다. 스킬 계수는 구조화된 시뮬레이션 항을 우선하고 없으면 툴팁에서 도출한다. 영어·중국어 카드의 효과 태그·피해 유형·도출 프로필은 한국어 카드의 결과를 공유한다. 구현: `src/domain/knowledge/facts.ts`, `dev/scripts/advisor/build-knowledge.ts`.
+`damageProfile`은 스킬 피해 유형 집계와 역할 가중치로 도출하며 `riot.damageType`과 별도 값이다. 스킬 계수는 구조화된 시뮬레이션 항을 우선하고 없으면 툴팁에서 도출한다. 영어·중국어 카드의 효과 태그·피해 유형·도출 프로필은 한국어 카드의 결과를 공유한다. 구현: `src/domain/knowledge/cards/facts.ts`, `dev/scripts/advisor/knowledge/build-knowledge.ts`.
 
 현재 사용할 수 있는 자료 생성 명령은 다음과 같다. 수집 명령은 네트워크를 사용하고, 생성 명령은 `public/data/<patch>/llm/`의 파일을 갱신한다.
 
@@ -334,7 +334,7 @@ AD 챔피언에게 주문력 아이템이 후보로 올라오지 않는다.
 
 ## 12. 당시 조언 설계의 판단 기준
 
-당시 설계의 판단 기준을 보존한다. 이를 고정 우선순위의 실행 규칙으로 읽지 않는다. 현재 조언은 개별 스킬의 조건·다른 피해 유형·기본 공격·아군과 적 조합을 함께 확인하며, 고정 피해가 있다는 이유만으로 모든 저항이 무용하다고 단정하지 않는다(`src/domain/knowledge/itemProfileText.ts`, `src/features/advisor/answers/matchupFactCheck.ts`).
+당시 설계의 판단 기준을 보존한다. 이를 고정 우선순위의 실행 규칙으로 읽지 않는다. 현재 조언은 개별 스킬의 조건·다른 피해 유형·기본 공격·아군과 적 조합을 함께 확인하며, 고정 피해가 있다는 이유만으로 모든 저항이 무용하다고 단정하지 않는다(`src/domain/knowledge/combat/itemProfileText.ts`, `src/features/advisor/answers/evidence/matchupFactCheck.ts`).
 
 1. 상대 주 피해 유형과 계수 프로필로 올릴 저항을 정한다.
 2. 상대에게 고정 피해가 있으면 저항으로 못 막는다고 명시한다.

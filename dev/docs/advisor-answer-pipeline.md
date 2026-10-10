@@ -35,18 +35,18 @@ flowchart TD
   G --> H[useAskAdvisor: 화면 전달과 기억 기록]
 ```
 
-[useAskAdvisor](../../src/features/advisor/conversation/useAskAdvisor.ts)는 첫 질문이 자료 로딩보다 빠르면 같은 자료 Promise를 기다린다. 현재 자료·언어·화면에서 선택한 챔피언·이전 발화·동의 상태와 판정/검색 함수를 [answerDialogue](../../src/features/advisor/conversation/dialogueFlow.ts)에 전달한다.
+[useAskAdvisor](../../src/features/advisor/session/useAskAdvisor.ts)는 첫 질문이 자료 로딩보다 빠르면 같은 자료 Promise를 기다린다. 현재 자료·언어·화면에서 선택한 챔피언·이전 발화·동의 상태와 판정/검색 함수를 [answerDialogue](../../src/features/advisor/conversation/dialogueFlow.ts)에 전달한다.
 
-1. [dialogueRequest.ts](../../src/features/advisor/conversation/dialogueRequest.ts)는 같은 패치의 코드 기억을 복원하고 `combined` 모드로 복합 요청을 나눈다. 나열한 스킬·능력치와 하나의 상성 조건은 별개 질문으로 무조건 나누지 않는다.
-2. [dialoguePlanner.ts](../../src/features/advisor/conversation/dialoguePlanner.ts)는 각 요청의 범위와 대상을 확인한다. 카드 조회·승인된 스킬 규칙·노트·상성 조언을 계획하고, 대상이 모호하면 확인 질문을 만든다. 지원하지 않는 조건과 요청/답변 불일치는 안내문으로 바꾼다.
-3. [dialogueReply.ts](../../src/features/advisor/conversation/dialogueReply.ts)는 계획에 따라 카드·근거 문장을 조립한다. 여러 요청의 답은 함께 전달하고 실제로 보여 준 상성 주제를 기억한다.
+1. [dialogueRequest.ts](../../src/features/advisor/conversation/planning/dialogueRequest.ts)는 같은 패치의 코드 기억을 복원하고 `combined` 모드로 복합 요청을 나눈다. 나열한 스킬·능력치와 하나의 상성 조건은 별개 질문으로 무조건 나누지 않는다.
+2. [dialoguePlanner.ts](../../src/features/advisor/conversation/planning/dialoguePlanner.ts)는 각 요청의 범위와 대상을 확인한다. 카드 조회·승인된 스킬 규칙·노트·상성 조언을 계획하고, 대상이 모호하면 확인 질문을 만든다. 지원하지 않는 조건과 요청/답변 불일치는 안내문으로 바꾼다.
+3. [dialogueReply.ts](../../src/features/advisor/conversation/planning/dialogueReply.ts)는 계획에 따라 카드·근거 문장을 조립한다. 여러 요청의 답은 함께 전달하고 실제로 보여 준 상성 주제를 기억한다.
 4. 화면 어댑터가 답변과 코드 기억을 함께 기록한다. 대화 맥락은 코드가 관리하며, 이전 답변 전체를 모델에게 매번 넘겨 추론시키지 않는다.
 
 [plan.ts](../../src/features/advisor/application/plan.ts)의 `planAnswer`는 이 흐름 안에서 사용하는 단일 질문 계획 함수다. 빠른 사실 조회 뒤 지식·상성·개별 대상·노트 순서의 9개 처리기를 실행한다. 앱 전체의 진입점이나 요청 범위 11종과는 다른 구분이다.
 
 ## 요청 분류와 검색
 
-[requestIntent.ts](../../src/features/advisor/understanding/requestIntent.ts)의 작은 요청 분류기는 문자/단어 특징을 사용하는 로지스틱 회귀다. `models/offline/request-v1.json`과 `.bin`을 읽으며, 0.8B 다운로드 없이 실행한다. 질문에 실제로 적힌 챔피언 이름·별명을 가려 이름에 따른 편향을 줄인다.
+[requestIntent.ts](../../src/features/advisor/understanding/requests/requestIntent.ts)의 작은 요청 분류기는 문자/단어 특징을 사용하는 로지스틱 회귀다. `models/offline/request-v1.json`과 `.bin`을 읽으며, 0.8B 다운로드 없이 실행한다. 질문에 실제로 적힌 챔피언 이름·별명을 가려 이름에 따른 편향을 줄인다.
 
 분류 범위는 `overview`, `statsAll`, `stats`, `skills`, `combo`, `counterplay`, `advice`, `ability`, `chat`, `identity`, `other`의 11종이다. 최고 확률이 0.6 이상이고 2위와 차이가 0.2 이상일 때만 채택한다. 노트 주제도 별도로 분류한다.
 
@@ -56,7 +56,7 @@ flowchart TD
 
 ## 카드·노트·미리 쓴 상성 답
 
-[context.ts](../../src/features/advisor/conversation/context.ts)는 패치와 언어별로 다음 자료를 불러와 `AdvisorData`를 만든다.
+[context.ts](../../src/features/advisor/retrieval/context.ts)는 패치와 언어별로 다음 자료를 불러와 `AdvisorData`를 만든다.
 
 - `llm/champion-cards-<locale>.json`: 챔피언·능력치·스킬 사실 카드.
 - `llm/advisor-knowledge.json`: 플레이북·팁·게임 규칙·효과 자료.
@@ -65,25 +65,25 @@ flowchart TD
 
 자료 URL은 [release.ts](../../src/app/pwa/release.ts)의 내용 해시가 붙은 release 경로를 사용한다. 로딩 Promise는 패치·언어별로 공유하며, 필수 자료 요청이 실패하면 제거해 다음 요청이 다시 시도할 수 있게 한다. 앱 패치와 지식 패치가 다르면 `stale`로 표시하고, 이 상태에서는 수치 QA를 시도하지 않는다.
 
-상성 답은 [matchupReply.ts](../../src/features/advisor/answers/matchupReply.ts)가 공통으로 조립한다. [precomputed.ts](../../src/features/advisor/retrieval/precomputed.ts)에서 내 챔피언의 `llm/matchups/<id>.json`만 불러온다. 영어·중국어는 `<id>.<locale>.json`을 사용한다. 쌍이나 요청한 칸이 없으면 검증 노트와 도출 문장으로 답을 만든다. 이미 모두 보여 준 주제를 더 요청하면 소진 안내를 한다.
+상성 답은 [matchupReply.ts](../../src/features/advisor/answers/builders/matchupReply.ts)가 공통으로 조립한다. [precomputed.ts](../../src/features/advisor/retrieval/precomputed.ts)에서 내 챔피언의 `llm/matchups/<id>.json`만 불러온다. 영어·중국어는 `<id>.<locale>.json`을 사용한다. 쌍이나 요청한 칸이 없으면 검증 노트와 도출 문장으로 답을 만든다. 이미 모두 보여 준 주제를 더 요청하면 소진 안내를 한다.
 
-미리 쓴 답과 노트 조립 모두 스킬 이름·슬롯·근거를 확인하는 [matchupFactCheck.ts](../../src/features/advisor/answers/matchupFactCheck.ts), 스킬의 사용 가능/불가 조건을 확인하는 [conditionedMatchup.ts](../../src/features/advisor/application/conditionedMatchup.ts)를 거친다. 실제로 남아 표시된 주제만 코드 기억에 기록한다.
+미리 쓴 답과 노트 조립 모두 스킬 이름·슬롯·근거를 확인하는 [matchupFactCheck.ts](../../src/features/advisor/answers/evidence/matchupFactCheck.ts), 스킬의 사용 가능/불가 조건을 확인하는 [conditionedMatchup.ts](../../src/features/advisor/application/plans/conditionedMatchup.ts)를 거친다. 실제로 남아 표시된 주제만 코드 기억에 기록한다.
 
 ## 제한적 수치 QA
 
-현재 앱은 [groundedNumeric.ts](../../src/features/advisor/answers/groundedNumeric.ts)의 수치 QA를 연결한다. 다음 조건을 모두 만족할 때만 후보를 요청한다.
+현재 앱은 [groundedNumeric.ts](../../src/features/advisor/answers/evidence/groundedNumeric.ts)의 수치 QA를 연결한다. 다음 조건을 모두 만족할 때만 후보를 요청한다.
 
 - 한국어 화면, 모델 다운로드 동의와 사용 가능 상태, 준비된 최신 지식 자료. 실제 생성은 모델 적재가 끝나 있어야 한다.
 - 요청 한 부분만 있으며 확인 질문·일반 생성 응답·관련 자료 선택·상성 스킬 조건이 없음.
 - 질문에 `몇`·`얼마`·`비율`·`퍼센트` 중 하나가 있고, 계획이 고른 근거 문서에서 요청 필드를 하나로 확인할 수 있음.
 
-[numericEvidence.ts](../../src/features/advisor/answers/numericEvidence.ts)는 단위와 질문의 속성 낱말 2개 이상이 같은 문서 줄에 나타나며 해당 단위의 값이 하나뿐일 때만 필드를 인정한다. 현재 인식 단위는 `%`/퍼센트, 초, 분, 시간, 골드다. 문맥은 정답 위치를 사용하지 않고 질문 기반으로 최대 1,300자를 선택한다.
+[numericEvidence.ts](../../src/features/advisor/answers/evidence/numericEvidence.ts)는 단위와 질문의 속성 낱말 2개 이상이 같은 문서 줄에 나타나며 해당 단위의 값이 하나뿐일 때만 필드를 인정한다. 현재 인식 단위는 `%`/퍼센트, 초, 분, 시간, 골드다. 문맥은 정답 위치를 사용하지 않고 질문 기반으로 최대 1,300자를 선택한다.
 
 워커는 `purpose: "grounded-numeric"`에만 QA adapter를 켜고 최대 24토큰을 생성한다. 완료 전 조각은 화면에 내보내지 않는다. 숫자·단위가 확인한 필드와 일치하고 그 근거 줄이 전달한 문맥에도 있을 때만 짧은 답과 근거 줄을 원래 본문 앞에 추가한다. 기존 카드와 본문은 유지한다. 모호한 필드·`NOT_FOUND`·검증 불일치·생성 오류는 원래 답변을 유지한다.
 
 문서에 같은 숫자가 있다는 사실만으로 의미 정확성을 보증하지 않는다. 현재 필드 검사는 명시적 한국어 속성과 단위가 있는 질문으로 범위를 좁힌 장치다. 영어·중국어, 회/번 단위, 명시적 속성이 부족한 자연 질문은 이 수치 QA의 지원 범위로 약속하지 않는다.
 
-[groundedSummary.ts](../../src/features/advisor/answers/groundedSummary.ts)의 근거 요약은 명시적으로 주입하는 실험 옵션이며 현재 화면 어댑터는 전달하지 않는다. 별도로, 자료가 없을 때의 `respond` 계획은 동의한 모델에 일반 생성을 요청할 수 있다. 이 경로와 검증된 자료 답변·수치 QA는 조건과 검증 방식이 다르다.
+[groundedSummary.ts](../../src/features/advisor/answers/evidence/groundedSummary.ts)의 근거 요약은 명시적으로 주입하는 실험 옵션이며 현재 화면 어댑터는 전달하지 않는다. 별도로, 자료가 없을 때의 `respond` 계획은 동의한 모델에 일반 생성을 요청할 수 있다. 이 경로와 검증된 자료 답변·수치 QA는 조건과 검증 방식이 다르다.
 
 ## 워커의 실행 경계
 
@@ -99,7 +99,7 @@ flowchart TD
 
 [history.ts](../../src/features/advisor/storage/history.ts)는 답변 카드 원본 snapshot과 참조 정보를 `cooldown.advisor.conversations.v1`에 저장한다. 최대 20개 대화, 대화마다 최대 80개 발화를 유지한다. 완료된 답변은 바로 저장하고, 진행 중 변경은 [useAdvisorHistory](../../src/features/advisor/session/useAdvisorHistory.ts)에서 400ms 뒤로 저장을 미룬다.
 
-새 챔피언·스킬·비교·오타 제안 답변의 상세 자료는 [useAdvisorHistoryDetails](../../src/features/advisor/session/useAdvisorHistoryDetails.ts)가 가져온다. [championDetail.ts](../../src/features/advisor/answers/championDetail.ts)는 요청한 ID·패치·언어·DDragon 버전이 일치하는 상세 자료만 붙인다. 상세 요청에 실패해도 기본 답변 카드는 유지한다.
+새 챔피언·스킬·비교·오타 제안 답변의 상세 자료는 [useAdvisorHistoryDetails](../../src/features/advisor/session/useAdvisorHistoryDetails.ts)가 가져온다. [championDetail.ts](../../src/features/advisor/answers/references/championDetail.ts)는 요청한 ID·패치·언어·DDragon 버전이 일치하는 상세 자료만 붙인다. 상세 요청에 실패해도 기본 답변 카드는 유지한다.
 
 저장한 대화는 현재 자료 로딩을 기다리지 않고 복원한다. 과거 발화의 카드를 현재 카드로 다시 채우거나 과거 상세 자료를 새로 요청하지 않는다. 손상됐거나 snapshot이 없는 예전 참조는 이용 불가를 표시하면서 질문과 답문을 남긴다. 다른 패치의 코드 기억은 현재 대화에 적용하지 않으며, 과거 발화를 다시 저장할 때 원본 기록을 보존한다.
 
@@ -121,9 +121,9 @@ npm run build
 npm run test:e2e
 ```
 
-관련 회귀만 확인할 때는 `npm run test:one -- <test 파일...>`을 사용한다. 주요 경계는 [대화 흐름](../tests/data/advisor-dialogue-flow.test.ts), [요청 범위](../tests/unit/request-scope-model.test.ts), [수치 QA](../tests/unit/grounded-numeric.test.ts), [워커 복구](../tests/unit/advisor-worker-recovery.test.ts), [과거 snapshot](../tests/unit/advisor-history-snapshots.test.ts), [브라우저 과거 기록](../tests/e2e/advisor-history-snapshots.spec.ts) 테스트가 보호한다. 코드 테스트 통과는 실제 기기의 모델 품질·속도 측정을 대신하지 않는다.
+관련 회귀만 확인할 때는 `npm run test:one -- <test 파일...>`을 사용한다. 주요 경계는 [대화 흐름](../tests/data/advisor/advisor-dialogue-flow.test.ts), [요청 범위](../tests/unit/advisor/request-scope-model.test.ts), [수치 QA](../tests/unit/advisor/grounded-numeric.test.ts), [워커 복구](../tests/unit/advisor/advisor-worker-recovery.test.ts), [과거 snapshot](../tests/unit/advisor/advisor-history-snapshots.test.ts), [브라우저 과거 기록](../tests/e2e/advisor/advisor-history-snapshots.spec.ts) 테스트가 보호한다. 코드 테스트 통과는 실제 기기의 모델 품질·속도 측정을 대신하지 않는다.
 
-자료 생성 명령은 `llm:build`(사실 카드), `llm:bundle`(지식·스킬 규칙 묶음), `llm:validate`(지식 검증)다. 패치 CI는 [update-static-data.yml](../../.github/workflows/update-static-data.yml)에서 정적 자료 생성 뒤 `llm:carry`를 실행한다. [carry-llm-data.ts](../scripts/advisor/carry-llm-data.ts)는 새 자료로 파생 파일을 다시 만들고, 재료 지문이 맞는 상성 답만 이어 쓴다.
+자료 생성 명령은 `llm:build`(사실 카드), `llm:bundle`(지식·스킬 규칙 묶음), `llm:validate`(지식 검증)다. 패치 CI는 [update-static-data.yml](../../.github/workflows/update-static-data.yml)에서 정적 자료 생성 뒤 `llm:carry`를 실행한다. [carry-llm-data.ts](../scripts/advisor/knowledge/carry-llm-data.ts)는 새 자료로 파생 파일을 다시 만들고, 재료 지문이 맞는 상성 답만 이어 쓴다.
 
 수동 평가 CLI [eval-b3.ts](../scripts/advisor/kev-agent/eval-b3.ts)는 [평가 로더](../scripts/advisor/kev-agent/lib.ts)의 고정 패치 `26.19`를 사용한다.
 최신 매니페스트를 자동 추종하는 검사로 취급하지 않는다. 패치가 바뀌면 평가 자료와 기준을 함께 다시 검토한다.

@@ -1,17 +1,17 @@
 /** 원문에서 요청을 고정하고, 뒷단의 계획이 다른 질문으로 바뀌는 것을 검사한다. */
-import { asksComparison, asksGenericAdvice, asksGuide, asksMatchup, asksScenarioAdvice } from "../understanding/askWords";
-import { resolveStatQuery } from "../conversation/dialogueStats";
-import { matchupParticipants } from "../understanding/matchupSides";
-import { sideOfNewName } from "../conversation/conversation";
+import { asksComparison, asksGenericAdvice, asksGuide, asksMatchup, asksScenarioAdvice } from "../understanding/requests/askWords";
+import { resolveStatQuery } from "../conversation/planning/dialogueStats";
+import { matchupParticipants } from "../understanding/requests/matchupSides";
+import { sideOfNewName } from "../conversation/memory/conversation";
 import { topicFromWords } from "../model/topicJudge";
-import { statFields, statQueryFromAnswer, type ChampionStatQuery } from "../understanding/statQuery";
+import { statFields, statQueryFromAnswer, type ChampionStatQuery } from "../understanding/stats/statQuery";
 import { answerChampionIds } from "../answers/answer";
-import { asksSpellNumbers } from "../understanding/spellFocus";
+import { asksSpellNumbers } from "../understanding/spells/spellFocus";
 import type { ResolvedQuestion } from "../understanding/resolvedQuestion";
-import type { DialogueMemory } from "../conversation/dialogueState";
-import { inferredSpellFocus } from "../conversation/dialogueState";
+import type { DialogueMemory } from "../conversation/memory/dialogueState";
+import { inferredSpellFocus } from "../conversation/memory/dialogueState";
 import type { AnswerPlan, PlanContext, JudgeTier } from "./planTypes";
-import type { GuidanceReason } from "../understanding/requestGuidance";
+import type { GuidanceReason } from "../understanding/requests/requestGuidance";
 
 export interface RequestContract {
   operation: "lookup" | "advice" | "explain" | "unknown";

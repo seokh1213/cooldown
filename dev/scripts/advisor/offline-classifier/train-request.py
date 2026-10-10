@@ -50,7 +50,7 @@ def topic_examples(directory):
     training_path = Path(directory) / "topic-train.jsonl"
     test_path = Path(directory) / "topic-test.jsonl"
     for options in [["--n", "5000", "--out", str(training_path)], ["--test", str(test_path)]]:
-        subprocess.run(["npx", "tsx", "dev/scripts/advisor/build-topic-train.ts", *options], cwd=ROOT,
+        subprocess.run(["npx", "tsx", "dev/scripts/advisor/evaluation/build-topic-train.ts", *options], cwd=ROOT,
                        check=True, stdout=subprocess.DEVNULL)
     rows = [json.loads(line) for line in training_path.read_text().splitlines()]
     tests = [json.loads(line) for line in test_path.read_text().splitlines()]
@@ -88,7 +88,7 @@ def main():
     directory = ROOT / "public/models/offline"
     directory.mkdir(parents=True, exist_ok=True)
     source_files = [HERE / "request-training.json", HERE / "train-request.py", HERE / "train.py",
-                    ROOT / "dev/scripts/advisor/build-topic-train.ts"]
+                    ROOT / "dev/scripts/advisor/evaluation/build-topic-train.ts"]
     source_hashes = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
                      for path in source_files}
     binary = weights.tobytes() + topic_weights.tobytes()

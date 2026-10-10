@@ -9,9 +9,9 @@ import type {
   DataLocale,
   StaticDataSources,
 } from "@/domain/game/contracts/staticData";
-import { VsComparison } from "./VsComparison";
-import { useVsState } from "./useVsWorkspace";
-import { parseVsState, serializeVsState, type VsSideKey } from "./vsState";
+import { VsComparison } from "./comparison/VsComparison";
+import { useVsState } from "./workspace/useVsWorkspace";
+import { parseVsState, serializeVsState, type VsSideKey } from "./workspace/vsState";
 
 interface VsPageProps {
   lang: DataLocale;

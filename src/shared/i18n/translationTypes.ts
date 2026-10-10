@@ -1,6 +1,6 @@
 import type { DataLocale } from "@/domain/game/contracts/staticData";
-import type { ComparisonLabels, ItemDetailLabels } from "./comparisonTranslations";
-import type { ChampionProfileLabels } from "./championProfileTranslations";
+import type { ComparisonLabels, ItemDetailLabels } from "./catalogs/comparisonTranslations";
+import type { ChampionProfileLabels } from "./catalogs/championProfileTranslations";
 
 export type Language = DataLocale;
 

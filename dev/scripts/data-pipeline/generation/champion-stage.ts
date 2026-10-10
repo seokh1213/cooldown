@@ -1,26 +1,26 @@
+import type { StaticDataRelease } from "../../../../src/domain/game/static-data/staticDataRelease";
+import type { CommunityDragonSpellData } from "../../../../src/domain/game/tooltip/contracts";
 import type { Champion } from "../../../../src/domain/game/types";
-import type { StaticDataRelease } from "../../../../src/domain/game/staticDataRelease";
 import type { NormalizedChampion } from "../../../../src/domain/game/types/combatNormalized";
-import type { CommunityDragonSpellData } from "../../../../src/domain/game/tooltip/types";
-import { extractPassiveSpell } from "../passive-tooltip-data";
 import {
-  extractActiveSpells,
-  type ActiveSpellSourceData,
-  type ActiveSpellExtraction,
-} from "../cdragon-active-spells";
-import {
-  requireMapValue,
-  type ChampionSpellData,
-  type ChampionsByLocale,
-} from "../champion-source";
-import { writeChampionV2Dataset } from "../champion-v2-writer";
+requireMapValue,
+type ChampionSpellData,
+type ChampionsByLocale,
+} from "../champions/champion-source";
+import { writeChampionV2Dataset } from "../champions/champion-v2-writer";
 import { fetchJson } from "../io/json";
-import type { DataLocale } from "../localization";
 import { normalizeChampion } from "../normalization/champion";
-import { fetchCDragonChampion, mergeCDragonChampionStats } from "../sources/cdragon-champion";
 import {
-  localizeActiveTooltips,
-  localizePassiveTooltips,
+extractActiveSpells,
+type ActiveSpellExtraction,
+type ActiveSpellSourceData,
+} from "../sources/cdragon-active-spells";
+import { fetchCDragonChampion,mergeCDragonChampionStats } from "../sources/cdragon-champion";
+import type { DataLocale } from "../tooltip/localization";
+import { extractPassiveSpell } from "../tooltip/passive-tooltip-data";
+import {
+localizeActiveTooltips,
+localizePassiveTooltips,
 } from "./tooltip-localizer";
 
 interface ChampionListResponse {

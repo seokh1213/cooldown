@@ -1,8 +1,8 @@
+import type { ChampionCard,SpellFact } from "@/domain/knowledge/cards/contracts";
+import { isSpellTicks } from "@/domain/knowledge/combat/abilityTicksValidation";
+import { CROWD_CONTROL } from "@/domain/knowledge/combat/crowdControl";
+import type { RuleNotes } from "@/domain/knowledge/notes/rules";
 import type { Language } from "@/shared/i18n";
-import type { ChampionCard, SpellFact } from "@/domain/knowledge/facts";
-import type { RuleNotes } from "@/domain/knowledge/rules";
-import { CROWD_CONTROL } from "@/domain/knowledge/crowdControl";
-import { isSpellTicks } from "@/domain/knowledge/abilityTicksValidation";
 import type { AdvisorAnswer } from "../answers/answer";
 import { isStoredAnswer } from "./historyValidation";
 

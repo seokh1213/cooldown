@@ -2,12 +2,12 @@
 import fs from "node:fs/promises";
 import { loadData, offlineFileJudge } from "../kev-agent/lib";
 import { resolveQuestion } from "../../../../src/features/advisor/understanding/resolvedQuestion";
-import { requestClassifier, type RequestScope } from "../../../../src/features/advisor/understanding/requestIntent";
+import { requestClassifier, type RequestScope } from "../../../../src/features/advisor/understanding/requests/requestIntent";
 import { readOfflineModel, answerOffline, type OfflineJudgeMeta } from "../../../../src/features/advisor/model/offlineJudge";
-import { REQUEST_SCOPES, REQUEST_SCOPE_INSTRUCTION } from "../../../../src/features/advisor/understanding/requestIntent";
+import { REQUEST_SCOPES, REQUEST_SCOPE_INSTRUCTION } from "../../../../src/features/advisor/understanding/requests/requestIntent";
 import { judgeRouteState } from "../../../../src/features/advisor/application/routeAsk";
 import { answerDialogue } from "../../../../src/features/advisor/conversation/dialogueFlow";
-import { statFields } from "../../../../src/features/advisor/understanding/statQuery";
+import { statFields } from "../../../../src/features/advisor/understanding/stats/statQuery";
 import { translations } from "../../../../src/shared/i18n/translations";
 import type { PlanContext, PlanTurn } from "../../../../src/features/advisor/contracts/planTypes";
 import type { Language } from "../../../../src/shared/i18n";

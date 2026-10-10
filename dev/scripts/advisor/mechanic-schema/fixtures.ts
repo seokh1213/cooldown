@@ -2,7 +2,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
 import { parseRecord } from "./schema";
 import type { MechanicRecord } from "./types";
 

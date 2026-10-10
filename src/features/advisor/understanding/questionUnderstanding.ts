@@ -1,18 +1,18 @@
 /** 질문의 이름·갈래·최근 대상을 한 번 읽고, 필요한 주제 판정은 지연한다. */
-import { classifyRequestInput } from "./classifyRequestInput";
-import { buildItemCard, type AdvisorData } from "../conversation/context";
+import type { ChampionCard } from "@/domain/knowledge/cards/contracts";
 import { answerChampionIds } from "../answers/answer";
-import { askFromWords } from "./askWords";
-import { matchupSidesByPhrase } from "./matchupSides";
-import { resolveQuestion, type QuestionInput } from "./resolvedQuestion";
-import { JUDGE_KIND9_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS, judgeRouteState, routeFromKind9, type AskRoute } from "../application/routeAsk";
-import { topicFromJudge, topicFromWords, topicQuestions } from "../model/topicJudge";
+import { JUDGE_KIND9_CRITERIA,JUDGE_KIND_INSTRUCTIONS,JUDGE_MINE_INSTRUCTIONS,judgeRouteState,routeFromKind9,type AskRoute } from "../application/routeAsk";
+import { type Intent,type PlanContext,type PlanDeps,type PlanTurn } from "../contracts/planTypes";
+import { matchupStateOf } from "../conversation/memory/conversation";
+import { ROUTE_HEAD,TOPIC_HEAD } from "../model/judgeHeads";
+import { topicFromJudge,topicFromWords,topicQuestions } from "../model/topicJudge";
+import { buildItemCard,type AdvisorData } from "../retrieval/context";
 import { gameMetaAnswer } from "../retrieval/gameMeta";
-import { matchupStateOf } from "../conversation/conversation";
 import { askedRules } from "../retrieval/questionDocs";
-import type { ChampionCard } from "@/domain/knowledge/facts";
-import { type PlanTurn, type PlanContext, type PlanDeps, type Intent } from "../contracts/planTypes";
-import { ROUTE_HEAD, TOPIC_HEAD } from "../model/judgeHeads";
+import { askFromWords } from "./requests/askWords";
+import { classifyRequestInput } from "./requests/classifyRequestInput";
+import { matchupSidesByPhrase } from "./requests/matchupSides";
+import { resolveQuestion,type QuestionInput } from "./resolvedQuestion";
 
 /** 질문에 적힌 이름, 갈래(판정기 또는 낱말)·주제, 대화가 남긴 맥락을 모은다. 판정기는 여기서 한 번(이름이 있으면 두 번) 부른다. */
 export async function understand(input: QuestionInput, ctx: PlanContext, data: AdvisorData, deps: PlanDeps): Promise<Intent> {

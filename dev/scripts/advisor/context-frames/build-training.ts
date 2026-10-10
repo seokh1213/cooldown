@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { buildBank, digest, readRows, ROOT } from "../quality/bank";
-import { contextFeatures } from "../../../../src/features/advisor/conversation/contextRanker";
-import { CONTEXT_LIMITS, type ContextFrame } from "../../../../src/features/advisor/conversation/contextFrameTypes";
+import { contextFeatures } from "../../../../src/features/advisor/conversation/memory/contextRanker";
+import { CONTEXT_LIMITS, type ContextFrame } from "../../../../src/features/advisor/conversation/memory/contextFrameTypes";
 import type { ResolvedQuestion } from "../../../../src/features/advisor/understanding/resolvedQuestion";
 
 const directory = "dev/research/llm-evals/workflow/datasets/context-frames";

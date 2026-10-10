@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir,readFile,writeFile } from "node:fs/promises";
 import path from "node:path";
-import { fetchChampionSkillNames, queryPages } from "../lib/fandom";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
+import { fetchChampionSkillNames,queryPages } from "../lib/fandom";
 import { wikiFields } from "./wikiFields";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
 
 const root = process.cwd();
 const { patchVersion: patch } = JSON.parse(await readFile(path.join(root, "public/data/version.json"), "utf8"));

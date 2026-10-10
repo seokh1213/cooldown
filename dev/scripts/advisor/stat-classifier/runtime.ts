@@ -1,7 +1,7 @@
 /** 고정된 자료를 사용하는 Node 실험 어댑터. 브라우저도 동일 core를 사용한다. */
 import { loadData } from "../kev-agent/lib";
 import { translations } from "../../../../src/shared/i18n/translations";
-import type { DialogueMemory } from "../../../../src/features/advisor/conversation/dialogueState";
+import type { DialogueMemory } from "../../../../src/features/advisor/conversation/memory/dialogueState";
 import type { PlanContext } from "../../../../src/features/advisor/contracts/planTypes";
 import * as core from "./core";
 export { jamo, grams, predict } from "./core";

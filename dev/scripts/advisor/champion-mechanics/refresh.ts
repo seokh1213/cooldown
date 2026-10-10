@@ -2,7 +2,7 @@
 import { access, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Job, Manifest } from "./contract";
+import type { Job, Manifest } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import type { ReviewDecision } from "./export";
 import { baselineDirectory, compareInventory, loadBaseline, type Baseline, type DriftSlot } from "./drift";
 import { prepare, ROOT } from "./prepare";

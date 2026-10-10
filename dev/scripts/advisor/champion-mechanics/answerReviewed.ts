@@ -1,7 +1,7 @@
 /** 연구도 앱의 대화 경로에 승인 색인을 전달한다. 응답 판단을 따로 구현하지 않는다. */
 import { answerDialogue } from "../../../../src/features/advisor/conversation/dialogueFlow";
 import type { PlanContext, PlanDeps } from "../../../../src/features/advisor/contracts/planTypes";
-import type { Slot } from "./contract";
+import type { Slot } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import type { ReviewedAbility, Topic } from "./retrieval";
 
 export interface RetrievalMemory { champion: string; slot: Slot; topic?: Topic }

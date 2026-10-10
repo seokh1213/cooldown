@@ -1,20 +1,20 @@
 /** Chrome DevTools에서 실행하는 현행/후보 평가. 실제 앱의 계획·자료·답 은행을 사용한다. */
-import { loadAdvisorData } from "../../../../src/features/advisor/conversation/context";
+import { loadAdvisorData } from "../../../../src/features/advisor/retrieval/context";
 import { planAnswer, type AnswerPlan, type PlanTurn } from "../../../../src/features/advisor/application/plan";
 import { buildCompareAnswer, type AdvisorAnswer } from "../../../../src/features/advisor/answers/answer";
 import { matchupNotes } from "../../../../src/features/advisor/retrieval/playbookNotes";
 import { loadPrecomputed, precomputedDigest, precomputedMore } from "../../../../src/features/advisor/retrieval/precomputed";
-import { answerProse } from "../../../../src/features/advisor/answers/prose";
-import { groundCommentary } from "../../../../src/features/advisor/retrieval/grounding";
+import { answerProse } from "../../../../src/features/advisor/answers/presentation/prose";
+import { groundCommentary } from "../../../../src/features/advisor/retrieval/grounding/groundCommentary";
 import { MAX_NEW_TOKENS } from "../../../../src/features/advisor/model/config";
-import { ruleAnswerText } from "../../../../src/features/advisor/understanding/ruleFocus";
+import { ruleAnswerText } from "../../../../src/features/advisor/understanding/spells/ruleFocus";
 import { translations } from "../../../../src/shared/i18n/translations";
 import type { Language } from "../../../../src/shared/i18n";
 import { createRuntime, type BrowserRuntime, type CallRecord } from "./runtime";
-import { planDialogue, type DialogueVariant } from "../../../../src/features/advisor/conversation/dialoguePlanner";
-import { assembleDialogueReply } from "../../../../src/features/advisor/conversation/dialogueReply";
-import type { DialogueMemory } from "../../../../src/features/advisor/conversation/dialogueState";
-import { acceptedSurface, SURFACE_SYSTEM } from "../../../../src/features/advisor/conversation/dialogueSurface";
+import { planDialogue, type DialogueVariant } from "../../../../src/features/advisor/conversation/planning/dialoguePlanner";
+import { assembleDialogueReply } from "../../../../src/features/advisor/conversation/planning/dialogueReply";
+import type { DialogueMemory } from "../../../../src/features/advisor/conversation/memory/dialogueState";
+import { acceptedSurface, SURFACE_SYSTEM } from "../../../../src/features/advisor/conversation/planning/dialogueSurface";
 
 export interface QuestionTurn { q: string; want: Record<string, unknown>; checks?: string[] }
 export interface QuestionCase { id: string; lang?: Language; holdout?: boolean; turns: QuestionTurn[] }

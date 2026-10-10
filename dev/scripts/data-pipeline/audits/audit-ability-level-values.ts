@@ -5,7 +5,7 @@ import path from "node:path";
 import { decodeChampionDetail, decodeChampionIndex } from "../../../../src/domain/game/contracts/championDataDecoder";
 import { decodeDataManifest } from "../../../../src/domain/game/contracts/dataManifest";
 import { DATA_LOCALES } from "../../../../src/domain/game/contracts/staticData";
-import { findAbilityLevelIssues, type AbilityLevelIssue } from "../ability-level-validation";
+import { findAbilityLevelIssues, type AbilityLevelIssue } from "../abilities/ability-level-validation";
 
 function argument(name: string): string | undefined {
   const index = process.argv.indexOf(name);

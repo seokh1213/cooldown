@@ -48,6 +48,6 @@
 ```sh
 node --import tsx dev/scripts/data-pipeline/audits/audit-ability-level-values.ts
 node --import tsx dev/scripts/data-pipeline/audits/audit-ability-level-values.ts --ref HEAD --json /tmp/ability-level-values.json
-npm run test:one -- dev/tests/unit/ability-level-validation.test.ts dev/tests/unit/ability-forms.test.ts dev/tests/data/ability-level-values.test.ts dev/tests/data/ability-forms.test.ts
-npm run test:e2e -- dev/tests/e2e/ability-level-values.spec.ts dev/tests/e2e/ability-forms.spec.ts
+npm run test:one -- dev/tests/unit/data-pipeline/ability-level-validation.test.ts dev/tests/unit/data-pipeline/ability-forms.test.ts dev/tests/data/data-pipeline/ability-level-values.test.ts dev/tests/data/data-pipeline/ability-forms.test.ts
+npm run test:e2e -- dev/tests/e2e/data-pipeline/ability-level-values.spec.ts dev/tests/e2e/data-pipeline/ability-forms.spec.ts
 ```

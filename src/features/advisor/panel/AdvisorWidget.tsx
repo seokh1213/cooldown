@@ -10,7 +10,7 @@ import { useAdvisor } from "@/features/advisor/session/useAdvisor";
 import { useAdvisorHistory } from "@/features/advisor/session/useAdvisorHistory";
 import { useDeviceType } from "@/shared/hooks/useDeviceType";
 import { useTranslation } from "@/shared/i18n";
-import { loadAdvisorData, type AdvisorData } from "@/features/advisor/conversation/context";
+import { loadAdvisorData, type AdvisorData } from "@/features/advisor/retrieval/context";
 import { canOfferModel } from "@/features/advisor/model/config";
 import { AdvisorPanel } from "./AdvisorPanel";
 import { AdvisorLauncher } from "./AdvisorLauncher";

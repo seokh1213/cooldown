@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
-import { noteVersion, type VersionContext } from "../../../../src/domain/knowledge/noteVersion";
+import { noteVersion, type VersionContext } from "../../../../src/domain/knowledge/notes/noteVersion";
 
 type JsonObject = Record<string, unknown>;
 export const hash = (value: string) => createHash("sha256").update(value).digest("hex");

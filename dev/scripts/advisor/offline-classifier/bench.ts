@@ -11,8 +11,8 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { detectChampions } from "../../../../src/features/advisor/understanding/intent";
-import { ACT_LABELS, actQuestion, actState } from "../../../../src/features/advisor/conversation/conversation";
+import { detectChampions } from "../../../../src/features/advisor/understanding/champions/intent";
+import { ACT_LABELS, actQuestion, actState } from "../../../../src/features/advisor/conversation/memory/conversation";
 import { JUDGE_KIND_INSTRUCTIONS, JUDGE_KIND9_CRITERIA, judgeRouteState } from "../../../../src/features/advisor/application/routeAsk";
 import { TOPIC_LABELS, topicQuestions } from "../../../../src/features/advisor/model/topicJudge";
 import { answerOffline, readOfflineModel, type OfflineJudgeMeta } from "../../../../src/features/advisor/model/offlineJudge";

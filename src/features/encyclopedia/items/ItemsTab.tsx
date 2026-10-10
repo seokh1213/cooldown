@@ -1,0 +1,225 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { Search } from "lucide-react";
+import type { DataLocale, StaticDataSources } from "@/domain/game/contracts/staticData";
+import { getNormalizedItems } from "@/infrastructure/queries/gameDataQueries";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/shared/ui/dialog";
+import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
+import { ScrollArea } from "@/shared/ui/scroll-area";
+import { VisuallyHidden } from "@/shared/ui/visually-hidden";
+import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
+import { useDeviceType } from "@/shared/hooks/useDeviceType";
+import { useTranslation } from "@/shared/i18n";
+import type { ItemTier } from "@/domain/game/itemTierUtils";
+import { ItemCell, ItemDetail } from "./ItemDetail";
+import { useEncyclopediaData } from "../useEncyclopediaData";
+import {
+  groupItemsByTier,
+  shouldShowInStore,
+  type Item,
+} from "./itemCatalogModel";
+
+interface ItemsTabProps {
+  patchVersion: string;
+  sources: StaticDataSources;
+  ddragonVersion: string;
+  lang: DataLocale;
+}
+
+function uniqueStoreItems(items: readonly Item[]): Item[] {
+  const names = new Set<string>();
+  return items.filter(shouldShowInStore).filter((item) => {
+    if (names.has(item.name)) return false;
+    names.add(item.name);
+    return true;
+  });
+}
+
+function ItemSearch(props: {
+  value: string;
+  placeholder: string;
+  mobile: boolean;
+  onChange: (value: string) => void;
+}) {
+  const { value, placeholder, mobile, onChange } = props;
+  return (
+    <div className={`relative group ${mobile ? "" : "w-full sm:w-52 md:w-64"}`}>
+      <Search className={`absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none group-focus-within:text-primary ${mobile ? "h-3.5 w-3.5" : "h-4 w-4"}`} />
+      <Input
+        aria-label={placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        className={`${mobile ? "h-9 pl-7 text-xs" : "h-8 pl-8 text-xs md:text-sm"} border-neutral-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary`}
+      />
+    </div>
+  );
+}
+
+function ItemGrid(props: {
+  itemsByTier: Record<ItemTier, Item[]>;
+  /**
+   * 거르기 전 **전체** 아이템 차례.
+   *
+   * 스프라이트 칸 자리를 이것으로 센다. 화면에 보이는 것만 넘기면 검색할 때마다
+   * 자리가 밀려 엉뚱한 아이콘이 나온다.
+   */
+  ddragonVersion: string;
+  selectedId: string | undefined;
+  tierLabel: (tier: ItemTier) => string;
+  onSelect: (item: Item, trigger: HTMLButtonElement) => void;
+}) {
+  const { itemsByTier, ddragonVersion, selectedId, tierLabel, onSelect } = props;
+  return (
+    <div className="p-1 space-y-1">
+      {(Object.keys(itemsByTier) as ItemTier[]).map((tier) => {
+        const items = itemsByTier[tier];
+        if (items.length === 0) return null;
+        return (
+          <div key={tier} className="space-y-0.5">
+            <div className="text-[11px] font-semibold text-muted-foreground">{tierLabel(tier)}</div>
+            <div className="flex flex-wrap gap-1">
+              {items.map((item) => (
+                <ItemCell
+                  key={item.id}
+                  item={item}
+                  ddragonVersion={ddragonVersion}
+                  isSelected={selectedId === item.id}
+                  onSelect={(trigger) => onSelect(item, trigger)}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export function ItemsTab({ patchVersion, sources, ddragonVersion, lang }: ItemsTabProps) {
+  const { t } = useTranslation();
+  const isMobile = useDeviceType() === "mobile";
+  const [search, setSearch] = useState("");
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  const detailTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedItemId = searchParams.get("item");
+
+  const loadItems = useCallback(
+    () => getNormalizedItems({ patchVersion, sources }, lang),
+    [patchVersion, sources, lang],
+  );
+  const { data: items, error, retry } = useEncyclopediaData(loadItems);
+  const storeItems = useMemo(() => items ? uniqueStoreItems(items) : null, [items]);
+  const selectedItem = items?.find((item) => item.id === selectedItemId) ?? storeItems?.[0] ?? null;
+
+  /*
+   * 고른 아이템을 주소에 적는다.
+   *
+   * 예전에는 화면 안에서만 들고 있어서 새로고침하면 목록 첫 칸으로 돌아갔다.
+   * 보던 것을 링크로 건네지도 못했다. 챔피언 탭이 `?champion=` 으로 하는 것과 같다.
+   *
+   * 자리를 **밀어 넣지 않고 갈아 끼운다**(`replace`). 격자에서는 훑어보느라 여러 개를
+   * 잇달아 누르는데, 누를 때마다 기록이 쌓이면 뒤로 가기가 아이템을 하나씩 되짚는
+   * 일이 된다. 사용자가 바라는 것은 백과를 떠나는 쪽이다.
+   */
+  const selectItem = (item: Item) => {
+    setSelectedItemId(item.id);
+    const next = new URLSearchParams(searchParams);
+    next.set("item", item.id);
+    setSearchParams(next, { replace: true });
+  };
+
+  // 도우미 답의 "아이템 백과에서 보기" 링크가 ?item=<id> 로 들어온다. 목록이 오면 그 아이템을 고른다.
+  useEffect(() => {
+    if (!items || !requestedItemId) return;
+    const requested = items.find((item) => item.id === requestedItemId);
+    if (!requested) return;
+    setSelectedItemId(requested.id);
+    if (isMobile) setMobileDetailOpen(true);
+  }, [items, requestedItemId, isMobile]);
+
+  const itemMap = useMemo(
+    () => new Map((items ?? []).map((item) => [item.id, item])),
+    [items],
+  );
+  const debouncedSearch = useDebouncedValue(search, isMobile ? 220 : 180);
+  const itemsByTier = useMemo(
+    () => groupItemsByTier(storeItems, debouncedSearch),
+    [storeItems, debouncedSearch],
+  );
+  const tierLabel = (tier: ItemTier) => t.encyclopedia.items.tiers[tier];
+  const selectMobileItem = (item: Item, trigger: HTMLButtonElement) => {
+    detailTriggerRef.current = trigger;
+    selectItem(item);
+    setMobileDetailOpen(true);
+  };
+
+  if (error) {
+    return <div role="alert" className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">{t.app.loadError}<Button onClick={retry} variant="outline" className="h-11">{t.app.retry}</Button></div>;
+  }
+  if (!storeItems) {
+    return <div role="status" className="mt-4 text-sm text-muted-foreground">{t.championSelector.loading}</div>;
+  }
+  if (storeItems.length === 0) {
+    return <div className="mt-4 text-sm text-muted-foreground">{t.championSelector.emptyList}</div>;
+  }
+  const detail = selectedItem && (
+    <ItemDetail
+      item={selectedItem}
+      itemMap={itemMap}
+      ddragonVersion={ddragonVersion}
+      locale={lang}
+      onSelect={selectItem}
+    />
+  );
+
+  if (isMobile) {
+    return (
+      <div className="mt-4 space-y-3">
+        <ItemSearch value={search} placeholder={t.encyclopedia.items.searchPlaceholder} mobile onChange={setSearch} />
+        <div className="rounded-md border bg-card/40">
+          <ItemGrid itemsByTier={itemsByTier} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={selectMobileItem} />
+        </div>
+        <Dialog open={mobileDetailOpen && selectedItem !== null} onOpenChange={setMobileDetailOpen}>
+          <DialogContent
+            className="w-[calc(100vw-32px)] max-w-lg h-[70vh] p-0 rounded-xl overflow-hidden flex flex-col"
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              const trigger = detailTriggerRef.current;
+              if (trigger?.isConnected) trigger.focus();
+              else document.getElementById("main-content")?.focus();
+            }}
+          >
+            <VisuallyHidden>
+              <DialogTitle>{selectedItem?.name ?? "Item"}</DialogTitle>
+              <DialogDescription>{selectedItem?.name ?? "Item"}</DialogDescription>
+            </VisuallyHidden>
+            <div className="flex-1 min-h-0 overflow-y-auto"><div className="p-4">{detail}</div></div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 space-y-3">
+      <ItemSearch value={search} placeholder={t.encyclopedia.items.searchPlaceholder} mobile={false} onChange={setSearch} />
+      <div className="rounded-md border bg-card/40 md:h-[calc(100vh-12rem)] flex flex-col md:flex-row">
+        <div className="md:flex-1 md:border-r border-border/60 flex flex-col min-w-0 min-h-0">
+          <div className="px-3 py-2 border-b border-border/60 text-[11px] font-semibold text-muted-foreground shrink-0">
+            {t.encyclopedia.items.listTitle}
+          </div>
+          <ScrollArea className="flex-1 min-h-0">
+            <ItemGrid itemsByTier={itemsByTier} ddragonVersion={ddragonVersion} selectedId={selectedItem?.id} tierLabel={tierLabel} onSelect={selectItem} />
+          </ScrollArea>
+        </div>
+        <div className="hidden min-h-0 flex-col p-4 md:flex md:w-[42%] md:min-w-[320px] lg:w-[420px]">
+          {detail ?? <div className="text-xs text-muted-foreground h-full flex items-center justify-center text-center px-4">{t.encyclopedia.items.detailEmpty}</div>}
+        </div>
+      </div>
+    </div>
+  );
+}

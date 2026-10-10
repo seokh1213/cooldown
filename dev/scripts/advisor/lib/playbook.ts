@@ -7,20 +7,20 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import type { Playbook, PlaybookEntry } from "../../../../src/domain/knowledge/playbookCore";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
 import {
-  deriveEscapeClaims,
-  deriveItemClaims,
-  deriveStackClaims,
-  renderEscapeClaims,
-  renderItemClaims,
-  renderStackClaims,
-} from "../../../../src/domain/knowledge/claims";
-import { loadComboCompilation } from "./comboNotes";
+deriveEscapeClaims,
+deriveItemClaims,
+deriveStackClaims,
+renderEscapeClaims,
+renderItemClaims,
+renderStackClaims,
+} from "../../../../src/domain/knowledge/combat/claims";
+import type { Playbook,PlaybookEntry } from "../../../../src/domain/knowledge/notes/playbookCore";
+import { loadComboCompilation } from "../combos/comboNotes";
 import { resolvePatchVersion } from "./data";
 
-export * from "../../../../src/domain/knowledge/playbookCore";
+export * from "../../../../src/domain/knowledge/notes/playbookCore";
 
 export const PLAYBOOK_ROOT = path.resolve(process.cwd(), "dev/data/knowledge", "playbooks");
 

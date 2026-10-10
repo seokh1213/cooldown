@@ -4,8 +4,8 @@
 import { useEffect, useState } from "react";
 import type { AdvisorTurn } from "@/features/advisor/session/useAdvisorTurns";
 import type { AdvisorAnswer } from "@/features/advisor/answers/answer";
-import { groupReferenceAnswers, isReferenceAnswer } from "@/features/advisor/answers/referenceGroups";
-import { referenceKey } from "@/features/advisor/answers/referenceIdentity";
+import { groupReferenceAnswers, isReferenceAnswer } from "@/features/advisor/answers/references/referenceGroups";
+import { referenceKey } from "@/features/advisor/answers/references/referenceIdentity";
 
 export function useReferenceSelection(turns: AdvisorTurn[], wide: boolean) {
   const [selection, setSelection] = useState<{ turnId: number; key?: string }>();

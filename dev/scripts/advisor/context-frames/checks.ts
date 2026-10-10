@@ -1,5 +1,5 @@
 import type { DialogueOutput } from "../../../../src/features/advisor/conversation/dialogueFlow";
-import { statFields, statQueryFromAnswer } from "../../../../src/features/advisor/understanding/statQuery";
+import { statFields, statQueryFromAnswer } from "../../../../src/features/advisor/understanding/stats/statQuery";
 import type { Check, QualityStory } from "../quality/types";
 
 export function contextChecks(output: DialogueOutput, expected: QualityStory["turns"][number]["expected"]): Check[] {

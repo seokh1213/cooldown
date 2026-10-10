@@ -1,6 +1,6 @@
 /** 앱에서 사용하는 이름 탐지기를 그대로 쓰는 Node 실험 진입점. 앱 기본 경로에는 연결하지 않는다. */
-import type { AdvisorData } from "../../../../src/features/advisor/conversation/context";
-import { detectChampionMentions } from "../../../../src/features/advisor/understanding/intent";
+import type { AdvisorData } from "../../../../src/features/advisor/retrieval/context";
+import { detectChampionMentions } from "../../../../src/features/advisor/understanding/champions/intent";
 import { fingerprint, sourceCard } from "./fixtures";
 import { evaluate } from "./engine";
 import { updateMemory } from "./memory";

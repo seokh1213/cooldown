@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { X, GripVertical } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { ChampionIcon } from "@/shared/ui/champion-icon";
+import { ChampionIcon } from "@/shared/ui/icons/champion-icon";
 import type { ChampionWithInfo } from "./types";
 import type { ChampionTab } from "@/infrastructure/storage/contracts";
 import {

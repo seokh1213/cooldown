@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { loadData, ROOT } from "../kev-agent/lib";
-import { splitSentences } from "../../../../src/features/advisor/answers/answerText";
+import { splitSentences } from "../../../../src/features/advisor/answers/presentation/answerText";
 import { rankDocs, type RagState, type SpellDoc } from "./evidence";
 import type { RagCase } from "./cases";
 

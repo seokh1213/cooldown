@@ -7,7 +7,7 @@ import { directory, models, modeNames, runQuestion } from "./adapter";
 import { nameCases } from "./seeds";
 import { data } from "./runtime";
 import { resolveQuestion } from "../../../../src/features/advisor/understanding/resolvedQuestion";
-import type { ChampionStatQuery } from "../../../../src/features/advisor/understanding/statQuery";
+import type { ChampionStatQuery } from "../../../../src/features/advisor/understanding/stats/statQuery";
 
 const examples: Example[] = fs.readFileSync(`${directory}/questions.jsonl`, "utf8").trim().split("\n").map(line => JSON.parse(line));
 const test = examples.filter(row => row.split === "test");

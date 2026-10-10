@@ -1,4 +1,4 @@
-import { resolveStaticDataRelease } from "../../../src/domain/game/staticDataRelease";
+import { resolveStaticDataRelease } from "../../../src/domain/game/static-data/staticDataRelease";
 
 export interface PatchComparison {
   previous: string;

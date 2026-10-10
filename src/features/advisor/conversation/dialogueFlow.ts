@@ -4,15 +4,15 @@
  * 판정·검색은 PlanDeps로 주입하고, 화면·React·저장 구현은 이 흐름 밖에 둔다.
  */
 import type { PlanContext, PlanDeps } from "../contracts/planTypes";
-import { prepareDialogueRequest } from "./dialogueRequest";
-import { planPreparedDialogue } from "./dialoguePlanner";
-import { summarizeGroundedReply, type SummaryExperiment } from "../answers/groundedSummary";
-import { assembleDialogueReply } from "./dialogueReply";
-import { answerGroundedNumeric } from "../answers/groundedNumeric";
-import { withContextFrames } from "./contextDialogue";
-import type { DialoguePlan } from "./dialoguePlanner";
-import type { DialogueReply } from "./dialogueReply";
-import { DEFAULT_CONTEXT_LIMIT, DEFAULT_CONTEXT_POLICY, type ContextDecision } from "./contextFrameTypes";
+import { prepareDialogueRequest } from "./planning/dialogueRequest";
+import { planPreparedDialogue } from "./planning/dialoguePlanner";
+import { summarizeGroundedReply, type SummaryExperiment } from "../answers/evidence/groundedSummary";
+import { assembleDialogueReply } from "./planning/dialogueReply";
+import { answerGroundedNumeric } from "../answers/evidence/groundedNumeric";
+import { withContextFrames } from "./memory/contextDialogue";
+import type { DialoguePlan } from "./planning/dialoguePlanner";
+import type { DialogueReply } from "./planning/dialogueReply";
+import { DEFAULT_CONTEXT_LIMIT, DEFAULT_CONTEXT_POLICY, type ContextDecision } from "./memory/contextFrameTypes";
 
 export interface DialogueOutput {
   dialogue: DialoguePlan;

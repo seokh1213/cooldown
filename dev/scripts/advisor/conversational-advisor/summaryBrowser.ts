@@ -1,8 +1,8 @@
 /** 실제 대화 흐름에 생성을 주입하고, 실패 후 본문과 다음 턴의 기억까지 비교한다. */
 import { answerDialogue } from "../../../../src/features/advisor/conversation/dialogueFlow";
-import { loadAdvisorData } from "../../../../src/features/advisor/conversation/context";
+import { loadAdvisorData } from "../../../../src/features/advisor/retrieval/context";
 import type { PlanTurn } from "../../../../src/features/advisor/application/plan";
-import type { SummaryMode } from "../../../../src/features/advisor/answers/groundedSummary";
+import type { SummaryMode } from "../../../../src/features/advisor/answers/evidence/groundedSummary";
 import { translations } from "../../../../src/shared/i18n/translations";
 import type { createEvaluation } from "./browser";
 

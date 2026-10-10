@@ -4,7 +4,7 @@ import { parseArgs } from "node:util";
 import { execFileSync } from "node:child_process";
 import { setImmediate } from "node:timers/promises";
 import { answerDialogue } from "../../../../src/features/advisor/conversation/dialogueFlow";
-import { CONTEXT_POLICIES, CONTEXT_LIMITS, type ContextPolicy } from "../../../../src/features/advisor/conversation/contextFrameTypes";
+import { CONTEXT_POLICIES, CONTEXT_LIMITS, type ContextPolicy } from "../../../../src/features/advisor/conversation/memory/contextFrameTypes";
 import { ADVISOR_MODEL } from "../../../../src/features/advisor/model/config";
 import { buildBank, digest, readRows, ROOT } from "../quality/bank";
 import { currentDataDirectory, fileHash, filesUnder } from "../quality/archive";
@@ -13,7 +13,7 @@ import { gradeTurn, observedAnswer, describe, routeCheck } from "../quality/chec
 import { openModel } from "../quality/model";
 import type { QualityStory, QualityRow, QualityReport } from "../quality/types";
 import { contextChecks } from "./checks";
-import { learnedContextRanker, type ContextRankModel } from "../../../../src/features/advisor/conversation/contextRanker";
+import { learnedContextRanker, type ContextRankModel } from "../../../../src/features/advisor/conversation/memory/contextRanker";
 import { TURN_LIMIT, dehydrateTurn } from "../../../../src/features/advisor/storage/history";
 
 const { values } = parseArgs({ options: {

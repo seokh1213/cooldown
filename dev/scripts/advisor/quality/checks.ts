@@ -1,14 +1,14 @@
-import { matchesTarget, checksFor, memoryChecks } from "../conversational-advisor/score";
-import type { Result } from "../conversational-advisor/browser";
-import { grade as schemaGrade, type Case as SchemaCase } from "../mechanic-schema/cases";
-import { translateStat } from "../../../../src/features/advisor/answers/promptLocale";
-import { answerChampionIds, type AdvisorAnswer } from "../../../../src/features/advisor/answers/answer";
-import type { PlanContext, AnswerPlan } from "../../../../src/features/advisor/contracts/planTypes";
-import type { StatName } from "../../../../src/domain/knowledge/facts";
-import type { QualityStory, Check } from "./types";
 import { isDeepStrictEqual } from "node:util";
-import { statFields, validStatFields, type ChampionStatQuery } from "../../../../src/features/advisor/understanding/statQuery";
-import { buildItemCard } from "../../../../src/features/advisor/conversation/context";
+import type { StatName } from "../../../../src/domain/knowledge/cards/contracts";
+import { answerChampionIds,type AdvisorAnswer } from "../../../../src/features/advisor/answers/answer";
+import { translateStat } from "../../../../src/features/advisor/answers/presentation/promptLocale";
+import type { AnswerPlan,PlanContext } from "../../../../src/features/advisor/contracts/planTypes";
+import { buildItemCard } from "../../../../src/features/advisor/retrieval/context";
+import { statFields,validStatFields,type ChampionStatQuery } from "../../../../src/features/advisor/understanding/stats/statQuery";
+import type { Result } from "../conversational-advisor/browser";
+import { checksFor,matchesTarget,memoryChecks } from "../conversational-advisor/score";
+import { grade as schemaGrade,type Case as SchemaCase } from "../mechanic-schema/cases";
+import type { Check,QualityStory } from "./types";
 
 export function routeCheck(input: { output: Output; ctx: PlanContext; expected: Record<string, unknown> }): Check[] {
   const kind = deliveredRoute(input.output, input.ctx);

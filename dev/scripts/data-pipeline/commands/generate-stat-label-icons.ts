@@ -33,7 +33,7 @@ import * as path from "node:path";
 import { decodeDataManifest } from "../../../../src/domain/game/contracts/dataManifest";
 import { FORMULA_GROUPS } from "../../../../src/domain/game/formulas/index";
 import { STAT_DEFINITIONS } from "../../../../src/domain/game/types/combatStats";
-import { EXTRA_STAT_GLYPHS } from "../../../../src/domain/game/tooltip/statIcons";
+import { EXTRA_STAT_GLYPHS } from "../../../../src/domain/game/tooltip/formatting/statIcons";
 
 const LOCALES = ["ko_KR", "en_US", "zh_CN"] as const;
 type Locale = (typeof LOCALES)[number];

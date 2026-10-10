@@ -1,8 +1,8 @@
-import type { AdvisorData } from "../../../src/features/advisor/conversation/context";
-import type { ChampionCard } from "../../../src/domain/knowledge/facts";
-import type { ComboGuideFile } from "../../../src/domain/knowledge/comboGuide";
-import { compileComboNotes } from "../../scripts/advisor/lib/comboNotes";
-import type { ComboBaseline } from "../../scripts/advisor/lib/comboReview";
+import type { ChampionCard } from "../../../src/domain/knowledge/cards/contracts";
+import type { ComboGuideFile } from "../../../src/domain/knowledge/notes/comboGuide";
+import type { AdvisorData } from "../../../src/features/advisor/retrieval/context";
+import { compileComboNotes } from "../../scripts/advisor/combos/comboNotes";
+import type { ComboBaseline } from "../../scripts/advisor/combos/comboReview";
 
 /** Conversation behavior uses approved snapshots; publication tests inspect live quarantine separately. */
 export function comboBaselineData(data: AdvisorData, guides: ComboGuideFile, baseline: ComboBaseline): AdvisorData {

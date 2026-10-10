@@ -1,7 +1,7 @@
-import { AbilityIcon } from "@/shared/ui/ability-icon";
-import { SkillTooltip } from "@/features/champions/comparison/SkillTooltip";
-import type { SpellFact } from "@/domain/knowledge/facts";
-import type { ChampionPassive, ChampionSpell } from "@/domain/game/types";
+import type { ChampionPassive,ChampionSpell } from "@/domain/game/types";
+import type { SpellFact } from "@/domain/knowledge/cards/contracts";
+import { SkillTooltip } from "@/features/champions/comparison/tooltip/SkillTooltip";
+import { AbilityIcon } from "@/shared/ui/icons/ability-icon";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 
 /** 카드의 검증된 본문을 기존 호버·터치 상세창으로 보여준다. */

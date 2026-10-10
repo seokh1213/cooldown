@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { PatchMetric, PatchSnapshot, PatchSnapshotEntity, PatchText } from "../../../src/domain/game/contracts/patchNotes";
 import { DATA_LOCALES, type DataLocale } from "../../../src/domain/game/contracts/staticData";
-import { resolveStaticDataRelease, type StaticDataRelease } from "../../../src/domain/game/staticDataRelease";
+import { resolveStaticDataRelease, type StaticDataRelease } from "../../../src/domain/game/static-data/staticDataRelease";
 import { fetchJson } from "../data-pipeline/io/json";
 import { ITEM_DEFINITIONS, SPECIFIC_DEFINITIONS, STAT_LABELS, VALUE_DEFINITIONS, text, type MetricDefinition } from "./metricLabels";
 import type { ChampionCatalogEntry, ItemCatalogEntry, NumericChampion, NumericSpell } from "./sourceTypes";

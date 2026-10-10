@@ -1,0 +1,61 @@
+import { useCallback, useEffect, useState } from "react";
+import type { Language } from "@/shared/i18n";
+import type { Champion } from "@/domain/game/types";
+import { getChampionList } from "@/infrastructure/queries/championQueries";
+import { championRepository } from "@/infrastructure/repositories/championRepository";
+import { gameDataRepository } from "@/infrastructure/repositories/gameDataRepository";
+import { manifestRepository } from "@/infrastructure/repositories/manifestRepository";
+import type { StaticDataSources } from "@/domain/game/contracts/staticData";
+import { waitForPWAStartup } from "@/app/pwa";
+
+export interface AppRuntimeData {
+  patchVersion: string;
+  sources: StaticDataSources;
+  championList: Champion[];
+}
+
+type BootstrapState =
+  | { status: "loading" }
+  | { status: "ready"; data: AppRuntimeData }
+  | { status: "error"; error: Error };
+
+export function useAppBootstrap(language: Language): {
+  state: BootstrapState;
+  retry: () => void;
+} {
+  const [attempt, setAttempt] = useState(0);
+  const [state, setState] = useState<BootstrapState>({ status: "loading" });
+
+  useEffect(() => {
+    let active = true;
+    setState({ status: "loading" });
+    void (async () => {
+      try {
+        await waitForPWAStartup();
+        if (!active) return;
+        const manifest = await manifestRepository.get();
+        championRepository.clearExceptRelease(manifest);
+        gameDataRepository.clearExceptRelease(manifest);
+        const championList = await getChampionList(
+          manifest,
+          language
+        );
+        if (!active) return;
+        if (championList.length === 0) {
+          throw new Error("Champion data is empty");
+        }
+        setState({ status: "ready", data: { ...manifest, championList } });
+      } catch (value) {
+        if (!active) return;
+        const error = value instanceof Error ? value : new Error(String(value));
+        setState({ status: "error", error });
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [language, attempt]);
+
+  const retry = useCallback(() => setAttempt((value) => value + 1), []);
+  return { state, retry };
+}

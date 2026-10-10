@@ -1,7 +1,7 @@
 import path from "node:path";
 import { decodePatchNotesIndex, type PatchSnapshot } from "../../../src/domain/game/contracts/patchNotes";
 import { decodeDataManifest } from "../../../src/domain/game/contracts/dataManifest";
-import { resolveStaticDataRelease } from "../../../src/domain/game/staticDataRelease";
+import { resolveStaticDataRelease } from "../../../src/domain/game/static-data/staticDataRelease";
 import { collectPatchSnapshot } from "./collect";
 import { comparePatchSnapshots } from "./diff";
 import { extendPatchNotesIndex } from "./archive";

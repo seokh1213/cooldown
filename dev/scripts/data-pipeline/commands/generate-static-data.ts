@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { pathToFileURL } from "node:url";
 import { DATA_LOCALES } from "../../../../src/domain/game/contracts/staticData";
-import { resolveStaticDataRelease } from "../../../../src/domain/game/staticDataRelease";
+import { resolveStaticDataRelease } from "../../../../src/domain/game/static-data/staticDataRelease";
 import {
   fetchCatalogSources,
   writeCatalogData,

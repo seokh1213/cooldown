@@ -3,7 +3,7 @@ import { appendFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Ajv from "ajv";
-import type { Draft, Job, Manifest } from "./contract";
+import type { Draft, Job, Manifest } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { acceptedReview, type ReviewDecision } from "./export";
 import { checkDirectory } from "./check";
 import { ROOT } from "./prepare";

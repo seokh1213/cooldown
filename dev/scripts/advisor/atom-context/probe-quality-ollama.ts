@@ -2,11 +2,11 @@
 import { writeFileSync } from "node:fs";
 import { performance } from "node:perf_hooks";
 import { loadData } from "../kev-agent/lib";
-import { selectPlaybook } from "../../../../src/domain/knowledge/playbookCore";
+import { selectPlaybook } from "../../../../src/domain/knowledge/notes/playbookCore";
 import { adviceUnit, actionEligible } from "../../../../src/features/advisor/application/adviceActions";
 import { adviceQuestion, relevantAdvice } from "../../../../src/features/advisor/application/adviceRelevance";
-import { checkedMatchupText } from "../../../../src/features/advisor/answers/matchupFactCheck";
-import { scenarioConditions } from "../../../../src/features/advisor/understanding/scenarioConditions";
+import { checkedMatchupText } from "../../../../src/features/advisor/answers/evidence/matchupFactCheck";
+import { scenarioConditions } from "../../../../src/features/advisor/understanding/requests/scenarioConditions";
 
 const cases = [
   { id: "m01", mine: "Thresh", enemy: "Morgana", q: "내 Q 없이 어떻게 들어가?", state: "내 Q가 없어", ids: ["thresh-skill-w", "thresh-skill-e", "vs-morgana-q"], expected: ["thresh-skill-e"] },

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import DOMPurify, { type Config } from "dompurify";
-import { renderStatIconTokens } from "@/domain/game/tooltip/statIcons";
+import { renderStatIconTokens } from "@/domain/game/tooltip/formatting/statIcons";
 
 const statImageBase = (import.meta.env?.BASE_URL ?? "/").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const statImageUri = new RegExp(`^${statImageBase}img/\\d+\\.\\d+(?:\\.\\d+)?/stat/[a-z]+\\.webp$`);

@@ -1,4 +1,4 @@
-import type { SourceDoc, SourceNumber } from "./contract";
+import type { SourceDoc, SourceNumber } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 const CARDINAL: Record<string, number> = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
 /** 모델이 수치를 새로 쓰지 않고 출처의 숫자를 참조하도록 번호를 붙인다. */
 export function sourceNumbers(sources: SourceDoc[]): SourceNumber[] {

@@ -1,5 +1,5 @@
 /** 스킬 상태 표현의 부정과 정정을 읽는다. 마지막으로 명시한 상태만 적용한다. */
-import type { ScenarioCondition } from "../conversation/dialogueState";
+import type { ScenarioCondition } from "../conversation/memory/dialogueState";
 
 const DOWN = /빠졌|빠진|빠지면|없(?:으면|을|이|고|어|는데|는)?|재사용\s*대기\s*중|쿨(?:타임)?(?:이|은)?\s*(?:중|돌고(?:\s*있(?:어|고|는데))?|도는)|is down|on cooldown|没了|冷却中/gi;
 const READY = /살아|남아|(?:는|가)\s*있|있(?:고|으면|어)|돌아왔|준비|사용\s*가능|(?:이|가)\s*(?:오면|들어오)|is up|available|还在|有技能|可用/gi;

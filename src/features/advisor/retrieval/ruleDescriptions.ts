@@ -1,5 +1,5 @@
-import type { AdvisorData } from "../conversation/context";
-import { askedRuleKinds } from "@/domain/knowledge/rules";
+import type { AdvisorData } from "./context";
+import { askedRuleKinds } from "@/domain/knowledge/notes/rules";
 
 interface Description { name: string; groups: RegExp[]; historical?: boolean }
 

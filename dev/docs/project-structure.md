@@ -43,6 +43,7 @@ cooldown/
 │   ├── research/              # 조사 근거, 평가 입력·기준선·검토 기록
 │   ├── docs/                  # 설계, 운영 방법, 감사 기록, README 이미지
 │   ├── assets/                # 이미지 생성에 쓰는 원본 자산
+│   ├── preview/               # OG 이미지 제작용 개발 화면
 │   ├── hooks/                 # Git pre-push 검사
 │   └── artifacts/             # 빌드·미리보기·테스트 결과, Git 제외
 ├── index.html                 # Vite HTML 진입점
@@ -56,10 +57,12 @@ cooldown/
 
 ## 처음 읽을 파일
 
-1. `src/main.tsx` → `src/app/App.tsx` → `src/app/AppRouter.tsx`: 앱이 시작하고 화면을 선택하는 흐름.
+1. `src/main.tsx` → `src/app/App.tsx` → `src/app/routing/AppRouter.tsx`: 앱이 시작하고 화면을 선택하는 흐름.
 2. 관심 있는 `src/features/<기능>/<기능명>Page.tsx`: 해당 화면의 구성.
 3. 기능 안의 작은 책임별 폴더: 화면, 상태, 계산의 세부 구현.
 4. `src/domain`과 `src/infrastructure`: 게임 규칙과 데이터 입출력.
+
+전체 폴더의 변경·유지 판단은 [전수 점검 기록](folder-structure-audit.md)에 있다.
 
 도우미는 [도우미 패키지 안내](../../src/features/advisor/README.md)와
 [답변 흐름](advisor-answer-pipeline.md)을 함께 읽는다.
@@ -77,17 +80,14 @@ UI와 일반 도구만 `shared`에 둔다. 게임의 의미를 가진 계산·�
 ```text
 features/champions/
 ├── comparison/
-│   ├── ChampionComparison.tsx       # 비교 기능의 진입 컴포넌트
-│   ├── SkillsSectionDesktop.tsx
-│   ├── SkillsSectionMobile.tsx
-│   ├── StatsSectionDesktop.tsx
-│   ├── StatsSectionMobile.tsx
-│   ├── SortableChampionHeader.tsx   # 데스크톱 표가 공유하는 헤더
-│   ├── SortableChampionCell.tsx     # 데스크톱 표가 공유하는 셀
-│   ├── useChampionReordering.ts
-│   └── …                          # 이 비교에서 쓰는 툴팁과 계산
-├── selection/                     # 검색·선택·즐겨찾기
-└── drag/                          # 챔피언 드래그 센서
+│   ├── ChampionComparison.tsx   # 비교 기능의 진입점
+│   ├── types.ts                 # 비교 화면의 입력 계약
+│   ├── stats/                   # 능력치 표와 값 표시
+│   ├── skills/                  # 스킬 표, 랭크, 쿨타임 표시
+│   ├── tooltip/                 # 툴팁 UI, 스킬 형태·구조화된 상세
+│   └── table/                   # 표가 공유하는 헤더·셀·드래그 순서
+├── selection/                   # 검색·선택·즐겨찾기
+└── drag/                        # 챔피언 드래그 센서
 ```
 
 관련 파일이 늘어나면 책임이 드러나는 하위 패키지로 나눈다. 한 파일마다 폴더를
@@ -99,6 +99,43 @@ features/champions/
 
 현재 경로를 직접 import한다. 이전 경로를 위한 재수출 파일이나 중복 구현은 두지 않는다.
 새로운 의존성이나 실행 서비스는 이 구조 변경에 추가하지 않았다.
+
+## 앱과 툴팁의 세부 구조
+
+```text
+app/
+├── App.tsx                       # 앱 조립
+├── useAppPreferences.ts           # 앱 전체 설정, 하나의 작은 모듈
+├── styles.css
+├── bootstrap/                    # 초기 데이터, 시작 오류, 대기 화면
+├── routing/                      # 화면 선택과 라우팅 오류 경계
+├── layout/                       # 공통 틀, 내비게이션, 사이드바, 푸터
+└── pwa/                          # 업데이트 표시·적용, 릴리스·캐시 관리
+
+domain/game/tooltip/
+├── parser.ts                     # 템플릿 해석의 실제 진입점
+├── contracts.ts                  # 입력·출력·진단 계약
+├── calculations/                 # 값 연산, 계산 파트, 레벨 범위, 계산 계약
+├── variables/                    # 토큰 해석·치환, 스킬 필드 읽기
+├── data/                         # 이름·해시 조회, 형제 스킬·런타임 별칭
+└── formatting/                   # 계산 결과·아이콘·태그·잔여 문구 표시
+```
+
+`comparison/tooltip`은 화면 UI를, `domain/game/tooltip`은 데이터 해석 엔진을 소유한다.
+`shared/ui/tooltip.tsx`는 작은 공용 UI 원시 컴포넌트라 단일 파일로 유지한다.
+`layout`이나 PWA 릴리스 관리처럼 같은 책임의 작은 묶음도 더 쪼개지 않는다.
+폴더 깊이나 파일 개수 자체를 목표로 삼지 않는다.
+
+백과사전은 `champions`, `items`, `runes`, `summoners`, `formulas`로 나눈다.
+패치 이력은 `entries`, `history`, `skills`, `data`, `formatting`으로 나눈다.
+VS는 `comparison`과 `workspace`, 쿨타임은 `view`와 `workspace`를 사용한다.
+
+개발 스크립트도 같은 기준을 따른다. 도우미의 `sources`, `knowledge`, `translations`,
+`review`, `combos`, `evaluation`은 수집·생성·번역·검수·콤보·평가를 각각 맡는다.
+게임 데이터 생성기의 `champions`, `abilities`, `simulation`, `tooltip`, `thumbnails`는
+생성 대상과 계산 책임을 나타낸다. 테스트는 실행 영역 `unit`, `data`, `e2e` 안에서
+`advisor`, `tooltip`, `app`, `data-pipeline` 등 소유 기능별로 묶는다.
+Node 테스트 명령은 하위 폴더까지 재귀 수집하고 Playwright도 동일하게 수집한다.
 
 ## 원본과 공개 데이터
 
@@ -118,7 +155,7 @@ dev/artifacts/dist                 # GitHub Pages에 전달하는 결과물
 원문, 조사 보고서, 학습·검수 입력, 개발 문서를 넣지 않는다. `dev`에 있다는 사실은
 Git 저장소의 공개 여부와 별개다. 비밀값은 어느 폴더에도 커밋하지 않는다.
 
-`src/domain/game/abilityIconStates.ts`는 `dev/data/overrides/abilityIconStates.json`을
+`src/domain/game/abilities/abilityIconStates.ts`는 `dev/data/overrides/abilityIconStates.json`을
 빌드 입력으로 읽는다. 해당 설정은 앱 코드에 필요한 부분으로 포함되고 원본 폴더 전체를
 공개하지 않는다. `src/infrastructure/generated`의 TypeScript 파일도 앱이 import하는
 생성 코드라 소스 영역에 유지한다.

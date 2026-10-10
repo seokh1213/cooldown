@@ -5,11 +5,11 @@
  * (`routeAsk`)가 그랬듯 영어·중국어에서는 거의 아무것도 못 가린다. 같은 판정기(`judge.ts`)에
  * 헤드만 하나 더 붙여 세 언어에서 고르게 가린다.
  *
- * **학습한 글자와 한 글자도 다르면 안 된다.** 학습 자료(`dev/scripts/advisor/build-topic-train.ts`)와
+ * **학습한 글자와 한 글자도 다르면 안 된다.** 학습 자료(`dev/scripts/advisor/evaluation/build-topic-train.ts`)와
  * 이 파일이 같은 문구를 쓴다.
  */
 import type { NoteCategory, NotePerspective } from "../retrieval/noteSelect";
-import { asksCombo } from "../understanding/comboIntent";
+import { asksCombo } from "../understanding/requests/comboIntent";
 
 export type TopicLabel = NoteCategory | "general";
 

@@ -1,14 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { readOfflineModel, answerOffline, type OfflineJudgeMeta } from "../../../../src/features/advisor/model/offlineJudge";
-import { REQUEST_MODEL_FILES, REQUEST_SCOPES, REQUEST_SCOPE_INSTRUCTION } from "../../../../src/features/advisor/understanding/requestIntent";
+import { REQUEST_MODEL_FILES, REQUEST_SCOPES, REQUEST_SCOPE_INSTRUCTION } from "../../../../src/features/advisor/understanding/requests/requestIntent";
 import { judgeRouteState } from "../../../../src/features/advisor/application/routeAsk";
 import { resolveQuestion } from "../../../../src/features/advisor/understanding/resolvedQuestion";
 import { requestScopePrompt, readRequestScope } from "../../../../src/features/advisor/model/requestScopeModel";
-import { confidentChoice } from "../../../../src/features/advisor/understanding/requestIntent";
+import { confidentChoice } from "../../../../src/features/advisor/understanding/requests/requestIntent";
 import { numericChecks, numericRequest, type NumericGold } from "./numeric";
 import { answerDialogue } from "../../../../src/features/advisor/conversation/dialogueFlow";
-import { answerEvidence } from "../../../../src/features/advisor/answers/answerEvidence";
+import { answerEvidence } from "../../../../src/features/advisor/answers/evidence/answerEvidence";
 import { buildRetrievalDocs } from "../../../../src/features/advisor/application/searchFallback";
 import { current } from "../vector-search/corpus";
 import { evaluationDeps, readPublic, qualityContext, type ModelRuntime } from "./dialogue";

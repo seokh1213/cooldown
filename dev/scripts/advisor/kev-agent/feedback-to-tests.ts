@@ -8,7 +8,7 @@
  *   npx tsx dev/scripts/advisor/kev-agent/feedback-to-tests.ts <내보낸 파일.json...> > dev/research/llm-evals/kev-agent/act-real-draft.jsonl
  */
 import * as fs from "node:fs";
-import type { DialogueMemory } from "../../../../src/features/advisor/conversation/dialogueState";
+import type { DialogueMemory } from "../../../../src/features/advisor/conversation/memory/dialogueState";
 import type { DialogueTrace } from "../../../../src/features/advisor/contracts/requestContract";
 
 interface AdvisorFeedback {

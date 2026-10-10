@@ -1,15 +1,15 @@
 /** 대화와 카드 원본을 이 기기에 저장한다. 과거 카드를 현재 자료로 다시 채우지 않는다. */
 import type { AdvisorAnswer, CompareRow, Fact, ItemEffect, ItemVerdict } from "../answers/answer";
-import type { SpellFocus } from "../understanding/spellFocus";
-import type { AdvisorData } from "../conversation/context";
+import type { SpellFocus } from "../understanding/spells/spellFocus";
+import type { AdvisorData } from "../retrieval/context";
 import type { NotePerspective } from "../retrieval/noteSelect";
 import type { AdvisorTurn } from "@/features/advisor/session/useAdvisorTurns";
-import type { DialogueMemory } from "../conversation/dialogueState";
-import type { ChampionStatQuery } from "../understanding/statQuery";
+import type { DialogueMemory } from "../conversation/memory/dialogueState";
+import type { ChampionStatQuery } from "../understanding/stats/statQuery";
 import type { DialogueTrace } from "../contracts/requestContract";
 import { isStoredAnswer, isStoredTurn, validStoredTurns } from "./historyValidation";
 import { isHistorySource, isSnapshotAnswer, type HistorySource } from "./historySnapshot";
-import { reviveChampionDetails } from "../answers/championDetail";
+import { reviveChampionDetails } from "../answers/references/championDetail";
 import type { ChampionDetailV2 } from "@/domain/game/contracts/championData";
 
 export const CONVERSATIONS_KEY = "cooldown.advisor.conversations.v1";

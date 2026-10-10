@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
-import SplashScreen from "@/app/layout/SplashScreen";
+import SplashScreen from "@/app/bootstrap/SplashScreen";
 import { I18nProvider } from "@/shared/i18n";
 import { subscribeToPWAUpdate } from "@/app/pwa/index";
-import { AppRouter } from "@/app/AppRouter";
-import { BootstrapError } from "@/app/BootstrapError";
-import { UpdateBanner } from "@/app/UpdateBanner";
-import { useAppBootstrap } from "@/app/useAppBootstrap";
+import { AppRouter } from "@/app/routing/AppRouter";
+import { BootstrapError } from "@/app/bootstrap/BootstrapError";
+import { UpdateBanner } from "@/app/pwa/UpdateBanner";
+import { useAppBootstrap } from "@/app/bootstrap/useAppBootstrap";
 import { useAppPreferences } from "@/app/useAppPreferences";
 import { warmIcons } from "@/shared/lib/warmIcons";
 

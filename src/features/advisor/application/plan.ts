@@ -1,17 +1,17 @@
 /** 질문 하나의 자료 계획. 질문 이해 뒤 지식 → 상성 → 개별 대상 → 노트 순서로 찾는다. */
-import { advisorSystemPrompt } from "../answers/persona";
-import { asksAboutHelper, isSmallTalk } from "../understanding/intent";
+import { advisorSystemPrompt } from "../answers/presentation/persona";
+import { asksAboutHelper, isSmallTalk } from "../understanding/champions/intent";
 import { type AnswerPlan, type PlanContext, type PlanDeps, type Step } from "../contracts/planTypes";
 import { resolveQuestion, type QuestionInput } from "../understanding/resolvedQuestion";
-import { directFactPlan } from "./directFactPlan";
-import { knowledgeFactPlan } from "./knowledgeFactPlan";
-import { passiveMechanicPlan } from "./passiveMechanicPlan";
+import { directFactPlan } from "./plans/directFactPlan";
+import { knowledgeFactPlan } from "./plans/knowledgeFactPlan";
+import { passiveMechanicPlan } from "./plans/passiveMechanicPlan";
 import { understand } from "../understanding/questionUnderstanding";
-import { answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact, answerFromNotes } from "./knowledgePlans";
-import { continueMatchup } from "./matchupPlans";
-import { answerNewMatchup } from "./newMatchupPlan";
-import { answerItemOrMechanics, answerChampion } from "./championPlans";
-import { comboAdvicePlan } from "./comboPlan";
+import { answerByVector, answerRuleQuestion, fixChampionTypo, answerGameFact, answerFromNotes } from "./plans/knowledgePlans";
+import { continueMatchup } from "./plans/matchupPlans";
+import { answerNewMatchup } from "./plans/newMatchupPlan";
+import { answerItemOrMechanics, answerChampion } from "./plans/championPlans";
+import { comboAdvicePlan } from "./plans/comboPlan";
 
 /** 자료 계획의 9개 처리기. 새 상성의 이름 수별 3개 처리기를 하나로 합쳐 기존 우선순위를 유지한다. */
 const ANSWER_STAGES = {
@@ -59,5 +59,5 @@ export async function planAnswer(input: QuestionInput, ctx: PlanContext, deps: P
 export type { AnswerPlan, PlanTurn, JudgeTier, PlanContext, PlanDeps, Intent } from "../contracts/planTypes";
 export { ROUTE_HEAD, TOPIC_HEAD, ACT_HEAD, KEV_HEAD } from "../model/judgeHeads";
 export { understand } from "../understanding/questionUnderstanding";
-export { pickMatchupSides } from "./newMatchupPlan";
-export { GENERIC_ADVICE } from "../understanding/askWords";
+export { pickMatchupSides } from "./plans/newMatchupPlan";
+export { GENERIC_ADVICE } from "../understanding/requests/askWords";

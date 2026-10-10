@@ -1,7 +1,7 @@
 /** 폼은 기존 구조화 데이터에서 복사하고, 하위 스킬은 출처에 있는 제목 구간으로 나눈다. */
 import type { AbilityV2 } from "../../../../src/domain/game/contracts/championData";
-import { stripHtml } from "../../../../src/domain/knowledge/text";
-import type { Slot, SourceDoc, Variant } from "./contract";
+import { stripHtml } from "../../../../src/domain/knowledge/text/text";
+import type { Slot, SourceDoc, Variant } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 
 const GROUPS: Record<string, Array<[string, string]>> = {
   "Hwei.Q": [["QQ", "Devastating Fire"], ["QW", "Severing Bolt"], ["QE", "Molten Fissure"]],

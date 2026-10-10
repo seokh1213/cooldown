@@ -1,5 +1,5 @@
 /** 원자 실험들이 같은 스킬 주인·대상을 사용하게 한다. */
-import type { AdvisorData } from "../../../../src/features/advisor/conversation/context";
+import type { AdvisorData } from "../../../../src/features/advisor/retrieval/context";
 import { resolveQuestion } from "../../../../src/features/advisor/understanding/resolvedQuestion";
 import type { AtomRequest } from "./select";
 

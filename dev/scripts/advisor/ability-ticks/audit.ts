@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
-import { isSpellTicks } from "../../../../src/domain/knowledge/abilityTicksValidation";
-import { tooltipHash, type TickFile } from "./attach";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
+import { isSpellTicks } from "../../../../src/domain/knowledge/combat/abilityTicksValidation";
+import { tooltipHash,type TickFile } from "./attach";
 
 export function auditAbilityTicks(file: TickFile, patch: string, locales: ChampionCard[][]): string[] {
   const errors: string[] = [];

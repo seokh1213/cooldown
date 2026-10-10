@@ -4,7 +4,7 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { AutoTokenizer } from "@huggingface/transformers";
 import { ADVISOR_MODEL } from "../../../../src/features/advisor/model/config";
-import { splitSentences } from "../../../../src/features/advisor/answers/answerText";
+import { splitSentences } from "../../../../src/features/advisor/answers/presentation/answerText";
 import { loadData, ROOT } from "../kev-agent/lib";
 import { cases } from "./cases";
 

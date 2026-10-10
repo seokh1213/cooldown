@@ -1,15 +1,15 @@
 /** 상태가 붙은 판단 단위를 현재 노트와 대조해 선택하는 실험. 앱 기본 경로에는 연결하지 않는다. */
 import { createHash } from "node:crypto";
-import type { AdvisorData } from "../../../../src/features/advisor/conversation/context";
-import type { DialogueMemory, ScenarioCondition } from "../../../../src/features/advisor/conversation/dialogueState";
+import type { AdvisorData } from "../../../../src/features/advisor/retrieval/context";
+import type { DialogueMemory, ScenarioCondition } from "../../../../src/features/advisor/conversation/memory/dialogueState";
 import type { PrecomputedPair, PrecomputedKey } from "../../../../src/features/advisor/retrieval/precomputed";
-import { selectPlaybook } from "../../../../src/domain/knowledge/playbookCore";
+import { selectPlaybook } from "../../../../src/domain/knowledge/notes/playbookCore";
 import { atomTarget } from "./target";
-import { asksReason } from "../../../../src/features/advisor/understanding/askWords";
+import { asksReason } from "../../../../src/features/advisor/understanding/requests/askWords";
 import { topicFromWords } from "../../../../src/features/advisor/model/topicJudge";
 import { adviceUnit, actionEligible, type ActionRequirement } from "../../../../src/features/advisor/application/adviceActions";
-import { conditionMatchupText } from "../../../../src/features/advisor/application/conditionedMatchup";
-import { checkMatchupFacts } from "../../../../src/features/advisor/answers/matchupFactCheck";
+import { conditionMatchupText } from "../../../../src/features/advisor/application/plans/conditionedMatchup";
+import { checkMatchupFacts } from "../../../../src/features/advisor/answers/evidence/matchupFactCheck";
 
 type Condition = Pick<ScenarioCondition, "owner" | "slot" | "status">;
 type Source = { kind: "bank"; key: PrecomputedKey }

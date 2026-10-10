@@ -1,15 +1,15 @@
-import { useTranslation } from "@/shared/i18n";
 import type { ChampionDetailV2 } from "@/domain/game/contracts/championData";
+import type { SpellFact } from "@/domain/knowledge/cards/contracts";
+import { tickHeading } from "@/domain/knowledge/combat/abilityTicks";
 import type { AdvisorAnswer } from "@/features/advisor/answers/answer";
-import { focusLabel, spellFocusValue, spellOneLiner, spellSummary, type Fact } from "@/features/advisor/answers/answer";
-import { spellFacts } from "@/features/advisor/answers/spellAnswer";
-import type { SpellFact } from "@/domain/knowledge/facts";
+import { focusLabel,spellFocusValue,spellOneLiner,spellSummary,type Fact } from "@/features/advisor/answers/answer";
+import { spellFacts } from "@/features/advisor/answers/builders/spellAnswer";
 import { toChampion } from "@/infrastructure/mappers/championMapper";
+import { useTranslation } from "@/shared/i18n";
+import { AdvisorMarkdown } from "../answers/cards/AdvisorMarkdown";
+import { Disclosure,KvTable } from "../answers/cards/AnswerCardFrame";
+import { SpellTickInfo } from "../answers/cards/SpellTickInfo";
 import { AdvisorSkillTrigger } from "./AdvisorSkillTrigger";
-import { Disclosure, KvTable } from "../answers/AnswerCardFrame";
-import { SpellTickInfo } from "../answers/SpellTickInfo";
-import { tickHeading } from "@/domain/knowledge/abilityTicks";
-import { AdvisorMarkdown } from "../answers/AdvisorMarkdown";
 
 export function ChampionReferenceSkills({ answer, detail, selectedSpells = [], patch, ddragonVersion }: {
   answer: Extract<AdvisorAnswer, { kind: "champion" }>; detail?: ChampionDetailV2;

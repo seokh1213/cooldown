@@ -4,19 +4,19 @@
  * 앱 판정은 `hidden_judge_serve.py` 가 앱 그래프의 은닉 상태를 내고 헤드 계산은 앱의 `scoreJudge` 가 한다.
  * kev 는 jaredpalmer/kev 의 `python -m kev.serve` (POST /v1/systemone).
  */
+import { AutoTokenizer,type PreTrainedTokenizer } from "@huggingface/transformers";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
-import { indexRules, type RuleNotes } from "../../../../src/domain/knowledge/rules";
-import { championAliases, collectEffectTags, type AdvisorData } from "../../../../src/features/advisor/conversation/context";
-import { abilityIndex, type AbilityBundle } from "../../../../src/features/advisor/mechanics/types";
-import { encodeJudgeRow, JUDGE_SPECIAL, readJudgeHead, scoreJudge, type JudgeHead, type JudgeHeadMeta, type JudgeQuestion } from "../../../../src/features/advisor/model/judge";
-import { AutoTokenizer, type PreTrainedTokenizer } from "@huggingface/transformers";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
+import { indexRules,type RuleNotes } from "../../../../src/domain/knowledge/notes/rules";
+import type { JudgeTier,PlanContext } from "../../../../src/features/advisor/application/plan";
+import { abilityIndex,type AbilityBundle } from "../../../../src/features/advisor/mechanics/types";
 import { ADVISOR_MODEL } from "../../../../src/features/advisor/model/config";
+import { encodeJudgeRow,JUDGE_SPECIAL,readJudgeHead,scoreJudge,type JudgeHead,type JudgeHeadMeta,type JudgeQuestion } from "../../../../src/features/advisor/model/judge";
 import { offlineJudge } from "../../../../src/features/advisor/model/offlineJudge";
-import { evaluationPaths } from "./evaluation_config";
-import type { JudgeTier, PlanContext } from "../../../../src/features/advisor/application/plan";
+import { championAliases,collectEffectTags,type AdvisorData } from "../../../../src/features/advisor/retrieval/context";
 import { readCurrentPatchVersion } from "../lib/data";
+import { evaluationPaths } from "./evaluation_config";
 
 export const ROOT = path.resolve(import.meta.dirname, "../../../..");
 export const PATCH = readCurrentPatchVersion(path.join(ROOT, "public/data"));

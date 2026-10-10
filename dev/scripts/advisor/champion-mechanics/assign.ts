@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Job } from "./contract";
+import type { Job } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { readJson } from "./sources";
 
 /** 같은 챔피언을 한 작업자에게 주고, 원문 길이로 작업량을 분산한다. */

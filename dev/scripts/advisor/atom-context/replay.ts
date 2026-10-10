@@ -2,16 +2,16 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { loadData } from "../kev-agent/lib";
-import type { AtomFile } from "../build-note-atoms";
+import type { AtomFile } from "../knowledge/build-note-atoms";
 import { translations } from "../../../../src/shared/i18n/translations";
-import { planDialogue } from "../../../../src/features/advisor/conversation/dialoguePlanner";
-import { assembleDialogueReply } from "../../../../src/features/advisor/conversation/dialogueReply";
-import { emptyDialogue, type DialogueMemory, type DialogueHistoryTurn } from "../../../../src/features/advisor/conversation/dialogueState";
+import { planDialogue } from "../../../../src/features/advisor/conversation/planning/dialoguePlanner";
+import { assembleDialogueReply } from "../../../../src/features/advisor/conversation/planning/dialogueReply";
+import { emptyDialogue, type DialogueMemory, type DialogueHistoryTurn } from "../../../../src/features/advisor/conversation/memory/dialogueState";
 import { buildCompareAnswer } from "../../../../src/features/advisor/answers/answer";
 import { matchupNotes } from "../../../../src/features/advisor/retrieval/playbookNotes";
-import { selectMatchupReply, focusOfMatchupTopic } from "../../../../src/features/advisor/answers/matchupReply";
+import { selectMatchupReply, focusOfMatchupTopic } from "../../../../src/features/advisor/answers/builders/matchupReply";
 import type { PrecomputedPair } from "../../../../src/features/advisor/retrieval/precomputed";
-import { dialogueAnswerText } from "../../../../src/features/advisor/conversation/dialogueReply";
+import { dialogueAnswerText } from "../../../../src/features/advisor/conversation/planning/dialogueReply";
 import { selectAtomAnswer, type AtomRequest, type AtomSelection } from "./select";
 interface ReplayRow {
   id: string; turn: number; question: string; plan: { mine: string; enemy: string; focus?: string };

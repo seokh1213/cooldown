@@ -6,7 +6,7 @@ import { reviewedAbilities } from "./retrieval";
 import { readJson } from "./sources";
 import { ROOT } from "./prepare";
 import type { AbilityBundle } from "../../../../src/features/advisor/mechanics/types";
-import { noteVersion } from "../../../../src/domain/knowledge/noteVersion";
+import { noteVersion } from "../../../../src/domain/knowledge/notes/noteVersion";
 
 export async function buildMechanicBundle(root = ROOT): Promise<AbilityBundle> {
   const { patchVersion: patch } = await readJson<{ patchVersion: string }>(path.join(root, "public/data/version.json"));

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { isSpellTicks } from "../../../../src/domain/knowledge/abilityTicksValidation";
+import { isSpellTicks } from "../../../../src/domain/knowledge/combat/abilityTicksValidation";
 import type { TickFile } from "./attach";
 
 interface Source {

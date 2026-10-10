@@ -6,7 +6,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { Check, Star } from "lucide-react";
 import { useTranslation } from "@/shared/i18n";
 import { championIconUrl } from "@/infrastructure/assets/riotAssetUrls";
-import { ChampionIcon, championInSheet } from "@/shared/ui/champion-icon";
+import { ChampionIcon, championInSheet } from "@/shared/ui/icons/champion-icon";
 
 interface ChampionThumbnailProps {
   addChampion: (champion: Champion) => void;

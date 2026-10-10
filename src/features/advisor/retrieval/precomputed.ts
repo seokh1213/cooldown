@@ -1,18 +1,18 @@
 /**
  * 미리 써 둔 상성 답 — 빌드할 때 큰 모델이 쓴 글을 조회해 보여 준다
  *
- * `dev/scripts/advisor/precompute-matchups.ts` 가 같은 포지션 쌍마다 주제별 2~4문장을 써 둔다
+ * `dev/scripts/advisor/evaluation/precompute-matchups.ts` 가 같은 포지션 쌍마다 주제별 2~4문장을 써 둔다
  * (llm/matchups/<내 챔피언>.json). 재료는 앱과 같은 검증된 노트·도출 문장이고, 스킬 이름·슬롯은
  * 코드 규칙(groundCommentary)으로 걸렀다. 앱은 주제 판정(topicFromWords·판정기)으로 칸 순서만 정한다.
  * 파일이 없거나 쌍이 없으면 undefined — 부르는 쪽이 노트 조립(`matchupDigest`)으로 간다.
  */
+import type { ChampionCard } from "@/domain/knowledge/cards/contracts";
 import type { Language } from "@/shared/i18n";
-import type { ChampionCard } from "@/domain/knowledge/facts";
-import { checkedMatchupPair } from "../answers/matchupFactCheck";
-import { labelSlots } from "../answers/slotLabels";
-import { DIGEST_HEADINGS, FIGHT_TITLES } from "../answers/prose";
-import { dataUrl } from "../conversation/context";
-import type { ScenarioCondition } from "../conversation/dialogueState";
+import { checkedMatchupPair } from "../answers/evidence/matchupFactCheck";
+import { DIGEST_HEADINGS,FIGHT_TITLES } from "../answers/presentation/prose";
+import { labelSlots } from "../answers/presentation/slotLabels";
+import type { ScenarioCondition } from "../conversation/memory/dialogueState";
+import { dataUrl } from "./context";
 
 export type PrecomputedKey = "watch" | "build" | "fight" | "laning" | "combo" | "escape" | "phase" | "teamfight";
 export type PrecomputedPair = Partial<Record<PrecomputedKey, string>>;
@@ -42,7 +42,7 @@ const TOPIC_OF: Partial<Record<PrecomputedKey, string>> = { laning: "laning", co
  */
 function leadClean(text: string): string {
   // "이후 라인을 밀고…", "그때 구체를…", "이 틈에 거리를…" 도 같은 흔적이다. 은행 7,416쌍에서 칸 첫머리의
-  // 0.7~1.9%(laning·escape·phase·fight)가 이렇게 시작했다(`dev/scripts/advisor/audit-precomputed.ts`).
+  // 0.7~1.9%(laning·escape·phase·fight)가 이렇게 시작했다(`dev/scripts/advisor/review/audit-precomputed.ts`).
   return text.replace(/^(이후에는|이후에도|이후|그 뒤에는|그 뒤|그다음에는|그다음|그때는|그때|이때는|이때|이 틈에|그 틈에|그 사이에|그 순간|그래서|또한|또|다만|반대로|하지만|그러나)\s+/, "");
 }
 

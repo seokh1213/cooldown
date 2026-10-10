@@ -5,12 +5,12 @@
  *   npx tsx dev/scripts/advisor/vector-search/lexical_scores.ts <질문.jsonl> <출력.json>
  */
 import * as fs from "node:fs";
-import { aliasesOf } from "../../../../src/domain/knowledge/searchAliases";
+import { aliasesOf } from "../../../../src/domain/knowledge/notes/searchAliases";
 import { lexicalSearch, type SearchDoc } from "../../../../src/features/advisor/application/searchFallback";
 import { questionLanguage } from "../../../../src/features/advisor/understanding/questionLanguage";
 import { corpus, current } from "./corpus";
-import { detectChampions } from "../../../../src/features/advisor/understanding/intent";
-import { buildItemCard, buildMechanicsAnswer } from "../../../../src/features/advisor/conversation/context";
+import { detectChampions } from "../../../../src/features/advisor/understanding/champions/intent";
+import { buildItemCard, buildMechanicsAnswer } from "../../../../src/features/advisor/retrieval/context";
 import { loadData, type Lang } from "../kev-agent/lib";
 
 const [input, output] = process.argv.slice(2);

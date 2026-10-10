@@ -1,7 +1,7 @@
 import { access, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Draft, Job } from "./contract";
+import type { Draft, Job } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { readJson } from "./sources";
 import { completeNumberEvidence } from "./evidence";
 import { validateDraft } from "./validate";

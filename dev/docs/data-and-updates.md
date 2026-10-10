@@ -14,7 +14,7 @@
 Data Dragon의 major가 15 이상이면 공식 패치 major에 10을 더한다.
 따라서 `15.1.1`은 `25.1`, `16.19.1`은 `26.19`이며, `14.24.1`은 `14.24`다.
 CDragon 판본은 DDragon의 major와 minor를 유지한다. 이 변환은
-[`staticDataRelease.ts`](../../src/domain/game/staticDataRelease.ts)에 모았다.
+[`staticDataRelease.ts`](../../src/domain/game/static-data/staticDataRelease.ts)에 모았다.
 
 정규화된 챔피언·아이템·룬·소환사 주문·프로필 JSON은 `schemaVersion: 2`,
 `patchVersion`, `locale`, `sources`를 갖는다. 지원 언어는 `ko_KR`, `en_US`, `zh_CN`이다.
@@ -146,7 +146,7 @@ GitHub Pages 산출물을 배포한다. 패치 기록과 보관 정책은 [패�
 
 현재 검증 경계는 다음 파일에 있다.
 
-- [`pwa-startup-gate.test.ts`](../tests/unit/pwa-startup-gate.test.ts): 3초 제한, 조기 해제, 갱신 직전 본문 유지.
-- [`production-data-cache.test.ts`](../tests/unit/production-data-cache.test.ts): 잘못된 데이터 거부, CacheFirst 재시도, 기존 오프라인 데이터 보존.
-- [`static-data-publication.test.ts`](../tests/unit/static-data-publication.test.ts)와 [`thumbnail-publication.test.ts`](../tests/unit/thumbnail-publication.test.ts): 다운로드·검증·발행 실패와 동일 판본 재생성의 보존·복원.
-- [`pwa-updates.spec.ts`](../tests/e2e/pwa-updates.spec.ts): 실제 빌드 A/B/C 교체, 진입·이용 중 갱신, 수동 승인·복수 탭·오프라인·실패 재시도·최초 테마.
+- [`pwa-startup-gate.test.ts`](../tests/unit/app/pwa-startup-gate.test.ts): 3초 제한, 조기 해제, 갱신 직전 본문 유지.
+- [`production-data-cache.test.ts`](../tests/unit/app/production-data-cache.test.ts): 잘못된 데이터 거부, CacheFirst 재시도, 기존 오프라인 데이터 보존.
+- [`static-data-publication.test.ts`](../tests/unit/data-pipeline/static-data-publication.test.ts)와 [`thumbnail-publication.test.ts`](../tests/unit/data-pipeline/thumbnail-publication.test.ts): 다운로드·검증·발행 실패와 동일 판본 재생성의 보존·복원.
+- [`pwa-updates.spec.ts`](../tests/e2e/app/pwa-updates.spec.ts): 실제 빌드 A/B/C 교체, 진입·이용 중 갱신, 수동 승인·복수 탭·오프라인·실패 재시도·최초 테마.

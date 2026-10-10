@@ -1,10 +1,10 @@
 import React from "react";
 import { Card, CardContent } from "@/shared/ui/card";
 import { useDeviceType } from "@/shared/hooks/useDeviceType";
-import { StatsSectionDesktop } from "./StatsSectionDesktop";
-import { StatsSectionMobile } from "./StatsSectionMobile";
-import { SkillsSectionDesktop } from "./SkillsSectionDesktop";
-import { SkillsSectionMobile } from "./SkillsSectionMobile";
+import { StatsSectionDesktop } from "./stats/StatsSectionDesktop";
+import { StatsSectionMobile } from "./stats/StatsSectionMobile";
+import { SkillsSectionDesktop } from "./skills/SkillsSectionDesktop";
+import { SkillsSectionMobile } from "./skills/SkillsSectionMobile";
 import { ChampionComparisonProps } from "./types";
 
 function ChampionComparison({

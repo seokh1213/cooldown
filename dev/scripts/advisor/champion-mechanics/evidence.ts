@@ -1,4 +1,4 @@
-import type { Draft, Job } from "./contract";
+import type { Draft, Job } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 
 /** 코드가 이미 인용된 원문에 있는 숫자의 문장만 보충한다. 값·참조 ID·조건·효과는 고치지 않는다. */
 export function completeNumberEvidence(job: Job, original: Draft) {

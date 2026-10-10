@@ -1,5 +1,10 @@
 ## 스킬 툴팁 파서 개요
 
+현재 구현은 `src/domain/game/tooltip` 안에서 계산(`calculations`), 치환(`variables`),
+원본 조회(`data`), 표시(`formatting`)로 구분한다. 진입점은 `parser.ts`, 공통 계약은
+`contracts.ts`, 계산 전용 계약은 `calculations/contracts.ts`다. 이전 경로의 재수출 파일은 없다.
+
+
 2026-10-06 기준 구현 설명. 데이터 버전은 `public/data/version.json`을 따르며, 아래 크산테 예시는 26.19 저장 자료를 기준으로 한다.
 
 이 모듈은 **Data Dragon 스킬 데이터(`ChampionSpell`)**와  
@@ -12,7 +17,7 @@
   - 원본 툴팁 텍스트(tooltip/description), 언어 코드(`ko_KR`, `en_US` 등)
 - **출력**
   - 색상/강조 HTML, `levelValues`, 미해결 토큰과 생략된 계산 항 진단
-  - 계수·조건·시뮬레이션은 후속 단계인 `dev/scripts/data-pipeline/champion-data-v2.ts`에서 Ability v2에 추가
+  - 계수·조건·시뮬레이션은 후속 단계인 `dev/scripts/data-pipeline/champions/champion-data-v2.ts`에서 Ability v2에 추가
 
 툴팁 파싱은 정적 데이터 생성 단계에서 실행됩니다. 브라우저는 완성된 Ability v2를 읽고 `SafeBlockHtml`/`SafeInlineHtml`의 태그·속성 허용 목록을 거쳐 표시합니다. 레벨값 포맷터와 스탯 아이콘 유틸은 브라우저에서도 재사용합니다.
 
@@ -166,7 +171,7 @@ const replacement = replaceVariable(
    - 벡터: `"80/100/120"` 형식
    - 스칼라: `"80"`
 
-관련 코드: `variableReplacer.ts` (`replaceEffectBurn`), `dataValueUtils.ts`, `valueUtils.ts`
+관련 코드: `variables/spellValues.ts` (`replaceEffectBurn`), `data/dataValueUtils.ts`, `formatting/valueFormatter.ts`
 
 ---
 
@@ -244,7 +249,7 @@ const replacement = replaceVariable(
   - 예: `mStartValue=0.8`, `mEndValue=0.95` → 나중에 ×100을 거쳐 `(80% ~ 95%)`
   - `mScaleByStatProgressionMultiplier`가 있으면 스탯 성장 곡선으로 보간. 19·20레벨은 18레벨 값 유지
 
-레벨 범위 문구는 1·18레벨 끝값을 표시하지만 `levelValues.values`는 1~20레벨을 저장합니다. 레벨별 나열형 `ByCharLevelFormulaCalculationPart`도 지원합니다. 배열 `[0]`은 0레벨이므로 제외하고, 20레벨까지 값이 부족하면 마지막 값으로 채웁니다. 관련 코드: `src/domain/game/championLevel.ts`, `calculationPartEvaluator.ts`, `calculationResultFormatter.ts`.
+레벨 범위 문구는 1·18레벨 끝값을 표시하지만 `levelValues.values`는 1~20레벨을 저장합니다. 레벨별 나열형 `ByCharLevelFormulaCalculationPart`도 지원합니다. 배열 `[0]`은 0레벨이므로 제외하고, 20레벨까지 값이 부족하면 마지막 값으로 채웁니다. 관련 코드: `src/domain/game/levels/championLevel.ts`, `calculationPartEvaluator.ts`, `calculationResultFormatter.ts`.
 
 ### 4) 일반적인 Formula Part 처리
 
@@ -319,7 +324,7 @@ const replacement = replaceVariable(
      - `"20/45/70/95/120 + (50% AD)"` → `"20/45/70/95/120 + (50% AD)"`
      - 여러 항목일 경우 `"(... + ...)"` 형태
 
-관련 코드: `spellCalculationHandler.ts`, `spellCalculationEvaluator.ts`, `calculationOperations.ts`, `calculationResultFormatter.ts`, `valueUtils.ts`, `types.ts`
+관련 코드: `spellCalculationHandler.ts`, `spellCalculationEvaluator.ts`, `calculationOperations.ts`, `calculationResultFormatter.ts`, `calculations/values.ts`, `formatting/statNames.ts`, `formatting/valueFormatter.ts`, `contracts.ts`, `calculations/contracts.ts`
 
 ---
 
@@ -344,7 +349,7 @@ Ability v2 생성기가 스킬 **랭크별 수치**를 구조화하는 로직입
 
 변신 형태 생성은 기본 폼의 비용·effect·leveltip을 다른 폼에 섞지 않도록 `leveltip`을 비웁니다. 각 폼 본문과 `levelValues`·쿨타임을 별도로 보존하며, 폼별 `rankValues` 목록은 현재 계약에 없습니다.
 
-관련 코드: `dev/scripts/data-pipeline/champion-data-v2.ts`, `dev/scripts/data-pipeline/ability-forms.ts`
+관련 코드: `dev/scripts/data-pipeline/champions/champion-data-v2.ts`, `dev/scripts/data-pipeline/abilities/ability-forms.ts`
 
 ---
 
@@ -373,7 +378,7 @@ Ability v2 생성기가 스킬 **랭크별 수치**를 구조화하는 로직입
 - precision이 붙은 변수(`rcooldownreduction.0*100` 등)에서 사용
 - 치환 후 문자열 안의 **모든 숫자**를 `toFixed(precision)`로 강제 포맷
 
-관련 코드: `formatters.ts`, `valueUtils.ts`, `variableTextUtils.ts`, `calculationResultFormatter.ts`
+관련 코드: `formatters.ts`, `calculations/values.ts`, `formatting/statNames.ts`, `formatting/valueFormatter.ts`, `variableTextUtils.ts`, `calculationResultFormatter.ts`
 
 ---
 
@@ -471,4 +476,4 @@ Tailwind 색상 클래스를 가진 `<span>` 태그로 매핑합니다.
 
 `GameCalculationConditional`은 기본 계산식을 선택하며 실제 전투 상태를 판정하지 않습니다. `complete`도 전체 스킬의 충전·재시전·모든 적중 횟수를 검증했다는 뜻은 아닙니다. 새로운 CDragon 계산 파트는 먼저 회귀 테스트를 추가하고, 선형식 또는 공식 트리의 의미와 대상 조건을 확인한 뒤 지원 범위에 포함합니다.
 
-관련 코드: `dev/scripts/data-pipeline/ability-simulation.ts`, `dev/scripts/data-pipeline/ability-simulation-formula.ts`, `dev/scripts/data-pipeline/ability-simulation-expression.ts`, `src/domain/game/abilitySimulationExpr.ts`.
+관련 코드: `dev/scripts/data-pipeline/simulation/ability-simulation.ts`, `dev/scripts/data-pipeline/simulation/ability-simulation-formula.ts`, `dev/scripts/data-pipeline/simulation/ability-simulation-expression.ts`, `src/domain/game/abilities/abilitySimulationExpr.ts`.

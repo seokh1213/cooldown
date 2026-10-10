@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promis
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Draft, Job } from "./contract";
+import type { Draft, Job } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { invokeCodex } from "./author";
 import { digest, readJson } from "./sources";
 import { buildReviewView } from "./review-view";

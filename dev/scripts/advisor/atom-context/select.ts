@@ -1,12 +1,12 @@
 /** 아톰은 선택 색인으로 쓰고, 출처 노트의 적용 조건과 문맥을 함께 돌려주는 비교 실험. */
-import type { AtomFile, Atom } from "../build-note-atoms";
-import type { AdvisorData } from "../../../../src/features/advisor/conversation/context";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
-import { selectPlaybook } from "../../../../src/domain/knowledge/playbookCore";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
+import { selectPlaybook } from "../../../../src/domain/knowledge/notes/playbookCore";
+import { checkedMatchupText } from "../../../../src/features/advisor/answers/evidence/matchupFactCheck";
+import { labelSlots } from "../../../../src/features/advisor/answers/presentation/slotLabels";
+import type { DialogueMemory } from "../../../../src/features/advisor/conversation/memory/dialogueState";
+import type { AdvisorData } from "../../../../src/features/advisor/retrieval/context";
+import type { Atom,AtomFile } from "../knowledge/build-note-atoms";
 import { atomTarget } from "./target";
-import { checkedMatchupText } from "../../../../src/features/advisor/answers/matchupFactCheck";
-import { labelSlots } from "../../../../src/features/advisor/answers/slotLabels";
-import type { DialogueMemory } from "../../../../src/features/advisor/conversation/dialogueState";
 
 export interface AtomRequest {
   question: string;

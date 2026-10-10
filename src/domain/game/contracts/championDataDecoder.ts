@@ -7,7 +7,7 @@ import {
   decodeStaticDataMetadata,
   isRecord,
 } from "./staticDataDecoder";
-import { CHAMPION_MAX_LEVEL } from "@/domain/game/championLevel";
+import { CHAMPION_MAX_LEVEL } from "@/domain/game/levels/championLevel";
 
 const ABILITY_SLOTS: AbilitySlot[] = ["P", "Q", "W", "E", "R"];
 const SIMULATION_STATS = new Set([

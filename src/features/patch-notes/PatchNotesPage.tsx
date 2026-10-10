@@ -4,15 +4,15 @@ import { ArrowRight } from "lucide-react";
 import { useTranslation } from "@/shared/i18n";
 import { Button } from "@/shared/ui/button";
 import { TooltipProvider } from "@/shared/ui/tooltip";
-import { PatchEntry } from "./PatchEntry";
-import { PatchHistory, PatchVersionSelect } from "./PatchHistory";
-import { PatchHighlights } from "./PatchHighlights";
-import { PatchFilters, type PatchFiltersValue } from "./PatchFilters";
-import { patchNotesLabels } from "./labels";
-import { filterPatchEntries, patchReportCounts } from "./model";
-import { usePatchNotes } from "./usePatchNotes";
-import { usePatchSkills } from "./usePatchSkills";
-import { usePatchFragment } from "./usePatchFragment";
+import { PatchEntry } from "./entries/PatchEntry";
+import { PatchHistory, PatchVersionSelect } from "./history/PatchHistory";
+import { PatchHighlights } from "./entries/PatchHighlights";
+import { PatchFilters, type PatchFiltersValue } from "./history/PatchFilters";
+import { patchNotesLabels } from "./formatting/labels";
+import { filterPatchEntries, patchReportCounts } from "./data/model";
+import { usePatchNotes } from "./data/usePatchNotes";
+import { usePatchSkills } from "./skills/usePatchSkills";
+import { usePatchFragment } from "./history/usePatchFragment";
 
 const EMPTY_FILTERS: PatchFiltersValue = { query: "", impact: "all", kind: "all" };
 

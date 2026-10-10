@@ -1,7 +1,7 @@
 import { mkdir, writeFile, access } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { SCHEMA_VERSION, type Manifest } from "./contract";
+import { SCHEMA_VERSION, type Manifest } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { GUIDE } from "./guide";
 import { DRAFT_SCHEMA } from "./schema";
 import { buildInventory, digest, promptHash, readJson } from "./sources";

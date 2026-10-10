@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { SpellCrowdControl } from "../../../../src/domain/knowledge/crowdControl";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
-import { inferCrowdControl } from "../../../../src/domain/knowledge/crowdControlInference";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
+import type { SpellCrowdControl } from "../../../../src/domain/knowledge/combat/crowdControl";
+import { inferCrowdControl } from "../../../../src/domain/knowledge/combat/crowdControlInference";
 import { digestSpellText } from "./spellOverrides";
 
 interface ControlFile {

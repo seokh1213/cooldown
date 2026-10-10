@@ -1,5 +1,5 @@
 /** 연구용 검색: 승인·해시·현재 원문을 확인한 스킬 규칙만 반환한다. */
-import type { Draft, Job } from "./contract";
+import type { Draft, Job } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 import { baselineDirectory, loadBaseline } from "./drift";
 import { acceptedReview } from "./export";
 import { buildInventory } from "./sources";

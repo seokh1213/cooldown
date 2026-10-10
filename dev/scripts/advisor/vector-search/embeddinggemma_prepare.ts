@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
 import { ADVISOR_MODEL } from "../../../../src/features/advisor/model/config";
 import { questionLanguage } from "../../../../src/features/advisor/understanding/questionLanguage";
 import { lexicalHit, searchesByVector } from "../../../../src/features/advisor/retrieval/questionDocs";
-import { namedMonsters } from "../../../../src/features/advisor/answers/monsterAnswer";
+import { namedMonsters } from "../../../../src/features/advisor/answers/builders/monsterAnswer";
 import { buildRetrievalDocs, lexicalSearch, HYBRID, hybridSearch } from "../../../../src/features/advisor/application/searchFallback";
 import { loadData, ROOT, PATCH, type Lang } from "../kev-agent/lib";
 

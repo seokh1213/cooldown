@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import assert from "node:assert/strict";
 import { buildBank, readRows, ROOT } from "../quality/bank";
-import { contextProbability, learnedContextRanker, type ContextRankModel } from "../../../../src/features/advisor/conversation/contextRanker";
+import { contextProbability, learnedContextRanker, type ContextRankModel } from "../../../../src/features/advisor/conversation/memory/contextRanker";
 
 const directory = "dev/research/llm-evals/workflow/datasets/context-frames";
 const normalize = (text: string) => text.toLowerCase().replace(/\d+(?:\.\d+)?/g, "#").replace(/[^\p{L}#]/gu, "");

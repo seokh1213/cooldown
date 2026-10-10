@@ -6,7 +6,7 @@ import { planAnswer, type PlanContext, type PlanDeps } from "../../../../src/fea
 import { buildRetrievalDocs } from "../../../../src/features/advisor/application/searchFallback";
 import { ROOT, appJudge, loadData, planFlags, saveJudgeCache } from "../kev-agent/lib";
 import { evaluationSearch } from "../kev-agent/retrieval_eval";
-import { answerEvidence as evidenceOf } from "../../../../src/features/advisor/answers/answerEvidence";
+import { answerEvidence as evidenceOf } from "../../../../src/features/advisor/answers/evidence/answerEvidence";
 
 interface Question {
   id: string; question: string; docId: string; answer: string; answerable: boolean;

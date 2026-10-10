@@ -1,4 +1,4 @@
-import { getRuntimeBasePath } from "@/domain/game/staticDataUtils";
+import { getRuntimeBasePath } from "@/domain/game/static-data/staticDataUtils";
 import { revisionedDataPath } from "@/app/pwa/release";
 import { cacheStaticDataResponse, discardStaticDataResponse, trackStaticDataPath } from "@/app/pwa/staticDataRevision";
 

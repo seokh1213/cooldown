@@ -1,11 +1,11 @@
 /** 각 하위 질문의 이름·슬롯·조회 초점을 한 번 읽어 대화와 자료 계획이 공유한다. */
-import type { AdvisorData } from "../conversation/context";
-import { detectSlot } from "../conversation/context";
-import { detectChampionMentions, type ChampionMention } from "./intent";
-import { detectSpellFocus } from "./spellFocus";
-import type { RequestIntent } from "./requestIntent";
+import type { AdvisorData } from "../retrieval/context";
+import { detectSlot } from "../retrieval/context";
+import { detectChampionMentions, type ChampionMention } from "./champions/intent";
+import { detectSpellFocus } from "./spells/spellFocus";
+import type { RequestIntent } from "./requests/requestIntent";
 import abilityAliases from "../../../../dev/data/knowledge/ability-aliases.json";
-import { aliasAt } from "@/domain/knowledge/searchAliases";
+import { aliasAt } from "@/domain/knowledge/notes/searchAliases";
 
 export interface ResolvedQuestion {
   text: string;

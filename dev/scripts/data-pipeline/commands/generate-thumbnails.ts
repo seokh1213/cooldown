@@ -20,10 +20,10 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { decodeDataManifest } from "../../../../src/domain/game/contracts/dataManifest";
-import { loadThumbnailCatalog, createThumbnailJobs, runeKey } from "../thumbnailCatalog";
-import { buildSheet, buildAbilityStrips, readStamps, writeStamps, writeSheetIndex, writeAssetVersion } from "../thumbnailArtifacts";
-import { CHAMPION_SIZE, ITEM_SIZE, RUNE_SIZE, SUMMONER_SIZE, QUALITY, runThumbnailJobs } from "../thumbnailImages";
-import { publishThumbnails } from "../thumbnailPublication";
+import { loadThumbnailCatalog, createThumbnailJobs, runeKey } from "../thumbnails/thumbnailCatalog";
+import { buildSheet, buildAbilityStrips, readStamps, writeStamps, writeSheetIndex, writeAssetVersion } from "../thumbnails/thumbnailArtifacts";
+import { CHAMPION_SIZE, ITEM_SIZE, RUNE_SIZE, SUMMONER_SIZE, QUALITY, runThumbnailJobs } from "../thumbnails/thumbnailImages";
+import { publishThumbnails } from "../thumbnails/thumbnailPublication";
 
 export async function generateThumbnails(repositoryRoot = process.cwd()): Promise<void> {
   const directory = path.join(repositoryRoot, "public/data");

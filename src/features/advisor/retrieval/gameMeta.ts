@@ -8,9 +8,9 @@
  */
 import meta from "../../../../dev/data/knowledge/game-meta.json";
 import prices from "../../../../dev/data/knowledge/champion-prices.json";
-import { aliasAt, aliasesOf } from "@/domain/knowledge/searchAliases";
-import { removalNotice, type NoteVersion } from "@/domain/knowledge/noteVersion";
-import { monsterDetails, monsterDocs, namedMonsters } from "../answers/monsterAnswer";
+import { aliasAt, aliasesOf } from "@/domain/knowledge/notes/searchAliases";
+import { removalNotice, type NoteVersion } from "@/domain/knowledge/notes/noteVersion";
+import { monsterDetails, monsterDocs, namedMonsters } from "../answers/builders/monsterAnswer";
 import { describedGameFact, describesChampionRespawn } from "./gameDescriptions";
 type Language = string;
 const short = (lang: Language): "ko" | "en" | "zh" => (lang.startsWith("en") ? "en" : lang.startsWith("zh") ? "zh" : "ko");

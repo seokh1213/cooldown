@@ -7,7 +7,7 @@ import type {
 import type { FormulaPart } from "../../../../src/domain/game/types/combatStats";
 import { buildBaseStatContributions, buildChampionBaseStats } from "./champion-stats";
 import { getNormalizationOverrides } from "./overrides";
-import type { ChampionSpellData } from "../champion-source";
+import type { ChampionSpellData } from "../champions/champion-source";
 
 function buildSpellScaling(
   spellIndex: number,

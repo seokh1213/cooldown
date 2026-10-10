@@ -1,4 +1,4 @@
-import type { ChampionStatQuery, StatLevel } from "../../../../src/features/advisor/understanding/statQuery";
+import type { ChampionStatQuery, StatLevel } from "../../../../src/features/advisor/understanding/stats/statQuery";
 import type { Field } from "./seeds";
 import type { Turn } from "./conversations";
 

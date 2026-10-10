@@ -23,7 +23,7 @@ export interface ChampionSpell {
   tooltipDiagnostics?: {
     unresolvedTokens: string[];
     /** 생성 때만 쓰는 진단. 계산식을 평가하다 값을 버린 자리 */
-    droppedCalculations?: import("@/domain/game/tooltip/types").DroppedCalculation[];
+    droppedCalculations?: import("@/domain/game/tooltip/contracts").DroppedCalculation[];
   };
   /** 생성 때만 쓰는 변신 폼 툴팁 진단. 공개 자료의 forms 에는 싣지 않는다 */
   formDiagnostics?: AbilityFormDiagnostics[];
@@ -52,7 +52,7 @@ export interface AbilityFormDiagnostics {
   form: "A" | "B";
   spellId: string;
   unresolvedTokens: string[];
-  droppedCalculations: import("@/domain/game/tooltip/types").DroppedCalculation[];
+  droppedCalculations: import("@/domain/game/tooltip/contracts").DroppedCalculation[];
 }
 
 export interface ChampionPassive {
@@ -71,7 +71,7 @@ export interface ChampionPassive {
   tooltipDiagnostics?: {
     unresolvedTokens: string[];
     /** 생성 때만 쓰는 진단. 계산식을 평가하다 값을 버린 자리 */
-    droppedCalculations?: import("@/domain/game/tooltip/types").DroppedCalculation[];
+    droppedCalculations?: import("@/domain/game/tooltip/contracts").DroppedCalculation[];
   };
   image: {
     full: string;

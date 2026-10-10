@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { JUDGE_KIND9_CRITERIA, JUDGE_KIND_INSTRUCTIONS, JUDGE_MINE_INSTRUCTIONS } from "../../../../src/features/advisor/application/routeAsk";
-import { actCriteria, ACT_INSTRUCTIONS } from "../../../../src/features/advisor/conversation/conversation";
+import { actCriteria, ACT_INSTRUCTIONS } from "../../../../src/features/advisor/conversation/memory/conversation";
 import { corpus } from "../vector-search/corpus";
 import { HELD_TOPIC_CHAMPIONS } from "../lib/topicCases";
 import { loadData, type Lang } from "../kev-agent/lib";

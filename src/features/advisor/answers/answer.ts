@@ -9,28 +9,28 @@
  * 화면은 종류에 맞는 카드를 그리고, 모델은 이 구조를 받아 해설만 쓴다.
  * 모델이 수치를 입에 담을 일이 없어진다.
  */
-import type { ChampionCard, SpellFact, StatName } from "@/domain/knowledge/facts";
-import { ruleLines, ruleName, type RuleNotes } from "@/domain/knowledge/rules";
-import { removalNotice } from "@/domain/knowledge/noteVersion";
-import type { Ability } from "../mechanics/types";
-import { renderRules } from "../mechanics/render";
+import type { ChampionCard,SpellFact,StatName } from "@/domain/knowledge/cards/contracts";
+import { tickHeading,tickText } from "@/domain/knowledge/combat/abilityTicks";
+import { removalNotice } from "@/domain/knowledge/notes/noteVersion";
+import { ruleLines,ruleName,type RuleNotes } from "@/domain/knowledge/notes/rules";
 import type { Language } from "@/shared/i18n";
 import { translations } from "@/shared/i18n/translations";
-import { tickHeading, tickText } from "@/domain/knowledge/abilityTicks";
+import { renderRules } from "../mechanics/render";
+import type { Ability } from "../mechanics/types";
 import type { SelectedNotes } from "../retrieval/noteSelect";
-import { detectSpellFocus, type SpellFocus } from "../understanding/spellFocus";
-import type { ChampionStatQuery } from "../understanding/statQuery";
-import { ratioText, spellFocusValue } from "./spellAnswer";
-import { splitSentences } from "./answerText";
-import { focusedRuleLines } from "../understanding/ruleFocus";
-export { splitSentences } from "./answerText";
-export { buildSpellAnswer, cooldownFact, rangeFact, spellFocusValue } from "./spellAnswer";
-import { buildStatComparison } from "./statComparison";
-export { detectStat, detectLevel } from "../understanding/statQuery";
+import { focusedRuleLines } from "../understanding/spells/ruleFocus";
+import { detectSpellFocus,type SpellFocus } from "../understanding/spells/spellFocus";
+import type { ChampionStatQuery } from "../understanding/stats/statQuery";
+import { ratioText,spellFocusValue } from "./builders/spellAnswer";
+import { buildStatComparison } from "./builders/statComparison";
+import { splitSentences } from "./presentation/answerText";
 import {
-  cardLabels,
-  translateTag,
-} from "./promptLocale";
+cardLabels,
+translateTag,
+} from "./presentation/promptLocale";
+export { detectLevel,detectStat } from "../understanding/stats/statQuery";
+export { buildSpellAnswer,cooldownFact,rangeFact,spellFocusValue } from "./builders/spellAnswer";
+export { splitSentences } from "./presentation/answerText";
 
 /** 상성 노트. `derived` 는 mine 앞쪽의 도출 문장 수다. */
 export interface MatchupNotes {
@@ -237,7 +237,7 @@ export function itemHeadline(answer: Extract<AdvisorAnswer, { kind: "item" }>): 
  * 있고, 모델에게 맡기면 없는 id 를 지어낸다. 상성·비교 답은 VS 화면, 룬·소환사 주문 규칙과
  * 아이템은 백과사전의 그 탭이다. 챔피언·스킬 답은 자료 카드 꼬리의 링크만 쓴다.
  */
-export { answerLinks, answerKey, answerChampionIds, type AnswerLink } from "./answerIdentity";
+export { answerChampionIds,answerKey,answerLinks,type AnswerLink } from "./answerIdentity";
 
 export function focusLabel(focus: SpellFocus, lang: Language = "ko_KR"): string {
   const w = cardLabels(lang);

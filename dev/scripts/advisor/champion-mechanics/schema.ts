@@ -1,6 +1,6 @@
 /** 생성과 검증에 같은 정의를 쓴다. 모르는 키를 버리지 않고 오류로 처리한다. */
 import Ajv from "ajv";
-import { CC_TYPES, EFFECTS, EVENTS, FIELDS, GAPS, PARAM_ROLES, STATS, SUBJECTS, VALUES, type Draft } from "./contract";
+import { CC_TYPES, EFFECTS, EVENTS, FIELDS, GAPS, PARAM_ROLES, STATS, SUBJECTS, VALUES, type Draft } from "../../../../src/domain/knowledge/notes/mechanicsContract";
 
 type Schema = Record<string, unknown>;
 const object = (properties: Record<string, Schema>): Schema => ({ type: "object", properties, required: Object.keys(properties), additionalProperties: false });

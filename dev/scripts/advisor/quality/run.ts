@@ -3,7 +3,7 @@ import path from "node:path";
 import { spawn, execFileSync } from "node:child_process";
 import { parseArgs } from "node:util";
 import { ADVISOR_MODEL } from "../../../../src/features/advisor/model/config";
-import { DEFAULT_CONTEXT_LIMIT, DEFAULT_CONTEXT_POLICY } from "../../../../src/features/advisor/conversation/contextFrameTypes";
+import { DEFAULT_CONTEXT_LIMIT, DEFAULT_CONTEXT_POLICY } from "../../../../src/features/advisor/conversation/memory/contextFrameTypes";
 import { CONTEXT_APPROVAL_FILE, EXPANDED_CONTEXT_APPROVAL_FILE, STRESS_APPROVAL_FILE } from "../context-frames/approval";
 import { audit } from "./audit";
 import { ROOT, WORKFLOW, buildBank, digest, readRows } from "./bank";
@@ -104,7 +104,7 @@ try {
   }
   if (profile === "ui") {
     await check("ui-build", "npx", ["vite", "build", "--config", "dev/config/vite.config.ts", "--mode", "local-preview"]);
-    await check("advisor-ui", "npx", ["playwright", "test", "--config", "dev/scripts/advisor/quality/playwright.config.ts", "dev/tests/e2e/advisor-", "--workers", "2", "--output", path.join(output, "e2e-results")]);
+    await check("advisor-ui", "npx", ["playwright", "test", "--config", "dev/scripts/advisor/quality/playwright.config.ts", "dev/tests/e2e/advisor/", "--workers", "2", "--output", path.join(output, "e2e-results")]);
   }
   if (profile === "regression" || profile === "quality") {
     for (const mode of ["none", "offline"] as const) await runDialogue({ stories: pendingStories(mode), mode, deps: evaluationDeps(), record });

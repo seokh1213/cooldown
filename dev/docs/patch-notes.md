@@ -220,8 +220,8 @@ npm run patch-notes:audit -- --write
 과거 데이터의 불변성, 3언어의 패치·스킬 상세, URL·기록 복원, 툴팁 조작,
 화면 폭·테마, CI 생성과 PWA 캐시는 계속 검증한다.
 
-데이터는 `dev/tests/data/patch-notes.test.ts`, 브라우저는 `dev/tests/e2e/patch-notes.spec.ts`,
-PWA는 `dev/tests/e2e/pwa-updates.spec.ts`에서 확인한다.
+데이터는 `dev/tests/data/patch-notes/patch-notes.test.ts`, 브라우저는 `dev/tests/e2e/patch-notes/patch-notes.spec.ts`,
+PWA는 `dev/tests/e2e/app/pwa-updates.spec.ts`에서 확인한다.
 
 기존 공통 `SkillTooltip`의 긴 함수는 별도 구조 개편 없이 노출 정책과 트리거
 확장 부분만 수정했다. 기존 쿨타임 화면의 패시브·Q 툴팁과 스탯 아이콘도 함께

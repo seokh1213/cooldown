@@ -18,7 +18,7 @@
  *   느린 회선     2G 급이면 지금 보는 화면이 먼저다
  *   재방문       서비스워커 캐시에 이미 있으면 요청 자체가 안 나간다
  */
-import { sheetBackground } from "@/shared/ui/sprite-icon";
+import { sheetBackground } from "@/shared/ui/icons/sprite-icon";
 
 /** 브라우저마다 있기도 없기도 하다. 없으면 제한을 안 걸고 받는다. */
 interface NetworkInformation {

@@ -5,10 +5,10 @@ import { pathToFileURL } from "node:url";
 import { performance } from "node:perf_hooks";
 import { translations } from "../../../../src/shared/i18n/translations";
 import { loadData, offlineFileJudge } from "../kev-agent/lib";
-import { planDialogue } from "../../../../src/features/advisor/conversation/dialoguePlanner";
-import { assembleDialogueReply } from "../../../../src/features/advisor/conversation/dialogueReply";
-import { composeMatchupReply } from "../../../../src/features/advisor/answers/matchupReply";
-import type { DialogueHistoryTurn, DialogueMemory } from "../../../../src/features/advisor/conversation/dialogueState";
+import { planDialogue } from "../../../../src/features/advisor/conversation/planning/dialoguePlanner";
+import { assembleDialogueReply } from "../../../../src/features/advisor/conversation/planning/dialogueReply";
+import { composeMatchupReply } from "../../../../src/features/advisor/answers/builders/matchupReply";
+import type { DialogueHistoryTurn, DialogueMemory } from "../../../../src/features/advisor/conversation/memory/dialogueState";
 import { matchesTarget } from "../conversational-advisor/score";
 import { describe, diagnostics, pairFor, type Case } from "./replay-actions";
 
@@ -32,7 +32,7 @@ async function run() {
   ];
   const beforeRoot = args.includes("--before-root") ? args[args.indexOf("--before-root") + 1] : undefined;
   const compose: typeof composeMatchupReply = beforeRoot
-    ? (await import(pathToFileURL(resolve(beforeRoot, "src/features/advisor/answers/matchupReply.ts")).href)).composeMatchupReply : composeMatchupReply;
+    ? (await import(pathToFileURL(resolve(beforeRoot, "src/features/advisor/answers/builders/matchupReply.ts")).href)).composeMatchupReply : composeMatchupReply;
   const previous = ["reviewed-results", "holdout-results"].flatMap(file => {
     const artifact = json<{ runs: Array<{ policy: string; rows: Array<{ id: string; turn: number; outputs: { guarded: { text: string } } }> }> }>(`dev/research/llm-evals/atoms/action-conditions/${file}.json`);
     return artifact.runs.find(r => r.policy === "independent")!.rows;

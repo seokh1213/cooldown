@@ -15,7 +15,7 @@ import { Button } from "@/shared/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
 import { cn } from "@/shared/lib/utils";
 import { useTranslation } from "@/shared/i18n";
-import { patchNotesLabels } from "@/features/patch-notes/labels";
+import { patchNotesLabels } from "@/features/patch-notes/formatting/labels";
 
 interface SidebarProps {
   isOpen: boolean;

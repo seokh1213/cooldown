@@ -5,18 +5,18 @@
  * 앱의 답 고르기(`plan.ts`)와 평가 하네스가 같이 쓴다.
  */
 import type { Language } from "@/shared/i18n";
-import { buildItemCard, buildMechanicsAnswerById, detectSlot, type AdvisorData } from "../conversation/context";
+import { buildItemCard, buildMechanicsAnswerById, detectSlot, type AdvisorData } from "./context";
 import { buildRuleAnswer as buildRuleCard, type AdvisorAnswer } from "../answers/answer";
-import { suggestChampions } from "../understanding/championTypo";
-import { asksAboutHelper, detectChampions, nicknames } from "../understanding/intent";
+import { suggestChampions } from "../understanding/champions/championTypo";
+import { asksAboutHelper, detectChampions, nicknames } from "../understanding/champions/intent";
 import { asksPrice, asksPriceTiers, findGameMeta, gameMetaById, gameMetaDocs } from "./gameMeta";
 import { descriptiveRuleHit, type LexicalHit } from "../application/searchFallback";
-import { findMentionedRules, askedRuleKinds, type RuleNotes } from "@/domain/knowledge/rules";
-import { detectSpellFocus } from "../understanding/spellFocus";
-import { findMechanics } from "@/domain/knowledge/mechanics";
-import { detectStat } from "../understanding/statQuery";
-import { unavailableStatName } from "../understanding/unavailableStats";
-import { aliasAt, aliasesOf } from "@/domain/knowledge/searchAliases";
+import { findMentionedRules, askedRuleKinds, type RuleNotes } from "@/domain/knowledge/notes/rules";
+import { detectSpellFocus } from "../understanding/spells/spellFocus";
+import { findMechanics } from "@/domain/knowledge/notes/mechanics";
+import { detectStat } from "../understanding/stats/statQuery";
+import { unavailableStatName } from "../understanding/stats/unavailableStats";
+import { aliasAt, aliasesOf } from "@/domain/knowledge/notes/searchAliases";
 import { describedRule } from "./ruleDescriptions";
 
 /** 검색 벡터로 찾을 질문인가(모델·동의 조건은 뺀 것). 평가 하네스도 이 조건으로 가른다. */

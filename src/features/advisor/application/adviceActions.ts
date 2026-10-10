@@ -1,9 +1,9 @@
 /** 기존 산문을 스킬 사용 조건이 붙은 단위로 옮긴다. 문단을 쪼개서 콤보의 일부만 권하지 않는다. */
-import type { ChampionCard } from "@/domain/knowledge/facts";
-import { HARD_CC } from "@/domain/knowledge/playbookCore";
-import { evidenceSentences } from "../answers/matchupFactCheck";
-import type { ScenarioCondition } from "../conversation/dialogueState";
-import { DIGEST_HEADINGS } from "../answers/prose";
+import type { ChampionCard } from "@/domain/knowledge/cards/contracts";
+import { HARD_CC } from "@/domain/knowledge/notes/playbookCore";
+import { evidenceSentences } from "../answers/evidence/matchupFactCheck";
+import { DIGEST_HEADINGS } from "../answers/presentation/prose";
+import type { ScenarioCondition } from "../conversation/memory/dialogueState";
 
 type Owner = ScenarioCondition["owner"];
 export interface ActionRequirement { owner: Owner; anyOf: string[] }

@@ -6,11 +6,11 @@ import type { ChampionDetailV2 } from "../../../../src/domain/game/contracts/cha
 import { assertStaticDataIdentity } from "../../../../src/domain/game/contracts/staticDataDecoder";
 import { DATA_LOCALES } from "../../../../src/domain/game/contracts/staticData";
 import type { Champion } from "../../../../src/domain/game/types";
-import type { StringTable } from "../localization";
+import type { StringTable } from "../tooltip/localization";
 import { fetchJson, writeJson } from "../io/json";
 import { fetchCDragonChampion } from "../sources/cdragon-champion";
-import { extractActiveSpells } from "../cdragon-active-spells";
-import { ABILITY_FORM_DEFINITIONS, buildAbilityForms, withAbilityUsageCondition } from "../ability-forms";
+import { extractActiveSpells } from "../sources/cdragon-active-spells";
+import { ABILITY_FORM_DEFINITIONS, buildAbilityForms, withAbilityUsageCondition } from "../abilities/ability-forms";
 
 async function generateForms() {
   const release = decodeDataManifest(JSON.parse(await readFile("public/data/version.json", "utf8")));

@@ -1,7 +1,7 @@
 /** 승인 계약은 타입으로만 공유한다. 브라우저 번들에는 작성 도구가 들어가지 않는다. */
-import type { Draft, Job, Slot, SourceNumber } from "../../../../dev/scripts/advisor/champion-mechanics/contract";
-import type { NoteVersion } from "../../../domain/knowledge/noteVersion";
-export type { Condition, Effect, Rule, Slot, Parameter } from "../../../../dev/scripts/advisor/champion-mechanics/contract";
+import type { Draft, Job, Slot, SourceNumber } from "@/domain/knowledge/notes/mechanicsContract";
+import type { NoteVersion } from "../../../domain/knowledge/notes/noteVersion";
+export type { Condition, Effect, Rule, Slot, Parameter } from "@/domain/knowledge/notes/mechanicsContract";
 
 export type AbilityJob = Pick<Job, "id" | "champion" | "slot" | "patch" | "sourceHash" | "slotRole" | "variants" | "facts"> & { numbers: Array<Pick<SourceNumber, "id" | "value" | "percent">> };
 export interface Ability { job: AbilityJob; draft: Draft; version?: NoteVersion }

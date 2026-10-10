@@ -1,5 +1,5 @@
-import type { DialogueMemory } from "../../../../src/features/advisor/conversation/dialogueState";
-import type { ChampionStatQuery } from "../../../../src/features/advisor/understanding/statQuery";
+import type { DialogueMemory } from "../../../../src/features/advisor/conversation/memory/dialogueState";
+import type { ChampionStatQuery } from "../../../../src/features/advisor/understanding/stats/statQuery";
 import type { Label } from "./seeds";
 
 export interface Example {
@@ -14,4 +14,4 @@ export interface Example {
   label: Label;
   expected: ChampionStatQuery | null;
 }
-export type { Channel, LinearModel } from "../../../../src/features/advisor/understanding/statClassifierTypes";
+export type { Channel, LinearModel } from "../../../../src/features/advisor/understanding/stats/statClassifierTypes";

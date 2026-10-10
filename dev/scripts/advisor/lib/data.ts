@@ -18,7 +18,7 @@ import type {
   RiotChampionMeta,
   WikiChampionMeta,
   WikiItemMeta,
-} from "../../../../src/domain/knowledge/sourceRecords";
+} from "../../../../src/domain/knowledge/cards/sourceRecords";
 
 export type LlmLocale = "ko_KR" | "en_US" | "zh_CN";
 

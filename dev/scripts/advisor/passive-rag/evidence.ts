@@ -1,7 +1,7 @@
 /** 질문 문형별 정답 문장을 고르지 않고, 챔피언의 전체 스킬에서 의미 검색한다. */
-import type { AdvisorData } from "../../../../src/features/advisor/conversation/context";
-import { detectChampionMentions } from "../../../../src/features/advisor/understanding/intent";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
+import type { AdvisorData } from "../../../../src/features/advisor/retrieval/context";
+import { detectChampionMentions } from "../../../../src/features/advisor/understanding/champions/intent";
 
 export interface SpellDoc { id: string; champion: string; slot: string; text: string }
 export interface RagState { champion?: string; questions: string[] }

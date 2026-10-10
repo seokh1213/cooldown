@@ -1,8 +1,8 @@
 /** 상황별 연계는 순서·조건을 생략하지 않고, 못 쓰는 스킬이 든 예시는 제외한다. */
-import type { PlaybookEntry } from "@/domain/knowledge/playbookCore";
-import { comboSlots } from "@/domain/knowledge/comboGuide";
+import type { PlaybookEntry } from "@/domain/knowledge/notes/playbookCore";
+import { comboSlots } from "@/domain/knowledge/notes/comboGuide";
 import type { SelectedNotes } from "./noteSelect";
-import { aliasAt, aliasesOf } from "@/domain/knowledge/searchAliases";
+import { aliasAt, aliasesOf } from "@/domain/knowledge/notes/searchAliases";
 
 interface ComboSelection {
   question: string;

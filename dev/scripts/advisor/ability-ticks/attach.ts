@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import type { ChampionCard } from "../../../../src/domain/knowledge/facts";
-import type { SpellTicks } from "../../../../src/domain/knowledge/abilityTicks";
-import { isSpellTicks } from "../../../../src/domain/knowledge/abilityTicksValidation";
+import type { ChampionCard } from "../../../../src/domain/knowledge/cards/contracts";
+import type { SpellTicks } from "../../../../src/domain/knowledge/combat/abilityTicks";
+import { isSpellTicks } from "../../../../src/domain/knowledge/combat/abilityTicksValidation";
 
 export interface TickEntry extends SpellTicks { tooltipHash: string }
 export interface TickFile { schemaVersion: 1; patch: string; checkedAt: string; abilities: Record<string, TickEntry> }

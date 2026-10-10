@@ -18,13 +18,13 @@
  * 의미 검색(임베딩)을 쓰면 한 문항을 더 맞혔지만 모델을 1.2GB 더 받아야 한다.
  * 웹에서 2.97GB 위에 얹을 값이 아니라서 글자 검색으로 간다.
  */
-import type { AdvisorData } from "../conversation/context";
-import { aliasesOf } from "@/domain/knowledge/searchAliases";
+import type { AdvisorData } from "../retrieval/context";
+import { aliasesOf } from "@/domain/knowledge/notes/searchAliases";
 import { asksPrice, gameMetaDocs } from "../retrieval/gameMeta";
-import { ruleLines, ruleName } from "@/domain/knowledge/rules";
-import { matchesMechanicsQuestion, type MechanicsSection } from "@/domain/knowledge/mechanics";
+import { ruleLines, ruleName } from "@/domain/knowledge/notes/rules";
+import { matchesMechanicsQuestion, type MechanicsSection } from "@/domain/knowledge/notes/mechanics";
 import { searchTerms } from "./searchTerms";
-import { htmlToText } from "../answers/answerText";
+import { htmlToText } from "../answers/presentation/answerText";
 
 export interface SearchDoc {
   /** 검색 문서 id(`rule:점화`). 하이브리드 검색이 벡터 점수와 맞춘다 */
@@ -205,7 +205,7 @@ export function buildRetrievalDocs(data: AdvisorData, lang: string, withAliases 
   return withAliases ? docs.map((doc) => ({ ...doc, text: `${doc.text}\n${aliasesOf(doc.id).join(" ")}` })) : docs;
 }
 
-function ruleDoc(data: AdvisorData, rule: import("@/domain/knowledge/rules").RuleNotes, lang: string): RetrievalDoc {
+function ruleDoc(data: AdvisorData, rule: import("@/domain/knowledge/notes/rules").RuleNotes, lang: string): RetrievalDoc {
   const names = [rule.name, rule.nameEn, rule.nameZh];
   const core = rule.subject === "rune" ? data.runes?.find(entry => names.includes(entry.name))
     : rule.subject === "summoner" ? data.summoners?.find(entry => names.includes(entry.name) && entry.modes?.includes("CLASSIC")) : undefined;

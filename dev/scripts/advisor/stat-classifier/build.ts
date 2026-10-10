@@ -1,8 +1,8 @@
 /** train/dev/test를 먼저 고정하고 정답을 코드의 예측과 독립적으로 붙인다. */
 import fs from "node:fs";
 import { createHash } from "node:crypto";
-import { emptyDialogue, type DialogueMemory } from "../../../../src/features/advisor/conversation/dialogueState";
-import type { ChampionStatQuery, StatLevel } from "../../../../src/features/advisor/understanding/statQuery";
+import { emptyDialogue, type DialogueMemory } from "../../../../src/features/advisor/conversation/memory/dialogueState";
+import type { ChampionStatQuery, StatLevel } from "../../../../src/features/advisor/understanding/stats/statQuery";
 import { fields, families, contextual, type Label } from "./seeds";
 import { data, inputFeatures } from "./runtime";
 import type { Example } from "./contracts";

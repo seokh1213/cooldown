@@ -1,16 +1,9 @@
 import { ChampionSpell } from "@/domain/game/types";
-import type {
-  CommunityDragonSpellData,
-  TooltipLocale,
-  TooltipRenderResult,
-} from "./types";
-import { convertXmlTagsToHtml } from "./xmlTagConverter";
-import {
-  replaceVariables,
-  replaceVariablesWithDiagnostics,
-} from "./variableReplacer";
-import { sanitizeHtml } from "./formatters";
-import { cleanUnresolvedMarks } from "./unresolvedCleanup";
+import type { CommunityDragonSpellData, TooltipLocale, TooltipRenderResult } from "./contracts";
+import { sanitizeHtml } from "./formatting/formatters";
+import { cleanUnresolvedMarks } from "./formatting/unresolvedCleanup";
+import { convertXmlTagsToHtml } from "./formatting/xmlTagConverter";
+import { replaceVariables, replaceVariablesWithDiagnostics } from "./variables/variableReplacer";
 
 /**
  * 스킬 툴팁 파싱 메인 함수

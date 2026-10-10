@@ -8,14 +8,14 @@ import { answerDialogue } from "../../../../src/features/advisor/conversation/di
 import { dehydrateTurn, reviveTurn } from "../../../../src/features/advisor/storage/history";
 import { normalizeMessage, offlineJudge } from "../../../../src/features/advisor/model/offlineJudge";
 import { judgeRouteState } from "../../../../src/features/advisor/application/routeAsk";
-import { requestClassifier, REQUEST_SCOPES, REQUEST_SCOPE_INSTRUCTION, REQUEST_MODEL_FILES, type RequestIntent, type RequestScope } from "../../../../src/features/advisor/understanding/requestIntent";
-import { statFields } from "../../../../src/features/advisor/understanding/statQuery";
+import { requestClassifier, REQUEST_SCOPES, REQUEST_SCOPE_INSTRUCTION, REQUEST_MODEL_FILES, type RequestIntent, type RequestScope } from "../../../../src/features/advisor/understanding/requests/requestIntent";
+import { statFields } from "../../../../src/features/advisor/understanding/stats/statQuery";
 import { translations } from "../../../../src/shared/i18n/translations";
 import type { Language } from "../../../../src/shared/i18n";
 import type { PlanContext } from "../../../../src/features/advisor/contracts/planTypes";
 import type { AdvisorAnswer } from "../../../../src/features/advisor/answers/answer";
 import type { ResolvedQuestion } from "../../../../src/features/advisor/understanding/resolvedQuestion";
-import { dialogueMemoryOf } from "../../../../src/features/advisor/conversation/dialogueState";
+import { dialogueMemoryOf } from "../../../../src/features/advisor/conversation/memory/dialogueState";
 
 const directory = "dev/research/llm-evals/request-classifier/comparison";
 const read = async (file: string) => {
